@@ -1,0 +1,27 @@
+.datatable.datatable-default.datatable-head-custom
+  > .datatable-table
+  > .datatable-head
+  .datatable-row
+  > .datatable-cell
+  > span,
+.datatable.datatable-default.datatable-head-custom
+  > .datatable-table
+  > .datatable-foot
+  .datatable-row
+  > .datatable-cell
+  > span {
+  color: #13b9a9 !important;
+  font-size: 1rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: normal;
+}
+
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__rendered
+  .select2-selection__choice {
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+  background: #13b9a914 !important;
+}
