@@ -25,14 +25,14 @@ class Controller
         $client = new \Redis();
         $client->connect('127.0.0.1');
         $this->cache = new \MatthiasMullie\Scrapbook\Adapters\Redis($client);
-        
+
         $this->audit = \Audit::instance();
 
         $this->headers = $this->getHttpHeaders();
 
         $this->objUser = $this->f3->get('SESSION.objUser');
 
-        if ($this->objUser && is_object($this->objUser) ) {
+        if ($this->objUser && is_object($this->objUser)) {
 
             $this->isAuth = true;
 
@@ -93,10 +93,9 @@ class Controller
 
     function rerouteAuth()
     {
-        if($this->f3->ajax()){
+        if ($this->f3->ajax()) {
             echo $this->webResponse->jsonResponse();
-        }
-        else {
+        } else {
             $this->f3->reroute('/app/auth/signin');
         }
     }
