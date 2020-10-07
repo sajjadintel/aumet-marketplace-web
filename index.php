@@ -64,7 +64,7 @@ $f3->set('mailBCC', 'a.atrash@aumet.me');
 
 define('CHUNK_SIZE', 1024 * 1024);
 
-session_save_path("/tmp");
+// session_save_path("/tmp");
 
 global $dbConnection;
 

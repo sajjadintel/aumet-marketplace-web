@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
 // Class Definition
-var WebAuth = function () {
+var WebAuth = (function () {
 	var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
 
 	var _handleFormSignin = function () {
@@ -13,63 +13,60 @@ var WebAuth = function () {
 			return;
 		}
 
-		FormValidation
-			.formValidation(
-				form,
-				{
-					fields: {
-						email: {
-							validators: {
-								notEmpty: {
-									message: WebAppLocals.getMessage("error_emailNotEmpty")
-								},
-								emailAddress: {
-									message: WebAppLocals.getMessage("error_emailFormat")
-								}
-							}
+		FormValidation.formValidation(form, {
+			fields: {
+				email: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('error_emailNotEmpty'),
 						},
-						password: {
-							validators: {
-								notEmpty: {
-									message: WebAppLocals.getMessage("error_passwordNotEmpty")
-								},
-								/*regexp: {
+						emailAddress: {
+							message: WebAppLocals.getMessage('error_emailFormat'),
+						},
+					},
+				},
+				password: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('error_passwordNotEmpty'),
+						},
+						/*regexp: {
 									regexp: /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/,
 									message: 'Ensure string has two uppercase letters.<br/>Ensure string has one special case letter.<br/>Ensure string has two digits.<br/>Ensure string has three lowercase letters.<br/>Ensure string is of length 8.'
 								}*/
-							}
-						}
 					},
-					plugins: {
-						trigger: new FormValidation.plugins.Trigger(),
-						submitButton: new FormValidation.plugins.SubmitButton(),
-						//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
-						bootstrap: new FormValidation.plugins.Bootstrap({
-							//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
-							//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
-						})
-					}
-				}
-			)
+				},
+			},
+			plugins: {
+				trigger: new FormValidation.plugins.Trigger(),
+				submitButton: new FormValidation.plugins.SubmitButton(),
+				//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
+				bootstrap: new FormValidation.plugins.Bootstrap({
+					//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
+					//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
+				}),
+			},
+		})
 			.on('core.form.valid', function () {
 				// Show loading state on button
-				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, "Please wait");
+				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
 
 				// Form Validation & Ajax Submission: https://formvalidation.io/guide/examples/using-ajax-to-submit-the-form
 
-				firebase.auth().signInWithEmailAndPassword(
-					form.querySelector('[name="email"]').value,
-					form.querySelector('[name="password"]').value).catch(function (error) {
+				firebase
+					.auth()
+					.signInWithEmailAndPassword(form.querySelector('[name="email"]').value, form.querySelector('[name="password"]').value)
+					.catch(function (error) {
 						// Handle Errors here.
 						KTUtil.btnRelease(formSubmitButton);
 						Swal.fire({
 							text: error.message,
-							icon: "error",
+							icon: 'error',
 							buttonsStyling: false,
-							confirmButtonText: WebAppLocals.getMessage("error_confirmButtonText"),
+							confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
 							customClass: {
-								confirmButton: "btn font-weight-bold btn-light-primary"
-							}
+								confirmButton: 'btn font-weight-bold btn-light-primary',
+							},
 						}).then(function () {
 							KTUtil.scrollTop();
 						});
@@ -78,7 +75,7 @@ var WebAuth = function () {
 			.on('core.form.invalid', function () {
 				KTUtil.scrollTop();
 			});
-	}
+	};
 
 	var _handleFormForgot = function () {
 		var form = KTUtil.getById('kt_login_forgot_form');
@@ -89,36 +86,32 @@ var WebAuth = function () {
 			return;
 		}
 
-		FormValidation
-			.formValidation(
-				form,
-				{
-					fields: {
-						email: {
-							validators: {
-								notEmpty: {
-									message: 'Email is required'
-								},
-								emailAddress: {
-									message: 'The value is not a valid email address'
-								}
-							}
-						}
+		FormValidation.formValidation(form, {
+			fields: {
+				email: {
+					validators: {
+						notEmpty: {
+							message: 'Email is required',
+						},
+						emailAddress: {
+							message: 'The value is not a valid email address',
+						},
 					},
-					plugins: {
-						trigger: new FormValidation.plugins.Trigger(),
-						submitButton: new FormValidation.plugins.SubmitButton(),
-						//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
-						bootstrap: new FormValidation.plugins.Bootstrap({
-							//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
-							//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
-						})
-					}
-				}
-			)
+				},
+			},
+			plugins: {
+				trigger: new FormValidation.plugins.Trigger(),
+				submitButton: new FormValidation.plugins.SubmitButton(),
+				//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
+				bootstrap: new FormValidation.plugins.Bootstrap({
+					//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
+					//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
+				}),
+			},
+		})
 			.on('core.form.valid', function () {
 				// Show loading state on button
-				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, "Please wait");
+				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
 
 				// Simulate Ajax request
 				setTimeout(function () {
@@ -127,18 +120,18 @@ var WebAuth = function () {
 			})
 			.on('core.form.invalid', function () {
 				Swal.fire({
-					text: "Sorry, looks like there are some errors detected, please try again.",
-					icon: "error",
+					text: 'Sorry, looks like there are some errors detected, please try again.',
+					icon: 'error',
 					buttonsStyling: false,
-					confirmButtonText: "Ok, got it!",
+					confirmButtonText: 'Ok, got it!',
 					customClass: {
-						confirmButton: "btn font-weight-bold btn-light-primary"
-					}
+						confirmButton: 'btn font-weight-bold btn-light-primary',
+					},
 				}).then(function () {
 					KTUtil.scrollTop();
 				});
 			});
-	}
+	};
 
 	var _handleFormSignup = function () {
 		// Base elements
@@ -153,41 +146,40 @@ var WebAuth = function () {
 
 		// Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
 		// Step 1
-		validations.push(FormValidation.formValidation(
-			form,
-			{
+		validations.push(
+			FormValidation.formValidation(form, {
 				fields: {
 					fname: {
 						validators: {
 							notEmpty: {
-								message: 'First name is required'
-							}
-						}
+								message: 'First name is required',
+							},
+						},
 					},
 					lname: {
 						validators: {
 							notEmpty: {
-								message: 'Last Name is required'
-							}
-						}
+								message: 'Last Name is required',
+							},
+						},
 					},
 					phone: {
 						validators: {
 							notEmpty: {
-								message: 'Phone is required'
-							}
-						}
+								message: 'Phone is required',
+							},
+						},
 					},
 					email: {
 						validators: {
 							notEmpty: {
-								message: 'Email is required'
+								message: 'Email is required',
 							},
 							emailAddress: {
-								message: 'The value is not a valid email address'
-							}
-						}
-					}
+								message: 'The value is not a valid email address',
+							},
+						},
+					},
 				},
 				plugins: {
 					trigger: new FormValidation.plugins.Trigger(),
@@ -195,51 +187,50 @@ var WebAuth = function () {
 					bootstrap: new FormValidation.plugins.Bootstrap({
 						//eleInvalidClass: '',
 						eleValidClass: '',
-					})
-				}
-			}
-		));
+					}),
+				},
+			})
+		);
 
 		// Step 2
-		validations.push(FormValidation.formValidation(
-			form,
-			{
+		validations.push(
+			FormValidation.formValidation(form, {
 				fields: {
 					address1: {
 						validators: {
 							notEmpty: {
-								message: 'Address is required'
-							}
-						}
+								message: 'Address is required',
+							},
+						},
 					},
 					postcode: {
 						validators: {
 							notEmpty: {
-								message: 'Postcode is required'
-							}
-						}
+								message: 'Postcode is required',
+							},
+						},
 					},
 					city: {
 						validators: {
 							notEmpty: {
-								message: 'City is required'
-							}
-						}
+								message: 'City is required',
+							},
+						},
 					},
 					state: {
 						validators: {
 							notEmpty: {
-								message: 'State is required'
-							}
-						}
+								message: 'State is required',
+							},
+						},
 					},
 					country: {
 						validators: {
 							notEmpty: {
-								message: 'Country is required'
-							}
-						}
-					}
+								message: 'Country is required',
+							},
+						},
+					},
 				},
 				plugins: {
 					trigger: new FormValidation.plugins.Trigger(),
@@ -247,37 +238,36 @@ var WebAuth = function () {
 					bootstrap: new FormValidation.plugins.Bootstrap({
 						//eleInvalidClass: '',
 						eleValidClass: '',
-					})
-				}
-			}
-		));
+					}),
+				},
+			})
+		);
 
 		// Step 3
-		validations.push(FormValidation.formValidation(
-			form,
-			{
+		validations.push(
+			FormValidation.formValidation(form, {
 				fields: {
 					delivery: {
 						validators: {
 							notEmpty: {
-								message: 'Delivery type is required'
-							}
-						}
+								message: 'Delivery type is required',
+							},
+						},
 					},
 					packaging: {
 						validators: {
 							notEmpty: {
-								message: 'Packaging type is required'
-							}
-						}
+								message: 'Packaging type is required',
+							},
+						},
 					},
 					preferreddelivery: {
 						validators: {
 							notEmpty: {
-								message: 'Preferred delivery window is required'
-							}
-						}
-					}
+								message: 'Preferred delivery window is required',
+							},
+						},
+					},
 				},
 				plugins: {
 					trigger: new FormValidation.plugins.Trigger(),
@@ -285,57 +275,56 @@ var WebAuth = function () {
 					bootstrap: new FormValidation.plugins.Bootstrap({
 						//eleInvalidClass: '',
 						eleValidClass: '',
-					})
-				}
-			}
-		));
+					}),
+				},
+			})
+		);
 
 		// Step 4
-		validations.push(FormValidation.formValidation(
-			form,
-			{
+		validations.push(
+			FormValidation.formValidation(form, {
 				fields: {
 					ccname: {
 						validators: {
 							notEmpty: {
-								message: 'Credit card name is required'
-							}
-						}
+								message: 'Credit card name is required',
+							},
+						},
 					},
 					ccnumber: {
 						validators: {
 							notEmpty: {
-								message: 'Credit card number is required'
+								message: 'Credit card number is required',
 							},
 							creditCard: {
-								message: 'The credit card number is not valid'
-							}
-						}
+								message: 'The credit card number is not valid',
+							},
+						},
 					},
 					ccmonth: {
 						validators: {
 							notEmpty: {
-								message: 'Credit card month is required'
-							}
-						}
+								message: 'Credit card month is required',
+							},
+						},
 					},
 					ccyear: {
 						validators: {
 							notEmpty: {
-								message: 'Credit card year is required'
-							}
-						}
+								message: 'Credit card year is required',
+							},
+						},
 					},
 					cccvv: {
 						validators: {
 							notEmpty: {
-								message: 'Credit card CVV is required'
+								message: 'Credit card CVV is required',
 							},
 							digits: {
-								message: 'The CVV value is not valid. Only numbers is allowed'
-							}
-						}
-					}
+								message: 'The CVV value is not valid. Only numbers is allowed',
+							},
+						},
+					},
 				},
 				plugins: {
 					trigger: new FormValidation.plugins.Trigger(),
@@ -343,15 +332,15 @@ var WebAuth = function () {
 					bootstrap: new FormValidation.plugins.Bootstrap({
 						//eleInvalidClass: '',
 						eleValidClass: '',
-					})
-				}
-			}
-		));
+					}),
+				},
+			})
+		);
 
 		// Initialize form wizard
 		wizardObj = new KTWizard(wizardEl, {
 			startStep: 1, // initial active step number
-			clickableSteps: false  // allow step clicking
+			clickableSteps: false, // allow step clicking
 		});
 
 		// Validation before going to next page
@@ -371,13 +360,13 @@ var WebAuth = function () {
 						KTUtil.scrollTop();
 					} else {
 						Swal.fire({
-							text: "Sorry, looks like there are some errors detected, please try again.",
-							icon: "error",
+							text: 'Sorry, looks like there are some errors detected, please try again.',
+							icon: 'error',
 							buttonsStyling: false,
-							confirmButtonText: "Ok, got it!",
+							confirmButtonText: 'Ok, got it!',
 							customClass: {
-								confirmButton: "btn font-weight-bold btn-light"
-							}
+								confirmButton: 'btn font-weight-bold btn-light',
+							},
 						}).then(function () {
 							KTUtil.scrollTop();
 						});
@@ -385,7 +374,7 @@ var WebAuth = function () {
 				});
 			}
 
-			return false;  // Do not change wizard step, further action will be handled by he validator
+			return false; // Do not change wizard step, further action will be handled by he validator
 		});
 
 		// Change event
@@ -396,33 +385,33 @@ var WebAuth = function () {
 		// Submit event
 		wizardObj.on('submit', function (wizard) {
 			Swal.fire({
-				text: "All is good! Please confirm the form submission.",
-				icon: "success",
+				text: 'All is good! Please confirm the form submission.',
+				icon: 'success',
 				showCancelButton: true,
 				buttonsStyling: false,
-				confirmButtonText: "Yes, submit!",
-				cancelButtonText: "No, cancel",
+				confirmButtonText: 'Yes, submit!',
+				cancelButtonText: 'No, cancel',
 				customClass: {
-					confirmButton: "btn font-weight-bold btn-primary",
-					cancelButton: "btn font-weight-bold btn-default"
-				}
+					confirmButton: 'btn font-weight-bold btn-primary',
+					cancelButton: 'btn font-weight-bold btn-default',
+				},
 			}).then(function (result) {
 				if (result.value) {
 					form.submit(); // Submit form
 				} else if (result.dismiss === 'cancel') {
 					Swal.fire({
-						text: "Your form has not been submitted!.",
-						icon: "error",
+						text: 'Your form has not been submitted!.',
+						icon: 'error',
 						buttonsStyling: false,
-						confirmButtonText: "Ok, got it!",
+						confirmButtonText: 'Ok, got it!',
 						customClass: {
-							confirmButton: "btn font-weight-bold btn-primary",
-						}
+							confirmButton: 'btn font-weight-bold btn-primary',
+						},
 					});
 				}
 			});
 		});
-	}
+	};
 
 	var _setupFirebase = function () {
 		// Initialize Firebase
@@ -440,82 +429,83 @@ var WebAuth = function () {
 					photoURL: user.photoURL,
 					isAnonymous: user.isAnonymous,
 					uid: user.uid,
-					providerData: user.providerData
-				}
+					providerData: user.providerData,
+				};
 
-				firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
+				firebase
+					.auth()
+					.currentUser.getIdToken(true)
+					.then(function (idToken) {
+						userInfo.idToken = idToken;
 
-					userInfo.idToken = idToken;
-
-					$.ajax({
-						url: "/app/auth/signin?_t=" + Date.now(),
-						type: "POST",
-						dataType: "json",
-						data: {
-							token: idToken
-						},
-						async: true
-					}).done(function (webResponse) {
-						if (webResponse && typeof webResponse === 'object') {
-							if (webResponse.errorCode == 0) {
-								firebase.analytics().logEvent('auth_ok');
-								window.location.href = "/app";
-							} else {
-								Swal.fire({
-									text: webResponse.message,
-									icon: "error",
-									buttonsStyling: false,
-									confirmButtonText: WebAppLocals.getMessage("error_confirmButtonText"),
-									customClass: {
-										confirmButton: "btn font-weight-bold btn-light-primary"
+						$.ajax({
+							url: '/web/auth/signin?_t=' + Date.now(),
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								token: idToken,
+							},
+							async: true,
+						})
+							.done(function (webResponse) {
+								if (webResponse && typeof webResponse === 'object') {
+									if (webResponse.errorCode == 0) {
+										firebase.analytics().logEvent('auth_ok');
+										window.location.href = '/web';
+									} else {
+										Swal.fire({
+											text: webResponse.message,
+											icon: 'error',
+											buttonsStyling: false,
+											confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
+											customClass: {
+												confirmButton: 'btn font-weight-bold btn-light-primary',
+											},
+										}).then(function () {
+											KTUtil.scrollTop();
+										});
 									}
+								} else {
+									Swal.fire({
+										text: webResponse.message,
+										icon: 'error',
+										buttonsStyling: false,
+										confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
+										customClass: {
+											confirmButton: 'btn font-weight-bold btn-light-primary',
+										},
+									}).then(function () {
+										KTUtil.scrollTop();
+									});
+								}
+							})
+							.fail(function (jqXHR, textStatus, errorThrown) {
+								Swal.fire({
+									text: WebAppLocals.getMessage('error'),
+									icon: 'error',
+									buttonsStyling: false,
+									confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
+									customClass: {
+										confirmButton: 'btn font-weight-bold btn-light-primary',
+									},
 								}).then(function () {
 									KTUtil.scrollTop();
 								});
-
-							}
-						}
-						else {
-							Swal.fire({
-								text: webResponse.message,
-								icon: "error",
-								buttonsStyling: false,
-								confirmButtonText: WebAppLocals.getMessage("error_confirmButtonText"),
-								customClass: {
-									confirmButton: "btn font-weight-bold btn-light-primary"
-								}
-							}).then(function () {
-								KTUtil.scrollTop();
 							});
-						}
-					}).fail(function (jqXHR, textStatus, errorThrown) {
+					})
+					.catch(function (error) {
 						Swal.fire({
-							text: WebAppLocals.getMessage("error"),
-							icon: "error",
+							text: error.message,
+							icon: 'error',
 							buttonsStyling: false,
-							confirmButtonText: WebAppLocals.getMessage("error_confirmButtonText"),
+							confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
 							customClass: {
-								confirmButton: "btn font-weight-bold btn-light-primary"
-							}
+								confirmButton: 'btn font-weight-bold btn-light-primary',
+							},
 						}).then(function () {
 							KTUtil.scrollTop();
 						});
 					});
-
-				}).catch(function (error) {
-					Swal.fire({
-						text: error.message,
-						icon: "error",
-						buttonsStyling: false,
-						confirmButtonText: WebAppLocals.getMessage("error_confirmButtonText"),
-						customClass: {
-							confirmButton: "btn font-weight-bold btn-light-primary"
-						}
-					}).then(function () {
-						KTUtil.scrollTop();
-					});
-				});
-
 
 				// ...
 			} else {
@@ -523,8 +513,7 @@ var WebAuth = function () {
 				// ...
 			}
 		});
-
-	}
+	};
 
 	// Public Functions
 	return {
@@ -534,9 +523,9 @@ var WebAuth = function () {
 			_handleFormSignin();
 			_handleFormForgot();
 			_handleFormSignup();
-		}
+		},
 	};
-}();
+})();
 
 // Class Initialization
 jQuery(document).ready(function () {

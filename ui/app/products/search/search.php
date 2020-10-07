@@ -125,7 +125,7 @@ function compress_htmlcode($codedata)
         placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
         tags: true,
         ajax: {
-            url: '/app/product/brandname/list',
+            url: '/web/product/brandname/list',
             dataType: 'json',
             processResults: function(response) {
                 return {
@@ -152,7 +152,7 @@ function compress_htmlcode($codedata)
         placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
         tags: true,
         ajax: {
-            url: '/app/product/scientificname/list',
+            url: '/web/product/scientificname/list',
             dataType: 'json',
             processResults: function(response) {
                 return {

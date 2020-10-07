@@ -100,7 +100,7 @@ function compress_htmlcode($codedata)
                     </h3>
                     <div class="card-toolbar">
                         <div class="dropdown dropdown-inline">
-                            <a href="javascript:;" class="btn btn-primary font-weight-bolder font-size-sm" onclick="WebApp.loadPage('/app/product/search');"><?php echo $vModule_cart_continueShopping ?></a>
+                            <a href="javascript:;" class="btn btn-primary font-weight-bolder font-size-sm" onclick="WebApp.loadPage('/web/product/search');"><?php echo $vModule_cart_continueShopping ?></a>
                         </div>
                     </div>
                 </div>
@@ -135,7 +135,7 @@ function compress_htmlcode($codedata)
                                             <div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light">
                                                 <div class="symbol-label" style="background-image: url('<?php echo $objItem->image ?>')"></div>
                                             </div>
-                                            <a href="javascript:;" onclick="WebApp.loadSubPage('/app/entity/<?php echo $objItem->entityId ?>/product/<?php echo $objItem->productId ?>')" class="text-dark text-hover-primary"><?php echo $objItem->productName_en ?></a>
+                                            <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $objItem->entityId ?>/product/<?php echo $objItem->productId ?>')" class="text-dark text-hover-primary"><?php echo $objItem->productName_en ?></a>
                                         </td>
                                         <td class="text-left align-middle "><?php echo $objItem->entityName_ar ?></td>
                                         <td class="text-center align-middle">

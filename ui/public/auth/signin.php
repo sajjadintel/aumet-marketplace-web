@@ -43,12 +43,12 @@
 				<!--begin::Signin-->
 				<div class="login-form">
 					<!--begin::Form-->
-					<form class="form" id="kt_login_singin_form" action="/app/auth/signin">
+					<form class="form" id="kt_login_singin_form" action="/web/auth/signin">
 						<!--begin::Title-->
 						<div class="pb-5 pb-lg-15">
 							<h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg"><?php echo $vLogin_signin ?></h3>
 							<div class="text-muted font-weight-bold font-size-h4"><?php echo $vLogin_noAccountAdv ?>
-								<a href="/app/auth/signup" class="text-primary font-weight-bolder"><?php echo $vLogin_signupAdv ?></a></div>
+								<a href="/web/auth/signup" class="text-primary font-weight-bolder"><?php echo $vLogin_signupAdv ?></a></div>
 						</div>
 						<!--begin::Title-->
 						<!--begin::Form group-->
@@ -61,7 +61,7 @@
 						<div class="form-group">
 							<div class="d-flex justify-content-between mt-n5">
 								<label class="font-size-h6 font-weight-bolder text-dark pt-5"><?php echo $vLogin_password ?></label>
-								<a href="/app/auth/forgot" class="text-primary font-size-h6 font-weight-bolder text-hover-primary pt-5"><?php echo $vLogin_forgotPassword ?></a>
+								<a href="/web/auth/forgot" class="text-primary font-size-h6 font-weight-bolder text-hover-primary pt-5"><?php echo $vLogin_forgotPassword ?></a>
 							</div>
 							<input class="form-control h-auto py-7 px-6 rounded-lg border-0" type="password" name="password" />
 						</div>

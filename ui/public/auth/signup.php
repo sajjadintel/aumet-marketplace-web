@@ -119,7 +119,7 @@
 							<div class="pb-10 pb-lg-15">
 								<h3 class="font-weight-bolder text-dark display5"><?php echo $vLogin_signup ?></h3>
 								<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_AlreadyHaveAccount ?>
-									<a href="/app/auth/signin" class="text-primary font-weight-bolder"><?php echo $vLogin_signin ?></a></div>
+									<a href="/web/auth/signin" class="text-primary font-weight-bolder"><?php echo $vLogin_signin ?></a></div>
 							</div>
 							<!--begin::Title-->
 							<!--begin::Form Group-->

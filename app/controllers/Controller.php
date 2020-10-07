@@ -20,6 +20,7 @@ class Controller
     function __construct()
     {
         $this->f3 = \Base::instance();
+        $this->db = $GLOBALS['dbConnection'];
         $this->webResponse = new WebResponse();
 
         $client = new \Redis();
@@ -40,6 +41,8 @@ class Controller
         } else {
             $this->isAuth = false;
         }
+
+        LayoutRender::setMainMenu($this->f3, $this->db, $this->objUser->menuId);
     }
 
     function beforeroute()
@@ -96,7 +99,7 @@ class Controller
         if ($this->f3->ajax()) {
             echo $this->webResponse->jsonResponse();
         } else {
-            $this->f3->reroute('/app/auth/signin');
+            $this->f3->reroute('/web/auth/signin');
         }
     }
 

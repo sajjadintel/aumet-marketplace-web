@@ -6,7 +6,7 @@ class CartController extends Controller
     function get()
     {
         if (!$this->f3->ajax()) {
-            $this->f3->set("pageURL", "/app/cart");
+            $this->f3->set("pageURL", "/web/cart");
             echo View::instance()->render('app/layout/layout.php');
         } else {
             global $dbConnection;
@@ -29,7 +29,7 @@ class CartController extends Controller
     function postAddItem()
     {
         if (!$this->f3->ajax()) {
-            $this->f3->set("pageURL", "/app/cart");
+            $this->f3->set("pageURL", "/web/cart");
             echo View::instance()->render('app/layout/layout.php');
         } else {
 
@@ -80,7 +80,7 @@ class CartController extends Controller
     function postRemoveItem()
     {
         if (!$this->f3->ajax()) {
-            $this->f3->set("pageURL", "/app/cart");
+            $this->f3->set("pageURL", "/web/cart");
             echo View::instance()->render('app/layout/layout.php');
         } else {
 
@@ -102,7 +102,7 @@ class CartController extends Controller
     function getStatus()
     {
         if (!$this->f3->ajax()) {
-            $this->f3->set("pageURL", "/app/cart");
+            $this->f3->set("pageURL", "/web/cart");
             echo View::instance()->render('app/layout/layout.php');
         } else {
             global $dbConnection;

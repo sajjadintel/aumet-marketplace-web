@@ -107,7 +107,7 @@ function compress_htmlcode($codedata)
                                 <?php foreach ($arrRelatedEntityProduct as $objItem) : ?>
 
                                     <tr>
-                                        <td class=" align-middle font-weight-bolder font-size-h5"><a href="javascript:;" onclick="WebApp.loadSubPage('/app/entity/<?php echo $objItem->entityId ?>/product/<?php echo $objItem->productId ?>')" class="text-dark text-hover-primary"><?php echo $objItem->productName_en ?></a></td>
+                                        <td class=" align-middle font-weight-bolder font-size-h5"><a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $objItem->entityId ?>/product/<?php echo $objItem->productId ?>')" class="text-dark text-hover-primary"><?php echo $objItem->productName_en ?></a></td>
 
                                         <td class="d-flex align-items-center font-weight-bolder">
 

@@ -2,33 +2,42 @@
 
 $f3->route('GET /', 'LandingController->get');
 
-$f3->route('GET /app/auth/signin', 'AuthController->getSignIn');
-$f3->route('POST /app/auth/signin', 'AuthController->postSignIn');
+$f3->route('GET /web/auth/signin', 'AuthController->getSignIn');
+$f3->route('POST /web/auth/signin', 'AuthController->postSignIn');
 
-$f3->route('GET /app/auth/signup', 'AuthController->getSignUp');
-$f3->route('GET /app/auth/forgot', 'AuthController->getForgottenPassword');
+$f3->route('GET /web/auth/signup', 'AuthController->getSignUp');
+$f3->route('GET /web/auth/forgot', 'AuthController->getForgottenPassword');
 
-$f3->route('GET /app/auth/signout', 'AuthController->getSignOut');
+$f3->route('GET /web/auth/signout', 'AuthController->getSignOut');
 
-$f3->route('GET /app', 'DashboardController->get');
+$f3->route('GET /web', 'DashboardController->get');
 
-$f3->route('GET /app/me/menu', 'UserController->getMenu');
+$f3->route('GET /web/me/menu', 'UserController->getMenu');
 
-$f3->route('GET /app/dashboard', 'DashboardController->get');
+$f3->route('GET /web/dashboard', 'DashboardController->get');
 
-$f3->route('GET /app/product/search', 'SearchController->getSearchProducts');
-$f3->route('POST /app/product/search', 'SearchController->postSearchProducts');
-$f3->route('GET /app/entity/@entityId/product/@productId', 'ProductsController->getEntityProduct');
+$f3->route('GET /web/product/search', 'SearchController->getSearchProducts');
+$f3->route('POST /web/product/search', 'SearchController->postSearchProducts');
+$f3->route('GET /web/entity/@entityId/product/@productId', 'ProductsController->getEntityProduct');
 
-$f3->route('GET /app/product/brandname/list', 'SearchController->getProductBrandNameList');
-$f3->route('GET /app/product/scientificname/list', 'SearchController->getProductScientificNameList');
+$f3->route('GET /web/product/brandname/list', 'SearchController->getProductBrandNameList');
+$f3->route('GET /web/product/scientificname/list', 'SearchController->getProductScientificNameList');
 
 
-$f3->route('GET /app/customercare', 'CustomerCareController->get');
+$f3->route('GET /web/customercare', 'CustomerCareController->get');
 
-$f3->route('GET /app/cart', 'CartController->get');
-$f3->route('POST /app/cart/add', 'CartController->postAddItem');
-$f3->route('GET /app/cart/status', 'CartController->getStatus');
-$f3->route('POST /app/cart/remove', 'CartController->postRemoveItem');
+$f3->route('GET /web/cart', 'CartController->get');
+$f3->route('POST /web/cart/add', 'CartController->postAddItem');
+$f3->route('GET /web/cart/status', 'CartController->getStatus');
+$f3->route('POST /web/cart/remove', 'CartController->postRemoveItem');
 
-$f3->route('GET /app/demo/editor/scientificnames', 'DemoController->get');
+$f3->route('GET /web/demo/editor/scientificnames', 'DemoController->get');
+
+
+
+$f3->route('GET /web/distributor/order', 'OrderController->getOrders');
+$f3->route('GET /web/distributor/order/@id', 'OrderController->getOrderDetails');
+$f3->route('POST /web/distributor/order/cancel/@id', 'OrderController->postCancelOrder');
+$f3->route('POST /web/distributor/order/complete/@id', 'OrderController->postCompleteOrder');
+$f3->route('POST /web/distributor/order/process/@id', 'OrderController->postProcessOrder');
+$f3->route('POST /web/distributor/order/onhold/@id', 'OrderController->postOnHoldOrder');

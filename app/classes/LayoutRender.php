@@ -8,14 +8,17 @@
 class LayoutRender
 {
 
+    private $db;
     private $f3;
     private $layout;
     private $objUser;
     private $asideMenu;
 
-    public function __construct($objUser)
+    public function __construct($objUser, $db)
     {
-        $this->f3 = \Base::instance();;
+        $this->f3 = \Base::instance();
+        $this->db = $db;
+        $this->objUser = $objUser;
 
         $this->layout = $objUser->menuLayout;
         if (!$objUser->menuLayout) {
@@ -29,7 +32,6 @@ class LayoutRender
                     break;
             }
         }
-        $this->objUser = $objUser;
 
         $this->f3->set('objUser', $this->objUser);
     }
@@ -153,7 +155,7 @@ class LayoutRender
         $this->f3->set('renderModule', $this->module);
         $this->f3->set('renderComponent', $this->component);
 
-        //LayoutRender::setMainMenu($this->f3, $this->objUser->typeId);
+        LayoutRender::setMainMenu($this->f3, $this->db, $this->objUser->menuId);
 
         LayoutRender::setupLayout($this->f3, $this->objUser->typeId);
 
@@ -227,7 +229,7 @@ class LayoutRender
         if (!is_numeric($menuId)) {
             return [];
         }
-        $dbMenuItems = new AbstractModel($db, "vwWebMenuItems");
+        $dbMenuItems = new BaseModel($db, "vwWebMenuItems");
         $dbMenuItems->title = "title_" . $lang;
         $dbMenuItems->getWhere("menuId = $menuId and parentItemId=$parentItemId");
 
@@ -278,64 +280,80 @@ class LayoutRender
         return $asideMenu;
     }
 
-    public static function getMainMenu($f3, $db, $objUser, $parentItemId = 0)
-    {
 
-        if (!is_numeric($objUser->menuId)) {
+    public static function getMainMenu($db, $menuId)
+    {
+        if (!is_numeric($menuId)) {
             return [];
         }
-        $dbMenuItems = new AbstractModel($db, "vwWebMenuItems");
-        $dbMenuItems->title = "title_" . $objUser->lang;
-        $dbMenuItems->getWhere("menuId = $objUser->menuId and parentItemId=$parentItemId");
 
-        $asideMenu = [];
-        while (!$dbMenuItems->dry()) {
+        $arrData = $db->exec("SELECT * FROM vwMenuItems WHERE `menuId` = ? OR `menuId` = 0 ORDER BY `order` ASC, `name_ar` ASC", $menuId);
+        $newData = LayoutRender::arrangeMenuItems($arrData);
 
-            switch ($dbMenuItems->type) {
-                case "link":
-                    $link = [
-                        "type" => $dbMenuItems->type,
-                        "pageId" => $dbMenuItems->pageId,
-                        "title" => $dbMenuItems->title,
-                        "link" => $dbMenuItems->link . ($dbMenuItems->filter != null ? "?$dbMenuItems->filter" : ""),
-                        "svgIcon" => $dbMenuItems->svgIconId > 0 ? $dbMenuItems->svg : ""
-                    ];
-                    $asideMenu[] = $link;
-                    break;
-
-                case "section":
-                    $section = [
-                        "type" => $dbMenuItems->type,
-                        "title" => $dbMenuItems->title
-                    ];
-                    $asideMenu[] = $section;
-                    break;
-
-                case "menu":
-                    $menu = [
-                        "type" => $dbMenuItems->type,
-                        "title" => $dbMenuItems->title,
-                        "link" => $dbMenuItems->link . ($dbMenuItems->filter != null ? "?$dbMenuItems->filter" : ""),
-                        "svgIcon" => $dbMenuItems->svgIconId > 0 ? $dbMenuItems->svg : "",
-                        "items" => LayoutRender::getMainMenu($f3, $db, $objUser, $dbMenuItems->id)
-                    ];
-                    $asideMenu[] = $menu;
-                    break;
-
-                default:
-                    break;
-            }
-
-            $dbMenuItems->next();
-        }
-
-        return $asideMenu;
+        return $newData;
     }
 
-    public static function setMainMenu($f3, $db, $objUser)
+    public static function arrangeMenuItems($data, $parentItemId = 0)
+    {
+        $filteredData = [];
+        for ($i = 0; $i < count($data); $i++) {
+            if ($data[$i]['parentItemId'] == $parentItemId) {
+
+                switch ($data[$i]['type']) {
+                    case "link":
+                        $link = [
+                            "id" => $data[$i]['id'],
+                            "type" => $data[$i]['type'],
+                            "name_ar" => $data[$i]['name_ar'],
+                            "name_fr" => $data[$i]['name_fr'],
+                            "name_en" => $data[$i]['name_en'],
+                            "url" => $data[$i]['url'],
+                            "method" => $data[$i]['method'],
+                            "svgIcon" => $data[$i]['svgIcon']
+                        ];
+                        $filteredData[] = $link;
+
+                        break;
+
+                    case "section":
+                        $section = [
+                            "id" => $data[$i]['id'],
+                            "type" => $data[$i]['type'],
+                            "name_ar" => $data[$i]['name_ar'],
+                            "name_fr" => $data[$i]['name_fr'],
+                            "name_en" => $data[$i]['name_en']
+                        ];
+                        $filteredData[] = $section;
+                        break;
+
+                    case "menu":
+                        $menu = [
+                            "id" => $data[$i]['id'],
+                            "type" => $data[$i]['type'],
+                            "name_ar" => $data[$i]['name_ar'],
+                            "name_fr" => $data[$i]['name_fr'],
+                            "name_en" => $data[$i]['name_en'],
+                            "url" => $data[$i]['url'],
+                            "method" => $data[$i]['method'],
+                            "svgIcon" => $data[$i]['svgIcon'],
+                            "items" => LayoutRender::arrangeMenuItems($data, $data[$i]['id'])
+                        ];
+                        $filteredData[] = $menu;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return $filteredData;
+    }
+
+    public static function setMainMenu($f3, $db, $menuId)
     {
 
-        $menu = LayoutRender::getMainMenu($f3, $db, $objUser);
+        $menu = LayoutRender::getMainMenu($db, $menuId);
         $f3->set('SESSION.mainMenu', $menu);
 
         return $menu;

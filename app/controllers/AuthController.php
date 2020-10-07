@@ -13,7 +13,7 @@ class AuthController extends Controller
     function getSignIn()
     {
         if ($this->isAuth) {
-            $this->f3->reroute('/app');
+            $this->f3->reroute('/web');
         } else {
             $activationId = $this->f3->get("PARAMS._a");
 
@@ -188,7 +188,7 @@ class AuthController extends Controller
     function getSignUp()
     {
         if ($this->isAuth) {
-            $this->f3->reroute('/app');
+            $this->f3->reroute('/web');
         } else {
             $this->f3->set('vAuthFile', 'signup');
 
@@ -199,7 +199,7 @@ class AuthController extends Controller
     function getForgottenPassword()
     {
         if ($this->isAuth) {
-            $this->f3->reroute('/app');
+            $this->f3->reroute('/web');
         } else {
             $this->f3->set('vAuthFile', 'forgot');
             echo View::instance()->render('public/auth/layout.php');

@@ -2,9 +2,71 @@
 	<!--begin::Menu Container-->
 	<div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
 		<!--begin::Menu Nav-->
+		<div id="kt_aside_menu" class="kt-aside-menu " data-ktmenu-vertical="1" data-ktmenu-scroll="1" data-ktmenu-dropdown-timeout="500">
+			<ul class="menu-nav ">
+				<?php foreach ($_SESSION['mainMenu'] as $menuItem) : ?>
+
+					<?php if ($menuItem['type'] == "menu") : ?>
+
+						<li class="menu-item menu-item-submenu" aria-haspopup="true" data-ktmenu-submenu-toggle="hover" id='kt-menu-item-<?php echo $menuItem['id']; ?>'>
+							<a href="javascript:;" class="menu-link menu-toggle">
+								<span class="svg-icon menu-icon">
+									<?php echo htmlspecialchars_decode($menuItem['svgIcon']); ?>
+								</span>
+								<span class="menu-text"><?php echo $menuItem["name_" . $_SESSION['userLang']] ?></span>
+								<i class="menu-arrow"></i>
+							</a>
+							<div class="menu-submenu ">
+								<i class="menu-arrow"></i>
+								<ul class="menu-subnav">
+									<li class="menu-item menu-item-parent" aria-haspopup="true">
+										<span class="menu-link">
+											<span class="menu-text"><?php echo $menuItem["name_" . $_SESSION['userLang']] ?></span>
+										</span>
+									</li>
+									<?php foreach ($menuItem['items'] as $subMenuItem) : ?>
+
+										<li class="menu-item" aria-haspopup="true" id='kt-menu-item-<?php echo $subMenuItem['id']; ?>'>
+											<a class="menu-link" href="javascript:;" onclick="WebApp.loadPage('<?php echo $subMenuItem['url']; ?>')">
+												<i class="menu-bullet menu-bullet-dot">
+													<span></span>
+												</i>
+												<span class="menu-text"><?php echo $subMenuItem["name_" . $_SESSION['userLang']] ?></span>
+											</a>
+										</li>
+
+									<?php endforeach; ?>
+								</ul>
+							</div>
+						</li>
+
+					<?php elseif ($menuItem['type'] == "section") : ?>
+						<li class="menu-section " id='kt-menu-item-<?php echo $menuItem['id']; ?>'>
+							<h4 class="menu-text"><?php echo $menuItem["name_" . $_SESSION['userLang']] ?></h4>
+							<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+						</li>
+					<?php elseif ($menuItem['type'] == "link") : ?>
+
+						<li class="menu-item" aria-haspopup="true" id='kt-menu-item-<?php echo $menuItem['id']; ?>'>
+							<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('<?php echo $menuItem['url']; ?>')">
+								<span class="svg-icon menu-icon">
+									<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
+									<?php echo htmlspecialchars_decode($menuItem['svgIcon']); ?>
+									<!--end::Svg Icon-->
+								</span>
+								<span class="menu-text"><?php echo $menuItem["name_" . $_SESSION['userLang']] ?></span>
+							</a>
+						</li>
+					<?php endif; ?>
+
+				<?php endforeach; ?>
+			</ul>
+		</div>
+
+		<?php /*
 		<ul class="menu-nav">
 			<li class="menu-item" aria-haspopup="true">
-				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/app/dashboard')">
+				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/web/dashboard')">
 					<span class="svg-icon menu-icon">
 						<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
 						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -14,13 +76,12 @@
 								<path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
 							</g>
 						</svg>
-						<!--end::Svg Icon-->
 					</span>
 					<span class="menu-text"><?php echo $vMenuItem_dashboard ?></span>
 				</a>
 			</li>
 			<li class="menu-item" aria-haspopup="true">
-				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/app/product/search')">
+				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/web/product/search')">
 					<span class="svg-icon menu-icon">
 						<!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo1\dist/../src/media/svg/icons\General\Search.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 							<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -39,7 +100,7 @@
 				<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 			</li>
 			<li class="menu-item" aria-haspopup="true">
-				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/app/orders/current/open')">
+				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/web/orders/current/open')">
 					<span class="svg-icon menu-icon">
 						<!--begin::Svg Icon | path:C:\wamp64\www\keenthemes\themes\metronic\theme\html\demo1\dist/../src/media/svg/icons\Design\Pen-tool-vector.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 							<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -54,7 +115,7 @@
 				</a>
 			</li>
 			<li class="menu-item" aria-haspopup="true">
-				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/app/orders/monthly/current')">
+				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/web/orders/monthly/current')">
 					<span class="svg-icon menu-icon">
 						<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
 						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -70,7 +131,7 @@
 				</a>
 			</li>
 			<li class="menu-item" aria-haspopup="true">
-				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/app/orders/monthly/previous')">
+				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/web/orders/monthly/previous')">
 					<span class="svg-icon menu-icon">
 						<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
 						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -86,7 +147,7 @@
 				</a>
 			</li>
 			<li class="menu-item" aria-haspopup="true">
-				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/app/orders/history')">
+				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/web/orders/history')">
 					<span class="svg-icon menu-icon">
 						<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
 						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -105,7 +166,6 @@
 				<h4 class="menu-text"><?php echo $vMenuSection_distributors ?></h4>
 				<i class="menu-icon ki ki-bold-more-hor icon-md"></i>
 			</li>
-
 			<li class="menu-item menu-item-submenu" aria-haspopup="true" data-menu-toggle="hover">
 				<a href="javascript:;" class="menu-link menu-toggle">
 					<span class="svg-icon menu-icon">
@@ -151,7 +211,7 @@
 			</li>
 
 			<li class="menu-item" aria-haspopup="true">
-				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/app/orders/current/open')">
+				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/web/orders/current/open')">
 					<span class="svg-icon menu-icon">
 						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 							<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -165,7 +225,7 @@
 				</a>
 			</li>
 			<li class="menu-item" aria-haspopup="true">
-				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/app/customercare')">
+				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/web/customercare')">
 					<span class="svg-icon menu-icon">
 						<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
 						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -182,7 +242,7 @@
 				</a>
 			</li>
 			<li class="menu-item" aria-haspopup="true">
-				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/app/cart')">
+				<a href="javascript:;" class="menu-link" onclick="WebApp.loadPage('/web/cart')">
 					<span class="svg-icon menu-icon">
 						<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
 						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -199,6 +259,8 @@
 				</a>
 			</li>
 		</ul>
+		
+*/ ?>
 		<!--end::Menu Nav-->
 	</div>
 	<!--end::Menu Container-->

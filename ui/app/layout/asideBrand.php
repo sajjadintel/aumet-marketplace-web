@@ -1,6 +1,6 @@
 <div class="brand flex-column-auto" id="kt_brand">
     <!--begin::Logo-->
-    <a href="/app" class="brand-logo">
+    <a href="/" class="brand-logo">
         <img alt="Logo" src="/assets/img/aumet-logo.svg" style="width: 100%; height: 35px;" />
     </a>
     <!--end::Logo-->
