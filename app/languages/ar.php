@@ -87,6 +87,11 @@ return array(
     'vModule_search_stockStatus_others' => 'الجميع',
     'vModule_search_unavailableHeader' => 'اضغط هنا للابلاغ عن عدم توفر المنتج المطلوب وسيتم العمل على مساعدتك بأسرع وقت ممكن',
 
+
+    'vModule_order_title' => 'لائحة الطلبات',
+    'vModule_order_header' => 'يمكنك عرض قائمة بأوامرك',
+
+    
     'vModule_product_name' => 'المنتج',
     'vModule_product_distributor' => 'الموزع',
     'vModule_product_madeIn' => 'صنع في',

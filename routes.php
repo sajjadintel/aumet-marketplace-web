@@ -34,10 +34,12 @@ $f3->route('POST /web/cart/remove', 'CartController->postRemoveItem');
 $f3->route('GET /web/demo/editor/scientificnames', 'DemoController->get');
 
 
-
-$f3->route('GET /web/distributor/order', 'OrderController->getOrders');
+// START APM 11
+$f3->route('GET /web/distributor/order', 'OrderController->getDistributorOrders');
 $f3->route('GET /web/distributor/order/@id', 'OrderController->getOrderDetails');
+$f3->route('POST /web/distributor/order', 'OrderController->postDistributorOrders');
 $f3->route('POST /web/distributor/order/cancel/@id', 'OrderController->postCancelOrder');
 $f3->route('POST /web/distributor/order/complete/@id', 'OrderController->postCompleteOrder');
 $f3->route('POST /web/distributor/order/process/@id', 'OrderController->postProcessOrder');
 $f3->route('POST /web/distributor/order/onhold/@id', 'OrderController->postOnHoldOrder');
+// END APM 11

@@ -26,6 +26,66 @@ var WebAppLocals = function () {
             ar: "الاسم التجاري",
             fr: ""
         },
+        entityCustomer: {
+            en: "Customer",
+            ar: "الزبون",
+            fr: ""
+        },
+        entityDistributor: {
+            en: "Distributor",
+            ar: "الموزع",
+            fr: ""
+        },
+        userCustomer: {
+            en: "Reference",
+            ar: "المرجع",
+            fr: ""
+        },
+        userDistributor: {
+            en: "Reference",
+            ar: "المرجع",
+            fr: ""
+        },
+        orderStatus: {
+            en: "Order Status",
+            ar: "حالة الطلب",
+            fr: ""
+        },
+        orderStatus_Pending: {
+            en: "Pending",
+            ar: "قيد الانتظار",
+            fr: ""
+        },
+        orderStatus_OnHold: {
+            en: "On Hold",
+            ar: "في الانتظار",
+            fr: ""
+        },
+        orderStatus_Processing: {
+            en: "Processing",
+            ar: "معالجة",
+            fr: ""
+        },
+        orderStatus_Completed: {
+            en: "Completed",
+            ar: "منجز",
+            fr: ""
+        },
+        orderStatus_Canceled: {
+            en: "Canceled",
+            ar: "ألغيت",
+            fr: ""
+        },
+        orderStatus_Received: {
+            en: "Received",
+            ar: "تم الاستلام",
+            fr: ""
+        },
+        orderTotal: {
+            en: "Total",
+            ar: "مجموع",
+            fr: ""
+        },
         unitPrice: {
             en: "Unit Price",
             ar: "سعر الوحدة",
@@ -41,13 +101,18 @@ var WebAppLocals = function () {
             ar: "تاريخ انتهاء الصلاحية",
             fr: ""
         },
+        insertDate: {
+            en: "Insert Date",
+            ar: "تاريخ الإدخال",
+            fr: ""
+        },
         bonus: {
             en: "Bonus",
             ar: "البونص",
             fr: ""
         },
         productScintificName: {
-            en: "Scintific Name",
+            en: "Scientific Name",
             ar: "الاسم العلمي",
             fr: ""
         },
