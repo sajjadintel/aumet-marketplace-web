@@ -72,6 +72,10 @@
 			appId: "1:418237979621:web:5fe1d4393d8676f5a3ad0c",
 			measurementId: "G-QEWB1B33ZE"
 		};
+
+		// Initialize Firebase
+		firebase.initializeApp(firebaseConfig);
+		firebase.analytics();
 	</script>
 
 	<?php include_once "$vAuthFile.php" ?>

@@ -465,9 +465,7 @@ var WebAuth = function () {
 	}
 
 	var _setupFirebase = function () {
-		// Initialize Firebase
-		firebase.initializeApp(firebaseConfig);
-		firebase.analytics();
+
 
 		firebase.auth().languageCode = docLang;
 
