@@ -39,6 +39,24 @@ class BaseModel extends DB\SQL\Mapper
         return $this->query;
     }
 
+    public function findAll($order = false, $limit = 0, $offset = 0)
+    {
+        $result = null;
+
+        if (!$order && $limit == 0) {
+            $result = $this->find();
+        } else if ($order && $limit == 0) {
+            $result = $this->find(array(), array('order' => $order, 'offset' => $offset));
+        } else if (!$order && $limit >= 0) {
+            $result = $this->find(array(), array('limit' => $limit, 'offset' => $offset));
+        } else {
+            $result = $this->find(array(), array('order' => $order, 'limit' => $limit, 'offset' => $offset));
+        }
+        $result = array_map(array($this, 'cast'), $result);
+
+        return $result;
+    }
+
     public function getFullSchema()
     {
 
@@ -82,6 +100,21 @@ class BaseModel extends DB\SQL\Mapper
             $this->load(array($where), array('order' => $order, 'limit' => $limit, 'offset' => $offset));
         }
         return $this->query;
+    }
+
+    public function findWhere($where, $order = "", $limit = 0, $offset = 0)
+    {
+        $result = null;
+        if ($order == "") {
+            $result = $this->find(array($where));
+        } else if ($limit == 0) {
+            $result = $this->find(array($where), array('order' => $order, 'offset' => $offset));
+        } else {
+            $result = $this->find(array($where), array('order' => $order, 'limit' => $limit, 'offset' => $offset));
+        }
+        $result = array_map(array($this, 'cast'), $result);
+
+        return $result;
     }
 
     public function getCurrentDateTime()
