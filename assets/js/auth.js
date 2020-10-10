@@ -5,13 +5,37 @@ var WebAuth = function () {
 	var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
 
 	var _handleFormSignin = function () {
+
+		console.log("Signin");
+
 		var form = KTUtil.getById('kt_login_singin_form');
 		var formSubmitUrl = KTUtil.attr(form, 'action');
 		var formSubmitButton = KTUtil.getById('kt_login_singin_form_submit_button');
 
 		if (!form) {
+			console.log("No Form");
 			return;
 		}
+
+		firebase.auth().signInWithEmailAndPassword(
+			form.querySelector('[name="email"]').value,
+			form.querySelector('[name="password"]').value).catch(function (error) {
+				// Handle Errors here.
+				KTUtil.btnRelease(formSubmitButton);
+				Swal.fire({
+					text: error.message,
+					icon: "error",
+					buttonsStyling: false,
+					confirmButtonText: WebAppLocals.getMessage("error_confirmButtonText"),
+					customClass: {
+						confirmButton: "btn font-weight-bold btn-light-primary"
+					}
+				}).then(function () {
+					KTUtil.scrollTop();
+				});
+			});
+
+		return;
 
 		FormValidation
 			.formValidation(
@@ -52,32 +76,20 @@ var WebAuth = function () {
 				}
 			)
 			.on('core.form.valid', function () {
+				console.log("valid");
 				// Show loading state on button
 				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, "Please wait");
 
 				// Form Validation & Ajax Submission: https://formvalidation.io/guide/examples/using-ajax-to-submit-the-form
 
-				firebase.auth().signInWithEmailAndPassword(
-					form.querySelector('[name="email"]').value,
-					form.querySelector('[name="password"]').value).catch(function (error) {
-						// Handle Errors here.
-						KTUtil.btnRelease(formSubmitButton);
-						Swal.fire({
-							text: error.message,
-							icon: "error",
-							buttonsStyling: false,
-							confirmButtonText: WebAppLocals.getMessage("error_confirmButtonText"),
-							customClass: {
-								confirmButton: "btn font-weight-bold btn-light-primary"
-							}
-						}).then(function () {
-							KTUtil.scrollTop();
-						});
-					});
+
 			})
 			.on('core.form.invalid', function () {
+				console.log("invalid");
 				KTUtil.scrollTop();
 			});
+
+		console.log("done");
 	}
 
 	var _handleGoogleSignin = function () {
@@ -489,7 +501,7 @@ var WebAuth = function () {
 					userInfo.idToken = idToken;
 
 					$.ajax({
-						url: "/app/auth/signin?_t=" + Date.now(),
+						url: "/web/auth/signin?_t=" + Date.now(),
 						type: "POST",
 						dataType: "json",
 						data: {
@@ -500,7 +512,7 @@ var WebAuth = function () {
 						if (webResponse && typeof webResponse === 'object') {
 							if (webResponse.errorCode == 0) {
 								firebase.analytics().logEvent('auth_ok');
-								window.location.href = "/app";
+								window.location.href = "/web";
 							} else {
 								Swal.fire({
 									text: webResponse.message,
@@ -576,6 +588,7 @@ var WebAuth = function () {
 			_handleFormSignup();
 		},
 		signIn: function () {
+
 			_handleFormSignin();
 		},
 		googleSignIn: function () {
