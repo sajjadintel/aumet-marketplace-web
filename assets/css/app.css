@@ -25,3 +25,7 @@
   padding-bottom: 0.25rem !important;
   background: #13b9a914 !important;
 }
+
+.p-0{
+  padding: 0 !important;
+}

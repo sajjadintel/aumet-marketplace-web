@@ -195,6 +195,7 @@ function compress_htmlcode($codedata)
 				<div class="content d-flex flex-column flex-column-fluid" id="pageContent">
 				</div>
 				<!--end::Content-->
+				<?php include_once 'modal.php'; ?>
 				<!--begin::Footer-->
 				<?php include_once 'footer.php'; ?>
 				<!--end::Footer-->
