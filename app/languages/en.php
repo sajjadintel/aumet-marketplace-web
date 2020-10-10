@@ -5,7 +5,7 @@ return array(
     'langActiveFlag' => '/assets/img/uae-flag-sq.svg',
     'vFooterText' => 'Aumet Inc | {Y} © All Rights Reserved',
 
-    'vLogin_slogan'=>'Connecting pharmacies and medical distributors through the largest online healthcare B2B marketplace',
+    'vLogin_slogan' => 'Connecting pharmacies and medical distributors through the largest online healthcare B2B marketplace',
 
     'vLogin_signin' => 'Sign In',
     'vLogin_signinWithGoole' => 'Sign in with Google',
@@ -27,5 +27,24 @@ return array(
     'vResetPassword_currentPassword' => 'Current Password',
 
     'vChangePassword_title' => 'Change Password',
-    'vChangePassword_subTitle' => 'Change Current Password'
+    'vChangePassword_subTitle' => 'Change Current Password',
+
+    'vResponse_notFound' => '{0} not found',
+    'vResponse_notUpdated' => '{0} could not be updated',
+    'vResponse_notAdded' => '{0} could not be added',
+    'vResponse_updated' => '{0} was updated!',
+    'vResponse_added' => '{0} was added!',
+
+    'vEntity_order' => 'Order',
+    'vEntity_orderLog' => 'Order Log',
+
+    'vOrderStatusConfirmation' => 'Are you sure you want to move this order to {0}?',
+    'vOrderStatus_Pending' => 'Pending',
+    'vOrderStatus_OnHold' => 'On Hold',
+    'vOrderStatus_Processing' => 'Processing',
+    'vOrderStatus_Completed' => 'Completed',
+    'vOrderStatus_Canceled' => 'Canceled',
+    'vOrderStatus_Received' => 'Received',
+
+    'vButton_update' => 'Update',
 );

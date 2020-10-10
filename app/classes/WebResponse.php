@@ -35,4 +35,13 @@ class WebResponse
         // return the encoded json
         return json_encode($this);
     }
+
+    public function jsonResponseV2($errorCode = 0, $title = null, $message = '', $data = null){
+
+        $this->errorCode = $errorCode; // 0 means no error
+        $this->message = $message;
+        $this->data = $data;
+        $this->title = $title;
+        return $this->jsonResponse();
+    }
 }

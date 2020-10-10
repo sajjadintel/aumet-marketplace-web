@@ -26,6 +26,66 @@ var WebAppLocals = function () {
             ar: "الاسم التجاري",
             fr: ""
         },
+        entityCustomer: {
+            en: "Customer",
+            ar: "الزبون",
+            fr: ""
+        },
+        entityDistributor: {
+            en: "Distributor",
+            ar: "الموزع",
+            fr: ""
+        },
+        userCustomer: {
+            en: "Reference",
+            ar: "المرجع",
+            fr: ""
+        },
+        userDistributor: {
+            en: "Reference",
+            ar: "المرجع",
+            fr: ""
+        },
+        orderStatus: {
+            en: "Order Status",
+            ar: "حالة الطلب",
+            fr: ""
+        },
+        orderStatus_Pending: {
+            en: "Pending",
+            ar: "قيد الانتظار",
+            fr: ""
+        },
+        orderStatus_OnHold: {
+            en: "On Hold",
+            ar: "في الانتظار",
+            fr: ""
+        },
+        orderStatus_Processing: {
+            en: "Processing",
+            ar: "معالجة",
+            fr: ""
+        },
+        orderStatus_Completed: {
+            en: "Completed",
+            ar: "منجز",
+            fr: ""
+        },
+        orderStatus_Canceled: {
+            en: "Canceled",
+            ar: "ألغيت",
+            fr: ""
+        },
+        orderStatus_Received: {
+            en: "Received",
+            ar: "تم الاستلام",
+            fr: ""
+        },
+        orderTotal: {
+            en: "Total",
+            ar: "مجموع",
+            fr: ""
+        },
         unitPrice: {
             en: "Unit Price",
             ar: "سعر الوحدة",
@@ -41,13 +101,18 @@ var WebAppLocals = function () {
             ar: "تاريخ انتهاء الصلاحية",
             fr: ""
         },
+        insertDate: {
+            en: "Insert Date",
+            ar: "تاريخ الإدخال",
+            fr: ""
+        },
         bonus: {
             en: "Bonus",
             ar: "البونص",
             fr: ""
         },
         productScintificName: {
-            en: "Scintific Name",
+            en: "Scientific Name",
             ar: "الاسم العلمي",
             fr: ""
         },
@@ -108,6 +173,11 @@ var WebAppLocals = function () {
         }
     };
 
+    var _symbolsLocals = {
+        svgProceed: "",
+        svgCancel: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/> <path d="M 10,10 l 90,90 M 100,10 l -90,90" fill="#000000" /></g></svg>',
+    }
+
     var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
 
     // Public Functions
@@ -117,6 +187,9 @@ var WebAppLocals = function () {
         },
         getMessage(key) {
             return _arrLocals[key][docLang];
+        },
+        getSymbol(key){
+            return _symbolsLocals[key];
         }
     };
 }();

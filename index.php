@@ -78,7 +78,7 @@ $dbConnection = new DB\SQL(
 
 if (getenv('ENV') == 'loc') {
     ini_set('mysql.connect_timeout', 300);
-    ini_set('default_socket_timeout', 300);
+    ini_set('default_socket_timeout', 300);     
 } else {
     // session_save_path("/tmp");
 }
