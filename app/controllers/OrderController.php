@@ -29,9 +29,6 @@ class OrderController extends Controller
             $orderId = $this->f3->get('PARAMS.orderId');
             $statusId = $this->f3->get('PARAMS.statusId');
 
-            $dbOrders = new BaseModel($this->db, "vwOrderEntityUser");
-            $dbOrders->getById($orderId);
-
             $modalRoute = '';
             $modalText = '';
             $modalTitle = '';
@@ -71,6 +68,28 @@ class OrderController extends Controller
 
             $this->f3->set('modalArr', $modal);
             echo $this->webResponse->jsonResponseV2(1, "", "", $modal);
+            return;
+        }
+    }
+
+    function getOrderDetails()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $orderId = $this->f3->get('PARAMS.orderId');
+
+            $dbOrder = new BaseModel($this->db, "vwOrderEntityUser");
+            $arrOrder = $dbOrder->findWhere("id = '$orderId'");
+
+            $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+            $arrOrderDetail = $dbOrderDetail->findWhere("id = '$orderId'");
+
+            $data['order'] = $arrOrder[0];
+            $data['orderDetail'] = $arrOrderDetail;
+
+            echo $this->webResponse->jsonResponseV2(1, "", "", $data);
             return;
         }
     }
