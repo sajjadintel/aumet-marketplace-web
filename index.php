@@ -30,9 +30,12 @@ $f3->set('FALLBACK', 'ar');
 $f3->set('ENCODING', 'UTF-8');
 $f3->set('uploadDIR', '/files/uploads');
 
-$f3->set('platformVersion', $f3->get('platformVersionDevelopment'));
+
 $f3->set('platformVersionRelease', '?v=1.3');
 $f3->set('platformVersionDevelopment', '?v=' . date('His'));
+
+$f3->set('platformVersion', $f3->get('platformVersionDevelopment'));
+
 $f3->set('authServerKey', '-SC4,=$?.3:&KRR]:DCQx{~wY!)`+--CkhE`2ur<VCZ(Tk8Pt2YXvdp3mz>3wsW`');
 
 $dbPort = getenv('DB_PORT');
@@ -64,8 +67,6 @@ $f3->set('mailBCC', 'a.atrash@aumet.me');
 
 define('CHUNK_SIZE', 1024 * 1024);
 
-// session_save_path("/tmp");
-
 global $dbConnection;
 
 $dbConnection = new DB\SQL(
@@ -74,6 +75,13 @@ $dbConnection = new DB\SQL(
     $f3->get('dbPassword'),
     array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION)
 );
+
+if (getenv('ENV') == 'loc') {
+    ini_set('mysql.connect_timeout', 300);
+    ini_set('default_socket_timeout', 300);
+} else {
+    // session_save_path("/tmp");
+}
 
 include_once("routes.php");
 
