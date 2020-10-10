@@ -157,6 +157,12 @@ var DistributorOrdersDataTable = (function () {
 						// First make them call the getOrderConfirmation API
 						// have getOrderConfirmation open up the modal afterwards
 						// make sure the modal proceeds with the action
+						var btnView =
+							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+							row.id +
+							',2)\' \
+						class="btn btn-sm btn-primary btn-text-primary btn-hover-primary mr-2" title="Order On Hold">\
+						<i class="nav-icon la la-times p-0"></i></a>';
 						var btnOrderOnHold =
 							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
 							row.id +
@@ -209,6 +215,10 @@ var DistributorOrdersDataTable = (function () {
 		WebApp.get('/web/distributor/order/confirm/' + orderId + '/' + statusId, WebApp.openModal);
 	};
 
+	var _orderViewModal = function (orderId) {
+		WebApp.get('/web/distributor/order/' + orderId, WebApp.openModal);
+	};
+
 	return {
 		// public functions
 		init: function (objQuery) {
@@ -221,6 +231,9 @@ var DistributorOrdersDataTable = (function () {
 		},
 		orderStatusModal: function (orderId, statusId) {
 			_orderStatusModal(orderId, statusId);
+		},
+		orderViewModal: function (orderId, statusId) {
+			_orderViewModal(orderId, statusId);
 		},
 		showColumn: function (columnName) {
 			datatable.showColumn(columnName);
