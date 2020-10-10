@@ -91,7 +91,7 @@ return array(
     'vModule_order_title' => 'لائحة الطلبات',
     'vModule_order_header' => 'يمكنك عرض قائمة بأوامرك',
 
-    
+
     'vModule_product_name' => 'المنتج',
     'vModule_product_distributor' => 'الموزع',
     'vModule_product_madeIn' => 'صنع في',
@@ -121,4 +121,22 @@ return array(
     'vSignup_' => '',
     'vSignup_' => '',
 
+    'vResponse_notFound' => '{0} not found',
+    'vResponse_notUpdated' => '{0} could not be updated',
+    'vResponse_notAdded' => '{0} could not be added',
+    'vResponse_updated' => '{0} was updated!',
+    'vResponse_added' => '{0} was added!',
+
+    'vEntity_order' => 'Order',
+    'vEntity_orderLog' => 'Order Log',
+
+    'vOrderStatusConfirmation' => 'Are you sure you want to move this order to {0}?',
+    'vOrderStatus_Pending' => 'Pending',
+    'vOrderStatus_OnHold' => 'On Hold',
+    'vOrderStatus_Processing' => 'Processing',
+    'vOrderStatus_Completed' => 'Completed',
+    'vOrderStatus_Canceled' => 'Canceled',
+    'vOrderStatus_Received' => 'Received',
+
+    'vButton_update' => 'Update',
 );

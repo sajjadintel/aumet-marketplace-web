@@ -173,6 +173,11 @@ var WebAppLocals = function () {
         }
     };
 
+    var _symbolsLocals = {
+        svgProceed: "",
+        svgCancel: '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><rect x="0" y="0" width="24" height="24"/> <path d="M 10,10 l 90,90 M 100,10 l -90,90" fill="#000000" /></g></svg>',
+    }
+
     var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
 
     // Public Functions
@@ -182,6 +187,9 @@ var WebAppLocals = function () {
         },
         getMessage(key) {
             return _arrLocals[key][docLang];
+        },
+        getSymbol(key){
+            return _symbolsLocals[key];
         }
     };
 }();

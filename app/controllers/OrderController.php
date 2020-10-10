@@ -7,12 +7,9 @@ class OrderController extends Controller
         if (!$this->f3->ajax()) {
             echo View::instance()->render('app/layout/layout.php');
         } else {
-
-            global $dbConnection;
-
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
 
-            $dbOrders = new BaseModel($dbConnection, "vwOrderEntityUser");
+            $dbOrders = new BaseModel($this->db, "vwOrderEntityUser");
             $arrOrders = $dbOrders->getWhere("entityDistributorId IN ($arrEntityId)");
             $this->f3->set('arrOrders', $arrOrders);
 
@@ -20,6 +17,61 @@ class OrderController extends Controller
             $this->webResponse->title = $this->f3->get('vModule_order_title');
             $this->webResponse->data = View::instance()->render('app/sale/orders/orders.php');
             echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function getOrderConfirmation()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $orderId = $this->f3->get('PARAMS.orderId');
+            $statusId = $this->f3->get('PARAMS.statusId');
+
+            $dbOrders = new BaseModel($this->db, "vwOrderEntityUser");
+            $dbOrders->getById($orderId);
+
+            $modalRoute = '';
+            $modalText = '';
+            $modalTitle = '';
+            $modalCallback = 'DistributorOrdersDataTable.reloadDatatable';
+            $modalButton = $this->f3->get('vButton_update');
+
+            switch ($statusId) {
+                case Constants::ORDER_STATUS_ONHOLD:
+                    $modalTitle = $this->f3->get('vOrderStatus_OnHold');
+                    $modalText = $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_OnHold'));
+                    $modalRoute = '/web/distributor/order/onhold';
+                    break;
+                case Constants::ORDER_STATUS_PROCESSING:
+                    $modalTitle = $this->f3->get('vOrderStatus_Processing');
+                    $modalText = $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_Processing'));
+                    $modalRoute = '/web/distributor/order/process';
+                    break;
+                case Constants::ORDER_STATUS_COMPLETED:
+                    $modalTitle = $this->f3->get('vOrderStatus_Completed');
+                    $modalText = $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_Completed'));
+                    $modalRoute = '/web/distributor/order/complete';
+                    break;
+                case Constants::ORDER_STATUS_CANCELED:
+                    $modalTitle = $this->f3->get('vOrderStatus_Canceled');
+                    $modalText = $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_Canceled'));
+                    $modalRoute = '/web/distributor/order/cancel';
+                    break;
+            }
+
+            $modal = new stdClass();
+            $modal->modalTitle = $modalTitle;
+            $modal->modalText = $modalText;
+            $modal->modalRoute = $modalRoute;
+            $modal->modalButton = $modalButton;
+            $modal->id = $orderId;
+            $modal->fnCallback = $modalCallback;
+
+            $this->f3->set('modalArr', $modal);
+            echo $this->webResponse->jsonResponseV2(1, "", "", $modal);
+            return;
         }
     }
 
@@ -150,5 +202,71 @@ class OrderController extends Controller
         );
 
         echo json_encode($result, JSON_PRETTY_PRINT);
+    }
+
+    function postOnHoldOrder()
+    {
+        $orderId = $this->f3->get("POST.id");
+        $statusId = Constants::ORDER_STATUS_ONHOLD;
+        $this->handleUpdateOrderStatus($orderId, $statusId);
+    }
+
+    function postProcessOrder()
+    {
+        $orderId = $this->f3->get("POST.id");
+        $statusId = Constants::ORDER_STATUS_PROCESSING;
+        $this->handleUpdateOrderStatus($orderId, $statusId);
+    }
+
+    function postCancelOrder()
+    {
+        $orderId = $this->f3->get("POST.id");
+        $statusId = Constants::ORDER_STATUS_CANCELED;
+        $this->handleUpdateOrderStatus($orderId, $statusId);
+    }
+
+    function postCompleteOrder()
+    {
+        $orderId = $this->f3->get("POST.id");
+        $statusId = Constants::ORDER_STATUS_COMPLETED;
+        $this->handleUpdateOrderStatus($orderId, $statusId);
+    }
+
+    function postReceivedOrder()
+    {
+        $orderId = $this->f3->get("POST.id");
+        $statusId = Constants::ORDER_STATUS_RECEIVED;
+        $this->handleUpdateOrderStatus($orderId, $statusId);
+    }
+
+    function handleUpdateOrderStatus($orderId, $statusId)
+    {
+        $dbOrder = new BaseModel($this->db, "order");
+        $dbOrder->getById($orderId);
+
+        if ($dbOrder->dry()) {
+            echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notFound', $this->f3->get('vEntity_order')), '', null);
+            return;
+        }
+
+        $dbOrder->statusId = $statusId;
+
+        if (!$dbOrder->update()) {
+            echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $dbOrder->exception(), null);
+            return;
+        }
+
+        $dbOrderLog = new BaseModel($this->db, "orderLog");
+        $dbOrderLog->orderId = $orderId;
+        $dbOrderLog->userId = $this->objUser->id;
+        $dbOrderLog->statusId = $statusId;
+
+        if (!$dbOrderLog->add()) {
+            echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notAdded', $this->f3->get('vEntity_orderLog')), $dbOrderLog->exception(), null);
+            return;
+        }
+
+        echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null, null);
+        return;
     }
 }

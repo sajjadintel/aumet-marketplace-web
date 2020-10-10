@@ -15,7 +15,7 @@ function compress_htmlcode($codedata)
 <!--begin::Container-->
 <div class="container-fluid">
     <div class="d-flex align-items-stretch text-center flex-column">
-        <h2 class="text-primary font-weight-bolder mt-10 mb-15 font-size-h4"><?php echo $vModule_order_title     ?></h2>
+        <h2 class="text-primary font-weight-bolder mt-10 mb-15 font-size-h4"><?php echo $vModule_order_title;?></h2>
     </div>
 
     <div class="card card-custom gutter-b mt-20">

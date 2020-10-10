@@ -13,4 +13,11 @@ class Constants
     ## Environments
     const ENV_LOC = 'loc';
     const ENV_PROD = 'prod';
+
+    const ORDER_STATUS_PENDING = 1;
+    const ORDER_STATUS_ONHOLD = 2;
+    const ORDER_STATUS_PROCESSING = 3;
+    const ORDER_STATUS_COMPLETED = 4;
+    const ORDER_STATUS_CANCELED = 5;
+    const ORDER_STATUS_RECEIVED = 6;
 }

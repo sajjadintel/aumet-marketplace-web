@@ -75,6 +75,19 @@ var WebApp = (function () {
 			});
 	};
 
+	$(function () {
+		$('#popupModalAction').on('click', function (e) {
+			e.preventDefault();
+			var url = $('#popupModalForm').attr('action');
+			var data = $('form#popupModalForm').serialize();
+			var callback = null;
+			if ($('#popupModalValueCallback').val() != '') {
+				callback = eval($('#popupModalValueCallback').val());
+			}
+			WebApp.post(url, data, callback);
+		});
+	});
+
 	var _post = function (url, data = null, fnCallback = null) {
 		_blurPage();
 		_blockPage();
@@ -224,6 +237,26 @@ var WebApp = (function () {
 		$(_pageContainerId).foggy(false);
 	};
 
+	var _openModal = function (webResponse) {
+		_resetModal();
+		$('#popupModalForm').attr('action', webResponse.data.modalRoute);
+		$('#popupModalTitle').html(webResponse.data.modalTitle);
+		$('#popupModalText').html(webResponse.data.modalText);
+		$('#popupModalValueId').val(webResponse.data.id);
+		$('#popupModalValueCallback').val(webResponse.data.fnCallback);
+		$('#popupModalAction').html(webResponse.data.modalButton);
+		$('#popupModal').modal('show');
+	};
+
+	var _resetModal = function () {
+		$('#popupModalForm').attr('action', '#');
+		$('#popupModalTitle').html('');
+		$('#popupModalText').html('');
+		$('#popupModalValueId').val('');
+		$('#popupModalValueCallback').val('');
+		$('#popupModalAction').html('');
+	};
+
 	var _signout = function () {
 		firebase
 			.auth()
@@ -306,6 +339,9 @@ var WebApp = (function () {
 		},
 		post: function (url, data = null, fnCallback = null) {
 			return _post(url, data, fnCallback);
+		},
+		openModal: function (webResponse) {
+			_openModal(webResponse);
 		},
 	};
 })();
