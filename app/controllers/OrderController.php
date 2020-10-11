@@ -288,4 +288,44 @@ class OrderController extends Controller
         echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null, null);
         return;
     }
+
+    function getPrintOrderInvoice()
+    {
+        $orderId = $this->f3->get('PARAMS.orderId');
+        $pdf = new PDF();
+        $pdf->AddPage();
+        $pdf->AliasNbPages();
+
+        // Title
+        $pdf->SetFont('Times', 'B', 14);
+        $pdf->Cell(0, 10, 'Order #111', 0, 0, 'R');
+        $pdf->Ln(5);
+        $pdf->Cell(0, 10, 'Violet Drug Store', 0, 0, 'R');
+        $pdf->Ln(10);
+
+        $pdf->SetFont('Times', '', 14);
+        $pdf->Cell(0, 10, '2020-10-08 22:21:49', 0, 0, 'R');
+        $pdf->Ln(20);
+
+        $pdf->SetFont('Times', '', 11);
+
+        $pharmacyTableHeader = array('Code', 'Customer Name', 'Email');
+        $pharmacyTableData = array(array('123', 'Pharmacy Salam', 'd.daoud@aumet.me'));
+        $pdf->FancyTable($pharmacyTableHeader, $pharmacyTableData);
+        $pdf->Ln(20);
+
+        $orderDetailHeader = array('Brand Name', 'Scientific Name', 'Quantity', 'Unit Price', 'VAT', 'Total');
+        $orderDetailData = array(
+            array('Bone Holding Forceps', 'Bone Holding Forceps', '1 (8336)', '$30.95', '0%', '$30.95'), array('Tonsil Tissue Forceps', 'Tissue Forceps', '1 (9510)', '$49.47', '0%', '$49.47'),
+            array('Medicine Cup', 'Medicine Cups', '1 (4213)', '27.61', '0%', '$27.61'), array('Collin Specula', 'Collin Specula', '1 (6120)', '$27.61', '0%', '$55.22'),
+            array('Catheter Mount', 'Catheter Mount', '1 (257)', '$28.92', '0%', '$28.92')
+        );
+        $pdf->FancyTableOrderDetail($orderDetailHeader, $orderDetailData);
+
+        $pdf->Ln(10);
+
+        $pdf->Cell(0, 0, 'Order Total: $192.17', 0, 0, 'R');
+
+        $pdf->Output();
+    }
 }

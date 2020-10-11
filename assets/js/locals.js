@@ -25,6 +25,11 @@ var WebAppLocals = (function () {
 			ar: 'شاهد',
 			fr: '',
 		},
+		edit: {
+			en: 'Edit',
+			ar: 'تعديل',
+			fr: '',
+		},
 		productName: {
 			en: 'Trade Name',
 			ar: 'الاسم التجاري',
@@ -53,6 +58,11 @@ var WebAppLocals = (function () {
 		order: {
 			en: 'Order',
 			ar: 'طلب',
+			fr: '',
+		},
+		orderDetails: {
+			en: 'Order Details',
+			ar: 'تفاصيل الطلب',
 			fr: '',
 		},
 		orderStatus: {
@@ -105,6 +115,11 @@ var WebAppLocals = (function () {
 			ar: 'سعر الوحدة',
 			fr: '',
 		},
+		tax: {
+			en: 'VAT',
+			ar: 'ضريبة',
+			fr: '',
+		},
 		quantity: {
 			en: 'Quantity',
 			ar: 'الكمية المطلوبة',
@@ -133,6 +148,11 @@ var WebAppLocals = (function () {
 		sellingEntityName: {
 			en: 'Ditributor Name',
 			ar: 'اسم الموزع',
+			fr: '',
+		},
+		quantityAvailable: {
+			en: 'Available Quality',
+			ar: 'الكمية المتوفرة',
 			fr: '',
 		},
 		stockAvailability: {
