@@ -1,0 +1,282 @@
+'use strict';
+// Class definition
+
+var DistributorProductsDataTable = (function () {
+	// Private functions
+
+	var datatable;
+	var _readParams;
+
+	var _init = function (objQuery) {
+		_readParams = objQuery;
+		datatable = $('#kt_datatable').KTDatatable({
+			// datasource definition
+
+			data: {
+				type: 'remote',
+				source: {
+					read: {
+						url: '/web/distributor/product',
+						params: _readParams,
+					},
+				},
+				serverPaging: true,
+				serverFiltering: true,
+				serverSorting: true,
+			},
+
+			// layout definition
+			layout: {
+				scroll: false, // enable/disable datatable scroll both horizontal and vertical when needed.
+				footer: false, // display/hide footer
+			},
+
+			// column sorting
+			sortable: true,
+
+			pagination: true,
+
+			// Order settings
+			order: [[2, 'asc']],
+
+			// columns definition
+			columns: [
+				{
+					field: 'id',
+					title: '#',
+					sortable: 'asc',
+					width: 40,
+					type: 'number',
+					selector: false,
+					textAlign: 'left',
+					autoHide: false,
+				},
+				{
+					field: 'productName_en', // + docLang,
+					title: WebAppLocals.getMessage('productName'),
+					autoHide: false,
+				},
+				{
+					field: 'image',
+					title: '',
+					autoHide: true,
+					sortable: false,
+					template: function (row) {
+						return (
+							'<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
+							row.image +
+							'\')" ></div></div>'
+						);
+					},
+				},
+				{
+					field: 'scientificName',
+					title: WebAppLocals.getMessage('productScintificName'),
+					autoHide: true,
+				},
+				{
+					field: 'entityName_ar', // + docLang,
+					title: WebAppLocals.getMessage('sellingEntityName'),
+					autoHide: false,
+				},
+				{
+					field: 'expiryDate',
+					title: WebAppLocals.getMessage('expiryDate'),
+					autoHide: true,
+					template: function (row) {
+						if (row.expiryDate) {
+							return (
+								'<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.expiryDate).format('DD / MM / YYYY') + '</span>'
+							);
+						} else {
+							return '';
+						}
+					},
+				},
+				{
+					field: 'stockStatusId',
+					sortable: false,
+					title: WebAppLocals.getMessage('stockAvailability'),
+					autoHide: true,
+					// callback function support for column rendering
+					template: function (row) {
+						var status = {
+							1: {
+								title: WebAppLocals.getMessage('stockAvailability_available'),
+								class: ' label-primary',
+							},
+							2: {
+								title: WebAppLocals.getMessage('stockAvailability_notAvailable'),
+								class: ' label-danger',
+							},
+							3: {
+								title: WebAppLocals.getMessage('stockAvailability_availableSoon'),
+								class: ' label-warning',
+							},
+						};
+
+						var output = '';
+
+						output +=
+							'<div><span class="label label-lg font-weight-bold ' +
+							status[row.stockStatusId].class +
+							' label-inline">' +
+							status[row.stockStatusId].title +
+							'</span></div>';
+						// output += '<div class="text-muted">' + (row.stockUpdateDateTime != null ? jQuery.timeago(row.stockUpdateDateTime) : 'NA') + '</div>';
+
+						return output;
+					},
+				},
+				{
+					field: 'stockUpdateDateTime',
+					title: WebAppLocals.getMessage('stockUpdateDateTime'),
+					autoHide: false,
+					template: function (row) {
+						if (row.stockUpdateDateTime) {
+							return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
+						} else {
+							return '';
+						}
+					},
+				},
+				{
+					field: 'unitPrice', // + docLang,
+					title: WebAppLocals.getMessage('unitPrice'),
+					autoHide: false,
+					template: function (row) {
+						return row.unitPrice + ' ' + row.currency;
+					},
+				},
+				// {
+				// 	field: 'bonusOptions', // + docLang,
+				// 	title: WebAppLocals.getMessage('bonus'),
+				// 	autoHide: false,
+				// 	sortable: false,
+				// 	template: function (row) {
+				// 		if (row.stockStatusId == 1) {
+				// 			var tdText = '';
+				// 			row.bonusOptions.sort((a, b) => parseInt(a.minOrder) - parseInt(b.minOrder));
+				// 			row.bonusOptions.forEach((element) => {
+				// 				tdText +=
+				// 					'<a href="javascript:;" onclick=\'SearchDataTable.onBonusOptionCallback(' +
+				// 					JSON.stringify(row) +
+				// 					', ' +
+				// 					JSON.stringify(element) +
+				// 					' )\'><span id="bonusOption-' +
+				// 					row.id +
+				// 					'-' +
+				// 					element.id +
+				// 					'" class="label label-xl label-light label-square label-inline mr-2 bonus-option-label-' +
+				// 					row.id +
+				// 					'">' +
+				// 					element.name +
+				// 					' </span></a>';
+				// 			});
+				// 			//var bonus = math.evaluate('floor(quantity / 6) * 2', row);
+				// 			//return '<span id="bonus-' + row.id + '" class="label label-xl label-rounded label-primary" style="width: 50px">' + bonus + ' </span>';
+				// 			return tdText;
+				// 		} else {
+				// 			return '';
+				// 		}
+				// 	},
+				// },
+				{
+					field: 'Actions',
+					title: '',
+					sortable: false,
+					width: 130,
+					overflow: 'visible',
+					autoHide: false,
+					template: function (row) {
+						var outActions = '';
+
+						var btnEdit =
+							'<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditModal(' +
+							row.id +
+							')\' \
+						class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
+						<i class="nav-icon la la-edit p-0"></i> ' +
+							WebAppLocals.getMessage('edit') +
+							'</a>';
+
+						// switch (row.stockStatusId) {
+						// 	case 1:
+						// 		outActions += btnViewProduct;
+						// 		if (row.cart > 0) {
+						// 			outActions += btnAddMoreToCart;
+						// 		} else {
+						// 			outActions += btnAddToCart;
+						// 		}
+						// 		SearchDataTable.changeProductQuantityCallback(row);
+						// 		break;
+						// 	case 2:
+						// 		outActions += btnViewProduct;
+						// 		outActions += btnNotifyMe;
+						// 		break;
+						// 	case 3:
+						// 		outActions += btnViewProduct;
+						// 		outActions += btnNotifyMe;
+						// 		break;
+						// }
+
+						outActions += btnEdit;
+
+						return outActions;
+					},
+				},
+			],
+		});
+	};
+
+	var _productEditModal = function (productId) {
+		WebApp.get('/web/distributor/product/' + productId, _productEditModalOpen);
+	};
+
+	var _productEditModalOpen = function (webResponse) {
+		$('#editModalTitle').html(WebAppLocals.getMessage('edit'));
+		$("label[for='editProductNameAr']").text(WebAppLocals.getMessage('productName') + ' AR');
+		$("label[for='editProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
+		$("label[for='editProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
+		$("label[for='editUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
+		$("label[for='editStock']").text(WebAppLocals.getMessage('quantityAvailable'));
+		$('#editProductNameAr').val(webResponse.data.product.productName_ar);
+		$('#editProductNameEn').val(webResponse.data.product.productName_en);
+		$('#editProductNameFr').val(webResponse.data.product.productName_fr);
+		$('#editUnitPrice').val(webResponse.data.product.unitPrice);
+		$('#editStock').val(webResponse.data.product.stock);
+		$('#editModalAction').html(WebAppLocals.getMessage('edit'));
+		// $('#viewModalTitle').html(WebAppLocals.getMessage('order'));
+		// $('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityCustomer'));
+		// $('#modalCustomerNameText').html(webResponse.data.order.entityCustomer + ' (' + webResponse.data.order.userCustomer + ')');
+		// $('#modalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
+		// $('#modalStatusText').html(status);
+		// $('#modalTotalLabel').html(WebAppLocals.getMessage('orderTotal'));
+		// $('#modalTotalText').html(webResponse.data.order.currency + Math.round((parseFloat(webResponse.data.order.total) + Number.EPSILON) * 100) / 100);
+		// $('#modalDateLabel').html(WebAppLocals.getMessage('insertDate'));
+		// $('#modalDateText').html(webResponse.data.order.insertDateTime);
+		// $('#modalOrderDetailLabel').html(WebAppLocals.getMessage('orderDetails'));
+		$('#editModal').appendTo('body').modal('show');
+	};
+
+	return {
+		// public functions
+		init: function (objQuery) {
+			_init(objQuery);
+		},
+		setReadParams: function (objQuery) {
+			_readParams = objQuery;
+			datatable.setDataSourceParam('query', _readParams);
+			datatable.reload();
+		},
+		productEditModal: function (productId) {
+			_productEditModal(productId);
+		},
+		showColumn: function (columnName) {
+			datatable.showColumn(columnName);
+		},
+		hideColumn: function (columnName) {
+			datatable.hideColumn(columnName);
+		},
+	};
+})();

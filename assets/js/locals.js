@@ -25,6 +25,11 @@ var WebAppLocals = (function () {
 			ar: 'شاهد',
 			fr: '',
 		},
+		edit: {
+			en: 'Edit',
+			ar: 'تعديل',
+			fr: '',
+		},
 		productName: {
 			en: 'Trade Name',
 			ar: 'الاسم التجاري',
@@ -143,6 +148,11 @@ var WebAppLocals = (function () {
 		sellingEntityName: {
 			en: 'Ditributor Name',
 			ar: 'اسم الموزع',
+			fr: '',
+		},
+		quantityAvailable: {
+			en: 'Available Quality',
+			ar: 'الكمية المتوفرة',
 			fr: '',
 		},
 		stockAvailability: {

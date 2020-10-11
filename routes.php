@@ -45,3 +45,12 @@ $f3->route('POST /web/distributor/order/complete', 'OrderController->postComplet
 $f3->route('POST /web/distributor/order/process', 'OrderController->postProcessOrder');
 $f3->route('POST /web/distributor/order/onhold', 'OrderController->postOnHoldOrder');
 // END  APM-10 APM-11 APM-35
+
+// START APM-37
+$f3->route('GET /web/distributor/product', 'ProductsController->getDistributorProducts');
+$f3->route('GET /web/distributor/product/@productId', 'ProductsController->getProductDetails');
+$f3->route('POST /web/distributor/product', 'ProductsController->postDistributorProducts');
+$f3->route('POST /web/distributor/product/add', 'OrderController->postAddDistributorProduct');
+$f3->route('POST /web/distributor/product/edit', 'OrderController->postEditDistributorProduct');
+$f3->route('POST /web/distributor/product/delete', 'OrderController->postDeleteDistributorProduct');
+// END APM-37

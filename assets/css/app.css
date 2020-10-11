@@ -28,3 +28,11 @@
 .float-left {
 	float: left;
 }
+.btn-lg-radius {
+	border-radius: 0.5em;
+}
+
+label.myLabel input[type='file'] {
+	position: absolute;
+	top: -1000px;
+}
