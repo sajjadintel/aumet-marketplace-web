@@ -35,6 +35,16 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="sub-header" id="modalOrderDetailLabel"></h3>
+                    </div>
+                    <div class="col-md-12">
+                        <!--begin: Datatable-->
+                        <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable_detail"></div>
+                        <!--end: Datatable-->
+                    </div>
+                </div>
             </div>
         </div>
     </div>

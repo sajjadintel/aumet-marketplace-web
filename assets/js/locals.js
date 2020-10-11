@@ -55,6 +55,11 @@ var WebAppLocals = (function () {
 			ar: 'طلب',
 			fr: '',
 		},
+		orderDetails: {
+			en: 'Order Details',
+			ar: 'تفاصيل الطلب',
+			fr: '',
+		},
 		orderStatus: {
 			en: 'Order Status',
 			ar: 'حالة الطلب',
@@ -103,6 +108,11 @@ var WebAppLocals = (function () {
 		unitPrice: {
 			en: 'Unit Price',
 			ar: 'سعر الوحدة',
+			fr: '',
+		},
+		tax: {
+			en: 'VAT',
+			ar: 'ضريبة',
 			fr: '',
 		},
 		quantity: {

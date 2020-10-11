@@ -5,6 +5,7 @@ var DistributorOrdersDataTable = (function () {
 	// Private functions
 
 	var datatable;
+	var datatableDetail;
 	var _readParams;
 
 	var _init = function (objQuery) {
@@ -226,6 +227,91 @@ var DistributorOrdersDataTable = (function () {
 		});
 	};
 
+	var _initOrderDetailDatatable = function (data) {
+		datatableDetail = $('#kt_datatable_detail').KTDatatable({
+			// datasource definition
+
+			data: {
+				type: 'local',
+				source: data,
+				pageSize: 10,
+			},
+
+			// layout definition
+			layout: {
+				scroll: false, // enable/disable datatable scroll both horizontal and vertical when needed.
+				footer: false, // display/hide footer
+			},
+
+			// column sorting
+			sortable: true,
+			pagination: true,
+
+			// columns definition
+			columns: [
+				{
+					field: 'productNameEn',
+					title: WebAppLocals.getMessage('productName'),
+					autoHide: false,
+				},
+				{
+					field: 'scientificName',
+					title: WebAppLocals.getMessage('productScintificName'),
+					autoHide: false,
+				},
+				{
+					field: 'quantity',
+					title: WebAppLocals.getMessage('quantity'),
+					sortable: false,
+					autoHide: false,
+					// callback function support for column rendering
+					template: function (row) {
+						var output = '';
+
+						output = row.quantity + ' (' + row.stock + ')';
+						return output;
+					},
+				},
+				{
+					field: 'unitPrice',
+					title: WebAppLocals.getMessage('unitPrice'),
+					sortable: false,
+					autoHide: false,
+					// callback function support for column rendering
+					template: function (row) {
+						var output = '';
+
+						var output = Math.round((parseFloat(row.unitPrice) + Number.EPSILON) * 100) / 100;
+						return output;
+					},
+				},
+				{
+					field: 'tax',
+					title: WebAppLocals.getMessage('tax'),
+					sortable: false,
+					autoHide: false,
+					// callback function support for column rendering
+					template: function (row) {
+						var output = '';
+
+						var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
+						return output;
+					},
+				},
+				{
+					field: 'total', // + docLang,
+					title: WebAppLocals.getMessage('orderTotal'),
+					autoHide: false,
+					template: function (row) {
+						var output = 1 * (parseFloat(row.unitPrice) * parseInt(row.quantity) * (1 + parseFloat(row.vat) / 100));
+						output = Math.round((output + Number.EPSILON) * 100) / 100;
+						return output;
+					},
+				},
+			],
+		});
+	};
+
 	var _orderStatusModal = function (orderId, statusId) {
 		WebApp.get('/web/distributor/order/confirm/' + orderId + '/' + statusId, WebApp.openModal);
 	};
@@ -265,6 +351,8 @@ var DistributorOrdersDataTable = (function () {
 		$('#modalTotalText').html(webResponse.data.order.currency + Math.round((parseFloat(webResponse.data.order.total) + Number.EPSILON) * 100) / 100);
 		$('#modalDateLabel').html(WebAppLocals.getMessage('insertDate'));
 		$('#modalDateText').html(webResponse.data.order.insertDateTime);
+		$('#modalOrderDetailLabel').html(WebAppLocals.getMessage('orderDetails'));
+		_initOrderDetailDatatable(webResponse.data.orderDetail);
 		$('#viewModal').appendTo('body').modal('show');
 	};
 
@@ -272,6 +360,9 @@ var DistributorOrdersDataTable = (function () {
 		// public functions
 		init: function (objQuery) {
 			_init(objQuery);
+		},
+		initOrderDetailDatatable: function (data) {
+			_initOrderDetailDatatable(data);
 		},
 		setReadParams: function (objQuery) {
 			_readParams = objQuery;
