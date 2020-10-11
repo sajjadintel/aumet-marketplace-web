@@ -252,11 +252,15 @@ var DistributorOrdersDataTable = (function () {
 				{
 					field: 'productNameEn',
 					title: WebAppLocals.getMessage('productName'),
+					overflow: 'visible',
+					width: 200,
 					autoHide: false,
 				},
 				{
 					field: 'scientificName',
 					title: WebAppLocals.getMessage('productScintificName'),
+					overflow: 'visible',
+					width: 200,
 					autoHide: false,
 				},
 				{
@@ -264,6 +268,7 @@ var DistributorOrdersDataTable = (function () {
 					title: WebAppLocals.getMessage('quantity'),
 					sortable: false,
 					autoHide: false,
+					width: 100,
 					// callback function support for column rendering
 					template: function (row) {
 						var output = '';
@@ -277,6 +282,7 @@ var DistributorOrdersDataTable = (function () {
 					title: WebAppLocals.getMessage('unitPrice'),
 					sortable: false,
 					autoHide: false,
+					width: 80,
 					// callback function support for column rendering
 					template: function (row) {
 						var output = '';
@@ -289,7 +295,7 @@ var DistributorOrdersDataTable = (function () {
 					field: 'tax',
 					title: WebAppLocals.getMessage('tax'),
 					sortable: false,
-					autoHide: false,
+					width: 50,
 					// callback function support for column rendering
 					template: function (row) {
 						var output = '';
@@ -302,8 +308,9 @@ var DistributorOrdersDataTable = (function () {
 					field: 'total', // + docLang,
 					title: WebAppLocals.getMessage('orderTotal'),
 					autoHide: false,
+					width: 80,
 					template: function (row) {
-						var output = 1 * (parseFloat(row.unitPrice) * parseInt(row.quantity) * (1 + parseFloat(row.vat) / 100));
+						var output = parseFloat(row.unitPrice) * parseFloat(row.quantity) * (1 + parseFloat(row.tax) / 100);
 						output = Math.round((output + Number.EPSILON) * 100) / 100;
 						return output;
 					},
@@ -352,8 +359,10 @@ var DistributorOrdersDataTable = (function () {
 		$('#modalDateLabel').html(WebAppLocals.getMessage('insertDate'));
 		$('#modalDateText').html(webResponse.data.order.insertDateTime);
 		$('#modalOrderDetailLabel').html(WebAppLocals.getMessage('orderDetails'));
+		$('#modalPrint').attr('href', '/web/distributor/order/print/' + webResponse.data.order.id);
 		_initOrderDetailDatatable(webResponse.data.orderDetail);
 		$('#viewModal').appendTo('body').modal('show');
+		datatableDetail.reload();
 	};
 
 	return {

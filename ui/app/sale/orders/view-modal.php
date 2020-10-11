@@ -10,6 +10,11 @@
             </div>
             <div class="modal-body">
                 <div class="row">
+                    <div class="col-md-12">
+                        <a id="modalPrint" target="_blank" href="web/distributor/order/print" class="btn btn-sm btn-primary btn-hover-primary  mr-2 float-left" title="Print Order">
+                            <i class="nav-icon la la-print p-0"></i>
+                        </a>
+                    </div>
                     <div class="col-md-6">
                         <div class="row form-group">
                             <div class="col-md-6 form-label" id="modalCustomerNameLabel"></div>

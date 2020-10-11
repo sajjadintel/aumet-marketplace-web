@@ -25,3 +25,6 @@
 	font-weight: 700;
 	padding-bottom: 1rem;
 }
+.float-left {
+	float: left;
+}

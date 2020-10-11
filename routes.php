@@ -37,6 +37,7 @@ $f3->route('GET /web/demo/editor/scientificnames', 'DemoController->get');
 // START APM-10 APM-11 APM-35 
 $f3->route('GET /web/distributor/order', 'OrderController->getDistributorOrders');
 $f3->route('GET /web/distributor/order/@orderId', 'OrderController->getOrderDetails');
+$f3->route('GET /web/distributor/order/print/@orderId', 'OrderController->getPrintOrderInvoice');
 $f3->route('GET /web/distributor/order/confirm/@orderId/@statusId', 'OrderController->getOrderConfirmation');
 $f3->route('POST /web/distributor/order', 'OrderController->postDistributorOrders');
 $f3->route('POST /web/distributor/order/cancel', 'OrderController->postCancelOrder');
