@@ -46,6 +46,7 @@
 	<meta name="msapplication-TileColor" content="#ffffff">
 	<meta name="msapplication-TileImage" content="/favicons/ms-icon-144x144.png">
 	<meta name="theme-color" content="#ffffff">
+	<link rel="icon" href="/favicons/favicon.ico">
 </head>
 <!--end::Head-->
 <!--begin::Body-->

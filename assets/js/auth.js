@@ -124,12 +124,6 @@ var WebAuth = function () {
 					KTUtil.scrollTop();
 				});
 			});
-
-		firebase.auth().signInWithEmailAndPassword(
-			form.querySelector('[name="email"]').value,
-			form.querySelector('[name="password"]').value).catch(function (error) {
-
-			});
 	}
 
 	var _handleFormForgot = function () {
