@@ -11,7 +11,7 @@ class DashboardController extends Controller
         } else {
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = $this->f3->get('vTitle_dashboard');
-            $this->webResponse->data = View::instance()->render('app/dashboard/buyer.php');
+            $this->webResponse->data = View::instance()->render('app/dashboard/default.php');
             echo $this->webResponse->jsonResponse();
         }
     }

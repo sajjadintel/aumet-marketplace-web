@@ -134,7 +134,7 @@ return array(
     'vEntity_order' => 'Order',
     'vEntity_orderLog' => 'Order Log',
 
-    'vOrderStatusConfirmation' => 'Are you sure you want to move this order to {0}?',
+    'vOrderStatusConfirmation' => 'هل آنت متأكد من أنك تريد تحويل هذا الطلب إلى {0}?',
     'vOrderStatus_Pending' => 'Pending',
     'vOrderStatus_OnHold' => 'On Hold',
     'vOrderStatus_Processing' => 'Processing',

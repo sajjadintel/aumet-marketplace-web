@@ -1,7 +1,7 @@
 'use strict';
 // Class definition
 
-var DistributorOrdersDataTable = (function () {
+var DistributorCustomersDataTable = (function () {
 	// Private functions
 
 	var datatable;
@@ -17,7 +17,7 @@ var DistributorOrdersDataTable = (function () {
 				type: 'remote',
 				source: {
 					read: {
-						url: '/web/distributor/order',
+						url: '/web/distributor/customers',
 						params: _readParams,
 					},
 				},
