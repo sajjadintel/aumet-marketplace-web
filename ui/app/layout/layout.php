@@ -71,6 +71,9 @@ function compress_htmlcode($codedata)
 	<link rel="manifest" href="/favicons/manifest.json">
 	<meta name="msapplication-TileColor" content="#ffffff">
 	<meta name="msapplication-TileImage" content="/favicons/ms-icon-144x144.png">
+
+	<link rel="icon" href="/favicons/favicon.ico">
+
 	<meta name="theme-color" content="#ffffff">
 
 	<script>
