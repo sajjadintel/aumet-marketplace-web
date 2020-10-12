@@ -305,6 +305,7 @@ var WebApp = (function () {
 	};
 
 	var _setSessionTimeoutCallback = function () {
+		/*
 		_timeoutSession = setTimeout(function () {
 			if (confirm("Press a button!\nEither OK or Cancel.")) {
 				_setSessionTimeoutCallback();
@@ -313,6 +314,7 @@ var WebApp = (function () {
 				_signout();
 			}
 		}, 5000); //30s
+		*/
 	}
 
 	var _initSessionTimeout = function () {
