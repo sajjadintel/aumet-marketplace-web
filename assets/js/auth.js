@@ -499,7 +499,8 @@ var WebAuth = function () {
 						type: "POST",
 						dataType: "json",
 						data: {
-							token: idToken
+							token: idToken,
+							userInfo: userInfo
 						},
 						async: true
 					}).done(function (webResponse) {

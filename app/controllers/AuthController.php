@@ -94,8 +94,11 @@ class AuthController extends Controller
             $dbUser = new BaseModel($dbConnection, "user");
             $dbUser->getByField("uid", $uid);
             if ($dbUser->dry()) {
+
+
                 $this->webResponse->errorCode = 1;
                 $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
+                $this->webResponse->data = $user;
             } else {
                 $this->configUser($dbUser);
                 $this->webResponse->errorCode = 0;
