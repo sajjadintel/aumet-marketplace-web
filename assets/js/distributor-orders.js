@@ -265,6 +265,11 @@ var DistributorOrdersDataTable = (function () {
 		$('#modalTotalText').html(webResponse.data.order.currency + Math.round((parseFloat(webResponse.data.order.total) + Number.EPSILON) * 100) / 100);
 		$('#modalDateLabel').html(WebAppLocals.getMessage('insertDate'));
 		$('#modalDateText').html(webResponse.data.order.insertDateTime);
+
+		// TODO:
+		// Add Order Details Datatable
+		// Load Datatable content from the local data
+		// Create a PDF containing the invoice
 		$('#viewModal').appendTo('body').modal('show');
 	};
 
