@@ -234,29 +234,48 @@ var DistributorProductsDataTable = (function () {
 	};
 
 	var _productEditModalOpen = function (webResponse) {
+		$('#editModalForm').attr('action', '/web/distributor/product/edit');
+		$('#editProductId').val(webResponse.data.product.id);
+		$('#editProductCallback').val(webResponse.data.product.id);
+
 		$('#editModalTitle').html(WebAppLocals.getMessage('edit'));
 		$("label[for='editProductNameAr']").text(WebAppLocals.getMessage('productName') + ' AR');
 		$("label[for='editProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
 		$("label[for='editProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
 		$("label[for='editUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
 		$("label[for='editStock']").text(WebAppLocals.getMessage('quantityAvailable'));
+
 		$('#editProductNameAr').val(webResponse.data.product.productName_ar);
 		$('#editProductNameEn').val(webResponse.data.product.productName_en);
 		$('#editProductNameFr').val(webResponse.data.product.productName_fr);
 		$('#editUnitPrice').val(webResponse.data.product.unitPrice);
 		$('#editStock').val(webResponse.data.product.stock);
 		$('#editModalAction').html(WebAppLocals.getMessage('edit'));
-		// $('#viewModalTitle').html(WebAppLocals.getMessage('order'));
-		// $('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityCustomer'));
-		// $('#modalCustomerNameText').html(webResponse.data.order.entityCustomer + ' (' + webResponse.data.order.userCustomer + ')');
-		// $('#modalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
-		// $('#modalStatusText').html(status);
-		// $('#modalTotalLabel').html(WebAppLocals.getMessage('orderTotal'));
-		// $('#modalTotalText').html(webResponse.data.order.currency + Math.round((parseFloat(webResponse.data.order.total) + Number.EPSILON) * 100) / 100);
-		// $('#modalDateLabel').html(WebAppLocals.getMessage('insertDate'));
-		// $('#modalDateText').html(webResponse.data.order.insertDateTime);
-		// $('#modalOrderDetailLabel').html(WebAppLocals.getMessage('orderDetails'));
 		$('#editModal').appendTo('body').modal('show');
+	};
+
+	var _editProduct = function (productId, productNameAr, productNameEn, productNameFr, unitPrice, stockQuantity) {
+		WebApp.post(
+			'/web/distributor/product/edit',
+			{ productId: productId, productNameAr: productNameAr, productNameEn: productNameEn, productNameFr: productNameFr, unitPrice: unitPrice, stockQuantity: stockQuantity },
+			reloadDatatable
+		);
+	};
+
+	var _addProduct = function (entityId, countryId, unitPrice, stockQuantity, productNameAr, productNameEn, productNameFr) {
+		WebApp.post(
+			'/web/distributor/product/add',
+			{
+				entityId: entityId,
+				countryId: countryId,
+				productNameAr: productNameAr,
+				productNameEn: productNameEn,
+				productNameFr: productNameFr,
+				unitPrice: unitPrice,
+				stockQuantity: stockQuantity,
+			},
+			reloadDatatable
+		);
 	};
 
 	return {
@@ -269,6 +288,9 @@ var DistributorProductsDataTable = (function () {
 			datatable.setDataSourceParam('query', _readParams);
 			datatable.reload();
 		},
+		reloadDatatable: function () {
+			datatable.reload();
+		},
 		productEditModal: function (productId) {
 			_productEditModal(productId);
 		},
@@ -277,6 +299,12 @@ var DistributorProductsDataTable = (function () {
 		},
 		hideColumn: function (columnName) {
 			datatable.hideColumn(columnName);
+		},
+		editProduct: function (productId, productNameAr, productNameEn, productNameFr, unitPrice, stockQuantity) {
+			_editProduct(productId, productNameAr, productNameEn, productNameFr, unitPrice, stockQuantity);
+		},
+		addProduct: function (entityId, countryId, unitPrice, stockQuantity, productNameAr, productNameEn, productNameFr) {
+			_addProduct(entityId, countryId, unitPrice, stockQuantity, productNameAr, productNameEn, productNameFr);
 		},
 	};
 })();

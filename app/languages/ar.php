@@ -118,6 +118,8 @@ return array(
     'vModule_cart_offersTitle' => 'العروض',
     'vModule_cart_offersMore' => 'تصفح المزيد من العروض',
 
+    'vModule_add' => 'أضف',
+
     'vModule_bonus_bonusTextTemplate' => 'كل %q: %b',
     'vSignup_' => '',
     'vSignup_' => '',

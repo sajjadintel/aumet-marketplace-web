@@ -283,4 +283,63 @@ class ProductsController extends Controller
 
         echo json_encode($result, JSON_PRETTY_PRINT);
     }
+
+
+    function postEditDistributorProduct()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/product");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+
+            $callback = file_get_contents('php://input');
+            $callback = json_decode(urldecode($callback));
+
+            $nameEn = $this->f3->get('POST.name_en');
+            echo $nameEn;
+            print_r($callback);
+            die();
+            $entityId = $this->f3->get('POST.entityId');
+            $productId = $this->f3->get('POST.productId');
+            $quantity = $this->f3->get('POST.quantity');
+
+            if (!is_numeric($quantity) || $quantity == 0) {
+                $quantity = 1;
+            }
+
+            global $dbConnection;
+
+            $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
+            $dbEntityProduct->getWhere("entityId=$entityId and productId=$productId");
+
+            if ($dbEntityProduct->dry()) {
+                $this->webResponse->errorCode = 2;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "No Product";
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $dbEntity = new BaseModel($dbConnection, "entity");
+                $dbEntity->name = "name_" . $this->objUser->language;
+                $dbEntity->getById($entityId);
+
+                $dbProduct = new BaseModel($dbConnection, "product");
+                $dbProduct->name = "name_" . $this->objUser->language;
+                $dbProduct->getById($productId);
+
+                $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
+                $dbCartDetail->getWhere("entityProductId = $dbEntityProduct->id and accountId=" . $this->objUser->accountId);
+                $dbCartDetail->accountId = $this->objUser->accountId;
+                $dbCartDetail->entityProductId = $dbEntityProduct->id;
+                $dbCartDetail->userId = $this->objUser->id;
+                $dbCartDetail->quantity += $quantity;
+                $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
+                $dbCartDetail->save();
+
+                $this->webResponse->errorCode = 1;
+                $this->webResponse->title = "";
+                $this->webResponse->data = $dbProduct->name;
+                echo $this->webResponse->jsonResponse();
+            }
+        }
+    }
 }

@@ -167,6 +167,8 @@ var WebApp = (function () {
 					_unblockPage();
 					_alertError(WebAppLocals.getMessage('error'));
 				}
+
+				_initModal();
 			})
 			.fail(function (jqXHR, textStatus, errorThrown) {
 				_alertError(WebAppLocals.getMessage('error'));
@@ -227,36 +229,42 @@ var WebApp = (function () {
 	};
 
 	var _initModal = function () {
-		$('#popupModalAction').on('click', function (e) {
-			e.preventDefault();
-			var url = $('#popupModalForm').attr('action');
-			var data = $('form#popupModalForm').serialize();
-			var callback = null;
-			if ($('#popupModalValueCallback').val() != '') {
-				callback = eval($('#popupModalValueCallback').val());
-			}
-			_post(url, data, callback);
+		$('.modalAction').each(function () {
+			$(this).off('click');
+			$(this).click(function (e) {
+				e.preventDefault();
+				var form = $(this).parent().parent().parent();
+				var url = $(form).attr('action');
+				var data = $(form).serializeJSON();
+				console.log('data');
+				console.log(data);
+				var callback = null;
+				if ($(form).find('.modalValueCallback').val() != '') {
+					callback = eval($(form).find('.modalValueCallback').val());
+				}
+				_post(url, data, callback);
+			});
 		});
 	};
 
 	var _openModal = function (webResponse) {
 		_resetModal();
-		$('#popupModalForm').attr('action', webResponse.data.modalRoute);
+		$('.modalForm').attr('action', webResponse.data.modalRoute);
 		$('#popupModalTitle').html(webResponse.data.modalTitle);
 		$('#popupModalText').html(webResponse.data.modalText);
 		$('#popupModalValueId').val(webResponse.data.id);
-		$('#popupModalValueCallback').val(webResponse.data.fnCallback);
-		$('#popupModalAction').html(webResponse.data.modalButton);
+		$('.modalValueCallback').val(webResponse.data.fnCallback);
+		$('.modalAction').html(webResponse.data.modalButton);
 		$('#popupModal').modal('show');
 	};
 
 	var _resetModal = function () {
-		$('#popupModalForm').attr('action', '#');
+		$('.modalForm').attr('action', '#');
 		$('#popupModalTitle').html('');
 		$('#popupModalText').html('');
 		$('#popupModalValueId').val('');
-		$('#popupModalValueCallback').val('');
-		$('#popupModalAction').html('');
+		$('.modalValueCallback').val('');
+		$('.modalAction').html('');
 	};
 
 	var _signout = function () {
@@ -315,14 +323,17 @@ var WebApp = (function () {
 			}
 		}, 5000); //30s
 		*/
-	}
+	};
 
 	var _initSessionTimeout = function () {
-
-		document.addEventListener('mousemove', function (e) {
-			clearTimeout(_timeoutSession);
-			_setSessionTimeoutCallback();
-		}, true);
+		document.addEventListener(
+			'mousemove',
+			function (e) {
+				clearTimeout(_timeoutSession);
+				_setSessionTimeoutCallback();
+			},
+			true
+		);
 	};
 
 	// Public Functions

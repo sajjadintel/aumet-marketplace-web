@@ -30,6 +30,11 @@ var WebAppLocals = (function () {
 			ar: 'تعديل',
 			fr: '',
 		},
+		add: {
+			en: 'Add',
+			ar: 'أضف',
+			fr: '',
+		},
 		productName: {
 			en: 'Trade Name',
 			ar: 'الاسم التجاري',
