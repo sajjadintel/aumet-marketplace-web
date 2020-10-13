@@ -5,6 +5,7 @@ var DistributorOrdersDataTable = (function () {
 	// Private functions
 
 	var datatable;
+	var datatableDetail;
 	var _readParams;
 
 	var _init = function (objQuery) {
@@ -226,6 +227,98 @@ var DistributorOrdersDataTable = (function () {
 		});
 	};
 
+	var _initOrderDetailDatatable = function (data) {
+		datatableDetail = $('#kt_datatable_detail').KTDatatable({
+			// datasource definition
+
+			data: {
+				type: 'local',
+				source: data,
+				pageSize: 10,
+			},
+
+			// layout definition
+			layout: {
+				scroll: false, // enable/disable datatable scroll both horizontal and vertical when needed.
+				footer: false, // display/hide footer
+			},
+
+			// column sorting
+			sortable: true,
+			pagination: true,
+
+			// columns definition
+			columns: [
+				{
+					field: 'productNameEn',
+					title: WebAppLocals.getMessage('productName'),
+					overflow: 'visible',
+					width: 200,
+					autoHide: false,
+				},
+				{
+					field: 'scientificName',
+					title: WebAppLocals.getMessage('productScintificName'),
+					overflow: 'visible',
+					width: 200,
+					autoHide: false,
+				},
+				{
+					field: 'quantity',
+					title: WebAppLocals.getMessage('quantity'),
+					sortable: false,
+					autoHide: false,
+					width: 100,
+					// callback function support for column rendering
+					template: function (row) {
+						var output = '';
+
+						output = row.quantity + ' (' + row.stock + ')';
+						return output;
+					},
+				},
+				{
+					field: 'unitPrice',
+					title: WebAppLocals.getMessage('unitPrice'),
+					sortable: false,
+					autoHide: false,
+					width: 80,
+					// callback function support for column rendering
+					template: function (row) {
+						var output = '';
+
+						var output = Math.round((parseFloat(row.unitPrice) + Number.EPSILON) * 100) / 100;
+						return output;
+					},
+				},
+				{
+					field: 'tax',
+					title: WebAppLocals.getMessage('tax'),
+					sortable: false,
+					width: 50,
+					// callback function support for column rendering
+					template: function (row) {
+						var output = '';
+
+						var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
+						return output;
+					},
+				},
+				{
+					field: 'total', // + docLang,
+					title: WebAppLocals.getMessage('orderTotal'),
+					autoHide: false,
+					width: 80,
+					template: function (row) {
+						var output = parseFloat(row.unitPrice) * parseFloat(row.quantity) * (1 + parseFloat(row.tax) / 100);
+						output = Math.round((output + Number.EPSILON) * 100) / 100;
+						return output;
+					},
+				},
+			],
+		});
+	};
+
 	var _orderStatusModal = function (orderId, statusId) {
 		WebApp.get('/web/distributor/order/confirm/' + orderId + '/' + statusId, WebApp.openModal);
 	};
@@ -270,13 +363,20 @@ var DistributorOrdersDataTable = (function () {
 		// Add Order Details Datatable
 		// Load Datatable content from the local data
 		// Create a PDF containing the invoice
+		$('#modalOrderDetailLabel').html(WebAppLocals.getMessage('orderDetails'));
+		$('#modalPrint').attr('href', '/web/distributor/order/print/' + webResponse.data.order.id);
+		_initOrderDetailDatatable(webResponse.data.orderDetail);
 		$('#viewModal').appendTo('body').modal('show');
+		datatableDetail.reload();
 	};
 
 	return {
 		// public functions
 		init: function (objQuery) {
 			_init(objQuery);
+		},
+		initOrderDetailDatatable: function (data) {
+			_initOrderDetailDatatable(data);
 		},
 		setReadParams: function (objQuery) {
 			_readParams = objQuery;

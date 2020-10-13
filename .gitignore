@@ -7,5 +7,5 @@
 .DS_Store
 composer.pharsendgrid.env
 "sendgrid.env" 
-
+composer.lock
 .env

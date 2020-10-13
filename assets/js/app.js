@@ -10,6 +10,8 @@ var WebApp = (function () {
 
 	var _idToken = '';
 
+	var _timeoutSession;
+
 	var _alertError = function (msg) {
 		Swal.fire({
 			text: msg,
@@ -74,19 +76,6 @@ var WebApp = (function () {
 				_unblockPage();
 			});
 	};
-
-	$(function () {
-		$('#popupModalAction').on('click', function (e) {
-			e.preventDefault();
-			var url = $('#popupModalForm').attr('action');
-			var data = $('form#popupModalForm').serialize();
-			var callback = null;
-			if ($('#popupModalValueCallback').val() != '') {
-				callback = eval($('#popupModalValueCallback').val());
-			}
-			WebApp.post(url, data, callback);
-		});
-	});
 
 	var _post = function (url, data = null, fnCallback = null) {
 		_blurPage();
@@ -237,6 +226,19 @@ var WebApp = (function () {
 		$(_pageContainerId).foggy(false);
 	};
 
+	var _initModal = function () {
+		$('#popupModalAction').on('click', function (e) {
+			e.preventDefault();
+			var url = $('#popupModalForm').attr('action');
+			var data = $('form#popupModalForm').serialize();
+			var callback = null;
+			if ($('#popupModalValueCallback').val() != '') {
+				callback = eval($('#popupModalValueCallback').val());
+			}
+			_post(url, data, callback);
+		});
+	};
+
 	var _openModal = function (webResponse) {
 		_resetModal();
 		$('#popupModalForm').attr('action', webResponse.data.modalRoute);
@@ -268,6 +270,7 @@ var WebApp = (function () {
 				// An error happened.
 			});
 	};
+
 	var _setUpFirebase = function () {
 		// Your web app's Firebase configuration
 		var firebaseConfig = {
@@ -301,14 +304,37 @@ var WebApp = (function () {
 		});
 	};
 
+	var _setSessionTimeoutCallback = function () {
+		/*
+		_timeoutSession = setTimeout(function () {
+			if (confirm("Press a button!\nEither OK or Cancel.")) {
+				_setSessionTimeoutCallback();
+			}
+			else {
+				_signout();
+			}
+		}, 5000); //30s
+		*/
+	}
+
+	var _initSessionTimeout = function () {
+
+		document.addEventListener('mousemove', function (e) {
+			clearTimeout(_timeoutSession);
+			_setSessionTimeoutCallback();
+		}, true);
+	};
+
 	// Public Functions
 	return {
 		init: function () {
 			_setUpFirebase();
-
 			WebAppLocals.init();
+			_initModal();
 			_loadPage(window.location.href);
 			Cart.init();
+
+			_initSessionTimeout();
 		},
 		signout: function () {
 			return _signout();

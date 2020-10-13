@@ -235,12 +235,19 @@ class SearchController extends Controller
             $objItem->stockUpdateDateTime = $dbProducts->stockUpdateDateTime;
             $objItem->image = $dbProducts->image;
             $objItem->unitPrice = $dbProducts->unitPrice;
-            $objItem->quantity = 10;
+            $objItem->currency = $dbProducts->currency;
+            $objItem->quantity = $dbProducts->defaultQuantity;
             $objItem->expiryDate = $dbProducts->expiryDate;
             $objItem->bonus = 0;
+            $objItem->bonusTypeId = $dbProducts->bonusTypeId;
 
             $objItem->bonusOptions = [];
 
+            if ($dbProducts->bonusTypeId == 2) {
+                $objItem->bonusOptions = json_decode($dbProducts->bonusConfig);
+            }
+
+            /*
             $objItemBonusOption = new stdClass();
             $objItemBonusOption->id = 1;
             $objItemBonusOption->minOrder = 10;
@@ -262,6 +269,8 @@ class SearchController extends Controller
             $objItemBonusOption->name = str_replace("%b", $objItemBonusOption->bonus, $objItemBonusOption->name);
             $objItemBonusOption->formula = "floor(quantity / minOrder) * bonus";
             $objItem->bonusOptions[] = $objItemBonusOption;
+
+            */
 
             $objItem->cart = 0;
             foreach ($arrCartDetail as $objCartItem) {

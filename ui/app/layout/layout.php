@@ -71,6 +71,9 @@ function compress_htmlcode($codedata)
 	<link rel="manifest" href="/favicons/manifest.json">
 	<meta name="msapplication-TileColor" content="#ffffff">
 	<meta name="msapplication-TileImage" content="/favicons/ms-icon-144x144.png">
+
+	<link rel="icon" href="/favicons/favicon.ico">
+
 	<meta name="theme-color" content="#ffffff">
 
 	<script>
@@ -253,6 +256,7 @@ function compress_htmlcode($codedata)
 	<script type="text/javascript" src="/assets/js/autocomplete.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/products-search.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-orders.js<?php echo $platformVersion ?>"></script>
+	<script type="text/javascript" src="/assets/js/distributor-products.js<?php echo $platformVersion ?>"></script>
 
 	<script type="text/javascript" src="/assets/js/treeview.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/demoApp.js<?php echo $platformVersion ?>"></script>

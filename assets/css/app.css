@@ -20,3 +20,19 @@
 	text-align: left;
 	font-weight: bold;
 }
+.sub-header {
+	color: #13b9a9 !important;
+	font-weight: 700;
+	padding-bottom: 1rem;
+}
+.float-left {
+	float: left;
+}
+.btn-lg-radius {
+	border-radius: 0.5em;
+}
+
+label.myLabel input[type='file'] {
+	position: absolute;
+	top: -1000px;
+}
