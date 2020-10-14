@@ -39,12 +39,13 @@ return array(
     'vEntity_orderLog' => 'Order Log',
 
     'vOrderStatusConfirmation' => 'Are you sure you want to move this order to {0}?',
-    'vOrderStatus_Pending' => 'Pending',
+    'vOrderStatus_New' => 'New',
     'vOrderStatus_OnHold' => 'On Hold',
     'vOrderStatus_Processing' => 'Processing',
     'vOrderStatus_Completed' => 'Completed',
     'vOrderStatus_Canceled' => 'Canceled',
     'vOrderStatus_Received' => 'Received',
+    'vOrderStatus_Paid' => 'Paid',
 
     'vButton_update' => 'Update',
 );

@@ -17,7 +17,7 @@ var DistributorOrdersDataTable = (function () {
 				type: 'remote',
 				source: {
 					read: {
-						url: '/web/distributor/order',
+						url: window.location.pathname,
 						params: _readParams,
 					},
 				},
@@ -106,7 +106,7 @@ var DistributorOrdersDataTable = (function () {
 					template: function (row) {
 						var status = {
 							1: {
-								title: WebAppLocals.getMessage('orderStatus_Pending'),
+								title: WebAppLocals.getMessage('orderStatus_New'),
 								class: ' label-primary',
 							},
 							2: {
@@ -115,11 +115,11 @@ var DistributorOrdersDataTable = (function () {
 							},
 							3: {
 								title: WebAppLocals.getMessage('orderStatus_Processing'),
-								class: ' label-warning',
+								class: ' label-primary',
 							},
 							4: {
 								title: WebAppLocals.getMessage('orderStatus_Completed'),
-								class: ' label-success',
+								class: ' label-primary',
 							},
 							5: {
 								title: WebAppLocals.getMessage('orderStatus_Canceled'),
@@ -127,6 +127,10 @@ var DistributorOrdersDataTable = (function () {
 							},
 							6: {
 								title: WebAppLocals.getMessage('orderStatus_Received'),
+								class: ' label-primary',
+							},
+							7: {
+								title: WebAppLocals.getMessage('orderStatus_Paid'),
 								class: ' label-success',
 							},
 						};

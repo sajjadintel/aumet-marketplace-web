@@ -2,20 +2,34 @@
 
 class OrderController extends Controller
 {
-    function getDistributorOrders()
+    function getDistributorOrdersNew()
+    {
+        $this->handleGetDistributorOrders('new');
+    }
+    function getDistributorOrdersPending()
+    {
+        $this->handleGetDistributorOrders('pending');
+    }
+    function getDistributorOrdersUnpaid()
+    {
+        $this->handleGetDistributorOrders('unpaid');
+    }
+    function getDistributorOrdersHistory()
+    {
+        $this->handleGetDistributorOrders('history');
+    }
+
+    function handleGetDistributorOrders($status)
     {
         if (!$this->f3->ajax()) {
             echo View::instance()->render('app/layout/layout.php');
         } else {
-            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
-
-            $dbOrders = new BaseModel($this->db, "vwOrderEntityUser");
-            $arrOrders = $dbOrders->getWhere("entitySellerId IN ($arrEntityId)");
-            $this->f3->set('arrOrders', $arrOrders);
+            $renderFile = 'app/sale/orders/orders.php';
+            $title = $this->f3->get('vModule_order_title');
 
             $this->webResponse->errorCode = 1;
-            $this->webResponse->title = $this->f3->get('vModule_order_title');
-            $this->webResponse->data = View::instance()->render('app/sale/orders/orders.php');
+            $this->webResponse->title = $title;
+            $this->webResponse->data = View::instance()->render($renderFile);
             echo $this->webResponse->jsonResponse();
         }
     }
@@ -94,7 +108,31 @@ class OrderController extends Controller
         }
     }
 
-    function postDistributorOrders()
+    function postDistributorOrdersNew()
+    {
+        $status = 'new';
+        $this->handlePostDistributorOrders($status);
+    }
+
+    function postDistributorOrdersPending()
+    {
+        $status = 'pending';
+        $this->handlePostDistributorOrders($status);
+    }
+
+    function postDistributorOrdersUnpaid()
+    {
+        $status = 'unpaid';
+        $this->handlePostDistributorOrders($status);
+    }
+
+    function postDistributorOrdersHistory()
+    {
+        $status = 'history';
+        $this->handlePostDistributorOrders($status);
+    }
+
+    function handlePostDistributorOrders($status)
     {
         $query = "";
         $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
@@ -174,6 +212,24 @@ class OrderController extends Controller
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
 
         $query = "entitySellerId IN ($arrEntityId)";
+
+        switch ($status) {
+            case 'new':
+                $query .= " AND statusId = 1";
+                break;
+            case 'unpaid':
+                $query .= " AND statusId = 6";
+                break;
+            case 'pending':
+                $query .= " AND statusId IN (2,3)";
+                break;
+            case 'history':
+                $query .= " AND statusId IN (4,5,6,7)";
+                break;
+            default:
+                break;
+        }
+
         $data = [];
 
         if ($query == "") {

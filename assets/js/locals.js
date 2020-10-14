@@ -65,6 +65,11 @@ var WebAppLocals = (function () {
 			ar: 'طلب',
 			fr: '',
 		},
+		orderCount: {
+			en: 'Order Count',
+			ar: 'عدد الطلبات',
+			fr: '',
+		},
 		orderDetails: {
 			en: 'Order Details',
 			ar: 'تفاصيل الطلب',
@@ -80,9 +85,9 @@ var WebAppLocals = (function () {
 			ar: 'الانتقال إلى ',
 			fr: '',
 		},
-		orderStatus_Pending: {
-			en: 'Pending',
-			ar: 'قيد الانتظار',
+		orderStatus_New: {
+			en: 'New',
+			ar: 'جديد',
 			fr: '',
 		},
 		orderStatus_OnHold: {
@@ -108,6 +113,11 @@ var WebAppLocals = (function () {
 		orderStatus_Received: {
 			en: 'Received',
 			ar: 'تم الاستلام',
+			fr: '',
+		},
+		orderStatus_Paid: {
+			en: 'Paid',
+			ar: 'مدفوع',
 			fr: '',
 		},
 		orderTotal: {
@@ -183,6 +193,16 @@ var WebAppLocals = (function () {
 		stockUpdateDateTime: {
 			en: 'Stock Update Date Time',
 			ar: 'آخر تحديث لتوفر المنتج',
+			fr: '',
+		},
+		relationAvailable: {
+			en: 'Available',
+			ar: 'متوفر',
+			fr: '',
+		},
+		relationBlacklisted: {
+			en: 'Blacklisted',
+			ar: 'محظور',
 			fr: '',
 		},
 		error: {

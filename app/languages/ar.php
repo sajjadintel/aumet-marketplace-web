@@ -95,6 +95,9 @@ return array(
     'vModule_order_title' => 'لائحة الطلبات',
     'vModule_order_header' => 'يمكنك عرض قائمة بأوامرك',
 
+    'vModule_customer_title' => 'الزبائن',
+    'vModule_customer_header' => 'يمكنك البحث عن الزبائن',
+
 
     'vModule_product_name' => 'المنتج',
     'vModule_product_distributor' => 'الموزع',
@@ -137,12 +140,13 @@ return array(
     'vEntity_orderLog' => 'Order Log',
 
     'vOrderStatusConfirmation' => 'Are you sure you want to move this order to {0}?',
-    'vOrderStatus_Pending' => 'Pending',
+    'vOrderStatus_New' => 'New',
     'vOrderStatus_OnHold' => 'On Hold',
     'vOrderStatus_Processing' => 'Processing',
     'vOrderStatus_Completed' => 'Completed',
     'vOrderStatus_Canceled' => 'Canceled',
     'vOrderStatus_Received' => 'Received',
+    'vOrderStatus_Paid' => 'Paid',
 
     'vButton_update' => 'Update',
 );

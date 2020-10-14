@@ -35,11 +35,17 @@ $f3->route('GET /web/demo/editor/scientificnames', 'DemoController->get');
 
 
 // START APM-10 APM-11 APM-35 
-$f3->route('GET /web/distributor/order', 'OrderController->getDistributorOrders');
+$f3->route('GET /web/distributor/order/new', 'OrderController->getDistributorOrdersNew');
+$f3->route('GET /web/distributor/order/pending', 'OrderController->getDistributorOrdersPending');
+$f3->route('GET /web/distributor/order/unpaid', 'OrderController->getDistributorOrdersUnpaid');
+$f3->route('GET /web/distributor/order/history', 'OrderController->getDistributorOrdersHistory');
 $f3->route('GET /web/distributor/order/@orderId', 'OrderController->getOrderDetails');
 $f3->route('GET /web/distributor/order/print/@orderId', 'OrderController->getPrintOrderInvoice');
 $f3->route('GET /web/distributor/order/confirm/@orderId/@statusId', 'OrderController->getOrderConfirmation');
-$f3->route('POST /web/distributor/order', 'OrderController->postDistributorOrders');
+$f3->route('POST /web/distributor/order/new', 'OrderController->postDistributorOrdersNew');
+$f3->route('POST /web/distributor/order/pending', 'OrderController->postDistributorOrdersPending');
+$f3->route('POST /web/distributor/order/unpaid', 'OrderController->postDistributorOrdersUnpaid');
+$f3->route('POST /web/distributor/order/history', 'OrderController->postDistributorOrdersHistory');
 $f3->route('POST /web/distributor/order/cancel', 'OrderController->postCancelOrder');
 $f3->route('POST /web/distributor/order/complete', 'OrderController->postCompleteOrder');
 $f3->route('POST /web/distributor/order/process', 'OrderController->postProcessOrder');
@@ -53,3 +59,7 @@ $f3->route('POST /web/distributor/product', 'ProductsController->postDistributor
 $f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDistributorProduct');
 $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDistributorProduct');
 // END APM-37
+
+$f3->route('GET /web/distributor/customer', 'EntityController->getEntityCustomers');
+$f3->route('GET /web/distributor/customer/@customerId', 'EntityController->getEntityCustomerDetails');
+$f3->route('POST /web/distributor/customer', 'EntityController->postEntityCustomers');
