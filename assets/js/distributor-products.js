@@ -236,7 +236,6 @@ var DistributorProductsDataTable = (function () {
 	var _productEditModalOpen = function (webResponse) {
 		$('#editModalForm').attr('action', '/web/distributor/product/edit');
 		$('#editProductId').val(webResponse.data.product.id);
-		$('#editProductCallback').val(webResponse.data.product.id);
 
 		$('#editModalTitle').html(WebAppLocals.getMessage('edit'));
 		$("label[for='editProductNameAr']").text(WebAppLocals.getMessage('productName') + ' AR');

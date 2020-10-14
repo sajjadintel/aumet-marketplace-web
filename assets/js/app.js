@@ -236,13 +236,14 @@ var WebApp = (function () {
 				var form = $(this).parent().parent().parent();
 				var url = $(form).attr('action');
 				var data = $(form).serializeJSON();
-				console.log('data');
+				console.log('JSON data from Modal:');
 				console.log(data);
 				var callback = null;
 				if ($(form).find('.modalValueCallback').val() != '') {
 					callback = eval($(form).find('.modalValueCallback').val());
 				}
 				_post(url, data, callback);
+				$(form).parent().parent().parent().modal('hide');
 			});
 		});
 	};

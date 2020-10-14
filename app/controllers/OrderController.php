@@ -10,7 +10,7 @@ class OrderController extends Controller
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
 
             $dbOrders = new BaseModel($this->db, "vwOrderEntityUser");
-            $arrOrders = $dbOrders->getWhere("entityDistributorId IN ($arrEntityId)");
+            $arrOrders = $dbOrders->getWhere("entitySellerId IN ($arrEntityId)");
             $this->f3->set('arrOrders', $arrOrders);
 
             $this->webResponse->errorCode = 1;
@@ -173,7 +173,7 @@ class OrderController extends Controller
         $dbData = new BaseModel($dbConnection, "vwOrderEntityUser");
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
 
-        $query = "entityDistributorId IN ($arrEntityId)";
+        $query = "entitySellerId IN ($arrEntityId)";
         $data = [];
 
         if ($query == "") {

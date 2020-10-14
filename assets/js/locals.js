@@ -40,22 +40,22 @@ var WebAppLocals = (function () {
 			ar: 'الاسم التجاري',
 			fr: '',
 		},
-		entityCustomer: {
+		entityBuyer: {
 			en: 'Customer',
 			ar: 'الزبون',
 			fr: '',
 		},
-		entityDistributor: {
+		entitySeller: {
 			en: 'Distributor',
 			ar: 'الموزع',
 			fr: '',
 		},
-		userCustomer: {
+		userBuyer: {
 			en: 'Reference',
 			ar: 'المرجع',
 			fr: '',
 		},
-		userDistributor: {
+		userSeller: {
 			en: 'Reference',
 			ar: 'المرجع',
 			fr: '',

@@ -56,25 +56,25 @@ var DistributorOrdersDataTable = (function () {
 					},
 				},
 				{
-					field: 'entityCustomer',
-					title: WebAppLocals.getMessage('entityCustomer'),
+					field: 'entityBuyer',
+					title: WebAppLocals.getMessage('entityBuyer'),
 					autoHide: false,
 					template: function (row) {
-						var output = row.entityCustomer;
-						if (row.userCustomer != null) {
-							output += ' (' + row.userCustomer + ')';
+						var output = row.entityBuyer;
+						if (row.userBuyer != null) {
+							output += ' (' + row.userBuyer + ')';
 						}
 						return output;
 					},
 				},
 				// {
-				// 	field: 'entityDistributor', // + docLang,
-				// 	title: WebAppLocals.getMessage('entityDistributor'),
+				// 	field: 'entitySeller', // + docLang,
+				// 	title: WebAppLocals.getMessage('entitySeller'),
 				// 	autoHide: false,
 				// 	template: function (row) {
-				// 		var output = row.entityDistributor;
-				// 		if (row.userDistributor != null) {
-				// 			output += ' (' + row.userDistributor + ')';
+				// 		var output = row.entitySeller;
+				// 		if (row.userSeller != null) {
+				// 			output += ' (' + row.userSeller + ')';
 				// 		}
 				// 		return output;
 				// 	},
@@ -350,8 +350,8 @@ var DistributorOrdersDataTable = (function () {
 				break;
 		}
 		$('#viewModalTitle').html(WebAppLocals.getMessage('order'));
-		$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityCustomer'));
-		$('#modalCustomerNameText').html(webResponse.data.order.entityCustomer + ' (' + webResponse.data.order.userCustomer + ')');
+		$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityBuyer'));
+		$('#modalCustomerNameText').html(webResponse.data.order.entityBuyer + ' (' + webResponse.data.order.userBuyer + ')');
 		$('#modalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
 		$('#modalStatusText').html(status);
 		$('#modalTotalLabel').html(WebAppLocals.getMessage('orderTotal'));

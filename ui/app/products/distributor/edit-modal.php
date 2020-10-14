@@ -11,7 +11,7 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" class="form-control" name="id" id="editProductId">
-                    <input type="hidden" name="fnCallback" class="modalValueCallback" id="editProductCallback" value="" />
+                    <input type="hidden" name="fnCallback" class="modalValueCallback" id="editProductCallback" value="DistributorProductsDataTable.reloadDatatable" />
                     <div class="row">
                         <div class="col-md-12 form-group">
                             <label for="editProductNameAr" class="form-control-label">Product Name Ar</label>
