@@ -22,6 +22,7 @@ class WebResponse
 
     public function jsonResponse()
     {
+
         // clear the old headers
         header_remove();
         // set the actual code
@@ -36,7 +37,8 @@ class WebResponse
         return json_encode($this);
     }
 
-    public function jsonResponseV2($errorCode = 0, $title = null, $message = '', $data = null){
+    public function jsonResponseV2($errorCode = 0, $title = null, $message = '', $data = null)
+    {
 
         $this->errorCode = $errorCode; // 0 means no error
         $this->message = $message;

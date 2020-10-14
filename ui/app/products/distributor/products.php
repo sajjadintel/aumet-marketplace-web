@@ -89,6 +89,9 @@ function compress_htmlcode($codedata)
                             <input type="file" required />
                             <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Upload Stock Excel Sheet"> <i class="nav-icon la la-file-excel-o p-0"></i> <?php echo $vModule_product_uploadStock; ?></a>
                         </label>
+                        <button type="button" class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" data-toggle="modal" data-target="#addModal">
+                            <i class="nav-icon la la-plus p-0"></i> <?php echo $vModule_add; ?>
+                        </button>
                     </div>
                 </div>
             </div>

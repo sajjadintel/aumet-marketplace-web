@@ -2,7 +2,7 @@
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
-            <form method="POST" action="/web/distributor/product/edit" id="editModalForm">
+            <form method="POST" action="/web/distributor/product/edit" class="modalForm" id="editModalForm">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalTitle"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -10,32 +10,34 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <input type="hidden" class="form-control" name="id" id="editProductId">
+                    <input type="hidden" name="fnCallback" class="modalValueCallback" id="editProductCallback" value="DistributorProductsDataTable.reloadDatatable" />
                     <div class="row">
                         <div class="col-md-12 form-group">
                             <label for="editProductNameAr" class="form-control-label">Product Name Ar</label>
-                            <input type="text" class="form-control" name="editProductNameAr" id="editProductNameAr">
+                            <input type="text" class="form-control" name="name_ar" id="editProductNameAr">
                         </div>
                         <div class="col-md-12 form-group">
                             <label for="editProductNameEn" class="form-control-label">Product Name En</label>
-                            <input type="text" class="form-control" name="editProductNameEn" id="editProductNameEn">
+                            <input type="text" class="form-control" name="name_en" id="editProductNameEn">
                         </div>
                         <div class="col-md-12 form-group">
                             <label for="editProductNameFr" class="form-control-label">Product Name Fr</label>
-                            <input type="text" class="form-control" name="editProductNameAr" id="editProductNameFr">
+                            <input type="text" class="form-control" name="name_fr" id="editProductNameFr">
                         </div>
                         <div class="col-md-12 form-group">
                             <label for="editUnitPrice" class="form-control-label">Unit Price</label>
-                            <input type="text" class="form-control" name="editUnitPrice" id="editUnitPrice">
+                            <input type="text" class="form-control" name="unitPrice" id="editUnitPrice">
                         </div>
                         <div class="col-md-12 form-group">
                             <label for="editStock" class="form-control-label">Stock</label>
-                            <input type="number" class="form-control" name="editStock" id="editStock">
+                            <input type="number" class="form-control" name="stock" id="editStock">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <div class="modal-edit-button">
-                        <button type="button" class="btn btn-primary font-weight-bold" id="editModalAction">Save changes</button>
+                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="editModalAction">Save changes</button>
                     </div>
                 </div>
             </form>
