@@ -14,6 +14,24 @@
                     <input type="hidden" name="fnCallback" class="modalValueCallback" id="editProductCallback" value="DistributorProductsDataTable.reloadDatatable" />
                     <div class="row">
                         <div class="col-md-12 form-group">
+                            <label for="editProductScientificName" class="form-control-label">Scientific Name</label>
+                            <select class="form-control" id="editProductScientificName" name="scientificNameId" tabindex="-1" aria-hidden="true">
+                                <option disabled>Scientific Name</option>
+                                <?php foreach ($arrScientificName as $scientificName) { ?>
+                                    <option value="<?php echo $scientificName['id']; ?>"><?php echo $scientificName['name']; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <label for="editProductCountry" class="form-control-label">Country</label>
+                            <select class="form-control" id="editProductCountry" name="madeInCountryId" tabindex="-1" aria-hidden="true">
+                                <option disabled>Made In Country</option>
+                                <?php foreach ($arrCountry as $country) { ?>
+                                    <option value="<?php echo $country['id']; ?>"><?php echo $country['name_en']; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-md-12 form-group">
                             <label for="editProductNameAr" class="form-control-label">Product Name Ar</label>
                             <input type="text" class="form-control" name="name_ar" id="editProductNameAr">
                         </div>

@@ -233,17 +233,25 @@ var DistributorProductsDataTable = (function () {
 		WebApp.get('/web/distributor/product/' + productId, _productEditModalOpen);
 	};
 
+	var _productAddModal = function () {
+		_productAddModalOpen();
+	};
+
 	var _productEditModalOpen = function (webResponse) {
 		$('#editModalForm').attr('action', '/web/distributor/product/edit');
 		$('#editProductId').val(webResponse.data.product.id);
 
 		$('#editModalTitle').html(WebAppLocals.getMessage('edit'));
+		$("label[for='editProductScientificName']").text(WebAppLocals.getMessage('productScintificName'));
+		$("label[for='editProductCountry']").text(WebAppLocals.getMessage('madeInCountry'));
 		$("label[for='editProductNameAr']").text(WebAppLocals.getMessage('productName') + ' AR');
 		$("label[for='editProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
 		$("label[for='editProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
 		$("label[for='editUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
 		$("label[for='editStock']").text(WebAppLocals.getMessage('quantityAvailable'));
 
+		$('#editProductScientificName').val(webResponse.data.product.scientificNameId);
+		$('#editProductCountry').val(webResponse.data.product.madeInCountryId);
 		$('#editProductNameAr').val(webResponse.data.product.productName_ar);
 		$('#editProductNameEn').val(webResponse.data.product.productName_en);
 		$('#editProductNameFr').val(webResponse.data.product.productName_fr);
@@ -253,28 +261,20 @@ var DistributorProductsDataTable = (function () {
 		$('#editModal').appendTo('body').modal('show');
 	};
 
-	var _editProduct = function (productId, productNameAr, productNameEn, productNameFr, unitPrice, stockQuantity) {
-		WebApp.post(
-			'/web/distributor/product/edit',
-			{ productId: productId, productNameAr: productNameAr, productNameEn: productNameEn, productNameFr: productNameFr, unitPrice: unitPrice, stockQuantity: stockQuantity },
-			reloadDatatable
-		);
-	};
+	var _productAddModalOpen = function () {
+		$('#addModalForm').attr('action', '/web/distributor/product/add');
 
-	var _addProduct = function (entityId, countryId, unitPrice, stockQuantity, productNameAr, productNameEn, productNameFr) {
-		WebApp.post(
-			'/web/distributor/product/add',
-			{
-				entityId: entityId,
-				countryId: countryId,
-				productNameAr: productNameAr,
-				productNameEn: productNameEn,
-				productNameFr: productNameFr,
-				unitPrice: unitPrice,
-				stockQuantity: stockQuantity,
-			},
-			reloadDatatable
-		);
+		$('#addModalTitle').html(WebAppLocals.getMessage('add'));
+		$("label[for='addProductScientificName']").text(WebAppLocals.getMessage('productScintificName'));
+		$("label[for='addProductCountry']").text(WebAppLocals.getMessage('madeInCountry'));
+		$("label[for='addProductNameAr']").text(WebAppLocals.getMessage('productName') + ' AR');
+		$("label[for='addProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
+		$("label[for='addProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
+		$("label[for='addUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
+		$("label[for='addStock']").text(WebAppLocals.getMessage('quantityAvailable'));
+
+		$('#addModalAction').html(WebAppLocals.getMessage('add'));
+		$('#addModal').appendTo('body').modal('show');
 	};
 
 	return {
@@ -293,17 +293,14 @@ var DistributorProductsDataTable = (function () {
 		productEditModal: function (productId) {
 			_productEditModal(productId);
 		},
+		productAddModal: function () {
+			_productAddModal();
+		},
 		showColumn: function (columnName) {
 			datatable.showColumn(columnName);
 		},
 		hideColumn: function (columnName) {
 			datatable.hideColumn(columnName);
-		},
-		editProduct: function (productId, productNameAr, productNameEn, productNameFr, unitPrice, stockQuantity) {
-			_editProduct(productId, productNameAr, productNameEn, productNameFr, unitPrice, stockQuantity);
-		},
-		addProduct: function (entityId, countryId, unitPrice, stockQuantity, productNameAr, productNameEn, productNameFr) {
-			_addProduct(entityId, countryId, unitPrice, stockQuantity, productNameAr, productNameEn, productNameFr);
 		},
 	};
 })();

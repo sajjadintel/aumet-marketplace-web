@@ -27,6 +27,23 @@ class OrderController extends Controller
             $renderFile = 'app/sale/orders/orders.php';
             $title = $this->f3->get('vModule_order_title');
 
+            switch ($status) {
+                case 'new':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_new'));
+                    break;
+                case 'pending':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_pending'));
+                    break;
+                case 'unpaid':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_unpaid'));
+                    break;
+                case 'history':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_history'));
+                    break;
+                default:
+                    $this->f3->set('vModule_order_header', 'Unknown List');
+                    break;
+            }
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = $title;
             $this->webResponse->data = View::instance()->render($renderFile);

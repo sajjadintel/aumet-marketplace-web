@@ -35,13 +35,18 @@ class ProductsController extends Controller
         if (!$this->f3->ajax()) {
             echo View::instance()->render('app/layout/layout.php');
         } else {
-
-            global $dbConnection;
-
-            $dbStockStatus = new BaseModel($dbConnection, "stockStatus");
+            $dbStockStatus = new BaseModel($this->db, "stockStatus");
             $dbStockStatus->name = "name_" . $this->objUser->language;
             $arrStockStatus = $dbStockStatus->all("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
+
+            $dbScientificName = new BaseModel($this->db, "scientificName");
+            $arrScientificName = $dbScientificName->findAll();
+            $this->f3->set('arrScientificName', $arrScientificName);
+
+            $dbCountry = new BaseModel($this->db, "country");
+            $arrCountry = $dbCountry->findAll();
+            $this->f3->set('arrCountry', $arrCountry);
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = $this->f3->get('vModule_product_title');
@@ -165,6 +170,7 @@ class ProductsController extends Controller
     {
         $query = "";
         $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
+        $datatable = [];
 
         if ($datatable['query'] != "") {
 
@@ -313,6 +319,8 @@ class ProductsController extends Controller
 
                 $dbEntityProduct->update();
 
+                $scientificNameId = $this->f3->get('POST.scientificNameId');
+                $madeInCountryId = $this->f3->get('POST.madeInCountryId');
                 $name_en = $this->f3->get('POST.name_en');
                 $name_ar = $this->f3->get('POST.name_ar');
                 $name_fr = $this->f3->get('POST.name_fr');
@@ -320,6 +328,8 @@ class ProductsController extends Controller
                 $dbProduct->name_en = $name_en;
                 $dbProduct->name_fr = $name_fr;
                 $dbProduct->name_ar = $name_ar;
+                $dbProduct->scientificNameId = $scientificNameId;
+                $dbProduct->madeInCountryId = $madeInCountryId;
 
                 $dbProduct->update();
 
@@ -371,7 +381,7 @@ class ProductsController extends Controller
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
-            $this->webResponse->data = $dbProduct->name_ar;
+            $this->webResponse->data = $dbProduct['name_' . $this->objUser->language];
             echo $this->webResponse->jsonResponse();
         }
     }

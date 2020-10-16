@@ -32,7 +32,6 @@ function compress_htmlcode($codedata)
                         </span>
                     </div>
                     <select class="select2 form-control" id="searchProductsBrandNameInput" multiple="" name="brandName" data-select2-id="searchProductsBrandNameInput" tabindex="-1" aria-hidden="true">
-
                     </select>
                 </div>
             </div>
@@ -89,9 +88,11 @@ function compress_htmlcode($codedata)
                             <input type="file" required />
                             <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Upload Stock Excel Sheet"> <i class="nav-icon la la-file-excel-o p-0"></i> <?php echo $vModule_product_uploadStock; ?></a>
                         </label>
-                        <button type="button" class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" data-toggle="modal" data-target="#addModal">
-                            <i class="nav-icon la la-plus p-0"></i> <?php echo $vModule_add; ?>
-                        </button>
+                        <label class="myLabel">
+                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="DistributorProductsDataTable.productAddModal()">
+                                <i class="nav-icon la la-plus p-0"></i> <?php echo $vButton_add; ?>
+                            </a>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -183,4 +184,5 @@ function compress_htmlcode($codedata)
     DistributorProductsDataTable.init(searchQuery);
 </script>
 <?php ob_end_flush(); ?>
-<?php include_once 'edit-modal.php'; ?>
+<?php include_once 'edit-modal.php';
+include_once 'add-modal.php'; ?>

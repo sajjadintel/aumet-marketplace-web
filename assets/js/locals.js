@@ -35,6 +35,11 @@ var WebAppLocals = (function () {
 			ar: 'أضف',
 			fr: '',
 		},
+		options: {
+			en: 'Options',
+			ar: 'خيارات',
+			fr: '',
+		},
 		productName: {
 			en: 'Trade Name',
 			ar: 'الاسم التجاري',
@@ -153,6 +158,11 @@ var WebAppLocals = (function () {
 		bonus: {
 			en: 'Bonus',
 			ar: 'البونص',
+			fr: '',
+		},
+		madeInCountry: {
+			en: 'Made In',
+			ar: 'صنع في',
 			fr: '',
 		},
 		productScintificName: {
