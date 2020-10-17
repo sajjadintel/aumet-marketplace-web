@@ -49,3 +49,7 @@ label.myLabel input[type='file'] {
 	font-size: 2.3rem !important;
 	vertical-align: bottom;
 }
+
+.standard-radius {
+	border-radius: 0.42rem !important;
+}

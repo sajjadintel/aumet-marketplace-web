@@ -42,7 +42,7 @@ function compress_htmlcode($codedata)
                         <span class="la-icon">
                             <i class="text-primary la la-calendar"></i>
                         </span>
-                        <input class="form-control" type="text" id="searchOrdersDateInput" name="dateRange" />
+                        <input class="form-control h-auto py-1 px-1 font-size-h6 standard-radius pl-4" type="text" id="searchOrdersDateInput" name="dateRange" />
                     </div>
                 </div>
             </div>
@@ -101,6 +101,8 @@ function compress_htmlcode($codedata)
         searchQuery.endDate = end.format('YYYY-MM-DD');
         DistributorOrdersDataTable.setReadParams(searchQuery);
     });
+
+    $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
     $(document).ready(function() {
         DistributorOrdersDataTable.init(searchQuery);
