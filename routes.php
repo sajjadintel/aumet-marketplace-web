@@ -22,6 +22,7 @@ $f3->route('GET /web/entity/@entityId/product/@productId', 'ProductsController->
 
 $f3->route('GET /web/product/brandname/list', 'SearchController->getProductBrandNameList');
 $f3->route('GET /web/product/scientificname/list', 'SearchController->getProductScientificNameList');
+$f3->route('GET /web/product/country/list', 'SearchController->getProductCountryList');
 
 
 $f3->route('GET /web/customercare', 'CustomerCareController->get');
@@ -48,6 +49,7 @@ $f3->route('POST /web/distributor/order/unpaid', 'OrderController->postDistribut
 $f3->route('POST /web/distributor/order/history', 'OrderController->postDistributorOrdersHistory');
 $f3->route('POST /web/distributor/order/cancel', 'OrderController->postCancelOrder');
 $f3->route('POST /web/distributor/order/complete', 'OrderController->postCompleteOrder');
+$f3->route('POST /web/distributor/order/paid', 'OrderController->postPaidOrder');
 $f3->route('POST /web/distributor/order/process', 'OrderController->postProcessOrder');
 $f3->route('POST /web/distributor/order/onhold', 'OrderController->postOnHoldOrder');
 // END  APM-10 APM-11 APM-35

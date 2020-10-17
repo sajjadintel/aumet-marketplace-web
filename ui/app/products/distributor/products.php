@@ -119,7 +119,7 @@ function compress_htmlcode($codedata)
 
     var _selectBrand = $('#searchProductsBrandNameInput').select2({
         placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
-        tags: true,
+
         ajax: {
             url: '/web/product/brandname/list',
             dataType: 'json',
@@ -146,7 +146,7 @@ function compress_htmlcode($codedata)
 
     var _selectScientific = $('#searchProductsScieceNameInput').select2({
         placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
-        tags: true,
+
         ajax: {
             url: '/web/product/scientificname/list',
             dataType: 'json',
@@ -178,6 +178,74 @@ function compress_htmlcode($codedata)
             DistributorProductsDataTable.showColumn('stockStatusId');
         }
 
+    });
+
+    var _selectScientificEdit = $('#editProductScientificName').select2({
+        placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+
+        ajax: {
+            url: '/web/product/scientificname/list',
+            dataType: 'json',
+            processResults: function(response) {
+                return {
+                    results: response.data.results,
+                    pagination: {
+                        more: response.data.pagination
+                    }
+                }
+            }
+        }
+    });
+
+    var _selectScientificAdd = $('#addProductScientificName').select2({
+        placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+
+        ajax: {
+            url: '/web/product/scientificname/list',
+            dataType: 'json',
+            processResults: function(response) {
+                return {
+                    results: response.data.results,
+                    pagination: {
+                        more: response.data.pagination
+                    }
+                }
+            }
+        }
+    });
+
+    var _selectCountryEdit = $('#editProductCountry').select2({
+        placeholder: "<?php echo $vModule_search_countryPlaceholder ?>",
+
+        ajax: {
+            url: '/web/product/country/list',
+            dataType: 'json',
+            processResults: function(response) {
+                return {
+                    results: response.data.results,
+                    pagination: {
+                        more: response.data.pagination
+                    }
+                }
+            }
+        }
+    });
+
+    var _selectCountryAdd = $('#addProductCountry').select2({
+        placeholder: "<?php echo $vModule_search_countryPlaceholder ?>",
+
+        ajax: {
+            url: '/web/product/country/list',
+            dataType: 'json',
+            processResults: function(response) {
+                return {
+                    results: response.data.results,
+                    pagination: {
+                        more: response.data.pagination
+                    }
+                }
+            }
+        }
     });
 
     $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");

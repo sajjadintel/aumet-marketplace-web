@@ -176,6 +176,13 @@ var DistributorOrdersDataTable = (function () {
 						var dropdownItemStart = '<li class="navi-item">';
 						var dropdownItemEnd = '</li>';
 
+						var btnPrint =
+							'<a href="/web/distributor/order/print/' +
+							row.id +
+							'" target="_blank" class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" title="Print Order">\
+						<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
+							WebAppLocals.getMessage('print') +
+							'</a>';
 						var btnView =
 							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderViewModal(' +
 							row.id +
@@ -220,8 +227,18 @@ var DistributorOrdersDataTable = (function () {
 							WebAppLocals.getMessage('orderStatusMove') +
 							WebAppLocals.getMessage('orderStatus_Canceled') +
 							'</a>';
+						var btnOrderPaid =
+							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+							row.id +
+							',7)\' \
+						class="btn btn-sm btn-primary btn-hover-primary  mr-2 navi-link" title="Order Paid">\
+						<i class="nav-icon la la-times p-0"></i> &nbsp&nbsp' +
+							WebAppLocals.getMessage('orderStatus_Paid') +
+							'</a>';
 						var outActions = '';
+
 						outActions += btnView;
+						outActions += btnPrint;
 
 						switch (row.statusId) {
 							case 1:
@@ -242,6 +259,8 @@ var DistributorOrdersDataTable = (function () {
 								outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
 								outActions += dropdownEnd;
 								break;
+							case 6:
+								outActions += btnOrderPaid;
 						}
 
 						return outActions;
@@ -371,6 +390,9 @@ var DistributorOrdersDataTable = (function () {
 				break;
 			case 6:
 				status = WebAppLocals.getMessage('orderStatus_Received');
+				break;
+			case 7:
+				status = WebAppLocals.getMessage('orderStatus_Paid');
 				break;
 		}
 		$('#viewModalTitle').html(WebAppLocals.getMessage('order'));

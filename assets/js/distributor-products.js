@@ -250,7 +250,9 @@ var DistributorProductsDataTable = (function () {
 		$("label[for='editUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
 		$("label[for='editStock']").text(WebAppLocals.getMessage('quantityAvailable'));
 
+		$('#editProductScientificName').append(new Option(webResponse.data.product.scientificName, webResponse.data.product.scientificNameId));
 		$('#editProductScientificName').val(webResponse.data.product.scientificNameId);
+		$('#editProductCountry').append(new Option(webResponse.data.product['madeInCountryName_' + docLang], webResponse.data.product.madeInCountryId));
 		$('#editProductCountry').val(webResponse.data.product.madeInCountryId);
 		$('#editProductNameAr').val(webResponse.data.product.productName_ar);
 		$('#editProductNameEn').val(webResponse.data.product.productName_en);

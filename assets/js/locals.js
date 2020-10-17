@@ -35,6 +35,11 @@ var WebAppLocals = (function () {
 			ar: 'أضف',
 			fr: '',
 		},
+		print: {
+			en: 'Print',
+			ar: 'طباعة',
+			fr: '',
+		},
 		options: {
 			en: 'Options',
 			ar: 'خيارات',

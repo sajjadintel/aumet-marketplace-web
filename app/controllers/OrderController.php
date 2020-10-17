@@ -87,6 +87,11 @@ class OrderController extends Controller
                     $modalText = $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_Canceled'));
                     $modalRoute = '/web/distributor/order/cancel';
                     break;
+                case Constants::ORDER_STATUS_PAID:
+                    $modalTitle = $this->f3->get('vOrderStatus_Paid');
+                    $modalText = $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_Paid'));
+                    $modalRoute = '/web/distributor/order/paid';
+                    break;
             }
 
             $modal = new stdClass();
@@ -329,6 +334,15 @@ class OrderController extends Controller
         $orderId = $this->f3->get("POST.id");
         $statusId = Constants::ORDER_STATUS_RECEIVED;
         $this->handleUpdateOrderStatus($orderId, $statusId);
+    }
+
+    function postPaidOrder()
+    {
+        $orderId = $this->f3->get("POST.id");
+        $statusId = Constants::ORDER_STATUS_PAID;
+        $this->handleUpdateOrderStatus($orderId, $statusId);
+
+        // TODO: Update entityRelation table with new details
     }
 
     function handleUpdateOrderStatus($orderId, $statusId)

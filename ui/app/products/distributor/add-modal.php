@@ -15,20 +15,14 @@
                     <div class="row">
                         <div class="col-md-12 form-group">
                             <label for="addProductScientificName" class="form-control-label">Scientific Name</label>
-                            <select class="form-control" id="addProductScientificName" name="scientificNameId" tabindex="-1" aria-hidden="true">
+                            <select class="select2 form-control" id="addProductScientificName" name="scientificNameId" data-select2-id="addProductScientificName" tabindex="-1" aria-hidden="true">
                                 <option selected disabled>Scientific Name</option>
-                                <?php foreach ($arrScientificName as $scientificName) { ?>
-                                    <option value="<?php echo $scientificName['id']; ?>"><?php echo $scientificName['name']; ?></option>
-                                <?php } ?>
                             </select>
                         </div>
                         <div class="col-md-12 form-group">
                             <label for="addProductCountry" class="form-control-label">Country</label>
-                            <select class="form-control" id="addProductCountry" name="madeInCountryId" tabindex="-1" aria-hidden="true">
+                            <select class="select2 form-control" id="addProductCountry" name="madeInCountryId" data-select2-id="addProductCountry" tabindex="-1" aria-hidden="true">
                                 <option selected disabled>Made In Country</option>
-                                <?php foreach ($arrCountry as $country) { ?>
-                                    <option value="<?php echo $country['id']; ?>"><?php echo $country['name_en']; ?></option>
-                                <?php } ?>
                             </select>
                         </div>
                         <div class="col-md-12 form-group">

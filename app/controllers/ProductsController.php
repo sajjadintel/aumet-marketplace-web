@@ -42,11 +42,7 @@ class ProductsController extends Controller
 
             $dbScientificName = new BaseModel($this->db, "scientificName");
             $arrScientificName = $dbScientificName->findAll();
-            $this->f3->set('arrScientificName', $arrScientificName);
 
-            $dbCountry = new BaseModel($this->db, "country");
-            $arrCountry = $dbCountry->findAll();
-            $this->f3->set('arrCountry', $arrCountry);
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = $this->f3->get('vModule_product_title');
@@ -71,99 +67,6 @@ class ProductsController extends Controller
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
             return;
         }
-    }
-
-    function getProductBrandNameList()
-    {
-        if ($this->f3->ajax()) {
-            $where = "";
-            $term = $_GET['term'];
-            if (isset($term) && $term != "" && $term != null) {
-                $where = "name_en like '%$term%'";
-            }
-            $page = $_GET['page'];
-            if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
-                $page = $page - 1;
-            } else {
-                $page = 0;
-            }
-
-            $pageSize = 10;
-
-            global $dbConnection;
-
-            $select2Result = new stdClass();
-            $select2Result->results = [];
-            $select2Result->pagination = false;
-
-            $dbProducts = new BaseModel($dbConnection, "product");
-            $dbProducts->name = "name_en";
-            $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
-            $resultsCount = 0;
-            while (!$dbProducts->dry()) {
-                $resultsCount++;
-                $select2ResultItem = new stdClass();
-                $select2ResultItem->id = $dbProducts->id;
-                $select2ResultItem->text = $dbProducts->name;
-                $select2Result->results[] = $select2ResultItem;
-                $dbProducts->next();
-            }
-
-            if ($resultsCount >= $pageSize) {
-                $select2Result->pagination = true;
-            }
-
-            $this->webResponse->errorCode = 1;
-            $this->webResponse->title = "";
-            $this->webResponse->data = $select2Result;
-        } else {
-            $this->webResponse->errorCode = 1;
-        }
-        echo $this->webResponse->jsonResponse();
-    }
-
-    function getProductScientificNameList()
-    {
-        $where = "";
-        $term = $_GET['term'];
-        if (isset($term) && $term != "" && $term != null) {
-            $where = "scientificName like '%$term%'";
-        }
-        $page = $_GET['page'];
-        if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
-            $page = $page - 1;
-        } else {
-            $page = 0;
-        }
-
-        $pageSize = 10;
-
-        global $dbConnection;
-
-        $select2Result = new stdClass();
-        $select2Result->results = [];
-        $select2Result->pagination = false;
-
-        $dbNames = new BaseModel($dbConnection, "scientificName");
-        $dbNames->getWhere($where, "name", $pageSize, $page * $pageSize);
-        $resultsCount = 0;
-        while (!$dbNames->dry()) {
-            $resultsCount++;
-            $select2ResultItem = new stdClass();
-            $select2ResultItem->id = $dbNames->id;
-            $select2ResultItem->text = $dbNames->name;
-            $select2Result->results[] = $select2ResultItem;
-            $dbNames->next();
-        }
-
-        if ($resultsCount >= $pageSize) {
-            $select2Result->pagination = true;
-        }
-
-        $this->webResponse->errorCode = 1;
-        $this->webResponse->title = "";
-        $this->webResponse->data = $select2Result;
-        echo $this->webResponse->jsonResponse();
     }
 
     function postDistributorProducts()
