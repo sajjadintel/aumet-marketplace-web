@@ -46,6 +46,7 @@
 	<meta name="msapplication-TileColor" content="#ffffff">
 	<meta name="msapplication-TileImage" content="/favicons/ms-icon-144x144.png">
 	<meta name="theme-color" content="#ffffff">
+	<link rel="icon" href="/favicons/favicon.ico">
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -72,6 +73,10 @@
 			appId: "1:418237979621:web:5fe1d4393d8676f5a3ad0c",
 			measurementId: "G-QEWB1B33ZE"
 		};
+
+		// Initialize Firebase
+		firebase.initializeApp(firebaseConfig);
+		firebase.analytics();
 	</script>
 
 	<?php include_once "$vAuthFile.php" ?>

@@ -413,11 +413,7 @@ var SearchDataTable = (function () {
 					autoHide: false,
 					template: function (row) {
 						if (row.stockUpdateDateTime) {
-							return (
-								'<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' +
-								moment(row.stockUpdateDateTime).format('DD / MM / YYYY') +
-								'</span>'
-							);
+							return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
 						} else {
 							return '';
 						}
@@ -427,6 +423,9 @@ var SearchDataTable = (function () {
 					field: 'unitPrice', // + docLang,
 					title: WebAppLocals.getMessage('unitPrice'),
 					autoHide: false,
+					template: function (row) {
+						return row.unitPrice + ' ' + row.currency;
+					},
 				},
 				{
 					field: 'bonusOptions', // + docLang,
@@ -436,6 +435,7 @@ var SearchDataTable = (function () {
 					template: function (row) {
 						if (row.stockStatusId == 1) {
 							var tdText = '';
+							row.bonusOptions.sort((a, b) => parseInt(a.minOrder) - parseInt(b.minOrder));
 							row.bonusOptions.forEach((element) => {
 								tdText +=
 									'<a href="javascript:;" onclick=\'SearchDataTable.onBonusOptionCallback(' +
@@ -466,20 +466,22 @@ var SearchDataTable = (function () {
 					autoHide: false,
 					sortable: false,
 					template: function (row) {
+						var vQuantity = '';
+						var vBonus = '';
 						if (row.stockStatusId == 1) {
-							return (
-								'<div >\
-                        <input id="quantity-' +
+							vQuantity =
+								'<input id="quantity-' +
 								row.id +
 								'" type="text" style="width: 70px; direction: ltr" value="' +
 								row.quantity +
 								'" oninput=\'SearchDataTable.changeProductQuantityCallback(' +
 								JSON.stringify(row) +
-								' )\' >\
-                        <span id="bonus-' +
-								row.id +
-								'" class="label label-xl label-rounded label-primary" style = "width: 50px" > </span></div>'
-							);
+								" )' >";
+							if (row.bonusTypeId == 2) {
+								vBonus = '<span id="bonus-' + row.id + '" class="label label-xl label-rounded label-primary ml-1" style = "width: 50px" > </span>';
+							}
+
+							return '<div>' + vQuantity + vBonus + '</div>';
 						} else {
 							return '';
 						}
@@ -576,54 +578,54 @@ var SearchDataTable = (function () {
 
 	var _initSearchFilter = function () {
 		/*
-        $('#searchProductScientificNameInput').autocomplete({
+		$('#searchProductScientificNameInput').autocomplete({
 
-            nameProperty: 'name',
-            valueField: '#hidden-field',
-            dataSource: myData,
+			nameProperty: 'name',
+			valueField: '#hidden-field',
+			dataSource: myData,
 
-            // value property
-            valueProperty: 'value',
+			// value property
+			valueProperty: 'value',
 
-            // item filter
-            filter: function (input, data) {
-                return data.filter(x => ~x[this.options.nameProperty].toLowerCase().indexOf(input.toLowerCase()));
-            },
+			// item filter
+			filter: function (input, data) {
+				return data.filter(x => ~x[this.options.nameProperty].toLowerCase().indexOf(input.toLowerCase()));
+			},
 
-            // trigger event
-            filterOn: 'input',
+			// trigger event
+			filterOn: 'input',
 
-            // called when the input is clicked
-            openOnInput: true,
+			// called when the input is clicked
+			openOnInput: true,
 
-            // function(li, item)
-            preAppendDataItem: null,
+			// function(li, item)
+			preAppendDataItem: null,
 
-            // function(input, data) { ... }
-            validation: null,
+			// function(input, data) { ... }
+			validation: null,
 
-            // auto select the first matched item
-            selectFirstMatch: false,
+			// auto select the first matched item
+			selectFirstMatch: false,
 
-            // trigger element
-            validateOn: 'blur',
+			// trigger element
+			validateOn: 'blur',
 
-            // called when selected
-            onSelected: null,
+			// called when selected
+			onSelected: null,
 
-            // class for invalid
-            invalidClass: 'invalid',
+			// class for invalid
+			invalidClass: 'invalid',
 
-            // triggered as soon as the initial value is selected
-            initialValueSelectedEvent: 'initial-value-selected.autocomplete',
+			// triggered as soon as the initial value is selected
+			initialValueSelectedEvent: 'initial-value-selected.autocomplete',
 
-            // append to the body element
-            appendToBody: false,
+			// append to the body element
+			appendToBody: false,
 
-            // if true the dropdown will only show unique values. 
-            distinct: false
+			// if true the dropdown will only show unique values. 
+			distinct: false
 
-        });*/
+		});*/
 	};
 
 	return {
@@ -644,34 +646,36 @@ var SearchDataTable = (function () {
 			SearchDataTable.changeProductQuantityCallback(row);
 		},
 		changeProductQuantityCallback: function (row) {
-			var newQuantity = $('#quantity-' + row.id).val();
-			var formulaConfig = {
-				quantity: newQuantity,
-				minOrder: 0,
-				bonus: 0,
-				formula: '',
-			};
-
-			var bonusOptionLabelId = '';
-
-			row.bonusOptions.forEach((bonusOption) => {
-				//var bonusOptionLabelId = '#bonusOption-' + row.id + '-' + element.id;
-				if (newQuantity >= bonusOption.minOrder) {
-					bonusOptionLabelId = '#bonusOption-' + row.id + '-' + bonusOption.id;
-					formulaConfig.minOrder = bonusOption.minOrder;
-					formulaConfig.formula = bonusOption.formula;
-					formulaConfig.bonus = bonusOption.bonus;
-				}
-			});
-			var bonus = 0;
-			if (formulaConfig.bonus > 0) {
-				bonus = math.evaluate(formulaConfig.formula, formulaConfig);
+			if (row.bonusTypeId == 2) {
 				$('.bonus-option-label-' + row.id).removeClass('label-primary');
 				$('.bonus-option-label-' + row.id).addClass('label-light');
-				$(bonusOptionLabelId).removeClass('label-light');
-				$(bonusOptionLabelId).addClass('label-primary');
+
+				var newQuantity = $('#quantity-' + row.id).val();
+				var formulaConfig = {
+					quantity: newQuantity,
+					minOrder: 0,
+					bonus: 0,
+					formula: '',
+				};
+
+				var bonusOptionLabelId = '';
+
+				row.bonusOptions.forEach((bonusOption) => {
+					//var bonusOptionLabelId = '#bonusOption-' + row.id + '-' + element.id;
+					if (newQuantity >= bonusOption.minOrder) {
+						bonusOptionLabelId = '#bonusOption-' + row.id + '-' + bonusOption.id;
+						formulaConfig.minOrder = bonusOption.minOrder;
+						formulaConfig.formula = bonusOption.formula;
+						formulaConfig.bonus = bonusOption.bonus;
+					}
+				});
+				var bonus = 0;
+				if (formulaConfig.bonus > 0) {
+					bonus = math.evaluate(formulaConfig.formula, formulaConfig);
+					$(bonusOptionLabelId).removeClass('label-light').addClass('label-primary');
+				}
+				$('#bonus-' + row.id).html(bonus);
 			}
-			$('#bonus-' + row.id).html(bonus);
 		},
 		setReadParams: function (objQuery) {
 			_readParams = objQuery;

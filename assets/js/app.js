@@ -10,6 +10,8 @@ var WebApp = (function () {
 
 	var _idToken = '';
 
+	var _timeoutSession;
+
 	var _alertError = function (msg) {
 		Swal.fire({
 			text: msg,
@@ -165,6 +167,8 @@ var WebApp = (function () {
 					_unblockPage();
 					_alertError(WebAppLocals.getMessage('error'));
 				}
+
+				_initModal();
 			})
 			.fail(function (jqXHR, textStatus, errorThrown) {
 				_alertError(WebAppLocals.getMessage('error'));
@@ -224,6 +228,46 @@ var WebApp = (function () {
 		$(_pageContainerId).foggy(false);
 	};
 
+	var _initModal = function () {
+		$('.modalAction').each(function () {
+			$(this).off('click');
+			$(this).click(function (e) {
+				e.preventDefault();
+				var form = $(this).parent().parent().parent();
+				var url = $(form).attr('action');
+				var data = $(form).serializeJSON();
+				console.log('JSON data from Modal:');
+				console.log(data);
+				var callback = null;
+				if ($(form).find('.modalValueCallback').val() != '') {
+					callback = eval($(form).find('.modalValueCallback').val());
+				}
+				_post(url, data, callback);
+				$(form).parent().parent().parent().modal('hide');
+			});
+		});
+	};
+
+	var _openModal = function (webResponse) {
+		_resetModal();
+		$('.modalForm').attr('action', webResponse.data.modalRoute);
+		$('#popupModalTitle').html(webResponse.data.modalTitle);
+		$('#popupModalText').html(webResponse.data.modalText);
+		$('#popupModalValueId').val(webResponse.data.id);
+		$('.modalValueCallback').val(webResponse.data.fnCallback);
+		$('.modalAction').html(webResponse.data.modalButton);
+		$('#popupModal').modal('show');
+	};
+
+	var _resetModal = function () {
+		$('.modalForm').attr('action', '#');
+		$('#popupModalTitle').html('');
+		$('#popupModalText').html('');
+		$('#popupModalValueId').val('');
+		$('.modalValueCallback').val('');
+		$('.modalAction').html('');
+	};
+
 	var _signout = function () {
 		firebase
 			.auth()
@@ -235,6 +279,7 @@ var WebApp = (function () {
 				// An error happened.
 			});
 	};
+
 	var _setUpFirebase = function () {
 		// Your web app's Firebase configuration
 		var firebaseConfig = {
@@ -268,14 +313,40 @@ var WebApp = (function () {
 		});
 	};
 
+	var _setSessionTimeoutCallback = function () {
+		/*
+		_timeoutSession = setTimeout(function () {
+			if (confirm("Press a button!\nEither OK or Cancel.")) {
+				_setSessionTimeoutCallback();
+			}
+			else {
+				_signout();
+			}
+		}, 5000); //30s
+		*/
+	};
+
+	var _initSessionTimeout = function () {
+		document.addEventListener(
+			'mousemove',
+			function (e) {
+				clearTimeout(_timeoutSession);
+				_setSessionTimeoutCallback();
+			},
+			true
+		);
+	};
+
 	// Public Functions
 	return {
 		init: function () {
 			_setUpFirebase();
-
 			WebAppLocals.init();
+			_initModal();
 			_loadPage(window.location.href);
 			Cart.init();
+
+			_initSessionTimeout();
 		},
 		signout: function () {
 			return _signout();
@@ -306,6 +377,9 @@ var WebApp = (function () {
 		},
 		post: function (url, data = null, fnCallback = null) {
 			return _post(url, data, fnCallback);
+		},
+		openModal: function (webResponse) {
+			_openModal(webResponse);
 		},
 	};
 })();

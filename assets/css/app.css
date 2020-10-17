@@ -1,27 +1,46 @@
-.datatable.datatable-default.datatable-head-custom
-  > .datatable-table
-  > .datatable-head
-  .datatable-row
-  > .datatable-cell
-  > span,
-.datatable.datatable-default.datatable-head-custom
-  > .datatable-table
-  > .datatable-foot
-  .datatable-row
-  > .datatable-cell
-  > span {
-  color: #13b9a9 !important;
-  font-size: 1rem;
-  text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: normal;
+.datatable.datatable-default.datatable-head-custom > .datatable-table > .datatable-head .datatable-row > .datatable-cell > span,
+.datatable.datatable-default.datatable-head-custom > .datatable-table > .datatable-foot .datatable-row > .datatable-cell > span {
+	color: #13b9a9 !important;
+	font-size: 1rem;
+	text-transform: uppercase;
+	font-weight: 700;
+	letter-spacing: normal;
 }
 
-.select2-container--default
-  .select2-selection--multiple
-  .select2-selection__rendered
-  .select2-selection__choice {
-  padding-top: 0.25rem !important;
-  padding-bottom: 0.25rem !important;
-  background: #13b9a914 !important;
+.select2-container--default .select2-selection--multiple .select2-selection__rendered .select2-selection__choice {
+	padding-top: 0.25rem !important;
+	padding-bottom: 0.25rem !important;
+	background: #13b9a914 !important;
+}
+
+.p-0 {
+	padding: 0 !important;
+}
+.form-label {
+	text-align: left;
+	font-weight: bold;
+}
+.sub-header {
+	color: #13b9a9 !important;
+	font-weight: 700;
+	padding-bottom: 1rem;
+}
+.float-left {
+	float: left;
+}
+.btn-lg-radius {
+	border-radius: 0.5em;
+}
+
+label.myLabel input[type='file'] {
+	position: absolute;
+	top: -1000px;
+}
+.navi .navi-link {
+	color: #fff !important;
+	margin: 0.5rem 0 !important;
+}
+
+.modal .select2-container {
+	width: 100% !important;
 }
