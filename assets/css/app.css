@@ -36,3 +36,11 @@ label.myLabel input[type='file'] {
 	position: absolute;
 	top: -1000px;
 }
+.navi .navi-link {
+	color: #fff !important;
+	margin: 0.5rem 0 !important;
+}
+
+.modal .select2-container {
+	width: 100% !important;
+}

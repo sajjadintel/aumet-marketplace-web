@@ -32,7 +32,6 @@ function compress_htmlcode($codedata)
                         </span>
                     </div>
                     <select class="select2 form-control" id="searchProductsBrandNameInput" multiple="" name="brandName" data-select2-id="searchProductsBrandNameInput" tabindex="-1" aria-hidden="true">
-
                     </select>
                 </div>
             </div>
@@ -89,9 +88,11 @@ function compress_htmlcode($codedata)
                             <input type="file" required />
                             <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Upload Stock Excel Sheet"> <i class="nav-icon la la-file-excel-o p-0"></i> <?php echo $vModule_product_uploadStock; ?></a>
                         </label>
-                        <button type="button" class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" data-toggle="modal" data-target="#addModal">
-                            <i class="nav-icon la la-plus p-0"></i> <?php echo $vModule_add; ?>
-                        </button>
+                        <label class="myLabel">
+                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="DistributorProductsDataTable.productAddModal()">
+                                <i class="nav-icon la la-plus p-0"></i> <?php echo $vButton_add; ?>
+                            </a>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -118,7 +119,7 @@ function compress_htmlcode($codedata)
 
     var _selectBrand = $('#searchProductsBrandNameInput').select2({
         placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
-        tags: true,
+
         ajax: {
             url: '/web/product/brandname/list',
             dataType: 'json',
@@ -145,7 +146,7 @@ function compress_htmlcode($codedata)
 
     var _selectScientific = $('#searchProductsScieceNameInput').select2({
         placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
-        tags: true,
+
         ajax: {
             url: '/web/product/scientificname/list',
             dataType: 'json',
@@ -179,8 +180,77 @@ function compress_htmlcode($codedata)
 
     });
 
+    var _selectScientificEdit = $('#editProductScientificName').select2({
+        placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+
+        ajax: {
+            url: '/web/product/scientificname/list',
+            dataType: 'json',
+            processResults: function(response) {
+                return {
+                    results: response.data.results,
+                    pagination: {
+                        more: response.data.pagination
+                    }
+                }
+            }
+        }
+    });
+
+    var _selectScientificAdd = $('#addProductScientificName').select2({
+        placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+
+        ajax: {
+            url: '/web/product/scientificname/list',
+            dataType: 'json',
+            processResults: function(response) {
+                return {
+                    results: response.data.results,
+                    pagination: {
+                        more: response.data.pagination
+                    }
+                }
+            }
+        }
+    });
+
+    var _selectCountryEdit = $('#editProductCountry').select2({
+        placeholder: "<?php echo $vModule_search_countryPlaceholder ?>",
+
+        ajax: {
+            url: '/web/product/country/list',
+            dataType: 'json',
+            processResults: function(response) {
+                return {
+                    results: response.data.results,
+                    pagination: {
+                        more: response.data.pagination
+                    }
+                }
+            }
+        }
+    });
+
+    var _selectCountryAdd = $('#addProductCountry').select2({
+        placeholder: "<?php echo $vModule_search_countryPlaceholder ?>",
+
+        ajax: {
+            url: '/web/product/country/list',
+            dataType: 'json',
+            processResults: function(response) {
+                return {
+                    results: response.data.results,
+                    pagination: {
+                        more: response.data.pagination
+                    }
+                }
+            }
+        }
+    });
+
     $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
     DistributorProductsDataTable.init(searchQuery);
 </script>
 <?php ob_end_flush(); ?>
-<?php include_once 'edit-modal.php'; ?>
+<?php include_once 'edit-modal.php';
+include_once 'add-modal.php'; ?>

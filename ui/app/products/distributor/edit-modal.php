@@ -14,6 +14,18 @@
                     <input type="hidden" name="fnCallback" class="modalValueCallback" id="editProductCallback" value="DistributorProductsDataTable.reloadDatatable" />
                     <div class="row">
                         <div class="col-md-12 form-group">
+                            <label for="editProductScientificName" class="form-control-label">Scientific Name</label>
+                            <select class="select2 form-control" id="editProductScientificName" name="scientificNameId" data-select2-id="editProductScientificName" tabindex="-1" aria-hidden="true">
+                                <option disabled>Scientific Name</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <label for="editProductCountry" class="form-control-label">Country</label>
+                            <select class="select2 form-control" id="editProductCountry" name="madeInCountryId" data-select2-id="editProductCountry" tabindex="-1" aria-hidden="true">
+                                <option disabled>Made In Country</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12 form-group">
                             <label for="editProductNameAr" class="form-control-label">Product Name Ar</label>
                             <input type="text" class="form-control" name="name_ar" id="editProductNameAr">
                         </div>

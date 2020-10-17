@@ -27,6 +27,23 @@ class OrderController extends Controller
             $renderFile = 'app/sale/orders/orders.php';
             $title = $this->f3->get('vModule_order_title');
 
+            switch ($status) {
+                case 'new':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_new'));
+                    break;
+                case 'pending':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_pending'));
+                    break;
+                case 'unpaid':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_unpaid'));
+                    break;
+                case 'history':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_history'));
+                    break;
+                default:
+                    $this->f3->set('vModule_order_header', 'Unknown List');
+                    break;
+            }
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = $title;
             $this->webResponse->data = View::instance()->render($renderFile);
@@ -69,6 +86,11 @@ class OrderController extends Controller
                     $modalTitle = $this->f3->get('vOrderStatus_Canceled');
                     $modalText = $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_Canceled'));
                     $modalRoute = '/web/distributor/order/cancel';
+                    break;
+                case Constants::ORDER_STATUS_PAID:
+                    $modalTitle = $this->f3->get('vOrderStatus_Paid');
+                    $modalText = $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_Paid'));
+                    $modalRoute = '/web/distributor/order/paid';
                     break;
             }
 
@@ -312,6 +334,15 @@ class OrderController extends Controller
         $orderId = $this->f3->get("POST.id");
         $statusId = Constants::ORDER_STATUS_RECEIVED;
         $this->handleUpdateOrderStatus($orderId, $statusId);
+    }
+
+    function postPaidOrder()
+    {
+        $orderId = $this->f3->get("POST.id");
+        $statusId = Constants::ORDER_STATUS_PAID;
+        $this->handleUpdateOrderStatus($orderId, $statusId);
+
+        // TODO: Update entityRelation table with new details
     }
 
     function handleUpdateOrderStatus($orderId, $statusId)

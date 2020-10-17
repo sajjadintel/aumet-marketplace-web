@@ -20,4 +20,5 @@ class Constants
     const ORDER_STATUS_COMPLETED = 4;
     const ORDER_STATUS_CANCELED = 5;
     const ORDER_STATUS_RECEIVED = 6;
+    const ORDER_STATUS_PAID = 7;
 }
