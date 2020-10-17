@@ -185,7 +185,7 @@ var DistributorProductsDataTable = (function () {
 					field: 'Actions',
 					title: '',
 					sortable: false,
-					width: 130,
+					width: 200,
 					overflow: 'visible',
 					autoHide: false,
 					template: function (row) {
@@ -198,6 +198,15 @@ var DistributorProductsDataTable = (function () {
 						class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
 						<i class="nav-icon la la-edit p-0"></i> ' +
 							WebAppLocals.getMessage('edit') +
+							'</a>';
+
+						var btnEditQuantity =
+							'<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditQuantityModal(' +
+							row.id +
+							')\' \
+						class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
+						<i class="nav-icon la la-edit p-0"></i> ' +
+							WebAppLocals.getMessage('editQuantity') +
 							'</a>';
 
 						// switch (row.stockStatusId) {
@@ -221,6 +230,7 @@ var DistributorProductsDataTable = (function () {
 						// }
 
 						outActions += btnEdit;
+						outActions += btnEditQuantity;
 
 						return outActions;
 					},
@@ -231,6 +241,10 @@ var DistributorProductsDataTable = (function () {
 
 	var _productEditModal = function (productId) {
 		WebApp.get('/web/distributor/product/' + productId, _productEditModalOpen);
+	};
+
+	var _productEditQuantityModal = function (productId) {
+		WebApp.get('/web/distributor/product/quantity/' + productId, _productEditQuantityModalOpen);
 	};
 
 	var _productAddModal = function () {
@@ -248,7 +262,6 @@ var DistributorProductsDataTable = (function () {
 		$("label[for='editProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
 		$("label[for='editProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
 		$("label[for='editUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
-		$("label[for='editStock']").text(WebAppLocals.getMessage('quantityAvailable'));
 
 		$('#editProductScientificName').append(new Option(webResponse.data.product.scientificName, webResponse.data.product.scientificNameId));
 		$('#editProductScientificName').val(webResponse.data.product.scientificNameId);
@@ -258,9 +271,43 @@ var DistributorProductsDataTable = (function () {
 		$('#editProductNameEn').val(webResponse.data.product.productName_en);
 		$('#editProductNameFr').val(webResponse.data.product.productName_fr);
 		$('#editUnitPrice').val(webResponse.data.product.unitPrice);
-		$('#editStock').val(webResponse.data.product.stock);
 		$('#editModalAction').html(WebAppLocals.getMessage('edit'));
 		$('#editModal').appendTo('body').modal('show');
+	};
+
+	var _productEditQuantityModalOpen = function (webResponse) {
+		$('#editQuantityModalForm').attr('action', '/web/distributor/product/editQuantity');
+		$('#editQuantityProductId').val(webResponse.data.product.id);
+
+		$('#editQuantityModalTitle').html(WebAppLocals.getMessage('editQuantity'));
+
+		$("label[for='editQuantityStock']").text(WebAppLocals.getMessage('quantityAvailable'));
+		$('#editQuantityStock').val(webResponse.data.product.stock);
+
+		switch (webResponse.data.product.stockStatusId) {
+			case 1:
+				$('#editQuantityStockAvailability').bootstrapSwitch('state', true);
+				$('#editQuantityStockAvailability').bootstrapSwitch('disabled', true);
+				break;
+			case 2:
+				$('#editQuantityStockAvailability').bootstrapSwitch('state', false);
+				break;
+			case 3:
+				$('#editQuantityStockAvailability').bootstrapSwitch('state', true);
+				break;
+			default:
+				break;
+		}
+		$('#editQuantityStock').on('change paste keyup', function () {
+			if ($(this).val() > 0) {
+				$('#editQuantityStockAvailability').bootstrapSwitch('disabled', true);
+			} else {
+				$('#editQuantityStockAvailability').bootstrapSwitch('disabled', false);
+			}
+		});
+
+		$('#editQuantityModalAction').html(WebAppLocals.getMessage('editQuantity'));
+		$('#editQuantityModal').appendTo('body').modal('show');
 	};
 
 	var _productAddModalOpen = function () {
@@ -291,6 +338,9 @@ var DistributorProductsDataTable = (function () {
 		},
 		reloadDatatable: function () {
 			datatable.reload();
+		},
+		productEditQuantityModal: function (productId) {
+			_productEditQuantityModal(productId);
 		},
 		productEditModal: function (productId) {
 			_productEditModal(productId);
