@@ -379,39 +379,47 @@ class OrderController extends Controller
     function getPrintOrderInvoice()
     {
         $orderId = $this->f3->get('PARAMS.orderId');
+
+        $dbOrder = new BaseModel($this->db, 'vwOrderEntityUser');
+        $arrOrder = $dbOrder->findWhere("id = $orderId");
+        $arrOrder = $arrOrder[0];
         $pdf = new PDF();
+        // create new PDF document
+        $pdf = new PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         $pdf->AddPage();
-        $pdf->AliasNbPages();
 
         // Title
-        $pdf->SetFont('Times', 'B', 14);
-        $pdf->Cell(0, 10, 'Order #111', 0, 0, 'R');
-        $pdf->Ln(5);
-        $pdf->Cell(0, 10, 'Violet Drug Store', 0, 0, 'R');
+        $pdf->SetFont('dejavusans', 'B', 14);
+        $pdf->Cell(0, 10, 'Order #' . $arrOrder['id'], 0, 0, 'R');
+        $pdf->Ln(6);
+        $pdf->Cell(0, 10, $arrOrder['entitySeller'], 0, 0, 'R');
         $pdf->Ln(10);
 
-        $pdf->SetFont('Times', '', 14);
-        $pdf->Cell(0, 10, '2020-10-08 22:21:49', 0, 0, 'R');
+        $pdf->SetFont('dejavusans', '', 14);
+        $pdf->Cell(0, 10, $arrOrder['insertDateTime'], 0, 0, 'R');
         $pdf->Ln(20);
 
-        $pdf->SetFont('Times', '', 11);
+        $pdf->SetFont('dejavusans', '', 11);
 
-        $pharmacyTableHeader = array('Code', 'Customer Name', 'Email');
-        $pharmacyTableData = array(array('123', 'Pharmacy Salam', 'd.daoud@aumet.me'));
+        $pharmacyTableHeader = array('ID', 'Customer Name', 'Email');
+        $pharmacyTableData = array(array($arrOrder['entityBuyerId'], $arrOrder['entityBuyer'], $arrOrder['userBuyerEmail']));
         $pdf->FancyTable($pharmacyTableHeader, $pharmacyTableData);
         $pdf->Ln(20);
 
         $orderDetailHeader = array('Brand Name', 'Scientific Name', 'Quantity', 'Unit Price', 'VAT', 'Total');
-        $orderDetailData = array(
-            array('Bone Holding Forceps', 'Bone Holding Forceps', '1 (8336)', '$30.95', '0%', '$30.95'), array('Tonsil Tissue Forceps', 'Tissue Forceps', '1 (9510)', '$49.47', '0%', '$49.47'),
-            array('Medicine Cup', 'Medicine Cups', '1 (4213)', '27.61', '0%', '$27.61'), array('Collin Specula', 'Collin Specula', '1 (6120)', '$27.61', '0%', '$55.22'),
-            array('Catheter Mount', 'Catheter Mount', '1 (257)', '$28.92', '0%', '$28.92')
-        );
+        $dbOrderDetail = new BaseModel($this->db, 'vwOrderDetail');
+        $arrOrderDetail = $dbOrderDetail->findWhere("id = $orderId");
+
+        $orderDetailData = array();
+        foreach ($arrOrderDetail as $item) {
+            array_push($orderDetailData, array($item['productNameEn'], $item['scientificName'], $item['quantity'] . " (" . $item['stock'] . ")", "$" . $item['unitPrice'], $item['tax'] . "%", "$" . ($item['unitPrice'] * $item['quantity'])));
+        }
+
         $pdf->FancyTableOrderDetail($orderDetailHeader, $orderDetailData);
 
         $pdf->Ln(10);
 
-        $pdf->Cell(0, 0, 'Order Total: $192.17', 0, 0, 'R');
+        $pdf->Cell(0, 0, 'Order Total: $' . $arrOrder['total'], 0, 0, 'R');
 
         $pdf->Output();
     }
