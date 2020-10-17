@@ -62,8 +62,8 @@ function compress_htmlcode($codedata)
 <script>
     var searchQuery = {
         entityBuyerId: [],
-        startDate: moment('2020-01-01'),
-        endDate: moment()
+        startDate: null,
+        endDate: null
     };
 
     var _selectBuyer = $('#searchOrdersBuyerInput').select2({
@@ -102,10 +102,8 @@ function compress_htmlcode($codedata)
         DistributorOrdersDataTable.setReadParams(searchQuery);
     });
 
-
     $(document).ready(function() {
         DistributorOrdersDataTable.init(searchQuery);
-
     });
 </script>
 <?php ob_end_flush(); ?>

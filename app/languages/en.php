@@ -66,7 +66,7 @@ return array(
     'vModule_search_title' => 'Search in Products',
     'vModule_search_header' => 'You can search in the products using the product name, scientific name, or distributor name',
     'vModule_search_brandNameplaceholder' => 'Brand Name',
-    'vModule_search_scientificNamePlaceholder' => 'Brand Name List',
+    'vModule_search_scientificNamePlaceholder' => 'Scientific Name List',
     'vModule_search_distributorNamePlaceholder' => 'Distributor List',
     'vModule_search_buyerNamePlaceholder' => 'Buyer List',
     'vModule_search_stockStatusPlaceholder' => 'Availability',

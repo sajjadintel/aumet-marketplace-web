@@ -73,7 +73,6 @@ class ProductsController extends Controller
     {
         $query = "";
         $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
-        $datatable = [];
 
         if ($datatable['query'] != "") {
 
@@ -146,6 +145,9 @@ class ProductsController extends Controller
 
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
 
+        if (!$dbProducts->exists($field)) {
+            $field = 'id';
+        }
         if ($query == "") {
             $total = $dbProducts->count();
             $data = $dbProducts->findAll("$field $sort", $perpage, $offset);

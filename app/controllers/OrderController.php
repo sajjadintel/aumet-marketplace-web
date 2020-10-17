@@ -156,85 +156,8 @@ class OrderController extends Controller
 
     function handlePostDistributorOrders($status)
     {
-        $query = "";
-        $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
-
-        // if ($datatable['query'] != "") {
-
-        //     $productQuery = "";
-        //     $productId = $datatable['query']['productId'];
-        //     if (isset($productId)) {
-        //         if (is_array($productId)) {
-        //             $productQuery = "id in (" . implode(",", $productId) . ")";
-        //         } else {
-        //             $productQuery = "id = $productId";
-        //         }
-        //     }
-
-        //     $scientificQuery = "";
-        //     $scientificNameId = $datatable['query']['scientificNameId'];
-        //     if (isset($scientificNameId)) {
-        //         if (is_array($scientificNameId)) {
-        //             $scientificQuery = "scientificNameId in (" . implode(",", $scientificNameId) . ")";
-        //         } else {
-        //             $scientificQuery = "scientificNameId = $scientificNameId";
-        //         }
-        //     }
-
-        //     $entityQuery = "";
-        //     $entityId = $datatable['query']['entityId'];
-        //     if (isset($entityId)) {
-        //         if (is_array($entityId)) {
-        //             $entityQuery = "entityId in (" . implode(",", $entityId) . ")";
-        //         } else {
-        //             $entityQuery = "entityId = $entityId";
-        //         }
-        //     }
-
-        //     if ($productQuery != "" && $scientificQuery != "" && $entityQuery != "") {
-        //         $query = " $entityQuery and ($productQuery or $scientificQuery)";
-        //     } elseif ($productQuery != "" && $scientificQuery != "" && $entityQuery == "") {
-        //         $query = "$productQuery or $scientificQuery";
-        //     } elseif ($productQuery != "" && $scientificQuery == "" && $entityQuery != "") {
-        //         $query = " $entityQuery and $productQuery";
-        //     } elseif ($productQuery != "" && $scientificQuery == "" && $entityQuery == "") {
-        //         $query = "$productQuery";
-        //     } elseif ($productQuery == "" && $scientificQuery != "" && $entityQuery != "") {
-        //         $query = "$entityQuery and $scientificQuery";
-        //     } elseif ($productQuery == "" && $scientificQuery == "" && $entityQuery != "") {
-        //         $query = "$entityQuery";
-        //     } elseif ($productQuery == "" && $scientificQuery != "" && $entityQuery == "") {
-        //         $query = "$scientificQuery";
-        //     }
-
-        //     if ($datatable['query']['stockOption'] == 1) {
-        //         if ($query == "") {
-        //             $query = "stockStatusId=1";
-        //         } else {
-        //             $query = "stockStatusId=1 and ($query)";
-        //         }
-        //     }
-        // } else {
-        //     $query = "stockStatusId=1";
-        // }
-
-        $sort = !empty($datatable['sort']['sort']) ? $datatable['sort']['sort'] : 'asc';
-        $field = !empty($datatable['sort']['field']) ? $datatable['sort']['field'] : 'id';
-
-        $meta = array();
-        $page = !empty($datatable['pagination']['page']) ? (int)$datatable['pagination']['page'] : 1;
-        $perpage = !empty($datatable['pagination']['perpage']) ? (int)$datatable['pagination']['perpage'] : 10;
-
-        $total = 0;
-        $offset = ($page - 1) * $perpage;
-
-        global $dbConnection;
-
-        $dbData = new BaseModel($dbConnection, "vwOrderEntityUser");
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
-
         $query = "entitySellerId IN ($arrEntityId)";
-
         switch ($status) {
             case 'new':
                 $query .= " AND statusId = 1";
@@ -252,8 +175,42 @@ class OrderController extends Controller
                 break;
         }
 
+        $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
+
+        if (is_array($datatable['query'])) {
+            $entityBuyerId = $datatable['query']['entityBuyerId'];
+            if (isset($entityBuyerId) && is_array($entityBuyerId)) {
+                $query .= " AND entityBuyerId in (" . implode(",", $entityBuyerId) . ")";
+            }
+
+            $startDate = $datatable['query']['startDate'];
+            if (isset($startDate) && $startDate != "") {
+                $query .= " AND insertDateTime >= '$startDate'";
+            }
+
+            $endDate = $datatable['query']['endDate'];
+            if (isset($endDate) && $endDate != "") {
+                $query .= " AND insertDateTime <= '$endDate'";
+            }
+        }
+
+        $sort = !empty($datatable['sort']['sort']) ? $datatable['sort']['sort'] : 'asc';
+        $field = !empty($datatable['sort']['field']) ? $datatable['sort']['field'] : 'id';
+
+        $meta = array();
+        $page = !empty($datatable['pagination']['page']) ? (int)$datatable['pagination']['page'] : 1;
+        $perpage = !empty($datatable['pagination']['perpage']) ? (int)$datatable['pagination']['perpage'] : 10;
+
+        $total = 0;
+        $offset = ($page - 1) * $perpage;
+
+        $dbData = new BaseModel($this->db, "vwOrderEntityUser");
+
         $data = [];
 
+        if (!$dbData->exists($field)) {
+            $field = 'id';
+        }
         if ($query == "") {
             $total = $dbData->count();
             $data = $dbData->findAll("$field $sort", $perpage, $offset);

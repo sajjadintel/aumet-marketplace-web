@@ -43,7 +43,6 @@ class EntityController extends Controller
     function postEntityCustomers()
     {
         $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
-        $datatable = [];
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entitySellerId IN ($arrEntityId)";
@@ -60,6 +59,9 @@ class EntityController extends Controller
 
         $dbProducts = new BaseModel($this->db, "vwEntityRelation");
 
+        if (!$dbProducts->exists($field)) {
+            $field = 'id';
+        }
         if ($query == "") {
             $total = $dbProducts->count();
             $data = $dbProducts->findAll("$field $sort", $perpage, $offset);
