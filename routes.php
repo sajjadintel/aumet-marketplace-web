@@ -23,6 +23,7 @@ $f3->route('GET /web/entity/@entityId/product/@productId', 'ProductsController->
 $f3->route('GET /web/product/brandname/list', 'SearchController->getProductBrandNameList');
 $f3->route('GET /web/product/scientificname/list', 'SearchController->getProductScientificNameList');
 $f3->route('GET /web/product/country/list', 'SearchController->getProductCountryList');
+$f3->route('GET /web/order/customer/list', 'SearchController->getOrderCustomerList');
 
 
 $f3->route('GET /web/customercare', 'CustomerCareController->get');

@@ -27,20 +27,31 @@ class SearchController extends Controller
         }
     }
 
-    function handleGetListFilters($table, $queryTerms, $queryDisplay)
+    function handleGetListFilters($table, $queryTerms, $queryDisplay, $additionalQuery = null)
     {
         $where = "";
+        if ($additionalQuery != null) {
+            $where = $additionalQuery;
+        }
         $term = $_GET['term'];
         if (isset($term) && $term != "" && $term != null) {
+            if ($additionalQuery != null) {
+                $where .= " AND (";
+            }
             if (is_array($queryTerms)) {
+                $i = 0;
                 foreach ($queryTerms as $queryTerm) {
-                    if ($where != '') {
+                    if ($i != 0) {
                         $where .= ' OR ';
                     }
                     $where .= "$queryTerm LIKE '%$term%'";
+                    $i++;
                 }
             } else {
                 $where .= "$queryTerms LIKE '%$term%'";
+            }
+            if ($additionalQuery != null) {
+                $where .= ")";
             }
         }
         $page = $_GET['page'];
@@ -135,6 +146,12 @@ class SearchController extends Controller
     function getProductCountryList()
     {
         $this->handleGetListFilters("country", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
+    }
+
+    function getOrderCustomerList()
+    {
+        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+        $this->handleGetListFilters("vwEntityRelation", ['buyerName_en', 'buyerName_fr', 'buyerName_ar'], 'buyerName_' . $this->objUser->language, "entitySellerId IN ($arrEntityId)");
     }
 
     function postSearchProducts()

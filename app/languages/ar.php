@@ -68,6 +68,7 @@ return array(
     'vModule_search_brandNameplaceholder' => 'الأسماء التجارية',
     'vModule_search_scientificNamePlaceholder' => 'الأسماء العلمية',
     'vModule_search_distributorNamePlaceholder' => 'قائمة الموزعين',
+    'vModule_search_buyerNamePlaceholder' => 'قائمة المشترين',
     'vModule_search_stockStatusPlaceholder' => 'توفر المنتج',
     'vModule_search_stockStatus_Available' => 'المتوفر فقط',
     'vModule_search_stockStatus_others' => 'الجميع',
@@ -121,6 +122,10 @@ return array(
 
     'vModule_bonus_bonusTextTemplate' => 'كل %q: %b',
 
+    'vModule_order_dateFrom' => 'أدخل تاريخ بدء الطلبات',
+    'vModule_order_dateTo' => 'أدخل تاريخ انتهاء الطلبات',
+    'vModule_order_date' => 'أدخل تاريخ الطلبات',
+
     'vResponse_notFound' => '{0} غير موجود',
     'vResponse_notUpdated' => 'تعذر تحديث {0}',
     'vResponse_notAdded' => 'تعذر إضافة {0}',
@@ -129,6 +134,8 @@ return array(
 
     'vEntity_order' => 'الطلب',
     'vEntity_orderLog' => 'سجل الطلبات',
+
+    'vWord_To' => 'إلى',
 
     'vButton_update' => 'تحديث',
     'vButton_add' => 'أضف',

@@ -378,6 +378,7 @@ class OrderController extends Controller
 
     function getPrintOrderInvoice()
     {
+        $font = 'dejavusans';
         $orderId = $this->f3->get('PARAMS.orderId');
 
         $dbOrder = new BaseModel($this->db, 'vwOrderEntityUser');
@@ -389,17 +390,17 @@ class OrderController extends Controller
         $pdf->AddPage();
 
         // Title
-        $pdf->SetFont('dejavusans', 'B', 14);
+        $pdf->SetFont($font, 'B', 14);
         $pdf->Cell(0, 10, 'Order #' . $arrOrder['id'], 0, 0, 'R');
         $pdf->Ln(6);
         $pdf->Cell(0, 10, $arrOrder['entitySeller'], 0, 0, 'R');
         $pdf->Ln(10);
 
-        $pdf->SetFont('dejavusans', '', 14);
+        $pdf->SetFont($font, '', 14);
         $pdf->Cell(0, 10, $arrOrder['insertDateTime'], 0, 0, 'R');
         $pdf->Ln(20);
 
-        $pdf->SetFont('dejavusans', '', 11);
+        $pdf->SetFont($font, '', 11);
 
         $pharmacyTableHeader = array('ID', 'Customer Name', 'Email');
         $pharmacyTableData = array(array($arrOrder['entityBuyerId'], $arrOrder['entityBuyer'], $arrOrder['userBuyerEmail']));
