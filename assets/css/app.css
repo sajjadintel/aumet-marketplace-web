@@ -53,3 +53,9 @@ label.myLabel input[type='file'] {
 .standard-radius {
 	border-radius: 0.42rem !important;
 }
+
+.bg-danger-hover:hover,
+.bg-danger-hover:hover * {
+	color: #f64e60 !important;
+	background-color: #ffe2e5 !important;
+}
