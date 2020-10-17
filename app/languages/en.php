@@ -66,8 +66,9 @@ return array(
     'vModule_search_title' => 'Search in Products',
     'vModule_search_header' => 'You can search in the products using the product name, scientific name, or distributor name',
     'vModule_search_brandNameplaceholder' => 'Brand Name',
-    'vModule_search_scientificNamePlaceholder' => 'Brand Name List',
+    'vModule_search_scientificNamePlaceholder' => 'Scientific Name List',
     'vModule_search_distributorNamePlaceholder' => 'Distributor List',
+    'vModule_search_buyerNamePlaceholder' => 'Buyer List',
     'vModule_search_stockStatusPlaceholder' => 'Availability',
     'vModule_search_stockStatus_Available' => 'Available Only',
     'vModule_search_stockStatus_others' => 'All',
@@ -121,6 +122,10 @@ return array(
 
     'vModule_bonus_bonusTextTemplate' => 'For %q: %b',
 
+    'vModule_order_dateFrom' => 'Get Orders Starting Date',
+    'vModule_order_dateTo' => 'Get Orders Ending Date',
+    'vModule_order_date' => 'Get Orders Date',
+
     'vResponse_notFound' => '{0} not found',
     'vResponse_notUpdated' => '{0} could not be updated',
     'vResponse_notAdded' => '{0} could not be added',
@@ -129,6 +134,7 @@ return array(
 
     'vEntity_order' => 'Order',
     'vEntity_orderLog' => 'Order Log',
+    'vWord_To' => 'TO',
 
     'vButton_update' => 'Update',
     'vButton_add' => 'Add',

@@ -12,6 +12,7 @@
 		"matthiasmullie/scrapbook": "^1.4",
 		"vlucas/phpdotenv": "^4.1",
         "setasign/fpdf": "^1.8",
+        "tecnickcom/tcpdf": "^6.3.5",
 		"kreait/firebase-php": "^5.8"
 	},
 	"license": "Aumet Inc All Rights Reserved",

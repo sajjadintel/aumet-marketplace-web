@@ -191,42 +191,44 @@ var DistributorOrdersDataTable = (function () {
 						<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
 							WebAppLocals.getMessage('view') +
 							'</a>';
-						var btnOrderOnHold =
-							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
-							row.id +
-							',2)\' \
-						class="btn btn-sm btn-primary btn-hover-primary mr-2 navi-link" title="Order On Hold">\
-						<i class="nav-icon la la-times p-0"></i> &nbsp&nbsp' +
-							WebAppLocals.getMessage('orderStatusMove') +
-							WebAppLocals.getMessage('orderStatus_OnHold') +
-							'</a>';
+
 						var btnOrderProcess =
-							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+							'<a class="navi-link" href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
 							row.id +
 							',3)\' \
 						class="btn btn-sm btn-primary btn-hover-primary  mr-2 navi-link" title="Order Process">\
-						<i class="nav-icon la la-check p-0"></i> &nbsp&nbsp' +
+						<span class="navi-icon"><i class="la la-check"></i></span><span class="navi-text"> &nbsp&nbsp' +
 							WebAppLocals.getMessage('orderStatusMove') +
 							WebAppLocals.getMessage('orderStatus_Processing') +
-							'</a>';
+							'</span></a>';
 						var btnOrderComplete =
-							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+							'<a class="navi-link" href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
 							row.id +
 							',4)\' \
 						class="btn btn-sm btn-primary btn-hover-primary  mr-2" navi-link title="Order Complete">\
-						<i class="nav-icon la la-check p-0"></i> &nbsp&nbsp' +
+						<span class="navi-icon"><i class="la la-check"></i></span><span class="navi-text"> &nbsp&nbsp' +
 							WebAppLocals.getMessage('orderStatusMove') +
 							WebAppLocals.getMessage('orderStatus_Completed') +
-							'</a>';
+							'</span></a>';
+						var btnOrderOnHold =
+							'<a class="navi-link bg-danger-hover" href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+							row.id +
+							',2)\' \
+						class="btn btn-sm btn-primary btn-hover-primary mr-2 navi-link" title="Order On Hold">\
+						<span class="navi-icon"><i class="la la-times"></i></span><span class="navi-text"> &nbsp&nbsp' +
+							WebAppLocals.getMessage('orderStatusMove') +
+							WebAppLocals.getMessage('orderStatus_OnHold') +
+							'</span></a>';
 						var btnOrderCancel =
-							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+							'<a class="navi-link bg-danger-hover" href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
 							row.id +
 							',5)\' \
 						class="btn btn-sm btn-primary btn-hover-primary  mr-2 navi-link" title="Order Cancel">\
-						<i class="nav-icon la la-times p-0"></i> &nbsp&nbsp' +
+						<span class="navi-icon"><i class="la la-times"></i></span><span class="navi-text"> &nbsp&nbsp' +
 							WebAppLocals.getMessage('orderStatusMove') +
 							WebAppLocals.getMessage('orderStatus_Canceled') +
-							'</a>';
+							'</span></a>';
+
 						var btnOrderPaid =
 							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
 							row.id +
