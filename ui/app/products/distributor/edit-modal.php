@@ -41,10 +41,6 @@
                             <label for="editUnitPrice" class="form-control-label">Unit Price</label>
                             <input type="text" class="form-control" name="unitPrice" id="editUnitPrice">
                         </div>
-                        <div class="col-md-12 form-group">
-                            <label for="editStock" class="form-control-label">Stock</label>
-                            <input type="number" class="form-control" name="stock" id="editStock">
-                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

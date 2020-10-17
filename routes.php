@@ -58,9 +58,11 @@ $f3->route('POST /web/distributor/order/onhold', 'OrderController->postOnHoldOrd
 // START APM-37
 $f3->route('GET /web/distributor/product', 'ProductsController->getDistributorProducts');
 $f3->route('GET /web/distributor/product/@productId', 'ProductsController->getProductDetails');
+$f3->route('GET /web/distributor/product/quantity/@productId', 'ProductsController->getProductQuantityDetails');
 $f3->route('POST /web/distributor/product', 'ProductsController->postDistributorProducts');
 $f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDistributorProduct');
 $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDistributorProduct');
+$f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->postEditQuantityDistributorProduct');
 // END APM-37
 
 $f3->route('GET /web/distributor/customer', 'EntityController->getEntityCustomers');

@@ -69,6 +69,24 @@ class ProductsController extends Controller
         }
     }
 
+    function getProductQuantityDetails()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $productId = $this->f3->get('PARAMS.productId');
+
+            $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
+            $arrProduct = $dbProduct->findWhere("productId = '$productId'");
+
+            $data['product'] = $arrProduct[0];
+
+            echo $this->webResponse->jsonResponseV2(1, "", "", $data);
+            return;
+        }
+    }
+
     function postDistributorProducts()
     {
         $query = "";
@@ -195,7 +213,6 @@ class ProductsController extends Controller
         echo json_encode($result, JSON_PRETTY_PRINT);
     }
 
-
     function postEditDistributorProduct()
     {
         if (!$this->f3->ajax()) {
@@ -217,9 +234,7 @@ class ProductsController extends Controller
                 echo $this->webResponse->jsonResponse();
             } else {
                 $unitPrice = $this->f3->get('POST.unitPrice');
-                $stock = $this->f3->get('POST.stock');
 
-                $dbEntityProduct->stock = $stock;
                 $dbEntityProduct->unitPrice = $unitPrice;
 
                 $dbEntityProduct->update();
@@ -237,6 +252,52 @@ class ProductsController extends Controller
                 $dbProduct->madeInCountryId = $madeInCountryId;
 
                 $dbProduct->update();
+
+                $this->webResponse->errorCode = 1;
+                $this->webResponse->title = "";
+                $this->webResponse->data = $dbProduct->name_ar;
+                echo $this->webResponse->jsonResponse();
+            }
+        }
+    }
+
+    function postEditQuantityDistributorProduct()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/product");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $id = $this->f3->get('POST.id');
+
+            $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
+            $dbEntityProduct->getWhere("productId=$id");
+
+            $dbProduct = new BaseModel($this->db, "product");
+            $dbProduct->getWhere("id=$id");
+
+            if ($dbEntityProduct->dry() || $dbProduct->dry()) {
+                $this->webResponse->errorCode = 2;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "No Product";
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $stock = $this->f3->get('POST.stock');
+                $stockStatusId = $this->f3->get('POST.stockStatus');
+
+                if ($stock > 0) {
+                    $stockStatusId = 1;
+                } else {
+                    if (isset($stockStatusId) && $stockStatusId == 'on') {
+                        $stockStatusId = 3;
+                    } else {
+                        $stockStatusId = 2;
+                    }
+                }
+
+                $dbEntityProduct->stock = $stock;
+                $dbEntityProduct->stockStatusId = $stockStatusId;
+
+                $dbEntityProduct->update();
 
                 $this->webResponse->errorCode = 1;
                 $this->webResponse->title = "";

@@ -30,6 +30,11 @@ var WebAppLocals = (function () {
 			ar: 'تعديل',
 			fr: '',
 		},
+		editQuantity: {
+			en: 'Edit Quantity',
+			ar: 'تعديل الكمية',
+			fr: '',
+		},
 		add: {
 			en: 'Add',
 			ar: 'أضف',
@@ -257,7 +262,7 @@ var WebAppLocals = (function () {
 
 	// Public Functions
 	return {
-		init: function () { },
+		init: function () {},
 		getMessage(key) {
 			return _arrLocals[key][docLang];
 		},

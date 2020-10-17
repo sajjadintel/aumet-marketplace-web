@@ -59,3 +59,8 @@ label.myLabel input[type='file'] {
 	color: #f64e60 !important;
 	background-color: #ffe2e5 !important;
 }
+
+.fit-width {
+	width: auto;
+	display: inline-flex;
+}

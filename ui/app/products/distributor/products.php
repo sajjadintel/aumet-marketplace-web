@@ -177,7 +177,6 @@ function compress_htmlcode($codedata)
         } else {
             DistributorProductsDataTable.showColumn('stockStatusId');
         }
-
     });
 
     var _selectScientificEdit = $('#editProductScientificName').select2({
@@ -253,4 +252,5 @@ function compress_htmlcode($codedata)
 </script>
 <?php ob_end_flush(); ?>
 <?php include_once 'edit-modal.php';
+include_once 'edit-quantity-modal.php';
 include_once 'add-modal.php'; ?>
