@@ -91,8 +91,8 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		orderStatusMove: {
-			en: 'Move Order to ',
-			ar: 'الانتقال إلى ',
+			en: 'Set ',
+			ar: '',
 			fr: '',
 		},
 		orderStatus_New: {
@@ -257,7 +257,7 @@ var WebAppLocals = (function () {
 
 	// Public Functions
 	return {
-		init: function () {},
+		init: function () { },
 		getMessage(key) {
 			return _arrLocals[key][docLang];
 		},
