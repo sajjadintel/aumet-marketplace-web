@@ -233,30 +233,50 @@ var DistributorProductsDataTable = (function () {
 		WebApp.get('/web/distributor/product/' + productId, _productEditModalOpen);
 	};
 
+	var _productAddModal = function () {
+		_productAddModalOpen();
+	};
+
 	var _productEditModalOpen = function (webResponse) {
+		$('#editModalForm').attr('action', '/web/distributor/product/edit');
+		$('#editProductId').val(webResponse.data.product.id);
+
 		$('#editModalTitle').html(WebAppLocals.getMessage('edit'));
+		$("label[for='editProductScientificName']").text(WebAppLocals.getMessage('productScintificName'));
+		$("label[for='editProductCountry']").text(WebAppLocals.getMessage('madeInCountry'));
 		$("label[for='editProductNameAr']").text(WebAppLocals.getMessage('productName') + ' AR');
 		$("label[for='editProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
 		$("label[for='editProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
 		$("label[for='editUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
 		$("label[for='editStock']").text(WebAppLocals.getMessage('quantityAvailable'));
+
+		$('#editProductScientificName').append(new Option(webResponse.data.product.scientificName, webResponse.data.product.scientificNameId));
+		$('#editProductScientificName').val(webResponse.data.product.scientificNameId);
+		$('#editProductCountry').append(new Option(webResponse.data.product['madeInCountryName_' + docLang], webResponse.data.product.madeInCountryId));
+		$('#editProductCountry').val(webResponse.data.product.madeInCountryId);
 		$('#editProductNameAr').val(webResponse.data.product.productName_ar);
 		$('#editProductNameEn').val(webResponse.data.product.productName_en);
 		$('#editProductNameFr').val(webResponse.data.product.productName_fr);
 		$('#editUnitPrice').val(webResponse.data.product.unitPrice);
 		$('#editStock').val(webResponse.data.product.stock);
 		$('#editModalAction').html(WebAppLocals.getMessage('edit'));
-		// $('#viewModalTitle').html(WebAppLocals.getMessage('order'));
-		// $('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityCustomer'));
-		// $('#modalCustomerNameText').html(webResponse.data.order.entityCustomer + ' (' + webResponse.data.order.userCustomer + ')');
-		// $('#modalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
-		// $('#modalStatusText').html(status);
-		// $('#modalTotalLabel').html(WebAppLocals.getMessage('orderTotal'));
-		// $('#modalTotalText').html(webResponse.data.order.currency + Math.round((parseFloat(webResponse.data.order.total) + Number.EPSILON) * 100) / 100);
-		// $('#modalDateLabel').html(WebAppLocals.getMessage('insertDate'));
-		// $('#modalDateText').html(webResponse.data.order.insertDateTime);
-		// $('#modalOrderDetailLabel').html(WebAppLocals.getMessage('orderDetails'));
 		$('#editModal').appendTo('body').modal('show');
+	};
+
+	var _productAddModalOpen = function () {
+		$('#addModalForm').attr('action', '/web/distributor/product/add');
+
+		$('#addModalTitle').html(WebAppLocals.getMessage('add'));
+		$("label[for='addProductScientificName']").text(WebAppLocals.getMessage('productScintificName'));
+		$("label[for='addProductCountry']").text(WebAppLocals.getMessage('madeInCountry'));
+		$("label[for='addProductNameAr']").text(WebAppLocals.getMessage('productName') + ' AR');
+		$("label[for='addProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
+		$("label[for='addProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
+		$("label[for='addUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
+		$("label[for='addStock']").text(WebAppLocals.getMessage('quantityAvailable'));
+
+		$('#addModalAction').html(WebAppLocals.getMessage('add'));
+		$('#addModal').appendTo('body').modal('show');
 	};
 
 	return {
@@ -269,8 +289,14 @@ var DistributorProductsDataTable = (function () {
 			datatable.setDataSourceParam('query', _readParams);
 			datatable.reload();
 		},
+		reloadDatatable: function () {
+			datatable.reload();
+		},
 		productEditModal: function (productId) {
 			_productEditModal(productId);
+		},
+		productAddModal: function () {
+			_productAddModal();
 		},
 		showColumn: function (columnName) {
 			datatable.showColumn(columnName);

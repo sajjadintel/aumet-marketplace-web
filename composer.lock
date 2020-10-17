@@ -342,16 +342,16 @@
         },
         {
             "name": "google/auth",
-            "version": "v1.14.1",
+            "version": "v1.14.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-auth-library-php.git",
-                "reference": "2df57c61c2fd739a15a81f792b1ccedc3e06d2b6"
+                "reference": "9d82b20a07ca560a5075e24ca8ac5721bc8c961d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/2df57c61c2fd739a15a81f792b1ccedc3e06d2b6",
-                "reference": "2df57c61c2fd739a15a81f792b1ccedc3e06d2b6",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/9d82b20a07ca560a5075e24ca8ac5721bc8c961d",
+                "reference": "9d82b20a07ca560a5075e24ca8ac5721bc8c961d",
                 "shasum": ""
             },
             "require": {
@@ -390,7 +390,7 @@
                 "google",
                 "oauth2"
             ],
-            "time": "2020-10-06T18:10:43+00:00"
+            "time": "2020-10-14T16:58:18+00:00"
         },
         {
             "name": "google/cloud-core",
@@ -2138,16 +2138,16 @@
         },
         {
             "name": "sendgrid/php-http-client",
-            "version": "3.11.1",
+            "version": "3.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sendgrid/php-http-client.git",
-                "reference": "b7e45dc6734357253217d63bf0d661fe18013e48"
+                "reference": "22a3dc4dac617046004bbad2d329c0e0d9be7daf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sendgrid/php-http-client/zipball/b7e45dc6734357253217d63bf0d661fe18013e48",
-                "reference": "b7e45dc6734357253217d63bf0d661fe18013e48",
+                "url": "https://api.github.com/repos/sendgrid/php-http-client/zipball/22a3dc4dac617046004bbad2d329c0e0d9be7daf",
+                "reference": "22a3dc4dac617046004bbad2d329c0e0d9be7daf",
                 "shasum": ""
             },
             "require": {
@@ -2161,6 +2161,9 @@
                 "phpunit/phpunit": "^5.7 || ^6.5",
                 "sebastian/version": "^1.0.6",
                 "squizlabs/php_codesniffer": "~2.0"
+            },
+            "suggest": {
+                "composer/ca-bundle": "Including this library will ensure that a valid CA bundle is available for secure connections"
             },
             "type": "library",
             "autoload": {
@@ -2191,20 +2194,20 @@
                 "rest",
                 "sendgrid"
             ],
-            "time": "2020-08-19T19:09:43+00:00"
+            "time": "2020-10-14T20:09:07+00:00"
         },
         {
             "name": "sendgrid/sendgrid",
-            "version": "7.8.4",
+            "version": "7.8.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sendgrid/sendgrid-php.git",
-                "reference": "3b3ce1f516575bf22ea17501ea6afc9be43083bf"
+                "reference": "a4537666f29cf51c511ee896f4425764c74d8a63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sendgrid/sendgrid-php/zipball/3b3ce1f516575bf22ea17501ea6afc9be43083bf",
-                "reference": "3b3ce1f516575bf22ea17501ea6afc9be43083bf",
+                "url": "https://api.github.com/repos/sendgrid/sendgrid-php/zipball/a4537666f29cf51c511ee896f4425764c74d8a63",
+                "reference": "a4537666f29cf51c511ee896f4425764c74d8a63",
                 "shasum": ""
             },
             "require": {
@@ -2252,7 +2255,7 @@
                 "sendgrid",
                 "twilio sendgrid"
             ],
-            "time": "2020-09-28T21:09:29+00:00"
+            "time": "2020-10-14T19:26:13+00:00"
         },
         {
             "name": "setasign/fpdf",

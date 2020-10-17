@@ -15,7 +15,7 @@ function compress_htmlcode($codedata)
 <!--begin::Container-->
 <div class="container-fluid">
     <div class="d-flex align-items-stretch text-center flex-column">
-        <h2 class="text-primary font-weight-bolder mt-10 mb-15 font-size-h4"><?php echo $vModule_order_header; ?></h2>
+        <h2 class="text-primary font-weight-bolder mt-10 mb-15 font-size-h4"><?php echo $vModule_customer_title; ?></h2>
     </div>
 
     <div class="card card-custom gutter-b mt-20">
@@ -28,14 +28,11 @@ function compress_htmlcode($codedata)
 </div>
 <!--end::Container-->
 <script>
-    var orderQuery = {
-        entityId: [],
+    var query = {
         statusId: []
     };
     $(document).ready(function() {
-        DistributorOrdersDataTable.init(orderQuery);
+        DistributorCustomersDataTable.init(query);
     });
 </script>
 <?php ob_end_flush(); ?>
-
-<?php include_once 'view-modal.php'; ?>

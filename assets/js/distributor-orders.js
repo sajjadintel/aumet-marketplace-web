@@ -17,7 +17,7 @@ var DistributorOrdersDataTable = (function () {
 				type: 'remote',
 				source: {
 					read: {
-						url: '/web/distributor/order',
+						url: window.location.pathname,
 						params: _readParams,
 					},
 				},
@@ -56,25 +56,25 @@ var DistributorOrdersDataTable = (function () {
 					},
 				},
 				{
-					field: 'entityCustomer',
-					title: WebAppLocals.getMessage('entityCustomer'),
+					field: 'entityBuyer',
+					title: WebAppLocals.getMessage('entityBuyer'),
 					autoHide: false,
 					template: function (row) {
-						var output = row.entityCustomer;
-						if (row.userCustomer != null) {
-							output += ' (' + row.userCustomer + ')';
+						var output = row.entityBuyer;
+						if (row.userBuyer != null) {
+							output += ' (' + row.userBuyer + ')';
 						}
 						return output;
 					},
 				},
 				// {
-				// 	field: 'entityDistributor', // + docLang,
-				// 	title: WebAppLocals.getMessage('entityDistributor'),
+				// 	field: 'entitySeller', // + docLang,
+				// 	title: WebAppLocals.getMessage('entitySeller'),
 				// 	autoHide: false,
 				// 	template: function (row) {
-				// 		var output = row.entityDistributor;
-				// 		if (row.userDistributor != null) {
-				// 			output += ' (' + row.userDistributor + ')';
+				// 		var output = row.entitySeller;
+				// 		if (row.userSeller != null) {
+				// 			output += ' (' + row.userSeller + ')';
 				// 		}
 				// 		return output;
 				// 	},
@@ -106,7 +106,7 @@ var DistributorOrdersDataTable = (function () {
 					template: function (row) {
 						var status = {
 							1: {
-								title: WebAppLocals.getMessage('orderStatus_Pending'),
+								title: WebAppLocals.getMessage('orderStatus_New'),
 								class: ' label-primary',
 							},
 							2: {
@@ -115,11 +115,11 @@ var DistributorOrdersDataTable = (function () {
 							},
 							3: {
 								title: WebAppLocals.getMessage('orderStatus_Processing'),
-								class: ' label-warning',
+								class: ' label-primary',
 							},
 							4: {
 								title: WebAppLocals.getMessage('orderStatus_Completed'),
-								class: ' label-success',
+								class: ' label-primary',
 							},
 							5: {
 								title: WebAppLocals.getMessage('orderStatus_Canceled'),
@@ -127,6 +127,10 @@ var DistributorOrdersDataTable = (function () {
 							},
 							6: {
 								title: WebAppLocals.getMessage('orderStatus_Received'),
+								class: ' label-primary',
+							},
+							7: {
+								title: WebAppLocals.getMessage('orderStatus_Paid'),
 								class: ' label-success',
 							},
 						};
@@ -158,20 +162,41 @@ var DistributorOrdersDataTable = (function () {
 					width: 400,
 					autoHide: false,
 					template: function (row) {
+						var dropdownStart =
+							'<div class="dropdown dropdown-inline">\
+                            <a href="javascript:;" class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" data-toggle="dropdown">\
+								<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
+							WebAppLocals.getMessage('options') +
+							'</a>\
+                            <div class="dropdown-menu dropdown-menu-md">\
+                                <ul class="navi flex-column navi-hover py-2">';
+						var dropdownEnd = '</ul>\
+                            </div>\
+						</div>';
+						var dropdownItemStart = '<li class="navi-item">';
+						var dropdownItemEnd = '</li>';
+
+						var btnPrint =
+							'<a href="/web/distributor/order/print/' +
+							row.id +
+							'" target="_blank" class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" title="Print Order">\
+						<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
+							WebAppLocals.getMessage('print') +
+							'</a>';
 						var btnView =
 							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderViewModal(' +
 							row.id +
 							')\' \
-						class="btn btn-sm btn-outline-primary btn-hover-primary mr-2 mt-2" title="View">\
-						<i class="nav-icon la la-eye p-0"></i> ' +
+						class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" title="View">\
+						<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
 							WebAppLocals.getMessage('view') +
 							'</a>';
 						var btnOrderOnHold =
 							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
 							row.id +
 							',2)\' \
-						class="btn btn-sm btn-info btn-hover-primary mr-2 mt-2" title="Order On Hold">\
-						<i class="nav-icon la la-times p-0"></i> ' +
+						class="btn btn-sm btn-primary btn-hover-primary mr-2 navi-link" title="Order On Hold">\
+						<i class="nav-icon la la-times p-0"></i> &nbsp&nbsp' +
 							WebAppLocals.getMessage('orderStatusMove') +
 							WebAppLocals.getMessage('orderStatus_OnHold') +
 							'</a>';
@@ -179,8 +204,8 @@ var DistributorOrdersDataTable = (function () {
 							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
 							row.id +
 							',3)\' \
-						class="btn btn-sm btn-success btn-hover-primary  mr-2 mt-2" title="Order Process">\
-						<i class="nav-icon la la-check p-0"></i> ' +
+						class="btn btn-sm btn-primary btn-hover-primary  mr-2 navi-link" title="Order Process">\
+						<i class="nav-icon la la-check p-0"></i> &nbsp&nbsp' +
 							WebAppLocals.getMessage('orderStatusMove') +
 							WebAppLocals.getMessage('orderStatus_Processing') +
 							'</a>';
@@ -188,8 +213,8 @@ var DistributorOrdersDataTable = (function () {
 							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
 							row.id +
 							',4)\' \
-						class="btn btn-sm btn-success btn-hover-primary  mr-2 mt-2" title="Order Complete">\
-						<i class="nav-icon la la-check p-0"></i> ' +
+						class="btn btn-sm btn-primary btn-hover-primary  mr-2" navi-link title="Order Complete">\
+						<i class="nav-icon la la-check p-0"></i> &nbsp&nbsp' +
 							WebAppLocals.getMessage('orderStatusMove') +
 							WebAppLocals.getMessage('orderStatus_Completed') +
 							'</a>';
@@ -197,27 +222,45 @@ var DistributorOrdersDataTable = (function () {
 							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
 							row.id +
 							',5)\' \
-						class="btn btn-sm btn-danger btn-hover-primary  mr-2 mt-2" title="Order Cancel">\
-						<i class="nav-icon la la-times p-0"></i> ' +
+						class="btn btn-sm btn-primary btn-hover-primary  mr-2 navi-link" title="Order Cancel">\
+						<i class="nav-icon la la-times p-0"></i> &nbsp&nbsp' +
 							WebAppLocals.getMessage('orderStatusMove') +
 							WebAppLocals.getMessage('orderStatus_Canceled') +
 							'</a>';
+						var btnOrderPaid =
+							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+							row.id +
+							',7)\' \
+						class="btn btn-sm btn-primary btn-hover-primary  mr-2 navi-link" title="Order Paid">\
+						<i class="nav-icon la la-times p-0"></i> &nbsp&nbsp' +
+							WebAppLocals.getMessage('orderStatus_Paid') +
+							'</a>';
 						var outActions = '';
+
 						outActions += btnView;
+						outActions += btnPrint;
 
 						switch (row.statusId) {
 							case 1:
-								outActions += btnOrderProcess;
-								outActions += btnOrderOnHold;
+								outActions += dropdownStart;
+								outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
+								outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
+								outActions += dropdownEnd;
 								break;
 							case 2:
-								outActions += btnOrderProcess;
-								outActions += btnOrderCancel;
+								outActions += dropdownStart;
+								outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
+								outActions += dropdownItemStart + btnOrderCancel + dropdownItemEnd;
+								outActions += dropdownEnd;
 								break;
 							case 3:
-								outActions += btnOrderComplete;
-								outActions += btnOrderOnHold;
+								outActions += dropdownStart;
+								outActions += dropdownItemStart + btnOrderComplete + dropdownItemEnd;
+								outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
+								outActions += dropdownEnd;
 								break;
+							case 6:
+								outActions += btnOrderPaid;
 						}
 
 						return outActions;
@@ -348,16 +391,24 @@ var DistributorOrdersDataTable = (function () {
 			case 6:
 				status = WebAppLocals.getMessage('orderStatus_Received');
 				break;
+			case 7:
+				status = WebAppLocals.getMessage('orderStatus_Paid');
+				break;
 		}
 		$('#viewModalTitle').html(WebAppLocals.getMessage('order'));
-		$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityCustomer'));
-		$('#modalCustomerNameText').html(webResponse.data.order.entityCustomer + ' (' + webResponse.data.order.userCustomer + ')');
+		$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityBuyer'));
+		$('#modalCustomerNameText').html(webResponse.data.order.entityBuyer + ' (' + webResponse.data.order.userBuyer + ')');
 		$('#modalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
 		$('#modalStatusText').html(status);
 		$('#modalTotalLabel').html(WebAppLocals.getMessage('orderTotal'));
 		$('#modalTotalText').html(webResponse.data.order.currency + Math.round((parseFloat(webResponse.data.order.total) + Number.EPSILON) * 100) / 100);
 		$('#modalDateLabel').html(WebAppLocals.getMessage('insertDate'));
 		$('#modalDateText').html(webResponse.data.order.insertDateTime);
+
+		// TODO:
+		// Add Order Details Datatable
+		// Load Datatable content from the local data
+		// Create a PDF containing the invoice
 		$('#modalOrderDetailLabel').html(WebAppLocals.getMessage('orderDetails'));
 		$('#modalPrint').attr('href', '/web/distributor/order/print/' + webResponse.data.order.id);
 		_initOrderDetailDatatable(webResponse.data.orderDetail);

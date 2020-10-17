@@ -63,20 +63,6 @@ return array(
 
     'vBack' => 'رجوع',
 
-    'vMenuItem_dashboard' => 'لوحة التحكم',
-    'vMenuItem_search' => 'البحث',
-    'vMenuSection_ordersManagement' => 'إدارة الطلبات',
-    'vMenuItem_currentOrder' => 'الطلب الحالي',
-    'vMenuItem_currentMonthOrders' => 'الشهر الحالي',
-    'vMenuItem_previousMonthOrders' => 'الشهر الماضي',
-    'vMenuItem_previousOrders' => 'أرشيف الطلبات',
-    'vMenuSection_support' => 'المساعدة والدعم',
-    'vMenuItem_reportMissedProduct' => 'منتج غير متوفر',
-    'vMenuItem_customerCare' => 'خدمة المتعاملين',
-    'vMenuSection_distributors' => 'المستودعات',
-    'vMenuItem_distributors' => 'قائمة المستودعات',
-
-
     'vModule_search_title' => 'البحث في المنتجات',
     'vModule_search_header' => 'يمكنك البحث عن المنتجات من خلال اسم المنتج أو الاسم العلمي للمنتج او اسم الموزع',
     'vModule_search_brandNameplaceholder' => 'الأسماء التجارية',
@@ -94,7 +80,22 @@ return array(
 
     'vModule_order_title' => 'لائحة الطلبات',
     'vModule_order_header' => 'يمكنك عرض قائمة بأوامرك',
+    'vModule_order_header_new' => 'يمكنك عرض طلباتك الجديدة',
+    'vModule_order_header_unpaid' => 'يمكنك عرض طلباتك غير المدفوعة',
+    'vModule_order_header_pending' => 'يمكنك عرض الطلبات المعلقة الخاصة بك',
+    'vModule_order_header_history' => 'يمكنك عرض محفوظات طلبك',
 
+    'vOrderStatusConfirmation' => 'هل أنت متأكد أنك تريد نقل هذا الطلب إلى {0}؟',
+    'vOrderStatus_New' => 'جديد',
+    'vOrderStatus_OnHold' => 'في الانتظار',
+    'vOrderStatus_Processing' => 'معالجة',
+    'vOrderStatus_Completed' => 'منجز',
+    'vOrderStatus_Canceled' => 'ألغيت',
+    'vOrderStatus_Received' => 'تم الاستلام',
+    'vOrderStatus_Paid' => 'دفع',
+
+    'vModule_customer_title' => 'الزبائن',
+    'vModule_customer_header' => 'يمكنك البحث عن الزبائن',
 
     'vModule_product_name' => 'المنتج',
     'vModule_product_distributor' => 'الموزع',
@@ -119,28 +120,16 @@ return array(
     'vModule_cart_offersMore' => 'تصفح المزيد من العروض',
 
     'vModule_bonus_bonusTextTemplate' => 'كل %q: %b',
-    'vSignup_' => '',
-    'vSignup_' => '',
-    'vSignup_' => '',
-    'vSignup_' => '',
-    'vSignup_' => '',
 
-    'vResponse_notFound' => '{0} not found',
-    'vResponse_notUpdated' => '{0} could not be updated',
-    'vResponse_notAdded' => '{0} could not be added',
-    'vResponse_updated' => '{0} was updated!',
-    'vResponse_added' => '{0} was added!',
+    'vResponse_notFound' => '{0} غير موجود',
+    'vResponse_notUpdated' => 'تعذر تحديث {0}',
+    'vResponse_notAdded' => 'تعذر إضافة {0}',
+    'vResponse_updated' => 'تم تحديث {0}!',
+    'vResponse_added' => 'تمت إضافة {0}!',
 
-    'vEntity_order' => 'Order',
-    'vEntity_orderLog' => 'Order Log',
+    'vEntity_order' => 'الطلب',
+    'vEntity_orderLog' => 'سجل الطلبات',
 
-    'vOrderStatusConfirmation' => 'هل آنت متأكد من أنك تريد تحويل هذا الطلب إلى {0}?',
-    'vOrderStatus_Pending' => 'Pending',
-    'vOrderStatus_OnHold' => 'On Hold',
-    'vOrderStatus_Processing' => 'Processing',
-    'vOrderStatus_Completed' => 'Completed',
-    'vOrderStatus_Canceled' => 'Canceled',
-    'vOrderStatus_Received' => 'Received',
-
-    'vButton_update' => 'Update',
+    'vButton_update' => 'تحديث',
+    'vButton_add' => 'أضف',
 );
