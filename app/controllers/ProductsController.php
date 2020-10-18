@@ -89,66 +89,43 @@ class ProductsController extends Controller
 
     function postDistributorProducts()
     {
-        $query = "";
+        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+        $query = "entityId IN ($arrEntityId)";
+
         $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
 
         if ($datatable['query'] != "") {
 
-            $productQuery = "";
             $productId = $datatable['query']['productId'];
             if (isset($productId)) {
                 if (is_array($productId)) {
-                    $productQuery = "id in (" . implode(",", $productId) . ")";
+                    $query .= " AND id in (" . implode(",", $productId) . ")";
                 } else {
-                    $productQuery = "id = $productId";
+                    $query .= " AND id = $productId";
                 }
             }
 
-            $scientificQuery = "";
             $scientificNameId = $datatable['query']['scientificNameId'];
             if (isset($scientificNameId)) {
                 if (is_array($scientificNameId)) {
-                    $scientificQuery = "scientificNameId in (" . implode(",", $scientificNameId) . ")";
+                    $query .= " AND scientificNameId in (" . implode(",", $scientificNameId) . ")";
                 } else {
-                    $scientificQuery = "scientificNameId = $scientificNameId";
+                    $query .= " AND scientificNameId = $scientificNameId";
                 }
             }
 
-            $entityQuery = "";
             $entityId = $datatable['query']['entityId'];
             if (isset($entityId)) {
                 if (is_array($entityId)) {
-                    $entityQuery = "entityId in (" . implode(",", $entityId) . ")";
+                    $query .= " AND entityId in (" . implode(",", $entityId) . ")";
                 } else {
-                    $entityQuery = "entityId = $entityId";
+                    $query .= " AND entityId = $entityId";
                 }
-            }
-
-            if ($productQuery != "" && $scientificQuery != "" && $entityQuery != "") {
-                $query = " $entityQuery and ($productQuery or $scientificQuery)";
-            } elseif ($productQuery != "" && $scientificQuery != "" && $entityQuery == "") {
-                $query = "$productQuery or $scientificQuery";
-            } elseif ($productQuery != "" && $scientificQuery == "" && $entityQuery != "") {
-                $query = " $entityQuery and $productQuery";
-            } elseif ($productQuery != "" && $scientificQuery == "" && $entityQuery == "") {
-                $query = "$productQuery";
-            } elseif ($productQuery == "" && $scientificQuery != "" && $entityQuery != "") {
-                $query = "$entityQuery and $scientificQuery";
-            } elseif ($productQuery == "" && $scientificQuery == "" && $entityQuery != "") {
-                $query = "$entityQuery";
-            } elseif ($productQuery == "" && $scientificQuery != "" && $entityQuery == "") {
-                $query = "$scientificQuery";
             }
 
             if ($datatable['query']['stockOption'] == 1) {
-                if ($query == "") {
-                    $query = "stockStatusId=1";
-                } else {
-                    $query = "stockStatusId=1 and ($query)";
-                }
+                $query .= " AND stockStatusId=1";
             }
-        } else {
-            $query = "stockStatusId=1";
         }
 
         $sort = !empty($datatable['sort']['sort']) ? $datatable['sort']['sort'] : 'asc';
