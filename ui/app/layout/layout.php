@@ -216,7 +216,7 @@ function compress_htmlcode($codedata)
 
 	<!--end::Quick Cart-->
 	<!--begin::Quick Panel-->
-	<?php include_once 'quickPanel.php'; ?>
+	<?php //include_once 'quickPanel.php'; ?>
 	<!--end::Quick Panel-->
 	<!--begin::Chat Panel-->
 	<?php include_once 'chatPanel.php'; ?>
@@ -237,7 +237,7 @@ function compress_htmlcode($codedata)
 	</div>
 	<!--end::Scrolltop-->
 	<!--begin::Sticky Toolbar-->
-	<?php include_once 'stickyToolbar.php'; ?>
+	<?php //include_once 'stickyToolbar.php'; ?>
 	<!--end::Sticky Toolbar-->
 
 

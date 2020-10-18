@@ -180,7 +180,7 @@ var DistributorOrdersDataTable = (function () {
 							'<a href="/web/distributor/order/print/' +
 							row.id +
 							'" target="_blank" class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" title="Print Order">\
-						<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
+						<i class="nav-icon la la-print p-0"></i> &nbsp&nbsp' +
 							WebAppLocals.getMessage('print') +
 							'</a>';
 						var btnView =
