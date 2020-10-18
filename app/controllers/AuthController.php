@@ -172,9 +172,12 @@ class AuthController extends Controller
                 break;
         }
 
+        $dbAccount = new BaseModel($dbConnection, "account");
+        $dbAccount->getByField("id", $dbUserAccount->accountId);
+
         $dbEntity = new BaseModel($dbConnection, "entity");
         $dbEntity->name = "name_" . $objUser->language;
-        $dbEntity->getByField("typeId", 10);
+        $dbEntity->getByField("id", $dbAccount->entityId);
         $arrEntities = [];
         while (!$dbEntity->dry()) {
             $arrEntities[$dbEntity->id] = $dbEntity->name;
