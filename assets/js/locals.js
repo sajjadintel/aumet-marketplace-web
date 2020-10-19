@@ -31,7 +31,7 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		editQuantity: {
-			en: 'Edit Quantity',
+			en: 'Edit Stock',
 			ar: 'تعديل الكمية',
 			fr: '',
 		},
@@ -233,6 +233,16 @@ var WebAppLocals = (function () {
 		relationBlacklisted: {
 			en: 'Blacklisted',
 			ar: 'محظور',
+			fr: '',
+		},
+		userFullname: {
+			en: 'User Full Name',
+			ar: 'إسم المستخدم',
+			fr: '',
+		},
+		orderRating: {
+			en: 'Rating',
+			ar: 'التصنيف',
 			fr: '',
 		},
 		error: {

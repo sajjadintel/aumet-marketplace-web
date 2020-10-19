@@ -141,4 +141,7 @@ return array(
 
     'vButton_update' => 'Update',
     'vButton_add' => 'Add',
+
+    'vModule_feedback_title' => 'Customer Orders Feedback',
+    'vModule_feedback_header' => 'The below customer feedback is delivered to you privately and they are not publicly available for any user',
 );
