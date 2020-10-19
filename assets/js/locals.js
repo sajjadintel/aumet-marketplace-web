@@ -140,6 +140,11 @@ var WebAppLocals = (function () {
 			ar: 'مدفوع',
 			fr: '',
 		},
+		orderStatus_Pending: {
+			en: 'Pending',
+			ar: 'معلق',
+			fr: '',
+		},
 		orderTotal: {
 			en: 'Total',
 			ar: 'مجموع',
