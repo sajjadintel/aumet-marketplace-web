@@ -14,8 +14,8 @@ function compress_htmlcode($codedata)
 ?>
 <!--begin::Container-->
 <div class="container-fluid">
-    <div class="d-flex align-items-stretch text-center flex-column">
-        <h2 class="text-primary font-weight-bolder mt-10 mb-15 font-size-h4"><?php echo $vModule_order_header; ?></h2>
+    <div class="d-flex align-items-stretch flex-column">
+        <h2 class="text-primary font-weight-bolder mt-5 mb-10 font-size-h4"><?php echo $vModule_order_header; ?></h2>
         <form class="d-flex position-relative w-100 m-auto">
 
             <div class="d-flex flex-column-fluid">
@@ -50,7 +50,7 @@ function compress_htmlcode($codedata)
         </form>
     </div>
 
-    <div class="card card-custom gutter-b mt-20">
+    <div class="card card-custom gutter-b mt-5">
         <div class="card-body">
             <!--begin: Datatable-->
             <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>

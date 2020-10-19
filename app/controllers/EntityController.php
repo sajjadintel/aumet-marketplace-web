@@ -108,4 +108,24 @@ class EntityController extends Controller
 
         echo json_encode($result, JSON_PRETTY_PRINT);
     }
+
+    function getEntityUsers()
+    {
+        if (!$this->f3->ajax()) {
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+
+            global $dbConnection;
+
+            $dbStockStatus = new BaseModel($dbConnection, "stockStatus");
+            $dbStockStatus->name = "name_" . $this->objUser->language;
+            $arrStockStatus = $dbStockStatus->all("id asc");
+            $this->f3->set('arrStockStatus', $arrStockStatus);
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = $this->f3->get('vModule_users_title');
+            $this->webResponse->data = View::instance()->render('app/users/list.php');
+            echo $this->webResponse->jsonResponse();
+        }
+    }
 }

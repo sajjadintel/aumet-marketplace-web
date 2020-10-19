@@ -200,6 +200,7 @@ function compress_htmlcode($codedata)
 				</div>
 				<!--end::Content-->
 				<?php include_once 'modal.php'; ?>
+                <?php include_once 'webGuidedTour-distributor.php'; ?>
 				<!--begin::Footer-->
 				<?php include_once 'footer.php'; ?>
 				<!--end::Footer-->
@@ -251,7 +252,8 @@ function compress_htmlcode($codedata)
 	<script type="text/javascript" src="/theme/assets/plugins/custom/jstree/jstree.bundle.js<?php echo $platformVersion ?>"></script>
 
 	<script type="text/javascript" src="/assets/js/math.min.js"></script>
-	<script type="text/javascript" src="/assets/js/locals.js<?php echo $platformVersion ?>"></script>
+	<script type="text/javascript" src="/assets/js/tour-distributor.js<?php echo $platformVersion ?>"></script>
+    <script type="text/javascript" src="/assets/js/locals.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/cart.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/app.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/autocomplete.js<?php echo $platformVersion ?>"></script>
