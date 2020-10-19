@@ -68,3 +68,8 @@ $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->po
 $f3->route('GET /web/distributor/customer', 'EntityController->getEntityCustomers');
 $f3->route('GET /web/distributor/customer/@customerId', 'EntityController->getEntityCustomerDetails');
 $f3->route('POST /web/distributor/customer', 'EntityController->postEntityCustomers');
+
+$f3->route('GET /web/distributor/customer/feedback', 'CustomersController->getOrderCustomersFeedback');
+$f3->route('POST /web/distributor/customer/feedback', 'CustomersController->postOrderCustomersFeedback');
+
+

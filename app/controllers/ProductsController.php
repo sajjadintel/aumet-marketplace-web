@@ -273,6 +273,7 @@ class ProductsController extends Controller
 
                 $dbEntityProduct->stock = $stock;
                 $dbEntityProduct->stockStatusId = $stockStatusId;
+                $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
 
                 $dbEntityProduct->update();
 

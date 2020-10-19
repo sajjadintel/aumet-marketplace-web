@@ -13,31 +13,31 @@
                     <input type="hidden" class="form-control" name="id" id="editProductId">
                     <input type="hidden" name="fnCallback" class="modalValueCallback" id="editProductCallback" value="DistributorProductsDataTable.reloadDatatable" />
                     <div class="row">
-                        <div class="col-md-12 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="editProductScientificName" class="form-control-label">Scientific Name</label>
                             <select class="select2 form-control" id="editProductScientificName" name="scientificNameId" data-select2-id="editProductScientificName" tabindex="-1" aria-hidden="true">
                                 <option disabled>Scientific Name</option>
                             </select>
                         </div>
-                        <div class="col-md-12 form-group">
-                            <label for="editProductCountry" class="form-control-label">Country</label>
+                        <div class="col-md-6 form-group">
+                            <label for="editProductCountry" class="form-control-label">Made In Country</label>
                             <select class="select2 form-control" id="editProductCountry" name="madeInCountryId" data-select2-id="editProductCountry" tabindex="-1" aria-hidden="true">
                                 <option disabled>Made In Country</option>
                             </select>
                         </div>
-                        <div class="col-md-12 form-group">
-                            <label for="editProductNameAr" class="form-control-label">Product Name Ar</label>
+                        <div class="col-md-6 form-group">
+                            <label for="editProductNameAr" class="form-control-label">Product Name (Arabic)</label>
                             <input type="text" class="form-control" name="name_ar" id="editProductNameAr">
                         </div>
-                        <div class="col-md-12 form-group">
-                            <label for="editProductNameEn" class="form-control-label">Product Name En</label>
+                        <div class="col-md-6 form-group">
+                            <label for="editProductNameEn" class="form-control-label">Product Name (English)</label>
                             <input type="text" class="form-control" name="name_en" id="editProductNameEn">
                         </div>
-                        <div class="col-md-12 form-group">
-                            <label for="editProductNameFr" class="form-control-label">Product Name Fr</label>
+                        <div class="col-md-6 form-group">
+                            <label for="editProductNameFr" class="form-control-label">Product Name (French)</label>
                             <input type="text" class="form-control" name="name_fr" id="editProductNameFr">
                         </div>
-                        <div class="col-md-12 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="editUnitPrice" class="form-control-label">Unit Price</label>
                             <input type="text" class="form-control" name="unitPrice" id="editUnitPrice">
                         </div>

@@ -75,11 +75,6 @@ var DistributorProductsDataTable = (function () {
 					autoHide: true,
 				},
 				{
-					field: 'entityName_ar', // + docLang,
-					title: WebAppLocals.getMessage('sellingEntityName'),
-					autoHide: false,
-				},
-				{
 					field: 'expiryDate',
 					title: WebAppLocals.getMessage('expiryDate'),
 					autoHide: true,
@@ -97,7 +92,7 @@ var DistributorProductsDataTable = (function () {
 					field: 'stockStatusId',
 					sortable: false,
 					title: WebAppLocals.getMessage('stockAvailability'),
-					autoHide: true,
+					autoHide: false,
 					// callback function support for column rendering
 					template: function (row) {
 						var status = {
@@ -185,7 +180,7 @@ var DistributorProductsDataTable = (function () {
 					field: 'Actions',
 					title: '',
 					sortable: false,
-					width: 200,
+
 					overflow: 'visible',
 					autoHide: false,
 					template: function (row) {
@@ -205,7 +200,7 @@ var DistributorProductsDataTable = (function () {
 							row.id +
 							')\' \
 						class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
-						<i class="nav-icon la la-edit p-0"></i> ' +
+						<i class="nav-icon la la-box p-0"></i> ' +
 							WebAppLocals.getMessage('editQuantity') +
 							'</a>';
 
