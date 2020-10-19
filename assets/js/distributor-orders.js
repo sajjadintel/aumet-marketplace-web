@@ -165,8 +165,8 @@ var DistributorOrdersDataTable = (function () {
 						var dropdownStart =
 							'<div class="dropdown dropdown-inline">\
                             <a href="javascript:;" class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" data-toggle="dropdown">\
-								<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
-							WebAppLocals.getMessage('options') +
+								<i class="nav-icon la la-ellipsis-h p-0"></i> &nbsp&nbsp' +
+							WebAppLocals.getMessage('actions') +
 							'</a>\
                             <div class="dropdown-menu dropdown-menu-md">\
                                 <ul class="navi flex-column navi-hover py-2">';

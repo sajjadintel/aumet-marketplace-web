@@ -1,6 +1,6 @@
 <!-- Modal-->
-<div class="modal fade" id="popupModal" tabindex="-1" role="dialog" aria-labelledby="popupModal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade " id="popupModal" tabindex="-1" role="dialog" aria-labelledby="popupModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <form method="POST" action="/" class="modalForm" id="modalForm">
                 <div class="modal-header">
