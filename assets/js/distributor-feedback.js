@@ -98,11 +98,11 @@ var CustomerFeedbackDataTable = (function () {
 							},
 							3: {
 								title: row.rateName,
-								class: ' label-info',
+								class: ' label-dark',
 							},
 							4: {
 								title: row.rateName,
-								class: ' label-success',
+								class: ' label-info',
 							},
 							5: {
 								title: row.rateName,
@@ -126,10 +126,31 @@ var CustomerFeedbackDataTable = (function () {
 					autoHide: false,
 					// callback function support for column rendering
 					template: function (row) {
+
+
+						var cssData = "text-muted";
+						switch (row.rateId) {
+							case 1:
+								cssData = "text-danger";
+								break;
+							case 2:
+								cssData = "text-warning";
+								break;
+							case 3:
+								cssData = "text-dark";
+								break;
+							case 4:
+								cssData = "text-info";
+								break;
+							case 5:
+								cssData = "text-primary";
+								break;
+						}
+
 						var output = '<div>';
 						for(var i=0; i<row.stars; i++){
 							output +=
-								'<i class="icon-xl far fa-star mr-1 text-warning"></i>';
+								'<i class="icon-xl fas fa-star mr-1 '+cssData+'"></i>';
 						}
 						for(; i<5; i++){
 							output +=
