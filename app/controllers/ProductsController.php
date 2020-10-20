@@ -80,7 +80,12 @@ class ProductsController extends Controller
             $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
             $arrProduct = $dbProduct->findWhere("productId = '$productId'");
 
+            $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+            $dbBonus->bonusId = 'id';
+            $arrBonus = $dbBonus->findWhere("entityProductId = '$productId' AND isActive = 1");
+
             $data['product'] = $arrProduct[0];
+            $data['bonus'] = $arrBonus;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
             return;
@@ -260,6 +265,8 @@ class ProductsController extends Controller
             } else {
                 $stock = $this->f3->get('POST.stock');
                 $stockStatusId = $this->f3->get('POST.stockStatus');
+                $bonusTypeId = $this->f3->get('POST.bonusType');
+                $bonusRepeater = $this->f3->get('POST.bonusRepeater');
 
                 if ($stock > 0) {
                     $stockStatusId = 1;
@@ -271,15 +278,41 @@ class ProductsController extends Controller
                     }
                 }
 
+                if (isset($bonusTypeId) && $bonusTypeId == 'on') {
+                    $bonusTypeId = 2;
+                } else {
+                    $bonusTypeId = 1;
+                }
+
                 $dbEntityProduct->stock = $stock;
                 $dbEntityProduct->stockStatusId = $stockStatusId;
+                $dbEntityProduct->bonusTypeId = $bonusTypeId;
                 $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
 
                 $dbEntityProduct->update();
 
+                if ($bonusTypeId != 1) {
+                    $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+                    $dbBonus->load(array("entityProductId = $id AND isActive = 1"));
+                    while (!$dbBonus->dry()) {
+                        $dbBonus->delete();
+                        $dbBonus->next();
+                    }
+
+                    foreach ($bonusRepeater as $bonus) {
+                        $dbBonus->reset();
+                        if ($bonus['minOrder'] != '' && $bonus['bonus'] != '') {
+                            $dbBonus->entityProductId = $id;
+                            $dbBonus->minOrder = $bonus['minOrder'];
+                            $dbBonus->bonus = $bonus['bonus'];
+                            $dbBonus->add();
+                        }
+                    }
+                }
+
                 $this->webResponse->errorCode = 1;
                 $this->webResponse->title = "";
-                $this->webResponse->data = $dbProduct->name_ar;
+                $this->webResponse->data = $bonusRepeater;
                 echo $this->webResponse->jsonResponse();
             }
         }
@@ -308,7 +341,8 @@ class ProductsController extends Controller
             $dbProduct->image = $image;
 
             $dbProduct->addReturnID();
-            $entityId = $this->f3->get('POST.entityId');
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $entityId = $arrEntityId;
             $unitPrice = $this->f3->get('POST.unitPrice');
             $stock = $this->f3->get('POST.stock');
 

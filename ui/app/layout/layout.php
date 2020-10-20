@@ -50,10 +50,11 @@ function compress_htmlcode($codedata)
 	<link href="/theme/assets/css/themes/layout/header/base/light<?php echo $_SESSION['userLangDirection'] == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
 	<link href="/theme/assets/css/themes/layout/header/menu/light<?php echo $_SESSION['userLangDirection'] == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
 	<link href="/theme/assets/css/themes/layout/brand/light<?php echo $_SESSION['userLangDirection'] == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
-	<link href="/theme/	assets/css/themes/layout/aside/light<?php echo $_SESSION['userLangDirection'] == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+	<link href="/theme/assets/css/themes/layout/aside/light<?php echo $_SESSION['userLangDirection'] == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
 
 	<link href="/assets/css/app.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+	<link href="/theme/assets/plugins/custom/datatables/datatables.bundle.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
 
 	<link rel="apple-touch-icon" sizes="57x57" href="/favicons/apple-icon-57x57.png">
 	<link rel="apple-touch-icon" sizes="60x60" href="/favicons/apple-icon-60x60.png">
@@ -265,6 +266,8 @@ function compress_htmlcode($codedata)
 
 	<script type="text/javascript" src="/assets/js/treeview.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/demoApp.js<?php echo $platformVersion ?>"></script>
+	<script type="text/javascript" src="/theme/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+	<script type="text/javascript" src="/theme/assets/js/pages/crud/forms/widgets/form-repeater.js"></script>
 </body>
 <!--end::Body-->
 

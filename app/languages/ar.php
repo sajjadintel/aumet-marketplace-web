@@ -110,6 +110,9 @@ return array(
     'vModule_product_stockStatus_NotAvailable' => 'غير متوفر',
     'vModule_product_stockStatus_ComingSoon' => 'قريبا',
 
+    'vModule_product_stockStatus_hasBonus' => 'لديه بونص',
+    'vModule_product_stockStatus_noBonus' => 'لا بونص',
+
     'vModule_cart_title' => 'قائمة الطلبات',
     'vModule_cart_continueShopping' => 'إضافة المزيد من المنتجات',
     'vModule_cart_proceedToCheckOut' => 'إرسال قائمة الطلبات',

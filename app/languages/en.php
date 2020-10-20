@@ -110,6 +110,9 @@ return array(
     'vModule_product_stockStatus_NotAvailable' => 'Not Available',
     'vModule_product_stockStatus_ComingSoon' => 'Coming Soon',
 
+    'vModule_product_stockStatus_hasBonus' => 'Has Bonus',
+    'vModule_product_stockStatus_noBonus' => 'No Bonus',
+
     'vModule_cart_title' => 'Order Cart',
     'vModule_cart_continueShopping' => 'Add More to Cart',
     'vModule_cart_proceedToCheckOut' => 'Proceed to Checkout',

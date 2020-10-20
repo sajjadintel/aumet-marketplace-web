@@ -40,6 +40,11 @@ var WebAppLocals = (function () {
 			ar: 'أضف',
 			fr: '',
 		},
+		delete: {
+			en: 'Delete',
+			ar: 'حذف',
+			fr: '',
+		},
 		print: {
 			en: 'Print',
 			ar: 'طباعة',
@@ -163,6 +168,11 @@ var WebAppLocals = (function () {
 		quantity: {
 			en: 'Quantity',
 			ar: 'الكمية المطلوبة',
+			fr: '',
+		},
+		minOrder: {
+			en: 'Minimum Order',
+			ar: 'أقل كمية',
 			fr: '',
 		},
 		expiryDate: {

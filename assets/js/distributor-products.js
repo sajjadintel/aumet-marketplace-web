@@ -1,6 +1,5 @@
 'use strict';
 // Class definition
-
 var DistributorProductsDataTable = (function () {
 	// Private functions
 
@@ -300,6 +299,38 @@ var DistributorProductsDataTable = (function () {
 				$('#editQuantityStockAvailability').bootstrapSwitch('disabled', false);
 			}
 		});
+
+		$("label[for='editQuantityBonusMinOrder']").text(WebAppLocals.getMessage('minOrder'));
+		$("label[for='editQuantityBonusQuantity']").text(WebAppLocals.getMessage('bonus'));
+		$("label[for='editQuantityBonusDelete']").text(WebAppLocals.getMessage('delete'));
+		$("label[for='editQuantityBonusAdd']").text(WebAppLocals.getMessage('add'));
+
+		$repeater.setList(webResponse.data.bonus);
+
+		$("label[for='editQuantityBonusType']").text(WebAppLocals.getMessage('bonus'));
+
+		switch (webResponse.data.product.bonusTypeId) {
+			case 1:
+				$('#editQuantityBonusListRepeater').hide();
+				$('#editQuantityBonusType').bootstrapSwitch('state', false);
+				break;
+			case 2:
+				$('#editQuantityBonusListRepeater').show();
+				$('#editQuantityBonusType').bootstrapSwitch('state', true);
+				break;
+			default:
+				break;
+		}
+
+		$('#editQuantityBonusType')
+			.bootstrapSwitch()
+			.on('switchChange.bootstrapSwitch', function (event, state) {
+				if (state) {
+					$('#editQuantityBonusListRepeater').show();
+				} else {
+					$('#editQuantityBonusListRepeater').hide();
+				}
+			});
 
 		$('#editQuantityModalAction').html(WebAppLocals.getMessage('editQuantity'));
 		$('#editQuantityModal').appendTo('body').modal('show');

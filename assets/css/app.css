@@ -65,6 +65,19 @@ label.myLabel input[type='file'] {
 	display: inline-flex;
 }
 
+.dataTables_length {
+	float: left;
+	margin-right: 20px;
+}
+
+.dataTables_filter {
+	float: right;
+}
+
+.btn-add-datatables {
+	float: right;
+	margin-left: 1rem;
+
 :root {
 	--TourAccent: #318CCF;
 	--TourBackground: #F3F3F3;
