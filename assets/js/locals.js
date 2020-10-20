@@ -31,7 +31,7 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		editQuantity: {
-			en: 'Edit Quantity',
+			en: 'Edit Stock',
 			ar: 'تعديل الكمية',
 			fr: '',
 		},
@@ -52,6 +52,11 @@ var WebAppLocals = (function () {
 		},
 		options: {
 			en: 'Options',
+			ar: 'خيارات',
+			fr: '',
+		},
+		actions: {
+			en: 'Actions',
 			ar: 'خيارات',
 			fr: '',
 		},
@@ -138,6 +143,11 @@ var WebAppLocals = (function () {
 		orderStatus_Paid: {
 			en: 'Paid',
 			ar: 'مدفوع',
+			fr: '',
+		},
+		orderStatus_Pending: {
+			en: 'Pending',
+			ar: 'معلق',
 			fr: '',
 		},
 		orderTotal: {
@@ -233,6 +243,16 @@ var WebAppLocals = (function () {
 		relationBlacklisted: {
 			en: 'Blacklisted',
 			ar: 'محظور',
+			fr: '',
+		},
+		userFullname: {
+			en: 'User Full Name',
+			ar: 'إسم المستخدم',
+			fr: '',
+		},
+		orderRating: {
+			en: 'Rating',
+			ar: 'التصنيف',
 			fr: '',
 		},
 		error: {

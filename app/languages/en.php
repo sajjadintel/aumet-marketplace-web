@@ -68,7 +68,7 @@ return array(
     'vModule_search_brandNameplaceholder' => 'Brand Name',
     'vModule_search_scientificNamePlaceholder' => 'Scientific Name List',
     'vModule_search_distributorNamePlaceholder' => 'Distributor List',
-    'vModule_search_buyerNamePlaceholder' => 'Buyer List',
+    'vModule_search_buyerNamePlaceholder' => 'Filter by Customer',
     'vModule_search_stockStatusPlaceholder' => 'Availability',
     'vModule_search_stockStatus_Available' => 'Available Only',
     'vModule_search_stockStatus_others' => 'All',
@@ -144,4 +144,7 @@ return array(
 
     'vButton_update' => 'Update',
     'vButton_add' => 'Add',
+
+    'vModule_feedback_title' => 'Customer Orders Feedback',
+    'vModule_feedback_header' => 'The below customer feedback is delivered to you privately and they are not publicly available for any user',
 );

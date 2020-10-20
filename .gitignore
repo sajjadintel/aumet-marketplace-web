@@ -2,6 +2,7 @@
 /.vscode/
 /tmp/
 /vendor/
+/.idea/
 
 # Temp and environment variables
 .DS_Store

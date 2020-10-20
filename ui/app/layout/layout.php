@@ -201,6 +201,7 @@ function compress_htmlcode($codedata)
 				</div>
 				<!--end::Content-->
 				<?php include_once 'modal.php'; ?>
+                <?php include_once 'webGuidedTour-distributor.php'; ?>
 				<!--begin::Footer-->
 				<?php include_once 'footer.php'; ?>
 				<!--end::Footer-->
@@ -217,7 +218,7 @@ function compress_htmlcode($codedata)
 
 	<!--end::Quick Cart-->
 	<!--begin::Quick Panel-->
-	<?php include_once 'quickPanel.php'; ?>
+	<?php //include_once 'quickPanel.php'; ?>
 	<!--end::Quick Panel-->
 	<!--begin::Chat Panel-->
 	<?php include_once 'chatPanel.php'; ?>
@@ -238,7 +239,7 @@ function compress_htmlcode($codedata)
 	</div>
 	<!--end::Scrolltop-->
 	<!--begin::Sticky Toolbar-->
-	<?php include_once 'stickyToolbar.php'; ?>
+	<?php //include_once 'stickyToolbar.php'; ?>
 	<!--end::Sticky Toolbar-->
 
 
@@ -252,12 +253,14 @@ function compress_htmlcode($codedata)
 	<script type="text/javascript" src="/theme/assets/plugins/custom/jstree/jstree.bundle.js<?php echo $platformVersion ?>"></script>
 
 	<script type="text/javascript" src="/assets/js/math.min.js"></script>
-	<script type="text/javascript" src="/assets/js/locals.js<?php echo $platformVersion ?>"></script>
+	<script type="text/javascript" src="/assets/js/tour-distributor.js<?php echo $platformVersion ?>"></script>
+    <script type="text/javascript" src="/assets/js/locals.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/cart.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/app.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/autocomplete.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/products-search.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-orders.js<?php echo $platformVersion ?>"></script>
+    <script type="text/javascript" src="/assets/js/distributor-feedback.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-products.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-customers.js<?php echo $platformVersion ?>"></script>
 

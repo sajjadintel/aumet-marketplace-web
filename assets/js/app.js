@@ -406,6 +406,8 @@ var WebApp = (function () {
 			Cart.init();
 
 			_initSessionTimeout();
+
+			//$("#webGuidedTourModal").modal();
 		},
 		signout: function () {
 			return _signout();

@@ -165,8 +165,8 @@ var DistributorOrdersDataTable = (function () {
 						var dropdownStart =
 							'<div class="dropdown dropdown-inline">\
                             <a href="javascript:;" class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" data-toggle="dropdown">\
-								<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
-							WebAppLocals.getMessage('options') +
+								<i class="nav-icon la la-ellipsis-h p-0"></i> &nbsp&nbsp' +
+							WebAppLocals.getMessage('actions') +
 							'</a>\
                             <div class="dropdown-menu dropdown-menu-md">\
                                 <ul class="navi flex-column navi-hover py-2">';
@@ -179,15 +179,15 @@ var DistributorOrdersDataTable = (function () {
 						var btnPrint =
 							'<a href="/web/distributor/order/print/' +
 							row.id +
-							'" target="_blank" class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" title="Print Order">\
-						<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
+							'" target="_blank" class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="Print Order">\
+						<i class="nav-icon la la-print p-0"></i> &nbsp&nbsp' +
 							WebAppLocals.getMessage('print') +
 							'</a>';
 						var btnView =
 							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderViewModal(' +
 							row.id +
 							')\' \
-						class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" title="View">\
+						class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
 						<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
 							WebAppLocals.getMessage('view') +
 							'</a>';
@@ -234,7 +234,8 @@ var DistributorOrdersDataTable = (function () {
 							row.id +
 							',7)\' \
 						class="btn btn-sm btn-primary btn-hover-primary  mr-2 navi-link" title="Order Paid">\
-						<i class="nav-icon la la-times p-0"></i> &nbsp&nbsp' +
+						<i class="nav-icon la la-dollar p-0"></i> &nbsp&nbsp' +
+							WebAppLocals.getMessage('orderStatusMove') +
 							WebAppLocals.getMessage('orderStatus_Paid') +
 							'</a>';
 						var outActions = '';
@@ -397,7 +398,7 @@ var DistributorOrdersDataTable = (function () {
 				status = WebAppLocals.getMessage('orderStatus_Paid');
 				break;
 		}
-		$('#viewModalTitle').html(WebAppLocals.getMessage('order'));
+		$('#viewModalTitle').html(WebAppLocals.getMessage('orderDetails'));
 		$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityBuyer'));
 		$('#modalCustomerNameText').html(webResponse.data.order.entityBuyer + ' (' + webResponse.data.order.userBuyer + ')');
 		$('#modalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));

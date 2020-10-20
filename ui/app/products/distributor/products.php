@@ -73,7 +73,7 @@ function compress_htmlcode($codedata)
                             </span>
                         </span>
                     </div>
-                    <input id="searchStockStatus" data-switch="true" type="checkbox" checked="checked" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="70" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
+                    <input id="searchStockStatus" data-switch="true" type="checkbox" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="70" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
                 </div>
             </div>
 
@@ -82,11 +82,11 @@ function compress_htmlcode($codedata)
                     <div class="input-group-prepend ">
                         <label class="myLabel">
                             <input type="file" required />
-                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Upload Bonus Excel Sheet"> <i class="nav-icon la la-file-excel-o p-0"></i> <?php echo $vModule_product_uploadBonus; ?></a>
+                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Upload Bonus Excel Sheet"> <i class="nav-icon la la-shopping-bag p-0"></i> <?php echo $vModule_product_uploadBonus; ?></a>
                         </label>
                         <label class="myLabel">
                             <input type="file" required />
-                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Upload Stock Excel Sheet"> <i class="nav-icon la la-file-excel-o p-0"></i> <?php echo $vModule_product_uploadStock; ?></a>
+                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Upload Stock Excel Sheet"> <i class="nav-icon la la-boxes p-0"></i> <?php echo $vModule_product_uploadStock; ?></a>
                         </label>
                         <label class="myLabel">
                             <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="DistributorProductsDataTable.productAddModal()">
@@ -101,7 +101,7 @@ function compress_htmlcode($codedata)
         </form>
     </div>
 
-    <div class="card card-custom gutter-b mt-20">
+    <div class="card card-custom gutter-b mt-10">
         <div class="card-body">
             <!--begin: Datatable-->
             <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>

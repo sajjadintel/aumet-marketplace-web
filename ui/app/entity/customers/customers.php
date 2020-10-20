@@ -14,11 +14,11 @@ function compress_htmlcode($codedata)
 ?>
 <!--begin::Container-->
 <div class="container-fluid">
-    <div class="d-flex align-items-stretch text-center flex-column">
+    <div class="d-flex align-items-stretch flex-column">
         <h2 class="text-primary font-weight-bolder mt-10 mb-15 font-size-h4"><?php echo $vModule_customer_title; ?></h2>
     </div>
 
-    <div class="card card-custom gutter-b mt-20">
+    <div class="card card-custom gutter-b mt-5">
         <div class="card-body">
             <!--begin: Datatable-->
             <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>

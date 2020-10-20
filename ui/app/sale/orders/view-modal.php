@@ -10,11 +10,6 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-12 mb-2">
-                        <a id="modalPrint" target="_blank" href="web/distributor/order/print" class="btn btn-sm btn-primary btn-hover-primary  mr-2 float-left" title="Print Order">
-                            <i class="nav-icon la la-print p-0"></i>
-                        </a>
-                    </div>
                     <div class="col-md-6">
                         <div class="row form-group">
                             <div class="col-md-6 form-label" id="modalCustomerNameLabel"></div>
@@ -48,6 +43,12 @@
                         <!--begin: Datatable-->
                         <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable_detail"></div>
                         <!--end: Datatable-->
+                    </div>
+                    <div class="col-md-12 mt-10 text-center">
+                        <a id="modalPrint" target="_blank" href="web/distributor/order/print" class="btn btn-sm btn-primary btn-hover-primary" title="Print Order">
+                            <i class="nav-icon la la-print p-0"></i>
+                            Print Order
+                        </a>
                     </div>
                 </div>
             </div>
