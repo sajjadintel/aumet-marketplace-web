@@ -80,7 +80,11 @@ class ProductsController extends Controller
             $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
             $arrProduct = $dbProduct->findWhere("productId = '$productId'");
 
+            $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+            $arrBonus = $dbBonus->findWhere("entityProductId = '$productId'");
+
             $data['product'] = $arrProduct[0];
+            $data['bonus'] = $arrBonus;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
             return;
@@ -307,7 +311,8 @@ class ProductsController extends Controller
             $dbProduct->image = $image;
 
             $dbProduct->addReturnID();
-            $entityId = $this->f3->get('POST.entityId');
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $entityId = $arrEntityId;
             $unitPrice = $this->f3->get('POST.unitPrice');
             $stock = $this->f3->get('POST.stock');
 

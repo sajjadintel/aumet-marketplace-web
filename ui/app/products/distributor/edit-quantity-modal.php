@@ -21,6 +21,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12 form-group">
+                            <label for="editQuantityBonusType" class="form-control-label">Has Bonus</label>
+                            <div>
+                                <input name="stockStatus" id="editQuantityBonusType" data-switch="true" type="checkbox" checked="checked" data-on-text="<?php echo $vModule_product_hasBonus ?>" data-handle-width="150" data-off-text="<?php echo $vModule_product_noBonus ?>" data-on-color="primary" />
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <button class="btn btn-primary btn-add btn-add-datatables" id="editQuantityBonusDatatableAddRow">+</button>
+                            <table id="editQuantityBonusDatatable" class="datatables-net compact hover order-column row-border table report-section"></table>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <div class="modal-editQuantity-button">
