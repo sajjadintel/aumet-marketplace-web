@@ -264,6 +264,7 @@ function compress_htmlcode($codedata)
 	<script type="text/javascript" src="/assets/js/treeview.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/demoApp.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/theme/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+	<script type="text/javascript" src="/theme/assets/js/pages/crud/forms/widgets/form-repeater.js"></script>
 </body>
 <!--end::Body-->
 

@@ -25,12 +25,43 @@
                         <div class="col-md-12 form-group">
                             <label for="editQuantityBonusType" class="form-control-label">Has Bonus</label>
                             <div>
-                                <input name="stockStatus" id="editQuantityBonusType" data-switch="true" type="checkbox" checked="checked" data-on-text="<?php echo $vModule_product_hasBonus ?>" data-handle-width="150" data-off-text="<?php echo $vModule_product_noBonus ?>" data-on-color="primary" />
+                                <input name="bonusType" id="editQuantityBonusType" data-switch="true" type="checkbox" checked="checked" data-on-text="<?php echo $vModule_product_stockStatus_hasBonus ?>" data-handle-width="150" data-off-text="<?php echo $vModule_product_stockStatus_noBonus ?>" data-on-color="primary" />
                             </div>
                         </div>
+
                         <div class="col-md-12 form-group">
+                            <div id="editQuantityBonusListRepeater">
+                                <div class="row">
+                                    <div data-repeater-list="bonusRepeater" class="col-lg-12">
+                                        <div data-repeater-item="" class="form-group row align-items-end">
+                                            <input type="hidden" id="editQuantityBonusId" name="bonusId" class="form-control">
+                                            <div class="col-md-4">
+                                                <label>Min Order:</label>
+                                                <input type="email" id="editQuantityBonusMinOrder" name="minOrder" class="form-control" placeholder="Enter Minimum Order Amount">
+                                                <div class="d-md-none mb-2"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Bonus:</label>
+                                                <input type="email" id="editQuantityBonusQuantity" name="bonus" class="form-control" placeholder="Enter Bonus Amount">
+                                                <div class="d-md-none mb-2"></div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <a href="javascript:;" id="editQuantityBonusDelete" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger">
+                                                    <i class="la la-trash-o"></i>Delete</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <a href="javascript:;" id="editQuantityBonusAdd" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
+                                            <i class="la la-plus"></i>Add</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--                             
                             <button class="btn btn-primary btn-add btn-add-datatables" id="editQuantityBonusDatatableAddRow">+</button>
-                            <table id="editQuantityBonusDatatable" class="datatables-net compact hover order-column row-border table report-section"></table>
+                            <table id="editQuantityBonusDatatable" class="datatables-net compact hover order-column row-border table report-section"></table> -->
                         </div>
                     </div>
                 </div>

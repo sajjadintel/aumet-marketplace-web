@@ -160,7 +160,16 @@ class BaseModel extends DB\SQL\Mapper
     public function delete()
     {
         try {
-            $this->erase();
+            if (isset($this->isActive)) {
+                if ($this->isActive == 0) {
+                    $this->exception = "Already deleted";
+                    return false;
+                }
+                $this->isActive = 0;
+                $this->update();
+            } else {
+                $this->erase();
+            }
             return TRUE;
         } catch (Exception $ex) {
             $this->exception = $ex->getMessage() . " - " . $ex->getTraceAsString();

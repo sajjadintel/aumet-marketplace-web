@@ -1,6 +1,7 @@
 'use strict';
 // Class definition
-
+var $repeater;
+var tempValue;
 var DistributorProductsDataTable = (function () {
 	// Private functions
 
@@ -306,43 +307,48 @@ var DistributorProductsDataTable = (function () {
 			}
 		});
 
-		console.log(webResponse.data.bonus);
+		$("label[for='editQuantityBonusMinOrder']").text(WebAppLocals.getMessage('minOrder'));
+		$("label[for='editQuantityBonusQuantity']").text(WebAppLocals.getMessage('bonus'));
+		$("label[for='editQuantityBonusDelete']").text(WebAppLocals.getMessage('delete'));
+		$("label[for='editQuantityBonusAdd']").text(WebAppLocals.getMessage('add'));
 
-		var columns = [{ data: 'minOrder', title: 'Min Order' }, { data: 'bonus', title: 'Bonus' }, { title: 'Delete' }];
-
-		var dbOptions = {
-			addSettings: [
-				{ addButton: 'editQuantityBonusDatatableAddRow' },
-				{ addText: { minOrder: '0', bonus: '0', Delete: '<i class="fa fa-minus-square" aria-hidden="true"></i>' } },
-			],
-			datatableOptions: {
-				columnDefs: [
-					{
-						targets: -1,
-						data: null,
-						defaultContent: '<i class="fa fa-minus-square" aria-hidden="true"></i>',
-					},
-				],
-				initComplete: function (oSettings) {
-					$(this).on('click', 'i.fa.fa-minus-square', function (e) {
-						datatableVar.row($(this).closest('tr')).remove().draw();
-					});
-				},
+		$repeater = $('#editQuantityBonusListRepeater').repeater({
+			isFirstItemUndeletable: true,
+			show: function () {
+				$(this).slideDown();
 			},
-		};
-		WebApp.createDatatable('editQuantityBonusDatatable', columns, webResponse.data.bonus, dbOptions);
+			hide: function (deleteElement) {
+				if (confirm('Are you sure you want to delete this element?')) {
+					$(this).slideUp(deleteElement);
+				}
+			},
+		});
+		$repeater.setList(webResponse.data.bonus);
+
 		$("label[for='editQuantityBonusType']").text(WebAppLocals.getMessage('bonus'));
 
 		switch (webResponse.data.product.bonusTypeId) {
 			case 1:
+				$('#editQuantityBonusListRepeater').hide();
 				$('#editQuantityBonusType').bootstrapSwitch('state', false);
 				break;
 			case 2:
+				$('#editQuantityBonusListRepeater').show();
 				$('#editQuantityBonusType').bootstrapSwitch('state', true);
 				break;
 			default:
 				break;
 		}
+
+		$('#editQuantityBonusType')
+			.bootstrapSwitch()
+			.on('switchChange.bootstrapSwitch', function (event, state) {
+				if (state) {
+					$('#editQuantityBonusListRepeater').show();
+				} else {
+					$('#editQuantityBonusListRepeater').hide();
+				}
+			});
 
 		$('#editQuantityModalAction').html(WebAppLocals.getMessage('editQuantity'));
 		$('#editQuantityModal').appendTo('body').modal('show');
