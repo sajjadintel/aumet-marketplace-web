@@ -55,6 +55,11 @@ var WebAppLocals = (function () {
 			ar: 'خيارات',
 			fr: '',
 		},
+		viewOrder: {
+			en: 'View Order',
+			ar: 'عرض الطلب',
+			fr: '',
+		},
 		actions: {
 			en: 'Actions',
 			ar: 'خيارات',

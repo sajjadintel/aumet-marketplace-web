@@ -405,6 +405,8 @@ var WebApp = (function () {
 			_loadPage(window.location.href);
 			Cart.init();
 
+			RegistrationWizard.init();
+
 			_initSessionTimeout();
 
 			//$("#webGuidedTourModal").modal();

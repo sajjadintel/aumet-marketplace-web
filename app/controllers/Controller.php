@@ -38,6 +38,8 @@ class Controller
 
             $this->isAuth = true;
 
+           // switch($this->objUser->)
+
             $this->f3->set('objUser', $this->objUser);
         } else {
             $this->isAuth = false;

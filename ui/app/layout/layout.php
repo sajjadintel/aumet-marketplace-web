@@ -201,7 +201,7 @@ function compress_htmlcode($codedata)
 				</div>
 				<!--end::Content-->
 				<?php include_once 'modal.php'; ?>
-                <?php include_once 'webGuidedTour-distributor.php'; ?>
+                <?php //include_once 'webGuidedTour-distributor.php'; ?>
 				<!--begin::Footer-->
 				<?php include_once 'footer.php'; ?>
 				<!--end::Footer-->

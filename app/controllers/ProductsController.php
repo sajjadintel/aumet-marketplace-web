@@ -364,4 +364,16 @@ class ProductsController extends Controller
             echo $this->webResponse->jsonResponse();
         }
     }
+
+    function getStockUpload()
+    {
+        if (!$this->f3->ajax()) {
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = $this->f3->get('vModule_stock_title');
+            $this->webResponse->data = View::instance()->render('app/products/stock/upload.php');
+            echo $this->webResponse->jsonResponse();
+        }
+    }
 }

@@ -27,6 +27,7 @@ function compress_htmlcode($codedata)
         </div>
     </div>
     <!--end::Container-->
+
     <script>
         var query = {
 
@@ -36,3 +37,5 @@ function compress_htmlcode($codedata)
         });
     </script>
 <?php ob_end_flush(); ?>
+
+
