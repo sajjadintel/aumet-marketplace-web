@@ -48,6 +48,7 @@ var CustomerFeedbackDataTable = (function () {
 					selector: false,
 					textAlign: 'left',
 					autoHide: false,
+					width: 75,
 				},
 				{
 					field: 'insertDateTime',

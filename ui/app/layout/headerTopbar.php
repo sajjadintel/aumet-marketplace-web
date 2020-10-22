@@ -21,7 +21,7 @@
 		<!--begin::Toggle-->
 		<div class="topbar-item" data-toggle="dropdown" data-offset="10px,0px">
 			<div class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1">
-				<img class="h-20px w-20px rounded-sm" src="/theme/assets/media/svg/flags/<?php echo $vFlagSVGName ?>" alt="" />
+				<img class="h-20px w-20px rounded-sm" src="/theme/assets/media/svg/flags/<?php echo $langActiveFlag ?>" alt="" />
 			</div>
 		</div>
 		<!--end::Toggle-->
@@ -31,9 +31,9 @@
 			<ul class="navi navi-hover py-4">
 				<!--begin::Item-->
 				<li class="navi-item">
-					<a href="#" class="navi-link">
+					<a href="/web/me/switchLanguage/ar" class="navi-link">
 						<span class="symbol symbol-20 mr-3">
-							<img src="/theme/assets/media/svg/flags/077-jordan.svg" alt="" />
+							<img src="/theme/assets/media/svg/flags/151-united-arab-emirates.svg" alt="" />
 						</span>
 						<span class="navi-text">العربية</span>
 					</a>
@@ -41,7 +41,7 @@
 				<!--end::Item-->
 				<!--begin::Item-->
 				<li class="navi-item">
-					<a href="#" class="navi-link">
+					<a href="/web/me/switchLanguage/en" class="navi-link">
 						<span class="symbol symbol-20 mr-3">
 							<img src="/theme/assets/media/svg/flags/226-united-states.svg" alt="" />
 						</span>
@@ -51,7 +51,7 @@
 				<!--end::Item-->
 				<!--begin::Item-->
 				<li class="navi-item">
-					<a href="#" class="navi-link">
+					<a href="/web/me/switchLanguage/fr" class="navi-link">
 						<span class="symbol symbol-20 mr-3">
 							<img src="/theme/assets/media/svg/flags/195-france.svg" alt="" />
 						</span>

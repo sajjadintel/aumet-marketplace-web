@@ -31,7 +31,7 @@ class AuthController extends Controller
 
                 $lang = $this->f3->get("PARAMS.lang");
                 if (!$lang) {
-                    $lang = 'ar';
+                    $lang = 'en';
                 }
                 $this->f3->set('SESSION.userLang', $lang);
                 $this->f3->set('SESSION.userLangDirection', $lang == "ar" ? "rtl" : "ltr");

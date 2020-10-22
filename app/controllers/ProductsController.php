@@ -354,6 +354,7 @@ class ProductsController extends Controller
             $dbEntityProduct->stock = $stock;
             $dbEntityProduct->stockStatusId = 1;
             $dbEntityProduct->bonusTypeId = 1;
+            $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
 
             $dbEntityProduct->add();
 

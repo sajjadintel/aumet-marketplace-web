@@ -23,10 +23,11 @@ class Controller
         $this->db = $GLOBALS['dbConnection'];
         $this->webResponse = new WebResponse();
 
-        $client = new \Redis();
-        $client->connect('127.0.0.1');
-        $this->cache = new \MatthiasMullie\Scrapbook\Adapters\Redis($client);
-
+        if (getenv('ENV') == Constants::ENV_PROD) {
+            $client = new \Redis();
+            $client->connect('127.0.0.1');
+            $this->cache = new \MatthiasMullie\Scrapbook\Adapters\Redis($client);
+        }
         $this->audit = \Audit::instance();
 
         $this->headers = $this->getHttpHeaders();

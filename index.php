@@ -26,7 +26,7 @@ $f3->set('UI', 'ui/');
 $f3->set('LOGS', 'logs/');
 $f3->set('pagesDIR', 'ui/pages');
 $f3->set('LOCALES', 'app/languages/');
-$f3->set('FALLBACK', 'ar');
+$f3->set('FALLBACK', 'en');
 $f3->set('ENCODING', 'UTF-8');
 $f3->set('uploadDIR', '/files/uploads');
 
@@ -98,4 +98,16 @@ switch ($_SESSION['userLang']) {
         break;
 }
 */
+
+$lang = $f3->get("PARAMS.lang");
+if ($lang != "en" && $lang != "ar" && $lang != "fr" ) {
+    $lang = $f3->get('SESSION.userLang');
+    if ($lang != "en" && $lang != "ar" && $lang != "fr" ) {
+        $lang = 'en';
+    }
+}
+$f3->set('SESSION.userLang', $lang);
+$f3->set('SESSION.userLangDirection', $lang == "ar" ? "rtl" : "ltr");
+$f3->set('LANGUAGE', $lang);
+
 $f3->run();

@@ -61,8 +61,13 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		productName: {
-			en: 'Trade Name',
+			en: 'Brand Name',
 			ar: 'الاسم التجاري',
+			fr: '',
+		},
+		productCode: {
+			en: 'Product Code',
+			ar: 'رمز المنتج',
 			fr: '',
 		},
 		entityBuyer: {
@@ -163,6 +168,11 @@ var WebAppLocals = (function () {
 		tax: {
 			en: 'VAT',
 			ar: 'ضريبة',
+			fr: '',
+		},
+		orderTotalWithVAT: {
+			en: 'Total (+ VAT)',
+			ar: 'مجموع',
 			fr: '',
 		},
 		quantity: {
