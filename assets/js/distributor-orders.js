@@ -150,7 +150,28 @@ var DistributorOrdersDataTable = (function () {
 					width: 120,
 					autoHide: false,
 					template: function (row) {
-						var output = row.currency + ' ' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100;
+						var output = row.currency + " <strong>" + (Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100)+ " </strong>";
+						return output;
+					},
+				},
+				{
+					field: 'tax',
+					title: WebAppLocals.getMessage('tax'),
+					sortable: false,
+					width: 50,
+					// callback function support for column rendering
+					template: function (row) {
+						var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
+						return output;
+					},
+				},
+				{
+					field: 'total', // + docLang,
+					title: WebAppLocals.getMessage('orderTotalWithVAT'),
+					width: 120,
+					autoHide: false,
+					template: function (row) {
+						var output = row.currency + " <strong>" + (Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100)+ " </strong>";
 						return output;
 					},
 				},
@@ -296,6 +317,13 @@ var DistributorOrdersDataTable = (function () {
 			// columns definition
 			columns: [
 				{
+					field: 'productCode',
+					title: WebAppLocals.getMessage('productCode'),
+					overflow: 'visible',
+					width: 120,
+					autoHide: false,
+				},
+				{
 					field: 'productNameEn',
 					title: WebAppLocals.getMessage('productName'),
 					overflow: 'visible',
@@ -319,7 +347,7 @@ var DistributorOrdersDataTable = (function () {
 					template: function (row) {
 						var output = '';
 
-						output = row.quantity + ' (' + row.stock + ')';
+						output = row.quantity ;
 						return output;
 					},
 				},
@@ -331,9 +359,7 @@ var DistributorOrdersDataTable = (function () {
 					width: 80,
 					// callback function support for column rendering
 					template: function (row) {
-						var output = '';
-
-						var output = Math.round((parseFloat(row.unitPrice) + Number.EPSILON) * 100) / 100;
+						var output = row.currency + " <strong>" + (Math.round((parseFloat(row.unitPrice) + Number.EPSILON) * 100) / 100) + "</strong>";
 						return output;
 					},
 				},
@@ -357,7 +383,7 @@ var DistributorOrdersDataTable = (function () {
 					width: 80,
 					template: function (row) {
 						var output = parseFloat(row.unitPrice) * parseFloat(row.quantity) * (1 + parseFloat(row.tax) / 100);
-						output = Math.round((output + Number.EPSILON) * 100) / 100;
+						output = row.currency + " <strong>" + (Math.round((output + Number.EPSILON) * 100) / 100) + "</strong>";
 						return output;
 					},
 				},

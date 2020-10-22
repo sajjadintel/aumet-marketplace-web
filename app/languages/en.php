@@ -1,8 +1,8 @@
 <?php
 return array(
     'vTitle' => 'Aumet Medical Marketplace',
-    'masterContentDir' => 'rtl',
-    'langActiveFlag' => '/assets/img/uae-flag-sq.svg',
+    'masterContentDir' => 'ltr',
+    'langActiveFlag' => '226-united-states.svg',
     'vFooterText' => 'Aumet Inc | {Y} © All Rights Reserved',
     'vFooterLinks_about' => 'About Aumet',
     'vFooterLinks_blog' => 'Aumet Blog',

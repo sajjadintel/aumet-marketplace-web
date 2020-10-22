@@ -2,7 +2,7 @@
 return array(
     'vTitle' => 'Aumet Medical Marketplace',
     'masterContentDir' => 'rtl',
-    'langActiveFlag' => '/assets/img/uae-flag-sq.svg',
+    'langActiveFlag' => '151-united-arab-emirates.svg',
     'vFooterText' => 'Aumet Inc | {Y} © جميع حقوق الطبع والنسخ محفوظة',
     'vFooterLinks_about' => 'عن Aumet',
     'vFooterLinks_blog' => 'مدونة Aumet',

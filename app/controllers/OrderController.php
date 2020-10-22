@@ -359,25 +359,30 @@ class OrderController extends Controller
 
         $pdf->SetFont($font, '', 11);
 
-        $pharmacyTableHeader = array('ID', 'Customer Name', 'Email');
+        $pharmacyTableHeader = array('Customer ID', 'Customer Name', 'Email');
         $pharmacyTableData = array(array($arrOrder['entityBuyerId'], $arrOrder['entityBuyer'], $arrOrder['userBuyerEmail']));
         $pdf->FancyTable($pharmacyTableHeader, $pharmacyTableData);
         $pdf->Ln(20);
 
-        $orderDetailHeader = array('Brand Name', 'Scientific Name', 'Quantity', 'Unit Price', 'VAT', 'Total');
+        $orderDetailHeader = array('Code', 'Name', 'Quantity', 'Price', 'VAT', 'Total');
         $dbOrderDetail = new BaseModel($this->db, 'vwOrderDetail');
         $arrOrderDetail = $dbOrderDetail->findWhere("id = $orderId");
 
         $orderDetailData = array();
         foreach ($arrOrderDetail as $item) {
-            array_push($orderDetailData, array($item['productNameEn'], $item['scientificName'], $item['quantity'] . " (" . $item['stock'] . ")", "$" . $item['unitPrice'], $item['tax'] . "%", "$" . ($item['unitPrice'] * $item['quantity'])));
+            array_push($orderDetailData, array($item['productCode'], $item['productNameEn'], $item['quantity'], $item['currency'] . " " . $item['unitPrice'], $item['tax'] . "%", $item['currency'] . " " . ($item['unitPrice'] * $item['quantity'])));
         }
 
         $pdf->FancyTableOrderDetail($orderDetailHeader, $orderDetailData);
 
-        $pdf->Ln(10);
+        $pdf->Ln(20);
 
-        $pdf->Cell(0, 0, 'Order Total: $' . $arrOrder['total'], 0, 0, 'R');
+        $pdf->Cell(0, 0, 'Order: AED ' . $arrOrder['total'], 0, 0, 'R');
+        $pdf->Ln(10);
+        $pdf->Cell(0, 0, 'VAT: AED ' . round($arrOrder['tax'] * $arrOrder['total'], 2) , 0, 0, 'R');
+
+        $pdf->Ln(10);
+        $pdf->Cell(0, 0, 'Total: AED ' . $arrOrder['total'] , 0, 0, 'R');
 
         $pdf->Output();
     }

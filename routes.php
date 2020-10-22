@@ -1,6 +1,7 @@
 <?php
 
 $f3->route('GET /', 'LandingController->get');
+$f3->route('GET /@lang', 'LandingController->get');
 
 $f3->route('GET /web/auth/signin', 'AuthController->getSignIn');
 $f3->route('POST /web/auth/signin', 'AuthController->postSignIn');
@@ -13,6 +14,7 @@ $f3->route('GET /web/auth/signout', 'AuthController->getSignOut');
 $f3->route('GET /web', 'DashboardController->get');
 
 $f3->route('GET /web/me/menu', 'UserController->getMenu');
+$f3->route('GET /web/me/switchLanguage/@lang', 'UserController->switchLanguage');
 
 $f3->route('GET /web/dashboard', 'DashboardController->get');
 
