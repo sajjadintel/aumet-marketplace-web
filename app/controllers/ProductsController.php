@@ -376,4 +376,13 @@ class ProductsController extends Controller
             echo $this->webResponse->jsonResponse();
         }
     }
+
+    function postStockUpload(){
+        $target_dir = $this->getUploadDirectory();
+        $target_file = $target_dir . basename($_FILES["file"]["name"]);
+
+        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir.$_FILES['file']['name'])) {
+            $status = 1;
+        }
+    }
 }

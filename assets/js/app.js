@@ -405,7 +405,7 @@ var WebApp = (function () {
 			_loadPage(window.location.href);
 			Cart.init();
 
-			RegistrationWizard.init();
+			//RegistrationWizard.init();
 
 			_initSessionTimeout();
 

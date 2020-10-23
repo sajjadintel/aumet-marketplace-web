@@ -28,10 +28,10 @@ function compress_htmlcode($codedata)
         <div class="card-body">
             <div class="d-flex align-items-center flex-column">
 
-                    <div class="dropzone dropzone-default dropzone-success" id="kt_dropzone_3">
+                    <div class="dropzone dropzone-default dropzone-success" id="dropZoneProductsStockUpload">
                         <div class="dropzone-msg dz-message needsclick">
                             <h3 class="dropzone-msg-title">Drop files here or click to upload.</h3>
-                            <span class="dropzone-msg-desc">Only image, pdf and psd files are allowed for upload</span>
+                            <span class="dropzone-msg-desc">Only .xlsx,.xls,.csv files are allowed for upload</span>
                         </div>
                     </div>
             </div>
@@ -39,15 +39,7 @@ function compress_htmlcode($codedata)
     </div>
 </div>
 <!--end::Container-->
-
-<script>
-    var query = {
-
-    };
-    $(document).ready(function() {
-
-    });
-</script>
+<script type="text/javascript" src="/assets/js/products-stock-upload.js<?php echo $platformVersion ?>"></script>
 <?php ob_end_flush(); ?>
 
 

@@ -298,8 +298,8 @@ var RegistrationWizard = function () {
     return {
         // public functions
         init: function () {
-            _wizardEl = KTUtil.getById('kt_wizard');
-            _formEl = KTUtil.getById('kt_form');
+            _wizardEl = KTUtil.getById('wizardRegistration');
+            _formEl = KTUtil.getById('formRegistration');
 
             _initValidation();
             _initWizard();

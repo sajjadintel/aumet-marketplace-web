@@ -65,8 +65,10 @@ $f3->route('POST /web/distributor/product', 'ProductsController->postDistributor
 $f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDistributorProduct');
 $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDistributorProduct');
 $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->postEditQuantityDistributorProduct');
+
+// stock upload
 $f3->route('GET /web/distributor/product/stock/upload', 'ProductsController->getStockUpload');
-// END APM-37
+$f3->route('POST /web/distributor/product/stock/upload', 'ProductsController->postStockUpload');
 
 $f3->route('GET /web/distributor/customer', 'EntityController->getEntityCustomers');
 $f3->route('GET /web/distributor/customer/@customerId', 'EntityController->getEntityCustomerDetails');
