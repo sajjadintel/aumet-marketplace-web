@@ -117,6 +117,9 @@ class AuthController extends Controller
     function configUser($dbUser)
     {
         $objUser = new stdClass();
+
+        global $dbConnection;
+
         $objUser->id = $dbUser->id;
         $objUser->email = $dbUser->email;
         $objUser->mobile = $dbUser->mobile;
@@ -126,8 +129,6 @@ class AuthController extends Controller
         $objUser->language = $dbUser->language;
 
         $this->f3->set('LANGUAGE', $objUser->language);
-
-        global $dbConnection;
 
         $dbUserRole = new BaseModel($dbConnection, "userRole");
         $dbUserRole->name = "name_" . $objUser->language;

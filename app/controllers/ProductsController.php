@@ -60,12 +60,18 @@ class ProductsController extends Controller
             $productId = $this->f3->get('PARAMS.productId');
 
             $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
-            $arrProduct = $dbProduct->findWhere("productId = '$productId'");
+            //$dbProduct->getByField("productId", $productId);
+            //$this->f3->set("objProduct", $dbProduct);
+            $arrProduct = $dbProduct->findWhere("productId = $productId");
 
             $data['product'] = $arrProduct[0];
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
-            return;
+
+            //$this->webResponse->errorCode = 1;
+            //$this->webResponse->title = $this->f3->get('vModule_feedback_title');
+            //$this->webResponse->data = View::instance()->render('app/products/distributor/modals/edit.php');
+            //echo $this->webResponse->jsonResponse();
         }
     }
 
@@ -362,6 +368,154 @@ class ProductsController extends Controller
             $this->webResponse->title = "";
             $this->webResponse->data = $dbProduct['name_' . $this->objUser->language];
             echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function getStockUpload()
+    {
+        if (!$this->f3->ajax()) {
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "Stock Update";//$this->f3->get('vModule_stock_title');
+            $this->webResponse->data = View::instance()->render('app/products/stock/upload.php');
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function postStockUpload(){
+        $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
+        // basename($_FILES["file"]["name"])
+
+        $targetFile = $this->getUploadDirectory() . $this->generateRandomString(16).".$ext";
+
+        if($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
+                global $dbConnection;
+                $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+                $dbStockUpdateUpload->userId = $this->objUser->id;
+                $dbStockUpdateUpload->filePath = $targetFile;
+                $dbStockUpdateUpload->entityId = $this->objUser->entityId;
+                $dbStockUpdateUpload->addReturnID();
+                echo "OK";
+            }
+        }
+    }
+
+    function postStockUploadProcess(){
+        global $dbConnection;
+
+        $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+
+        $dbStockUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
+
+        $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($dbStockUpdateUpload->filePath);
+        try {
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+            $spreadsheet = $reader->load($dbStockUpdateUpload->filePath);
+
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            $dbStockUpdateUpload->recordsCount = 0;
+            foreach ($worksheet->getRowIterator() as $row) {
+                $dbStockUpdateUpload->recordsCount++;
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+
+            }
+            $dbStockUpdateUpload->recordsCount -= 1;
+
+
+            $dbStockUpdateUpload->completedCount = $dbStockUpdateUpload->recordsCount -5;
+            $dbStockUpdateUpload->importSuccessRate = round($dbStockUpdateUpload->completedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
+
+            $dbStockUpdateUpload->failedCount = $dbStockUpdateUpload->recordsCount - $dbStockUpdateUpload->completedCount;
+            $dbStockUpdateUpload->importFailureRate = round($dbStockUpdateUpload->failedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
+
+            $dbStockUpdateUpload->update();
+
+            $this->f3->set("objStockUpdateUpload", $dbStockUpdateUpload);
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = View::instance()->render('app/products/stock/uploadResult.php');
+            echo $this->webResponse->jsonResponse();
+
+        } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
+        }
+    }
+
+    function getBonusUpload()
+    {
+        if (!$this->f3->ajax()) {
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "Bonus Update";//$this->f3->get('vModule_bonus_title');
+            $this->webResponse->data = View::instance()->render('app/products/bonus/upload.php');
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function postBonusUpload(){
+        $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
+        // basename($_FILES["file"]["name"])
+
+        $targetFile = $this->getUploadDirectory() . $this->generateRandomString(16).".$ext";
+
+        if($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
+                global $dbConnection;
+                $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+                $dbStockUpdateUpload->userId = $this->objUser->id;
+                $dbStockUpdateUpload->filePath = $targetFile;
+                $dbStockUpdateUpload->entityId = $this->objUser->entityId;
+                $dbStockUpdateUpload->addReturnID();
+                echo "OK";
+            }
+        }
+    }
+
+    function postBonusUploadProcess(){
+        global $dbConnection;
+
+        $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+
+        $dbStockUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
+
+        $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($dbStockUpdateUpload->filePath);
+        try {
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+            $spreadsheet = $reader->load($dbStockUpdateUpload->filePath);
+
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            $dbStockUpdateUpload->recordsCount = 0;
+            foreach ($worksheet->getRowIterator() as $row) {
+                $dbStockUpdateUpload->recordsCount++;
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+
+            }
+            $dbStockUpdateUpload->recordsCount -= 1;
+
+
+            $dbStockUpdateUpload->completedCount = $dbStockUpdateUpload->recordsCount -5;
+            $dbStockUpdateUpload->importSuccessRate = round($dbStockUpdateUpload->completedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
+
+            $dbStockUpdateUpload->failedCount = $dbStockUpdateUpload->recordsCount - $dbStockUpdateUpload->completedCount;
+            $dbStockUpdateUpload->importFailureRate = round($dbStockUpdateUpload->failedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
+
+            $dbStockUpdateUpload->update();
+
+            $this->f3->set("objBonusUpdateUpload", $dbStockUpdateUpload);
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = View::instance()->render('app/products/bonus/uploadResult.php');
+            echo $this->webResponse->jsonResponse();
+
+        } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
         }
     }
 }

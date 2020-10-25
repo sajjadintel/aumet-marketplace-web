@@ -14,10 +14,6 @@ function compress_htmlcode($codedata)
 ?>
 <!--begin::Container-->
 <div class="container-fluid">
-    <div class="d-flex align-items-stretch flex-column">
-        <h2 class="text-primary font-weight-bolder mt-10 mb-15 font-size-h4"><?php echo $vModule_customer_title; ?></h2>
-    </div>
-
     <div class="card card-custom gutter-b mt-5">
         <div class="card-body">
             <!--begin: Datatable-->

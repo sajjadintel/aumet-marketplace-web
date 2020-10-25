@@ -28,8 +28,36 @@ $f3->set('pagesDIR', 'ui/pages');
 $f3->set('LOCALES', 'app/languages/');
 $f3->set('FALLBACK', 'en');
 $f3->set('ENCODING', 'UTF-8');
-$f3->set('uploadDIR', '/files/uploads');
 
+$f3->set('rootDIR', dirname(__FILE__));
+
+$f3->set('tempDIR', dirname(__FILE__).'/tmp/');
+
+$tempDIR = dirname(__FILE__).'/files/tmp/';
+if(is_dir($tempDIR)) {
+    $f3->set('tempDIR', $tempDIR);
+}
+else {
+    if (!mkdir($tempDIR, 0777, true)) {
+        die('Failed to create folders...');
+    }
+    else{
+        $f3->set('tempDIR', $tempDIR);
+    }
+}
+
+$uploadsDir = dirname(__FILE__).'/files/uploads/';
+if(is_dir($uploadsDir)) {
+    $f3->set('uploadDIR', $uploadsDir);
+}
+else {
+    if (!mkdir($uploadsDir, 0777, true)) {
+        die('Failed to create folders...');
+    }
+    else{
+        $f3->set('uploadDIR', $uploadsDir);
+    }
+}
 
 $f3->set('platformVersionRelease', '?v=1.3');
 $f3->set('platformVersionDevelopment', '?v=' . date('His'));

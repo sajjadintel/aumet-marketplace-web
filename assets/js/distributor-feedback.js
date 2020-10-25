@@ -162,6 +162,33 @@ var CustomerFeedbackDataTable = (function () {
 						return output;
 					},
 				},
+				{
+					field: 'Actions',
+					title: '',
+					sortable: false,
+					overflow: 'visible',
+					width: 200,
+					autoHide: false,
+					template: function (row) {
+
+
+						var btnView =
+							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderViewModal(' +
+							row.orderId +
+							')\' \
+						class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
+						<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
+							WebAppLocals.getMessage('viewOrder') +
+							'</a>';
+
+
+						var outActions = '';
+
+						outActions += btnView;
+
+						return outActions;
+					},
+				},
 			],
 		});
 	};

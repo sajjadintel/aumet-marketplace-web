@@ -201,7 +201,7 @@ function compress_htmlcode($codedata)
 				</div>
 				<!--end::Content-->
 				<?php include_once 'modal.php'; ?>
-                <?php include_once 'webGuidedTour-distributor.php'; ?>
+                <?php //include_once 'webGuidedTour-distributor.php'; ?>
 				<!--begin::Footer-->
 				<?php include_once 'footer.php'; ?>
 				<!--end::Footer-->
@@ -263,6 +263,7 @@ function compress_htmlcode($codedata)
     <script type="text/javascript" src="/assets/js/distributor-feedback.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-products.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-customers.js<?php echo $platformVersion ?>"></script>
+
 
 	<script type="text/javascript" src="/assets/js/treeview.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/demoApp.js<?php echo $platformVersion ?>"></script>

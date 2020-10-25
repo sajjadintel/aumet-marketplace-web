@@ -205,11 +205,11 @@ var WebApp = (function () {
 		}
 	};
 
-	var _blockPage = function () {
+	var _blockPage = function (_msgKey = "loading") {
 		KTApp.blockPage({
 			overlayColor: 'black',
 			opacity: 0.2,
-			message: WebAppLocals.getMessage('loading'),
+			message: WebAppLocals.getMessage(_msgKey),
 			state: 'primary', // a bootstrap color
 		});
 	};
@@ -405,6 +405,8 @@ var WebApp = (function () {
 			_loadPage(window.location.href);
 			Cart.init();
 
+			//RegistrationWizard.init();
+
 			_initSessionTimeout();
 
 			//$("#webGuidedTourModal").modal();
@@ -421,8 +423,8 @@ var WebApp = (function () {
 		closeSubPage: function (fnCallback = null) {
 			return _closeSubPage(fnCallback);
 		},
-		block: function () {
-			return _blockPage();
+		block: function (_msgKey = "loading") {
+			return _blockPage(_msgKey);
 		},
 		unblock: function () {
 			return _unblockPage();

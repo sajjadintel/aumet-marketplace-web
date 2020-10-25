@@ -12,11 +12,20 @@
                 <div class="modal-body">
                     <input type="hidden" class="form-control" name="id" id="editQuantityProductId">
                     <input type="hidden" name="fnCallback" class="modalValueCallback" id="editQuantityProductCallback" value="DistributorProductsDataTable.reloadDatatable" />
+
+                    <div class="form-group row">
+                        <label class="col-3 col-form-label">Stock Quantity:</label>
+                        <div class="col-9">
+                            <input class="form-control fit-width " type="number" name="stock" id="editQuantityStock">
+                        </div>
+                    </div>
+
                     <div class="row">
+
                         <div class="col-md-12 form-group">
-                            <label for="editQuantityStock" class="form-control-label">Stock Quantity</label>
-                            <div>
-                                <input class="form-control fit-width" type="number" name="stock" id="editQuantityStock">
+                            <label for="editQuantityStock " class="form-control-label col-md-4"></label>
+                            <div class="col-md-8">
+
                             </div>
                         </div>
                         <div class="col-md-12 form-group">

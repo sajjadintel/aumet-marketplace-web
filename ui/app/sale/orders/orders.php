@@ -19,6 +19,11 @@ function compress_htmlcode($codedata)
         <form class="d-flex position-relative w-100 m-auto">
 
             <div class="d-flex flex-column-fluid">
+                <a class="btn btn-lg btn-primary mr-2 btn-lg-radius" title="Export To Excel" onclick="">
+                    <i class="la la-file-excel-o"></i> Export to Excel
+                </a>
+            </div>
+            <div class="d-flex flex-column-fluid">
                 <div class="input-group input-group-lg mr-5">
                     <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
@@ -109,5 +114,3 @@ function compress_htmlcode($codedata)
     });
 </script>
 <?php ob_end_flush(); ?>
-
-<?php include_once 'view-modal.php'; ?>

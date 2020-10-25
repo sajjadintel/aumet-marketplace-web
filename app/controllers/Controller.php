@@ -38,6 +38,8 @@ class Controller
 
             $this->isAuth = true;
 
+           // switch($this->objUser->)
+
             $this->f3->set('objUser', $this->objUser);
         } else {
             $this->isAuth = false;
@@ -302,12 +304,12 @@ class Controller
 
     function getRootDirectory()
     {
-        return dirname(dirname(dirname(__FILE__))) . '/';
+        return $this->f3->get('rootDIR');
     }
 
     function getTempDirectory()
     {
-        return dirname(dirname(dirname(__FILE__))) . '/tmp/';
+        return $this->f3->get('tempDIR');
     }
 
     function getCurrentDirectory()

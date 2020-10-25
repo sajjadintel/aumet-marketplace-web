@@ -1,8 +1,8 @@
 # Temp and vendor folders
-/.vscode/
-/tmp/
-/vendor/
-/.idea/
+.vscode/
+vendor/
+files/
+.idea/
 
 # Temp and environment variables
 .DS_Store
