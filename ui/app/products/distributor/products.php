@@ -80,14 +80,7 @@ function compress_htmlcode($codedata)
             <div class="d-flex flex-column-fluid">
                 <div class="input-group input-group-lg">
                     <div class="input-group-prepend ">
-                        <label class="myLabel">
-                            <input type="file" required />
-                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Upload Bonus Excel Sheet"> <i class="nav-icon la la-shopping-bag p-0"></i> <?php echo $vModule_product_uploadBonus; ?></a>
-                        </label>
-                        <label class="myLabel">
-                            <input type="file" required />
-                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Upload Stock Excel Sheet"> <i class="nav-icon la la-boxes p-0"></i> <?php echo $vModule_product_uploadStock; ?></a>
-                        </label>
+
                         <label class="myLabel">
                             <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="DistributorProductsDataTable.productAddModal()">
                                 <i class="nav-icon la la-plus p-0"></i> <?php echo $vButton_add; ?>

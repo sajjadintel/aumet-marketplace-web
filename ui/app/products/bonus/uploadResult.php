@@ -4,9 +4,9 @@
             <div class="card-body my-4">
                 <a href="javascript:;" class="card-title font-weight-bolder text-primary font-size-h2 mb-4 text-hover-state-dark d-block">Import Success Rate</a>
                 <div class="font-weight-bold text-dark font-size-h3">
-                    <span class="text-dark font-weight-bolder font-size-h2 mr-2"><?php echo $objStockUpdateUpload->importSuccessRate ?> %</span> Successful</div>
+                    <span class="text-dark font-weight-bolder font-size-h2 mr-2"><?php echo $objBonusUpdateUpload->importSuccessRate ?> %</span> Successful</div>
                 <div class="progress progress-xs mt-7 bg-primary-o-40">
-                    <div class="progress-bar bg-primary" role="progressbar" style="width: <?php echo $objStockUpdateUpload->importSuccessRate ?>%;" aria-valuenow="<?php echo $objStockUpdateUpload->importSuccessRate ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: <?php echo $objBonusUpdateUpload->importSuccessRate ?>%;" aria-valuenow="<?php echo $objBonusUpdateUpload->importSuccessRate ?>" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
         </div>
@@ -16,9 +16,9 @@
             <div class="card-body my-4">
                 <a href="javascript:;" class="card-title font-weight-bolder text-danger font-size-h2 mb-4 text-hover-state-dark d-block">Import Failure Rate (<span class="text-dark">Download Failed Records<span>)</a>
                 <div class="font-weight-bold text-dark font-size-h3">
-                    <span class="text-dark font-weight-bolder font-size-h2 mr-2"><?php echo $objStockUpdateUpload->importFailureRate ?> %</span> Failure</div>
+                    <span class="text-dark font-weight-bolder font-size-h2 mr-2"><?php echo $objBonusUpdateUpload->importFailureRate ?> %</span> Failure</div>
                 <div class="progress progress-xs mt-7 bg-danger-o-40">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: <?php echo $objStockUpdateUpload->importFailureRate ?>%;" aria-valuenow="<?php echo $objStockUpdateUpload->importFailureRate ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: <?php echo $objBonusUpdateUpload->importFailureRate ?>%;" aria-valuenow="<?php echo $objBonusUpdateUpload->importFailureRate ?>" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
         </div>

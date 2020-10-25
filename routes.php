@@ -69,6 +69,12 @@ $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->po
 // stock upload
 $f3->route('GET /web/distributor/product/stock/upload', 'ProductsController->getStockUpload');
 $f3->route('POST /web/distributor/product/stock/upload', 'ProductsController->postStockUpload');
+$f3->route('POST /web/distributor/product/stock/upload/process', 'ProductsController->postStockUploadProcess');
+
+// stock upload
+$f3->route('GET /web/distributor/product/bonus/upload', 'ProductsController->getBonusUpload');
+$f3->route('POST /web/distributor/product/bonus/upload', 'ProductsController->postBonusUpload');
+$f3->route('POST /web/distributor/product/bonus/upload/process', 'ProductsController->postBonusUploadProcess');
 
 $f3->route('GET /web/distributor/customer', 'EntityController->getEntityCustomers');
 $f3->route('GET /web/distributor/customer/@customerId', 'EntityController->getEntityCustomerDetails');

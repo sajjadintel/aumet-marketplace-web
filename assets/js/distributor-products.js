@@ -139,7 +139,7 @@ var DistributorProductsDataTable = (function () {
 					title: WebAppLocals.getMessage('unitPrice'),
 					autoHide: false,
 					template: function (row) {
-						return row.unitPrice + ' ' + row.currency;
+						return '<span class="font-size-sm">'+row.currency+'</span>' + ' <b class="font-size-h4">' + row.unitPrice  + '</b>';
 					},
 				},
 				// {
@@ -246,13 +246,13 @@ var DistributorProductsDataTable = (function () {
 	};
 
 
-	var _productEditModalOpen = function (webResponse) {
+	var _productEditModalOpenNew = function (webResponse) {
 		$('#genericModalContent').html(webResponse.data)
 		$('#genericModal').modal('show');
 	};
 
 
-	var _productEditModalOpenOLD = function (webResponse) {
+	var _productEditModalOpen = function (webResponse) {
 
 
 
