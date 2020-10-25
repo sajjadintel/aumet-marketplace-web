@@ -78,7 +78,7 @@ class AuthController extends Controller
 
     function postSignIn()
     {
-        $factory = (new Factory)->withServiceAccount($this->getRootDirectory() . 'config/aumet-marketplace-firebase-adminsdk-xw4gn-6075919bd7.json');
+        $factory = (new Factory)->withServiceAccount($this->getRootDirectory() . '/config/aumet-marketplace-firebase-adminsdk-xw4gn-6075919bd7.json');
 
         $auth = $factory->createAuth();
 
