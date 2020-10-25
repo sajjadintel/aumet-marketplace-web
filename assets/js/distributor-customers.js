@@ -58,10 +58,10 @@ var DistributorCustomersDataTable = (function () {
 					field: 'orderCount',
 					title: WebAppLocals.getMessage('orderCount'),
 					autoHide: false,
-					tempplate: function (row) {
+					template: function (row) {
 						var output = null;
 
-						output = row.orderCount + ' (' + row.orderCountPaid + ')';
+						output = row.orderCount;
 						return output;
 					},
 				},
@@ -69,10 +69,33 @@ var DistributorCustomersDataTable = (function () {
 					field: 'orderTotal',
 					title: WebAppLocals.getMessage('orderTotal'),
 					autoHide: false,
+					template: function (row) {
+						var output = null;
+
+						output = row.currencySymbol + ' ' +row.orderTotal;
+						return output;
+					},
+				},
+				{
+					field: 'orderTotalPaid',
+					title: WebAppLocals.getMessage('orderTotalPaid'),
+					autoHide: false,
+					template: function (row) {
+						var output = null;
+
+						output = row.currencySymbol + ' ' +row.orderTotalPaid;
+						return output;
+					},
+				},
+				{
+					field: 'orderTotalUnPaid',
+					title: WebAppLocals.getMessage('orderTotalUnPaid'),
+					autoHide: false,
 					tempplate: function (row) {
 						var output = null;
 
-						output = row.orderTotal + ' (' + row.orderTotalPaid + ')';
+						output = row.currencySymbol + ' ' + row.orderTotalUnPaid;
+
 						return output;
 					},
 				},
@@ -80,16 +103,16 @@ var DistributorCustomersDataTable = (function () {
 					field: 'statusId',
 					sortable: false,
 					width: 120,
-					title: WebAppLocals.getMessage('orderStatus'),
+					title: WebAppLocals.getMessage('customerStatus'),
 					autoHide: false,
 					// callback function support for column rendering
 					template: function (row) {
 						var status = {
 							1: {
 								title: WebAppLocals.getMessage('relationAvailable'),
-								class: ' label-sucess',
+								class: ' label-success',
 							},
-							0: {
+							2: {
 								title: WebAppLocals.getMessage('relationBlacklisted'),
 								class: ' label-danger',
 							},

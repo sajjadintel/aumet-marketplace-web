@@ -60,12 +60,16 @@ class ProductsController extends Controller
             $productId = $this->f3->get('PARAMS.productId');
 
             $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
-            $arrProduct = $dbProduct->findWhere("productId = '$productId'");
+            $dbProduct->getByField("productId", $productId);
+            $this->f3->set("objProduct", $dbProduct);
+            //$arrProduct = $dbProduct->findWhere("productId = $productId");
 
-            $data['product'] = $arrProduct[0];
+            //$data['product'] = $arrProduct[0];
 
-            echo $this->webResponse->jsonResponseV2(1, "", "", $data);
-            return;
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = $this->f3->get('vModule_feedback_title');
+            $this->webResponse->data = View::instance()->render('app/products/distributor/modals/edit.php');
+            echo $this->webResponse->jsonResponse();
         }
     }
 
@@ -378,11 +382,50 @@ class ProductsController extends Controller
     }
 
     function postStockUpload(){
-        $target_dir = $this->getUploadDirectory();
-        $target_file = $target_dir . basename($_FILES["file"]["name"]);
+        $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
+        // basename($_FILES["file"]["name"])
 
-        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_dir.$_FILES['file']['name'])) {
-            $status = 1;
+        $targetFile = $this->getUploadDirectory() . $this->generateRandomString(16).".$ext";
+
+        if($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
+                echo "OK";
+            }
+        }
+    }
+
+    function postStockUploadProcess(){
+        global $dbConnection;
+
+        $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+
+        $dbStockUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
+
+
+
+        $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($dbStockUpdateUpload->filePath);
+        try {
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+            $spreadsheet = $reader->load($dbStockUpdateUpload->filePath);
+
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            $dbStockUpdateUpload->recordsCount = 0;
+            foreach ($worksheet->getRowIterator() as $row) {
+                $dbStockUpdateUpload->recordsCount++;
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+
+            }
+            $dbStockUpdateUpload->recordsCount -= 1;
+            $dbStockUpdateUpload->update();
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = View::instance()->render('app/products/stock/uploadResult.php');
+            echo $this->webResponse->jsonResponse();
+
+        } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
         }
     }
 }

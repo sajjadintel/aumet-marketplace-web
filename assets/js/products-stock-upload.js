@@ -2,6 +2,10 @@
 var ProductsStockUpload = function () {
     var _init = function () {
         var _id = '#dropZoneProductsStockUpload';
+        var previewNode = $(_id + " .dropzone-item");
+        previewNode.id = "";
+        var previewTemplate = previewNode.parent('.dropzone-items').html();
+        previewNode.remove();
         $(_id).dropzone({
             url: "/web/distributor/product/stock/upload",
             paramName: "file",
@@ -10,6 +14,9 @@ var ProductsStockUpload = function () {
             addRemoveLinks: false,
             acceptedFiles: ".xlsx,.xls,.csv",
             createImageThumbnails: false,
+            //previewTemplate: previewTemplate,
+            //previewsContainer: _id + " .dropzone-items",
+            //clickable: "#btnProductsStockUpload",
             accept: function (file, done) {
                 if (file.name == "justinbieber.jpg") {
                     done("Naha, you don't.");
@@ -17,8 +24,25 @@ var ProductsStockUpload = function () {
                     done();
                 }
             },
+            addedfile: function (file) {
+                $("#dropZoneProductsStockUpload").fadeOut();
+                $("#dropZoneProductsStockUploadProgressContainer").fadeIn();
+            },
+
+            sending: function (file) {
+
+            },
             totaluploadprogress: function (progress) {
-                $(this).find(_id + " .progress-bar").css('width', progress + "%");
+                $("#dropZoneProductsStockUploadProgress").html('Uploading: '+ progress + " %");
+                $("#dropZoneProductsStockUploadProgress").css('width', progress + "%");
+                if(progress == 100){
+                    $("#dropZoneProductsStockUploadProgress").html('Upload Completed Successfully');
+                    WebApp.block('stockUpdateProcessing');
+                }
+
+            },
+            complete: function (progress) {
+                WebApp.unblock();
             }
         });
     }
@@ -34,8 +58,8 @@ var ProductsStockUpload = function () {
             previewTemplate: previewTemplate,
             maxFilesize: 1,
             autoQueue: false,
-            previewsContainer: id + " .dropzone-items",
-            clickable: id + " .dropzone-select"
+            //previewsContainer: id + " .dropzone-items",
+            //clickable: id + " .dropzone-select"
         });
         myDropzone4.on("addedfile", function (file) {
             file.previewElement.querySelector(id + " .dropzone-start").onclick = function () {

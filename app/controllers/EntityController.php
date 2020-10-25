@@ -57,17 +57,19 @@ class EntityController extends Controller
         $offset = ($page - 1) * $perpage;
         $total = 0;
 
-        $dbProducts = new BaseModel($this->db, "vwEntityRelation");
+        $dbCustomers = new BaseModel($this->db, "vwEntityRelation");
+        $dbCustomers->buyerName = "buyerName_".$this->f3->get("LANGUAGE");
+        $dbCustomers->sellerName = "sellerName_".$this->f3->get("LANGUAGE");
 
-        if (!$dbProducts->exists($field)) {
+        if (!$dbCustomers->exists($field)) {
             $field = 'id';
         }
         if ($query == "") {
-            $total = $dbProducts->count();
-            $data = $dbProducts->findAll("$field $sort", $perpage, $offset);
+            $total = $dbCustomers->count();
+            $data = $dbCustomers->findAll("$field $sort", $perpage, $offset);
         } else {
-            $total = $dbProducts->count($query);
-            $data = $dbProducts->findWhere($query, "$field $sort", $perpage, $offset);
+            $total = $dbCustomers->count($query);
+            $data = $dbCustomers->findWhere($query, "$field $sort", $perpage, $offset);
         }
 
         $pages = 1;

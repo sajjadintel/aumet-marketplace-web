@@ -15,7 +15,7 @@ function compress_htmlcode($codedata)
 <!--begin::Container-->
 <div class="container-fluid">
     <div class="d-flex align-items-stretch text-center flex-column">
-        <h2 class="text-primary font-weight-bolder mt-10 mb-15 font-size-h4"><?php echo $vModule_product_header ?></h2>
+
         <form class="d-flex position-relative w-100 m-auto">
 
             <div class="d-flex flex-column-fluid">

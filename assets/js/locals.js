@@ -250,13 +250,18 @@ var WebAppLocals = (function () {
 			ar: 'آخر تحديث لتوفر المنتج',
 			fr: '',
 		},
+		customerStatus: {
+			en: 'Status',
+			ar: 'الحالة',
+			fr: '',
+		},
 		relationAvailable: {
-			en: 'Available',
-			ar: 'متوفر',
+			en: 'Active',
+			ar: 'فعال',
 			fr: '',
 		},
 		relationBlacklisted: {
-			en: 'Blacklisted',
+			en: 'Blocked',
 			ar: 'محظور',
 			fr: '',
 		},
@@ -268,6 +273,21 @@ var WebAppLocals = (function () {
 		orderRating: {
 			en: 'Rating',
 			ar: 'التصنيف',
+			fr: '',
+		},
+		stockUpdateProcessing: {
+			en: 'Stock file under processing, Please wait...',
+			ar: 'جاري العمل على تحديث ملف الأصناف, الرجاء الانتظار',
+			fr: '',
+		},
+		orderTotalPaid: {
+			en: 'Total Paid',
+			ar: 'مجموع المدفوع',
+			fr: '',
+		},
+		orderTotalUnPaid: {
+			en: 'Total Un-Paid',
+			ar: 'مجموع الغير مدفوع',
 			fr: '',
 		},
 		error: {

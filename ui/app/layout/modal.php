@@ -82,3 +82,10 @@
     </div>
 </div>
 
+<div class="modal fade" id="genericModal" tabindex="-1" role="dialog" aria-labelledby="genericModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content" id="genericModalContent">
+        </div>
+    </div>
+</div>
+

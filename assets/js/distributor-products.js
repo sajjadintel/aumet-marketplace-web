@@ -245,7 +245,17 @@ var DistributorProductsDataTable = (function () {
 		_productAddModalOpen();
 	};
 
+
 	var _productEditModalOpen = function (webResponse) {
+		$('#genericModalContent').html(webResponse.data)
+		$('#genericModal').modal('show');
+	};
+
+
+	var _productEditModalOpenOLD = function (webResponse) {
+
+
+
 		$('#editModalForm').attr('action', '/web/distributor/product/edit');
 		$('#editProductId').val(webResponse.data.product.id);
 
