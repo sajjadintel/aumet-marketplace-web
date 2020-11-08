@@ -79,9 +79,8 @@
                                 } else {
                                     echo '<i class="la la-equals la-lg text-white"></i> ';
                                 }
-                                echo 'AED ' . $dashboard_new_customer; ?>
+                                echo $dashboard_new_customer; ?>
                             </span>
-                            <span class="font-size-h2 mr-2"><i class="la la-rocket la-lg text-white"></i> 3</span>
                         </div>
                     </div>
                 </div>
