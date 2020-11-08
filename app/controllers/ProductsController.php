@@ -201,6 +201,38 @@ class ProductsController extends Controller
         echo json_encode($result, JSON_PRETTY_PRINT);
     }
 
+    function postDistributorProductsBestSelling()
+    {
+        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+        $query = "entityId IN ($arrEntityId)";
+        $meta = array();
+        $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
+        $data = $dbProducts->findWhere($query, "quantityOrdered DESC", 5, 0);
+
+        $meta = array(
+            'page' => 1,
+            'pages' => 1,
+            'perpage' => 5,
+            'total' => 5,
+        );
+
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description');
+
+        $result = array(
+            'q' => $query,
+            'meta' => $meta + array(
+                'sort' => 'desc',
+                'field' => 'quantityOrdered',
+            ),
+            'data' => $data
+        );
+
+        echo json_encode($result, JSON_PRETTY_PRINT);
+    }
+
     function postEditDistributorProduct()
     {
         if (!$this->f3->ajax()) {
@@ -377,19 +409,20 @@ class ProductsController extends Controller
             echo View::instance()->render('app/layout/layout.php');
         } else {
             $this->webResponse->errorCode = 1;
-            $this->webResponse->title = "Stock Update";//$this->f3->get('vModule_stock_title');
+            $this->webResponse->title = "Stock Update"; //$this->f3->get('vModule_stock_title');
             $this->webResponse->data = View::instance()->render('app/products/stock/upload.php');
             echo $this->webResponse->jsonResponse();
         }
     }
 
-    function postStockUpload(){
+    function postStockUpload()
+    {
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
         // basename($_FILES["file"]["name"])
 
-        $targetFile = $this->getUploadDirectory() . $this->generateRandomString(16).".$ext";
+        $targetFile = $this->getUploadDirectory() . $this->generateRandomString(16) . ".$ext";
 
-        if($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
+        if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
                 global $dbConnection;
                 $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
@@ -402,7 +435,8 @@ class ProductsController extends Controller
         }
     }
 
-    function postStockUploadProcess(){
+    function postStockUploadProcess()
+    {
         global $dbConnection;
 
         $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
@@ -426,7 +460,7 @@ class ProductsController extends Controller
             $dbStockUpdateUpload->recordsCount -= 1;
 
 
-            $dbStockUpdateUpload->completedCount = $dbStockUpdateUpload->recordsCount -5;
+            $dbStockUpdateUpload->completedCount = $dbStockUpdateUpload->recordsCount - 5;
             $dbStockUpdateUpload->importSuccessRate = round($dbStockUpdateUpload->completedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
 
             $dbStockUpdateUpload->failedCount = $dbStockUpdateUpload->recordsCount - $dbStockUpdateUpload->completedCount;
@@ -440,7 +474,6 @@ class ProductsController extends Controller
             $this->webResponse->title = "";
             $this->webResponse->data = View::instance()->render('app/products/stock/uploadResult.php');
             echo $this->webResponse->jsonResponse();
-
         } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
         }
     }
@@ -451,19 +484,20 @@ class ProductsController extends Controller
             echo View::instance()->render('app/layout/layout.php');
         } else {
             $this->webResponse->errorCode = 1;
-            $this->webResponse->title = "Bonus Update";//$this->f3->get('vModule_bonus_title');
+            $this->webResponse->title = "Bonus Update"; //$this->f3->get('vModule_bonus_title');
             $this->webResponse->data = View::instance()->render('app/products/bonus/upload.php');
             echo $this->webResponse->jsonResponse();
         }
     }
 
-    function postBonusUpload(){
+    function postBonusUpload()
+    {
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
         // basename($_FILES["file"]["name"])
 
-        $targetFile = $this->getUploadDirectory() . $this->generateRandomString(16).".$ext";
+        $targetFile = $this->getUploadDirectory() . $this->generateRandomString(16) . ".$ext";
 
-        if($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
+        if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
                 global $dbConnection;
                 $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
@@ -476,7 +510,8 @@ class ProductsController extends Controller
         }
     }
 
-    function postBonusUploadProcess(){
+    function postBonusUploadProcess()
+    {
         global $dbConnection;
 
         $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
@@ -500,7 +535,7 @@ class ProductsController extends Controller
             $dbStockUpdateUpload->recordsCount -= 1;
 
 
-            $dbStockUpdateUpload->completedCount = $dbStockUpdateUpload->recordsCount -5;
+            $dbStockUpdateUpload->completedCount = $dbStockUpdateUpload->recordsCount - 5;
             $dbStockUpdateUpload->importSuccessRate = round($dbStockUpdateUpload->completedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
 
             $dbStockUpdateUpload->failedCount = $dbStockUpdateUpload->recordsCount - $dbStockUpdateUpload->completedCount;
@@ -514,7 +549,6 @@ class ProductsController extends Controller
             $this->webResponse->title = "";
             $this->webResponse->data = View::instance()->render('app/products/bonus/uploadResult.php');
             echo $this->webResponse->jsonResponse();
-
         } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
         }
     }

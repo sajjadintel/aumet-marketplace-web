@@ -70,7 +70,7 @@ var DistributorProductsDataTable = (function () {
 				},
 				{
 					field: 'scientificName',
-					title: WebAppLocals.getMessage('productScintificName'),
+					title: WebAppLocals.getMessage('productScientificName'),
 					autoHide: true,
 				},
 				{
@@ -139,7 +139,7 @@ var DistributorProductsDataTable = (function () {
 					title: WebAppLocals.getMessage('unitPrice'),
 					autoHide: false,
 					template: function (row) {
-						return '<span class="font-size-sm">'+row.currency+'</span>' + ' <b class="font-size-h4">' + row.unitPrice  + '</b>';
+						return '<span class="font-size-sm">' + row.currency + '</span>' + ' <b class="font-size-h4">' + row.unitPrice + '</b>';
 					},
 				},
 				// {
@@ -245,22 +245,17 @@ var DistributorProductsDataTable = (function () {
 		_productAddModalOpen();
 	};
 
-
 	var _productEditModalOpenNew = function (webResponse) {
-		$('#genericModalContent').html(webResponse.data)
+		$('#genericModalContent').html(webResponse.data);
 		$('#genericModal').modal('show');
 	};
 
-
 	var _productEditModalOpen = function (webResponse) {
-
-
-
 		$('#editModalForm').attr('action', '/web/distributor/product/edit');
 		$('#editProductId').val(webResponse.data.product.id);
 
 		$('#editModalTitle').html(WebAppLocals.getMessage('edit'));
-		$("label[for='editProductScientificName']").text(WebAppLocals.getMessage('productScintificName'));
+		$("label[for='editProductScientificName']").text(WebAppLocals.getMessage('productScientificName'));
 		$("label[for='editProductCountry']").text(WebAppLocals.getMessage('madeInCountry'));
 		$("label[for='editProductNameAr']").text(WebAppLocals.getMessage('productName') + ' AR');
 		$("label[for='editProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
@@ -350,7 +345,7 @@ var DistributorProductsDataTable = (function () {
 		$('#addModalForm').attr('action', '/web/distributor/product/add');
 
 		$('#addModalTitle').html(WebAppLocals.getMessage('add'));
-		$("label[for='addProductScientificName']").text(WebAppLocals.getMessage('productScintificName'));
+		$("label[for='addProductScientificName']").text(WebAppLocals.getMessage('productScientificName'));
 		$("label[for='addProductCountry']").text(WebAppLocals.getMessage('madeInCountry'));
 		$("label[for='addProductNameAr']").text(WebAppLocals.getMessage('productName') + ' AR');
 		$("label[for='addProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');

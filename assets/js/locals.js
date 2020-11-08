@@ -210,7 +210,12 @@ var WebAppLocals = (function () {
 			ar: 'صنع في',
 			fr: '',
 		},
-		productScintificName: {
+		quantityOrdered: {
+			en: 'Quantity Ordered',
+			ar: 'الكمية المطلوبة',
+			fr: '',
+		},
+		productScientificName: {
 			en: 'Scientific Name',
 			ar: 'الاسم العلمي',
 			fr: '',
