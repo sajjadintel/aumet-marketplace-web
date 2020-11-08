@@ -2,7 +2,7 @@
 return array(
     'vTitle' => 'Aumet Medical Marketplace',
     'masterContentDir' => 'ltr',
-    'langActiveFlag' => '226-united-states.svg',
+    'langActiveFlag' => '260-united-kingdom.svg',
     'vFooterText' => 'Aumet Inc | {Y} © All Rights Reserved',
     'vFooterLinks_about' => 'About Aumet',
     'vFooterLinks_blog' => 'Aumet Blog',
@@ -10,9 +10,7 @@ return array(
 
     'vGreeting' => 'Hello',
 
-    'vFlagSVGName' => '077-jordan.svg',
-
-    'vLogin_slogan' => 'Connecting pharmacies and medical distributors through the largest online healthcare B2B marketplace',
+    'vLogin_slogan' => 'Connecting healthcare end users and distributors through the largest online healthcare B2B marketplace',
 
     'vMessage_invalidLogin' => 'Invalid Email or Password',
 
@@ -20,17 +18,20 @@ return array(
     'vLogin_help' => 'Request Assistance',
 
     'vLogin_signin' => 'Sign In',
-    'vLogin_signinWithGoole' => 'Sign in with Google',
+    'vLogin_signinWithGoogle' => 'Sign in with Google',
+    'vLogin_signinWithPhone' => 'Sign in with Phone',
     'vLogin_signout' => 'Logout',
     'vLogin_signup' => 'Create Account',
     'vLogin_signupAdv' => 'Register Now',
-    'vLogin_noAccountAdv' => 'New Here ?',
-    'vLogin_email' => 'Email Address',
+    'vLogin_noAccountAdv' => "Don't you have an account yet?",
+    'vLogin_email' => 'Work Email Address',
     'vLogin_password' => 'Password',
     'vLogin_rememberMe' => 'Remember Me',
     'vLogin_forgotPassword' => 'Forgotten Password ?',
     'vLogin_forgotPasswordDescription' => 'Enter your email to reset your password',
     'vLogin_forgotPasswordSubmit' => 'Submit',
+
+    'vSignup_password' => 'Password',
 
     'vResetPassword_title' => 'Enter New Password',
     'vResetPassword_password' => 'New Password',
@@ -40,6 +41,15 @@ return array(
 
     'vChangePassword_title' => 'Change Password',
     'vChangePassword_subTitle' => 'Change Current Password',
+
+    'vSignup_AlreadyHaveAccount' => 'Do you have an account?',
+    'vSignup_firstName' => 'First Name',
+    'vSignup_lastName' => 'Last Name',
+    'vSignup_name' => 'Name',
+    'vSignup_mobile' => 'Phone Numer',
+    'vSignup_email' => 'Email Address',
+
+    'vBack' => 'Go Back',
 
     'vSignup_wizardUserInfo' => 'Account Information',
     'vSignup_wizardUserInfoDesc' => 'Set up your account information',

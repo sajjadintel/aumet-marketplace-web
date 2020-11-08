@@ -29,36 +29,25 @@
 		<div class="dropdown-menu p-0 m-0 dropdown-menu-anim-up dropdown-menu-sm dropdown-menu-right">
 			<!--begin::Nav-->
 			<ul class="navi navi-hover py-4">
-				<!--begin::Item-->
-				<li class="navi-item">
-					<a href="/web/me/switchLanguage/ar" class="navi-link">
+                <!--begin::Item-->
+                <li class="navi-item">
+                    <a href="/me/switchLanguage/ar" class="navi-link">
 						<span class="symbol symbol-20 mr-3">
-							<img src="/theme/assets/media/svg/flags/151-united-arab-emirates.svg" alt="" />
+							<img src="/theme/assets/media/svg/flags/008-saudi-arabia.svg" alt=""/>
 						</span>
-						<span class="navi-text">العربية</span>
-					</a>
-				</li>
-				<!--end::Item-->
-				<!--begin::Item-->
-				<li class="navi-item">
-					<a href="/web/me/switchLanguage/en" class="navi-link">
+                        <span class="navi-text">العربية</span>
+                    </a>
+                </li>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <li class="navi-item">
+                    <a href="/me/switchLanguage/en" class="navi-link">
 						<span class="symbol symbol-20 mr-3">
-							<img src="/theme/assets/media/svg/flags/226-united-states.svg" alt="" />
+							<img src="/theme/assets/media/svg/flags/260-united-kingdom.svg" alt=""/>
 						</span>
-						<span class="navi-text">English</span>
-					</a>
-				</li>
-				<!--end::Item-->
-				<!--begin::Item-->
-				<li class="navi-item">
-					<a href="/web/me/switchLanguage/fr" class="navi-link">
-						<span class="symbol symbol-20 mr-3">
-							<img src="/theme/assets/media/svg/flags/195-france.svg" alt="" />
-						</span>
-						<span class="navi-text">Français</span>
-					</a>
-				</li>
-				<!--end::Item-->
+                        <span class="navi-text">English</span>
+                    </a>
+                </li>
 			</ul>
 			<!--end::Nav-->
 		</div>

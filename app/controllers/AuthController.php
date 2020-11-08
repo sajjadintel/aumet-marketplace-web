@@ -78,7 +78,7 @@ class AuthController extends Controller
 
     function postSignIn()
     {
-        $factory = (new Factory)->withServiceAccount($this->getRootDirectory() . '/config/aumet-marketplace-firebase-adminsdk-xw4gn-6075919bd7.json');
+        $factory = (new Factory)->withServiceAccount($this->getRootDirectory() . '/config/aumet-com-firebase-adminsdk-2nsnx-64efaf5c39.json');
 
         $auth = $factory->createAuth();
 
@@ -94,7 +94,6 @@ class AuthController extends Controller
             $dbUser = new BaseModel($dbConnection, "user");
             $dbUser->getByField("uid", $uid);
             if ($dbUser->dry()) {
-
 
                 $this->webResponse->errorCode = 1;
                 $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
@@ -186,10 +185,6 @@ class AuthController extends Controller
         }
 
         $this->f3->set('SESSION.arrEntities', $arrEntities);
-    }
-
-    function setLanguage()
-    {
     }
 
     function getSignUp()
