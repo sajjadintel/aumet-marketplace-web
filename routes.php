@@ -46,7 +46,9 @@ $f3->route('GET /web/distributor/order/history', 'OrderController->getDistributo
 $f3->route('GET /web/distributor/order/@orderId', 'OrderController->getOrderDetails');
 $f3->route('GET /web/distributor/order/print/@orderId', 'OrderController->getPrintOrderInvoice');
 $f3->route('GET /web/distributor/order/confirm/@orderId/@statusId', 'OrderController->getOrderConfirmation');
+$f3->route('GET /web/distributor/order/confirm/@orderId/@statusId/dashboard', 'OrderController->getOrderConfirmationDashboard');
 $f3->route('POST /web/distributor/order/new', 'OrderController->postDistributorOrdersNew');
+
 $f3->route('POST /web/distributor/order/pending', 'OrderController->postDistributorOrdersPending');
 $f3->route('POST /web/distributor/order/unpaid', 'OrderController->postDistributorOrdersUnpaid');
 $f3->route('POST /web/distributor/order/history', 'OrderController->postDistributorOrdersHistory');
@@ -61,6 +63,7 @@ $f3->route('POST /web/distributor/order/onhold', 'OrderController->postOnHoldOrd
 $f3->route('GET /web/distributor/product', 'ProductsController->getDistributorProducts');
 $f3->route('GET /web/distributor/product/@productId', 'ProductsController->getProductDetails');
 $f3->route('GET /web/distributor/product/quantity/@productId', 'ProductsController->getProductQuantityDetails');
+
 $f3->route('POST /web/distributor/product', 'ProductsController->postDistributorProducts');
 $f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDistributorProduct');
 $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDistributorProduct');
@@ -83,4 +86,7 @@ $f3->route('POST /web/distributor/customer', 'EntityController->postEntityCustom
 $f3->route('GET /web/distributor/customer/feedback', 'CustomersController->getOrderCustomersFeedback');
 $f3->route('POST /web/distributor/customer/feedback', 'CustomersController->postOrderCustomersFeedback');
 
-
+// START dashboard
+$f3->route('POST /web/distributor/order/recent', 'OrderController->postDistributorOrdersRecent');
+$f3->route('POST /web/distributor/product/bestselling', 'ProductsController->postDistributorProductsBestSelling');
+// END dashboard

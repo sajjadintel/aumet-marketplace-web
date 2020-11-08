@@ -12,36 +12,36 @@ function compress_htmlcode($codedata)
 	return $codedata;
 }
 ?>
-    <!DOCTYPE html>
-    <html lang="<?php echo $LANGUAGE ?>" dir="<?php echo $cssDirection ?>" direction="<?php echo $cssDirection ?>" style="direction: <?php echo $cssDirection ?>">
-    <!--begin::Head-->
+<!DOCTYPE html>
+<html lang="<?php echo $LANGUAGE ?>" dir="<?php echo $cssDirection ?>" direction="<?php echo $cssDirection ?>" style="direction: <?php echo $cssDirection ?>">
+<!--begin::Head-->
 
-    <head>
-        <!-- The core Firebase JS SDK is always required and must be listed first -->
-        <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+<head>
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
 
-        <!-- TODO: Add SDKs for Firebase products that you want to use
+	<!-- TODO: Add SDKs for Firebase products that you want to use
              https://firebase.google.com/docs/web/setup#available-libraries -->
-        <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-analytics.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-analytics.js"></script>
 
-        <script>
-            // Your web app's Firebase configuration
-            var firebaseConfig = {
-                apiKey: "AIzaSyBy1rh8zZNp1lnUBLyQ15a-cgNvZzsNFBU",
-                authDomain: "aumet-com.firebaseapp.com",
-                databaseURL: "https://aumet-com.firebaseio.com",
-                projectId: "aumet-com",
-                storageBucket: "aumet-com.appspot.com",
-                messagingSenderId: "380649916442",
-                appId: "1:380649916442:web:8ff3bfa9cd74f7c69969a3",
-                measurementId: "G-YJ2BRPK2JD"
-            };
+	<script>
+		// Your web app's Firebase configuration
+		var firebaseConfig = {
+			apiKey: "AIzaSyBy1rh8zZNp1lnUBLyQ15a-cgNvZzsNFBU",
+			authDomain: "aumet-com.firebaseapp.com",
+			databaseURL: "https://aumet-com.firebaseio.com",
+			projectId: "aumet-com",
+			storageBucket: "aumet-com.appspot.com",
+			messagingSenderId: "380649916442",
+			appId: "1:380649916442:web:8ff3bfa9cd74f7c69969a3",
+			measurementId: "G-YJ2BRPK2JD"
+		};
 
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-            firebase.analytics();
-        </script>
+		// Initialize Firebase
+		firebase.initializeApp(firebaseConfig);
+		firebase.analytics();
+	</script>
 
 	<meta charset="utf-8" />
 	<title><?php echo $vTitle; ?></title>
@@ -59,19 +59,19 @@ function compress_htmlcode($codedata)
 	<link href="/theme/assets/plugins/custom/jstree/jstree.bundle.css" rel="stylesheet" type="text/css" />
 
 	<!--end::Page Custom Styles-->
-        <!--begin::Global Theme Styles(used by all pages)-->
-        <link href="/theme/assets/plugins/global/plugins.bundle<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.css" rel="stylesheet" type="text/css" />
-        <link href="/theme/assets/plugins/custom/prismjs/prismjs.bundle.min.css" rel="stylesheet" type="text/css" />
-        <link href="/theme/assets/css/style.bundle<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
-        <!--end::Global Theme Styles-->
-        <!--begin::Layout Themes(used by all pages)-->
-        <link href="/theme/assets/css/themes/layout/header/base/light<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
-        <link href="/theme/assets/css/themes/layout/header/menu/light<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
-        <link href="/theme/assets/css/themes/layout/brand/light<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
-        <link href="/theme/assets/css/themes/layout/aside/light<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
-        <!--end::Layout Themes-->
+	<!--begin::Global Theme Styles(used by all pages)-->
+	<link href="/theme/assets/plugins/global/plugins.bundle<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.css" rel="stylesheet" type="text/css" />
+	<link href="/theme/assets/plugins/custom/prismjs/prismjs.bundle.min.css" rel="stylesheet" type="text/css" />
+	<link href="/theme/assets/css/style.bundle<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+	<!--end::Global Theme Styles-->
+	<!--begin::Layout Themes(used by all pages)-->
+	<link href="/theme/assets/css/themes/layout/header/base/light<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+	<link href="/theme/assets/css/themes/layout/header/menu/light<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+	<link href="/theme/assets/css/themes/layout/brand/light<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+	<link href="/theme/assets/css/themes/layout/aside/light<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+	<!--end::Layout Themes-->
 
-        <link href="/assets/css/app.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+	<link href="/assets/css/app.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
 	<link href="/theme/assets/plugins/custom/datatables/datatables.bundle.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
 
 	<link rel="apple-touch-icon" sizes="57x57" href="/favicons/apple-icon-57x57.png">
@@ -219,7 +219,8 @@ function compress_htmlcode($codedata)
 				</div>
 				<!--end::Content-->
 				<?php include_once 'modal.php'; ?>
-                <?php //include_once 'webGuidedTour-distributor.php'; ?>
+				<?php //include_once 'webGuidedTour-distributor.php'; 
+				?>
 				<!--begin::Footer-->
 				<?php include_once 'footer.php'; ?>
 				<!--end::Footer-->
@@ -236,7 +237,8 @@ function compress_htmlcode($codedata)
 
 	<!--end::Quick Cart-->
 	<!--begin::Quick Panel-->
-	<?php //include_once 'quickPanel.php'; ?>
+	<?php //include_once 'quickPanel.php'; 
+	?>
 	<!--end::Quick Panel-->
 	<!--begin::Chat Panel-->
 	<?php include_once 'chatPanel.php'; ?>
@@ -257,31 +259,33 @@ function compress_htmlcode($codedata)
 	</div>
 	<!--end::Scrolltop-->
 	<!--begin::Sticky Toolbar-->
-	<?php //include_once 'stickyToolbar.php'; ?>
+	<?php //include_once 'stickyToolbar.php'; 
+	?>
 	<!--end::Sticky Toolbar-->
 
 
 
 
 	<script>
-        var docLang = "<?php echo $LANGUAGE; ?>";
-        var _ajaxUrl = "<?php echo $ajaxUrl; ?>";
-        var _id = "<?php echo $objUser->id ?>";
+		var docLang = "<?php echo $LANGUAGE; ?>";
+		var _ajaxUrl = "<?php echo $ajaxUrl; ?>";
+		var _id = "<?php echo $objUser->id ?>";
 	</script>
 
 	<script type="text/javascript" src="/theme/assets/plugins/custom/jstree/jstree.bundle.js<?php echo $platformVersion ?>"></script>
 
 	<script type="text/javascript" src="/assets/js/math.min.js"></script>
 	<script type="text/javascript" src="/assets/js/tour-distributor.js<?php echo $platformVersion ?>"></script>
-    <script type="text/javascript" src="/assets/js/locals.js<?php echo $platformVersion ?>"></script>
+	<script type="text/javascript" src="/assets/js/locals.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/cart.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/app.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/autocomplete.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/products-search.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-orders.js<?php echo $platformVersion ?>"></script>
-    <script type="text/javascript" src="/assets/js/distributor-feedback.js<?php echo $platformVersion ?>"></script>
+	<script type="text/javascript" src="/assets/js/distributor-feedback.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-products.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-customers.js<?php echo $platformVersion ?>"></script>
+	<script type="text/javascript" src="/assets/js/distributor-dashboard.js<?php echo $platformVersion ?>"></script>
 
 
 	<script type="text/javascript" src="/assets/js/treeview.js<?php echo $platformVersion ?>"></script>
@@ -289,12 +293,11 @@ function compress_htmlcode($codedata)
 	<script type="text/javascript" src="/theme/assets/plugins/custom/datatables/datatables.bundle.js"></script>
 	<script type="text/javascript" src="/theme/assets/js/pages/crud/forms/widgets/form-repeater.js"></script>
 
-    <script>
-
-        jQuery(document).ready(function () {
-            WebApp.init();
-        });
-    </script>
+	<script>
+		jQuery(document).ready(function() {
+			WebApp.init();
+		});
+	</script>
 </body>
 <!--end::Body-->
 

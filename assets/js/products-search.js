@@ -71,7 +71,7 @@ var SearchDataTable = (function () {
 				},
 				{
 					field: 'scientificName',
-					title: WebAppLocals.getMessage('productScintificName'),
+					title: WebAppLocals.getMessage('productScientificName'),
 					autoHide: true,
 				},
 				{

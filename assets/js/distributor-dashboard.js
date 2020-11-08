@@ -1,24 +1,20 @@
 'use strict';
 // Class definition
-
-var DistributorOrdersDataTable = (function () {
+var DistributorDashboardDataTable = (function () {
 	// Private functions
 
-	var datatable;
-	var datatableDetail;
-	var _readParams;
+	var datatableOrders;
+	var datatableProducts;
 
-	var _init = function (objQuery) {
-		_readParams = objQuery;
-		datatable = $('#kt_datatable').KTDatatable({
+	var _initRecentOrders = function () {
+		datatableOrders = $('#kt_datatable_orders').KTDatatable({
 			// datasource definition
 
 			data: {
 				type: 'remote',
 				source: {
 					read: {
-						url: window.location.pathname,
-						params: _readParams,
+						url: '/web/distributor/order/recent',
 					},
 				},
 				serverPaging: true,
@@ -48,7 +44,7 @@ var DistributorOrdersDataTable = (function () {
 					sortable: 'asc',
 					selector: false,
 					textAlign: 'left',
-					width: 120,
+					width: 80,
 					autoHide: false,
 					template: function (row) {
 						var output = '(' + row.id + ') - #' + row.serial;
@@ -67,22 +63,9 @@ var DistributorOrdersDataTable = (function () {
 						return output;
 					},
 				},
-				// {
-				// 	field: 'entitySeller', // + docLang,
-				// 	title: WebAppLocals.getMessage('entitySeller'),
-				// 	autoHide: false,
-				// 	template: function (row) {
-				// 		var output = row.entitySeller;
-				// 		if (row.userSeller != null) {
-				// 			output += ' (' + row.userSeller + ')';
-				// 		}
-				// 		return output;
-				// 	},
-				// },
 				{
 					field: 'insertDateTime',
 					title: WebAppLocals.getMessage('insertDate'),
-					autoHide: false,
 					width: 120,
 					template: function (row) {
 						if (row.insertDateTime) {
@@ -97,58 +80,9 @@ var DistributorOrdersDataTable = (function () {
 					},
 				},
 				{
-					field: 'statusId',
-					sortable: false,
-					width: 120,
-					title: WebAppLocals.getMessage('orderStatus'),
-					autoHide: false,
-					// callback function support for column rendering
-					template: function (row) {
-						var status = {
-							1: {
-								title: WebAppLocals.getMessage('orderStatus_New'),
-								class: ' label-primary',
-							},
-							2: {
-								title: WebAppLocals.getMessage('orderStatus_OnHold'),
-								class: ' label-warning',
-							},
-							3: {
-								title: WebAppLocals.getMessage('orderStatus_Processing'),
-								class: ' label-primary',
-							},
-							4: {
-								title: WebAppLocals.getMessage('orderStatus_Completed'),
-								class: ' label-primary',
-							},
-							5: {
-								title: WebAppLocals.getMessage('orderStatus_Canceled'),
-								class: ' label-danger',
-							},
-							6: {
-								title: WebAppLocals.getMessage('orderStatus_Received'),
-								class: ' label-primary',
-							},
-							7: {
-								title: WebAppLocals.getMessage('orderStatus_Paid'),
-								class: ' label-success',
-							},
-						};
-
-						var output = '';
-
-						output +=
-							'<div><span class="label label-lg font-weight-bold ' + status[row.statusId].class + ' label-inline">' + status[row.statusId].title + '</span></div>';
-						// output += '<div class="text-muted">' + (row.stockUpdateDateTime != null ? jQuery.timeago(row.stockUpdateDateTime) : 'NA') + '</div>';
-
-						return output;
-					},
-				},
-				{
 					field: 'total', // + docLang,
 					title: WebAppLocals.getMessage('orderTotal'),
 					width: 120,
-					autoHide: false,
 					template: function (row) {
 						var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
 						return output;
@@ -180,7 +114,7 @@ var DistributorOrdersDataTable = (function () {
 					title: '',
 					sortable: false,
 					overflow: 'visible',
-					width: 400,
+					width: 250,
 					autoHide: false,
 					template: function (row) {
 						var dropdownStart =
@@ -294,6 +228,149 @@ var DistributorOrdersDataTable = (function () {
 		});
 	};
 
+	var _initTopProducts = function () {
+		datatableProducts = $('#kt_datatable_products').KTDatatable({
+			// datasource definition
+
+			data: {
+				type: 'remote',
+				source: {
+					read: {
+						url: '/web/distributor/product/bestselling',
+					},
+				},
+				serverPaging: true,
+				serverFiltering: true,
+				serverSorting: true,
+			},
+
+			// layout definition
+			layout: {
+				scroll: false, // enable/disable datatable scroll both horizontal and vertical when needed.
+				footer: false, // display/hide footer
+			},
+
+			// column sorting
+			sortable: true,
+
+			pagination: true,
+
+			// Order settings
+			order: [[2, 'asc']],
+
+			// columns definition
+			columns: [
+				{
+					field: 'id',
+					title: '#',
+					sortable: 'asc',
+					width: 40,
+					type: 'number',
+					selector: false,
+					textAlign: 'left',
+					autoHide: false,
+				},
+				{
+					field: 'productName_en', // + docLang,
+					title: WebAppLocals.getMessage('productName'),
+					autoHide: false,
+				},
+				{
+					field: 'image',
+					title: '',
+					autoHide: true,
+					sortable: false,
+					template: function (row) {
+						return (
+							'<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
+							row.image +
+							'\')" ></div></div>'
+						);
+					},
+				},
+				{
+					field: 'quantityOrdered',
+					title: WebAppLocals.getMessage('quantityOrdered'),
+					autoHide: false,
+				},
+				{
+					field: 'scientificName',
+					title: WebAppLocals.getMessage('productScientificName'),
+					autoHide: true,
+				},
+				{
+					field: 'expiryDate',
+					title: WebAppLocals.getMessage('expiryDate'),
+					autoHide: true,
+					template: function (row) {
+						if (row.expiryDate) {
+							return (
+								'<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.expiryDate).format('DD / MM / YYYY') + '</span>'
+							);
+						} else {
+							return '';
+						}
+					},
+				},
+				{
+					field: 'stockStatusId',
+					sortable: false,
+					title: WebAppLocals.getMessage('stockAvailability'),
+					autoHide: true,
+					// callback function support for column rendering
+					template: function (row) {
+						var status = {
+							1: {
+								title: WebAppLocals.getMessage('stockAvailability_available'),
+								class: ' label-primary',
+							},
+							2: {
+								title: WebAppLocals.getMessage('stockAvailability_notAvailable'),
+								class: ' label-danger',
+							},
+							3: {
+								title: WebAppLocals.getMessage('stockAvailability_availableSoon'),
+								class: ' label-warning',
+							},
+						};
+
+						var output = '';
+
+						output +=
+							'<div><span class="label label-lg font-weight-bold ' +
+							status[row.stockStatusId].class +
+							' label-inline">' +
+							status[row.stockStatusId].title +
+							'</span></div>';
+						// output += '<div class="text-muted">' + (row.stockUpdateDateTime != null ? jQuery.timeago(row.stockUpdateDateTime) : 'NA') + '</div>';
+
+						return output;
+					},
+				},
+				{
+					field: 'stockUpdateDateTime',
+					title: WebAppLocals.getMessage('stockUpdateDateTime'),
+					autoHide: true,
+					template: function (row) {
+						if (row.stockUpdateDateTime) {
+							return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
+						} else {
+							return '';
+						}
+					},
+				},
+				{
+					field: 'unitPrice', // + docLang,
+					title: WebAppLocals.getMessage('unitPrice'),
+					autoHide: false,
+					template: function (row) {
+						return '<span class="font-size-sm">' + row.currency + '</span>' + ' <b class="font-size-h4">' + row.unitPrice + '</b>';
+					},
+				},
+			],
+		});
+	};
+
 	var _initOrderDetailDatatable = function (data) {
 		datatableDetail = $('#kt_datatable_detail').KTDatatable({
 			// datasource definition
@@ -392,7 +469,7 @@ var DistributorOrdersDataTable = (function () {
 	};
 
 	var _orderStatusModal = function (orderId, statusId) {
-		WebApp.get('/web/distributor/order/confirm/' + orderId + '/' + statusId, WebApp.openModal);
+		WebApp.get('/web/distributor/order/confirm/' + orderId + '/' + statusId + '/dashboard', WebApp.openModal);
 	};
 
 	var _orderViewModal = function (orderId) {
@@ -447,16 +524,12 @@ var DistributorOrdersDataTable = (function () {
 
 	return {
 		// public functions
-		init: function (objQuery) {
-			_init(objQuery);
+		init: function () {
+			_initRecentOrders();
+			_initTopProducts();
 		},
 		initOrderDetailDatatable: function (data) {
 			_initOrderDetailDatatable(data);
-		},
-		setReadParams: function (objQuery) {
-			_readParams = objQuery;
-			datatable.setDataSourceParam('query', _readParams);
-			datatable.reload();
 		},
 		orderStatusModal: function (orderId, statusId) {
 			_orderStatusModal(orderId, statusId);
@@ -464,17 +537,11 @@ var DistributorOrdersDataTable = (function () {
 		orderViewModal: function (orderId) {
 			_orderViewModal(orderId);
 		},
-		showColumn: function (columnName) {
-			datatable.showColumn(columnName);
-		},
-		hideColumn: function (columnName) {
-			datatable.hideColumn(columnName);
-		},
 		reloadDatatable: function (webResponse) {
 			if ($('#popupModal').is(':visible')) {
 				$('#popupModal').modal('hide');
 			}
-			datatable.reload();
+			datatableOrders.reload();
 		},
 	};
 })();

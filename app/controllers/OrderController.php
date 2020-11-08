@@ -51,7 +51,12 @@ class OrderController extends Controller
         }
     }
 
-    function getOrderConfirmation()
+    function getOrderConfirmationDashboard()
+    {
+        $this->getOrderConfirmation(true);
+    }
+
+    function getOrderConfirmation($fromDashboard = false)
     {
         if (!$this->f3->ajax()) {
             $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
@@ -63,7 +68,11 @@ class OrderController extends Controller
             $modalRoute = '';
             $modalText = '';
             $modalTitle = '';
-            $modalCallback = 'DistributorOrdersDataTable.reloadDatatable';
+            if ($fromDashboard) {
+                $modalCallback = 'DistributorDashboardDataTable.reloadDatatable';
+            } else {
+                $modalCallback = 'DistributorOrdersDataTable.reloadDatatable';
+            }
             $modalButton = $this->f3->get('vButton_update');
 
             switch ($statusId) {
@@ -130,28 +139,29 @@ class OrderController extends Controller
         }
     }
 
+    function postDistributorOrdersRecent()
+    {
+        $this->handlePostDistributorOrders('new');
+    }
+
     function postDistributorOrdersNew()
     {
-        $status = 'new';
-        $this->handlePostDistributorOrders($status);
+        $this->handlePostDistributorOrders('new');
     }
 
     function postDistributorOrdersPending()
     {
-        $status = 'pending';
-        $this->handlePostDistributorOrders($status);
+        $this->handlePostDistributorOrders('pending');
     }
 
     function postDistributorOrdersUnpaid()
     {
-        $status = 'unpaid';
-        $this->handlePostDistributorOrders($status);
+        $this->handlePostDistributorOrders('unpaid');
     }
 
     function postDistributorOrdersHistory()
     {
-        $status = 'history';
-        $this->handlePostDistributorOrders($status);
+        $this->handlePostDistributorOrders('history');
     }
 
     function handlePostDistributorOrders($status)
@@ -379,10 +389,10 @@ class OrderController extends Controller
 
         $pdf->Cell(0, 0, 'Order: AED ' . $arrOrder['total'], 0, 0, 'R');
         $pdf->Ln(10);
-        $pdf->Cell(0, 0, 'VAT: AED ' . round($arrOrder['tax'] * $arrOrder['total'], 2) , 0, 0, 'R');
+        $pdf->Cell(0, 0, 'VAT: AED ' . round($arrOrder['tax'] * $arrOrder['total'], 2), 0, 0, 'R');
 
         $pdf->Ln(10);
-        $pdf->Cell(0, 0, 'Total: AED ' . $arrOrder['total'] , 0, 0, 'R');
+        $pdf->Cell(0, 0, 'Total: AED ' . $arrOrder['total'], 0, 0, 'R');
 
         $pdf->Output();
     }

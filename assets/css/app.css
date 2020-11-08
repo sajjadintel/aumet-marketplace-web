@@ -182,3 +182,8 @@ label.myLabel input[type='file'] {
 	-webkit-filter: brightness(95%);
 	filter: brightness(95%);
 }
+
+.bg-primary{
+	background-color: #13b9a9 !important;
+	color: #fff !important;
+}
