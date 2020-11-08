@@ -1,5 +1,7 @@
 'use strict';
 
+var datatableVar;
+
 // Class Definition
 var WebApp = (function () {
 	var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
@@ -203,11 +205,11 @@ var WebApp = (function () {
 		}
 	};
 
-	var _blockPage = function () {
+	var _blockPage = function (_msgKey = "loading") {
 		KTApp.blockPage({
 			overlayColor: 'black',
 			opacity: 0.2,
-			message: WebAppLocals.getMessage('loading'),
+			message: WebAppLocals.getMessage(_msgKey),
 			state: 'primary', // a bootstrap color
 		});
 	};
@@ -283,14 +285,14 @@ var WebApp = (function () {
 	var _setUpFirebase = function () {
 		// Your web app's Firebase configuration
 		var firebaseConfig = {
-			apiKey: 'AIzaSyApi3WBeQ3HmB_we8CSOF8k1qgU1SEpxao',
-			authDomain: 'aumet-marketplace.firebaseapp.com',
-			databaseURL: 'https://aumet-marketplace.firebaseio.com',
-			projectId: 'aumet-marketplace',
-			storageBucket: 'aumet-marketplace.appspot.com',
-			messagingSenderId: '418237979621',
-			appId: '1:418237979621:web:5fe1d4393d8676f5a3ad0c',
-			measurementId: 'G-QEWB1B33ZE',
+			apiKey: "AIzaSyBy1rh8zZNp1lnUBLyQ15a-cgNvZzsNFBU",
+			authDomain: "aumet-com.firebaseapp.com",
+			databaseURL: "https://aumet-com.firebaseio.com",
+			projectId: "aumet-com",
+			storageBucket: "aumet-com.appspot.com",
+			messagingSenderId: "380649916442",
+			appId: "1:380649916442:web:8ff3bfa9cd74f7c69969a3",
+			measurementId: "G-YJ2BRPK2JD"
 		};
 		// Initialize Firebase
 		firebase.initializeApp(firebaseConfig);
@@ -337,16 +339,77 @@ var WebApp = (function () {
 		);
 	};
 
+	var _createDatatable = function (vElementId, vColumns, vData, vAdditionalOptions) {
+		//////////////////////////
+		// delete cached datatable
+		if (datatableVar != null && $.fn.DataTable.isDataTable(datatableVar)) {
+			datatableVar.clear();
+			datatableVar.destroy();
+		}
+
+		var table = $('#' + vElementId);
+
+		///////////////////////
+		// initialize datatable
+		var fileName = 'Aumet Marketplace';
+		// if (!$('#pageTitle').is(':hidden')) {
+		// 	fileName += ' - ' + $('#pageTitle').text();
+		// }
+		// if (!$('#dashboard_daterangepicker_start').is(':hidden')) {
+		// 	fileName += ' - ' + $('#dashboard_daterangepicker_start').data('dateFrom') + ' to ' + $('#dashboard_daterangepicker_start').data('dateTo');
+		// }
+		// if (!$('#dashboard_daterangepicker_end').is(':hidden')) {
+		// 	fileName += ' -- ' + $('#dashboard_daterangepicker_end').data('dateFrom') + ' to ' + $('#dashboard_daterangepicker_start').data('dateTo');
+		// }
+
+		var dbOptions = {
+			data: vData,
+			columns: vColumns,
+			rowId: 'id',
+			dom: 'Blfrtip',
+			buttons: [
+				{ extend: 'excelHtml5', filename: fileName },
+				{ extend: 'pdfHtml5', filename: fileName },
+			],
+			responsive: true,
+			pageLength: 25,
+			scrollX: false,
+			orderCellsTop: true,
+			order: [[0, 'asc']],
+		};
+
+		var dbOptionsObj = { ...dbOptions };
+
+		console.log(vAdditionalOptions);
+		if (vAdditionalOptions && vAdditionalOptions.datatableOptions) {
+			var dbOptionsObj = { ...dbOptions, ...vAdditionalOptions.datatableOptions };
+		}
+
+		datatableVar = $(table).DataTable(dbOptionsObj).draw();
+
+		if (vAdditionalOptions && vAdditionalOptions.addSettings) {
+			$('#' + vAdditionalOptions.addSettings.addButton).on('click', function () {
+				datatableVar.row.add(vAdditionalOptions.addSettings.addText).draw(false);
+			});
+		}
+
+		return datatableVar;
+	};
+
 	// Public Functions
 	return {
 		init: function () {
-			_setUpFirebase();
+			//_setUpFirebase();
 			WebAppLocals.init();
 			_initModal();
 			_loadPage(window.location.href);
 			Cart.init();
 
-			_initSessionTimeout();
+			//RegistrationWizard.init();
+
+			//_initSessionTimeout();
+
+			//$("#webGuidedTourModal").modal();
 		},
 		signout: function () {
 			return _signout();
@@ -360,8 +423,8 @@ var WebApp = (function () {
 		closeSubPage: function (fnCallback = null) {
 			return _closeSubPage(fnCallback);
 		},
-		block: function () {
-			return _blockPage();
+		block: function (_msgKey = "loading") {
+			return _blockPage(_msgKey);
 		},
 		unblock: function () {
 			return _unblockPage();
@@ -381,9 +444,8 @@ var WebApp = (function () {
 		openModal: function (webResponse) {
 			_openModal(webResponse);
 		},
+		createDatatable: function (vElementId, vColumns, vData, vAdditionalOptions) {
+			_createDatatable(vElementId, vColumns, vData, vAdditionalOptions);
+		},
 	};
 })();
-
-jQuery(document).ready(function () {
-	WebApp.init();
-});

@@ -30,9 +30,19 @@ var WebAppLocals = (function () {
 			ar: 'تعديل',
 			fr: '',
 		},
+		editQuantity: {
+			en: 'Edit Stock',
+			ar: 'تعديل الكمية',
+			fr: '',
+		},
 		add: {
 			en: 'Add',
 			ar: 'أضف',
+			fr: '',
+		},
+		delete: {
+			en: 'Delete',
+			ar: 'حذف',
 			fr: '',
 		},
 		print: {
@@ -45,9 +55,24 @@ var WebAppLocals = (function () {
 			ar: 'خيارات',
 			fr: '',
 		},
+		viewOrder: {
+			en: 'View Order',
+			ar: 'عرض الطلب',
+			fr: '',
+		},
+		actions: {
+			en: 'Actions',
+			ar: 'خيارات',
+			fr: '',
+		},
 		productName: {
-			en: 'Trade Name',
+			en: 'Brand Name',
 			ar: 'الاسم التجاري',
+			fr: '',
+		},
+		productCode: {
+			en: 'Product Code',
+			ar: 'رمز المنتج',
 			fr: '',
 		},
 		entityBuyer: {
@@ -130,6 +155,11 @@ var WebAppLocals = (function () {
 			ar: 'مدفوع',
 			fr: '',
 		},
+		orderStatus_Pending: {
+			en: 'Pending',
+			ar: 'معلق',
+			fr: '',
+		},
 		orderTotal: {
 			en: 'Total',
 			ar: 'مجموع',
@@ -145,9 +175,19 @@ var WebAppLocals = (function () {
 			ar: 'ضريبة',
 			fr: '',
 		},
+		orderTotalWithVAT: {
+			en: 'Total (+ VAT)',
+			ar: 'مجموع',
+			fr: '',
+		},
 		quantity: {
 			en: 'Quantity',
 			ar: 'الكمية المطلوبة',
+			fr: '',
+		},
+		minOrder: {
+			en: 'Minimum Order',
+			ar: 'أقل كمية',
 			fr: '',
 		},
 		expiryDate: {
@@ -210,14 +250,44 @@ var WebAppLocals = (function () {
 			ar: 'آخر تحديث لتوفر المنتج',
 			fr: '',
 		},
+		customerStatus: {
+			en: 'Status',
+			ar: 'الحالة',
+			fr: '',
+		},
 		relationAvailable: {
-			en: 'Available',
-			ar: 'متوفر',
+			en: 'Active',
+			ar: 'فعال',
 			fr: '',
 		},
 		relationBlacklisted: {
-			en: 'Blacklisted',
+			en: 'Blocked',
 			ar: 'محظور',
+			fr: '',
+		},
+		userFullname: {
+			en: 'User Full Name',
+			ar: 'إسم المستخدم',
+			fr: '',
+		},
+		orderRating: {
+			en: 'Rating',
+			ar: 'التصنيف',
+			fr: '',
+		},
+		stockUpdateProcessing: {
+			en: 'Stock file under processing, Please wait...',
+			ar: 'جاري العمل على تحديث ملف الأصناف, الرجاء الانتظار',
+			fr: '',
+		},
+		orderTotalPaid: {
+			en: 'Total Paid',
+			ar: 'مجموع المدفوع',
+			fr: '',
+		},
+		orderTotalUnPaid: {
+			en: 'Total Un-Paid',
+			ar: 'مجموع الغير مدفوع',
 			fr: '',
 		},
 		error: {
@@ -257,7 +327,7 @@ var WebAppLocals = (function () {
 
 	// Public Functions
 	return {
-		init: function () { },
+		init: function () {},
 		getMessage(key) {
 			return _arrLocals[key][docLang];
 		},

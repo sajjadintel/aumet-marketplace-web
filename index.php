@@ -26,10 +26,38 @@ $f3->set('UI', 'ui/');
 $f3->set('LOGS', 'logs/');
 $f3->set('pagesDIR', 'ui/pages');
 $f3->set('LOCALES', 'app/languages/');
-$f3->set('FALLBACK', 'ar');
+$f3->set('FALLBACK', 'en');
 $f3->set('ENCODING', 'UTF-8');
-$f3->set('uploadDIR', '/files/uploads');
 
+$f3->set('rootDIR', dirname(__FILE__));
+
+$f3->set('tempDIR', dirname(__FILE__).'/tmp/');
+
+$tempDIR = dirname(__FILE__).'/files/tmp/';
+if(is_dir($tempDIR)) {
+    $f3->set('tempDIR', $tempDIR);
+}
+else {
+    if (!mkdir($tempDIR, 0777, true)) {
+        die('Failed to create folders...');
+    }
+    else{
+        $f3->set('tempDIR', $tempDIR);
+    }
+}
+
+$uploadsDir = dirname(__FILE__).'/files/uploads/';
+if(is_dir($uploadsDir)) {
+    $f3->set('uploadDIR', $uploadsDir);
+}
+else {
+    if (!mkdir($uploadsDir, 0777, true)) {
+        die('Failed to create folders...');
+    }
+    else{
+        $f3->set('uploadDIR', $uploadsDir);
+    }
+}
 
 $f3->set('platformVersionRelease', '?v=1.3');
 $f3->set('platformVersionDevelopment', '?v=' . date('His'));
@@ -98,4 +126,16 @@ switch ($_SESSION['userLang']) {
         break;
 }
 */
+
+$lang = $f3->get("PARAMS.lang");
+if ($lang != "en" && $lang != "ar" && $lang != "fr" ) {
+    $lang = $f3->get('SESSION.userLang');
+    if ($lang != "en" && $lang != "ar" && $lang != "fr" ) {
+        $lang = 'en';
+    }
+}
+$f3->set('SESSION.userLang', $lang);
+$f3->set('SESSION.userLangDirection', $lang == "ar" ? "rtl" : "ltr");
+$f3->set('LANGUAGE', $lang);
+
 $f3->run();

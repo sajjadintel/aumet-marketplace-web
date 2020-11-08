@@ -1,5 +1,5 @@
 <?php
-class PDF extends FPDF
+class PDF extends TCPDF
 {
     // Page header
     function Header()
@@ -96,7 +96,7 @@ class PDF extends FPDF
         $this->SetLineWidth(.3);
         $this->SetFont('', 'B');
         // Header
-        $w = array(50, 50, 20, 30, 20, 20);
+        $w = array(30, 60, 20, 30, 20, 30);
         for ($i = 0; $i < count($header); $i++)
             $this->Cell($w[$i], 7, $header[$i], 1, 0, 'C', true);
         $this->Ln();

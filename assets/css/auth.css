@@ -1,6 +1,11 @@
 .login.login-3 .login-aside {
     width: 100%;
-    max-width: 30% !important;
+    max-width: 33% !important;
+}
+
+.login.login-3 .login-content .login-form {
+    width: 100%;
+    max-width: 600px;
 }
 
 .hide-mobile {

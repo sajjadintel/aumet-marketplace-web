@@ -1,6 +1,7 @@
 <?php
 
 $f3->route('GET /', 'LandingController->get');
+$f3->route('GET /@lang', 'LandingController->get');
 
 $f3->route('GET /web/auth/signin', 'AuthController->getSignIn');
 $f3->route('POST /web/auth/signin', 'AuthController->postSignIn');
@@ -13,6 +14,7 @@ $f3->route('GET /web/auth/signout', 'AuthController->getSignOut');
 $f3->route('GET /web', 'DashboardController->get');
 
 $f3->route('GET /web/me/menu', 'UserController->getMenu');
+$f3->route('GET /web/me/switchLanguage/@lang', 'UserController->switchLanguage');
 
 $f3->route('GET /web/dashboard', 'DashboardController->get');
 
@@ -23,6 +25,7 @@ $f3->route('GET /web/entity/@entityId/product/@productId', 'ProductsController->
 $f3->route('GET /web/product/brandname/list', 'SearchController->getProductBrandNameList');
 $f3->route('GET /web/product/scientificname/list', 'SearchController->getProductScientificNameList');
 $f3->route('GET /web/product/country/list', 'SearchController->getProductCountryList');
+$f3->route('GET /web/order/customer/list', 'SearchController->getOrderBuyerList');
 
 
 $f3->route('GET /web/customercare', 'CustomerCareController->get');
@@ -57,11 +60,27 @@ $f3->route('POST /web/distributor/order/onhold', 'OrderController->postOnHoldOrd
 // START APM-37
 $f3->route('GET /web/distributor/product', 'ProductsController->getDistributorProducts');
 $f3->route('GET /web/distributor/product/@productId', 'ProductsController->getProductDetails');
+$f3->route('GET /web/distributor/product/quantity/@productId', 'ProductsController->getProductQuantityDetails');
 $f3->route('POST /web/distributor/product', 'ProductsController->postDistributorProducts');
 $f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDistributorProduct');
 $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDistributorProduct');
-// END APM-37
+$f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->postEditQuantityDistributorProduct');
+
+// stock upload
+$f3->route('GET /web/distributor/product/stock/upload', 'ProductsController->getStockUpload');
+$f3->route('POST /web/distributor/product/stock/upload', 'ProductsController->postStockUpload');
+$f3->route('POST /web/distributor/product/stock/upload/process', 'ProductsController->postStockUploadProcess');
+
+// stock upload
+$f3->route('GET /web/distributor/product/bonus/upload', 'ProductsController->getBonusUpload');
+$f3->route('POST /web/distributor/product/bonus/upload', 'ProductsController->postBonusUpload');
+$f3->route('POST /web/distributor/product/bonus/upload/process', 'ProductsController->postBonusUploadProcess');
 
 $f3->route('GET /web/distributor/customer', 'EntityController->getEntityCustomers');
 $f3->route('GET /web/distributor/customer/@customerId', 'EntityController->getEntityCustomerDetails');
 $f3->route('POST /web/distributor/customer', 'EntityController->postEntityCustomers');
+
+$f3->route('GET /web/distributor/customer/feedback', 'CustomersController->getOrderCustomersFeedback');
+$f3->route('POST /web/distributor/customer/feedback', 'CustomersController->postOrderCustomersFeedback');
+
+

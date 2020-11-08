@@ -1,8 +1,8 @@
 <?php
 return array(
     'vTitle' => 'Aumet Medical Marketplace',
-    'masterContentDir' => 'rtl',
-    'langActiveFlag' => '/assets/img/uae-flag-sq.svg',
+    'masterContentDir' => 'ltr',
+    'langActiveFlag' => '260-united-kingdom.svg',
     'vFooterText' => 'Aumet Inc | {Y} © All Rights Reserved',
     'vFooterLinks_about' => 'About Aumet',
     'vFooterLinks_blog' => 'Aumet Blog',
@@ -10,9 +10,7 @@ return array(
 
     'vGreeting' => 'Hello',
 
-    'vFlagSVGName' => '077-jordan.svg',
-
-    'vLogin_slogan' => 'Connecting pharmacies and medical distributors through the largest online healthcare B2B marketplace',
+    'vLogin_slogan' => 'Connecting healthcare end users and distributors through the largest online healthcare B2B marketplace',
 
     'vMessage_invalidLogin' => 'Invalid Email or Password',
 
@@ -20,17 +18,20 @@ return array(
     'vLogin_help' => 'Request Assistance',
 
     'vLogin_signin' => 'Sign In',
-    'vLogin_signinWithGoole' => 'Sign in with Google',
+    'vLogin_signinWithGoogle' => 'Sign in with Google',
+    'vLogin_signinWithPhone' => 'Sign in with Phone',
     'vLogin_signout' => 'Logout',
     'vLogin_signup' => 'Create Account',
     'vLogin_signupAdv' => 'Register Now',
-    'vLogin_noAccountAdv' => 'New Here ?',
-    'vLogin_email' => 'Email Address',
+    'vLogin_noAccountAdv' => "Don't you have an account yet?",
+    'vLogin_email' => 'Work Email Address',
     'vLogin_password' => 'Password',
     'vLogin_rememberMe' => 'Remember Me',
     'vLogin_forgotPassword' => 'Forgotten Password ?',
     'vLogin_forgotPasswordDescription' => 'Enter your email to reset your password',
     'vLogin_forgotPasswordSubmit' => 'Submit',
+
+    'vSignup_password' => 'Password',
 
     'vResetPassword_title' => 'Enter New Password',
     'vResetPassword_password' => 'New Password',
@@ -40,6 +41,15 @@ return array(
 
     'vChangePassword_title' => 'Change Password',
     'vChangePassword_subTitle' => 'Change Current Password',
+
+    'vSignup_AlreadyHaveAccount' => 'Do you have an account?',
+    'vSignup_firstName' => 'First Name',
+    'vSignup_lastName' => 'Last Name',
+    'vSignup_name' => 'Name',
+    'vSignup_mobile' => 'Phone Numer',
+    'vSignup_email' => 'Email Address',
+
+    'vBack' => 'Go Back',
 
     'vSignup_wizardUserInfo' => 'Account Information',
     'vSignup_wizardUserInfoDesc' => 'Set up your account information',
@@ -66,8 +76,9 @@ return array(
     'vModule_search_title' => 'Search in Products',
     'vModule_search_header' => 'You can search in the products using the product name, scientific name, or distributor name',
     'vModule_search_brandNameplaceholder' => 'Brand Name',
-    'vModule_search_scientificNamePlaceholder' => 'Brand Name List',
+    'vModule_search_scientificNamePlaceholder' => 'Scientific Name List',
     'vModule_search_distributorNamePlaceholder' => 'Distributor List',
+    'vModule_search_buyerNamePlaceholder' => 'Filter by Customer',
     'vModule_search_stockStatusPlaceholder' => 'Availability',
     'vModule_search_stockStatus_Available' => 'Available Only',
     'vModule_search_stockStatus_others' => 'All',
@@ -106,6 +117,12 @@ return array(
     'vModule_product_unitPrice' => 'Unit Price',
     'vModule_product_related' => 'Related Products',
 
+    'vModule_product_stockStatus_NotAvailable' => 'Not Available',
+    'vModule_product_stockStatus_ComingSoon' => 'Coming Soon',
+
+    'vModule_product_stockStatus_hasBonus' => 'Has Bonus',
+    'vModule_product_stockStatus_noBonus' => 'No Bonus',
+
     'vModule_cart_title' => 'Order Cart',
     'vModule_cart_continueShopping' => 'Add More to Cart',
     'vModule_cart_proceedToCheckOut' => 'Proceed to Checkout',
@@ -121,6 +138,10 @@ return array(
 
     'vModule_bonus_bonusTextTemplate' => 'For %q: %b',
 
+    'vModule_order_dateFrom' => 'Get Orders Starting Date',
+    'vModule_order_dateTo' => 'Get Orders Ending Date',
+    'vModule_order_date' => 'Get Orders Date',
+
     'vResponse_notFound' => '{0} not found',
     'vResponse_notUpdated' => '{0} could not be updated',
     'vResponse_notAdded' => '{0} could not be added',
@@ -129,7 +150,11 @@ return array(
 
     'vEntity_order' => 'Order',
     'vEntity_orderLog' => 'Order Log',
+    'vWord_To' => 'TO',
 
     'vButton_update' => 'Update',
     'vButton_add' => 'Add',
+
+    'vModule_feedback_title' => 'Customer Orders Feedback',
+    'vModule_feedback_header' => 'The below customer feedback is delivered to you privately and they are not publicly available for any user',
 );

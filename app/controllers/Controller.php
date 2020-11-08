@@ -11,7 +11,7 @@ class Controller
     protected $cache;
     protected $isAuth;
     protected $objUser;
-    protected $layoutRender;
+    protected $language;
 
     protected $headers;
 
@@ -23,13 +23,16 @@ class Controller
         $this->db = $GLOBALS['dbConnection'];
         $this->webResponse = new WebResponse();
 
-        $client = new \Redis();
-        $client->connect('127.0.0.1');
-        $this->cache = new \MatthiasMullie\Scrapbook\Adapters\Redis($client);
-
+        if (getenv('ENV') == Constants::ENV_PROD) {
+            $client = new \Redis();
+            $client->connect('127.0.0.1');
+            $this->cache = new \MatthiasMullie\Scrapbook\Adapters\Redis($client);
+        }
         $this->audit = \Audit::instance();
 
         $this->headers = $this->getHttpHeaders();
+
+        $this->setLanguage();
 
         $this->objUser = $this->f3->get('SESSION.objUser');
 
@@ -37,12 +40,33 @@ class Controller
 
             $this->isAuth = true;
 
+           // switch($this->objUser->)
+
             $this->f3->set('objUser', $this->objUser);
         } else {
             $this->isAuth = false;
         }
 
         LayoutRender::setMainMenu($this->f3, $this->db, $this->objUser->menuId);
+    }
+
+    function setLanguage($language = false){
+        if(!$language) {
+            $this->language = $this->f3->get("PARAMS.language");
+        }
+        else {
+            $this->language = $language;
+        }
+
+        if ($this->language != 'ar' && $this->language != 'fr' && $this->language != 'en') {
+            $this->language = $this->f3->get("SESSION.uiLanguage");
+            if ($this->language != 'ar' || $this->language != 'fr' && $this->language != 'en') {
+                $this->language = 'en';
+            }
+        }
+        $this->f3->set('SESSION.uiLanguage', $this->language);
+        $this->f3->set('cssDirection', $this->language == "ar" ? "rtl" : "ltr");
+        $this->f3->set('LANGUAGE', $this->language);
     }
 
     function beforeroute()
@@ -301,12 +325,12 @@ class Controller
 
     function getRootDirectory()
     {
-        return dirname(dirname(dirname(__FILE__))) . '/';
+        return $this->f3->get('rootDIR');
     }
 
     function getTempDirectory()
     {
-        return dirname(dirname(dirname(__FILE__))) . '/tmp/';
+        return $this->f3->get('tempDIR');
     }
 
     function getCurrentDirectory()

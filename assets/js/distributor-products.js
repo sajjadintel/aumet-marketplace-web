@@ -1,6 +1,5 @@
 'use strict';
 // Class definition
-
 var DistributorProductsDataTable = (function () {
 	// Private functions
 
@@ -75,11 +74,6 @@ var DistributorProductsDataTable = (function () {
 					autoHide: true,
 				},
 				{
-					field: 'entityName_ar', // + docLang,
-					title: WebAppLocals.getMessage('sellingEntityName'),
-					autoHide: false,
-				},
-				{
 					field: 'expiryDate',
 					title: WebAppLocals.getMessage('expiryDate'),
 					autoHide: true,
@@ -97,7 +91,7 @@ var DistributorProductsDataTable = (function () {
 					field: 'stockStatusId',
 					sortable: false,
 					title: WebAppLocals.getMessage('stockAvailability'),
-					autoHide: true,
+					autoHide: false,
 					// callback function support for column rendering
 					template: function (row) {
 						var status = {
@@ -145,7 +139,7 @@ var DistributorProductsDataTable = (function () {
 					title: WebAppLocals.getMessage('unitPrice'),
 					autoHide: false,
 					template: function (row) {
-						return row.unitPrice + ' ' + row.currency;
+						return '<span class="font-size-sm">'+row.currency+'</span>' + ' <b class="font-size-h4">' + row.unitPrice  + '</b>';
 					},
 				},
 				// {
@@ -185,7 +179,7 @@ var DistributorProductsDataTable = (function () {
 					field: 'Actions',
 					title: '',
 					sortable: false,
-					width: 130,
+
 					overflow: 'visible',
 					autoHide: false,
 					template: function (row) {
@@ -198,6 +192,15 @@ var DistributorProductsDataTable = (function () {
 						class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
 						<i class="nav-icon la la-edit p-0"></i> ' +
 							WebAppLocals.getMessage('edit') +
+							'</a>';
+
+						var btnEditQuantity =
+							'<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditQuantityModal(' +
+							row.id +
+							')\' \
+						class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
+						<i class="nav-icon la la-box p-0"></i> ' +
+							WebAppLocals.getMessage('editQuantity') +
 							'</a>';
 
 						// switch (row.stockStatusId) {
@@ -221,6 +224,7 @@ var DistributorProductsDataTable = (function () {
 						// }
 
 						outActions += btnEdit;
+						outActions += btnEditQuantity;
 
 						return outActions;
 					},
@@ -233,11 +237,25 @@ var DistributorProductsDataTable = (function () {
 		WebApp.get('/web/distributor/product/' + productId, _productEditModalOpen);
 	};
 
+	var _productEditQuantityModal = function (productId) {
+		WebApp.get('/web/distributor/product/quantity/' + productId, _productEditQuantityModalOpen);
+	};
+
 	var _productAddModal = function () {
 		_productAddModalOpen();
 	};
 
+
+	var _productEditModalOpenNew = function (webResponse) {
+		$('#genericModalContent').html(webResponse.data)
+		$('#genericModal').modal('show');
+	};
+
+
 	var _productEditModalOpen = function (webResponse) {
+
+
+
 		$('#editModalForm').attr('action', '/web/distributor/product/edit');
 		$('#editProductId').val(webResponse.data.product.id);
 
@@ -248,7 +266,6 @@ var DistributorProductsDataTable = (function () {
 		$("label[for='editProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
 		$("label[for='editProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
 		$("label[for='editUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
-		$("label[for='editStock']").text(WebAppLocals.getMessage('quantityAvailable'));
 
 		$('#editProductScientificName').append(new Option(webResponse.data.product.scientificName, webResponse.data.product.scientificNameId));
 		$('#editProductScientificName').val(webResponse.data.product.scientificNameId);
@@ -258,9 +275,75 @@ var DistributorProductsDataTable = (function () {
 		$('#editProductNameEn').val(webResponse.data.product.productName_en);
 		$('#editProductNameFr').val(webResponse.data.product.productName_fr);
 		$('#editUnitPrice').val(webResponse.data.product.unitPrice);
-		$('#editStock').val(webResponse.data.product.stock);
 		$('#editModalAction').html(WebAppLocals.getMessage('edit'));
 		$('#editModal').appendTo('body').modal('show');
+	};
+
+	var _productEditQuantityModalOpen = function (webResponse) {
+		$('#editQuantityModalForm').attr('action', '/web/distributor/product/editQuantity');
+		$('#editQuantityProductId').val(webResponse.data.product.id);
+
+		$('#editQuantityModalTitle').html(WebAppLocals.getMessage('editQuantity'));
+
+		$("label[for='editQuantityStock']").text(WebAppLocals.getMessage('quantityAvailable'));
+		$('#editQuantityStock').val(webResponse.data.product.stock);
+
+		switch (webResponse.data.product.stockStatusId) {
+			case 1:
+				$('#editQuantityStockAvailability').bootstrapSwitch('state', true);
+				$('#editQuantityStockAvailability').bootstrapSwitch('disabled', true);
+				break;
+			case 2:
+				$('#editQuantityStockAvailability').bootstrapSwitch('state', false);
+				break;
+			case 3:
+				$('#editQuantityStockAvailability').bootstrapSwitch('state', true);
+				break;
+			default:
+				break;
+		}
+		$('#editQuantityStock').on('change paste keyup', function () {
+			if ($(this).val() > 0) {
+				$('#editQuantityStockAvailability').bootstrapSwitch('disabled', true);
+			} else {
+				$('#editQuantityStockAvailability').bootstrapSwitch('disabled', false);
+			}
+		});
+
+		$("label[for='editQuantityBonusMinOrder']").text(WebAppLocals.getMessage('minOrder'));
+		$("label[for='editQuantityBonusQuantity']").text(WebAppLocals.getMessage('bonus'));
+		$("label[for='editQuantityBonusDelete']").text(WebAppLocals.getMessage('delete'));
+		$("label[for='editQuantityBonusAdd']").text(WebAppLocals.getMessage('add'));
+
+		$repeater.setList(webResponse.data.bonus);
+
+		$("label[for='editQuantityBonusType']").text(WebAppLocals.getMessage('bonus'));
+
+		switch (webResponse.data.product.bonusTypeId) {
+			case 1:
+				$('#editQuantityBonusListRepeater').hide();
+				$('#editQuantityBonusType').bootstrapSwitch('state', false);
+				break;
+			case 2:
+				$('#editQuantityBonusListRepeater').show();
+				$('#editQuantityBonusType').bootstrapSwitch('state', true);
+				break;
+			default:
+				break;
+		}
+
+		$('#editQuantityBonusType')
+			.bootstrapSwitch()
+			.on('switchChange.bootstrapSwitch', function (event, state) {
+				if (state) {
+					$('#editQuantityBonusListRepeater').show();
+				} else {
+					$('#editQuantityBonusListRepeater').hide();
+				}
+			});
+
+		$('#editQuantityModalAction').html(WebAppLocals.getMessage('editQuantity'));
+		$('#editQuantityModal').appendTo('body').modal('show');
 	};
 
 	var _productAddModalOpen = function () {
@@ -291,6 +374,9 @@ var DistributorProductsDataTable = (function () {
 		},
 		reloadDatatable: function () {
 			datatable.reload();
+		},
+		productEditQuantityModal: function (productId) {
+			_productEditQuantityModal(productId);
 		},
 		productEditModal: function (productId) {
 			_productEditModal(productId);

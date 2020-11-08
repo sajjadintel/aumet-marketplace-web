@@ -75,7 +75,7 @@ class LayoutRender
         $this->f3->set('renderJS', array(
             "/assets/js/page.js",
             "/assets/js/systemPages/submissionsBoard.js",
-            "/assets/js/systemPages/users.js",
+            "/assets/js/systemPages/distributor-users.js",
             "/assets/js/systemPages/calendar.js",
             "/assets/js/systemPages/assessment.js",
             "https://cdn.jsdelivr.net/npm/gridstack@0.6.0/dist/gridstack.all.js"

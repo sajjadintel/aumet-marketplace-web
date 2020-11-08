@@ -31,7 +31,7 @@ class AuthController extends Controller
 
                 $lang = $this->f3->get("PARAMS.lang");
                 if (!$lang) {
-                    $lang = 'ar';
+                    $lang = 'en';
                 }
                 $this->f3->set('SESSION.userLang', $lang);
                 $this->f3->set('SESSION.userLangDirection', $lang == "ar" ? "rtl" : "ltr");
@@ -78,7 +78,7 @@ class AuthController extends Controller
 
     function postSignIn()
     {
-        $factory = (new Factory)->withServiceAccount($this->getRootDirectory() . 'config/aumet-marketplace-firebase-adminsdk-xw4gn-6075919bd7.json');
+        $factory = (new Factory)->withServiceAccount($this->getRootDirectory() . '/config/aumet-com-firebase-adminsdk-2nsnx-64efaf5c39.json');
 
         $auth = $factory->createAuth();
 
@@ -94,7 +94,6 @@ class AuthController extends Controller
             $dbUser = new BaseModel($dbConnection, "user");
             $dbUser->getByField("uid", $uid);
             if ($dbUser->dry()) {
-
 
                 $this->webResponse->errorCode = 1;
                 $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
@@ -117,6 +116,9 @@ class AuthController extends Controller
     function configUser($dbUser)
     {
         $objUser = new stdClass();
+
+        global $dbConnection;
+
         $objUser->id = $dbUser->id;
         $objUser->email = $dbUser->email;
         $objUser->mobile = $dbUser->mobile;
@@ -126,8 +128,6 @@ class AuthController extends Controller
         $objUser->language = $dbUser->language;
 
         $this->f3->set('LANGUAGE', $objUser->language);
-
-        global $dbConnection;
 
         $dbUserRole = new BaseModel($dbConnection, "userRole");
         $dbUserRole->name = "name_" . $objUser->language;
@@ -172,9 +172,12 @@ class AuthController extends Controller
                 break;
         }
 
+        $dbAccount = new BaseModel($dbConnection, "account");
+        $dbAccount->getByField("id", $dbUserAccount->accountId);
+
         $dbEntity = new BaseModel($dbConnection, "entity");
         $dbEntity->name = "name_" . $objUser->language;
-        $dbEntity->getByField("typeId", 10);
+        $dbEntity->getByField("id", $dbAccount->entityId);
         $arrEntities = [];
         while (!$dbEntity->dry()) {
             $arrEntities[$dbEntity->id] = $dbEntity->name;
@@ -182,10 +185,6 @@ class AuthController extends Controller
         }
 
         $this->f3->set('SESSION.arrEntities', $arrEntities);
-    }
-
-    function setLanguage()
-    {
     }
 
     function getSignUp()

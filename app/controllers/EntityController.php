@@ -43,7 +43,6 @@ class EntityController extends Controller
     function postEntityCustomers()
     {
         $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
-        $datatable = [];
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entitySellerId IN ($arrEntityId)";
@@ -58,14 +57,19 @@ class EntityController extends Controller
         $offset = ($page - 1) * $perpage;
         $total = 0;
 
-        $dbProducts = new BaseModel($this->db, "vwEntityRelation");
+        $dbCustomers = new BaseModel($this->db, "vwEntityRelation");
+        $dbCustomers->buyerName = "buyerName_".$this->f3->get("LANGUAGE");
+        $dbCustomers->sellerName = "sellerName_".$this->f3->get("LANGUAGE");
 
+        if (!$dbCustomers->exists($field)) {
+            $field = 'id';
+        }
         if ($query == "") {
-            $total = $dbProducts->count();
-            $data = $dbProducts->findAll("$field $sort", $perpage, $offset);
+            $total = $dbCustomers->count();
+            $data = $dbCustomers->findAll("$field $sort", $perpage, $offset);
         } else {
-            $total = $dbProducts->count($query);
-            $data = $dbProducts->findWhere($query, "$field $sort", $perpage, $offset);
+            $total = $dbCustomers->count($query);
+            $data = $dbCustomers->findWhere($query, "$field $sort", $perpage, $offset);
         }
 
         $pages = 1;
@@ -105,5 +109,25 @@ class EntityController extends Controller
         );
 
         echo json_encode($result, JSON_PRETTY_PRINT);
+    }
+
+    function getEntityUsers()
+    {
+        if (!$this->f3->ajax()) {
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+
+            global $dbConnection;
+
+            $dbStockStatus = new BaseModel($dbConnection, "stockStatus");
+            $dbStockStatus->name = "name_" . $this->objUser->language;
+            $arrStockStatus = $dbStockStatus->all("id asc");
+            $this->f3->set('arrStockStatus', $arrStockStatus);
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = $this->f3->get('vModule_users_title');
+            $this->webResponse->data = View::instance()->render('app/users/list.php');
+            echo $this->webResponse->jsonResponse();
+        }
     }
 }

@@ -2,7 +2,7 @@
 return array(
     'vTitle' => 'Aumet Medical Marketplace',
     'masterContentDir' => 'rtl',
-    'langActiveFlag' => '/assets/img/uae-flag-sq.svg',
+    'langActiveFlag' => '151-united-arab-emirates.svg',
     'vFooterText' => 'Aumet Inc | {Y} © جميع حقوق الطبع والنسخ محفوظة',
     'vFooterLinks_about' => 'عن Aumet',
     'vFooterLinks_blog' => 'مدونة Aumet',
@@ -68,6 +68,7 @@ return array(
     'vModule_search_brandNameplaceholder' => 'الأسماء التجارية',
     'vModule_search_scientificNamePlaceholder' => 'الأسماء العلمية',
     'vModule_search_distributorNamePlaceholder' => 'قائمة الموزعين',
+    'vModule_search_buyerNamePlaceholder' => 'قائمة المشترين',
     'vModule_search_stockStatusPlaceholder' => 'توفر المنتج',
     'vModule_search_stockStatus_Available' => 'المتوفر فقط',
     'vModule_search_stockStatus_others' => 'الجميع',
@@ -106,6 +107,12 @@ return array(
     'vModule_product_unitPrice' => 'سعر المنتج',
     'vModule_product_related' => 'منتجات أخرى',
 
+    'vModule_product_stockStatus_NotAvailable' => 'غير متوفر',
+    'vModule_product_stockStatus_ComingSoon' => 'قريبا',
+
+    'vModule_product_stockStatus_hasBonus' => 'لديه بونص',
+    'vModule_product_stockStatus_noBonus' => 'لا بونص',
+
     'vModule_cart_title' => 'قائمة الطلبات',
     'vModule_cart_continueShopping' => 'إضافة المزيد من المنتجات',
     'vModule_cart_proceedToCheckOut' => 'إرسال قائمة الطلبات',
@@ -121,6 +128,10 @@ return array(
 
     'vModule_bonus_bonusTextTemplate' => 'كل %q: %b',
 
+    'vModule_order_dateFrom' => 'أدخل تاريخ بدء الطلبات',
+    'vModule_order_dateTo' => 'أدخل تاريخ انتهاء الطلبات',
+    'vModule_order_date' => 'أدخل تاريخ الطلبات',
+
     'vResponse_notFound' => '{0} غير موجود',
     'vResponse_notUpdated' => 'تعذر تحديث {0}',
     'vResponse_notAdded' => 'تعذر إضافة {0}',
@@ -129,6 +140,8 @@ return array(
 
     'vEntity_order' => 'الطلب',
     'vEntity_orderLog' => 'سجل الطلبات',
+
+    'vWord_To' => 'إلى',
 
     'vButton_update' => 'تحديث',
     'vButton_add' => 'أضف',

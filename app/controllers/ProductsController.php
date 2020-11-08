@@ -60,9 +60,38 @@ class ProductsController extends Controller
             $productId = $this->f3->get('PARAMS.productId');
 
             $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
-            $arrProduct = $dbProduct->findWhere("productId = '$productId'");
+            //$dbProduct->getByField("productId", $productId);
+            //$this->f3->set("objProduct", $dbProduct);
+            $arrProduct = $dbProduct->findWhere("productId = $productId");
 
             $data['product'] = $arrProduct[0];
+
+            echo $this->webResponse->jsonResponseV2(1, "", "", $data);
+
+            //$this->webResponse->errorCode = 1;
+            //$this->webResponse->title = $this->f3->get('vModule_feedback_title');
+            //$this->webResponse->data = View::instance()->render('app/products/distributor/modals/edit.php');
+            //echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function getProductQuantityDetails()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $productId = $this->f3->get('PARAMS.productId');
+
+            $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
+            $arrProduct = $dbProduct->findWhere("productId = '$productId'");
+
+            $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+            $dbBonus->bonusId = 'id';
+            $arrBonus = $dbBonus->findWhere("entityProductId = '$productId' AND isActive = 1");
+
+            $data['product'] = $arrProduct[0];
+            $data['bonus'] = $arrBonus;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
             return;
@@ -71,67 +100,43 @@ class ProductsController extends Controller
 
     function postDistributorProducts()
     {
-        $query = "";
+        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+        $query = "entityId IN ($arrEntityId)";
+
         $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
-        $datatable = [];
 
         if ($datatable['query'] != "") {
 
-            $productQuery = "";
             $productId = $datatable['query']['productId'];
             if (isset($productId)) {
                 if (is_array($productId)) {
-                    $productQuery = "id in (" . implode(",", $productId) . ")";
+                    $query .= " AND id in (" . implode(",", $productId) . ")";
                 } else {
-                    $productQuery = "id = $productId";
+                    $query .= " AND id = $productId";
                 }
             }
 
-            $scientificQuery = "";
             $scientificNameId = $datatable['query']['scientificNameId'];
             if (isset($scientificNameId)) {
                 if (is_array($scientificNameId)) {
-                    $scientificQuery = "scientificNameId in (" . implode(",", $scientificNameId) . ")";
+                    $query .= " AND scientificNameId in (" . implode(",", $scientificNameId) . ")";
                 } else {
-                    $scientificQuery = "scientificNameId = $scientificNameId";
+                    $query .= " AND scientificNameId = $scientificNameId";
                 }
             }
 
-            $entityQuery = "";
             $entityId = $datatable['query']['entityId'];
             if (isset($entityId)) {
                 if (is_array($entityId)) {
-                    $entityQuery = "entityId in (" . implode(",", $entityId) . ")";
+                    $query .= " AND entityId in (" . implode(",", $entityId) . ")";
                 } else {
-                    $entityQuery = "entityId = $entityId";
+                    $query .= " AND entityId = $entityId";
                 }
-            }
-
-            if ($productQuery != "" && $scientificQuery != "" && $entityQuery != "") {
-                $query = " $entityQuery and ($productQuery or $scientificQuery)";
-            } elseif ($productQuery != "" && $scientificQuery != "" && $entityQuery == "") {
-                $query = "$productQuery or $scientificQuery";
-            } elseif ($productQuery != "" && $scientificQuery == "" && $entityQuery != "") {
-                $query = " $entityQuery and $productQuery";
-            } elseif ($productQuery != "" && $scientificQuery == "" && $entityQuery == "") {
-                $query = "$productQuery";
-            } elseif ($productQuery == "" && $scientificQuery != "" && $entityQuery != "") {
-                $query = "$entityQuery and $scientificQuery";
-            } elseif ($productQuery == "" && $scientificQuery == "" && $entityQuery != "") {
-                $query = "$entityQuery";
-            } elseif ($productQuery == "" && $scientificQuery != "" && $entityQuery == "") {
-                $query = "$scientificQuery";
             }
 
             if ($datatable['query']['stockOption'] == 1) {
-                if ($query == "") {
-                    $query = "stockStatusId=1";
-                } else {
-                    $query = "stockStatusId=1 and ($query)";
-                }
+                $query .= " AND stockStatusId=1";
             }
-        } else {
-            $query = "stockStatusId=1";
         }
 
         $sort = !empty($datatable['sort']['sort']) ? $datatable['sort']['sort'] : 'asc';
@@ -146,6 +151,9 @@ class ProductsController extends Controller
 
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
 
+        if (!$dbProducts->exists($field)) {
+            $field = 'id';
+        }
         if ($query == "") {
             $total = $dbProducts->count();
             $data = $dbProducts->findAll("$field $sort", $perpage, $offset);
@@ -193,7 +201,6 @@ class ProductsController extends Controller
         echo json_encode($result, JSON_PRETTY_PRINT);
     }
 
-
     function postEditDistributorProduct()
     {
         if (!$this->f3->ajax()) {
@@ -215,9 +222,7 @@ class ProductsController extends Controller
                 echo $this->webResponse->jsonResponse();
             } else {
                 $unitPrice = $this->f3->get('POST.unitPrice');
-                $stock = $this->f3->get('POST.stock');
 
-                $dbEntityProduct->stock = $stock;
                 $dbEntityProduct->unitPrice = $unitPrice;
 
                 $dbEntityProduct->update();
@@ -239,6 +244,81 @@ class ProductsController extends Controller
                 $this->webResponse->errorCode = 1;
                 $this->webResponse->title = "";
                 $this->webResponse->data = $dbProduct->name_ar;
+                echo $this->webResponse->jsonResponse();
+            }
+        }
+    }
+
+    function postEditQuantityDistributorProduct()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/product");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $id = $this->f3->get('POST.id');
+
+            $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
+            $dbEntityProduct->getWhere("productId=$id");
+
+            $dbProduct = new BaseModel($this->db, "product");
+            $dbProduct->getWhere("id=$id");
+
+            if ($dbEntityProduct->dry() || $dbProduct->dry()) {
+                $this->webResponse->errorCode = 2;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "No Product";
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $stock = $this->f3->get('POST.stock');
+                $stockStatusId = $this->f3->get('POST.stockStatus');
+                $bonusTypeId = $this->f3->get('POST.bonusType');
+                $bonusRepeater = $this->f3->get('POST.bonusRepeater');
+
+                if ($stock > 0) {
+                    $stockStatusId = 1;
+                } else {
+                    if (isset($stockStatusId) && $stockStatusId == 'on') {
+                        $stockStatusId = 3;
+                    } else {
+                        $stockStatusId = 2;
+                    }
+                }
+
+                if (isset($bonusTypeId) && $bonusTypeId == 'on') {
+                    $bonusTypeId = 2;
+                } else {
+                    $bonusTypeId = 1;
+                }
+
+                $dbEntityProduct->stock = $stock;
+                $dbEntityProduct->stockStatusId = $stockStatusId;
+                $dbEntityProduct->bonusTypeId = $bonusTypeId;
+                $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
+
+                $dbEntityProduct->update();
+
+                if ($bonusTypeId != 1) {
+                    $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+                    $dbBonus->load(array("entityProductId = $id AND isActive = 1"));
+                    while (!$dbBonus->dry()) {
+                        $dbBonus->delete();
+                        $dbBonus->next();
+                    }
+
+                    foreach ($bonusRepeater as $bonus) {
+                        $dbBonus->reset();
+                        if ($bonus['minOrder'] != '' && $bonus['bonus'] != '') {
+                            $dbBonus->entityProductId = $id;
+                            $dbBonus->minOrder = $bonus['minOrder'];
+                            $dbBonus->bonus = $bonus['bonus'];
+                            $dbBonus->add();
+                        }
+                    }
+                }
+
+                $this->webResponse->errorCode = 1;
+                $this->webResponse->title = "";
+                $this->webResponse->data = $bonusRepeater;
                 echo $this->webResponse->jsonResponse();
             }
         }
@@ -267,7 +347,8 @@ class ProductsController extends Controller
             $dbProduct->image = $image;
 
             $dbProduct->addReturnID();
-            $entityId = $this->f3->get('POST.entityId');
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $entityId = $arrEntityId;
             $unitPrice = $this->f3->get('POST.unitPrice');
             $stock = $this->f3->get('POST.stock');
 
@@ -279,6 +360,7 @@ class ProductsController extends Controller
             $dbEntityProduct->stock = $stock;
             $dbEntityProduct->stockStatusId = 1;
             $dbEntityProduct->bonusTypeId = 1;
+            $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
 
             $dbEntityProduct->add();
 
@@ -286,6 +368,154 @@ class ProductsController extends Controller
             $this->webResponse->title = "";
             $this->webResponse->data = $dbProduct['name_' . $this->objUser->language];
             echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function getStockUpload()
+    {
+        if (!$this->f3->ajax()) {
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "Stock Update";//$this->f3->get('vModule_stock_title');
+            $this->webResponse->data = View::instance()->render('app/products/stock/upload.php');
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function postStockUpload(){
+        $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
+        // basename($_FILES["file"]["name"])
+
+        $targetFile = $this->getUploadDirectory() . $this->generateRandomString(16).".$ext";
+
+        if($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
+                global $dbConnection;
+                $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+                $dbStockUpdateUpload->userId = $this->objUser->id;
+                $dbStockUpdateUpload->filePath = $targetFile;
+                $dbStockUpdateUpload->entityId = $this->objUser->entityId;
+                $dbStockUpdateUpload->addReturnID();
+                echo "OK";
+            }
+        }
+    }
+
+    function postStockUploadProcess(){
+        global $dbConnection;
+
+        $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+
+        $dbStockUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
+
+        $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($dbStockUpdateUpload->filePath);
+        try {
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+            $spreadsheet = $reader->load($dbStockUpdateUpload->filePath);
+
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            $dbStockUpdateUpload->recordsCount = 0;
+            foreach ($worksheet->getRowIterator() as $row) {
+                $dbStockUpdateUpload->recordsCount++;
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+
+            }
+            $dbStockUpdateUpload->recordsCount -= 1;
+
+
+            $dbStockUpdateUpload->completedCount = $dbStockUpdateUpload->recordsCount -5;
+            $dbStockUpdateUpload->importSuccessRate = round($dbStockUpdateUpload->completedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
+
+            $dbStockUpdateUpload->failedCount = $dbStockUpdateUpload->recordsCount - $dbStockUpdateUpload->completedCount;
+            $dbStockUpdateUpload->importFailureRate = round($dbStockUpdateUpload->failedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
+
+            $dbStockUpdateUpload->update();
+
+            $this->f3->set("objStockUpdateUpload", $dbStockUpdateUpload);
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = View::instance()->render('app/products/stock/uploadResult.php');
+            echo $this->webResponse->jsonResponse();
+
+        } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
+        }
+    }
+
+    function getBonusUpload()
+    {
+        if (!$this->f3->ajax()) {
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "Bonus Update";//$this->f3->get('vModule_bonus_title');
+            $this->webResponse->data = View::instance()->render('app/products/bonus/upload.php');
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function postBonusUpload(){
+        $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
+        // basename($_FILES["file"]["name"])
+
+        $targetFile = $this->getUploadDirectory() . $this->generateRandomString(16).".$ext";
+
+        if($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
+                global $dbConnection;
+                $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+                $dbStockUpdateUpload->userId = $this->objUser->id;
+                $dbStockUpdateUpload->filePath = $targetFile;
+                $dbStockUpdateUpload->entityId = $this->objUser->entityId;
+                $dbStockUpdateUpload->addReturnID();
+                echo "OK";
+            }
+        }
+    }
+
+    function postBonusUploadProcess(){
+        global $dbConnection;
+
+        $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+
+        $dbStockUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
+
+        $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($dbStockUpdateUpload->filePath);
+        try {
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+            $spreadsheet = $reader->load($dbStockUpdateUpload->filePath);
+
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            $dbStockUpdateUpload->recordsCount = 0;
+            foreach ($worksheet->getRowIterator() as $row) {
+                $dbStockUpdateUpload->recordsCount++;
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+
+            }
+            $dbStockUpdateUpload->recordsCount -= 1;
+
+
+            $dbStockUpdateUpload->completedCount = $dbStockUpdateUpload->recordsCount -5;
+            $dbStockUpdateUpload->importSuccessRate = round($dbStockUpdateUpload->completedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
+
+            $dbStockUpdateUpload->failedCount = $dbStockUpdateUpload->recordsCount - $dbStockUpdateUpload->completedCount;
+            $dbStockUpdateUpload->importFailureRate = round($dbStockUpdateUpload->failedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
+
+            $dbStockUpdateUpload->update();
+
+            $this->f3->set("objBonusUpdateUpload", $dbStockUpdateUpload);
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = View::instance()->render('app/products/bonus/uploadResult.php');
+            echo $this->webResponse->jsonResponse();
+
+        } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
         }
     }
 }

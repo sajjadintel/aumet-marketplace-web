@@ -15,7 +15,7 @@ function compress_htmlcode($codedata)
 <!--begin::Container-->
 <div class="container-fluid">
     <div class="d-flex align-items-stretch text-center flex-column">
-        <h2 class="text-primary font-weight-bolder mt-10 mb-15 font-size-h4"><?php echo $vModule_product_header ?></h2>
+
         <form class="d-flex position-relative w-100 m-auto">
 
             <div class="d-flex flex-column-fluid">
@@ -73,21 +73,14 @@ function compress_htmlcode($codedata)
                             </span>
                         </span>
                     </div>
-                    <input id="searchStockStatus" data-switch="true" type="checkbox" checked="checked" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="70" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
+                    <input id="searchStockStatus" data-switch="true" type="checkbox" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="70" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
                 </div>
             </div>
 
             <div class="d-flex flex-column-fluid">
                 <div class="input-group input-group-lg">
                     <div class="input-group-prepend ">
-                        <label class="myLabel">
-                            <input type="file" required />
-                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Upload Bonus Excel Sheet"> <i class="nav-icon la la-file-excel-o p-0"></i> <?php echo $vModule_product_uploadBonus; ?></a>
-                        </label>
-                        <label class="myLabel">
-                            <input type="file" required />
-                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Upload Stock Excel Sheet"> <i class="nav-icon la la-file-excel-o p-0"></i> <?php echo $vModule_product_uploadStock; ?></a>
-                        </label>
+
                         <label class="myLabel">
                             <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="DistributorProductsDataTable.productAddModal()">
                                 <i class="nav-icon la la-plus p-0"></i> <?php echo $vButton_add; ?>
@@ -101,7 +94,7 @@ function compress_htmlcode($codedata)
         </form>
     </div>
 
-    <div class="card card-custom gutter-b mt-20">
+    <div class="card card-custom gutter-b mt-10">
         <div class="card-body">
             <!--begin: Datatable-->
             <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
@@ -116,6 +109,7 @@ function compress_htmlcode($codedata)
         scientificNameId: [],
         stockOption: 1
     };
+    var $repeater;
 
     var _selectBrand = $('#searchProductsBrandNameInput').select2({
         placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
@@ -177,7 +171,6 @@ function compress_htmlcode($codedata)
         } else {
             DistributorProductsDataTable.showColumn('stockStatusId');
         }
-
     });
 
     var _selectScientificEdit = $('#editProductScientificName').select2({
@@ -248,9 +241,23 @@ function compress_htmlcode($codedata)
         }
     });
 
+
+    $repeater = $('#editQuantityBonusListRepeater').repeater({
+        isFirstItemUndeletable: true,
+        show: function() {
+            $(this).slideDown();
+        },
+        hide: function(deleteElement) {
+            if (confirm('Are you sure you want to delete this element?')) {
+                $(this).slideUp(deleteElement);
+            }
+        },
+    });
+
     $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
     DistributorProductsDataTable.init(searchQuery);
 </script>
 <?php ob_end_flush(); ?>
 <?php include_once 'edit-modal.php';
+include_once 'edit-quantity-modal.php';
 include_once 'add-modal.php'; ?>
