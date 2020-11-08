@@ -285,14 +285,14 @@ var WebApp = (function () {
 	var _setUpFirebase = function () {
 		// Your web app's Firebase configuration
 		var firebaseConfig = {
-			apiKey: 'AIzaSyApi3WBeQ3HmB_we8CSOF8k1qgU1SEpxao',
-			authDomain: 'aumet-marketplace.firebaseapp.com',
-			databaseURL: 'https://aumet-marketplace.firebaseio.com',
-			projectId: 'aumet-marketplace',
-			storageBucket: 'aumet-marketplace.appspot.com',
-			messagingSenderId: '418237979621',
-			appId: '1:418237979621:web:5fe1d4393d8676f5a3ad0c',
-			measurementId: 'G-QEWB1B33ZE',
+			apiKey: "AIzaSyBy1rh8zZNp1lnUBLyQ15a-cgNvZzsNFBU",
+			authDomain: "aumet-com.firebaseapp.com",
+			databaseURL: "https://aumet-com.firebaseio.com",
+			projectId: "aumet-com",
+			storageBucket: "aumet-com.appspot.com",
+			messagingSenderId: "380649916442",
+			appId: "1:380649916442:web:8ff3bfa9cd74f7c69969a3",
+			measurementId: "G-YJ2BRPK2JD"
 		};
 		// Initialize Firebase
 		firebase.initializeApp(firebaseConfig);
