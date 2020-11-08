@@ -61,9 +61,9 @@ var DistributorOrdersDataTable = (function () {
 					autoHide: false,
 					template: function (row) {
 						var output = row.entityBuyer;
-						if (row.userBuyer != null) {
-							output += ' (' + row.userBuyer + ')';
-						}
+						//if (row.userBuyer != null) {
+						//	output += ' (' + row.userBuyer + ')';
+						//}
 						return output;
 					},
 				},
