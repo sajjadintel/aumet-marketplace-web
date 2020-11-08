@@ -8,7 +8,7 @@
             <div class="col-md-3">
                 <div class="card card-custom bg-primary card-stretch gutter-b">
                     <div class="card-body my-4">
-                        <a href="#" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Orders</a>
+                        <a href="/web/distributor/order/new" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Orders</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
                                 <?php if ($dashboard_order > $dashboard_orderYesterday) {
@@ -29,7 +29,7 @@
             <div class="col-md-3">
                 <div class="card card-custom bg-primary card-stretch gutter-b">
                     <div class="card-body my-4">
-                        <a href="#" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Revenue</a>
+                        <a href="web/distributor/order/new" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Revenue</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
                                 <?php if ($dashboard_revenue > $dashboard_revenueYesterday) {
@@ -49,7 +49,7 @@
             <div class="col-md-3">
                 <div class="card card-custom bg-primary card-stretch gutter-b">
                     <div class="card-body my-4">
-                        <a href="#" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Customers</a>
+                        <a href="web/distributor/customer" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Customers</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
                                 <?php if ($dashboard_customer > $dashboard_customerYesterday) {
@@ -69,7 +69,7 @@
             <div class="col-md-3">
                 <div class="card card-custom bg-primary card-stretch gutter-b">
                     <div class="card-body my-4">
-                        <a href="#" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">New Customers</a>
+                        <a href="web/distributor/customer" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">New Customers</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
                                 <?php if ($dashboard_new_customer > $dashboard_new_customerYesterday) {
