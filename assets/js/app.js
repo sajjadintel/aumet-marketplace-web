@@ -399,7 +399,7 @@ var WebApp = (function () {
 	// Public Functions
 	return {
 		init: function () {
-			_setUpFirebase();
+			//_setUpFirebase();
 			WebAppLocals.init();
 			_initModal();
 			_loadPage(window.location.href);
@@ -407,7 +407,7 @@ var WebApp = (function () {
 
 			//RegistrationWizard.init();
 
-			_initSessionTimeout();
+			//_initSessionTimeout();
 
 			//$("#webGuidedTourModal").modal();
 		},
@@ -449,7 +449,3 @@ var WebApp = (function () {
 		},
 	};
 })();
-
-jQuery(document).ready(function () {
-	WebApp.init();
-});
