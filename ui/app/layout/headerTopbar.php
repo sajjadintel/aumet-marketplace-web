@@ -31,7 +31,7 @@
 			<ul class="navi navi-hover py-4">
                 <!--begin::Item-->
                 <li class="navi-item">
-                    <a href="/me/switchLanguage/ar" class="navi-link">
+                    <a href="/web/me/switchLanguage/ar" class="navi-link">
 						<span class="symbol symbol-20 mr-3">
 							<img src="/theme/assets/media/svg/flags/008-saudi-arabia.svg" alt=""/>
 						</span>
@@ -41,7 +41,7 @@
                 <!--end::Item-->
                 <!--begin::Item-->
                 <li class="navi-item">
-                    <a href="/me/switchLanguage/en" class="navi-link">
+                    <a href="/web/me/switchLanguage/en" class="navi-link">
 						<span class="symbol symbol-20 mr-3">
 							<img src="/theme/assets/media/svg/flags/260-united-kingdom.svg" alt=""/>
 						</span>

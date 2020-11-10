@@ -271,6 +271,7 @@ var WebApp = (function () {
 	};
 
 	var _signout = function () {
+
 		firebase
 			.auth()
 			.signOut()
@@ -283,20 +284,6 @@ var WebApp = (function () {
 	};
 
 	var _setUpFirebase = function () {
-		// Your web app's Firebase configuration
-		var firebaseConfig = {
-			apiKey: "AIzaSyBy1rh8zZNp1lnUBLyQ15a-cgNvZzsNFBU",
-			authDomain: "aumet-com.firebaseapp.com",
-			databaseURL: "https://aumet-com.firebaseio.com",
-			projectId: "aumet-com",
-			storageBucket: "aumet-com.appspot.com",
-			messagingSenderId: "380649916442",
-			appId: "1:380649916442:web:8ff3bfa9cd74f7c69969a3",
-			measurementId: "G-YJ2BRPK2JD"
-		};
-		// Initialize Firebase
-		firebase.initializeApp(firebaseConfig);
-		firebase.analytics();
 
 		firebase.auth().onAuthStateChanged(function (user) {
 			if (!user) {
@@ -403,7 +390,7 @@ var WebApp = (function () {
 			WebAppLocals.init();
 			_initModal();
 			_loadPage(window.location.href);
-			Cart.init();
+			//Cart.init();
 
 			//RegistrationWizard.init();
 

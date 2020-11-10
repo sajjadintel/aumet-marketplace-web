@@ -6,7 +6,7 @@
         <div class="row">
 
             <div class="col-md-3">
-                <div class="card card-custom bg-primary card-stretch gutter-b">
+                <div class="card card-custom bg-NavyBlue card-stretch gutter-b">
                     <div class="card-body my-4">
                         <a href="#" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Orders</a>
                         <div class="font-weight-bold text-white font-size-sm">
@@ -27,7 +27,7 @@
 
 
             <div class="col-md-3">
-                <div class="card card-custom bg-primary card-stretch gutter-b">
+                <div class="card card-custom bg-Blue card-stretch gutter-b">
                     <div class="card-body my-4">
                         <a href="#" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Revenue</a>
                         <div class="font-weight-bold text-white font-size-sm">
@@ -47,7 +47,7 @@
             </div>
 
             <div class="col-md-3">
-                <div class="card card-custom bg-primary card-stretch gutter-b">
+                <div class="card card-custom bg-BlueGrotto card-stretch gutter-b">
                     <div class="card-body my-4">
                         <a href="#" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Customers</a>
                         <div class="font-weight-bold text-white font-size-sm">
@@ -67,7 +67,7 @@
             </div>
 
             <div class="col-md-3">
-                <div class="card card-custom bg-primary card-stretch gutter-b">
+                <div class="card card-custom bg-BabyBlue card-stretch gutter-b">
                     <div class="card-body my-4">
                         <a href="#" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">New Customers</a>
                         <div class="font-weight-bold text-white font-size-sm">
