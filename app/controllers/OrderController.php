@@ -19,6 +19,28 @@ class OrderController extends Controller
         $this->handleGetDistributorOrders('history');
     }
 
+function getNotifcationsDistributorOrdersNew(){
+
+    global $dbConnection;
+
+    $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+    $query = "notificationFlag = 1 and entitySellerId IN ($arrEntityId)";
+
+    $dbOrder = new BaseModel($dbConnection, "order");
+    $dbOrder->getWhere($query);
+    $count = 0;
+    while (!$dbOrder->dry()) {
+        $count++;
+        $dbOrder->notificationFlag = 2;
+        $dbOrder->update();
+        $dbOrder->next();
+    }
+    $this->webResponse->errorCode = 1;
+    $this->webResponse->title = "";
+    $this->webResponse->data =$count;
+    echo $this->webResponse->jsonResponse();
+}
+
     function handleGetDistributorOrders($status)
     {
         if (!$this->f3->ajax()) {

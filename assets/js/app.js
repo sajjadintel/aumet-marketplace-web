@@ -42,6 +42,45 @@ var WebApp = (function () {
 		});
 	};
 
+	var _alertNewOrders = function (ordersCount) {
+		Swal.fire({
+			text: "<h3>You have received ("+ordersCount+") orders</h3>",
+			icon: 'success',
+			buttonsStyling: false,
+			confirmButtonText: "Start Working On Them",
+			showCancelButton: true,
+			cancelButtonText: 'Ok',
+			customClass: {
+				confirmButton: 'btn font-weight-bold btn-primary',
+				cancelButton: 'btn font-weight-bold btn-outline-primary',
+			},
+		}).then((result) => {
+			KTUtil.scrollTop();
+			if (result.value) {
+				WebApp.loadPage("/web/distributor/order/new");
+			}
+		});
+	};
+
+	var _getAsync = function (url, fnCallback = null) {
+		$.ajax({
+			url: url + '?_t=' + Date.now(),
+			type: 'GET',
+			dataType: 'json',
+			async: true,
+		})
+			.done(function (webResponse) {
+				if (webResponse && typeof webResponse === 'object') {
+					fnCallback(webResponse);
+				} else {
+					fnCallback(false);
+				}
+			})
+			.fail(function (jqXHR, textStatus, errorThrown) {
+				fnCallback(false);
+			});
+	};
+
 	var _get = function (url, fnCallback = null) {
 		_blurPage();
 		_blockPage();
@@ -383,6 +422,20 @@ var WebApp = (function () {
 		return datatableVar;
 	};
 
+	var _handleNotificationTimer = function (webResponse){
+		if (webResponse && typeof webResponse === 'object') {
+			if(webResponse.data > 0){
+				_alertNewOrders(webResponse.data);
+			}
+		}
+	};
+
+	var _initNotificationTimer = function (){
+		setInterval(function() {
+			WebApp.getAsync("/web/notification/order/new", _handleNotificationTimer);
+		}, 5000);
+	};
+
 	// Public Functions
 	return {
 		init: function () {
@@ -397,6 +450,8 @@ var WebApp = (function () {
 			//_initSessionTimeout();
 
 			//$("#webGuidedTourModal").modal();
+
+			_initNotificationTimer();
 		},
 		signout: function () {
 			return _signout();
@@ -424,6 +479,9 @@ var WebApp = (function () {
 		},
 		get: function (url, fnCallback = null) {
 			return _get(url, fnCallback);
+		},
+		getAsync: function (url, fnCallback = null) {
+			return _getAsync(url, fnCallback);
 		},
 		post: function (url, data = null, fnCallback = null) {
 			return _post(url, data, fnCallback);
