@@ -1,5 +1,7 @@
 <?php
 
+$f3->route('GET /web/demo/order/add', 'DemoController->getGenerateOrder');
+
 $f3->route('GET /', 'LandingController->get');
 $f3->route('GET /@lang', 'LandingController->get');
 
@@ -90,3 +92,5 @@ $f3->route('POST /web/distributor/customer/feedback', 'CustomersController->post
 $f3->route('POST /web/distributor/order/recent', 'OrderController->postDistributorOrdersRecent');
 $f3->route('POST /web/distributor/product/bestselling', 'ProductsController->postDistributorProductsBestSelling');
 // END dashboard
+
+$f3->route('GET /web/notification/order/new', 'OrderController->getNotifcationsDistributorOrdersNew');

@@ -114,15 +114,13 @@ var DistributorDashboardDataTable = (function () {
 					title: '',
 					sortable: false,
 					overflow: 'visible',
-					width: 250,
+					width: 150,
 					autoHide: false,
 					template: function (row) {
 						var dropdownStart =
 							'<div class="dropdown dropdown-inline">\
                             <a href="javascript:;" class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" data-toggle="dropdown">\
-								<i class="nav-icon la la-ellipsis-h p-0"></i> &nbsp&nbsp' +
-							WebAppLocals.getMessage('actions') +
-							'</a>\
+								<i class="nav-icon la la-ellipsis-h p-0"></i></a>\
                             <div class="dropdown-menu dropdown-menu-md">\
                                 <ul class="navi flex-column navi-hover py-2">';
 						var dropdownEnd = '</ul>\
@@ -135,17 +133,13 @@ var DistributorDashboardDataTable = (function () {
 							'<a href="/web/distributor/order/print/' +
 							row.id +
 							'" target="_blank" class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="Print Order">\
-						<i class="nav-icon la la-print p-0"></i> &nbsp&nbsp' +
-							WebAppLocals.getMessage('print') +
-							'</a>';
+						<i class="nav-icon la la-print p-0"></i></a>';
 						var btnView =
 							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderViewModal(' +
 							row.id +
 							')\' \
 						class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
-						<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
-							WebAppLocals.getMessage('view') +
-							'</a>';
+						<i class="nav-icon la la-eye p-0"></i></a>';
 
 						var btnOrderProcess =
 							'<a class="navi-link" href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +

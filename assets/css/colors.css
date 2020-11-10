@@ -1,0 +1,50 @@
+.bg-primary{
+    background-color: #13b9a9 !important;
+    color: #fff !important;
+}
+
+.bg-danger-hover:hover,
+.bg-danger-hover:hover * {
+    color: #f64e60 !important;
+    background-color: #ffe2e5 !important;
+}
+
+.bg-MidnightBlue {
+    background-color: #0C6980 !important;
+    color: #fff !important;
+}
+
+.bg-Cyan {
+    background-color: #00A8A8 !important;
+    color: #fff !important;
+}
+
+.bg-Turquoise {
+    background-color: #2EB5E0 !important;
+    color: #fff !important;
+}
+
+.bg-Serenity {
+    background-color: #C4DBE0 !important;
+    color: #fff !important;
+}
+
+.bg-NavyBlue {
+    background-color: #003060 !important;
+    color: #fff !important;
+}
+
+.bg-Blue {
+    background-color: #055C9D !important;
+    color: #fff !important;
+}
+
+.bg-BlueGrotto {
+    background-color: #0E86D4 !important;
+    color: #fff !important;
+}
+
+.bg-BabyBlue {
+    background-color: #68BBE3 !important;
+    color: #fff !important;
+}

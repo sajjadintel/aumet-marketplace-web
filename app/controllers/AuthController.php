@@ -46,6 +46,24 @@ class AuthController extends Controller
 
     function getSignOut()
     {
+        try {
+            $factory = (new Factory)->withServiceAccount($this->getRootDirectory() . '/config/aumet-com-firebase-adminsdk-2nsnx-64efaf5c39.json');
+
+            $auth = $factory->createAuth();
+
+            $idTokenString = $this->f3->get("SESSION.token");
+
+            $verifiedIdToken = $auth->verifyIdToken($idTokenString);
+            $uid = $verifiedIdToken->getClaim('sub');
+
+            $auth->revokeRefreshTokens($uid);
+
+            $verifiedIdToken = $auth->verifyIdToken($idTokenString, $checkIfRevoked = true);
+        } catch (RevokedIdToken $e) {
+            //$e->getMessage();
+        } catch (Exception $e) {
+
+        }
         $this->clearUserSession();
         $this->rerouteAuth();
     }

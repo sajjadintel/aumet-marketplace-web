@@ -17,7 +17,7 @@
                 <i class="symbol-badge bg-success"></i>
             </div>
             <div class="d-flex flex-column">
-                <a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?php echo $objUser->fullname ?></a>
+                <a href="javascript:;" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?php echo $objUser->fullname ?></a>
                 <div class="text-muted mt-1"><?php echo $objUser->roleName ?></div>
                 <div class="navi mt-2">
                     <a href="#" class="navi-item">
@@ -38,7 +38,7 @@
                             <span class="navi-text text-muted text-hover-primary"><?php echo $objUser->email ?></span>
                         </span>
                     </a>
-                    <a href="javascript:;" class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5" onclick="WebApp.signout()"><?php echo $vLogin_signout ?></a>
+                    <a href="/web/auth/signout" class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5"><?php echo $vLogin_signout ?></a>
                 </div>
             </div>
         </div>
