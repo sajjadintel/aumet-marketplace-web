@@ -13,34 +13,50 @@ function compress_htmlcode($codedata)
 }
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo $LANGUAGE ?>" dir="<?php echo $cssDirection ?>" direction="<?php echo $cssDirection ?>" style="direction: <?php echo $cssDirection ?>">
+<html lang="<?php echo $LANGUAGE ?>" dir="<?php echo $_SESSION['userLangDirection'] ?>" direction="<?php echo $_SESSION['userLangDirection'] ?>" style="direction: <?php echo $_SESSION['userLangDirection'] ?>">
 <!--begin::Head-->
 
 <head>
 	<!-- The core Firebase JS SDK is always required and must be listed first -->
-	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>
 
-	<!-- TODO: Add SDKs for Firebase products that you want to use
-             https://firebase.google.com/docs/web/setup#available-libraries -->
-	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-auth.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-performance.js"></script>
 
 	<script>
-		// Your web app's Firebase configuration
-		var firebaseConfig = {
-			apiKey: "AIzaSyBy1rh8zZNp1lnUBLyQ15a-cgNvZzsNFBU",
-			authDomain: "aumet-com.firebaseapp.com",
-			databaseURL: "https://aumet-com.firebaseio.com",
-			projectId: "aumet-com",
-			storageBucket: "aumet-com.appspot.com",
-			messagingSenderId: "380649916442",
-			appId: "1:380649916442:web:8ff3bfa9cd74f7c69969a3",
-			measurementId: "G-YJ2BRPK2JD"
-		};
+        const firebaseConfig = {
+            apiKey: "AIzaSyBy1rh8zZNp1lnUBLyQ15a-cgNvZzsNFBU",
+            authDomain: "aumet-com.firebaseapp.com",
+            databaseURL: "https://aumet-com.firebaseio.com",
+            projectId: "aumet-com",
+            storageBucket: "aumet-com.appspot.com",
+            messagingSenderId: "380649916442",
+            appId: "1:380649916442:web:8ff3bfa9cd74f7c69969a3",
+            measurementId: "G-YJ2BRPK2JD"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        console.log(defaultProject.name);
+        firebase.analytics();
 
-		// Initialize Firebase
-		firebase.initializeApp(firebaseConfig);
-		firebase.analytics();
+        var perf = firebase.performance();
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (!user) {
+                _loadPage('/web/auth/signout', false, null);
+            } else {
+                firebase
+                    .auth()
+                    .currentUser.getIdToken(true)
+                    .then(function (idToken) {
+                        _idToken = idToken;
+                    })
+                    .catch(function (error) {
+                        // Handle error
+                    });
+            }
+        });
 	</script>
 
 	<meta charset="utf-8" />
@@ -60,19 +76,21 @@ function compress_htmlcode($codedata)
 
 	<!--end::Page Custom Styles-->
 	<!--begin::Global Theme Styles(used by all pages)-->
-	<link href="/theme/assets/plugins/global/plugins.bundle<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.css" rel="stylesheet" type="text/css" />
+	<link href="/theme/assets/plugins/global/plugins.bundle<?php echo $_SESSION['userLangDirection'] == "ltr" ? "" : ".rtl" ?>.css" rel="stylesheet" type="text/css" />
 	<link href="/theme/assets/plugins/custom/prismjs/prismjs.bundle.min.css" rel="stylesheet" type="text/css" />
-	<link href="/theme/assets/css/style.bundle<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+	<link href="/theme/assets/css/style.bundle<?php echo $_SESSION['userLangDirection'] == "ltr" ? "" : ".rtl" ?>.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
 	<!--end::Global Theme Styles-->
 	<!--begin::Layout Themes(used by all pages)-->
-	<link href="/theme/assets/css/themes/layout/header/base/light<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
-	<link href="/theme/assets/css/themes/layout/header/menu/light<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
-	<link href="/theme/assets/css/themes/layout/brand/light<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
-	<link href="/theme/assets/css/themes/layout/aside/light<?php echo $cssDirection == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+	<link href="/theme/assets/css/themes/layout/header/base/light<?php echo $_SESSION['userLangDirection'] == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+	<link href="/theme/assets/css/themes/layout/header/menu/light<?php echo $_SESSION['userLangDirection'] == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+	<link href="/theme/assets/css/themes/layout/brand/light<?php echo $_SESSION['userLangDirection'] == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+	<link href="/theme/assets/css/themes/layout/aside/light<?php echo $_SESSION['userLangDirection'] == "ltr" ? "" : ".rtl" ?>.min.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
 	<!--end::Layout Themes-->
 
 	<link href="/assets/css/app.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
 	<link href="/theme/assets/plugins/custom/datatables/datatables.bundle.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+
+    <link href="/assets/css/colors.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
 
 	<link rel="apple-touch-icon" sizes="57x57" href="/favicons/apple-icon-57x57.png">
 	<link rel="apple-touch-icon" sizes="60x60" href="/favicons/apple-icon-60x60.png">
