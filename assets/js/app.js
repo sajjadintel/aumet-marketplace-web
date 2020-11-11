@@ -44,7 +44,7 @@ var WebApp = (function () {
 
 	var _alertNewOrders = function (ordersCount) {
 		Swal.fire({
-			text: "<h3>You have received ("+ordersCount+") orders</h3>",
+			text: "You have received ( "+ordersCount+" ) orders",
 			icon: 'success',
 			buttonsStyling: false,
 			confirmButtonText: "Start Working On Them",
