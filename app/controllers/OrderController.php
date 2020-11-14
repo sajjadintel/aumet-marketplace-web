@@ -19,27 +19,28 @@ class OrderController extends Controller
         $this->handleGetDistributorOrders('history');
     }
 
-function getNotifcationsDistributorOrdersNew(){
+    function getNotifcationsDistributorOrdersNew()
+    {
 
-    global $dbConnection;
+        global $dbConnection;
 
-    $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
-    $query = "notificationFlag = 1 and entitySellerId IN ($arrEntityId)";
+        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+        $query = "notificationFlag = 1 and entitySellerId IN ($arrEntityId)";
 
-    $dbOrder = new BaseModel($dbConnection, "order");
-    $dbOrder->getWhere($query);
-    $count = 0;
-    while (!$dbOrder->dry()) {
-        $count++;
-        $dbOrder->notificationFlag = 2;
-        $dbOrder->update();
-        $dbOrder->next();
+        $dbOrder = new BaseModel($dbConnection, "order");
+        $dbOrder->getWhere($query);
+        $count = 0;
+        while (!$dbOrder->dry()) {
+            $count++;
+            $dbOrder->notificationFlag = 2;
+            $dbOrder->update();
+            $dbOrder->next();
+        }
+        $this->webResponse->errorCode = 1;
+        $this->webResponse->title = "";
+        $this->webResponse->data = $count;
+        echo $this->webResponse->jsonResponse();
     }
-    $this->webResponse->errorCode = 1;
-    $this->webResponse->title = "";
-    $this->webResponse->data =$count;
-    echo $this->webResponse->jsonResponse();
-}
 
     function handleGetDistributorOrders($status)
     {
@@ -153,8 +154,12 @@ function getNotifcationsDistributorOrdersNew(){
             $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
             $arrOrderDetail = $dbOrderDetail->findWhere("id = '$orderId'");
 
+            $dbOrderLog = new BaseModel($this->db, "vwOrderLog");
+            $arrOrderLog = $dbOrderLog->findWhere("orderId = '$orderId'");
+
             $data['order'] = $arrOrder[0];
             $data['orderDetail'] = $arrOrderDetail;
+            $data['orderLog'] = $arrOrderLog;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
             return;
@@ -330,8 +335,6 @@ function getNotifcationsDistributorOrdersNew(){
         $orderId = $this->f3->get("POST.id");
         $statusId = Constants::ORDER_STATUS_PAID;
         $this->handleUpdateOrderStatus($orderId, $statusId);
-
-        // TODO: Update entityRelation table with new details
     }
 
     function handleUpdateOrderStatus($orderId, $statusId)
@@ -344,7 +347,29 @@ function getNotifcationsDistributorOrdersNew(){
             return;
         }
 
+        // Add conditions for checks on Order
+        // If Order to change to Complete, check if Stock is available for all the items
+        if ($statusId == Constants::ORDER_STATUS_COMPLETED) {
+            $dbOrderItems = new BaseModel($this->db, "orderDetail");
+            $dbProduct = new BaseModel($this->db, "entityProductSell");
+            // check all items if stock is available
+            $dbOrderItems->getWhere("orderId = $orderId");
+
+            while (!$dbOrderItems->dry()) {
+                $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
+
+                if ($dbProduct->dry() || $dbProduct->stockStatusId != 1 || $dbProduct->stock < $dbOrderItems->quantity) {
+                    echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $this->f3->get('vResponse_productsMissing'), null);
+                    return;
+                }
+
+                $dbProduct->next();
+            }
+        }
+
+        $dbOrder->updateDateTime = date("Y-m-d H:i:s");
         $dbOrder->statusId = $statusId;
+        $dbOrder->userSellerId = $this->objUser->id;
 
         if (!$dbOrder->update()) {
             echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $dbOrder->exception(), null);
@@ -356,9 +381,51 @@ function getNotifcationsDistributorOrdersNew(){
         $dbOrderLog->userId = $this->objUser->id;
         $dbOrderLog->statusId = $statusId;
 
+
         if (!$dbOrderLog->add()) {
             echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notAdded', $this->f3->get('vEntity_orderLog')), $dbOrderLog->exception(), null);
             return;
+        }
+
+        // Add other management information
+        // If order is Complete, adjust stocks and relation (unpaid total)
+        // If order is Paid, adjust relation (paid total)
+        if ($statusId == Constants::ORDER_STATUS_COMPLETED) {
+            $dbOrderItems->getWhere("orderId = $orderId");
+
+            while (!$dbOrderItems->dry()) {
+                $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
+
+                $dbProduct->stock -= $dbOrderItems->quantity;
+                $dbProduct->update();
+
+                $dbProduct->next();
+            }
+
+            $dbRelation = new BaseModel($this->db, "entityRelation");
+            $dbRelation->getWhere("entityBuyerId = $dbOrder->entityBuyerId AND entitySellerId = $dbOrder->entitySellerId");
+
+            if ($dbRelation->dry()) {
+                $dbRelation->entityBuyerId = $dbOrder->entityBuyerId;
+                $dbRelation->entitySellerId = $dbOrder->entitySellerId;
+                $dbRelation->currencyId = $dbOrder->currencyId;
+                $dbRelation->orderCount = 1;
+                $dbRelation->orderTotal = $dbOrder->total;
+                $dbRelation->add();
+            } else {
+                $dbRelation->orderCount++;
+                $dbRelation->orderTotal += $dbOrder->total;
+                $dbRelation->updatedAt = date('Y-m-d H:i:s');
+                $dbRelation->update();
+            }
+        } elseif ($statusId == Constants::ORDER_STATUS_PAID) {
+            $dbRelation = new BaseModel($this->db, "entityRelation");
+            $dbRelation->getWhere("entityBuyerId = $dbOrder->entityBuyerId AND entitySellerId = $dbOrder->entitySellerId");
+
+            $dbRelation->orderCountPaid++;
+            $dbRelation->orderTotalPaid += $dbOrder->total;
+            $dbRelation->updatedAt = date('Y-m-d H:i:s');
+            $dbRelation->update();
         }
 
         echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null, null);
