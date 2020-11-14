@@ -138,6 +138,8 @@ return array(
     'vResponse_updated' => 'تم تحديث {0}!',
     'vResponse_added' => 'تمت إضافة {0}!',
 
+    'vResponse_productsMissing' => 'المنتجات مفقودة من المخزون!',
+
     'vEntity_order' => 'الطلب',
     'vEntity_orderLog' => 'سجل الطلبات',
 

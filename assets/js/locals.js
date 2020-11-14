@@ -110,6 +110,11 @@ var WebAppLocals = (function () {
 			ar: 'تفاصيل الطلب',
 			fr: '',
 		},
+		orderLogs: {
+			en: 'Order Logs',
+			ar: 'سجلات الطلبات',
+			fr: '',
+		},
 		orderStatus: {
 			en: 'Order Status',
 			ar: 'حالة الطلب',
@@ -163,6 +168,16 @@ var WebAppLocals = (function () {
 		orderTotal: {
 			en: 'Total',
 			ar: 'مجموع',
+			fr: '',
+		},
+		branch: {
+			en: 'Branch',
+			ar: 'فرع',
+			fr: '',
+		},
+		address: {
+			en: 'Address',
+			ar: 'عنوان',
 			fr: '',
 		},
 		unitPrice: {

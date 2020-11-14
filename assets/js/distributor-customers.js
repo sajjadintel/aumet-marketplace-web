@@ -72,7 +72,7 @@ var DistributorCustomersDataTable = (function () {
 					template: function (row) {
 						var output = null;
 
-						output = row.currencySymbol + ' ' +row.orderTotal;
+						output = row.currencySymbol + ' ' + row.orderTotal;
 						return output;
 					},
 				},
@@ -83,7 +83,7 @@ var DistributorCustomersDataTable = (function () {
 					template: function (row) {
 						var output = null;
 
-						output = row.currencySymbol + ' ' +row.orderTotalPaid;
+						output = row.currencySymbol + ' ' + row.orderTotalPaid;
 						return output;
 					},
 				},

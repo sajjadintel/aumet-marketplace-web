@@ -60,10 +60,24 @@
                             <div class="col-md-6 form-text" id="modalDateText"></div>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="row form-group">
+                            <div class="col-md-6 form-label" id="modalBranchLabel"></div>
+                            <div class="col-md-6 form-text" id="modalBranchText"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row form-group">
+                            <div class="col-md-6 form-label" id="modalAddressLabel"></div>
+                            <div class="col-md-6 form-text" id="modalAddressText"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
-                        <h3 class="sub-header" id="modalOrderDetailLabel"></h3>
+                    <div class="col-md-12 form-group">
+                        <div>
+                            <input name="modalOrderDetailLog" id="modalBootstrapOrderDetailLog" data-switch="true" type="checkbox" checked="checked" data-on-text="True" data-handle-width="150" data-off-text="False" data-on-color="primary" data-off-color="secondary" />
+                        </div>
                     </div>
                     <div class="col-md-12">
                         <!--begin: Datatable-->
@@ -88,4 +102,3 @@
         </div>
     </div>
 </div>
-

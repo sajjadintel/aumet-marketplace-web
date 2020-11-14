@@ -365,7 +365,10 @@ var DistributorDashboardDataTable = (function () {
 		});
 	};
 
-	var _initOrderDetailDatatable = function (data) {
+	var _initDatatable = function (data, columns) {
+		if (datatableDetail != null) {
+			datatableDetail.destroy();
+		}
 		datatableDetail = $('#kt_datatable_detail').KTDatatable({
 			// datasource definition
 
@@ -386,79 +389,7 @@ var DistributorDashboardDataTable = (function () {
 			pagination: true,
 
 			// columns definition
-			columns: [
-				{
-					field: 'productCode',
-					title: WebAppLocals.getMessage('productCode'),
-					overflow: 'visible',
-					width: 120,
-					autoHide: false,
-				},
-				{
-					field: 'productNameEn',
-					title: WebAppLocals.getMessage('productName'),
-					overflow: 'visible',
-					width: 200,
-					autoHide: false,
-				},
-				{
-					field: 'scientificName',
-					title: WebAppLocals.getMessage('productScientificName'),
-					overflow: 'visible',
-					width: 200,
-					autoHide: false,
-				},
-				{
-					field: 'quantity',
-					title: WebAppLocals.getMessage('quantity'),
-					sortable: false,
-					autoHide: false,
-					width: 100,
-					// callback function support for column rendering
-					template: function (row) {
-						var output = '';
-
-						output = row.quantity;
-						return output;
-					},
-				},
-				{
-					field: 'unitPrice',
-					title: WebAppLocals.getMessage('unitPrice'),
-					sortable: false,
-					autoHide: false,
-					width: 80,
-					// callback function support for column rendering
-					template: function (row) {
-						var output = row.currency + ' <strong>' + Math.round((parseFloat(row.unitPrice) + Number.EPSILON) * 100) / 100 + '</strong>';
-						return output;
-					},
-				},
-				{
-					field: 'tax',
-					title: WebAppLocals.getMessage('tax'),
-					sortable: false,
-					width: 50,
-					// callback function support for column rendering
-					template: function (row) {
-						var output = '';
-
-						var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
-						return output;
-					},
-				},
-				{
-					field: 'total', // + docLang,
-					title: WebAppLocals.getMessage('orderTotal'),
-					autoHide: false,
-					width: 80,
-					template: function (row) {
-						var output = parseFloat(row.unitPrice) * parseFloat(row.quantity) * (1 + parseFloat(row.tax) / 100);
-						output = row.currency + ' <strong>' + Math.round((output + Number.EPSILON) * 100) / 100 + '</strong>';
-						return output;
-					},
-				},
-			],
+			columns: columns,
 		});
 	};
 
@@ -504,14 +435,133 @@ var DistributorDashboardDataTable = (function () {
 		$('#modalTotalText').html(webResponse.data.order.currency + Math.round((parseFloat(webResponse.data.order.total) + Number.EPSILON) * 100) / 100);
 		$('#modalDateLabel').html(WebAppLocals.getMessage('insertDate'));
 		$('#modalDateText').html(webResponse.data.order.insertDateTime);
+		$('#modalBranchLabel').html(WebAppLocals.getMessage('branch'));
+		$('#modalBranchText').html(webResponse.data.order.branchBuyer);
+		$('#modalAddressLabel').html(WebAppLocals.getMessage('address'));
+		$('#modalAddressText').html(webResponse.data.order.addressBuyer);
 
-		// TODO:
-		// Add Order Details Datatable
-		// Load Datatable content from the local data
-		// Create a PDF containing the invoice
-		$('#modalOrderDetailLabel').html(WebAppLocals.getMessage('orderDetails'));
+		$('#modalBootstrapOrderDetailLog').attr('data-on-text', WebAppLocals.getMessage('orderDetails'));
+		$('#modalBootstrapOrderDetailLog').attr('data-off-text', WebAppLocals.getMessage('orderLogs'));
+
+		var orderDetailColumns = [
+			{
+				field: 'productCode',
+				title: WebAppLocals.getMessage('productCode'),
+				overflow: 'visible',
+				width: 120,
+				autoHide: false,
+			},
+			{
+				field: 'productNameEn',
+				title: WebAppLocals.getMessage('productName'),
+				overflow: 'visible',
+				width: 200,
+				autoHide: false,
+			},
+			{
+				field: 'scientificName',
+				title: WebAppLocals.getMessage('productScientificName'),
+				overflow: 'visible',
+				width: 200,
+				autoHide: false,
+			},
+			{
+				field: 'quantity',
+				title: WebAppLocals.getMessage('quantity'),
+				sortable: false,
+				autoHide: false,
+				width: 100,
+				// callback function support for column rendering
+				template: function (row) {
+					var output = '';
+
+					output = row.quantity;
+					return output;
+				},
+			},
+			{
+				field: 'unitPrice',
+				title: WebAppLocals.getMessage('unitPrice'),
+				sortable: false,
+				autoHide: false,
+				width: 80,
+				// callback function support for column rendering
+				template: function (row) {
+					var output = row.currency + ' <strong>' + Math.round((parseFloat(row.unitPrice) + Number.EPSILON) * 100) / 100 + '</strong>';
+					return output;
+				},
+			},
+			{
+				field: 'tax',
+				title: WebAppLocals.getMessage('tax'),
+				sortable: false,
+				width: 50,
+				// callback function support for column rendering
+				template: function (row) {
+					var output = '';
+
+					var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
+					return output;
+				},
+			},
+			{
+				field: 'total', // + docLang,
+				title: WebAppLocals.getMessage('orderTotal'),
+				autoHide: false,
+				width: 80,
+				template: function (row) {
+					var output = parseFloat(row.unitPrice) * parseFloat(row.quantity) * (1 + parseFloat(row.tax) / 100);
+					output = row.currency + ' <strong>' + Math.round((output + Number.EPSILON) * 100) / 100 + '</strong>';
+					return output;
+				},
+			},
+		];
+
+		var orderLogColumns = [
+			{
+				field: 'name_en',
+				title: WebAppLocals.getMessage('orderStatus'),
+				autoHide: false,
+				template: function (row) {
+					var output = row['name_' + docLang];
+					return output;
+				},
+			},
+			{
+				field: 'fullname',
+				title: WebAppLocals.getMessage('userSeller'),
+				overflow: 'visible',
+				autoHide: false,
+			},
+			{
+				field: 'updatedAt',
+				title: WebAppLocals.getMessage('insertDate'),
+				autoHide: false,
+				width: 120,
+				template: function (row) {
+					if (row.updatedAt) {
+						return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.updatedAt).format('DD / MM / YYYY') + '</span>';
+					} else {
+						return '';
+					}
+				},
+			},
+		];
+
+		$('#modalBootstrapOrderDetailLog')
+			.bootstrapSwitch()
+			.on('switchChange.bootstrapSwitch', function (event, state) {
+				if (state) {
+					initDatatable(webResponse.data.orderDetail, orderDetailColumns);
+					datatableDetail.reload();
+				} else {
+					initDatatable(webResponse.data.orderLog, orderLogColumns);
+					datatableDetail.reload();
+				}
+			});
+
 		$('#modalPrint').attr('href', '/web/distributor/order/print/' + webResponse.data.order.id);
-		_initOrderDetailDatatable(webResponse.data.orderDetail);
+		initDatatable(webResponse.data.orderDetail, orderDetailColumns);
 		$('#viewModal').appendTo('body').modal('show');
 		datatableDetail.reload();
 	};
@@ -522,8 +572,8 @@ var DistributorDashboardDataTable = (function () {
 			_initRecentOrders();
 			_initTopProducts();
 		},
-		initOrderDetailDatatable: function (data) {
-			_initOrderDetailDatatable(data);
+		initDatatable: function (data, columns) {
+			_initDatatable(data, columns);
 		},
 		orderStatusModal: function (orderId, statusId) {
 			_orderStatusModal(orderId, statusId);

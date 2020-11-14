@@ -29,7 +29,6 @@
                             </div>
                         </div>
                         <div class="col-md-12 form-group">
-                            <label for="editQuantityStockAvailability" class="form-control-label">Stock Availability</label>
                             <div>
                                 <input name="stockStatus" id="editQuantityStockAvailability" data-switch="true" type="checkbox" checked="checked" data-on-text="<?php echo $vModule_product_stockStatus_ComingSoon ?>" data-handle-width="150" data-off-text="<?php echo $vModule_product_stockStatus_NotAvailable ?>" data-on-color="primary" />
                             </div>

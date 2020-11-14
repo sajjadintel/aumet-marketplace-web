@@ -148,6 +148,8 @@ return array(
     'vResponse_updated' => '{0} was updated!',
     'vResponse_added' => '{0} was added!',
 
+    'vResponse_productsMissing' => 'Products missing from stock!',
+
     'vEntity_order' => 'Order',
     'vEntity_orderLog' => 'Order Log',
     'vWord_To' => 'TO',
