@@ -495,6 +495,9 @@ class ProductsController extends Controller
 
     function postStockUploadProcess()
     {
+        ini_set('max_execution_time', 600);
+        ini_set('mysql.connect_timeout', 600);
+        
         global $dbConnection;
 
         $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
