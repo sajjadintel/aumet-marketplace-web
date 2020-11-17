@@ -697,7 +697,9 @@ class ProductsController extends Controller
             }
 
             $this->f3->set("objStockUpdateUpload", $dbStockUpdateUpload);
-            $this->f3->set("failedProductsSheetUrl", "/" . $failedProductsSheetUrl);
+            if(!is_null($failedProductsSheetUrl)) {
+                $this->f3->set("failedProductsSheetUrl", "/" . $failedProductsSheetUrl);
+            }
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";

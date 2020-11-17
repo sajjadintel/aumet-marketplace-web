@@ -14,7 +14,11 @@
     <div class="col-4">
         <div class="card card-custom bgi-no-repeat card-stretch gutter-b" style="background-position: right top; background-size: 30% auto; background-image: url(/theme/assets/media/svg/shapes/abstract-2.svg)">
             <div class="card-body my-4">
-                <a href=<?php echo $failedProductsSheetUrl ?> target="_blank" class="card-title font-weight-bolder text-danger font-size-h2 mb-4 text-hover-state-dark d-block">Import Failure Rate <span class="text-dark">(Download Failed Records)<span></a>
+                <?php if(!is_null($failedProductsSheetUrl)): ?>
+                    <a href=<?php echo $failedProductsSheetUrl ?> target="_blank" class="card-title font-weight-bolder text-danger font-size-h2 mb-4 text-hover-state-dark d-block">Import Failure Rate <span class="text-dark">(Download Failed Records)<span></a>
+                <?php else: ?>
+                    <a href="javascript:;" class="card-title font-weight-bolder text-danger font-size-h2 mb-4 text-hover-state-dark d-block">Import Failure Rate <span class="text-dark"><span></a>
+                <?php endif; ?>
                 <div class="font-weight-bold text-dark font-size-h3">
                     <span class="text-dark font-weight-bolder font-size-h2 mr-2"><?php echo $objStockUpdateUpload->failedCount ?> Failure (<?php echo $objStockUpdateUpload->importFailureRate ?>%</span>)</div>
                 <div class="progress progress-xs mt-7 bg-danger-o-40">
