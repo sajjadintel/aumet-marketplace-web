@@ -1,5 +1,8 @@
 <?php
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class ProductsController extends Controller
 {
 
@@ -415,12 +418,67 @@ class ProductsController extends Controller
         }
     }
 
+    function getStockDownload() {
+        if ($this->f3->ajax()) {
+            // Get all related products
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $query = "entityId IN ($arrEntityId)";
+            $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
+            $products = $dbProducts->findWhere($query);
+    
+            // Setup excel Sheet
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            
+            // Set column names
+            $columns = [
+                "A" => "Product ID",
+                "B" => "Price",
+                "C" => "VAT",
+                "D" => "Stock Availability",
+                "E" => "Stock Quantity",
+                "F" => "Expiry Date"
+            ];
+            foreach($columns as $cellLetter=>$columnName) {
+                $sheet->setCellValue($cellLetter . "1", $columnName);
+            }
+            
+            // Fill rows with products
+            $fields = [
+                "A" => "productId",
+                "B" => "unitPrice",
+                "C" => "vat",
+                "D" => "stockStatusId",
+                "E" => "stock",
+                "F" => "expiryDate"
+            ];
+            $i = 2;
+            foreach($products as $product) {
+                foreach($fields as $cellLetter=>$field) {
+                    $sheet->setCellValue($cellLetter . $i, $product[$field]);
+                }
+                $i++;
+            }
+    
+            $productsSheetUrl = "appfiles/downloads/". time() .".xlsx";
+    
+            // Create excel sheet
+            $writer = new Xlsx($spreadsheet);
+            $writer->save($productsSheetUrl);
+    
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "Stock Download";
+            $this->webResponse->data = "/" . $productsSheetUrl;
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
     function postStockUpload()
     {
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
         // basename($_FILES["file"]["name"])
 
-        $targetFile = $this->getUploadDirectory() . $this->generateRandomString(16) . ".$ext";
+        $targetFile = $this->getUploadDirectory() . time() . ".$ext";
 
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
@@ -450,30 +508,198 @@ class ProductsController extends Controller
 
             $worksheet = $spreadsheet->getActiveSheet();
 
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $dbEntityProductSell = new BaseModel($this->db, "entityProductSell");
+
+            $fields = [
+                "A" => "productId",
+                "B" => "unitPrice",
+                "C" => "vat",
+                "D" => "stockStatusId",
+                "E" => "stock",
+                "F" => "expiryDate"
+            ];
+
+            $failedRows = [];
+            $allErrors = [];
+
             $dbStockUpdateUpload->recordsCount = 0;
-            foreach ($worksheet->getRowIterator() as $row) {
+            $successRecords = 0;
+            $failedRecords = 0;
+            $unchangedRecords = 0;
+
+            $firstRow = true;
+            foreach($worksheet->getRowIterator() as $row) {
+                if($firstRow) {
+                    $firstRow = false;
+                    continue;
+                }
+
                 $dbStockUpdateUpload->recordsCount++;
                 $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+                $cellIterator->setIterateOnlyExistingCells(FALSE);
 
+                $errors = [];
+
+                $fieldsChanged = false;
+                $stockFieldsChanged = false;
+                foreach ($cellIterator as $cell) {
+                    $cellLetter = $cell->getColumn();
+                    $cellValue = $cell->getValue();
+
+                    switch($cellLetter) {
+                        case "A":
+                            $dbEntityProductSell->getWhere("productId=$cellValue and entityId IN ($arrEntityId)");
+                            if($dbEntityProductSell->dry()) {
+                                array_push($errors, "Product not found");
+                            }
+                            break;
+                        case "B":
+                            if(!is_numeric($cellValue) || (float) $cellValue < 0) {
+                                array_push($errors, "Price must be a positive number");
+                            } else {
+                                $unitPrice = round((float) $cellValue, 2);
+                                if($dbEntityProductSell->unitPrice != $unitPrice) {
+                                    $fieldsChanged = true;
+                                    $dbEntityProductSell->unitPrice = $unitPrice;
+                                }
+                            }
+                            break;
+                        case "C":
+                            if(!is_numeric($cellValue) || (float) $cellValue < 0) {
+                                array_push($errors, "VAT must be a positive number");
+                            } else {
+                                $vat = round((float) $cellValue, 2);
+                                if($dbEntityProductSell->vat != $vat) {
+                                    $fieldsChanged = true;
+                                    $dbEntityProductSell->vat = $vat;
+                                }
+                            }
+                            break;
+                        case "D":
+                            if($cellValue != "1" && $cellValue != "2" && $cellValue != "3") {
+                                array_push($errors, "Stock Availability must be 1, 2 or 3 only");
+                            } else {
+                                $stockStatusId = (int) $cellValue;
+                                if($dbEntityProductSell->stockStatusId != $stockStatusId) {
+                                    $stockFieldsChanged = true;
+                                    $dbEntityProductSell->stockStatusId = $stockStatusId;
+                                }
+                            }
+                            break;
+                        case "E":
+                            if(!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                                array_push($errors, "Stock Quantity must be a positive whole number");
+                            } else {
+                                $stock = (int) $cellValue;
+                                if($dbEntityProductSell->stock != $stock) {
+                                    $stockFieldsChanged = true;
+                                    $dbEntityProductSell->stock = $stock;
+                                }
+                            }
+                            break;
+                        case "F":
+                            $tempDate = explode('-', $cellValue);
+                            if(count($tempDate) !== 3 || !checkdate((int) $tempDate[1], (int) $tempDate[2], (int) $tempDate[0])) {
+                                array_push($errors, "Expiry Date must fit a date format (YYYY-MM-DD)");
+                            } else {
+                                $expiryDate = $cellValue;
+                                if($dbEntityProductSell->expiryDate != $expiryDate) {
+                                    $fieldsChanged = true;
+                                    $dbEntityProductSell->expiryDate = $expiryDate;
+                                }
+                            }
+                            break;
+                    }
+                }
+
+                if(!$dbEntityProductSell->dry() && ($fieldsChanged || $stockFieldsChanged) && count($errors) === 0) {
+                    $currentDate = date("Y-m-d H:i:s");
+                    if($fieldsChanged) {
+                        $dbEntityProductSell->updateDateTime = $currentDate;
+                    }
+
+                    if($stockFieldsChanged) {
+                        $dbEntityProductSell->stockUpdateDateTime = $currentDate;
+                    }
+
+                    $dbEntityProductSell->update();
+                    $successRecords++;
+                } else if(count($errors) > 0) {
+                    array_push($failedRows, $row);
+                    array_push($allErrors, $errors);
+                    $failedRecords++;
+                } else {
+                    $unchangedRecords++;
+                }
+
+                $dbEntityProductSell->reset();
             }
-            $dbStockUpdateUpload->recordsCount -= 1;
 
+            if(count($failedRows) > 0) {
+                // Setup excel Sheet
+                $failedSpreadsheet = new Spreadsheet();
+                $failedSheet = $failedSpreadsheet->getActiveSheet();
+                
+                // Set column names
+                $columns = [
+                    "A" => "Product ID",
+                    "B" => "Price",
+                    "C" => "VAT",
+                    "D" => "Stock Availability",
+                    "E" => "Stock Quantity",
+                    "F" => "Expiry Date",
+                    "G" => "Error"
+                ];
+                foreach($columns as $cellLetter=>$columnName) {
+                    $failedSheet->setCellValue($cellLetter . "1", $columnName);
+                }
+                
+                // Fill rows with failed products
+                for($i = 0; $i < count($failedRows); $i++) {
+                    $row = $failedRows[$i];
+                    $rowNumber = $i + 2;
+                    $cellIterator = $row->getCellIterator();
+                    $cellIterator->setIterateOnlyExistingCells(FALSE);
+                    
+                    foreach($cellIterator as $cell) {
+                        $cellLetter = $cell->getColumn();
+                        $cellValue = $cell->getValue();
+                        $failedSheet->setCellValue($cellLetter . $rowNumber, $cellValue);
+                    }
+    
+                    $errors = $allErrors[$i];
+                    $error = join(", ", $errors);
+                    $failedSheet->setCellValue("G" . $rowNumber, $error);
+                }
+    
+                $failedProductsSheetUrl = "appfiles/downloads/". time() .".xlsx";
+    
+                // Create excel sheet
+                $failedWriter = new Xlsx($failedSpreadsheet);
+                $failedWriter->save($failedProductsSheetUrl);
+            }
 
-            $dbStockUpdateUpload->completedCount = $dbStockUpdateUpload->recordsCount - 5;
-            $dbStockUpdateUpload->importSuccessRate = round($dbStockUpdateUpload->completedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
+            // Update counts and rates
+            $dbStockUpdateUpload->completedCount = $successRecords;
+            $dbStockUpdateUpload->failedCount = $failedRecords;
+            $dbStockUpdateUpload->unchagedCount = $unchangedRecords;
 
-            $dbStockUpdateUpload->failedCount = $dbStockUpdateUpload->recordsCount - $dbStockUpdateUpload->completedCount;
-            $dbStockUpdateUpload->importFailureRate = round($dbStockUpdateUpload->failedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
-
-            $dbStockUpdateUpload->update();
+            if($successRecords + $failedRecords !== 0) {
+                $dbStockUpdateUpload->importSuccessRate = round($successRecords / ($successRecords + $failedRecords), 2) * 100;
+                $dbStockUpdateUpload->importFailureRate = round($failedRecords / ($successRecords + $failedRecords), 2) * 100;
+            } else {
+                $dbStockUpdateUpload->importSuccessRate = 0;
+                $dbStockUpdateUpload->importFailureRate = 0;
+            }
 
             $this->f3->set("objStockUpdateUpload", $dbStockUpdateUpload);
+            $this->f3->set("failedProductsSheetUrl", "/" . $failedProductsSheetUrl);
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
             $this->webResponse->data = View::instance()->render('app/products/stock/uploadResult.php');
-            echo $this->webResponse->jsonResponse();
+            echo $this->webResponse->jsonResponse();;
         } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
         }
     }

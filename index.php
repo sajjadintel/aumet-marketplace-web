@@ -67,9 +67,9 @@ $dbPort = getenv('DB_PORT');
 if (getenv('ENV') == Constants::ENV_LOC) {
 
     // Temp variables for localhost
-    ini_set('mysql.connect_timeout', 90);
+    ini_set('mysql.connect_timeout', 600);
     ini_set('mysql.allow_persistent', 1);
-    ini_set('max_execution_time', 90);
+    ini_set('max_execution_time', 600);
     ini_set('max_input_time', 90);
     ini_set('max_allowed_packet', '512M');
     ini_set('default_socket_timeout', 90);
@@ -111,7 +111,7 @@ $dbConnection = new DB\SQL(
 );
 
 if (getenv('ENV') == 'loc') {
-    ini_set('mysql.connect_timeout', 300);
+    ini_set('mysql.connect_timeout', 600);
     ini_set('default_socket_timeout', 300);
 } else {
     // session_save_path("/tmp");
