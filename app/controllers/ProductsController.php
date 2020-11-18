@@ -2,6 +2,8 @@
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class ProductsController extends Controller
 {
@@ -418,30 +420,212 @@ class ProductsController extends Controller
         }
     }
 
+    function setCellFormulaVLookup($sheet, $start_cell, $value, $table) {
+        $rowArray = [];
+        for($i = 3; $i <= 2505; $i++) {
+            $input_val = $value.$i;
+            $rowArray[] = "=VLOOKUP($input_val, $table, 2, FALSE)";
+        }
+    
+        $columnArray = array_chunk($rowArray, 1);
+        $sheet->fromArray(
+                $columnArray,
+                NULL, 
+                $start_cell
+        );
+    }
+
+    function setDataValidation($sheet, $start_cell, $end_cell, $validation_type, $formula1, $formula2 = '') {
+        $validation = $sheet->getCell($start_cell)->getDataValidation();
+    
+        switch ($validation_type) {
+            case "TYPE_CUSTOM":
+                $validation->setType( \PhpOffice\PhpSpreadsheet\Cell\DataValidation::TYPE_CUSTOM );
+                break;
+            case "TYPE_DECIMAL":
+                $validation->setType( \PhpOffice\PhpSpreadsheet\Cell\DataValidation::TYPE_DECIMAL );
+                break;
+            case "TYPE_LIST":
+                $validation->setType( \PhpOffice\PhpSpreadsheet\Cell\DataValidation::TYPE_LIST );
+                break;
+        }
+        
+        $validation->setErrorStyle( \PhpOffice\PhpSpreadsheet\Cell\DataValidation::STYLE_STOP );
+        $validation->setAllowBlank(true);
+        $validation->setShowInputMessage(true);
+        $validation->setShowErrorMessage(true);
+    
+        // set dropdown in case of list type validation
+        if($validation_type == 'TYPE_LIST') $validation->setShowDropDown(true);
+    
+        $validation->setFormula1($formula1);
+        if($formula2 != '') $validation->setFormula2($formula2);
+    
+        return $sheet->setDataValidation($start_cell.":".$end_cell, $validation);
+    
+    }
+    
     function getStockDownload() {
         if ($this->f3->ajax()) {
+            ini_set('max_execution_time', 600);
+
             // Get all related products
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
             $query = "entityId IN ($arrEntityId)";
             $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
             $products = $dbProducts->findWhere($query);
-    
-            // Setup excel Sheet
-            $spreadsheet = new Spreadsheet();
-            $sheet = $spreadsheet->getActiveSheet();
-            
-            // Set column names
-            $columns = [
-                "A" => "Product ID",
-                "B" => "Price",
-                "C" => "VAT",
-                "D" => "Stock Availability",
-                "E" => "Stock Quantity",
-                "F" => "Expiry Date"
+
+            // Setup excel sheet
+            $sheetname_user_input = 'User Input';
+            $sheetname_database_input = 'Database Input';
+            $sheetname_variables = 'Variables';
+
+            // prepare  data for variables sheet
+            $arr_products = [
+                ['Name', 'Value']
             ];
-            foreach($columns as $cellLetter=>$columnName) {
-                $sheet->setCellValue($cellLetter . "1", $columnName);
+            $arr_stock_availability = [
+                ['Name', 'Value']
+            ];
+
+            $mapProductIdName = [];
+            $products_num = 2;
+            $nameField = "productName_" . $this->objUser->language;
+            foreach($products as $product) {
+                $products_num++;
+                $arr_products[] = array($product[$nameField], $product['productId']);
+                $mapProductIdName[$product['productId']] = $product[$nameField]; 
             }
+            
+            $dbStockStatus = new BaseModel($this->db, "stockStatus");
+            $dbStockStatus->name = "name_" . $this->objUser->language;
+            $allStockStatus = $dbStockStatus->all("id asc");
+
+            $mapStockIdName = [];
+            $stock_availability_num = 2;
+            foreach($allStockStatus as $stockStatus) {
+                $stock_availability_num++;
+                $arr_stock_availability[] = array($stockStatus['name'], $stockStatus['id']);
+                $mapStockIdName[$stockStatus['id']] = $stockStatus['name'];
+            }
+            
+            $sampleFilePath = $this->getRootDirectory() . '\appfiles\downloads\products-stock-sample.xlsx';
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($sampleFilePath);
+
+            // change active sheet to variables
+            $sheet = $spreadsheet->setActiveSheetIndex(2); 
+            
+            /**
+             * set common style for the excel sheet
+             * */ 
+
+            $style_center_bold_border_thick = array(
+                'alignment' => array(
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                ),
+                'font'    => array(
+                    'bold'      => true
+                ),
+                'borders' => array(
+                    'bottom'     => array(
+                        'borderStyle' => Border::BORDER_THICK,
+                        'color' => array(
+                            'rgb' => '000000'
+                        )
+                    )
+                )
+            );
+            $style_center_bold_border_normal = array(
+                'alignment' => array(
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                ),
+                'font'    => array(
+                    'bold'      => true
+                ),
+                'borders' => array(
+                    'bottom'     => array(
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => array(
+                            'rgb' => '000000'
+                        )
+                    )
+                )
+            );
+
+            $style_bold_border_thick = array(
+                'font'    => array(
+                    'bold'      => true
+                ),
+                'borders' => array(
+                    'bottom'     => array(
+                        'borderStyle' => Border::BORDER_THICK,
+                        'color' => array(
+                            'rgb' => '000000'
+                        )
+                    )
+                )
+            );
+
+            /**
+             * populate data in variables sheet
+             * */ 
+
+            // set products in excel
+            $sheet->setCellValue('A1', 'Products');
+            $sheet->mergeCells('A1:B1');
+            $sheet->getStyle('A1:B1')->applyFromArray($style_center_bold_border_thick);
+            $sheet->fromArray(
+                $arr_products,
+                NULL,
+                'A2',
+                true
+            );
+
+            // set stock availability in excel
+            $sheet->setCellValue('D1', 'Stock Availability');
+            $sheet->mergeCells('D1:E1');
+            $sheet->getStyle('D1:E1')->applyFromArray($style_center_bold_border_thick);
+            $sheet->fromArray(
+                $arr_stock_availability,
+                NULL,
+                'D2',
+                true        
+            );
+
+
+            // change active sheet to user input
+            $sheet = $spreadsheet->setActiveSheetIndex(0);
+
+
+            /**
+             * set validation and formula for user input sheet
+             * */ 
+            
+            // set data validation for products
+            $this->setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$'.$products_num);
+
+            // set data validation for stock availability
+            $this->setDataValidation($sheet, 'D3', 'D2505', 'TYPE_LIST', 'Variables!$D$3:$D$'.$stock_availability_num);
+
+
+            
+            /**
+             * set heading for database input sheet
+             * */ 
+            $sheet = $spreadsheet->setActiveSheetIndex(1);
+            
+            /**
+             * set validation and formula for database input sheet
+             * */ 
+            $this->setCellFormulaVLookup($sheet, 'A3', "'User Input'!A", 'Variables!$A$3:$B$'.$products_num);
+
+            $this->setCellFormulaVLookup($sheet, 'D3', "'User Input'!D", 'Variables!$D$3:$E$'.$stock_availability_num);
+
+            // hide database and variables sheet
+            $spreadsheet->getSheetByName($sheetname_database_input)->setSheetState(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet::SHEETSTATE_HIDDEN);
+            $spreadsheet->getSheetByName($sheetname_variables)->setSheetState(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet::SHEETSTATE_HIDDEN);
+            
+            $sheet = $spreadsheet->setActiveSheetIndex(0);
             
             // Fill rows with products
             $fields = [
@@ -452,10 +636,17 @@ class ProductsController extends Controller
                 "E" => "stock",
                 "F" => "expiryDate"
             ];
-            $i = 2;
+            $i = 3;
             foreach($products as $product) {
                 foreach($fields as $cellLetter=>$field) {
-                    $sheet->setCellValue($cellLetter . $i, $product[$field]);
+                    if($field == "productId") {
+                        $cellValue = $mapProductIdName[$product[$field]];
+                    } else if($field == "stockStatusId") {
+                        $cellValue = $mapStockIdName[$product[$field]];
+                    } else {
+                        $cellValue = $product[$field];
+                    }
+                    $sheet->setCellValue($cellLetter . $i, $cellValue);
                 }
                 $i++;
             }
@@ -514,6 +705,42 @@ class ProductsController extends Controller
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
             $dbEntityProductSell = new BaseModel($this->db, "entityProductSell");
 
+            // Get all related products
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $query = "entityId IN ($arrEntityId)";
+            $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
+            $products = $dbProducts->findWhere($query);
+
+            // prepare  data for variables sheet
+            $arr_products = [
+                ['Name', 'Value']
+            ];
+            $arr_stock_availability = [
+                ['Name', 'Value']
+            ];
+
+            $mapProductNameId = [];
+            $products_num = 2;
+            $nameField = "productName_" . $this->objUser->language;
+            foreach($products as $product) {
+                $products_num++;
+                $arr_products[] = array($product[$nameField], $product['productId']);
+                $mapProductNameId[$product[$nameField]] = $product['productId'];
+            }
+
+            
+            $dbStockStatus = new BaseModel($this->db, "stockStatus");
+            $dbStockStatus->name = "name_" . $this->objUser->language;
+            $allStockStatus = $dbStockStatus->all("id asc");
+
+            $mapStockNameId = [];
+            $stock_availability_num = 2;
+            foreach($allStockStatus as $stockStatus) {
+                $stock_availability_num++;
+                $arr_stock_availability[] = array($stockStatus['name'], $stockStatus['id']);
+                $mapStockNameId[$stockStatus['name']] = $stockStatus['id'];
+            }
+
             $fields = [
                 "A" => "productId",
                 "B" => "unitPrice",
@@ -522,6 +749,9 @@ class ProductsController extends Controller
                 "E" => "stock",
                 "F" => "expiryDate"
             ];
+            
+            $successProducts = [];
+            $failedProducts = [];
 
             $failedRows = [];
             $allErrors = [];
@@ -532,9 +762,17 @@ class ProductsController extends Controller
             $unchangedRecords = 0;
 
             $firstRow = true;
+            $secondRow = false;
+            $finished = false;
             foreach($worksheet->getRowIterator() as $row) {
+                $product = [];
+
                 if($firstRow) {
                     $firstRow = false;
+                    $secondRow = true;
+                    continue;
+                } else if($secondRow) {
+                    $secondRow = false;
                     continue;
                 }
 
@@ -550,11 +788,22 @@ class ProductsController extends Controller
                     $cellLetter = $cell->getColumn();
                     $cellValue = $cell->getValue();
 
+                    array_push($product, $cellValue);
+
                     switch($cellLetter) {
                         case "A":
-                            $dbEntityProductSell->getWhere("productId=$cellValue and entityId IN ($arrEntityId)");
-                            if($dbEntityProductSell->dry()) {
+                            if(is_null($cellValue)) {
+                                $finished = true;
+                                break;
+                            }
+                            $productId = $mapProductNameId[$cellValue];
+                            if(is_null($productId)) {
                                 array_push($errors, "Product not found");
+                            } else {
+                                $dbEntityProductSell->getWhere("productId=$productId and entityId IN ($arrEntityId)");
+                                if($dbEntityProductSell->dry()) {
+                                    array_push($errors, "Product not found");
+                                }
                             }
                             break;
                         case "B":
@@ -580,10 +829,10 @@ class ProductsController extends Controller
                             }
                             break;
                         case "D":
-                            if($cellValue != "1" && $cellValue != "2" && $cellValue != "3") {
-                                array_push($errors, "Stock Availability must be 1, 2 or 3 only");
+                            if(!array_key_exists($cellValue, $mapStockNameId)) {
+                                array_push($errors, "Stock Availability invalid");
                             } else {
-                                $stockStatusId = (int) $cellValue;
+                                $stockStatusId = $mapStockNameId[$cellValue];
                                 if($dbEntityProductSell->stockStatusId != $stockStatusId) {
                                     $stockFieldsChanged = true;
                                     $dbEntityProductSell->stockStatusId = $stockStatusId;
@@ -602,18 +851,24 @@ class ProductsController extends Controller
                             }
                             break;
                         case "F":
-                            $tempDate = explode('-', $cellValue);
-                            if(count($tempDate) !== 3 || !checkdate((int) $tempDate[1], (int) $tempDate[2], (int) $tempDate[0])) {
-                                array_push($errors, "Expiry Date must fit a date format (YYYY-MM-DD)");
-                            } else {
-                                $expiryDate = $cellValue;
-                                if($dbEntityProductSell->expiryDate != $expiryDate) {
-                                    $fieldsChanged = true;
-                                    $dbEntityProductSell->expiryDate = $expiryDate;
+                            if(!is_null($cellValue)) {
+                                $tempDate = explode('-', $cellValue);
+                                if(count($tempDate) !== 3 || !checkdate((int) $tempDate[1], (int) $tempDate[2], (int) $tempDate[0])) {
+                                    array_push($errors, "Expiry Date must fit a date format (YYYY-MM-DD)");
+                                } else {
+                                    $expiryDate = $cellValue;
+                                    if($dbEntityProductSell->expiryDate != $expiryDate) {
+                                        $fieldsChanged = true;
+                                        $dbEntityProductSell->expiryDate = $expiryDate;
+                                    }
                                 }
                             }
                             break;
                     }
+                }
+
+                if($finished) {
+                    break;
                 }
 
                 if(!$dbEntityProductSell->dry() && ($fieldsChanged || $stockFieldsChanged) && count($errors) === 0) {
@@ -626,9 +881,13 @@ class ProductsController extends Controller
                         $dbEntityProductSell->stockUpdateDateTime = $currentDate;
                     }
 
+                    array_push($successProducts, $product);
+
                     $dbEntityProductSell->update();
                     $successRecords++;
                 } else if(count($errors) > 0) {
+                    array_push($failedProducts, $product);
+
                     array_push($failedRows, $row);
                     array_push($allErrors, $errors);
                     $failedRecords++;
@@ -640,9 +899,161 @@ class ProductsController extends Controller
             }
 
             if(count($failedRows) > 0) {
-                // Setup excel Sheet
-                $failedSpreadsheet = new Spreadsheet();
-                $failedSheet = $failedSpreadsheet->getActiveSheet();
+                // Setup excel sheet
+                $sheetname_user_input = 'User Input';
+                $sheetname_database_input = 'Database Input';
+                $sheetname_variables = 'Variables';
+    
+                // prepare  data for variables sheet
+                $arr_products = [
+                    ['Name', 'Value']
+                ];
+                $arr_stock_availability = [
+                    ['Name', 'Value']
+                ];
+    
+                $mapProductNameId = [];
+                $products_num = 2;
+                $nameField = "productName_" . $this->objUser->language;
+                foreach($products as $product) {
+                    $products_num++;
+                    $arr_products[] = array($product[$nameField], $product['productId']);
+                    $mapProductNameId[$product[$nameField]] = $product['productId'];
+                }
+
+                
+                $dbStockStatus = new BaseModel($this->db, "stockStatus");
+                $dbStockStatus->name = "name_" . $this->objUser->language;
+                $allStockStatus = $dbStockStatus->all("id asc");
+    
+                $mapStockNameId = [];
+                $stock_availability_num = 2;
+                foreach($allStockStatus as $stockStatus) {
+                    $stock_availability_num++;
+                    $arr_stock_availability[] = array($stockStatus['name'], $stockStatus['id']);
+                    $mapStockNameId[$stockStatus['name']] = $stockStatus['id'];
+                }
+                
+                $sampleFilePath = $this->getRootDirectory() . '\appfiles\downloads\products-stock-sample.xlsx';
+                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($sampleFilePath);
+    
+                // change active sheet to variables
+                $sheet = $spreadsheet->setActiveSheetIndex(2); 
+                
+                /**
+                 * set common style for the excel sheet
+                 * */ 
+    
+                $style_center_bold_border_thick = array(
+                    'alignment' => array(
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    ),
+                    'font'    => array(
+                        'bold'      => true
+                    ),
+                    'borders' => array(
+                        'bottom'     => array(
+                            'borderStyle' => Border::BORDER_THICK,
+                            'color' => array(
+                                'rgb' => '000000'
+                            )
+                        )
+                    )
+                );
+                $style_center_bold_border_normal = array(
+                    'alignment' => array(
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    ),
+                    'font'    => array(
+                        'bold'      => true
+                    ),
+                    'borders' => array(
+                        'bottom'     => array(
+                            'borderStyle' => Border::BORDER_THIN,
+                            'color' => array(
+                                'rgb' => '000000'
+                            )
+                        )
+                    )
+                );
+    
+                $style_bold_border_thick = array(
+                    'font'    => array(
+                        'bold'      => true
+                    ),
+                    'borders' => array(
+                        'bottom'     => array(
+                            'borderStyle' => Border::BORDER_THICK,
+                            'color' => array(
+                                'rgb' => '000000'
+                            )
+                        )
+                    )
+                );
+    
+                /**
+                 * populate data in variables sheet
+                 * */ 
+    
+                // set products in excel
+                $sheet->setCellValue('A1', 'Products');
+                $sheet->mergeCells('A1:B1');
+                $sheet->getStyle('A1:B1')->applyFromArray($style_center_bold_border_thick);
+                $sheet->fromArray(
+                    $arr_products,
+                    NULL,
+                    'A2',
+                    true
+                );
+    
+                // set stock availability in excel
+                $sheet->setCellValue('D1', 'Stock Availability');
+                $sheet->mergeCells('D1:E1');
+                $sheet->getStyle('D1:E1')->applyFromArray($style_center_bold_border_thick);
+                $sheet->fromArray(
+                    $arr_stock_availability,
+                    NULL,
+                    'D2',
+                    true        
+                );
+    
+    
+                // change active sheet to user input
+                $sheet = $spreadsheet->setActiveSheetIndex(0);
+    
+    
+                /**
+                 * set validation and formula for user input sheet
+                 * */ 
+                
+                // set data validation for products
+                $this->setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$'.$products_num);
+    
+                // set data validation for stock availability
+                $this->setDataValidation($sheet, 'D3', 'D2505', 'TYPE_LIST', 'Variables!$D$3:$D$'.$stock_availability_num);
+    
+    
+                
+                /**
+                 * set heading for database input sheet
+                 * */ 
+                $sheet = $spreadsheet->setActiveSheetIndex(1);
+                
+                /**
+                 * set validation and formula for database input sheet
+                 * */ 
+                $this->setCellFormulaVLookup($sheet, 'A3', "'User Input'!A", 'Variables!$A$3:$B$'.$products_num);
+    
+                $this->setCellFormulaVLookup($sheet, 'D3', "'User Input'!D", 'Variables!$D$3:$E$'.$stock_availability_num);
+    
+                // hide database and variables sheet
+                $spreadsheet->getSheetByName($sheetname_database_input)->setSheetState(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet::SHEETSTATE_HIDDEN);
+                $spreadsheet->getSheetByName($sheetname_variables)->setSheetState(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet::SHEETSTATE_HIDDEN);
+                
+                $sheet = $spreadsheet->setActiveSheetIndex(0);
+
+                $sheet->setCellValue('G2', 'Error');
+                $sheet->getStyle('G2')->applyFromArray($style_center_bold_border_thick);
                 
                 // Set column names
                 $columns = [
@@ -654,33 +1065,39 @@ class ProductsController extends Controller
                     "F" => "Expiry Date",
                     "G" => "Error"
                 ];
-                foreach($columns as $cellLetter=>$columnName) {
-                    $failedSheet->setCellValue($cellLetter . "1", $columnName);
-                }
                 
                 // Fill rows with failed products
                 for($i = 0; $i < count($failedRows); $i++) {
                     $row = $failedRows[$i];
-                    $rowNumber = $i + 2;
+                    $rowNumber = $i + 3;
                     $cellIterator = $row->getCellIterator();
                     $cellIterator->setIterateOnlyExistingCells(FALSE);
                     
                     foreach($cellIterator as $cell) {
                         $cellLetter = $cell->getColumn();
                         $cellValue = $cell->getValue();
-                        $failedSheet->setCellValue($cellLetter . $rowNumber, $cellValue);
+                        $sheet->setCellValue($cellLetter . $rowNumber, $cellValue);
                     }
     
                     $errors = $allErrors[$i];
                     $error = join(", ", $errors);
-                    $failedSheet->setCellValue("G" . $rowNumber, $error);
+                    $sheet->setCellValue("G" . $rowNumber, $error);
                 }
     
                 $failedProductsSheetUrl = "appfiles/downloads/". time() .".xlsx";
     
                 // Create excel sheet
-                $failedWriter = new Xlsx($failedSpreadsheet);
-                $failedWriter->save($failedProductsSheetUrl);
+                $writer = new Xlsx($spreadsheet);
+                $writer->save($failedProductsSheetUrl);
+            }
+
+            // Update logs
+            if(count($successProducts) > 0) {
+                $dbStockUpdateUpload->successLog = json_encode($successProducts);
+            }
+
+            if(count($failedProducts) > 0) {
+                $dbStockUpdateUpload->failedLog = json_encode($failedProducts);
             }
 
             // Update counts and rates
@@ -700,6 +1117,8 @@ class ProductsController extends Controller
             if(!is_null($failedProductsSheetUrl)) {
                 $this->f3->set("failedProductsSheetUrl", "/" . $failedProductsSheetUrl);
             }
+
+            $dbStockUpdateUpload->update();
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
