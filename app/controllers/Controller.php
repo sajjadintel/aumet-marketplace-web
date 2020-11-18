@@ -40,7 +40,7 @@ class Controller
 
             $this->isAuth = true;
 
-           // switch($this->objUser->)
+            // switch($this->objUser->)
 
             $this->f3->set('objUser', $this->objUser);
         } else {
@@ -50,11 +50,11 @@ class Controller
         LayoutRender::setMainMenu($this->f3, $this->db, $this->objUser->menuId);
     }
 
-    function setLanguage($language = false){
-        if(!$language) {
+    function setLanguage($language = false)
+    {
+        if (!$language) {
             $this->language = $this->f3->get("PARAMS.language");
-        }
-        else {
+        } else {
             $this->language = $language;
         }
 
@@ -265,6 +265,18 @@ class Controller
             'message' => $message,
             'data' => $data
         ));
+    }
+
+    function jsonResponseAPI($dataArray)
+    {
+        header_remove();
+        http_response_code(200);
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description');
+        header('Status: 200 OK');
+        echo json_encode($dataArray);
     }
 
     function jsonResponseDebug($statusCode = false, $data = null, $debugData = null)

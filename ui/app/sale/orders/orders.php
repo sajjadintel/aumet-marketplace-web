@@ -58,6 +58,9 @@ function compress_htmlcode($codedata)
     <div class="card card-custom gutter-b mt-5">
         <div class="card-body">
             <!--begin: Datatable-->
+            <table id="datatable" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
+            </table>
+            <!--
             <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
             <!--end: Datatable-->
         </div>
@@ -65,52 +68,223 @@ function compress_htmlcode($codedata)
 </div>
 <!--end::Container-->
 <script>
-    var searchQuery = {
-        entityBuyerId: [],
-        startDate: null,
-        endDate: null
-    };
+    var PageClass = function() {
+        var elementId = "#datatable";
+        var url = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 
-    var _selectBuyer = $('#searchOrdersBuyerInput').select2({
-        placeholder: "<?php echo $vModule_search_buyerNamePlaceholder ?>",
-
-        ajax: {
-            url: '/web/order/customer/list',
-            dataType: 'json',
-            processResults: function(response) {
-                return {
-                    results: response.data.results,
-                    pagination: {
-                        more: response.data.pagination
-                    }
-                }
+        var columnDefs = [{
+            targets: 0,
+            title: '#',
+            data: 'id',
+            render: function(data, type, row, meta) {
+                var output = '(' + row.id + ') - #' + row.serial;
+                return output;
             }
-        }
-    });
-    _selectBuyer.on("select2:select", function(e) {
-        searchQuery.entityBuyerId = $("#searchOrdersBuyerInput").val();
-        DistributorOrdersDataTable.setReadParams(searchQuery);
+        }, {
+            targets: 1,
+            title: WebAppLocals.getMessage('entityBuyer'),
+            data: 'entityBuyer',
+            render: function(data, type, row, meta) {
+                var output = row.entityBuyer;
+                return output;
+            },
+        }, {
+            targets: 2,
+            title: WebAppLocals.getMessage('insertDate'),
+            data: 'insertDateTime',
+            render: function(data, type, row, meta) {
+                var output = '';
+                if (row.insertDateTime) {
+                    output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.insertDateTime).format('DD / MM / YYYY') + '</span>';
+                };
+                return output
+            }
+        }, {
+            targets: 3,
+            title: WebAppLocals.getMessage('orderStatus'),
+            data: 'statusId',
+            render: function(data, type, row, meta) {
+                var status = {
+                    1: {
+                        title: WebAppLocals.getMessage('orderStatus_New'),
+                        class: ' label-primary',
+                    },
+                    2: {
+                        title: WebAppLocals.getMessage('orderStatus_OnHold'),
+                        class: ' label-warning',
+                    },
+                    3: {
+                        title: WebAppLocals.getMessage('orderStatus_Processing'),
+                        class: ' label-primary',
+                    },
+                    4: {
+                        title: WebAppLocals.getMessage('orderStatus_Completed'),
+                        class: ' label-primary',
+                    },
+                    5: {
+                        title: WebAppLocals.getMessage('orderStatus_Canceled'),
+                        class: ' label-danger',
+                    },
+                    6: {
+                        title: WebAppLocals.getMessage('orderStatus_Received'),
+                        class: ' label-primary',
+                    },
+                    7: {
+                        title: WebAppLocals.getMessage('orderStatus_Paid'),
+                        class: ' label-success',
+                    },
+                };
 
-    });
-    _selectBuyer.on("select2:unselect", function(e) {
-        searchQuery.entityBuyerId = $("#searchOrdersBuyerInput").val();
-        DistributorOrdersDataTable.setReadParams(searchQuery);
-    });
+                var output = '<div><span class="label label-lg font-weight-bold ' + status[row.statusId].class + ' label-inline">' + status[row.statusId].title + '</span></div>';
+                return output;
+            },
+        }, {
+            targets: 4,
+            title: WebAppLocals.getMessage('orderTotal'),
+            data: 'total',
+            render: function(data, type, row, meta) {
+                var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
+                return output;
+            },
+        }, {
+            targets: 5,
+            title: WebAppLocals.getMessage('tax'),
+            data: 'tax',
+            render: function(data, type, row, meta) {
+                var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
+                return output;
+            },
+        }, {
+            targets: 6,
+            title: WebAppLocals.getMessage('orderTotalWithVAT'),
+            data: 'total',
+            render: function(data, type, row, meta) {
+                var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
+                return output;
+            },
+        }, {
+            targets: 7,
+            title: '',
+            data: 'id',
+            render: function(data, type, row, meta) {
+                var dropdownStart =
+                    '<div class="dropdown dropdown-inline">\
+                            <a href="javascript:;" class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" data-toggle="dropdown">\
+								<i class="nav-icon la la-ellipsis-h p-0"></i> &nbsp&nbsp' +
+                    WebAppLocals.getMessage('actions') +
+                    '</a>\
+                            <div class="dropdown-menu dropdown-menu-md">\
+                                <ul class="navi flex-column navi-hover py-2">';
+                var dropdownEnd = '</ul>\
+                            </div>\
+						</div>';
+                var dropdownItemStart = '<li class="navi-item">';
+                var dropdownItemEnd = '</li>';
 
-    $('#searchOrdersDateInput').daterangepicker({
-        opens: 'left',
-        startDate: moment('2020-01-01'),
-        endDate: moment(),
-    }, function(start, end, label) {
-        searchQuery.startDate = start.format('YYYY-MM-DD');
-        searchQuery.endDate = end.format('YYYY-MM-DD');
-        DistributorOrdersDataTable.setReadParams(searchQuery);
-    });
+                var btnPrint =
+                    '<a href="/web/distributor/order/print/' +
+                    row.id +
+                    '" target="_blank" class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="Print Order">\
+						<i class="nav-icon la la-print p-0"></i> &nbsp&nbsp' +
+                    WebAppLocals.getMessage('print') +
+                    '</a>';
+                var btnView =
+                    '<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderViewModal(' +
+                    row.id +
+                    ')\' \
+						class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
+						<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
+                    WebAppLocals.getMessage('view') +
+                    '</a>';
 
-    $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
+                var btnOrderProcess =
+                    '<a class="navi-link" href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+                    row.id +
+                    ',3)\' \
+						class="btn btn-sm btn-primary btn-hover-primary  mr-2 navi-link" title="Order Process">\
+						<span class="navi-icon"><i class="la la-check"></i></span><span class="navi-text"> &nbsp&nbsp' +
+                    WebAppLocals.getMessage('orderStatusMove') +
+                    WebAppLocals.getMessage('orderStatus_Processing') +
+                    '</span></a>';
+                var btnOrderComplete =
+                    '<a class="navi-link" href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+                    row.id +
+                    ',4)\' \
+						class="btn btn-sm btn-primary btn-hover-primary  mr-2" navi-link title="Order Complete">\
+						<span class="navi-icon"><i class="la la-check"></i></span><span class="navi-text"> &nbsp&nbsp' +
+                    WebAppLocals.getMessage('orderStatusMove') +
+                    WebAppLocals.getMessage('orderStatus_Completed') +
+                    '</span></a>';
+                var btnOrderOnHold =
+                    '<a class="navi-link bg-danger-hover" href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+                    row.id +
+                    ',2)\' \
+						class="btn btn-sm btn-primary btn-hover-primary mr-2 navi-link" title="Order On Hold">\
+						<span class="navi-icon"><i class="la la-times"></i></span><span class="navi-text"> &nbsp&nbsp' +
+                    WebAppLocals.getMessage('orderStatusMove') +
+                    WebAppLocals.getMessage('orderStatus_OnHold') +
+                    '</span></a>';
+                var btnOrderCancel =
+                    '<a class="navi-link bg-danger-hover" href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+                    row.id +
+                    ',5)\' \
+						class="btn btn-sm btn-primary btn-hover-primary  mr-2 navi-link" title="Order Cancel">\
+						<span class="navi-icon"><i class="la la-times"></i></span><span class="navi-text"> &nbsp&nbsp' +
+                    WebAppLocals.getMessage('orderStatusMove') +
+                    WebAppLocals.getMessage('orderStatus_Canceled') +
+                    '</span></a>';
 
-    $(document).ready(function() {
-        DistributorOrdersDataTable.init(searchQuery);
-    });
+                var btnOrderPaid =
+                    '<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+                    row.id +
+                    ',7)\' \
+						class="btn btn-sm btn-primary btn-hover-primary  mr-2 navi-link" title="Order Paid">\
+						<i class="nav-icon la la-dollar p-0"></i> &nbsp&nbsp' +
+                    WebAppLocals.getMessage('orderStatusMove') +
+                    WebAppLocals.getMessage('orderStatus_Paid') +
+                    '</a>';
+                var outActions = '';
+
+                outActions += btnView;
+                outActions += btnPrint;
+
+                switch (row.statusId) {
+                    case 1:
+                        outActions += dropdownStart;
+                        outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
+                        outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
+                        outActions += dropdownEnd;
+                        break;
+                    case 2:
+                        outActions += dropdownStart;
+                        outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
+                        outActions += dropdownItemStart + btnOrderCancel + dropdownItemEnd;
+                        outActions += dropdownEnd;
+                        break;
+                    case 3:
+                        outActions += dropdownStart;
+                        outActions += dropdownItemStart + btnOrderComplete + dropdownItemEnd;
+                        outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
+                        outActions += dropdownEnd;
+                        break;
+                    case 6:
+                        outActions += btnOrderPaid;
+                }
+
+                return outActions;
+            },
+        }];
+
+        var initiate = function() {
+            GenericDatatable.init(elementId, url, columnDefs);
+        };
+        return {
+            init: function() {
+                initiate();
+            },
+        };
+    }();
+
+    PageClass.init();
 </script>
 <?php ob_end_flush(); ?>
