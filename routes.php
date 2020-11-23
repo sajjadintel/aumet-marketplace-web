@@ -71,6 +71,9 @@ $f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDist
 $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDistributorProduct');
 $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->postEditQuantityDistributorProduct');
 
+// stock download
+$f3->route('GET /web/distributor/product/stock/download', 'ProductsController->getStockDownload');
+
 // stock upload
 $f3->route('GET /web/distributor/product/stock/upload', 'ProductsController->getStockUpload');
 $f3->route('POST /web/distributor/product/stock/upload', 'ProductsController->postStockUpload');
