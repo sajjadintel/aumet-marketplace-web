@@ -272,6 +272,9 @@ var DistributorProductsDataTable = (function () {
 		$('#editUnitPrice').val(webResponse.data.product.unitPrice);
 		$('#editModalAction').html(WebAppLocals.getMessage('edit'));
 		$('#editModal').appendTo('body').modal('show');
+
+		changeImageHolder(webResponse.data.product.image);
+		$('#editProductImage').on("change", changeProductImage);
 	};
 
 	var _productEditQuantityModalOpen = function (webResponse) {
@@ -356,6 +359,48 @@ var DistributorProductsDataTable = (function () {
 		$('#addModalAction').html(WebAppLocals.getMessage('add'));
 		$('#addModal').appendTo('body').modal('show');
 	};
+
+	var _productImageUpload = function (webResponse) {
+		changeImageHolder(webResponse.data);
+	}
+
+	function changeImageHolder(image) {
+		let backgroundImageVal = "/theme/assets/media/users/blank.png";
+		if(image) {
+			if(!isValidUrl(image)) image = "/assets/" + image;
+			backgroundImageVal = encodeURI(image);
+		}
+		$('#productImageHolder').css("background-image", "url(" + backgroundImageVal + ")");
+		$('#productImage').val(image);
+	}
+
+	function changeProductImage(ev) {
+		let image = ev.target.files[0];
+		let id = $('#editProductId').val();
+
+		let formData = new FormData();
+		formData.append('image', image);
+		formData.append('id', id);
+
+		$.ajax({
+			url: '/web/distributor/product/image',
+			data: formData,
+			type: 'POST',
+			contentType: false,
+			processData: false,
+		}).done(function (webResponse) {
+			_productImageUpload(webResponse);
+		});
+	}
+
+	function isValidUrl(string) {
+		try {
+		  new URL(string);
+		} catch (ex) {
+		  return false;  
+		}
+		return true;
+	}
 
 	return {
 		// public functions
