@@ -1227,34 +1227,29 @@ class ProductsController extends Controller
                 $failedProductsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-".$this->objUser->id."-".time().".xlsx";
                 Excel::saveSpreadsheetToPath($spreadsheet, $failedProductsSheetUrl);
             } else {
-                $dbEntityProductSell = new BaseModel($this->db, "entityProductSell");
+                $productIdsWithoutBonus = [];
                 foreach($mapProductIdProduct as $productId => $product) {
-                    $dbEntityProductSell->getWhere("productId=$productId");
-                    if(in_array($productId, $productIdsWithBonus)) {
-                        $dbEntityProductSell->bonusTypeId = 2;
-                    } else {
-                        $dbEntityProductSell->bonusTypeId = 1;
+                    if(!in_array($productId, $productIdsWithBonus)) {
+                        array_push($productIdsWithoutBonus, $productId);
                     }
                 }
+                $productIdsWithoutBonusStr = implode(", ", array_keys($productIdsWithoutBonus));
+                $productIdsWithBonusStr = implode(", ", array_keys($productIdsWithBonus));
 
-                $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
-                
-                $allProductsIds = implode(", ", array_keys($mapProductIdProduct ));
-                $dbBonus->load(array("entityProductId IN (".$allProductsIds. ") AND isActive = 1"));
-                while (!$dbBonus->dry()) {
-                    $dbBonus->delete();
-                    $dbBonus->next();
-                }
+                $allProductsIds = implode(", ", array_keys($mapProductIdProduct));
+
+                $commands = [
+                    "UPDATE entityProductSell SET bonusTypeId = '2' WHERE productId IN (".$productIdsWithBonusStr.");",
+                    "UPDATE entityProductSell SET bonusTypeId = '1' WHERE productId IN (".$productIdsWithoutBonusStr.");",
+                    "DELETE FROM entityProductSellBonusDetail WHERE entityProductId IN (".$allProductsIds. ") AND isActive = 1",
+                ];
 
                 foreach ($allBonuses as $bonus) {
-                    $dbBonus->reset();
-
-                    $dbBonus->entityProductId = $bonus[0];
-                    $dbBonus->minOrder = $bonus[1];
-                    $dbBonus->bonus = $bonus[2];
-                    $dbBonus->add();
+                    $query = "INSERT INTO entityProductSellBonusDetail (`entityProductId`, `minOrder`, `bonus`, `isActive`) VALUES ('".$bonus[0]."', '".$bonus[1]."', '".$bonus[2]."', '1')";
+                    array_push($commands, $query);
                 }
 
+                $this->db->exec($commands);
             }
 
             // Update logs
