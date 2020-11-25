@@ -367,20 +367,25 @@ var DistributorProductsDataTable = (function () {
 	function changeImageHolder(image) {
 		let backgroundImageVal = "/theme/assets/media/users/blank.png";
 		if(image) {
-			if(!isValidUrl(image)) image = "/assets/" + image;
-			backgroundImageVal = encodeURI(image);
+			let imageVal = image;
+			if(!isValidUrl(image)) imageVal = "/assets/" + image;
+			backgroundImageVal = imageVal;
 		}
 		$('#productImageHolder').css("background-image", "url(" + backgroundImageVal + ")");
 		$('#productImage').val(image);
 	}
 
 	function changeProductImage(ev) {
-		let image = ev.target.files[0];
-		let id = $('#editProductId').val();
+		let file = ev.target.files[0];
+		let ext = file.type.split("/")[1];
 
+		let id = $('#editProductId').val();
+		let imageName = id + "-" + new Date().getTime() + "." + ext;
+		let image = new File([file], imageName, {type: file.type});
+		
 		let formData = new FormData();
 		formData.append('image', image);
-		formData.append('id', id);
+		formData.append('imageName', imageName);
 
 		$.ajax({
 			url: '/web/distributor/product/image',

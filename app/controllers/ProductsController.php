@@ -201,6 +201,28 @@ class ProductsController extends Controller
         echo json_encode($result, JSON_PRETTY_PRINT);
     }
 
+    function postProductImage() {
+        $imageName = $this->f3->get('POST.imageName');
+
+        $uploadDir = $this->getRootDirectory() . "/assets/img/products/";
+        $this->f3->set('UPLOADS', $uploadDir);
+
+        $overwrite = true; 
+
+        $web = \Web::instance();
+        $files = $web->receive(function($file,$formFieldName) {
+                return true;
+            }, $overwrite, true
+        );
+
+        $path = "img/products/" . $imageName;
+
+        $this->webResponse->errorCode = 1;
+        $this->webResponse->title = "Product Image Upload";
+        $this->webResponse->data = $path;
+        echo $this->webResponse->jsonResponse();
+    }
+
     function postDistributorProductsBestSelling()
     {
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
