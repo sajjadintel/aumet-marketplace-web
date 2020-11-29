@@ -272,6 +272,9 @@ var DistributorProductsDataTable = (function () {
 		$('#editUnitPrice').val(webResponse.data.product.unitPrice);
 		$('#editModalAction').html(WebAppLocals.getMessage('edit'));
 		$('#editModal').appendTo('body').modal('show');
+
+		changeImageHolder(webResponse.data.product.image);
+		$('#editProductImage').on("change", changeProductImage);
 	};
 
 	var _productEditQuantityModalOpen = function (webResponse) {
@@ -356,6 +359,53 @@ var DistributorProductsDataTable = (function () {
 		$('#addModalAction').html(WebAppLocals.getMessage('add'));
 		$('#addModal').appendTo('body').modal('show');
 	};
+
+	var _productImageUpload = function (webResponse) {
+		changeImageHolder(webResponse.data);
+	}
+
+	function changeImageHolder(image) {
+		let backgroundImageVal = "/theme/assets/media/users/blank.png";
+		if(image) {
+			let imageVal = image;
+			if(!isValidUrl(image)) imageVal = "/assets/" + image;
+			backgroundImageVal = imageVal;
+		}
+		$('#productImageHolder').css("background-image", "url(" + backgroundImageVal + ")");
+		$('#productImage').val(image);
+	}
+
+	function changeProductImage(ev) {
+		let file = ev.target.files[0];
+		let ext = file.type.split("/")[1];
+
+		let id = $('#editProductId').val();
+		let imageName = id + "-" + new Date().getTime() + "." + ext;
+		let image = new File([file], imageName, {type: file.type});
+		
+		let formData = new FormData();
+		formData.append('image', image);
+		formData.append('imageName', imageName);
+
+		$.ajax({
+			url: '/web/distributor/product/image',
+			data: formData,
+			type: 'POST',
+			contentType: false,
+			processData: false,
+		}).done(function (webResponse) {
+			_productImageUpload(webResponse);
+		});
+	}
+
+	function isValidUrl(string) {
+		try {
+		  new URL(string);
+		} catch (ex) {
+		  return false;  
+		}
+		return true;
+	}
 
 	return {
 		// public functions

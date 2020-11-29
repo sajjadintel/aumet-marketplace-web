@@ -12,12 +12,23 @@ function compress_htmlcode($codedata)
     return $codedata;
 }
 ?>
+<script>
+    $('#export-to-excel').on('click', function (e) {
+        e.preventDefault();
+		WebApp.get('/web/distributor/product/stock/download', downloadExcelSheet);
+    });
+    
+    function downloadExcelSheet(webResponse) {
+        const link = webResponse.data;
+        window.open(link, "_blank");
+    }
+</script>
 <!--begin::Container-->
 <div class="container-fluid">
     <div class="d-flex align-items-stretch flex-column">
 
         <div class="d-flex flex-column-fluid">
-            <a class="btn btn-lg btn-primary mr-2 btn-lg-radius" title="Export To Excel" href="/appfiles/downloads/products-stock-sample.xlsx" target="_blank">
+            <a id="export-to-excel" class="btn btn-lg btn-primary mr-2 btn-lg-radius" title="Export To Excel">
                 <i class="la la-file-excel-o"></i> Download Sample Stock Excel File
             </a>
         </div>

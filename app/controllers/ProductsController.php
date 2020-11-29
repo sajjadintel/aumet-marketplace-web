@@ -37,7 +37,7 @@ class ProductsController extends Controller
         } else {
             $dbStockStatus = new BaseModel($this->db, "stockStatus");
             $dbStockStatus->name = "name_" . $this->objUser->language;
-            $arrStockStatus = $dbStockStatus->all("id asc");
+            $arrStockStatus = $dbStockStatus->findAll("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
 
             $dbScientificName = new BaseModel($this->db, "scientificName");
@@ -201,6 +201,28 @@ class ProductsController extends Controller
         echo json_encode($result, JSON_PRETTY_PRINT);
     }
 
+    function postProductImage() {
+        $imageName = $this->f3->get('POST.imageName');
+
+        $uploadDir = $this->getRootDirectory() . "/assets/img/products/";
+        $this->f3->set('UPLOADS', $uploadDir);
+
+        $overwrite = true; 
+
+        $web = \Web::instance();
+        $files = $web->receive(function($file,$formFieldName) {
+                return true;
+            }, $overwrite, true
+        );
+
+        $path = "img/products/" . $imageName;
+
+        $this->webResponse->errorCode = 1;
+        $this->webResponse->title = "Product Image Upload";
+        $this->webResponse->data = $path;
+        echo $this->webResponse->jsonResponse();
+    }
+
     function postDistributorProductsBestSelling()
     {
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
@@ -254,22 +276,21 @@ class ProductsController extends Controller
                 echo $this->webResponse->jsonResponse();
             } else {
                 $unitPrice = $this->f3->get('POST.unitPrice');
-
-                $dbEntityProduct->unitPrice = $unitPrice;
-
-                $dbEntityProduct->update();
-
                 $scientificNameId = $this->f3->get('POST.scientificNameId');
                 $madeInCountryId = $this->f3->get('POST.madeInCountryId');
                 $name_en = $this->f3->get('POST.name_en');
                 $name_ar = $this->f3->get('POST.name_ar');
                 $name_fr = $this->f3->get('POST.name_fr');
+                $image = $this->f3->get('POST.image');
 
+                $dbEntityProduct->unitPrice = $unitPrice;
                 $dbProduct->name_en = $name_en;
                 $dbProduct->name_fr = $name_fr;
                 $dbProduct->name_ar = $name_ar;
                 $dbProduct->scientificNameId = $scientificNameId;
                 $dbProduct->madeInCountryId = $madeInCountryId;
+
+                $dbProduct->image = $image;
 
                 $dbProduct->update();
 
@@ -414,14 +435,129 @@ class ProductsController extends Controller
             echo $this->webResponse->jsonResponse();
         }
     }
+    
+    function getStockDownload()
+    {
+        if ($this->f3->ajax()) {
+            ini_set('max_execution_time', 600);
+
+            // Get all related products
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $query = "entityId IN ($arrEntityId)";
+            $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
+            $allProducts = $dbProducts->findWhere($query);
+
+            // Setup excel sheet
+            $sheetnameUserInput = 'User Input';
+            $sheetnameDatabaseInput = 'Database Input';
+            $sheetnameVariables = 'Variables';
+
+            // Prepare data for variables sheet
+            $arrProducts = [
+                ['Name', 'Value']
+            ];
+            $arrStockAvailability = [
+                ['Name', 'Value']
+            ];
+
+            $mapProductIdName = [];
+            $productsNum = 2;
+            $nameField = "productName_" . $this->objUser->language;
+            foreach($allProducts as $product) {
+                $productsNum++;
+                $arrProducts[] = array($product[$nameField], $product['productId']);
+                $mapProductIdName[$product['productId']] = $product[$nameField]; 
+            }
+            
+            $dbStockStatus = new BaseModel($this->db, "stockStatus");
+            $dbStockStatus->name = "name_" . $this->objUser->language;
+            $allStockStatus = $dbStockStatus->findAll("id asc");
+
+            $mapStockIdName = [];
+            $stockAvailabilityNum = 2;
+            foreach($allStockStatus as $stockStatus) {
+                $stockAvailabilityNum++;
+                $arrStockAvailability[] = array($stockStatus['name'], $stockStatus['id']);
+                $mapStockIdName[$stockStatus['id']] = $stockStatus['name'];
+            }
+            
+            $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-stock-sample.xlsx';
+            $spreadsheet = Excel::loadFile($sampleFilePath);
+
+            // Change active sheet to variables
+            $sheet = $spreadsheet->setActiveSheetIndex(2); 
+
+            // Set products and stock availability in excel
+            $sheet->fromArray($arrProducts, NULL, 'A2', true);
+            $sheet->fromArray($arrStockAvailability, NULL, 'D2', true);
+
+            // Change active sheet to database input
+            $sheet = $spreadsheet->setActiveSheetIndex(1);
+            
+            // Set validation and formula 
+            Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$'.$productsNum);
+            Excel::setCellFormulaVLookup($sheet, 'D3', count($allStockStatus), "'User Input'!D", 'Variables!$D$3:$E$'.$stockAvailabilityNum);
+
+            // Hide database and variables sheet
+            Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
+            Excel::hideSheetByName($spreadsheet, $sheetnameVariables);
+            
+            // Change active sheet to user input
+            $sheet = $spreadsheet->setActiveSheetIndex(0);
+            
+            // Set data validation for products and stock availability
+            Excel::setDataValidation($sheet, 'A3', 'A'.count($allProducts), 'TYPE_LIST', 'Variables!$A$3:$A$'.$productsNum);
+            Excel::setDataValidation($sheet, 'D3', 'D'.count($allProducts), 'TYPE_LIST', 'Variables!$D$3:$D$'.$stockAvailabilityNum);
+
+            // Add all products to multidimensional array 
+            $multiProducts = [];
+            $fields = [
+                "productId",
+                "unitPrice",
+                "vat",
+                "stockStatusId",
+                "stock",
+                "expiryDate"
+            ];
+            $i = 3;
+            foreach($allProducts as $product) {
+                $singleProduct = [];
+                foreach($fields as $field) {
+                    if($field == "productId") {
+                        $cellValue = $mapProductIdName[$product[$field]];
+                    } else if($field == "stockStatusId") {
+                        $cellValue = $mapStockIdName[$product[$field]];
+                    } else {
+                        $cellValue = $product[$field];
+                    }
+                    array_push($singleProduct, $cellValue);
+                }
+                array_push($multiProducts, $singleProduct);
+                $i++;
+            }
+
+            // Fill rows with products
+            $sheet->fromArray($multiProducts, NULL, 'A3', true);
+    
+            // Create excel sheet
+            $productsSheetUrl = "files/downloads/reports/products-stock/products-stock-".$this->objUser->id."-".time().".xlsx";
+            Excel::saveSpreadsheetToPath($spreadsheet, $productsSheetUrl);
+    
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "Stock Download";
+            $this->webResponse->data = "/" . $productsSheetUrl;
+            echo $this->webResponse->jsonResponse();
+        }
+    }
 
     function postStockUpload()
     {
+        $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME); 
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
         // basename($_FILES["file"]["name"])
 
-        $targetFile = $this->getUploadDirectory() . $this->generateRandomString(16) . ".$ext";
-
+        $targetFile = $this->getUploadDirectory() . "reports/products-stock/".$this->objUser->id."-".$fileName."-".time().".$ext";
+        
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
                 global $dbConnection;
@@ -437,43 +573,339 @@ class ProductsController extends Controller
 
     function postStockUploadProcess()
     {
+        ini_set('max_execution_time', 1000);
+        ini_set('mysql.connect_timeout', 1000);
+        
         global $dbConnection;
 
         $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
 
         $dbStockUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
 
-        $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($dbStockUpdateUpload->filePath);
+        // $inputFileType = Excel::identifyFileType($dbStockUpdateUpload->filePath);
         try {
-            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
-            $spreadsheet = $reader->load($dbStockUpdateUpload->filePath);
+            // $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+            // $spreadsheet = $reader->load($dbStockUpdateUpload->filePath);
+            $spreadsheet = Excel::loadFile($dbStockUpdateUpload->filePath);
 
-            $worksheet = $spreadsheet->getActiveSheet();
+            // Change active sheet to database input
+            $sheet = $spreadsheet->setActiveSheetIndex(1);
+
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $dbEntityProductSell = new BaseModel($this->db, "entityProductSell");
+
+            // Get all related products
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $query = "entityId IN ($arrEntityId)";
+            $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
+            $allProducts = $dbProducts->findWhere($query);
+
+            // Get all stock status
+            $dbStockStatus = new BaseModel($this->db, "stockStatus");
+            $dbStockStatus->name = "name_" . $this->objUser->language;
+            $allStockStatus = $dbStockStatus->findAll("id asc");
+            
+            $allStockStatusId = [];
+            $allStockStatusName = [];
+            $mapStockStatusNameId = [];
+            foreach($allStockStatus as $stockStatus) {
+                array_push($allStockStatusId, $stockStatus['id']);
+                array_push($allStockStatusName, $stockStatus['name']);
+                $mapStockStatusNameId[$stockStatus['name']] = $stockStatus['id'];
+            }
+
+            $fields = [
+                "A" => "productId",
+                "B" => "unitPrice",
+                "C" => "vat",
+                "D" => "stockStatusId",
+                "E" => "stock",
+                "F" => "expiryDate"
+            ];
+            
+            $successProducts = [];
+            $failedProducts = [];
+
+            $allErrors = [];
 
             $dbStockUpdateUpload->recordsCount = 0;
-            foreach ($worksheet->getRowIterator() as $row) {
+            $successRecords = 0;
+            $failedRecords = 0;
+            $unchangedRecords = 0;
+
+            $firstRow = true;
+            $secondRow = false;
+            $finished = false;
+            foreach($sheet->getRowIterator() as $row) {
+                $product = [];
+
+                if($firstRow) {
+                    $firstRow = false;
+                    $secondRow = true;
+                    continue;
+                } else if($secondRow) {
+                    $secondRow = false;
+                    continue;
+                }
+
                 $dbStockUpdateUpload->recordsCount++;
                 $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+                $cellIterator->setIterateOnlyExistingCells(FALSE);
 
+                $errors = [];
+
+                $fieldsChanged = false;
+                $stockFieldsChanged = false;
+                foreach ($cellIterator as $cell) {
+                    $cellLetter = $cell->getColumn();
+                    $cellValue = $cell->getCalculatedValue();
+
+                    array_push($product, $cellValue);
+
+                    switch($cellLetter) {
+                        case "A":
+                            if(!is_numeric($cellValue)) {
+                                $finished = true;
+                                break;
+                            } else {
+                                $dbEntityProductSell->getWhere("productId=$cellValue and entityId IN ($arrEntityId)");
+                                if($dbEntityProductSell->dry()) {
+                                    array_push($errors, "Product not found");
+                                }
+                            }
+                            break;
+                        case "B":
+                            if(!is_numeric($cellValue) || (float) $cellValue < 0) {
+                                array_push($errors, "Price must be a positive number");
+                            } else {
+                                $unitPrice = round((float) $cellValue, 2);
+                                if($dbEntityProductSell->unitPrice != $unitPrice) {
+                                    $fieldsChanged = true;
+                                    $dbEntityProductSell->unitPrice = $unitPrice;
+                                }
+                            }
+                            break;
+                        case "C":
+                            if(!is_numeric($cellValue) || (float) $cellValue < 0) {
+                                array_push($errors, "VAT must be a positive number");
+                            } else {
+                                $vat = round((float) $cellValue, 2);
+                                if($dbEntityProductSell->vat != $vat) {
+                                    $fieldsChanged = true;
+                                    $dbEntityProductSell->vat = $vat;
+                                }
+                            }
+                            break;
+                        case "D":
+                            if(!in_array($cellValue, $allStockStatusId) && !in_array($cellValue, $allStockStatusName)) {
+                                array_push($errors, "Stock Availability invalid");
+                            } else {
+                                if(is_int($cellValue)) {
+                                    $stockStatusId = $cellValue;
+                                } else {
+                                    $stockStatusId = $mapStockStatusNameId[$cellValue];
+                                }
+                                if($dbEntityProductSell->stockStatusId != $stockStatusId) {
+                                    $stockFieldsChanged = true;
+                                    $dbEntityProductSell->stockStatusId = $stockStatusId;
+                                }
+                            }
+                            break;
+                        case "E":
+                            if(!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                                array_push($errors, "Stock Quantity must be a positive whole number");
+                            } else {
+                                $stock = (int) $cellValue;
+                                if($dbEntityProductSell->stock != $stock) {
+                                    $stockFieldsChanged = true;
+                                    $dbEntityProductSell->stock = $stock;
+                                }
+                            }
+                            break;
+                        case "F":
+                            if(!is_null($cellValue)) {
+                                if(!is_int($cellValue) && (count(explode("-", $cellValue)) !== 3)) {
+                                    array_push($errors, "Expiry Date must fit a date format (YYYY-MM-DD)");
+                                } else {
+                                    if(is_int($cellValue)) {
+                                        $expiryDate = Excel::excelDateToRegularDate($cellValue);
+                                    } else {
+                                        $expiryDate = $cellValue;
+                                    }
+                                    if($dbEntityProductSell->expiryDate != $expiryDate) {
+                                        $fieldsChanged = true;
+                                        $dbEntityProductSell->expiryDate = $expiryDate;
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                }
+
+                if($finished) {
+                    break;
+                }
+
+                if(!$dbEntityProductSell->dry() && ($fieldsChanged || $stockFieldsChanged) && count($errors) === 0) {
+                    $currentDate = date("Y-m-d H:i:s");
+                    if($fieldsChanged) {
+                        $dbEntityProductSell->updateDateTime = $currentDate;
+                    }
+
+                    if($stockFieldsChanged) {
+                        $dbEntityProductSell->stockUpdateDateTime = $currentDate;
+                    }
+
+                    array_push($successProducts, $product);
+
+                    $dbEntityProductSell->update();
+                    $successRecords++;
+                } else if(count($errors) > 0) {
+                    array_push($failedProducts, $product);
+                    array_push($allErrors, $errors);
+                    $failedRecords++;
+                } else {
+                    $unchangedRecords++;
+                }
+
+                $dbEntityProductSell->reset();
             }
-            $dbStockUpdateUpload->recordsCount -= 1;
 
+            if(count($failedProducts) > 0) {
+                // Setup excel sheet
+                $sheetnameUserInput = 'User Input';
+                $sheetnameDatabaseInput = 'Database Input';
+                $sheetnameVariables = 'Variables';
 
-            $dbStockUpdateUpload->completedCount = $dbStockUpdateUpload->recordsCount - 5;
-            $dbStockUpdateUpload->importSuccessRate = round($dbStockUpdateUpload->completedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
+                // Prepare data for variables sheet
+                $arrProducts = [
+                    ['Name', 'Value']
+                ];
+                $arrStockAvailability = [
+                    ['Name', 'Value']
+                ];
 
-            $dbStockUpdateUpload->failedCount = $dbStockUpdateUpload->recordsCount - $dbStockUpdateUpload->completedCount;
-            $dbStockUpdateUpload->importFailureRate = round($dbStockUpdateUpload->failedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
+                $mapProductIdName = [];
+                $productsNum = 2;
+                $nameField = "productName_" . $this->objUser->language;
+                foreach($allProducts as $product) {
+                    $productsNum++;
+                    $arrProducts[] = array($product[$nameField], $product['productId']);
+                    $mapProductIdName[$product['productId']] = $product[$nameField]; 
+                }
 
-            $dbStockUpdateUpload->update();
+                $mapStockIdName = [];
+                $stockAvailabilityNum = 2;
+                foreach($allStockStatus as $stockStatus) {
+                    $stockAvailabilityNum++;
+                    $arrStockAvailability[] = array($stockStatus['name'], $stockStatus['id']);
+                    $mapStockIdName[$stockStatus['id']] = $stockStatus['name'];
+                }
+                
+                $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-stock-sample.xlsx';
+                $spreadsheet = Excel::loadFile($sampleFilePath);
+
+                // Change active sheet to variables
+                $sheet = $spreadsheet->setActiveSheetIndex(2); 
+
+                // Set products and stock availability in excel
+                $sheet->fromArray($arrProducts, NULL, 'A2', true);
+                $sheet->fromArray($arrStockAvailability, NULL, 'D2', true);
+
+                // Change active sheet to database input
+                $sheet = $spreadsheet->setActiveSheetIndex(1);
+                
+                // Set validation and formula 
+                Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$'.$productsNum);
+                Excel::setCellFormulaVLookup($sheet, 'D3', count($allStockStatus), "'User Input'!D", 'Variables!$D$3:$E$'.$stockAvailabilityNum);
+
+                // Hide database and variables sheet
+                Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
+                Excel::hideSheetByName($spreadsheet, $sheetnameVariables);
+                
+                // Change active sheet to user input
+                $sheet = $spreadsheet->setActiveSheetIndex(0);
+                
+                // Set data validation for products and stock availability
+                Excel::setDataValidation($sheet, 'A3', 'A'.count($failedProducts), 'TYPE_LIST', 'Variables!$A$3:$A$'.$productsNum);
+                Excel::setDataValidation($sheet, 'D3', 'D'.count($failedProducts), 'TYPE_LIST', 'Variables!$D$3:$D$'.$stockAvailabilityNum);
+
+                $sheet->setCellValue('G2', 'Error');
+                $sheet->getStyle('G2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
+                
+                // Add all products to multidimensional array 
+                $multiProducts = [];
+                $fields = [
+                    "productId",
+                    "unitPrice",
+                    "vat",
+                    "stockStatusId",
+                    "stock",
+                    "expiryDate"
+                ];
+                $i = 3;
+                for($i = 0; $i < count($failedProducts); $i++) {
+                    $product = $failedProducts[$i];
+                    $singleProduct = [];
+                    $j = 0;
+                    foreach($fields as $field) {
+                        if($field == "productId") {
+                            $cellValue = $mapProductIdName[$product[$j]];
+                        } else if($field == "stockStatusId") {
+                            $cellValue = $mapStockIdName[$product[$j]];
+                        } else {
+                            $cellValue = $product[$j];
+                        }
+                        array_push($singleProduct, $cellValue);
+                        $j++;
+                    }
+                    $errors = $allErrors[$i];
+                    $error = join(", ", $errors);
+                    array_push($singleProduct, $error);
+                    
+                    array_push($multiProducts, $singleProduct);
+                }
+                // Fill rows with products
+                $sheet->fromArray($multiProducts, NULL, 'A3', true);
+                
+                // Create excel sheet
+                $failedProductsSheetUrl = "files/downloads/reports/products-stock/products-stock-".$this->objUser->id."-".time().".xlsx";
+                Excel::saveSpreadsheetToPath($spreadsheet, $failedProductsSheetUrl);
+            }
+
+            // Update logs
+            if(count($successProducts) > 0) {
+                $dbStockUpdateUpload->successLog = json_encode($successProducts);
+            }
+
+            if(count($failedProducts) > 0) {
+                $dbStockUpdateUpload->failedLog = json_encode($failedProducts);
+            }
+
+            // Update counts and rates
+            $dbStockUpdateUpload->completedCount = $successRecords;
+            $dbStockUpdateUpload->failedCount = $failedRecords;
+            $dbStockUpdateUpload->unchagedCount = $unchangedRecords;
+
+            if($successRecords + $failedRecords !== 0) {
+                $dbStockUpdateUpload->importSuccessRate = round($successRecords / ($successRecords + $failedRecords), 2) * 100;
+                $dbStockUpdateUpload->importFailureRate = round($failedRecords / ($successRecords + $failedRecords), 2) * 100;
+            } else {
+                $dbStockUpdateUpload->importSuccessRate = 0;
+                $dbStockUpdateUpload->importFailureRate = 0;
+            }
 
             $this->f3->set("objStockUpdateUpload", $dbStockUpdateUpload);
+            if(!is_null($failedProductsSheetUrl)) {
+                $this->f3->set("failedProductsSheetUrl", "/" . $failedProductsSheetUrl);
+            }
+
+            $dbStockUpdateUpload->update();
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
             $this->webResponse->data = View::instance()->render('app/products/stock/uploadResult.php');
-            echo $this->webResponse->jsonResponse();
+            echo $this->webResponse->jsonResponse();;
         } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
         }
     }
@@ -490,12 +922,113 @@ class ProductsController extends Controller
         }
     }
 
+    function getBonusDownload()
+    {
+        if ($this->f3->ajax()) {
+            ini_set('max_execution_time', 600);
+
+            // Get all related products
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $query = "entityId IN ($arrEntityId)";
+            $dbProducts = new BaseModel($this->db, "vwEntityProductSellSummary");
+            $allProducts = $dbProducts->findWhere($query);
+
+            // Setup excel sheet
+            $sheetnameUserInput = 'User Input';
+            $sheetnameDatabaseInput = 'Database Input';
+            $sheetnameVariables = 'Variables';
+
+            // Prepare data for variables sheet
+            $arrProducts = [
+                ['Name', 'Value']
+            ];
+
+            $mapProductIdName = [];
+            $productsNum = 2;
+            $nameField = "productName_" . $this->objUser->language;
+            foreach($allProducts as $product) {
+                $productsNum++;
+                $arrProducts[] = array($product[$nameField], $product['id']);
+                $mapProductIdName[$product['id']] = $product[$nameField]; 
+            }
+            
+            $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-bonus-sample.xlsx';
+            $spreadsheet = Excel::loadFile($sampleFilePath);
+
+            // Change active sheet to variables
+            $sheet = $spreadsheet->setActiveSheetIndex(2); 
+
+            // Set products in excel
+            $sheet->fromArray($arrProducts, NULL, 'A2', true);
+            
+            // Change active sheet to database input
+            $sheet = $spreadsheet->setActiveSheetIndex(1);
+            
+            // Set validation and formula 
+            Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$'.$productsNum);
+            
+            // Hide database and variables sheet
+            Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
+            Excel::hideSheetByName($spreadsheet, $sheetnameVariables);
+            
+            // Get all bonuses
+            $allBonuses = [];
+            
+            $allProductsIds = implode(", ", array_keys($mapProductIdName));
+            $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+            $allBonuses = $dbBonus->findWhere("entityProductId in (".$allProductsIds. ") AND isActive = 1");
+            
+            $bonusesNum = count($allBonuses) + 2;
+            
+            // Change active sheet to user input
+            $sheet = $spreadsheet->setActiveSheetIndex(0);
+            
+            // Set data validation for bonuses and stock availability
+            Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$'.$bonusesNum);
+
+            // Add all bonuses to multidimensional array 
+            $multiBonuses = [];
+            $fields = [
+                "entityProductId",
+                "minOrder",
+                "bonus"
+            ];
+            $i = 3;
+            foreach($allBonuses as $bonus) {
+                $singleBonus = [];
+                foreach($fields as $field) {
+                    if($field == "entityProductId") {
+                        $cellValue = $mapProductIdName[$bonus[$field]];
+                    } else {
+                        $cellValue = $bonus[$field];
+                    }
+                    array_push($singleBonus, $cellValue);
+                }
+                array_push($multiBonuses, $singleBonus);
+                $i++;
+            }
+
+            // Fill rows with bonuses
+            $sheet->fromArray($multiBonuses, NULL, 'A3', true);
+    
+            // Create excel sheet
+            $productsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-".$this->objUser->id."-".time().".xlsx";
+            Excel::saveSpreadsheetToPath($spreadsheet, $productsSheetUrl);
+    
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "Bonus Download";
+            $this->webResponse->data = "/" . $productsSheetUrl;
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
     function postBonusUpload()
     {
+        $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME); 
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
         // basename($_FILES["file"]["name"])
 
-        $targetFile = $this->getUploadDirectory() . $this->generateRandomString(16) . ".$ext";
+        $targetFile = $this->getUploadDirectory() . "reports/products-bonus/".$this->objUser->id."-".$fileName."-".time().".$ext";
 
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
@@ -512,43 +1045,258 @@ class ProductsController extends Controller
 
     function postBonusUploadProcess()
     {
+        ini_set('max_execution_time', 1000);
+        ini_set('mysql.connect_timeout', 1000);
+        
         global $dbConnection;
 
-        $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+        $dbBonusUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
 
-        $dbStockUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
+        $dbBonusUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
 
-        $inputFileType = \PhpOffice\PhpSpreadsheet\IOFactory::identify($dbStockUpdateUpload->filePath);
+        // $inputFileType = Excel::identifyFileType($dbBonusUpdateUpload->filePath);
         try {
-            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
-            $spreadsheet = $reader->load($dbStockUpdateUpload->filePath);
+            // $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+            // $spreadsheet = $reader->load($dbBonusUpdateUpload->filePath);
+            $spreadsheet = Excel::loadFile($dbBonusUpdateUpload->filePath);
 
-            $worksheet = $spreadsheet->getActiveSheet();
+            // Change active sheet to database input
+            $sheet = $spreadsheet->setActiveSheetIndex(1);
 
-            $dbStockUpdateUpload->recordsCount = 0;
-            foreach ($worksheet->getRowIterator() as $row) {
-                $dbStockUpdateUpload->recordsCount++;
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $dbEntityProductBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+
+            // Get all related products
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $query = "entityId IN ($arrEntityId)";
+            $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
+            $allProducts = $dbProducts->findWhere($query);
+
+            $mapProductIdProduct = [];
+            foreach($allProducts as $product) {
+                $mapProductIdProduct[$product['productId']] = $product;
+                $mapProductIdMinQuant[$product['productId']] = [];
+            }
+            $productIdsWithBonus = [];
+
+            $fields = [
+                "A" => "productId",
+                "B" => "minOrder",
+                "C" => "bonus"
+            ];
+            
+            $allBonuses = [];
+            $allErrors = [];
+
+            $dbBonusUpdateUpload->recordsCount = 0;
+
+            $firstRow = true;
+            $secondRow = false;
+            $finished = false;
+            foreach($sheet->getRowIterator() as $row) {
+                $singleBonus = [];
+
+                if($firstRow) {
+                    $firstRow = false;
+                    $secondRow = true;
+                    continue;
+                } else if($secondRow) {
+                    $secondRow = false;
+                    continue;
+                }
+
+                $dbBonusUpdateUpload->recordsCount++;
                 $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(FALSE); // This loops through all cells,
+                $cellIterator->setIterateOnlyExistingCells(FALSE);
+
+                $errors = [];
+
+                foreach ($cellIterator as $cell) {
+                    $cellLetter = $cell->getColumn();
+                    $cellValue = $cell->getCalculatedValue();
+
+                    array_push($singleBonus, $cellValue);
+
+                    switch($cellLetter) {
+                        case "A":
+                            if(!is_numeric($cellValue)) {
+                                $finished = true;
+                                break;
+                            } else {
+                                if(array_key_exists($cellValue, $mapProductIdProduct)) {
+                                    $dbProduct = $mapProductIdProduct[$cellValue];
+                                    array_push($productIdsWithBonus, $cellValue);
+                                } else {
+                                    array_push($errors, "Product not found");
+                                }
+                            }
+                            break;
+                        case "B":
+                            if(!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                                array_push($errors, "Minimum Quantity must be a positive whole number");
+                            } else {
+                                $minOrder = (int) $cellValue;
+                                $allQuant = $mapProductIdMinQuant[$dbProduct['productId']];
+                                if(in_array($minOrder, $allQuant)) {
+                                    array_push($errors, "Minimum Quantity should be unique by product");
+                                } else {
+                                    array_push($allQuant, $minOrder);
+                                    $mapProductIdMinQuant[$dbProduct['productId']] = $allQuant;
+                                }
+                            }
+                            break;
+                        case "C":
+                            if(!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                                array_push($errors, "Bonus Quantity must be a positive whole number");
+                            } else {
+                                $bonus = (int) $cellValue;
+                            }
+                            break;
+                    }
+                }
+
+                if($finished) {
+                    break;
+                }
+
+                array_push($allBonuses, $singleBonus);
+                array_push($allErrors, $errors);
+
+                if(count($errors) > 0) {
+                    $failedSheet = true;
+                }
+            }
+
+            if($failedSheet) {
+                // Setup excel sheet
+                $sheetnameUserInput = 'User Input';
+                $sheetnameDatabaseInput = 'Database Input';
+                $sheetnameVariables = 'Variables';
+
+                // Prepare data for variables sheet
+                $arrProducts = [
+                    ['Name', 'Value']
+                ];
+
+                $mapProductIdName = [];
+                $productsNum = 2;
+                $nameField = "productName_" . $this->objUser->language;
+                foreach($allProducts as $product) {
+                    $productsNum++;
+                    $arrProducts[] = array($product[$nameField], $product['productId']);
+                    $mapProductIdName[$product['productId']] = $product[$nameField]; 
+                }
+                
+                $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-bonus-sample.xlsx';
+                $spreadsheet = Excel::loadFile($sampleFilePath);
+
+                // Change active sheet to variables
+                $sheet = $spreadsheet->setActiveSheetIndex(2); 
+
+                // Set products in excel
+                $sheet->fromArray($arrProducts, NULL, 'A2', true);
+
+                // Change active sheet to database input
+                $sheet = $spreadsheet->setActiveSheetIndex(1);
+                
+                // Set validation and formula 
+                Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$'.$productsNum);
+                
+                // Hide database and variables sheet
+                Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
+                Excel::hideSheetByName($spreadsheet, $sheetnameVariables);
+                
+                // Change active sheet to user input
+                $sheet = $spreadsheet->setActiveSheetIndex(0);
+                
+                // Set data validation for products
+                Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$'.$productsNum);
+                
+                $sheet->setCellValue('D2', 'Error');
+                $sheet->getStyle('D2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
+                
+                // Add all bonuses to multidimensional array 
+                $multiBonuses = [];
+                $fields = [
+                    "productId",
+                    "minOrder",
+                    "bonus"
+                ];
+                for($i = 0; $i < count($allBonuses); $i++) {
+                    $bonus = $allBonuses[$i];
+                    $singleBonus = [];
+                    $j = 0;
+                    foreach($fields as $field) {
+                        if($field == "productId") {
+                            $cellValue = $mapProductIdName[$bonus[$j]];
+                        } else {
+                            $cellValue = $bonus[$j];
+                        }
+                        array_push($singleBonus, $cellValue);
+                        $j++;
+                    }
+                    $errors = $allErrors[$i];
+                    $error = join(", ", $errors);
+                    array_push($singleBonus, $error);
+                    
+                    array_push($multiBonuses, $singleBonus);
+                }
+
+                // Fill rows with products
+                $sheet->fromArray($multiBonuses, NULL, 'A3', true);
+                
+                // Create excel sheet
+                $failedProductsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-".$this->objUser->id."-".time().".xlsx";
+                Excel::saveSpreadsheetToPath($spreadsheet, $failedProductsSheetUrl);
+            } else {
+                $dbEntityProductSell = new BaseModel($this->db, "entityProductSell");
+                foreach($mapProductIdProduct as $productId => $product) {
+                    $dbEntityProductSell->getWhere("productId=$productId");
+                    if(in_array($productId, $productIdsWithBonus)) {
+                        $dbEntityProductSell->bonusTypeId = 2;
+                    } else {
+                        $dbEntityProductSell->bonusTypeId = 1;
+                    }
+                }
+
+                $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+                
+                $allProductsIds = implode(", ", array_keys($mapProductIdProduct ));
+                $dbBonus->load(array("entityProductId IN (".$allProductsIds. ") AND isActive = 1"));
+                while (!$dbBonus->dry()) {
+                    $dbBonus->delete();
+                    $dbBonus->next();
+                }
+
+                foreach ($allBonuses as $bonus) {
+                    $dbBonus->reset();
+
+                    $dbBonus->entityProductId = $bonus[0];
+                    $dbBonus->minOrder = $bonus[1];
+                    $dbBonus->bonus = $bonus[2];
+                    $dbBonus->add();
+                }
 
             }
-            $dbStockUpdateUpload->recordsCount -= 1;
 
+            // Update logs
+            if($failedSheet) {
+                $dbBonusUpdateUpload->failedLog = json_encode($allBonuses);
+            } else {
+                $dbBonusUpdateUpload->successLog = json_encode($allBonuses);
+            }
 
-            $dbStockUpdateUpload->completedCount = $dbStockUpdateUpload->recordsCount - 5;
-            $dbStockUpdateUpload->importSuccessRate = round($dbStockUpdateUpload->completedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
+            $this->f3->set("objBonusUpdateUpload", $dbBonusUpdateUpload);
+            if(!is_null($failedProductsSheetUrl)) {
+                $this->f3->set("failedProductsSheetUrl", "/" . $failedProductsSheetUrl);
+            }
 
-            $dbStockUpdateUpload->failedCount = $dbStockUpdateUpload->recordsCount - $dbStockUpdateUpload->completedCount;
-            $dbStockUpdateUpload->importFailureRate = round($dbStockUpdateUpload->failedCount / $dbStockUpdateUpload->recordsCount, 2) * 100;
-
-            $dbStockUpdateUpload->update();
-
-            $this->f3->set("objBonusUpdateUpload", $dbStockUpdateUpload);
+            $dbBonusUpdateUpload->update();
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
             $this->webResponse->data = View::instance()->render('app/products/bonus/uploadResult.php');
-            echo $this->webResponse->jsonResponse();
+            echo $this->webResponse->jsonResponse();;
         } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
         }
     }

@@ -1,7 +1,7 @@
 # Temp and vendor folders
 .vscode/
 vendor/
-files/
+./files/
 .idea/
 
 # Temp and environment variables
