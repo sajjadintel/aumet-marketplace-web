@@ -1,5 +1,6 @@
 # Temp and vendor folders
 .vscode/
+files/
 vendor/
 ./files/
 .idea/

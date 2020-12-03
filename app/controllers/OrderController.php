@@ -138,13 +138,7 @@ class OrderController extends Controller {
 
             $modalRoute = '';
             $modalText = '';
-            $modalTitle = '';
-            $modalCallback = '';
-            // if ($fromDashboard) {
-            //     $modalCallback = 'DistributorDashboardDataTable.reloadDatatable';
-            // } else {
-            //     $modalCallback = 'DistributorOrdersDataTable.reloadDatatable';
-            // }
+            $modalCallback = 'WebApp.reloadDatatable';
             $modalButton = $this->f3->get('vButton_update');
 
             switch ($statusId) {
@@ -290,8 +284,8 @@ class OrderController extends Controller {
 
         $data = [];
 
-        $totalRecords = $dbData->count($query);
-        $totalFiltered = $dbData->count($fullQuery);
+        $totalRecords = $dbData->count($fullQuery);
+        $totalFiltered = $dbData->count($query);
         $data = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
 
         ## Response

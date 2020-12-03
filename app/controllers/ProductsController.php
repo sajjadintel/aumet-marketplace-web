@@ -1,7 +1,6 @@
 <?php
 
-class ProductsController extends Controller
-{
+class ProductsController extends Controller {
 
     function getEntityProduct()
     {
@@ -201,7 +200,8 @@ class ProductsController extends Controller
         echo json_encode($result, JSON_PRETTY_PRINT);
     }
 
-    function postProductImage() {
+    function postProductImage()
+    {
         $imageName = $this->f3->get('POST.imageName');
 
         $uploadDir = $this->getRootDirectory() . "/assets/img/products/";
@@ -210,10 +210,9 @@ class ProductsController extends Controller
         $overwrite = true;
 
         $web = \Web::instance();
-        $files = $web->receive(function($file,$formFieldName) {
+        $files = $web->receive(function ($file, $formFieldName) {
             return true;
-        }, $overwrite, true
-        );
+        }, $overwrite, true);
 
         $path = "img/products/" . $imageName;
 
@@ -456,10 +455,10 @@ class ProductsController extends Controller
             ];
 
             $mapProductIdName = [];
-            $products_num = 2;
+            $productsNum = 2;
             $nameField = "productName_" . $this->objUser->language;
             foreach ($allProducts as $product) {
-                $products_num++;
+                $productsNum++;
                 $arrProducts[] = array($product[$nameField], $product['productId']);
                 $mapProductIdName[$product['productId']] = $product[$nameField];
             }
@@ -469,9 +468,9 @@ class ProductsController extends Controller
             $allStockStatus = $dbStockStatus->findAll("id asc");
 
             $mapStockIdName = [];
-            $stock_availability_num = 2;
+            $stockAvailabilityNum = 2;
             foreach ($allStockStatus as $stockStatus) {
-                $stock_availability_num++;
+                $stockAvailabilityNum++;
                 $arrStockAvailability[] = array($stockStatus['name'], $stockStatus['id']);
                 $mapStockIdName[$stockStatus['id']] = $stockStatus['name'];
             }
@@ -490,8 +489,8 @@ class ProductsController extends Controller
             $sheet = $spreadsheet->setActiveSheetIndex(1);
 
             // Set validation and formula
-            Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $products_num);
-            Excel::setCellFormulaVLookup($sheet, 'D3', count($allStockStatus), "'User Input'!D", 'Variables!$D$3:$E$' . $stock_availability_num);
+            Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
+            Excel::setCellFormulaVLookup($sheet, 'D3', count($allStockStatus), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -501,8 +500,8 @@ class ProductsController extends Controller
             $sheet = $spreadsheet->setActiveSheetIndex(0);
 
             // Set data validation for products and stock availability
-            Excel::setDataValidation($sheet, 'A3', 'A' . count($allProducts), 'TYPE_LIST', 'Variables!$A$3:$A$' . $products_num);
-            Excel::setDataValidation($sheet, 'D3', 'D' . count($allProducts), 'TYPE_LIST', 'Variables!$D$3:$D$' . $stock_availability_num);
+            Excel::setDataValidation($sheet, 'A3', 'A' . count($allProducts), 'TYPE_LIST', 'Variables!$A$3:$A$' . $productsNum);
+            Excel::setDataValidation($sheet, 'D3', 'D' . count($allProducts), 'TYPE_LIST', 'Variables!$D$3:$D$' . $stockAvailabilityNum);
 
             // Add all products to multidimensional array
             $multiProducts = [];
@@ -568,8 +567,8 @@ class ProductsController extends Controller
 
     function postStockUploadProcess()
     {
-        ini_set('max_execution_time', 600);
-        ini_set('mysql.connect_timeout', 600);
+        ini_set('max_execution_time', 1000);
+        ini_set('mysql.connect_timeout', 1000);
 
         global $dbConnection;
 
@@ -601,6 +600,8 @@ class ProductsController extends Controller
             $allStockStatus = $dbStockStatus->findAll("id asc");
 
             $allStockStatusId = [];
+            $allStockStatusName = [];
+            $mapStockStatusNameId = [];
             foreach ($allStockStatus as $stockStatus) {
                 array_push($allStockStatusId, $stockStatus['id']);
                 array_push($allStockStatusName, $stockStatus['name']);
@@ -668,10 +669,10 @@ class ProductsController extends Controller
                             }
                             break;
                         case "B":
-                            if (!is_numeric($cellValue) || (float) $cellValue < 0) {
+                            if (!is_numeric($cellValue) || (float)$cellValue < 0) {
                                 array_push($errors, "Price must be a positive number");
                             } else {
-                                $unitPrice = round((float) $cellValue, 2);
+                                $unitPrice = round((float)$cellValue, 2);
                                 if ($dbEntityProductSell->unitPrice != $unitPrice) {
                                     $fieldsChanged = true;
                                     $dbEntityProductSell->unitPrice = $unitPrice;
@@ -679,10 +680,10 @@ class ProductsController extends Controller
                             }
                             break;
                         case "C":
-                            if (!is_numeric($cellValue) || (float) $cellValue < 0) {
+                            if (!is_numeric($cellValue) || (float)$cellValue < 0) {
                                 array_push($errors, "VAT must be a positive number");
                             } else {
-                                $vat = round((float) $cellValue, 2);
+                                $vat = round((float)$cellValue, 2);
                                 if ($dbEntityProductSell->vat != $vat) {
                                     $fieldsChanged = true;
                                     $dbEntityProductSell->vat = $vat;
@@ -690,10 +691,14 @@ class ProductsController extends Controller
                             }
                             break;
                         case "D":
-                            if (!in_array($cellValue, $allStockStatusId)) {
+                            if (!in_array($cellValue, $allStockStatusId) && !in_array($cellValue, $allStockStatusName)) {
                                 array_push($errors, "Stock Availability invalid");
                             } else {
-                                $stockStatusId = $cellValue;
+                                if (is_int($cellValue)) {
+                                    $stockStatusId = $cellValue;
+                                } else {
+                                    $stockStatusId = $mapStockStatusNameId[$cellValue];
+                                }
                                 if ($dbEntityProductSell->stockStatusId != $stockStatusId) {
                                     $stockFieldsChanged = true;
                                     $dbEntityProductSell->stockStatusId = $stockStatusId;
@@ -701,10 +706,10 @@ class ProductsController extends Controller
                             }
                             break;
                         case "E":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Stock Quantity must be a positive whole number");
                             } else {
-                                $stock = (int) $cellValue;
+                                $stock = (int)$cellValue;
                                 if ($dbEntityProductSell->stock != $stock) {
                                     $stockFieldsChanged = true;
                                     $dbEntityProductSell->stock = $stock;
@@ -713,10 +718,14 @@ class ProductsController extends Controller
                             break;
                         case "F":
                             if (!is_null($cellValue)) {
-                                if (!filter_var($cellValue, FILTER_VALIDATE_INT)) {
+                                if (!is_int($cellValue) && (count(explode("-", $cellValue)) !== 3)) {
                                     array_push($errors, "Expiry Date must fit a date format (YYYY-MM-DD)");
                                 } else {
-                                    $expiryDate = Excel::excelDateToRegularDate($cellValue);
+                                    if (is_int($cellValue)) {
+                                        $expiryDate = Excel::excelDateToRegularDate($cellValue);
+                                    } else {
+                                        $expiryDate = $cellValue;
+                                    }
                                     if ($dbEntityProductSell->expiryDate != $expiryDate) {
                                         $fieldsChanged = true;
                                         $dbEntityProductSell->expiryDate = $expiryDate;
@@ -774,15 +783,15 @@ class ProductsController extends Controller
                 $productsNum = 2;
                 $nameField = "productName_" . $this->objUser->language;
                 foreach ($allProducts as $product) {
-                    $products_num++;
+                    $productsNum++;
                     $arrProducts[] = array($product[$nameField], $product['productId']);
                     $mapProductIdName[$product['productId']] = $product[$nameField];
                 }
 
                 $mapStockIdName = [];
-                $stock_availability_num = 2;
+                $stockAvailabilityNum = 2;
                 foreach ($allStockStatus as $stockStatus) {
-                    $stock_availability_num++;
+                    $stockAvailabilityNum++;
                     $arrStockAvailability[] = array($stockStatus['name'], $stockStatus['id']);
                     $mapStockIdName[$stockStatus['id']] = $stockStatus['name'];
                 }
@@ -801,8 +810,8 @@ class ProductsController extends Controller
                 $sheet = $spreadsheet->setActiveSheetIndex(1);
 
                 // Set validation and formula
-                Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $products_num);
-                Excel::setCellFormulaVLookup($sheet, 'D3', count($allStockStatus), "'User Input'!D", 'Variables!$D$3:$E$' . $stock_availability_num);
+                Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
+                Excel::setCellFormulaVLookup($sheet, 'D3', count($allStockStatus), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
 
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -812,8 +821,8 @@ class ProductsController extends Controller
                 $sheet = $spreadsheet->setActiveSheetIndex(0);
 
                 // Set data validation for products and stock availability
-                Excel::setDataValidation($sheet, 'A3', 'A' . count($failedProducts), 'TYPE_LIST', 'Variables!$A$3:$A$' . $products_num);
-                Excel::setDataValidation($sheet, 'D3', 'D' . count($failedProducts), 'TYPE_LIST', 'Variables!$D$3:$D$' . $stock_availability_num);
+                Excel::setDataValidation($sheet, 'A3', 'A' . count($failedProducts), 'TYPE_LIST', 'Variables!$A$3:$A$' . $productsNum);
+                Excel::setDataValidation($sheet, 'D3', 'D' . count($failedProducts), 'TYPE_LIST', 'Variables!$D$3:$D$' . $stockAvailabilityNum);
 
                 $sheet->setCellValue('G2', 'Error');
                 $sheet->getStyle('G2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
@@ -835,9 +844,9 @@ class ProductsController extends Controller
                     $j = 0;
                     foreach ($fields as $field) {
                         if ($field == "productId") {
-                            $cellValue = $mapProductIdName[$product[$field]];
+                            $cellValue = $mapProductIdName[$product[$j]];
                         } else if ($field == "stockStatusId") {
-                            $cellValue = $mapStockIdName[$product[$field]];
+                            $cellValue = $mapStockIdName[$product[$j]];
                         } else {
                             $cellValue = $product[$j];
                         }
@@ -931,7 +940,7 @@ class ProductsController extends Controller
             $mapProductIdName = [];
             $productsNum = 2;
             $nameField = "productName_" . $this->objUser->language;
-            foreach($allProducts as $product) {
+            foreach ($allProducts as $product) {
                 $productsNum++;
                 $arrProducts[] = array($product[$nameField], $product['id']);
                 $mapProductIdName[$product['id']] = $product[$nameField];
@@ -950,7 +959,7 @@ class ProductsController extends Controller
             $sheet = $spreadsheet->setActiveSheetIndex(1);
 
             // Set validation and formula 
-            Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$'.$productsNum);
+            Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -961,7 +970,7 @@ class ProductsController extends Controller
 
             $allProductsIds = implode(", ", array_keys($mapProductIdName));
             $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
-            $allBonuses = $dbBonus->findWhere("entityProductId in (".$allProductsIds. ") AND isActive = 1");
+            $allBonuses = $dbBonus->findWhere("entityProductId in (" . $allProductsIds . ") AND isActive = 1");
 
             $bonusesNum = count($allBonuses) + 2;
 
@@ -969,7 +978,7 @@ class ProductsController extends Controller
             $sheet = $spreadsheet->setActiveSheetIndex(0);
 
             // Set data validation for bonuses and stock availability
-            Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$'.$bonusesNum);
+            Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $bonusesNum);
 
             // Add all bonuses to multidimensional array 
             $multiBonuses = [];
@@ -979,10 +988,10 @@ class ProductsController extends Controller
                 "bonus"
             ];
             $i = 3;
-            foreach($allBonuses as $bonus) {
+            foreach ($allBonuses as $bonus) {
                 $singleBonus = [];
-                foreach($fields as $field) {
-                    if($field == "entityProductId") {
+                foreach ($fields as $field) {
+                    if ($field == "entityProductId") {
                         $cellValue = $mapProductIdName[$bonus[$field]];
                     } else {
                         $cellValue = $bonus[$field];
@@ -997,7 +1006,7 @@ class ProductsController extends Controller
             $sheet->fromArray($multiBonuses, NULL, 'A3', true);
 
             // Create excel sheet
-            $productsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-".$this->objUser->id."-".time().".xlsx";
+            $productsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-" . $this->objUser->id . "-" . time() . ".xlsx";
             Excel::saveSpreadsheetToPath($spreadsheet, $productsSheetUrl);
 
             $this->webResponse->errorCode = 1;
@@ -1013,7 +1022,7 @@ class ProductsController extends Controller
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
         // basename($_FILES["file"]["name"])
 
-        $targetFile = $this->getUploadDirectory() . "reports/products-bonus/".$this->objUser->id."-".$fileName."-".time().".$ext";
+        $targetFile = $this->getUploadDirectory() . "reports/products-bonus/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
 
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
@@ -1058,7 +1067,7 @@ class ProductsController extends Controller
             $allProducts = $dbProducts->findWhere($query);
 
             $mapProductIdProduct = [];
-            foreach($allProducts as $product) {
+            foreach ($allProducts as $product) {
                 $mapProductIdProduct[$product['productId']] = $product;
                 $mapProductIdMinQuant[$product['productId']] = [];
             }
@@ -1078,14 +1087,14 @@ class ProductsController extends Controller
             $firstRow = true;
             $secondRow = false;
             $finished = false;
-            foreach($sheet->getRowIterator() as $row) {
+            foreach ($sheet->getRowIterator() as $row) {
                 $singleBonus = [];
 
-                if($firstRow) {
+                if ($firstRow) {
                     $firstRow = false;
                     $secondRow = true;
                     continue;
-                } else if($secondRow) {
+                } else if ($secondRow) {
                     $secondRow = false;
                     continue;
                 }
@@ -1102,13 +1111,13 @@ class ProductsController extends Controller
 
                     array_push($singleBonus, $cellValue);
 
-                    switch($cellLetter) {
+                    switch ($cellLetter) {
                         case "A":
-                            if(!is_numeric($cellValue)) {
+                            if (!is_numeric($cellValue)) {
                                 $finished = true;
                                 break;
                             } else {
-                                if(array_key_exists($cellValue, $mapProductIdProduct)) {
+                                if (array_key_exists($cellValue, $mapProductIdProduct)) {
                                     $dbProduct = $mapProductIdProduct[$cellValue];
                                     array_push($productIdsWithBonus, $cellValue);
                                 } else {
@@ -1117,12 +1126,12 @@ class ProductsController extends Controller
                             }
                             break;
                         case "B":
-                            if(!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Minimum Quantity must be a positive whole number");
                             } else {
-                                $minOrder = (int) $cellValue;
+                                $minOrder = (int)$cellValue;
                                 $allQuant = $mapProductIdMinQuant[$dbProduct['productId']];
-                                if(in_array($minOrder, $allQuant)) {
+                                if (in_array($minOrder, $allQuant)) {
                                     array_push($errors, "Minimum Quantity should be unique by product");
                                 } else {
                                     array_push($allQuant, $minOrder);
@@ -1131,28 +1140,28 @@ class ProductsController extends Controller
                             }
                             break;
                         case "C":
-                            if(!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Bonus Quantity must be a positive whole number");
                             } else {
-                                $bonus = (int) $cellValue;
+                                $bonus = (int)$cellValue;
                             }
                             break;
                     }
                 }
 
-                if($finished) {
+                if ($finished) {
                     break;
                 }
 
                 array_push($allBonuses, $singleBonus);
                 array_push($allErrors, $errors);
 
-                if(count($errors) > 0) {
+                if (count($errors) > 0) {
                     $failedSheet = true;
                 }
             }
 
-            if($failedSheet) {
+            if ($failedSheet) {
                 // Setup excel sheet
                 $sheetnameUserInput = 'User Input';
                 $sheetnameDatabaseInput = 'Database Input';
@@ -1166,7 +1175,7 @@ class ProductsController extends Controller
                 $mapProductIdName = [];
                 $productsNum = 2;
                 $nameField = "productName_" . $this->objUser->language;
-                foreach($allProducts as $product) {
+                foreach ($allProducts as $product) {
                     $productsNum++;
                     $arrProducts[] = array($product[$nameField], $product['productId']);
                     $mapProductIdName[$product['productId']] = $product[$nameField];
@@ -1185,7 +1194,7 @@ class ProductsController extends Controller
                 $sheet = $spreadsheet->setActiveSheetIndex(1);
 
                 // Set validation and formula 
-                Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$'.$productsNum);
+                Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
 
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -1195,7 +1204,7 @@ class ProductsController extends Controller
                 $sheet = $spreadsheet->setActiveSheetIndex(0);
 
                 // Set data validation for products
-                Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$'.$productsNum);
+                Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $productsNum);
 
                 $sheet->setCellValue('D2', 'Error');
                 $sheet->getStyle('D2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
@@ -1207,12 +1216,12 @@ class ProductsController extends Controller
                     "minOrder",
                     "bonus"
                 ];
-                for($i = 0; $i < count($allBonuses); $i++) {
+                for ($i = 0; $i < count($allBonuses); $i++) {
                     $bonus = $allBonuses[$i];
                     $singleBonus = [];
                     $j = 0;
-                    foreach($fields as $field) {
-                        if($field == "productId") {
+                    foreach ($fields as $field) {
+                        if ($field == "productId") {
                             $cellValue = $mapProductIdName[$bonus[$j]];
                         } else {
                             $cellValue = $bonus[$j];
@@ -1231,12 +1240,12 @@ class ProductsController extends Controller
                 $sheet->fromArray($multiBonuses, NULL, 'A3', true);
 
                 // Create excel sheet
-                $failedProductsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-".$this->objUser->id."-".time().".xlsx";
+                $failedProductsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-" . $this->objUser->id . "-" . time() . ".xlsx";
                 Excel::saveSpreadsheetToPath($spreadsheet, $failedProductsSheetUrl);
             } else {
                 $productIdsWithoutBonus = [];
-                foreach($mapProductIdProduct as $productId => $product) {
-                    if(!in_array($productId, $productIdsWithBonus)) {
+                foreach ($mapProductIdProduct as $productId => $product) {
+                    if (!in_array($productId, $productIdsWithBonus)) {
                         array_push($productIdsWithoutBonus, $productId);
                     }
                 }
@@ -1246,13 +1255,13 @@ class ProductsController extends Controller
                 $allProductsIds = implode(", ", array_keys($mapProductIdProduct));
 
                 $commands = [
-                    "UPDATE entityProductSell SET bonusTypeId = '2' WHERE productId IN (".$productIdsWithBonusStr.");",
-                    "UPDATE entityProductSell SET bonusTypeId = '1' WHERE productId IN (".$productIdsWithoutBonusStr.");",
-                    "DELETE FROM entityProductSellBonusDetail WHERE entityProductId IN (".$allProductsIds. ") AND isActive = 1",
+                    "UPDATE entityProductSell SET bonusTypeId = '2' WHERE productId IN (" . $productIdsWithBonusStr . ");",
+                    "UPDATE entityProductSell SET bonusTypeId = '1' WHERE productId IN (" . $productIdsWithoutBonusStr . ");",
+                    "DELETE FROM entityProductSellBonusDetail WHERE entityProductId IN (" . $allProductsIds . ") AND isActive = 1",
                 ];
 
                 foreach ($allBonuses as $bonus) {
-                    $query = "INSERT INTO entityProductSellBonusDetail (`entityProductId`, `minOrder`, `bonus`, `isActive`) VALUES ('".$bonus[0]."', '".$bonus[1]."', '".$bonus[2]."', '1')";
+                    $query = "INSERT INTO entityProductSellBonusDetail (`entityProductId`, `minOrder`, `bonus`, `isActive`) VALUES ('" . $bonus[0] . "', '" . $bonus[1] . "', '" . $bonus[2] . "', '1')";
                     array_push($commands, $query);
                 }
 
@@ -1260,14 +1269,14 @@ class ProductsController extends Controller
             }
 
             // Update logs
-            if($failedSheet) {
+            if ($failedSheet) {
                 $dbBonusUpdateUpload->failedLog = json_encode($allBonuses);
             } else {
                 $dbBonusUpdateUpload->successLog = json_encode($allBonuses);
             }
 
             $this->f3->set("objBonusUpdateUpload", $dbBonusUpdateUpload);
-            if(!is_null($failedProductsSheetUrl)) {
+            if (!is_null($failedProductsSheetUrl)) {
                 $this->f3->set("failedProductsSheetUrl", "/" . $failedProductsSheetUrl);
             }
 
