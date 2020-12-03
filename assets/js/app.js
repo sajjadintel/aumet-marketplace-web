@@ -44,10 +44,10 @@ var WebApp = (function () {
 
 	var _alertNewOrders = function (ordersCount) {
 		Swal.fire({
-			text: "You have received ( "+ordersCount+" ) orders",
+			text: 'You have received ( ' + ordersCount + ' ) orders',
 			icon: 'success',
 			buttonsStyling: false,
-			confirmButtonText: "Start Working On Them",
+			confirmButtonText: 'Start Working On Them',
 			showCancelButton: true,
 			cancelButtonText: 'Ok',
 			customClass: {
@@ -57,7 +57,7 @@ var WebApp = (function () {
 		}).then((result) => {
 			KTUtil.scrollTop();
 			if (result.value) {
-				WebApp.loadPage("/web/distributor/order/new");
+				WebApp.loadPage('/web/distributor/order/new');
 			}
 		});
 	};
@@ -244,7 +244,7 @@ var WebApp = (function () {
 		}
 	};
 
-	var _blockPage = function (_msgKey = "loading") {
+	var _blockPage = function (_msgKey = 'loading') {
 		KTApp.blockPage({
 			overlayColor: 'black',
 			opacity: 0.2,
@@ -310,7 +310,6 @@ var WebApp = (function () {
 	};
 
 	var _signout = function () {
-
 		firebase
 			.auth()
 			.signOut()
@@ -323,7 +322,6 @@ var WebApp = (function () {
 	};
 
 	var _setUpFirebase = function () {
-
 		firebase.auth().onAuthStateChanged(function (user) {
 			if (!user) {
 				_loadPage('/web/auth/signout', false, null);
@@ -365,74 +363,155 @@ var WebApp = (function () {
 		);
 	};
 
-	var _createDatatable = function (vElementId, vColumns, vData, vAdditionalOptions) {
-		//////////////////////////
-		// delete cached datatable
-		if (datatableVar != null && $.fn.DataTable.isDataTable(datatableVar)) {
-			datatableVar.clear();
-			datatableVar.destroy();
-		}
+	var _createDatatableServerside = function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
+		_blurPage();
+		_blockPage();
 
-		var table = $('#' + vElementId);
+		// // delete cached datatable
+		// if ($.fn.DataTable.isDataTable(datatableVar)) {
+		// 	datatableVar.clear().destroy();
+		// }
 
-		///////////////////////
-		// initialize datatable
-		var fileName = 'Aumet Marketplace';
-		// if (!$('#pageTitle').is(':hidden')) {
-		// 	fileName += ' - ' + $('#pageTitle').text();
-		// }
-		// if (!$('#dashboard_daterangepicker_start').is(':hidden')) {
-		// 	fileName += ' - ' + $('#dashboard_daterangepicker_start').data('dateFrom') + ' to ' + $('#dashboard_daterangepicker_start').data('dateTo');
-		// }
-		// if (!$('#dashboard_daterangepicker_end').is(':hidden')) {
-		// 	fileName += ' -- ' + $('#dashboard_daterangepicker_end').data('dateFrom') + ' to ' + $('#dashboard_daterangepicker_start').data('dateTo');
-		// }
+		var fileName = 'Aumet Marketplace - ' + vTableName;
 
 		var dbOptions = {
-			data: vData,
-			columns: vColumns,
-			rowId: 'id',
-			dom: 'Blfrtip',
-			buttons: [
-				{ extend: 'excelHtml5', filename: fileName },
-				{ extend: 'pdfHtml5', filename: fileName },
-			],
+			dom: 'Brt<"float-right"i><"float-right"l><"float-left"p>',
 			responsive: true,
-			pageLength: 25,
 			scrollX: false,
 			orderCellsTop: true,
 			order: [[0, 'asc']],
+			destroy: true,
+			language: {
+				lengthMenu: '_MENU_',
+				info: 'Showing _START_ - _END_ of _TOTAL_',
+				infoEmpty: 'Showing 0',
+				infoFiltered: '(from _MAX_ total)',
+			},
+			buttons: [
+				{
+					extend: 'excelHtml5',
+					filename: fileName,
+					exportOptions: {
+						columns: '.export_datatable',
+					},
+				},
+				{
+					extend: 'pdfHtml5',
+					filename: fileName,
+					exportOptions: {
+						columns: '.export_datatable',
+					},
+				},
+			],
+			processing: true,
+			serverSide: true,
+			ajax: {
+				url: vUrl,
+				dataType: 'json',
+				type: 'POST',
+				data: {},
+			},
+			columnDefs: vColumnDefs,
 		};
+
+		if (vParams != null) {
+			dbOptions['ajax']['data']['query'] = vParams;
+		}
 
 		var dbOptionsObj = { ...dbOptions };
 
-		console.log(vAdditionalOptions);
 		if (vAdditionalOptions && vAdditionalOptions.datatableOptions) {
 			var dbOptionsObj = { ...dbOptions, ...vAdditionalOptions.datatableOptions };
 		}
 
-		datatableVar = $(table).DataTable(dbOptionsObj).draw();
+		datatableVar = $('' + vElementId).DataTable(dbOptionsObj);
 
-		if (vAdditionalOptions && vAdditionalOptions.addSettings) {
-			$('#' + vAdditionalOptions.addSettings.addButton).on('click', function () {
-				datatableVar.row.add(vAdditionalOptions.addSettings.addText).draw(false);
-			});
-		}
+		datatableVar.on('draw', function () {
+			_unblurPage();
+			_unblockPage();
+		});
 
 		return datatableVar;
 	};
 
-	var _handleNotificationTimer = function (webResponse){
+	var _createDatatableLocal = function (vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions = null) {
+		_blurPage();
+		_blockPage();
+
+		// // delete cached datatable
+		// if ($.fn.DataTable.isDataTable(datatableVar)) {
+		// 	datatableVar.clear().destroy();
+		// }
+
+		var fileName = 'Aumet Marketplace - ' + vTableName;
+
+		var dbOptions = {
+			dom: 'Brt<"float-right"i><"float-right"l><"float-left"p>',
+			responsive: true,
+			scrollX: false,
+			orderCellsTop: true,
+			order: [[0, 'asc']],
+			destroy: true,
+			language: {
+				lengthMenu: '_MENU_',
+				info: 'Showing _START_ - _END_ of _TOTAL_',
+				infoEmpty: 'Showing 0',
+				infoFiltered: '(from _MAX_ total)',
+			},
+			buttons: [
+				{
+					extend: 'excelHtml5',
+					filename: fileName,
+					exportOptions: {
+						columns: '.export_datatable',
+					},
+				},
+				{
+					extend: 'pdfHtml5',
+					filename: fileName,
+					exportOptions: {
+						columns: '.export_datatable',
+					},
+				},
+			],
+			processing: true,
+			data: vData,
+			columnDefs: vColumnDefs,
+		};
+
+		var dbOptionsObj = { ...dbOptions };
+
+		if (vAdditionalOptions && vAdditionalOptions.datatableOptions) {
+			var dbOptionsObj = { ...dbOptions, ...vAdditionalOptions.datatableOptions };
+		}
+
+		datatableVar = $('' + vElementId).DataTable(dbOptionsObj);
+
+		datatableVar.on('draw', function () {
+			_unblurPage();
+			_unblockPage();
+		});
+
+		return datatableVar;
+	};
+
+	var _reloadDatatable = function (vType, vElementId) {
+		if ($.fn.DataTable.isDataTable('' + vElementId)) {
+			$('' + vElementId).ajax.reload();
+		}
+	};
+
+	var _handleNotificationTimer = function (webResponse) {
 		if (webResponse && typeof webResponse === 'object') {
-			if(webResponse.data > 0){
+			if (webResponse.data > 0) {
 				_alertNewOrders(webResponse.data);
 			}
 		}
 	};
 
-	var _initNotificationTimer = function (){
-		setInterval(function() {
-			WebApp.getAsync("/web/notification/order/new", _handleNotificationTimer);
+	var _initNotificationTimer = function () {
+		setInterval(function () {
+			WebApp.getAsync('/web/notification/order/new', _handleNotificationTimer);
 		}, 5000);
 	};
 
@@ -465,7 +544,7 @@ var WebApp = (function () {
 		closeSubPage: function (fnCallback = null) {
 			return _closeSubPage(fnCallback);
 		},
-		block: function (_msgKey = "loading") {
+		block: function (_msgKey = 'loading') {
 			return _blockPage(_msgKey);
 		},
 		unblock: function () {
@@ -489,8 +568,17 @@ var WebApp = (function () {
 		openModal: function (webResponse) {
 			_openModal(webResponse);
 		},
-		createDatatable: function (vElementId, vColumns, vData, vAdditionalOptions) {
-			_createDatatable(vElementId, vColumns, vData, vAdditionalOptions);
+		CreateDatatableServerside: function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
+			_createDatatableServerside(vTableName, vElementId, vUrl, vColumnDefs, vParams, vAdditionalOptions);
+		},
+		CreateDatatableLocal: function (vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions = null) {
+			_createDatatableLocal(vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions);
+		},
+		ReloadDatatableLocal: function (vElementId) {
+			_reloadDatatable('local', vElementId);
+		},
+		ReloadDatatableServerside: function (vElementId) {
+			_reloadDatatable('serverside', vElementId);
 		},
 	};
 })();

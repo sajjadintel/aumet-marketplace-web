@@ -297,14 +297,12 @@ function compress_htmlcode($codedata)
 	<script type="text/javascript" src="/assets/js/locals.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/cart.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/app.js<?php echo $platformVersion ?>"></script>
+	<script type="text/javascript" src="/assets/js/app-modals.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/autocomplete.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/products-search.js<?php echo $platformVersion ?>"></script>
-	<script type="text/javascript" src="/assets/js/distributor-orders.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-feedback.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-products.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-customers.js<?php echo $platformVersion ?>"></script>
-	<script type="text/javascript" src="/assets/js/distributor-dashboard.js<?php echo $platformVersion ?>"></script>
-	<script type="text/javascript" src="/assets/js/datatables.js<?php echo $platformVersion ?>"></script>
 
 
 	<script type="text/javascript" src="/assets/js/treeview.js<?php echo $platformVersion ?>"></script>

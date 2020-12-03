@@ -1,7 +1,7 @@
 <?php
 class Datatable
 {
-    public $draw, $offset, $limit, $columnIndex, $sortBy, $sortByOrder;
+    public $draw, $offset, $limit, $columnIndex, $sortBy, $sortByOrder, $query;
 
     function __construct($request)
     {
@@ -11,6 +11,7 @@ class Datatable
         $this->columnIndex = $request['order'][0]['column']; // Column index
         $this->sortBy = $request['columns'][$this->columnIndex]['data']; // Column name
         $this->sortByOrder = $request['order'][0]['dir']; // asc or desc
+        $this->query = $request['query']; // custom data for filtering
 
     }
 }

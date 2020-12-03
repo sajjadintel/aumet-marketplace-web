@@ -205,7 +205,7 @@ var DistributorOrdersDataTable = (function () {
 							WebAppLocals.getMessage('print') +
 							'</a>';
 						var btnView =
-							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderViewModal(' +
+							'<a href="javascript:;" onclick=\'WebAppModals.orderViewModal(' +
 							row.id +
 							')\' \
 						class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\

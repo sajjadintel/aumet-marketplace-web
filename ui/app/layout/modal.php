@@ -81,7 +81,8 @@
                     </div>
                     <div class="col-md-12">
                         <!--begin: Datatable-->
-                        <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable_detail"></div>
+                        <table id="order_details_datatable" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
+                        </table>
                         <!--end: Datatable-->
                     </div>
                     <div class="col-md-12 mt-10 text-center">

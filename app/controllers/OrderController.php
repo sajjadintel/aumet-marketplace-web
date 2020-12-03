@@ -6,14 +6,17 @@ class OrderController extends Controller
     {
         $this->handleGetDistributorOrders('new');
     }
+
     function getDistributorOrdersPending()
     {
         $this->handleGetDistributorOrders('pending');
     }
+
     function getDistributorOrdersUnpaid()
     {
         $this->handleGetDistributorOrders('unpaid');
     }
+
     function getDistributorOrdersHistory()
     {
         $this->handleGetDistributorOrders('history');
@@ -91,11 +94,12 @@ class OrderController extends Controller
             $modalRoute = '';
             $modalText = '';
             $modalTitle = '';
-            if ($fromDashboard) {
-                $modalCallback = 'DistributorDashboardDataTable.reloadDatatable';
-            } else {
-                $modalCallback = 'DistributorOrdersDataTable.reloadDatatable';
-            }
+            $modalCallback = '';
+            // if ($fromDashboard) {
+            //     $modalCallback = 'DistributorDashboardDataTable.reloadDatatable';
+            // } else {
+            //     $modalCallback = 'DistributorOrdersDataTable.reloadDatatable';
+            // }
             $modalButton = $this->f3->get('vButton_update');
 
             switch ($statusId) {
@@ -220,22 +224,22 @@ class OrderController extends Controller
 
         // $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
 
-        // if (is_array($datatable['query'])) {
-        //     $entityBuyerId = $datatable['query']['entityBuyerId'];
-        //     if (isset($entityBuyerId) && is_array($entityBuyerId)) {
-        //         $query .= " AND entityBuyerId in (" . implode(",", $entityBuyerId) . ")";
-        //     }
+        if (is_array($datatable->query)) {
+            $entityBuyerId = $datatable->query['entityBuyerId'];
+            if (isset($entityBuyerId) && is_array($entityBuyerId)) {
+                $query .= " AND entityBuyerId in (" . implode(",", $entityBuyerId) . ")";
+            }
 
-        //     $startDate = $datatable['query']['startDate'];
-        //     if (isset($startDate) && $startDate != "") {
-        //         $query .= " AND insertDateTime >= '$startDate'";
-        //     }
+            $startDate = $datatable->query['startDate'];
+            if (isset($startDate) && $startDate != "") {
+                $query .= " AND insertDateTime >= '$startDate'";
+            }
 
-        //     $endDate = $datatable['query']['endDate'];
-        //     if (isset($endDate) && $endDate != "") {
-        //         $query .= " AND insertDateTime <= '$endDate'";
-        //     }
-        // }
+            $endDate = $datatable->query['endDate'];
+            if (isset($endDate) && $endDate != "") {
+                $query .= " AND insertDateTime <= '$endDate'";
+            }
+        }
 
         $dbData = new BaseModel($this->db, "vwOrderEntityUser");
 

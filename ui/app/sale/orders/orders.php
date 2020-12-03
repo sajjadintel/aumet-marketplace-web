@@ -19,11 +19,6 @@ function compress_htmlcode($codedata)
         <form class="d-flex position-relative w-100 m-auto">
 
             <div class="d-flex flex-column-fluid">
-                <a class="btn btn-lg btn-primary mr-2 btn-lg-radius" title="Export To Excel" onclick="">
-                    <i class="la la-file-excel-o"></i> Export to Excel
-                </a>
-            </div>
-            <div class="d-flex flex-column-fluid">
                 <div class="input-group input-group-lg mr-5">
                     <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
@@ -60,9 +55,6 @@ function compress_htmlcode($codedata)
             <!--begin: Datatable-->
             <table id="datatable" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
             </table>
-            <!--
-            <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
-            <!--end: Datatable-->
         </div>
     </div>
 </div>
@@ -73,6 +65,9 @@ function compress_htmlcode($codedata)
         var url = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 
         var columnDefs = [{
+            className: "export_datatable",
+            targets: [0, 1, 2, 3]
+        }, {
             targets: 0,
             title: '#',
             data: 'id',
@@ -166,6 +161,7 @@ function compress_htmlcode($codedata)
             targets: 7,
             title: '',
             data: 'id',
+            orderable: false,
             render: function(data, type, row, meta) {
                 var dropdownStart =
                     '<div class="dropdown dropdown-inline">\
@@ -189,7 +185,7 @@ function compress_htmlcode($codedata)
                     WebAppLocals.getMessage('print') +
                     '</a>';
                 var btnView =
-                    '<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderViewModal(' +
+                    '<a href="javascript:;" onclick=\'WebAppModals.orderViewModal(' +
                     row.id +
                     ')\' \
 						class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
@@ -198,7 +194,7 @@ function compress_htmlcode($codedata)
                     '</a>';
 
                 var btnOrderProcess =
-                    '<a class="navi-link" href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+                    '<a class="navi-link" href="javascript:;" onclick=\'WebAppModals.orderStatusModal(' +
                     row.id +
                     ',3)\' \
 						class="btn btn-sm btn-primary btn-hover-primary  mr-2 navi-link" title="Order Process">\
@@ -207,7 +203,7 @@ function compress_htmlcode($codedata)
                     WebAppLocals.getMessage('orderStatus_Processing') +
                     '</span></a>';
                 var btnOrderComplete =
-                    '<a class="navi-link" href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+                    '<a class="navi-link" href="javascript:;" onclick=\'WebAppModals.orderStatusModal(' +
                     row.id +
                     ',4)\' \
 						class="btn btn-sm btn-primary btn-hover-primary  mr-2" navi-link title="Order Complete">\
@@ -216,7 +212,7 @@ function compress_htmlcode($codedata)
                     WebAppLocals.getMessage('orderStatus_Completed') +
                     '</span></a>';
                 var btnOrderOnHold =
-                    '<a class="navi-link bg-danger-hover" href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+                    '<a class="navi-link bg-danger-hover" href="javascript:;" onclick=\'WebAppModals.orderStatusModal(' +
                     row.id +
                     ',2)\' \
 						class="btn btn-sm btn-primary btn-hover-primary mr-2 navi-link" title="Order On Hold">\
@@ -225,7 +221,7 @@ function compress_htmlcode($codedata)
                     WebAppLocals.getMessage('orderStatus_OnHold') +
                     '</span></a>';
                 var btnOrderCancel =
-                    '<a class="navi-link bg-danger-hover" href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+                    '<a class="navi-link bg-danger-hover" href="javascript:;" onclick=\'WebAppModals.orderStatusModal(' +
                     row.id +
                     ',5)\' \
 						class="btn btn-sm btn-primary btn-hover-primary  mr-2 navi-link" title="Order Cancel">\
@@ -235,7 +231,7 @@ function compress_htmlcode($codedata)
                     '</span></a>';
 
                 var btnOrderPaid =
-                    '<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderStatusModal(' +
+                    '<a href="javascript:;" onclick=\'WebAppModals.orderStatusModal(' +
                     row.id +
                     ',7)\' \
 						class="btn btn-sm btn-primary btn-hover-primary  mr-2 navi-link" title="Order Paid">\
@@ -275,8 +271,53 @@ function compress_htmlcode($codedata)
             },
         }];
 
+        var searchQuery = {
+            entityBuyerId: [],
+            startDate: null,
+            endDate: null
+        };
+
+
+        var _selectBuyer = $('#searchOrdersBuyerInput').select2({
+            placeholder: "<?php echo $vModule_search_buyerNamePlaceholder ?>",
+
+            ajax: {
+                url: '/web/order/customer/list',
+                dataType: 'json',
+                processResults: function(response) {
+                    return {
+                        results: response.data.results,
+                        pagination: {
+                            more: response.data.pagination
+                        }
+                    }
+                }
+            }
+        });
+        _selectBuyer.on("select2:select", function(e) {
+            searchQuery.entityBuyerId = $("#searchOrdersBuyerInput").val();
+            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery);
+
+        });
+        _selectBuyer.on("select2:unselect", function(e) {
+            searchQuery.entityBuyerId = $("#searchOrdersBuyerInput").val();
+            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery);
+        });
+
+        $('#searchOrdersDateInput').daterangepicker({
+            opens: 'left',
+            startDate: moment('2020-01-01'),
+            endDate: moment(),
+        }, function(start, end, label) {
+            searchQuery.startDate = start.format('YYYY-MM-DD');
+            searchQuery.endDate = end.format('YYYY-MM-DD');
+            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery);
+        });
+
+        $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
+
         var initiate = function() {
-            GenericDatatable.init(elementId, url, columnDefs);
+            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery);
         };
         return {
             init: function() {
