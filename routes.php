@@ -101,3 +101,18 @@ $f3->route('POST /web/distributor/product/bestselling', 'ProductsController->pos
 // END dashboard
 
 $f3->route('GET /web/notification/order/new', 'OrderController->getNotifcationsDistributorOrdersNew');
+
+
+$f3->route('GET /web/pharmacy/order/pending', 'OrderController->getPharmacyOrdersPending');
+$f3->route('GET /web/pharmacy/order/unpaid', 'OrderController->getPharmacyOrdersUnpaid');
+$f3->route('GET /web/pharmacy/order/history', 'OrderController->getPharmacyOrdersHistory');
+
+$f3->route('POST /web/pharmacy/order/pending', 'OrderController->postPharmacyOrdersPending');
+$f3->route('POST /web/pharmacy/order/unpaid', 'OrderController->postPharmacyOrdersUnpaid');
+$f3->route('POST /web/pharmacy/order/history', 'OrderController->postPharmacyOrdersHistory');
+
+//$f3->route('POST /web/pharmacy/order/cancel', 'OrderController->postCancelOrder');
+//$f3->route('POST /web/pharmacy/order/complete', 'OrderController->postCompleteOrder');
+//$f3->route('POST /web/pharmacy/order/paid', 'OrderController->postPaidOrder');
+//$f3->route('POST /web/pharmacy/order/process', 'OrderController->postProcessOrder');
+//$f3->route('POST /web/pharmacy/order/onhold', 'OrderController->postOnHoldOrder');

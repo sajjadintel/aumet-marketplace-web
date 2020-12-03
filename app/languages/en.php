@@ -79,6 +79,7 @@ return array(
     'vModule_search_scientificNamePlaceholder' => 'Scientific Name List',
     'vModule_search_distributorNamePlaceholder' => 'Distributor List',
     'vModule_search_buyerNamePlaceholder' => 'Filter by Customer',
+    'vModule_search_sellerNamePlaceholder' => 'Filter by Distributor',
     'vModule_search_stockStatusPlaceholder' => 'Availability',
     'vModule_search_stockStatus_Available' => 'Available Only',
     'vModule_search_stockStatus_others' => 'All',

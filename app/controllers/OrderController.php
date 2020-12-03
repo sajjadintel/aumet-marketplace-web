@@ -1,22 +1,40 @@
 <?php
 
-class OrderController extends Controller
-{
+class OrderController extends Controller {
     function getDistributorOrdersNew()
     {
         $this->handleGetDistributorOrders('new');
     }
+
     function getDistributorOrdersPending()
     {
         $this->handleGetDistributorOrders('pending');
     }
+
     function getDistributorOrdersUnpaid()
     {
         $this->handleGetDistributorOrders('unpaid');
     }
+
     function getDistributorOrdersHistory()
     {
         $this->handleGetDistributorOrders('history');
+    }
+
+
+    function getPharmacyOrdersUnpaid()
+    {
+        $this->handleGetPharmacyOrders('unpaid');
+    }
+
+    function getPharmacyOrdersPending()
+    {
+        $this->handleGetPharmacyOrders('pending');
+    }
+
+    function getPharmacyOrdersHistory()
+    {
+        $this->handleGetPharmacyOrders('history');
     }
 
     function getNotifcationsDistributorOrdersNew()
@@ -73,6 +91,36 @@ class OrderController extends Controller
             echo $this->webResponse->jsonResponse();
         }
     }
+
+    function handleGetPharmacyOrders($status)
+    {
+        if (!$this->f3->ajax()) {
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $renderFile = 'app/sale/orders/ordersPharmacy.php';
+            $title = $this->f3->get('vModule_order_title');
+
+            switch ($status) {
+                case 'pending':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_pending'));
+                    break;
+                case 'unpaid':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_unpaid'));
+                    break;
+                case 'history':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_history'));
+                    break;
+                default:
+                    $this->f3->set('vModule_order_header', 'Unknown List');
+                    break;
+            }
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = $title;
+            $this->webResponse->data = View::instance()->render($renderFile);
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
 
     function getOrderConfirmationDashboard()
     {
@@ -286,14 +334,131 @@ class OrderController extends Controller
         $result = array(
             'q' => $query,
             'meta' => $meta + array(
-                'sort' => $sort,
-                'field' => $field,
-            ),
+                    'sort' => $sort,
+                    'field' => $field,
+                ),
             'data' => $data
         );
 
         echo json_encode($result, JSON_PRETTY_PRINT);
     }
+
+    function postPharmacyOrdersPending()
+    {
+        $this->handlePostPharmacyOrders('pending');
+    }
+
+    function postPharmacyOrdersUnpaid()
+    {
+        $this->handlePostPharmacyOrders('unpaid');
+    }
+
+    function postPharmacyOrdersHistory()
+    {
+        $this->handlePostPharmacyOrders('history');
+    }
+
+    function handlePostPharmacyOrders($status)
+    {
+        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+        $query = "entityBuyerId IN ($arrEntityId)";
+        switch ($status) {
+            case 'unpaid':
+                $query .= " AND statusId = 6";
+                break;
+            case 'pending':
+                $query .= " AND statusId IN (2,3)";
+                break;
+            case 'history':
+                $query .= " AND statusId IN (4,5,6,7)";
+                break;
+            default:
+                break;
+        }
+
+        $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
+
+        if (is_array($datatable['query'])) {
+            $entityBuyerId = $datatable['query']['entityBuyerId'];
+            if (isset($entityBuyerId) && is_array($entityBuyerId)) {
+                $query .= " AND entityBuyerId in (" . implode(",", $entityBuyerId) . ")";
+            }
+
+            $startDate = $datatable['query']['startDate'];
+            if (isset($startDate) && $startDate != "") {
+                $query .= " AND insertDateTime >= '$startDate'";
+            }
+
+            $endDate = $datatable['query']['endDate'];
+            if (isset($endDate) && $endDate != "") {
+                $query .= " AND insertDateTime <= '$endDate'";
+            }
+        }
+
+        $sort = !empty($datatable['sort']['sort']) ? $datatable['sort']['sort'] : 'asc';
+        $field = !empty($datatable['sort']['field']) ? $datatable['sort']['field'] : 'id';
+
+        $meta = array();
+        $page = !empty($datatable['pagination']['page']) ? (int)$datatable['pagination']['page'] : 1;
+        $perpage = !empty($datatable['pagination']['perpage']) ? (int)$datatable['pagination']['perpage'] : 10;
+
+        $total = 0;
+        $offset = ($page - 1) * $perpage;
+
+        $dbData = new BaseModel($this->db, "vwOrderEntityUser");
+
+        $data = [];
+
+        if (!$dbData->exists($field)) {
+            $field = 'id';
+        }
+        if ($query == "") {
+            $total = $dbData->count();
+            $data = $dbData->findAll("$field $sort", $perpage, $offset);
+        } else {
+            $total = $dbData->count($query);
+            $data = $dbData->findWhere($query, "$field $sort", $perpage, $offset);
+        }
+
+        $pages = 1;
+
+        // $perpage 0; get all data
+        if ($perpage > 0) {
+            $pages = ceil($total / $perpage); // calculate total pages
+            $page = max($page, 1); // get 1 page when $_REQUEST['page'] <= 0
+            $page = min($page, $pages); // get last page when $_REQUEST['page'] > $totalPages
+            $offset = ($page - 1) * $perpage;
+            if ($offset < 0) {
+                $offset = 0;
+            }
+
+            //$data = array_slice($data, $offset, $perpage, true);
+        }
+
+        $meta = array(
+            'page' => $page,
+            'pages' => $pages,
+            'perpage' => $perpage,
+            'total' => $total,
+        );
+
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description');
+
+        $result = array(
+            'q' => $query,
+            'meta' => $meta + array(
+                    'sort' => $sort,
+                    'field' => $field,
+                ),
+            'data' => $data
+        );
+
+        echo json_encode($result, JSON_PRETTY_PRINT);
+    }
+
 
     function postOnHoldOrder()
     {
