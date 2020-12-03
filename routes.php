@@ -28,6 +28,7 @@ $f3->route('GET /web/product/brandname/list', 'SearchController->getProductBrand
 $f3->route('GET /web/product/scientificname/list', 'SearchController->getProductScientificNameList');
 $f3->route('GET /web/product/country/list', 'SearchController->getProductCountryList');
 $f3->route('GET /web/order/customer/list', 'SearchController->getOrderBuyerList');
+$f3->route('GET /web/order/Distributor/list', 'SearchController->getOrderSellerList');
 
 
 $f3->route('GET /web/customercare', 'CustomerCareController->get');
