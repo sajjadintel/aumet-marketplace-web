@@ -11,7 +11,7 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" class="form-control" name="id" id="editQuantityProductId">
-                    <input type="hidden" name="fnCallback" class="modalValueCallback" id="editQuantityProductCallback" value="DistributorProductsDataTable.reloadDatatable" />
+                    <input type="hidden" name="fnCallback" class="modalValueCallback" id="editQuantityProductCallback" value="WebApp.reloadDatatable" />
 
                     <div class="form-group row">
                         <label class="col-3 col-form-label">Stock Quantity:</label>

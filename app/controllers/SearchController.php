@@ -156,203 +156,72 @@ class SearchController extends Controller
 
     function postSearchProducts()
     {
-        $query = "";
-        $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
+        ## Read values from Datatables
+        $datatable = new Datatable($_POST);
+        $query = "1=1 ";
 
-        if ($datatable['query'] != "") {
+        $fullQuery = $query;
 
-            $productQuery = "";
-            $productId = $datatable['query']['productId'];
-            if (isset($productId)) {
-                if (is_array($productId)) {
-                    $productQuery = "id in (" . implode(",", $productId) . ")";
-                } else {
-                    $productQuery = "id = $productId";
-                }
+        if (is_array($datatable->query)) {
+            $productId = $datatable->query['productId'];
+            if (isset($productId) && is_array($productId)) {
+                $query .= " AND id in (" . implode(",", $productId) . ")";
             }
 
-            $scientificQuery = "";
-            $scientificNameId = $datatable['query']['scientificNameId'];
-            if (isset($scientificNameId)) {
-                if (is_array($scientificNameId)) {
-                    $scientificQuery = "scientificNameId in (" . implode(",", $scientificNameId) . ")";
-                } else {
-                    $scientificQuery = "scientificNameId = $scientificNameId";
-                }
+            $scientificNameId = $datatable->query['scientificNameId'];
+            if (isset($scientificNameId) && is_array($scientificNameId)) {
+                $query .= " AND scientificNameId in (" . implode(",", $scientificNameId) . ")";
             }
 
-            $entityQuery = "";
-            $entityId = $datatable['query']['entityId'];
-            if (isset($entityId)) {
-                if (is_array($entityId)) {
-                    $entityQuery = "entityId in (" . implode(",", $entityId) . ")";
-                } else {
-                    $entityQuery = "entityId = $entityId";
-                }
+            $entityId = $datatable->query['entityId'];
+            if (isset($entityId) && is_array($entityId)) {
+                $query .= " AND entityId in (" . implode(",", $entityId) . ")";
             }
 
-            if ($productQuery != "" && $scientificQuery != "" && $entityQuery != "") {
-                $query = " $entityQuery and ($productQuery or $scientificQuery)";
-            } elseif ($productQuery != "" && $scientificQuery != "" && $entityQuery == "") {
-                $query = "$productQuery or $scientificQuery";
-            } elseif ($productQuery != "" && $scientificQuery == "" && $entityQuery != "") {
-                $query = " $entityQuery and $productQuery";
-            } elseif ($productQuery != "" && $scientificQuery == "" && $entityQuery == "") {
-                $query = "$productQuery";
-            } elseif ($productQuery == "" && $scientificQuery != "" && $entityQuery != "") {
-                $query = "$entityQuery and $scientificQuery";
-            } elseif ($productQuery == "" && $scientificQuery == "" && $entityQuery != "") {
-                $query = "$entityQuery";
-            } elseif ($productQuery == "" && $scientificQuery != "" && $entityQuery == "") {
-                $query = "$scientificQuery";
+            $stockOption = $datatable->query['stockOption'];
+            if (isset($stockOption) && $stockOption == 1) {
+                $query .= " AND stockStatusId = 1 ";
             }
-
-            if ($datatable['query']['stockOption'] == 1) {
-                if ($query == "") {
-                    $query = "stockStatusId=1";
-                } else {
-                    $query = "stockStatusId=1 and ($query)";
-                }
-            }
-        } else {
-            $query = "stockStatusId=1";
         }
 
-        $sort = !empty($datatable['sort']['sort']) ? $datatable['sort']['sort'] : 'asc';
-        $field = !empty($datatable['sort']['field']) ? $datatable['sort']['field'] : 'id';
+        $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
 
-        $meta = array();
-        $page = !empty($datatable['pagination']['page']) ? (int)$datatable['pagination']['page'] : 1;
-        $perpage = !empty($datatable['pagination']['perpage']) ? (int)$datatable['pagination']['perpage'] : 10;
+        $data = [];
 
-        $offset = ($page - 1) * $perpage;
+        $totalRecords = $dbProducts->count($fullQuery);
+        $totalFiltered = $dbProducts->count($query);
+        $data = $dbProducts->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
 
-        global $dbConnection;
 
-        $total = 0;
-
-        $dbProducts = new BaseModel($dbConnection, "vwEntityProductSell");
-
-        if ($query == "") {
-            //$dbConnection->exec("select count(id) from vwEntityProductSell");
-
-            $total = $dbProducts->count();
-            $dbProducts->all("$field $sort", $perpage, $offset);
-        } else {
-            $total = $dbProducts->count($query);
-            $dbProducts->getWhere($query, "$field $sort", $perpage, $offset);
-        }
-
-        $arrCartDetail = [];
         if (!$dbProducts->dry()) {
-            $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
+            $dbCartDetail = new BaseModel($this->db, "cartDetail");
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
         }
 
-        $data = [];
-        while (!$dbProducts->dry()) {
-            $objItem = new stdClass();
-            $objItem->id = $dbProducts->id;
-            $objItem->entityId = $dbProducts->entityId;
-            $objItem->entityName_ar = $dbProducts->entityName_ar;
-            $objItem->entityName_en = $dbProducts->entityName_en;
-            $objItem->entityName_fr = $dbProducts->entityName_fr;
-            $objItem->productId = $dbProducts->productId;
-            $objItem->scientificNameId = $dbProducts->scientificNameId;
-            $objItem->scientificName = $dbProducts->scientificName;
-            $objItem->productName_ar = $dbProducts->productName_ar;
-            $objItem->productName_en = $dbProducts->productName_en;
-            $objItem->productName_fr = $dbProducts->productName_fr;
-            $objItem->stockStatusId = $dbProducts->stockStatusId;
-            $objItem->stock = $dbProducts->stock;
-            $objItem->stockUpdateDateTime = $dbProducts->stockUpdateDateTime;
-            $objItem->image = $dbProducts->image;
-            $objItem->unitPrice = $dbProducts->unitPrice;
-            $objItem->currency = $dbProducts->currency;
-            $objItem->quantity = $dbProducts->defaultQuantity;
-            $objItem->expiryDate = $dbProducts->expiryDate;
-            $objItem->bonus = 0;
-            $objItem->bonusTypeId = $dbProducts->bonusTypeId;
-
-            $objItem->bonusOptions = [];
-
-            if ($dbProducts->bonusTypeId == 2) {
-                $objItem->bonusOptions = json_decode($dbProducts->bonusConfig);
+        for ($i = 0; $i < count($data); $i++) {
+            if ($data[$i]['bonusTypeId'] == 2) {
+                $data[$i]['bonusOptions'] = json_decode($data[$i]['bonusConfig']);
             }
 
-            /*
-            $objItemBonusOption = new stdClass();
-            $objItemBonusOption->id = 1;
-            $objItemBonusOption->minOrder = 10;
-            $objItemBonusOption->bonus = 2;
-            $objItemBonusOption->selected = 1;
-            $objItemBonusOption->name = $this->f3->get("vModule_bonus_bonusTextTemplate");
-            $objItemBonusOption->name = str_replace("%q", $objItemBonusOption->minOrder, $objItemBonusOption->name);
-            $objItemBonusOption->name = str_replace("%b", $objItemBonusOption->bonus, $objItemBonusOption->name);
-            $objItemBonusOption->formula = "floor(quantity / minOrder) * bonus";
-            $objItem->bonusOptions[] = $objItemBonusOption;
-
-            $objItemBonusOption = new stdClass();
-            $objItemBonusOption->id = 2;
-            $objItemBonusOption->minOrder = 100;
-            $objItemBonusOption->bonus = 30;
-            $objItemBonusOption->selected = 0;
-            $objItemBonusOption->name = $this->f3->get("vModule_bonus_bonusTextTemplate");
-            $objItemBonusOption->name = str_replace("%q", $objItemBonusOption->minOrder, $objItemBonusOption->name);
-            $objItemBonusOption->name = str_replace("%b", $objItemBonusOption->bonus, $objItemBonusOption->name);
-            $objItemBonusOption->formula = "floor(quantity / minOrder) * bonus";
-            $objItem->bonusOptions[] = $objItemBonusOption;
-
-            */
-
-            $objItem->cart = 0;
-            foreach ($arrCartDetail as $objCartItem) {
-                if ($objCartItem->entityProductId == $objItem->id) {
-                    $objItem->cart = $objCartItem->quantity;
-                    break;
+            $data[$i]['cart'] = 0;
+            if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
+                foreach ($arrCartDetail as $objCartItem) {
+                    if ($objCartItem['entityProductId'] == $data[$i]['id']) {
+                        $data[$i]['cart'] = $objCartItem['quantity'];
+                        break;
+                    }
                 }
             }
-
-            $data[] = $objItem;
-            $dbProducts->next();
         }
 
-        $pages = 1;
-
-        // $perpage 0; get all data
-        if ($perpage > 0) {
-            $pages = ceil($total / $perpage); // calculate total pages
-            $page = max($page, 1); // get 1 page when $_REQUEST['page'] <= 0
-            $page = min($page, $pages); // get last page when $_REQUEST['page'] > $totalPages
-            $offset = ($page - 1) * $perpage;
-            if ($offset < 0) {
-                $offset = 0;
-            }
-
-            //$data = array_slice($data, $offset, $perpage, true);
-        }
-
-        $meta = array(
-            'page' => $page,
-            'pages' => $pages,
-            'perpage' => $perpage,
-            'total' => $total,
+        ## Response
+        $response = array(
+            "draw" => intval($datatable->draw),
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $totalFiltered,
+            "data" => $data
         );
 
-        header('Content-Type: application/json');
-        header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description');
-
-        $result = array(
-            'q' => $query,
-            'meta' => $meta + array(
-                'sort' => $sort,
-                'field' => $field,
-            ),
-            'data' => $data
-        );
-
-        echo json_encode($result, JSON_PRETTY_PRINT);
+        $this->jsonResponseAPI($response);
     }
 }

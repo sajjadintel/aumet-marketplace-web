@@ -76,9 +76,9 @@ var CustomerFeedbackDataTable = (function () {
 					field: 'userFullname',
 					title: WebAppLocals.getMessage('userFullname'),
 					autoHide: false,
-					template: row => {
-						return "<a href='mailto:"+row.userEmail+"' >"+row.userFullname+"</a>"
-					}
+					template: (row) => {
+						return "<a href='mailto:" + row.userEmail + "' >" + row.userFullname + '</a>';
+					},
 				},
 				{
 					field: 'rateId',
@@ -108,13 +108,12 @@ var CustomerFeedbackDataTable = (function () {
 							5: {
 								title: row.rateName,
 								class: ' label-primary',
-							}
+							},
 						};
 
 						var output = '';
 
-						output +=
-							'<div><span class="label label-lg font-weight-bold ' + status[row.rateId].class + ' label-inline">' + status[row.rateId].title + '</span></div>';
+						output += '<div><span class="label label-lg font-weight-bold ' + status[row.rateId].class + ' label-inline">' + status[row.rateId].title + '</span></div>';
 
 						return output;
 					},
@@ -123,39 +122,35 @@ var CustomerFeedbackDataTable = (function () {
 					field: 'stars',
 					sortable: false,
 					width: 150,
-					title: "",
+					title: '',
 					autoHide: false,
 					// callback function support for column rendering
 					template: function (row) {
-
-
-						var cssData = "text-muted";
+						var cssData = 'text-muted';
 						switch (row.rateId) {
 							case 1:
-								cssData = "text-danger";
+								cssData = 'text-danger';
 								break;
 							case 2:
-								cssData = "text-warning";
+								cssData = 'text-warning';
 								break;
 							case 3:
-								cssData = "text-dark";
+								cssData = 'text-dark';
 								break;
 							case 4:
-								cssData = "text-info";
+								cssData = 'text-info';
 								break;
 							case 5:
-								cssData = "text-primary";
+								cssData = 'text-primary';
 								break;
 						}
 
 						var output = '<div>';
-						for(var i=0; i<row.stars; i++){
-							output +=
-								'<i class="icon-xl fas fa-star mr-1 '+cssData+'"></i>';
+						for (var i = 0; i < row.stars; i++) {
+							output += '<i class="icon-xl fas fa-star mr-1 ' + cssData + '"></i>';
 						}
-						for(; i<5; i++){
-							output +=
-								'<i class="icon-xl far fa-star mr-1 text-muted"></i>';
+						for (; i < 5; i++) {
+							output += '<i class="icon-xl far fa-star mr-1 text-muted"></i>';
 						}
 						output += '</div>';
 
@@ -170,17 +165,14 @@ var CustomerFeedbackDataTable = (function () {
 					width: 200,
 					autoHide: false,
 					template: function (row) {
-
-
 						var btnView =
-							'<a href="javascript:;" onclick=\'DistributorOrdersDataTable.orderViewModal(' +
+							'<a href="javascript:;" onclick=\'WebAppModals.orderViewModal(' +
 							row.orderId +
 							')\' \
 						class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
 						<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
 							WebAppLocals.getMessage('viewOrder') +
 							'</a>';
-
 
 						var outActions = '';
 
