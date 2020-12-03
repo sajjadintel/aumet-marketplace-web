@@ -1,6 +1,6 @@
 'use strict';
 
-var datatableVar;
+var datatableVar = [];
 
 // Class Definition
 var WebApp = (function () {
@@ -424,9 +424,9 @@ var WebApp = (function () {
 			var dbOptionsObj = { ...dbOptions, ...vAdditionalOptions.datatableOptions };
 		}
 
-		datatableVar = $('' + vElementId).DataTable(dbOptionsObj);
+		datatableVar.push($('' + vElementId).DataTable(dbOptionsObj));
 
-		datatableVar.on('draw', function () {
+		datatableVar[datatableVar.length - 1].on('draw', function () {
 			_unblurPage();
 			_unblockPage();
 		});
@@ -485,9 +485,9 @@ var WebApp = (function () {
 			var dbOptionsObj = { ...dbOptions, ...vAdditionalOptions.datatableOptions };
 		}
 
-		datatableVar = $('' + vElementId).DataTable(dbOptionsObj);
+		datatableVar.push($('' + vElementId).DataTable(dbOptionsObj));
 
-		datatableVar.on('draw', function () {
+		datatableVar[datatableVar.length - 1].on('draw', function () {
 			_unblurPage();
 			_unblockPage();
 		});
@@ -579,6 +579,14 @@ var WebApp = (function () {
 		},
 		ReloadDatatableServerside: function (vElementId) {
 			_reloadDatatable('serverside', vElementId);
+		},
+		reloadDatatable: function (webResponse) {
+			if ($('#popupModal').is(':visible')) {
+				$('#popupModal').modal('hide');
+			}
+			datatableVar.forEach(function (vValue) {
+				vValue.ajax.reload();
+			});
 		},
 	};
 })();

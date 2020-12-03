@@ -1,7 +1,5 @@
 'use strict';
 
-var datatableVar;
-
 // Class Definition
 var WebAppModals = (function () {
 	var columnDefsOrderDetails = [
