@@ -62,7 +62,6 @@ class AuthController extends Controller
         } catch (RevokedIdToken $e) {
             //$e->getMessage();
         } catch (Exception $e) {
-
         }
         $this->clearUserSession();
         $this->rerouteAuth();

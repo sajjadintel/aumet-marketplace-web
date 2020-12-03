@@ -69,6 +69,7 @@ $f3->route('GET /web/distributor/product/quantity/@productId', 'ProductsControll
 $f3->route('POST /web/distributor/product', 'ProductsController->postDistributorProducts');
 $f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDistributorProduct');
 $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDistributorProduct');
+$f3->route('POST /web/distributor/product/image', 'ProductsController->postProductImage');
 $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->postEditQuantityDistributorProduct');
 
 // stock download
@@ -79,7 +80,10 @@ $f3->route('GET /web/distributor/product/stock/upload', 'ProductsController->get
 $f3->route('POST /web/distributor/product/stock/upload', 'ProductsController->postStockUpload');
 $f3->route('POST /web/distributor/product/stock/upload/process', 'ProductsController->postStockUploadProcess');
 
-// stock upload
+// bonus stock download
+$f3->route('GET /web/distributor/product/bonus/download', 'ProductsController->getBonusDownload');
+
+// bonus stock upload
 $f3->route('GET /web/distributor/product/bonus/upload', 'ProductsController->getBonusUpload');
 $f3->route('POST /web/distributor/product/bonus/upload', 'ProductsController->postBonusUpload');
 $f3->route('POST /web/distributor/product/bonus/upload/process', 'ProductsController->postBonusUploadProcess');
