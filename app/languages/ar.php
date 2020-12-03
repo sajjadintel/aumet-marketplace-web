@@ -119,12 +119,22 @@ return array(
     'vModule_cart_quantity' => 'الكمية',
     'vModule_cart_unitPrice' => 'سعر الوحدة',
     'vModule_cart_totalPrice' => 'السعر الاجمالي',
+    'vModule_cart_grandTotal' => 'المجموع الكلي',
     'vModule_cart_productOrderPrice' => 'سعر الكمية',
     'vModule_cart_entityOrderPrice' => 'قيمة فاتورة الموزع',
     'vModule_cart_term' => 'الأسعار أعلاه قابلة للتغيير تبعا لتوقيت تحديث الاسعار من قبل الموزع',
 
     'vModule_cart_offersTitle' => 'العروض',
     'vModule_cart_offersMore' => 'تصفح المزيد من العروض',
+
+    'vModule_cartCheckout_empty' => 'عربة التسوق فارغة',
+    'vModule_cartCheckout_submitOrder' => 'إرسال الطلب',
+    'vModule_cartCheckout_removalConfirmationTitle' => 'تأكيد الإزالة',
+    'vModule_cartCheckout_removalConfirmation' => 'هل أنت متأكد أنك تريد إزالة هذا العنصر؟',
+    'vModule_cartCheckout_orderConfirmationTitle' => 'تأكيد الطلب',
+    'vModule_cartCheckout_orderConfirmation' => 'هل أنت متأكد أنك تريد تقديم هذا الطلب؟',
+    'vModule_cartCheckout_successTitle' => 'أجل النجاح',
+    'vModule_cartCheckout_successContent' => 'تم تقديم طلبك بنجاح !',
 
     'vModule_bonus_bonusTextTemplate' => 'كل %q: %b',
 
@@ -147,4 +157,5 @@ return array(
 
     'vButton_update' => 'تحديث',
     'vButton_add' => 'أضف',
+    'vButton_confirm' => 'تأكيد',
 );
