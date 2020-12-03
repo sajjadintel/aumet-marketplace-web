@@ -239,8 +239,8 @@ class OrderController extends Controller
 
         $data = [];
 
-        $totalRecords = $dbData->count($query);
-        $totalFiltered = $dbData->count($fullQuery);
+        $totalRecords = $dbData->count($fullQuery);
+        $totalFiltered = $dbData->count($query);
         $data = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
 
         ## Response

@@ -569,6 +569,7 @@ var WebApp = (function () {
 			_openModal(webResponse);
 		},
 		CreateDatatableServerside: function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
+			console.log(vParams);
 			_createDatatableServerside(vTableName, vElementId, vUrl, vColumnDefs, vParams, vAdditionalOptions);
 		},
 		CreateDatatableLocal: function (vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions = null) {
