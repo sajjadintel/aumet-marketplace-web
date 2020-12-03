@@ -110,9 +110,3 @@ $f3->route('GET /web/pharmacy/order/history', 'OrderController->getPharmacyOrder
 $f3->route('POST /web/pharmacy/order/pending', 'OrderController->postPharmacyOrdersPending');
 $f3->route('POST /web/pharmacy/order/unpaid', 'OrderController->postPharmacyOrdersUnpaid');
 $f3->route('POST /web/pharmacy/order/history', 'OrderController->postPharmacyOrdersHistory');
-
-//$f3->route('POST /web/pharmacy/order/cancel', 'OrderController->postCancelOrder');
-//$f3->route('POST /web/pharmacy/order/complete', 'OrderController->postCompleteOrder');
-//$f3->route('POST /web/pharmacy/order/paid', 'OrderController->postPaidOrder');
-//$f3->route('POST /web/pharmacy/order/process', 'OrderController->postProcessOrder');
-//$f3->route('POST /web/pharmacy/order/onhold', 'OrderController->postOnHoldOrder');

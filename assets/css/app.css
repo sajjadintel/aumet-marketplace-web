@@ -1,5 +1,7 @@
 .datatable.datatable-default.datatable-head-custom > .datatable-table > .datatable-head .datatable-row > .datatable-cell > span,
-.datatable.datatable-default.datatable-head-custom > .datatable-table > .datatable-foot .datatable-row > .datatable-cell > span {
+.datatable.datatable-default.datatable-head-custom > .datatable-table > .datatable-foot .datatable-row > .datatable-cell > span,
+table.datatable.datatable-head-custom thead th,
+table.datatable.datatable-head-custom > tfoot > th {
 	color: #13b9a9 !important;
 	font-size: 1rem;
 	text-transform: uppercase;
