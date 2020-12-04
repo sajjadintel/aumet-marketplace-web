@@ -69,6 +69,7 @@ return array(
     'vModule_search_scientificNamePlaceholder' => 'الأسماء العلمية',
     'vModule_search_distributorNamePlaceholder' => 'قائمة الموزعين',
     'vModule_search_buyerNamePlaceholder' => 'قائمة المشترين',
+    'vModule_search_sellerNamePlaceholder' => '', // todo translate
     'vModule_search_stockStatusPlaceholder' => 'توفر المنتج',
     'vModule_search_stockStatus_Available' => 'المتوفر فقط',
     'vModule_search_stockStatus_others' => 'الجميع',

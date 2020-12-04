@@ -111,3 +111,5 @@ $f3->route('GET /web/pharmacy/order/history', 'OrderController->getPharmacyOrder
 $f3->route('POST /web/pharmacy/order/pending', 'OrderController->postPharmacyOrdersPending');
 $f3->route('POST /web/pharmacy/order/unpaid', 'OrderController->postPharmacyOrdersUnpaid');
 $f3->route('POST /web/pharmacy/order/history', 'OrderController->postPharmacyOrdersHistory');
+
+$f3->route('GET /web/pharmacy/order/print/@orderId', 'OrderController->getPrintOrderPharmacyInvoice');

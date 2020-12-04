@@ -2,6 +2,8 @@
 
 // Class Definition
 var WebAppModals = (function () {
+	var isPharmacy = false;
+
 	var columnDefsOrderDetails = [
 		{
 			className: 'export_datatable',
@@ -94,7 +96,8 @@ var WebAppModals = (function () {
 		WebApp.get('/web/distributor/order/confirm/' + orderId + '/' + statusId + '/dashboard', WebApp.openModal);
 	};
 
-	var _orderViewModal = function (orderId) {
+	var _orderViewModal = function (orderId, mIsPharmacy) {
+		isPharmacy = mIsPharmacy;
 		WebApp.get('/web/distributor/order/' + orderId, _orderViewModalOpen);
 	};
 
@@ -124,16 +127,22 @@ var WebAppModals = (function () {
 				break;
 		}
 		$('#viewModalTitle').html(WebAppLocals.getMessage('orderDetails'));
-		$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityBuyer'));
-		$('#modalCustomerNameText').html(webResponse.data.order.entityBuyer + ' (' + webResponse.data.order.userBuyer + ')');
+		$('#modalBranchLabel').html(WebAppLocals.getMessage('branch'));
+		if (isPharmacy) {
+			$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entitySeller'));
+			$('#modalCustomerNameText').html(webResponse.data.order.entitySeller + ' (' + webResponse.data.order.userSeller + ')');
+			$('#modalBranchText').html(webResponse.data.order.branchSeller);
+		} else {
+			$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityBuyer'));
+			$('#modalCustomerNameText').html(webResponse.data.order.entityBuyer + ' (' + webResponse.data.order.userBuyer + ')');
+			$('#modalBranchText').html(webResponse.data.order.branchBuyer);
+		}
 		$('#modalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
 		$('#modalStatusText').html(status);
 		$('#modalTotalLabel').html(WebAppLocals.getMessage('orderTotal'));
 		$('#modalTotalText').html(webResponse.data.order.currency + Math.round((parseFloat(webResponse.data.order.total) + Number.EPSILON) * 100) / 100);
 		$('#modalDateLabel').html(WebAppLocals.getMessage('insertDate'));
 		$('#modalDateText').html(webResponse.data.order.insertDateTime);
-		$('#modalBranchLabel').html(WebAppLocals.getMessage('branch'));
-		$('#modalBranchText').html(webResponse.data.order.branchBuyer);
 		$('#modalAddressLabel').html(WebAppLocals.getMessage('address'));
 		$('#modalAddressText').html(webResponse.data.order.addressBuyer);
 
@@ -150,7 +159,11 @@ var WebAppModals = (function () {
 				}
 			});
 
-		$('#modalPrint').attr('href', '/web/distributor/order/print/' + webResponse.data.order.id);
+		if (isPharmacy) {
+			$('#modalPrint').attr('href', '/web/pharmacy/order/print/' + webResponse.data.order.id);
+		} else {
+			$('#modalPrint').attr('href', '/web/distributor/order/print/' + webResponse.data.order.id);
+		}
 
 		WebApp.CreateDatatableLocal('Order Details', '#order_details_datatable', webResponse.data.orderDetail, columnDefsOrderDetails);
 		$('#viewModal').modal('show');
@@ -161,8 +174,8 @@ var WebAppModals = (function () {
 		orderStatusModal: function (orderId, statusId) {
 			_orderStatusModal(orderId, statusId);
 		},
-		orderViewModal: function (orderId) {
-			_orderViewModal(orderId);
+		orderViewModal: function (orderId, isPharmacy = false) {
+			_orderViewModal(orderId, isPharmacy);
 		},
 	};
 })();
