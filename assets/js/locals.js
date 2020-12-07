@@ -335,6 +335,17 @@ var WebAppLocals = (function () {
 			ar: 'يجب ادخال كلمة السر',
 			fr: '',
 		},
+		addBonusTitle: {
+			en: 'Add Bonus',
+			ar: 'إضافة مكافأة',
+			fr: '',
+		},
+		addBonusDone: {
+			en: 'Done',
+			ar: 'منجز',
+			fr: '',
+		},
+
 	};
 
 	var _symbolsLocals = {
