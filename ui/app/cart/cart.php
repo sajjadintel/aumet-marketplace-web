@@ -150,7 +150,7 @@ function compress_htmlcode($codedata)
                                         <td class="text-right align-middle font-weight-bolder font-size-h5"><?php echo $objItem->unitPrice ?></td>
                                         <td class="text-right align-middle font-weight-bolder font-size-h5"><?php echo $objItem->quantity  * $objItem->unitPrice ?></td>
                                         <td class="text-right align-middle">
-                                            <a href="javascript:;" onclick="Cart.removeItem(<?php echo $objItem->id ?>)" class="btn btn-sm btn-light btn-text-danger btn-hover-primary btn-icon  mr-2" title="">
+                                            <a href="javascript:;" onclick="Cart.removeItem(<?php echo $objItem->id ?>, false)" class="btn btn-sm btn-light btn-text-danger btn-hover-primary btn-icon  mr-2" title="">
                                                 <span class="svg-icon svg-icon-md">
                                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
