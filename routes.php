@@ -28,6 +28,7 @@ $f3->route('GET /web/product/brandname/list', 'SearchController->getProductBrand
 $f3->route('GET /web/product/scientificname/list', 'SearchController->getProductScientificNameList');
 $f3->route('GET /web/product/country/list', 'SearchController->getProductCountryList');
 $f3->route('GET /web/order/customer/list', 'SearchController->getOrderBuyerList');
+$f3->route('GET /web/order/Distributor/list', 'SearchController->getOrderSellerList');
 
 
 $f3->route('GET /web/customercare', 'CustomerCareController->get');
@@ -101,3 +102,14 @@ $f3->route('POST /web/distributor/product/bestselling', 'ProductsController->pos
 // END dashboard
 
 $f3->route('GET /web/notification/order/new', 'OrderController->getNotifcationsDistributorOrdersNew');
+
+
+$f3->route('GET /web/pharmacy/order/pending', 'OrderController->getPharmacyOrdersPending');
+$f3->route('GET /web/pharmacy/order/unpaid', 'OrderController->getPharmacyOrdersUnpaid');
+$f3->route('GET /web/pharmacy/order/history', 'OrderController->getPharmacyOrdersHistory');
+
+$f3->route('POST /web/pharmacy/order/pending', 'OrderController->postPharmacyOrdersPending');
+$f3->route('POST /web/pharmacy/order/unpaid', 'OrderController->postPharmacyOrdersUnpaid');
+$f3->route('POST /web/pharmacy/order/history', 'OrderController->postPharmacyOrdersHistory');
+
+$f3->route('GET /web/pharmacy/order/print/@orderId', 'OrderController->getPrintOrderPharmacyInvoice');

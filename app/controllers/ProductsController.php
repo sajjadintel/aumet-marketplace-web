@@ -1,7 +1,6 @@
 <?php
 
-class ProductsController extends Controller
-{
+class ProductsController extends Controller {
 
     function getEntityProduct()
     {
@@ -192,9 +191,9 @@ class ProductsController extends Controller
         $result = array(
             'q' => $query,
             'meta' => $meta + array(
-                'sort' => $sort,
-                'field' => $field,
-            ),
+                    'sort' => $sort,
+                    'field' => $field,
+                ),
             'data' => $data
         );
 
@@ -489,7 +488,7 @@ class ProductsController extends Controller
             // Change active sheet to database input
             $sheet = $spreadsheet->setActiveSheetIndex(1);
 
-            // Set validation and formula 
+            // Set validation and formula
             Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
             Excel::setCellFormulaVLookup($sheet, 'D3', count($allStockStatus), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
 
@@ -504,7 +503,7 @@ class ProductsController extends Controller
             Excel::setDataValidation($sheet, 'A3', 'A' . count($allProducts), 'TYPE_LIST', 'Variables!$A$3:$A$' . $productsNum);
             Excel::setDataValidation($sheet, 'D3', 'D' . count($allProducts), 'TYPE_LIST', 'Variables!$D$3:$D$' . $stockAvailabilityNum);
 
-            // Add all products to multidimensional array 
+            // Add all products to multidimensional array
             $multiProducts = [];
             $fields = [
                 "productId",
@@ -670,10 +669,10 @@ class ProductsController extends Controller
                             }
                             break;
                         case "B":
-                            if (!is_numeric($cellValue) || (float) $cellValue < 0) {
+                            if (!is_numeric($cellValue) || (float)$cellValue < 0) {
                                 array_push($errors, "Price must be a positive number");
                             } else {
-                                $unitPrice = round((float) $cellValue, 2);
+                                $unitPrice = round((float)$cellValue, 2);
                                 if ($dbEntityProductSell->unitPrice != $unitPrice) {
                                     $fieldsChanged = true;
                                     $dbEntityProductSell->unitPrice = $unitPrice;
@@ -681,10 +680,10 @@ class ProductsController extends Controller
                             }
                             break;
                         case "C":
-                            if (!is_numeric($cellValue) || (float) $cellValue < 0) {
+                            if (!is_numeric($cellValue) || (float)$cellValue < 0) {
                                 array_push($errors, "VAT must be a positive number");
                             } else {
-                                $vat = round((float) $cellValue, 2);
+                                $vat = round((float)$cellValue, 2);
                                 if ($dbEntityProductSell->vat != $vat) {
                                     $fieldsChanged = true;
                                     $dbEntityProductSell->vat = $vat;
@@ -707,10 +706,10 @@ class ProductsController extends Controller
                             }
                             break;
                         case "E":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Stock Quantity must be a positive whole number");
                             } else {
-                                $stock = (int) $cellValue;
+                                $stock = (int)$cellValue;
                                 if ($dbEntityProductSell->stock != $stock) {
                                     $stockFieldsChanged = true;
                                     $dbEntityProductSell->stock = $stock;
@@ -810,7 +809,7 @@ class ProductsController extends Controller
                 // Change active sheet to database input
                 $sheet = $spreadsheet->setActiveSheetIndex(1);
 
-                // Set validation and formula 
+                // Set validation and formula
                 Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
                 Excel::setCellFormulaVLookup($sheet, 'D3', count($allStockStatus), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
 
@@ -828,7 +827,7 @@ class ProductsController extends Controller
                 $sheet->setCellValue('G2', 'Error');
                 $sheet->getStyle('G2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
 
-                // Add all products to multidimensional array 
+                // Add all products to multidimensional array
                 $multiProducts = [];
                 $fields = [
                     "productId",
@@ -1127,10 +1126,10 @@ class ProductsController extends Controller
                             }
                             break;
                         case "B":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Minimum Quantity must be a positive whole number");
                             } else {
-                                $minOrder = (int) $cellValue;
+                                $minOrder = (int)$cellValue;
                                 $allQuant = $mapProductIdMinQuant[$dbProduct['productId']];
                                 if (in_array($minOrder, $allQuant)) {
                                     array_push($errors, "Minimum Quantity should be unique by product");
@@ -1141,10 +1140,10 @@ class ProductsController extends Controller
                             }
                             break;
                         case "C":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Bonus Quantity must be a positive whole number");
                             } else {
-                                $bonus = (int) $cellValue;
+                                $bonus = (int)$cellValue;
                             }
                             break;
                     }
