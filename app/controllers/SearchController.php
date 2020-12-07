@@ -198,11 +198,8 @@ class SearchController extends Controller
         $totalFiltered = $dbProducts->count($query);
         $data = $dbProducts->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
 
-
-        if (!$dbProducts->dry()) {
-            $dbCartDetail = new BaseModel($this->db, "cartDetail");
-            $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-        }
+        $dbCartDetail = new BaseModel($this->db, "cartDetail");
+        $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
 
         for ($i = 0; $i < count($data); $i++) {
             if ($data[$i]['bonusTypeId'] == 2) {

@@ -65,7 +65,8 @@ class CartController extends Controller
                 $dbCartDetail->accountId = $this->objUser->accountId;
                 $dbCartDetail->entityProductId = $dbEntityProduct->id;
                 $dbCartDetail->userId = $this->objUser->id;
-                $dbCartDetail->quantity += $quantity;
+                $dbCartDetail->quantity = $dbCartDetail->quantity + $quantity;
+
                 $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
                 $dbCartDetail->save();
 

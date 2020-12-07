@@ -296,6 +296,43 @@ var SearchDataTable = (function () {
 			],
 		});
 	};
+	
+	var _productAddBonusModal = function (productId) {
+		WebApp.get('/web/distributor/product/quantity/' + productId, _productAddBonusModalOpen);
+	};
+
+	var _productAddBonusModalOpen = function (webResponse) {
+		$('#addBonusProductId').val(webResponse.data.product.id);
+
+		$('#addBonusModalTitle').html(WebAppLocals.getMessage('addBonusTitle'));
+
+		$("label[for='addBonusMinOrder']").text(WebAppLocals.getMessage('minOrder'));
+		$("label[for='addBonusQuantity']").text(WebAppLocals.getMessage('bonus'));
+		$("label[for='addBonusAdd']").text(WebAppLocals.getMessage('add'));
+
+		var repeater = $('#addBonusListRepeater').repeater({
+			show: function() {
+				$(this).slideDown();
+			},
+		});
+		repeater.setList(webResponse.data.bonus);
+
+		$('#addBonusDone').html(WebAppLocals.getMessage('addBonusDone'));
+		$('#addBonusModal').appendTo('body').modal('show');
+	};
+
+	var _productAddBonus = function() {
+		let productId = $('#addBonusProductId').val();
+		let bonusId = $('#bonusId').val();
+		let addBonusProductId = $("#addBonusProductId").val();
+		console.log("addBonusProductId");
+		console.log(addBonusProductId);
+		console.log("productId");
+		console.log(productId);
+		console.log("bonusId");
+		console.log(bonusId);
+		$('#addBonusModal').appendTo('body').modal('hide');
+	}
 
 	var _initSearchFilter = function () {
 		/*
@@ -348,7 +385,7 @@ var SearchDataTable = (function () {
 
 		});*/
 	};
-
+	
 	return {
 		// public functions
 		init: function (objQuery) {
@@ -356,11 +393,15 @@ var SearchDataTable = (function () {
 		},
 		onClickAddToCart: function (row) {
 			Cart.addItem(row.entityId, row.productId, '#quantity-' + row.id);
-			datatable.reload();
+			WebApp.reloadDatatable();
 		},
 		onClickAddMoreToCart: function (row) {
 			Cart.addItem(row.entityId, row.productId, '#quantity-' + row.id);
-			datatable.reload();
+			WebApp.reloadDatatable();
+		},
+		onClickAddBonusToCart: function (entityId, productId, quantity, freeQuantity) {
+			Cart.addItemBonus(entityId, productId, quantity, freeQuantity);
+			WebApp.reloadDatatable();
 		},
 		onBonusOptionCallback: function (row, bonusOption) {
 			$('#quantity-' + row.id).val(bonusOption.minOrder);
@@ -409,5 +450,14 @@ var SearchDataTable = (function () {
 		hideColumn: function (columnName) {
 			datatable.hideColumn(columnName);
 		},
+		productAddBonusModal: function(productId) {
+			_productAddBonusModal(productId)
+		},
+		productAddBonusModalOpen: function (webResponse) {
+			_productAddBonusModalOpen(webResponse)
+		},
+		productAddBonus: function() {
+			_productAddBonus()
+		}
 	};
 })();
