@@ -36,6 +36,7 @@ $f3->route('GET /web/cart', 'CartController->get');
 $f3->route('POST /web/cart/add', 'CartController->postAddItem');
 $f3->route('GET /web/cart/status', 'CartController->getStatus');
 $f3->route('POST /web/cart/remove', 'CartController->postRemoveItem');
+$f3->route('POST /web/cart/bonus/add', 'CartController->postAddBonusItem');
 
 $f3->route('GET /web/demo/editor/scientificnames', 'DemoController->get');
 

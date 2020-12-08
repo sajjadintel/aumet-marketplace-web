@@ -118,4 +118,55 @@ class CartController extends Controller
             echo $this->webResponse->jsonResponse();
         }
     }
+
+    function postAddBonusItem()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/cart");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+
+            $entityId = $this->f3->get('POST.entityId');
+            $productId = $this->f3->get('POST.productId');
+            $bonusId = $this->f3->get('POST.bonusId');
+            
+            global $dbConnection;
+
+            $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
+            $dbEntityProduct->getWhere("entityId=$entityId and productId=$productId");
+
+            if ($dbEntityProduct->dry()) {
+                $this->webResponse->errorCode = 2;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "No Product";
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $dbEntity = new BaseModel($dbConnection, "entity");
+                $dbEntity->name = "name_" . $this->objUser->language;
+                $dbEntity->getById($entityId);
+
+                $dbProduct = new BaseModel($dbConnection, "product");
+                $dbProduct->name = "name_" . $this->objUser->language;
+                $dbProduct->getById($productId);
+
+                $dbBonus = new BaseModel($dbConnection, "entityProductSellBonusDetail");
+                $dbBonus->getById($bonusId);
+
+                $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
+                $dbCartDetail->accountId = $this->objUser->accountId;
+                $dbCartDetail->entityProductId = $dbEntityProduct->id;
+                $dbCartDetail->userId = $this->objUser->id;
+                $dbCartDetail->quantity = $dbBonus->minOrder;
+                $dbCartDetail->quantityFree = $dbBonus->bonus;
+                $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
+                
+                $dbCartDetail->addReturnID();
+
+                $this->webResponse->errorCode = 1;
+                $this->webResponse->title = "";
+                $this->webResponse->data = $dbProduct->name;
+                echo $this->webResponse->jsonResponse();
+            }
+        }
+    }
 }
