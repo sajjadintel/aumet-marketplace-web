@@ -1,7 +1,6 @@
 <?php
 
-class OrderController extends Controller
-{
+class OrderController extends Controller {
     function getDistributorOrdersNew()
     {
         $this->handleGetDistributorOrders('new');
@@ -20,6 +19,22 @@ class OrderController extends Controller
     function getDistributorOrdersHistory()
     {
         $this->handleGetDistributorOrders('history');
+    }
+
+
+    function getPharmacyOrdersUnpaid()
+    {
+        $this->handleGetPharmacyOrders('unpaid');
+    }
+
+    function getPharmacyOrdersPending()
+    {
+        $this->handleGetPharmacyOrders('pending');
+    }
+
+    function getPharmacyOrdersHistory()
+    {
+        $this->handleGetPharmacyOrders('history');
     }
 
     function getNotifcationsDistributorOrdersNew()
@@ -76,6 +91,36 @@ class OrderController extends Controller
             echo $this->webResponse->jsonResponse();
         }
     }
+
+    function handleGetPharmacyOrders($status)
+    {
+        if (!$this->f3->ajax()) {
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $renderFile = 'app/sale/orders/ordersPharmacy.php';
+            $title = $this->f3->get('vModule_order_title');
+
+            switch ($status) {
+                case 'pending':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_pending'));
+                    break;
+                case 'unpaid':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_unpaid'));
+                    break;
+                case 'history':
+                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_history'));
+                    break;
+                default:
+                    $this->f3->set('vModule_order_header', 'Unknown List');
+                    break;
+            }
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = $title;
+            $this->webResponse->data = View::instance()->render($renderFile);
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
 
     function getOrderConfirmationDashboard()
     {
@@ -253,6 +298,84 @@ class OrderController extends Controller
 
         $this->jsonResponseAPI($response);
     }
+
+    function postPharmacyOrdersPending()
+    {
+        $this->handlePostPharmacyOrders('pending');
+    }
+
+    function postPharmacyOrdersUnpaid()
+    {
+        $this->handlePostPharmacyOrders('unpaid');
+    }
+
+    function postPharmacyOrdersHistory()
+    {
+        $this->handlePostPharmacyOrders('history');
+    }
+
+    function handlePostPharmacyOrders($status)
+    {
+        ## Read values from Datatables
+        $datatable = new Datatable($_POST);
+        $query = "";
+
+        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+        $query = "entityBuyerId IN ($arrEntityId)";
+        switch ($status) {
+            case 'unpaid':
+                $query .= " AND statusId = 6";
+                break;
+            case 'pending':
+                $query .= " AND statusId IN (2,3)";
+                break;
+            case 'history':
+                $query .= " AND statusId IN (4,5,6,7)";
+                break;
+            default:
+                break;
+        }
+
+        $fullQuery = $query;
+
+        // $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
+
+        if (is_array($datatable->query)) {
+            $entitySellerId = $datatable->query['entitySellerId'];
+            if (isset($entitySellerId) && is_array($entitySellerId)) {
+                $query .= " AND entitySellerId in (" . implode(",", $entitySellerId) . ")";
+            }
+
+            $startDate = $datatable->query['startDate'];
+            if (isset($startDate) && $startDate != "") {
+                $query .= " AND insertDateTime >= '$startDate'";
+            }
+
+            $endDate = $datatable->query['endDate'];
+            if (isset($endDate) && $endDate != "") {
+                $query .= " AND insertDateTime <= '$endDate'";
+            }
+        }
+
+        $dbData = new BaseModel($this->db, "vwOrderEntityUser");
+
+        $data = [];
+
+        $totalRecords = $dbData->count($fullQuery);
+        $totalFiltered = $dbData->count($query);
+        $data = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
+
+        ## Response
+        $response = array(
+            "draw" => intval($datatable->draw),
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $totalFiltered,
+            "data" => $data
+        );
+
+        $this->jsonResponseAPI($response);
+    }
+
 
     function postOnHoldOrder()
     {
@@ -444,4 +567,59 @@ class OrderController extends Controller
 
         $pdf->Output();
     }
+
+    function getPrintOrderPharmacyInvoice()
+    {
+        $font = 'dejavusans';
+        $orderId = $this->f3->get('PARAMS.orderId');
+
+        $dbOrder = new BaseModel($this->db, 'vwOrderEntityUser');
+        $arrOrder = $dbOrder->findWhere("id = $orderId");
+        $arrOrder = $arrOrder[0];
+        $pdf = new PDF();
+        // create new PDF document
+        $pdf = new PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->AddPage();
+
+        // Title
+        $pdf->SetFont($font, 'B', 14);
+        $pdf->Cell(0, 10, 'Order #' . $arrOrder['id'], 0, 0, 'R');
+        $pdf->Ln(6);
+        $pdf->Cell(0, 10, $arrOrder['entityBuyer'], 0, 0, 'R');
+        $pdf->Ln(10);
+
+        $pdf->SetFont($font, '', 14);
+        $pdf->Cell(0, 10, $arrOrder['insertDateTime'], 0, 0, 'R');
+        $pdf->Ln(20);
+
+        $pdf->SetFont($font, '', 11);
+
+        $pharmacyTableHeader = array('Distributor ID', 'Distributor Name', 'Email');
+        $pharmacyTableData = array(array($arrOrder['entitySellerId'], $arrOrder['entitySeller'], $arrOrder['userSellerEmail']));
+        $pdf->FancyTable($pharmacyTableHeader, $pharmacyTableData);
+        $pdf->Ln(20);
+
+        $orderDetailHeader = array('Code', 'Name', 'Quantity', 'Price', 'VAT', 'Total');
+        $dbOrderDetail = new BaseModel($this->db, 'vwOrderDetail');
+        $arrOrderDetail = $dbOrderDetail->findWhere("id = $orderId");
+
+        $orderDetailData = array();
+        foreach ($arrOrderDetail as $item) {
+            array_push($orderDetailData, array($item['productCode'], $item['productNameEn'], $item['quantity'], $item['currency'] . " " . $item['unitPrice'], $item['tax'] . "%", $item['currency'] . " " . ($item['unitPrice'] * $item['quantity'])));
+        }
+
+        $pdf->FancyTableOrderDetail($orderDetailHeader, $orderDetailData);
+
+        $pdf->Ln(20);
+
+        $pdf->Cell(0, 0, 'Order: AED ' . $arrOrder['total'], 0, 0, 'R');
+        $pdf->Ln(10);
+        $pdf->Cell(0, 0, 'VAT: AED ' . round($arrOrder['tax'] * $arrOrder['total'], 2), 0, 0, 'R');
+
+        $pdf->Ln(10);
+        $pdf->Cell(0, 0, 'Total: AED ' . $arrOrder['total'], 0, 0, 'R');
+
+        $pdf->Output();
+    }
+
 }

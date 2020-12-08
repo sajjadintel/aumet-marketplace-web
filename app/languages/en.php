@@ -79,6 +79,7 @@ return array(
     'vModule_search_scientificNamePlaceholder' => 'Scientific Name List',
     'vModule_search_distributorNamePlaceholder' => 'Distributor List',
     'vModule_search_buyerNamePlaceholder' => 'Filter by Customer',
+    'vModule_search_sellerNamePlaceholder' => 'Filter by Distributor',
     'vModule_search_stockStatusPlaceholder' => 'Availability',
     'vModule_search_stockStatus_Available' => 'Available Only',
     'vModule_search_stockStatus_others' => 'All',
@@ -129,12 +130,22 @@ return array(
     'vModule_cart_quantity' => 'Quantity',
     'vModule_cart_unitPrice' => 'Unit Price',
     'vModule_cart_totalPrice' => 'Total Price',
+    'vModule_cart_grandTotal' => 'Grand Total',
     'vModule_cart_productOrderPrice' => 'Product Price',
     'vModule_cart_entityOrderPrice' => 'Distributor Invoice',
     'vModule_cart_term' => 'Prices shown are prone to changes upon price update from the Distributor',
 
     'vModule_cart_offersTitle' => 'Offers',
     'vModule_cart_offersMore' => 'Browse More Offers',
+
+    'vModule_cartCheckout_empty' => 'Your cart is empty',
+    'vModule_cartCheckout_submitOrder' => 'Submit Order',
+    'vModule_cartCheckout_removalConfirmationTitle' => 'Removal Confirmation',
+    'vModule_cartCheckout_removalConfirmation' => 'Are you sure you want to remove this item?',
+    'vModule_cartCheckout_orderConfirmationTitle' => 'Order Confirmation',
+    'vModule_cartCheckout_orderConfirmation' => 'Are you sure you want to submit this order?',
+    'vModule_cartCheckout_successTitle' => 'Order Sucess',
+    'vModule_cartCheckout_successContent' => 'Your order has been submitted successfully !',
 
     'vModule_bonus_bonusTextTemplate' => 'For %q: %b',
 
@@ -156,6 +167,7 @@ return array(
 
     'vButton_update' => 'Update',
     'vButton_add' => 'Add',
+    'vButton_confirm' => 'Confirm',
 
     'vModule_feedback_title' => 'Customer Orders Feedback',
     'vModule_feedback_header' => 'The below customer feedback is delivered to you privately and they are not publicly available for any user',
