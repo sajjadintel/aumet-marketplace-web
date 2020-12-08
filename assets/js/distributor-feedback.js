@@ -158,6 +158,21 @@ var CustomerFeedbackDataTable = (function () {
 					},
 				},
 				{
+					field: 'feedback',
+					sortable: false,
+					width: 150,
+					title: '',
+					autoHide: false,
+					// callback function support for column rendering
+					template: function (row) {
+						return (
+							'<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' +
+							row.feedback +
+							'</span>'
+						);
+					},
+				},
+				{
 					field: 'Actions',
 					title: '',
 					sortable: false,
