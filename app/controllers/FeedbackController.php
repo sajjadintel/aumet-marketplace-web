@@ -137,7 +137,7 @@ class FeedbackController extends Controller {
 
         $fullQuery = $query;
 
-        $dbData = new BaseModel($this->db, "vwOrderEntityUser");
+        $dbData = new BaseModel($this->db, "vwOrderEntityUserFeedbackPending");
 
         $data = [];
 
