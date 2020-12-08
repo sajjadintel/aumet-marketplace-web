@@ -206,6 +206,20 @@ class CartController extends Controller
                 array_push($cartItemsBySeller, $cartDetail);
                 $allCartItems[$sellerId] = $cartItemsBySeller;
             }
+
+            foreach($allCartItems as $sellerId => $cartItemsBySeller) {
+                // Sort cart items to get product followed by its bonuses
+                usort($cartItemsBySeller, function($c1, $c2) {
+                    $productIdDIff = $c1->entityProductId - $c2->entityProductId;
+                    if($productIdDIff === 0) {
+                        return $c1->quantityFree - $c2->quantityFree;
+                    } else {
+                        return $productIdDIff;
+                    }
+                });
+                $allCartItems[$sellerId] = $cartItemsBySeller;
+            }
+
             $this->f3->set('allCartItems', $allCartItems);
             $this->f3->set('allSellers', $allSellers);
 
@@ -444,9 +458,10 @@ class CartController extends Controller
                 $orderId = $mapSellerIdOrderId[$cartDetail->entityId];
                 $entityProductId = $cartDetail->entityProductId;
                 $quantity = $cartDetail->quantity;
+                $quantityFree = $cartDetail->quantityFree;
                 $unitPrice = $cartDetail->unitPrice;
 
-                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `unitPrice`) VALUES ('".$orderId."', '".$entityProductId."', '".$quantity."', '".$unitPrice."');";
+                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `quantityFree`, `unitPrice`) VALUES ('".$orderId."', '".$entityProductId."', '".$quantity."', '".$quantityFree."', '".$unitPrice."');";
                 array_push($commands, $query);
             }
             
