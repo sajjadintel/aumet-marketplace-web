@@ -251,10 +251,22 @@ function compress_htmlcode($codedata)
                       WebAppLocals.getMessage('view') +
                       '</a>';
 
+                 var missingProduct =
+                      '<a href="javascript:;" onclick=\'WebMissingProductModals.orderMissingProductPharmacyModal(' +
+                      row.id +
+                      ')\' \
+                          class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
+                          <i class="nav-icon la la-box p-0"></i> &nbsp&nbsp' +
+                      WebAppLocals.getMessage('missingProduct') +
+                      '</a>';
+
                   var outActions = '';
 
                   outActions += btnView;
                   outActions += btnPrint;
+
+                  if (row.statusId === 4 || row.statusId === 6)
+                      outActions += missingProduct;
 
                   return outActions;
               },
