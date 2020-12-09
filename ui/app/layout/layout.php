@@ -299,6 +299,7 @@ function compress_htmlcode($codedata)
 	<script type="text/javascript" src="/assets/js/cart-checkout.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/app.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/app-modals.js<?php echo $platformVersion ?>"></script>
+	<script type="text/javascript" src="/assets/js/feedback-modals.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/autocomplete.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/products-search.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/pharmacy-orders.js<?php echo $platformVersion ?>"></script>
@@ -311,6 +312,7 @@ function compress_htmlcode($codedata)
 	<script type="text/javascript" src="/assets/js/demoApp.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/theme/assets/plugins/custom/datatables/datatables.bundle.js"></script>
 	<script type="text/javascript" src="/theme/assets/js/pages/crud/forms/widgets/form-repeater.js"></script>
+	<script type="text/javascript" src="/theme/assets/js/pages/crud/forms/widgets/jquery-rate-picker.js"></script>
 
 	<script>
 		jQuery(document).ready(function() {

@@ -235,8 +235,8 @@ function compress_htmlcode($codedata)
                       WebAppLocals.getMessage('print') +
                       '</a>';
                   var btnView =
-                      '<a href="javascript:;" onclick=\'WebAppModals.orderViewModal(' +
-                      row.id + ', true' +
+                      '<a href="javascript:;" onclick=\'WebAppModals.orderViewPharmacyModal(' +
+                      row.id +
                       ')\' \
                           class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
                           <i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +

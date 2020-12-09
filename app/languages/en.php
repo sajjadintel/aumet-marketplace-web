@@ -97,6 +97,13 @@ return array(
     'vModule_order_header_pending' => 'You can view your pending orders',
     'vModule_order_header_history' => 'You can view your order history',
 
+    'vModule_pharmacy_feedback_title' => 'Feedback List',
+    'vModule_pharmacy_feedback_header_pending' => 'You can view your feedback pending',
+    'vModule_pharmacy_feedback_header_history' => 'You can view your feedback history',
+
+    'alreadySentFeedback' => 'Already sent a feedback!',
+    'feedbackSaved' => 'Feedback saved!',
+
     'vOrderStatusConfirmation' => 'Are you sure you want to move this order to {0}?',
     'vOrderStatus_New' => 'New',
     'vOrderStatus_OnHold' => 'On Hold',

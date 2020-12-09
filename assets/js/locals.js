@@ -25,6 +25,11 @@ var WebAppLocals = (function () {
 			ar: 'شاهد',
 			fr: '',
 		},
+		feedback: {
+			en: 'Feedback',
+			ar: '', //todo translate
+			fr: '',
+		},
 		edit: {
 			en: 'Edit',
 			ar: 'تعديل',
@@ -85,6 +90,11 @@ var WebAppLocals = (function () {
 			ar: 'الموزع',
 			fr: '',
 		},
+		branchSeller: {
+			en: 'Branch',
+			ar: '', //todo translate
+			fr: '',
+		},
 		userBuyer: {
 			en: 'Reference',
 			ar: 'المرجع',
@@ -108,6 +118,11 @@ var WebAppLocals = (function () {
 		orderDetails: {
 			en: 'Order Details',
 			ar: 'تفاصيل الطلب',
+			fr: '',
+		},
+		orderFeedback: {
+			en: 'Order Feedback',
+			ar: '', // TODO: Translate
 			fr: '',
 		},
 		orderLogs: {
@@ -298,6 +313,11 @@ var WebAppLocals = (function () {
 		orderRating: {
 			en: 'Rating',
 			ar: 'التصنيف',
+			fr: '',
+		},
+		orderComment: {
+			en: 'Feedback',
+			ar: '', // TODO: Translate
 			fr: '',
 		},
 		stockUpdateProcessing: {
