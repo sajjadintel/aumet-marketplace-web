@@ -47,6 +47,7 @@ var WebFeedbackModals = (function () {
         $('#feedbackModalAddressText').html(webResponse.data.order.addressBuyer);
         $('#feedbackModalRatingLabel').html(WebAppLocals.getMessage('orderRating'));
         $('#feedbackModalCommentLabel').html(WebAppLocals.getMessage('orderComment'));
+        $('#feedbackModalComment').val('');
 
         $('#feedbackModalTitle').html(WebAppLocals.getMessage('orderFeedback'));
 
@@ -79,6 +80,7 @@ var WebFeedbackModals = (function () {
     var _sendFeedbackSuccessCallback = function (webResponse) {
         $('#feedbackModal').modal('hide');
         WebApp.alertSuccess(webResponse.title);
+        WebApp.reloadDatatable();
     };
 
     return {
