@@ -133,6 +133,14 @@ var DistributorOrdersDataTable = (function () {
 								title: WebAppLocals.getMessage('orderStatus_Paid'),
 								class: ' label-success',
 							},
+							8: {
+								title: WebAppLocals.getMessage('orderStatus_MissingProducts'),
+								class: ' label-primary',
+							},
+							9: {
+								title: WebAppLocals.getMessage('orderStatus_MissingProductsDelivered'),
+								class: ' label-primary',
+							},
 						};
 
 						var output = '';
@@ -353,6 +361,12 @@ var DistributorOrdersDataTable = (function () {
 				break;
 			case 7:
 				status = WebAppLocals.getMessage('orderStatus_Paid');
+				break;
+			case 8:
+				status = WebAppLocals.getMessage('orderStatus_MissingProducts');
+				break;
+			case 9:
+				status = WebAppLocals.getMessage('orderStatus_MissingProductsDelivered');
 				break;
 		}
 		$('#viewModalTitle').html(WebAppLocals.getMessage('orderDetails'));

@@ -175,6 +175,16 @@ var WebAppLocals = (function () {
 			ar: 'مدفوع',
 			fr: '',
 		},
+		orderStatus_MissingProducts: {
+			en: 'Missing Products',
+			ar: '', // TODO: Translate
+			fr: '',
+		},
+		orderStatus_MissingProductsDelivered: {
+			en: 'Missing Products Delivered',
+			ar: '', // TODO: Translate
+			fr: '',
+		},
 		orderStatus_PayOrder: {
 			en: 'Pay Order',
 			ar: '',
@@ -313,6 +323,11 @@ var WebAppLocals = (function () {
 		orderRating: {
 			en: 'Rating',
 			ar: 'التصنيف',
+			fr: '',
+		},
+		missingProduct: {
+			en: 'Missing Product',
+			ar: '', // TODO: Translate
 			fr: '',
 		},
 		orderComment: {

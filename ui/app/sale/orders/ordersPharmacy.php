@@ -178,6 +178,14 @@ function compress_htmlcode($codedata)
                           title: WebAppLocals.getMessage('orderStatus_Paid'),
                           class: ' label-success',
                       },
+                      8: {
+                          title: WebAppLocals.getMessage('orderStatus_MissingProducts'),
+                          class: ' label-primary',
+                      },
+                      9: {
+                          title: WebAppLocals.getMessage('orderStatus_MissingProductsDelivered'),
+                          class: ' label-success',
+                      },
                   };
 
                   var output = '<div><span class="label label-lg font-weight-bold ' + status[row.statusId].class + ' label-inline">' + status[row.statusId].title + '</span></div>';
