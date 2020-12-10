@@ -156,4 +156,6 @@ return array(
 
     'vButton_update' => 'تحديث',
     'vButton_add' => 'أضف',
+
+    'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ', // TODO: add translation
 );

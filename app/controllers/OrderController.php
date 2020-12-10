@@ -395,7 +395,8 @@ class OrderController extends Controller {
             }
             $serverProduct = $this->getProductFromArrayById($missingProduct['productId'], $arrOrderDetail);
             if ($missingProduct['quantity'] > $serverProduct['quantity'] || $missingProduct['quantity'] <= 0) {
-                echo $this->webResponse->jsonResponseV2(2, "Error", "Invalid quantity for " . $serverProduct['productNameEn']);
+            if ($missingProduct['quantity'] > $serverProduct['quantity'] || $missingProduct['quantity'] <= 0) {
+                echo $this->webResponse->jsonResponseV2(2, "Error",  $this->f3->get('vMissingProduct_ErrorInvalidQuantity') . $serverProduct['productNameEn']);
                 return;
             }
         }

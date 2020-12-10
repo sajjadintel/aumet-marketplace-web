@@ -168,4 +168,6 @@ return array(
 
     'vModule_feedback_title' => 'Customer Orders Feedback',
     'vModule_feedback_header' => 'The below customer feedback is delivered to you privately and they are not publicly available for any user',
+
+    'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ',
 );
