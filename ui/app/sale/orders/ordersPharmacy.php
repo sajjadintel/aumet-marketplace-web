@@ -257,7 +257,7 @@ function compress_htmlcode($codedata)
                       ')\' \
                           class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
                           <i class="nav-icon la la-box p-0"></i> &nbsp&nbsp' +
-                      WebAppLocals.getMessage('missingProduct') +
+                      WebAppLocals.getMessage('orderReportMissing') +
                       '</a>';
 
                   var outActions = '';

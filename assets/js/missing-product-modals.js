@@ -39,7 +39,7 @@ var WebMissingProductModals = (function () {
                 status = WebAppLocals.getMessage('orderStatus_MissingProductsDelivered');
                 break;
         }
-        $('#missingProductModalTitle').html(WebAppLocals.getMessage('orderMissingProduct'));
+        $('#missingProductModalTitle').html(WebAppLocals.getMessage('orderReportMissing'));
         $('#missingProductModalCustomerNameLabel').html(WebAppLocals.getMessage('entitySeller'));
         $('#missingProductModalCustomerNameText').html(webResponse.data.order.entitySeller + ' (' + webResponse.data.order.userSeller + ')');
         $('#missingProductModalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));

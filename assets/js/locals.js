@@ -125,6 +125,11 @@ var WebAppLocals = (function () {
 			ar: '', // TODO: Translate
 			fr: '',
 		},
+		orderReportMissing: {
+			en: 'Report Missing',
+			ar: '', // TODO: Translate
+			fr: '',
+		},
 		orderFeedback: {
 			en: 'Order Feedback',
 			ar: '', // TODO: Translate
