@@ -414,6 +414,9 @@ class OrderController extends Controller {
         $dbOrder->statusId = 8; // Missing Products
         $dbOrder->edit();
 
+        $missingProductsToEmail = $missingProducts;
+        // TODO: Email To Distributor
+
         echo $this->webResponse->jsonResponseV2(1, "Success", "");
     }
 
