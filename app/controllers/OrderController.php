@@ -380,6 +380,10 @@ class OrderController extends Controller {
     {
         $orderId = $this->f3->get("POST.orderId");
         $missingProducts = $this->f3->get("POST.missingProductsRepeater");
+        if ($this->checkForProductsDuplication($missingProducts)) {
+            echo $this->webResponse->jsonResponseV2(2, "Error", $this->f3->get('vMissingProduct_ErrorDuplicateProducts'));
+            return;
+        }
 
         $dbOrder = new BaseModel($this->db, "order");
         $dbOrder->getByField("id", $orderId);
@@ -395,7 +399,7 @@ class OrderController extends Controller {
             }
             $serverProduct = $this->getProductFromArrayById($missingProduct['productId'], $arrOrderDetail);
             if ($missingProduct['quantity'] > $serverProduct['quantity'] || $missingProduct['quantity'] <= 0) {
-                echo $this->webResponse->jsonResponseV2(2, "Error",  $this->f3->get('vMissingProduct_ErrorInvalidQuantity') . $serverProduct['productNameEn']);
+                echo $this->webResponse->jsonResponseV2(2, "Error", $this->f3->get('vMissingProduct_ErrorInvalidQuantity') . $serverProduct['productNameEn']);
                 return;
             }
         }
@@ -423,10 +427,22 @@ class OrderController extends Controller {
     private function getProductFromArrayById($productId, $products)
     {
         foreach ($products as $product) {
-            if ($product['id'] == $productId)
+            if ($product['productCode'] == $productId)
                 return $product;
         }
         return null;
+    }
+
+    private function checkForProductsDuplication($missingProducts)
+    {
+        $dupe_array = array();
+        foreach ($missingProducts as $val) {
+            echo $val['productId'] . " ";
+            if (++$dupe_array[$val['productId']] > 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

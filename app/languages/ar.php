@@ -158,4 +158,5 @@ return array(
     'vButton_add' => 'أضف',
 
     'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ', // TODO: add translation
+    'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!', // TODO: add translation
 );

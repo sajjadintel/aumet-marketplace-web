@@ -59,7 +59,8 @@ var WebMissingProductModals = (function () {
         $products = webResponse.data.orderDetail;
 
         $products = $.map($products, function (obj) {
-            obj.text = obj.productNameEn
+            obj.text = obj.productNameEn;
+            obj.id = obj.productCode;
             return obj;
         });
 
