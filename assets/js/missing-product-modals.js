@@ -35,9 +35,6 @@ var WebMissingProductModals = (function () {
             case 8:
                 status = WebAppLocals.getMessage('orderStatus_MissingProducts');
                 break;
-            case 9:
-                status = WebAppLocals.getMessage('orderStatus_MissingProductsDelivered');
-                break;
         }
         $('#missingProductModalTitle').html(WebAppLocals.getMessage('orderReportMissing'));
         $('#missingProductModalCustomerNameLabel').html(WebAppLocals.getMessage('entitySeller'));

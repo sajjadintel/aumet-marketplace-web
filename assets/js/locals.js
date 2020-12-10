@@ -190,11 +190,6 @@ var WebAppLocals = (function () {
 			ar: '', // TODO: Translate
 			fr: '',
 		},
-		orderStatus_MissingProductsDelivered: {
-			en: 'Missing Products Delivered',
-			ar: '', // TODO: Translate
-			fr: '',
-		},
 		orderStatus_PayOrder: {
 			en: 'Pay Order',
 			ar: '',

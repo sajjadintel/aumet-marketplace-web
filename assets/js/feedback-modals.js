@@ -35,9 +35,6 @@ var WebFeedbackModals = (function () {
             case 8:
                 status = WebAppLocals.getMessage('orderStatus_MissingProducts');
                 break;
-            case 9:
-                status = WebAppLocals.getMessage('orderStatus_MissingProductsDelivered');
-                break;
         }
         $('#feedbackModalBranchLabel').html(WebAppLocals.getMessage('branch'));
         $('#feedbackModalCustomerNameLabel').html(WebAppLocals.getMessage('entitySeller'));
