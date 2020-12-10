@@ -330,3 +330,4 @@ function compress_htmlcode($codedata)
       PageClass.init();
 	</script>
 <?php ob_end_flush(); ?>
+<? include_once 'missing-product-modal.php'; ?>

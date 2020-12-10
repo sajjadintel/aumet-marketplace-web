@@ -237,7 +237,7 @@ function compress_htmlcode($codedata)
 				</div>
 				<!--end::Content-->
 				<?php include_once 'modal.php'; ?>
-				<?php //include_once 'webGuidedTour-distributor.php'; 
+				<?php //include_once 'webGuidedTour-distributor.php';
 				?>
 				<!--begin::Footer-->
 				<?php include_once 'footer.php'; ?>
@@ -299,6 +299,7 @@ function compress_htmlcode($codedata)
 	<script type="text/javascript" src="/assets/js/app.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/app-modals.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/feedback-modals.js<?php echo $platformVersion ?>"></script>
+	<script type="text/javascript" src="/assets/js/missing-product-modals.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/autocomplete.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/products-search.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/pharmacy-orders.js<?php echo $platformVersion ?>"></script>

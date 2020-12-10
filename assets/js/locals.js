@@ -120,6 +120,11 @@ var WebAppLocals = (function () {
 			ar: 'تفاصيل الطلب',
 			fr: '',
 		},
+		orderMissingProduct: {
+			en: 'Order Missing Product',
+			ar: '', // TODO: Translate
+			fr: '',
+		},
 		orderFeedback: {
 			en: 'Order Feedback',
 			ar: '', // TODO: Translate
