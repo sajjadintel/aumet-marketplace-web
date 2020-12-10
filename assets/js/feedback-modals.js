@@ -32,6 +32,9 @@ var WebFeedbackModals = (function () {
             case 7:
                 status = WebAppLocals.getMessage('orderStatus_Paid');
                 break;
+            case 8:
+                status = WebAppLocals.getMessage('orderStatus_MissingProducts');
+                break;
         }
         $('#feedbackModalBranchLabel').html(WebAppLocals.getMessage('branch'));
         $('#feedbackModalCustomerNameLabel').html(WebAppLocals.getMessage('entitySeller'));
@@ -47,6 +50,7 @@ var WebFeedbackModals = (function () {
         $('#feedbackModalAddressText').html(webResponse.data.order.addressBuyer);
         $('#feedbackModalRatingLabel').html(WebAppLocals.getMessage('orderRating'));
         $('#feedbackModalCommentLabel').html(WebAppLocals.getMessage('orderComment'));
+        $('#feedbackModalComment').val('');
 
         $('#feedbackModalTitle').html(WebAppLocals.getMessage('orderFeedback'));
 
@@ -79,6 +83,7 @@ var WebFeedbackModals = (function () {
     var _sendFeedbackSuccessCallback = function (webResponse) {
         $('#feedbackModal').modal('hide');
         WebApp.alertSuccess(webResponse.title);
+        WebApp.reloadDatatable();
     };
 
     return {

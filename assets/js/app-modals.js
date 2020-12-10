@@ -125,6 +125,9 @@ var WebAppModals = (function () {
 			case 7:
 				status = WebAppLocals.getMessage('orderStatus_Paid');
 				break;
+			case 8:
+				status = WebAppLocals.getMessage('orderStatus_MissingProducts');
+				break;
 		}
 		$('#viewModalTitle').html(WebAppLocals.getMessage('orderDetails'));
 		$('#modalBranchLabel').html(WebAppLocals.getMessage('branch'));

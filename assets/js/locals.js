@@ -120,6 +120,16 @@ var WebAppLocals = (function () {
 			ar: 'تفاصيل الطلب',
 			fr: '',
 		},
+		orderMissingProduct: {
+			en: 'Order Missing Product',
+			ar: '', // TODO: Translate
+			fr: '',
+		},
+		orderReportMissing: {
+			en: 'Report Missing',
+			ar: '', // TODO: Translate
+			fr: '',
+		},
 		orderFeedback: {
 			en: 'Order Feedback',
 			ar: '', // TODO: Translate
@@ -173,6 +183,11 @@ var WebAppLocals = (function () {
 		orderStatus_Paid: {
 			en: 'Paid',
 			ar: 'مدفوع',
+			fr: '',
+		},
+		orderStatus_MissingProducts: {
+			en: 'Missing Products',
+			ar: '', // TODO: Translate
 			fr: '',
 		},
 		orderStatus_PayOrder: {
@@ -313,6 +328,11 @@ var WebAppLocals = (function () {
 		orderRating: {
 			en: 'Rating',
 			ar: 'التصنيف',
+			fr: '',
+		},
+		missingProduct: {
+			en: 'Missing Product',
+			ar: '', // TODO: Translate
 			fr: '',
 		},
 		orderComment: {
