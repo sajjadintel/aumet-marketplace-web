@@ -130,7 +130,7 @@ function compress_htmlcode($codedata)
                     },
                     8: {
                         title: WebAppLocals.getMessage('orderStatus_MissingProducts'),
-                        class: ' label-primary',
+                        class: ' label-danger',
                     },
                 };
 
