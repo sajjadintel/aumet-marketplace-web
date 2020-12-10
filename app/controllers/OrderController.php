@@ -404,7 +404,7 @@ class OrderController extends Controller {
             $dbMissingProduct = new BaseModel($this->db, "orderMissingProduct");
             $dbMissingProduct->orderId = $orderId;
             $dbMissingProduct->statusId = 1;
-            $dbMissingProduct->buyerUserId = $dbOrder->userBuyerId;
+            $dbMissingProduct->buyerUserId = $this->objUser->id;
             $dbMissingProduct->productId = $missingProduct['productId'];
             $dbMissingProduct->quantity = $missingProduct['quantity'];
             $dbMissingProduct->add();
