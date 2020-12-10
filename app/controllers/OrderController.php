@@ -437,7 +437,6 @@ class OrderController extends Controller {
     {
         $dupe_array = array();
         foreach ($missingProducts as $val) {
-            echo $val['productId'] . " ";
             if (++$dupe_array[$val['productId']] > 1) {
                 return true;
             }
