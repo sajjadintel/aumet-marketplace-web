@@ -27,7 +27,7 @@ var WebAppLocals = (function () {
 		},
 		feedback: {
 			en: 'Feedback',
-			ar: '', //todo translate
+			ar: '', // TODO: add translation
 			fr: '',
 		},
 		edit: {
@@ -92,7 +92,7 @@ var WebAppLocals = (function () {
 		},
 		branchSeller: {
 			en: 'Branch',
-			ar: '', //todo translate
+			ar: '', // TODO: add translation
 			fr: '',
 		},
 		userBuyer: {
@@ -122,17 +122,17 @@ var WebAppLocals = (function () {
 		},
 		orderMissingProduct: {
 			en: 'Order Missing Product',
-			ar: '', // TODO: Translate
+			ar: '', // TODO: add translation
 			fr: '',
 		},
 		orderReportMissing: {
 			en: 'Report Missing',
-			ar: '', // TODO: Translate
+			ar: '', // TODO: add translation
 			fr: '',
 		},
 		orderFeedback: {
 			en: 'Order Feedback',
-			ar: '', // TODO: Translate
+			ar: '', // TODO: add translation
 			fr: '',
 		},
 		orderLogs: {
@@ -187,7 +187,7 @@ var WebAppLocals = (function () {
 		},
 		orderStatus_MissingProducts: {
 			en: 'Missing Products',
-			ar: '', // TODO: Translate
+			ar: '', // TODO: add translation
 			fr: '',
 		},
 		orderStatus_PayOrder: {
@@ -332,12 +332,12 @@ var WebAppLocals = (function () {
 		},
 		missingProduct: {
 			en: 'Missing Product',
-			ar: '', // TODO: Translate
+			ar: '', // TODO: add translation
 			fr: '',
 		},
 		orderComment: {
 			en: 'Feedback',
-			ar: '', // TODO: Translate
+			ar: '', // TODO: add translation
 			fr: '',
 		},
 		stockUpdateProcessing: {
