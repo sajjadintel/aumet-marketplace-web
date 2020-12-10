@@ -247,13 +247,13 @@ class OrderController extends Controller {
                 $query .= " AND statusId = 1";
                 break;
             case 'unpaid':
-                $query .= " AND statusId = 6";
+                $query .= " AND statusId IN (6,8)";
                 break;
             case 'pending':
                 $query .= " AND statusId IN (2,3)";
                 break;
             case 'history':
-                $query .= " AND statusId IN (4,5,6,7)";
+                $query .= " AND statusId IN (4,5,6,7,8)";
                 break;
             default:
                 break;
@@ -324,13 +324,13 @@ class OrderController extends Controller {
         $query = "entityBuyerId IN ($arrEntityId)";
         switch ($status) {
             case 'unpaid':
-                $query .= " AND statusId = 6";
+                $query .= " AND statusId IN (6,8) ";
                 break;
             case 'pending':
                 $query .= " AND statusId IN (2,3)";
                 break;
             case 'history':
-                $query .= " AND statusId IN (4,5,6,7)";
+                $query .= " AND statusId IN (4,5,6,7,8)";
                 break;
             default:
                 break;
