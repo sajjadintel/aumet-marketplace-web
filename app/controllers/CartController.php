@@ -70,6 +70,10 @@ class CartController extends Controller
                 $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
                 $dbCartDetail->save();
 
+                // Get cart count
+                $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+                $this->objUser->cartCount = count($arrCartDetail);
+
                 $this->webResponse->errorCode = 1;
                 $this->webResponse->title = "";
                 $this->webResponse->data = $dbProduct->name;
@@ -92,6 +96,10 @@ class CartController extends Controller
             $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
             $dbCartDetail->getByField("id", $id);
             $dbCartDetail->erase();
+
+            // Get cart count
+            $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+            $this->objUser->cartCount = count($arrCartDetail);
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
@@ -161,6 +169,10 @@ class CartController extends Controller
                 $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
                 
                 $dbCartDetail->addReturnID();
+
+                // Get cart count
+                $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+                $this->objUser->cartCount = count($arrCartDetail);
 
                 $this->webResponse->errorCode = 1;
                 $this->webResponse->title = "";
@@ -472,5 +484,14 @@ class CartController extends Controller
             $this->webResponse->data = "Done";
             echo $this->webResponse->jsonResponse();
         }
+    }
+
+    function testMail()
+    {
+        global $dbConnection;
+
+        $emailHandler = new EmailHandler($dbConnection);
+        $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+        $emailHandler->sendEmail("Test subject", "Test body");
     }
 }
