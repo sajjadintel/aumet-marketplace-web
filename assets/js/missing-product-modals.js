@@ -2,7 +2,6 @@
 
 // Class Definition
 var WebMissingProductModals = (function () {
-    var rating = 0;
 
     var _orderMissingProductPharmacyModal = function (orderId) {
         WebApp.get('/web/distributor/order/' + orderId, _missingProductModalOpen);

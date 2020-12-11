@@ -121,7 +121,7 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		orderMissingProduct: {
-			en: 'Order Missing Product',
+			en: 'Missing Product',
 			ar: '', // TODO: add translation
 			fr: '',
 		},

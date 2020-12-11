@@ -243,6 +243,17 @@ function compress_htmlcode($codedata)
                     WebAppLocals.getMessage('orderStatusMove') +
                     WebAppLocals.getMessage('orderStatus_Paid') +
                     '</a>';
+
+                var missingProduct =
+                    '<a href="javascript:;" onclick=\'OrderMissingProductListModals.orderMissingProductListDistributorModal(' +
+                    row.id +
+                    ')\' \
+                        class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
+                        <i class="nav-icon la la-box p-0"></i> &nbsp&nbsp' +
+                    WebAppLocals.getMessage('orderMissingProduct') +
+                    '</a>';
+
+
                 var outActions = '';
 
                 outActions += btnView;
@@ -269,6 +280,10 @@ function compress_htmlcode($codedata)
                         break;
                     case 6:
                         outActions += btnOrderPaid;
+                        break;
+                    case 8:
+                        outActions += missingProduct;
+                        break;
                 }
 
                 return outActions;

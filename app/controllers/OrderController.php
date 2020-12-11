@@ -209,6 +209,30 @@ class OrderController extends Controller {
         }
     }
 
+    function getOrderMissingProducts()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $orderId = $this->f3->get('PARAMS.orderId');
+
+            $dbOrder = new BaseModel($this->db, "vwOrderEntityUser");
+            $arrOrder = $dbOrder->findWhere("id = '$orderId'");
+
+//            $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+            $dbOrderDetail = new BaseModel($this->db, "vwOrderMissingProductDetail");
+            $arrOrderDetail = $dbOrderDetail->findWhere("id = '$orderId'");
+
+
+            $data['order'] = $arrOrder[0];
+            $data['orderDetail'] = $arrOrderDetail;
+
+            echo $this->webResponse->jsonResponseV2(1, "", "", $data);
+            return;
+        }
+    }
+
     function postDistributorOrdersRecent()
     {
         $this->handlePostDistributorOrders('new');

@@ -52,6 +52,8 @@ $f3->route('GET /web/distributor/order/confirm/@orderId/@statusId', 'OrderContro
 $f3->route('GET /web/distributor/order/confirm/@orderId/@statusId/dashboard', 'OrderController->getOrderConfirmationDashboard');
 $f3->route('POST /web/distributor/order/new', 'OrderController->postDistributorOrdersNew');
 
+$f3->route('GET /web/distributor/orderMissingProducts/@orderId', 'OrderController->getOrderMissingProducts');
+
 $f3->route('POST /web/distributor/order/pending', 'OrderController->postDistributorOrdersPending');
 $f3->route('POST /web/distributor/order/unpaid', 'OrderController->postDistributorOrdersUnpaid');
 $f3->route('POST /web/distributor/order/history', 'OrderController->postDistributorOrdersHistory');
