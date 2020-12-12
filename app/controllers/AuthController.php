@@ -180,6 +180,11 @@ class AuthController extends Controller
         $dbUserAccount->getByField("userId", $objUser->id);
         $objUser->accountId = $dbUserAccount->accountId;
 
+        // Get cart count
+        $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
+        $arrCartDetail = $dbCartDetail->getByField("accountId", $objUser->accountId);
+        $objUser->cartCount = count($arrCartDetail);
+
         $this->isAuth = true;
 
         $dbUser->loginCounter++;

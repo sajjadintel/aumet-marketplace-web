@@ -12,6 +12,19 @@ function compress_htmlcode($codedata)
     return $codedata;
 }
 ?>
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
 <!--begin::Container-->
 <div class="container">
     <div class="d-flex flex-row">
@@ -54,16 +67,25 @@ function compress_htmlcode($codedata)
                                             <div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light">
                                                 <div class="symbol-label" style="background-image: url('<?php echo $item->image ?>')"></div>
                                             </div>
-                                            <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->productId ?>')" class="text-dark text-hover-primary"><?php echo $item->name ?></a>
+                                            <div>
+                                                <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->productId ?>')" class="text-dark text-hover-primary"><?php echo $item->name ?></a>
+                                                <?php if($item->quantityFree > 0) : ?>
+                                                    <p class="text-danger">Free <?php echo $item->name ?> x<?php echo $item->quantityFree ?></p>
+                                                <?php endif; ?>
+                                            </div>
                                         </td>
                                         <td class="text-center align-middle">
-                                            <a onclick="CartCheckout.updateQuantity(<?php echo $item->productId ?>, -1, <?php echo $item->stock?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon mr-2">
-                                                <i class="ki ki-minus icon-xs"></i>
-                                            </a>
-                                            <input style="width: 40%;" id="quantity-<?php echo $item->productId ?>" onfocusout="CartCheckout.updateQuantity(<?php echo $item->productId ?>, 0, <?php echo $item->stock?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="mr-2 font-weight-bolder quantity" min="0" max="<?php echo $item->stock ?>" value="<?php echo $item->quantity ?>" name="quantity">
-                                            <a onclick="CartCheckout.updateQuantity(<?php echo $item->productId ?>, 1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon">
-                                                <i class="ki ki-plus icon-xs"></i>
-                                            </a>
+                                            <?php if($item->quantityFree > 0) : ?>
+                                                <input style="width: 40%;" type="number" id="quantityBonus-<?php echo $item->productId ?>"  class="mr-2 font-weight-bolder quantity" value="<?php echo $item->quantity ?>" name="quantity" disabled>
+                                            <?php else : ?>
+                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->productId ?>, -1, <?php echo $item->stock?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon mr-2">
+                                                    <i class="ki ki-minus icon-xs"></i>
+                                                </a>
+                                                <input style="width: 40%;" type="number" id="quantity-<?php echo $item->productId ?>" onfocusout="CartCheckout.updateQuantity(<?php echo $item->productId ?>, 0, <?php echo $item->stock?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="mr-2 font-weight-bolder quantity" min="0" max="<?php echo $item->stock ?>" value="<?php echo $item->quantity ?>" name="quantity">
+                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->productId ?>, 1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon">
+                                                    <i class="ki ki-plus icon-xs"></i>
+                                                </a>
+                                            <?php endif; ?>
                                         </td>
                                         <td class="text-right align-middle font-weight-bolder font-size-h5"><?php echo $item->unitPrice . " " . $currencySymbol  ?></td>
                                         <td class="text-right align-middle font-weight-bolder font-size-h5 productPrice-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" data-unitPrice="<?php echo $item->unitPrice ?>" data-productPrice="<?php echo $item->quantity * $item->unitPrice ?>" id="productPrice-<?php echo $item->productId ?>"><?php echo $item->quantity * $item->unitPrice . " " . $currencySymbol ?></td>
