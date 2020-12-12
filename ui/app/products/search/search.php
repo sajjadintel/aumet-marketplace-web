@@ -114,6 +114,19 @@ function compress_htmlcode($codedata)
     </div>
 </div>
 <!--end::Container-->
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
 <script>
     var PageClass = function() {
         var elementId = "#datatable";
@@ -230,70 +243,41 @@ function compress_htmlcode($codedata)
             },
         }, {
             targets: 9,
-            title: WebAppLocals.getMessage('bonus'),
-            data: 'bonusTypeId',
-            orderable: false,
-            render: function(data, type, row, meta) {
-                var output = '';
-                <?php /*
-                if (row.stockStatusId == 1) {
-                    row.bonusOptions.sort((a, b) => parseInt(a.minOrder) - parseInt(b.minOrder));
-                    row.bonusOptions.forEach((element) => {
-                        output +=
-                            '<a href="javascript:;" onclick=\'SearchDataTable.onBonusOptionCallback(' +
-                            JSON.stringify(row) +
-                            ', ' +
-                            JSON.stringify(element) +
-                            ' )\'><span id="bonusOption-' +
-                            row.id +
-                            '-' +
-                            element.id +
-                            '" class="label label-xl label-light label-square label-inline mr-2 bonus-option-label-' +
-                            row.id +
-                            '">' +
-                            element.name +
-                            ' </span></a>';
-                    });
-                }
-                */ ?>
-                return output;
-            },
-        }, {
-            targets: 10,
             title: WebAppLocals.getMessage('quantity'),
             data: 'id',
             orderable: false,
             render: function(data, type, row, meta) {
-
                 var vQuantity = '';
-                var vBonus = '';
+                
+                var rowQuantity = 1;
+                if(row.quantity) {
+                    rowQuantity = row.quantity
+                }
+
                 if (row.stockStatusId == 1) {
                     vQuantity =
                         '<input id="quantity-' +
                         row.id +
-                        '" type="text" style="width: 70px; direction: ltr" value="' +
-                        row.quantity +
+                        '" type="number" style="width: 70px; direction: ltr" value="' +
+                        rowQuantity +
                         '" oninput=\'SearchDataTable.changeProductQuantityCallback(' +
                         JSON.stringify(row) +
                         " )' >";
-                    if (row.bonusTypeId == 2) {
-                        vBonus = '<span id="bonus-' + row.id + '" class="label label-xl label-rounded label-primary ml-1" style = "width: 50px" > </span>';
-                    }
                 }
 
-                return '<div>' + vQuantity + vBonus + '</div>';
+                return '<div>' + vQuantity + '</div>';
             },
         }, {
-            targets: 11,
+            targets: 10,
             title: '',
             data: 'id',
             orderable: false,
             render: function(data, type, row, meta) {
-
+                
                 var btnAddMoreToCart =
                     '<a href="javascript:;" onclick=\'SearchDataTable.onClickAddMoreToCart(' +
                     JSON.stringify(row) +
-                    ' )\' class="btn btn-sm btn-primary btn-text-primary btn-hover-primary  mr-2" title="Add to cart">\
+                    ' )\' class="btn btn-sm btn-primary btn-text-primary btn-hover-primary  mr-2 mb-2" title="Add to cart">\
                     <span class="svg-icon svg-icon-md">\
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -308,7 +292,7 @@ function compress_htmlcode($codedata)
                 var btnAddToCart =
                     '<a href="javascript:;" onclick=\'SearchDataTable.onClickAddToCart(' +
                     JSON.stringify(row) +
-                    ' )\' class="btn btn-sm btn-default btn-text-primary btn-hover-primary  mr-2" title="Add to cart">\
+                    ' )\' class="btn btn-sm btn-default btn-text-primary btn-hover-primary  mr-2 mb-2" title="Add to cart">\
                     <span class="svg-icon svg-icon-md">\
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -318,7 +302,7 @@ function compress_htmlcode($codedata)
                     </g></svg></span></a>';
 
                 var btnNotifyMe =
-                    '<a href="javascript:;" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2" title="Add to cart">\
+                    '<a href="javascript:;" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2 mb-2" title="Add to cart">\
                     <span class="svg-icon svg-icon-md">\
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -332,7 +316,7 @@ function compress_htmlcode($codedata)
                     row.entityId +
                     '/product/' +
                     row.productId +
-                    '\')" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2" title="View">\
+                    '\')" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2 mb-2" title="View">\
                     <span class="svg-icon svg-icon-md">\
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -341,6 +325,11 @@ function compress_htmlcode($codedata)
                         <path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero"/>\
                         <path d="M10.5,10.5 L10.5,9.5 C10.5,9.22385763 10.7238576,9 11,9 C11.2761424,9 11.5,9.22385763 11.5,9.5 L11.5,10.5 L12.5,10.5 C12.7761424,10.5 13,10.7238576 13,11 C13,11.2761424 12.7761424,11.5 12.5,11.5 L11.5,11.5 L11.5,12.5 C11.5,12.7761424 11.2761424,13 11,13 C10.7238576,13 10.5,12.7761424 10.5,12.5 L10.5,11.5 L9.5,11.5 C9.22385763,11.5 9,11.2761424 9,11 C9,10.7238576 9.22385763,10.5 9.5,10.5 L10.5,10.5 Z" fill="#000000" opacity="0.3"/>\
                         </g></svg></span></a>';
+                    
+                var btnShowBonuses =
+                    '<a href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.productId + ')\'\
+                    class="btn btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="View">\
+                    <span>Show Bonuses</span></a>';
 
                 var outActions = '';
 
@@ -362,6 +351,10 @@ function compress_htmlcode($codedata)
                         outActions += btnViewProduct;
                         outActions += btnNotifyMe;
                         break;
+                }
+
+                if(row.bonusTypeId === 2) {
+                    outActions += btnShowBonuses;
                 }
 
                 return outActions;
@@ -462,6 +455,7 @@ function compress_htmlcode($codedata)
         var initiate = function() {
             WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
         };
+        
         return {
             init: function() {
                 initiate();
@@ -472,3 +466,4 @@ function compress_htmlcode($codedata)
     PageClass.init();
 </script>
 <?php ob_end_flush(); ?>
+<?php include_once 'add-bonus-modal.php';?>

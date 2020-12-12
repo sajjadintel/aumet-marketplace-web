@@ -6,6 +6,7 @@ $f3->route('GET /', 'LandingController->get');
 $f3->route('GET /@lang', 'LandingController->get');
 
 $f3->route('GET /web/auth/signin', 'AuthController->getSignIn');
+$f3->route('POST /web/auth/signin_nofirebase', 'AuthController->postSignIn_NoFirebase');
 $f3->route('POST /web/auth/signin', 'AuthController->postSignIn');
 
 $f3->route('GET /web/auth/signup', 'AuthController->getSignUp');
@@ -35,8 +36,14 @@ $f3->route('GET /web/customercare', 'CustomerCareController->get');
 
 $f3->route('GET /web/cart', 'CartController->get');
 $f3->route('POST /web/cart/add', 'CartController->postAddItem');
+$f3->route('POST /web/cart/bonus/add', 'CartController->postAddBonusItem');
 $f3->route('GET /web/cart/status', 'CartController->getStatus');
 $f3->route('POST /web/cart/remove', 'CartController->postRemoveItem');
+$f3->route('GET /web/cart/remove/confirm/@itemId', 'CartController->getRemoveItemConfirmation');
+$f3->route('POST /web/cart/checkout/update', 'CartController->postCartCheckoutUpdate');
+$f3->route('GET /web/cart/checkout', 'CartController->getCartCheckout');
+$f3->route('POST /web/cart/checkout/submit', 'CartController->postCartCheckoutSubmit');
+$f3->route('GET /web/cart/checkout/submit/confirm', 'CartController->getCartCheckoutSubmitConfirmation');
 
 $f3->route('GET /web/demo/editor/scientificnames', 'DemoController->get');
 
