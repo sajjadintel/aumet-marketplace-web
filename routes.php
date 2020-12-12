@@ -6,6 +6,7 @@ $f3->route('GET /', 'LandingController->get');
 $f3->route('GET /@lang', 'LandingController->get');
 
 $f3->route('GET /web/auth/signin', 'AuthController->getSignIn');
+$f3->route('POST /web/auth/signin_nofirebase', 'AuthController->postSignIn_NoFirebase');
 $f3->route('POST /web/auth/signin', 'AuthController->postSignIn');
 
 $f3->route('GET /web/auth/signup', 'AuthController->getSignUp');

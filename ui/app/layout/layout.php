@@ -293,6 +293,7 @@ function compress_htmlcode($codedata)
 	<script type="text/javascript" src="/theme/assets/plugins/custom/jstree/jstree.bundle.js<?php echo $platformVersion ?>"></script>
 
 	<script type="text/javascript" src="/assets/js/math.min.js"></script>
+	<script type="text/javascript" src="/assets/js/locals.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/tour-distributor.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/locals.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/cart.js<?php echo $platformVersion ?>"></script>
