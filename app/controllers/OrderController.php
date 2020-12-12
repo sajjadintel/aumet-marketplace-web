@@ -209,6 +209,30 @@ class OrderController extends Controller {
         }
     }
 
+    function getOrderMissingProducts()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $orderId = $this->f3->get('PARAMS.orderId');
+
+            $dbOrder = new BaseModel($this->db, "vwOrderEntityUser");
+            $arrOrder = $dbOrder->findWhere("id = '$orderId'");
+
+//            $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+            $dbOrderDetail = new BaseModel($this->db, "vwOrderMissingProductDetail");
+            $arrOrderDetail = $dbOrderDetail->findWhere("id = '$orderId'");
+
+
+            $data['order'] = $arrOrder[0];
+            $data['orderDetail'] = $arrOrderDetail;
+
+            echo $this->webResponse->jsonResponseV2(1, "", "", $data);
+            return;
+        }
+    }
+
     function postDistributorOrdersRecent()
     {
         $this->handlePostDistributorOrders('new');
@@ -380,6 +404,10 @@ class OrderController extends Controller {
     {
         $orderId = $this->f3->get("POST.orderId");
         $missingProducts = $this->f3->get("POST.missingProductsRepeater");
+        if ($this->checkForProductsDuplication($missingProducts)) {
+            echo $this->webResponse->jsonResponseV2(2, "Error", $this->f3->get('vMissingProduct_ErrorDuplicateProducts'));
+            return;
+        }
 
         $dbOrder = new BaseModel($this->db, "order");
         $dbOrder->getByField("id", $orderId);
@@ -395,7 +423,7 @@ class OrderController extends Controller {
             }
             $serverProduct = $this->getProductFromArrayById($missingProduct['productId'], $arrOrderDetail);
             if ($missingProduct['quantity'] > $serverProduct['quantity'] || $missingProduct['quantity'] <= 0) {
-                echo $this->webResponse->jsonResponseV2(2, "Error", "Invalid quantity for " . $serverProduct['productNameEn']);
+                echo $this->webResponse->jsonResponseV2(2, "Error", $this->f3->get('vMissingProduct_ErrorInvalidQuantity') . $serverProduct['productNameEn']);
                 return;
             }
         }
@@ -404,7 +432,7 @@ class OrderController extends Controller {
             $dbMissingProduct = new BaseModel($this->db, "orderMissingProduct");
             $dbMissingProduct->orderId = $orderId;
             $dbMissingProduct->statusId = 1;
-            $dbMissingProduct->buyerUserId = $dbOrder->userBuyerId;
+            $dbMissingProduct->buyerUserId = $this->objUser->id;
             $dbMissingProduct->productId = $missingProduct['productId'];
             $dbMissingProduct->quantity = $missingProduct['quantity'];
             $dbMissingProduct->add();
@@ -423,10 +451,21 @@ class OrderController extends Controller {
     private function getProductFromArrayById($productId, $products)
     {
         foreach ($products as $product) {
-            if ($product['id'] == $productId)
+            if ($product['productCode'] == $productId)
                 return $product;
         }
         return null;
+    }
+
+    private function checkForProductsDuplication($missingProducts)
+    {
+        $dupe_array = array();
+        foreach ($missingProducts as $val) {
+            if (++$dupe_array[$val['productId']] > 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

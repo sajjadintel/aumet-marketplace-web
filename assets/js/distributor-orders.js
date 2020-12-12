@@ -135,7 +135,7 @@ var DistributorOrdersDataTable = (function () {
 							},
 							8: {
 								title: WebAppLocals.getMessage('orderStatus_MissingProducts'),
-								class: ' label-primary',
+								class: ' label-danger',
 							},
 						};
 

@@ -2,7 +2,6 @@
 
 // Class Definition
 var WebMissingProductModals = (function () {
-    var rating = 0;
 
     var _orderMissingProductPharmacyModal = function (orderId) {
         WebApp.get('/web/distributor/order/' + orderId, _missingProductModalOpen);
@@ -59,7 +58,8 @@ var WebMissingProductModals = (function () {
         $products = webResponse.data.orderDetail;
 
         $products = $.map($products, function (obj) {
-            obj.text = obj.productNameEn
+            obj.text = obj.productNameEn;
+            obj.id = obj.productCode;
             return obj;
         });
 

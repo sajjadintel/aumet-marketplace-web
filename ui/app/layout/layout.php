@@ -237,7 +237,8 @@ function compress_htmlcode($codedata)
 				</div>
 				<!--end::Content-->
 				<?php include_once 'modal.php'; ?>
-				<?php //include_once 'webGuidedTour-distributor.php';
+                <? include_once 'ui/app/sale/orders/missing-product-list-modal.php'; ?>
+                <?php //include_once 'webGuidedTour-distributor.php';
 				?>
 				<!--begin::Footer-->
 				<?php include_once 'footer.php'; ?>
@@ -302,10 +303,9 @@ function compress_htmlcode($codedata)
 	<script type="text/javascript" src="/assets/js/app-modals.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/feedback-modals.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/missing-product-modals.js<?php echo $platformVersion ?>"></script>
+	<script type="text/javascript" src="/assets/js/missing-product-list-modals.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/autocomplete.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/products-search.js<?php echo $platformVersion ?>"></script>
-	<script type="text/javascript" src="/assets/js/pharmacy-orders.js<?php echo $platformVersion ?>"></script>
-	<script type="text/javascript" src="/assets/js/distributor-feedback.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-products.js<?php echo $platformVersion ?>"></script>
 	<script type="text/javascript" src="/assets/js/distributor-customers.js<?php echo $platformVersion ?>"></script>
 

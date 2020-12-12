@@ -69,8 +69,8 @@ return array(
     'vModule_search_scientificNamePlaceholder' => 'الأسماء العلمية',
     'vModule_search_distributorNamePlaceholder' => 'قائمة الموزعين',
     'vModule_search_buyerNamePlaceholder' => 'قائمة المشترين',
-    'vModule_search_productPlaceholder' => '', // TODO: Translate
-    'vModule_search_sellerNamePlaceholder' => 'Filter by Distributor', // TODO: Translate
+    'vModule_search_productPlaceholder' => '', // TODO: add translation
+    'vModule_search_sellerNamePlaceholder' => 'Filter by Distributor', // TODO: add translation
     'vModule_search_stockStatusPlaceholder' => 'توفر المنتج',
     'vModule_search_stockStatus_Available' => 'المتوفر فقط',
     'vModule_search_stockStatus_others' => 'الجميع',
@@ -88,12 +88,12 @@ return array(
     'vModule_order_header_pending' => 'يمكنك عرض الطلبات المعلقة الخاصة بك',
     'vModule_order_header_history' => 'يمكنك عرض محفوظات طلبك',
 
-    'vModule_pharmacy_feedback_title' => 'Feedback List', // TODO: Translate
-    'vModule_pharmacy_feedback_header_pending' => 'You can view your feedback pending', // TODO: Translate
-    'vModule_pharmacy_feedback_header_history' => 'You can view your feedback history', // TODO: Translate
+    'vModule_pharmacy_feedback_title' => 'Feedback List', // TODO: add translation
+    'vModule_pharmacy_feedback_header_pending' => 'You can view your feedback pending', // TODO: add translation
+    'vModule_pharmacy_feedback_header_history' => 'You can view your feedback history', // TODO: add translation
 
-    'alreadySentFeedback' => 'Already sent a feedback!', // TODO: Translate
-    'feedbackSaved' => 'Feedback saved!', // TODO: Translate
+    'alreadySentFeedback' => 'Already sent a feedback!', // TODO: add translation
+    'feedbackSaved' => 'Feedback saved!', // TODO: add translation
 
     'vOrderStatusConfirmation' => 'هل أنت متأكد أنك تريد نقل هذا الطلب إلى {0}؟',
     'vOrderStatus_New' => 'جديد',
@@ -166,5 +166,7 @@ return array(
 
     'vButton_update' => 'تحديث',
     'vButton_add' => 'أضف',
+    'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ', // TODO: add translation
+    'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!', // TODO: add translation
     'vButton_confirm' => 'تأكيد',
 );
