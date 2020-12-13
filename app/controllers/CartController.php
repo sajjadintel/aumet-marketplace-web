@@ -453,7 +453,8 @@ class CartController extends Controller
                 $dbOrder->userBuyerId = $this->objUser->id;
                 $dbOrder->userSellerId = null;
                 $dbOrder->statusId = 1;
-                
+                $dbOrder->paymentMethodId = 1;
+
                 // TODO: Adjust serial logic
                 $dbOrder->serial = mt_rand(100000, 999999);
                 
