@@ -302,7 +302,9 @@ class CartController extends Controller
             $dbOrderGrand->buyerEntityId = $account->entityId;
             $dbOrderGrand->buyerBranchId = $entityBranch->id;
             $dbOrderGrand->buyerUserId = $this->objUser->id;
+            $dbOrderGrand->paymentMethodId = 1;
             $dbOrderGrand->addReturnID();
+            $grandOrderId = $dbOrderGrand->id;
 
             $dbCartDetail = new BaseModel($dbConnection, "vwCartDetail");
             $nameField = "productName_" . $this->objUser->language;
@@ -368,7 +370,7 @@ class CartController extends Controller
 
                 // Add to order
                 $dbOrder = new BaseModel($dbConnection, "order");
-                $dbOrder->orderGrandId = $dbOrderGrand->id;
+                $dbOrder->orderGrandId = $grandOrderId;
                 $dbOrder->entityBuyerId = $account->entityId;
                 $dbOrder->entitySellerId = $sellerId;
                 $dbOrder->branchBuyerId = $entityBranch->id;
@@ -407,7 +409,7 @@ class CartController extends Controller
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
-            $this->webResponse->data = "Done";
+            $this->webResponse->data = $grandOrderId;
             echo $this->webResponse->jsonResponse();
         }
     }
