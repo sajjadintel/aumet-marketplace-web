@@ -16,23 +16,13 @@
 
 
                         <div class="col-md-12 form-group">
-<<<<<<< HEAD
                             <div class="image-input image-input-empty image-input-outline" id="kt_image_5" style="background-image: url(/theme/assets/media/users/blank.png)">
                                 <div class="image-input-wrapper"></div>
-=======
-                            <div class="image-input image-input-empty image-input-outline">
-                                <div class="image-input-wrapper" id="productImageHolder"></div>
->>>>>>> 0799e07b393771245d254573e0406f88d6a65c54
 
                                 <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Change avatar">
                                     <i class="fa fa-pen icon-sm text-muted"></i>
-<<<<<<< HEAD
                                     <input type="file" name="profile_avatar" accept=".png, .jpg, .jpeg" />
                                     <input type="hidden" name="profile_avatar_remove" />
-=======
-                                    <input type="file" name="profile_avatar" accept=".png, .jpg, .jpeg" id="editProductImage"/>
-                                    <input type="hidden" name="image" id="productImage"/>
->>>>>>> 0799e07b393771245d254573e0406f88d6a65c54
                                 </label>
 
                                 <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Cancel avatar">

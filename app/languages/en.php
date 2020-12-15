@@ -79,6 +79,7 @@ return array(
     'vModule_search_scientificNamePlaceholder' => 'Scientific Name List',
     'vModule_search_distributorNamePlaceholder' => 'Distributor List',
     'vModule_search_buyerNamePlaceholder' => 'Filter by Customer',
+    'vModule_search_productPlaceholder' => 'Filter by Product',
     'vModule_search_sellerNamePlaceholder' => 'Filter by Distributor',
     'vModule_search_stockStatusPlaceholder' => 'Availability',
     'vModule_search_stockStatus_Available' => 'Available Only',
@@ -96,6 +97,13 @@ return array(
     'vModule_order_header_unpaid' => 'You can view your unpaid orders',
     'vModule_order_header_pending' => 'You can view your pending orders',
     'vModule_order_header_history' => 'You can view your order history',
+
+    'vModule_pharmacy_feedback_title' => 'Feedback List',
+    'vModule_pharmacy_feedback_header_pending' => 'You can view your feedback pending',
+    'vModule_pharmacy_feedback_header_history' => 'You can view your feedback history',
+
+    'alreadySentFeedback' => 'Already sent a feedback!',
+    'feedbackSaved' => 'Feedback saved!',
 
     'vOrderStatusConfirmation' => 'Are you sure you want to move this order to {0}?',
     'vOrderStatus_New' => 'New',
@@ -171,4 +179,7 @@ return array(
 
     'vModule_feedback_title' => 'Customer Orders Feedback',
     'vModule_feedback_header' => 'The below customer feedback is delivered to you privately and they are not publicly available for any user',
+
+    'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ',
+    'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!',
 );
