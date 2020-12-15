@@ -24,4 +24,5 @@ class Constants
 
     ## Email Types
     const EMAIL_NEW_ORDER = 'New Order';
+    const EMAIL_ORDER_STATUS_UPDATE = 'Order Status Update';
 }

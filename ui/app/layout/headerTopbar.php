@@ -1,5 +1,5 @@
 <div class="topbar">
-	<?php if($objUser->roleId === 40): ?>
+	<?php if($objUser->menuId !== 1): ?>
 	<!--begin::CartCheckout-->
 	<div class="topbar-item">
 		<div class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1" id="kt_quick_cart_toggle" onclick="window.location.href = '/web/cart/checkout'">
@@ -13,15 +13,15 @@
 					</g>
 				</svg>
 				<!--end::Svg Icon-->
-				<?php if($objUser->cartCount > 0) : ?>
-					<span class="label label-danger ml-2">
+				<span class="label label-danger ml-2" id="cartCount"
+					style="<?php if($objUser->cartCount > 0) : ?>display: flex;<?php else : ?>display: none;<?php endif; ?>"
+				>
 					<?php if($objUser->cartCount > 9) : ?>
 						9+
 					<?php else : ?>
 						<?php echo $objUser->cartCount ?>
 					<?php endif; ?>
-					</span>
-				<?php endif; ?>
+				</span>
 			</span>
 		</div>
 	</div>

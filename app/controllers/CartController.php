@@ -72,11 +72,12 @@ class CartController extends Controller
 
                 // Get cart count
                 $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-                $this->objUser->cartCount = count($arrCartDetail);
+                $cartCount = count($arrCartDetail);
+                $this->objUser->cartCount = $cartCount;
 
                 $this->webResponse->errorCode = 1;
                 $this->webResponse->title = "";
-                $this->webResponse->data = $dbProduct->name;
+                $this->webResponse->data = $cartCount;
                 echo $this->webResponse->jsonResponse();
             }
         }
@@ -99,11 +100,12 @@ class CartController extends Controller
 
             // Get cart count
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-            $this->objUser->cartCount = count($arrCartDetail);
+            $cartCount = count($arrCartDetail);
+            $this->objUser->cartCount = $cartCount;
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
-            $this->webResponse->data = "Done";
+            $this->webResponse->data = $cartCount;
             echo $this->webResponse->jsonResponse();
         }
     }
@@ -172,11 +174,12 @@ class CartController extends Controller
 
                 // Get cart count
                 $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-                $this->objUser->cartCount = count($arrCartDetail);
+                $cartCount = count($arrCartDetail);
+                $this->objUser->cartCount = $cartCount;
 
                 $this->webResponse->errorCode = 1;
                 $this->webResponse->title = "";
-                $this->webResponse->data = $dbProduct->name;
+                $this->webResponse->data = $cartCount;
                 echo $this->webResponse->jsonResponse();
             }
         }
@@ -265,7 +268,13 @@ class CartController extends Controller
             $account = $dbAccount->getById($this->objUser->accountId)[0];
             $buyerCurrency = $mapSellerIdCurrency[$account->entityId];
             $this->f3->set('buyerCurrency', $buyerCurrency);
-
+            
+            // Set paymenet methods
+            $dbPaymentMethod = new BaseModel($dbConnection, "orderPaymentMethod");
+            $nameField = "name_" . $this->objUser->language;
+            $dbPaymentMethod->name = $nameField;
+            $allPaymentMethods = $dbPaymentMethod->all();
+            $this->f3->set('allPaymentMethods', $allPaymentMethods);
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = $this->f3->get('vTitle_cart');
@@ -379,6 +388,10 @@ class CartController extends Controller
             $dbOrderGrand->buyerEntityId = $account->entityId;
             $dbOrderGrand->buyerBranchId = $entityBranch->id;
             $dbOrderGrand->buyerUserId = $this->objUser->id;
+
+            // TODO: Change paymentMethodId logic
+            $dbOrderGrand->paymentMethodId = 1;
+            
             $dbOrderGrand->addReturnID();
 
             $dbCartDetail = new BaseModel($dbConnection, "vwCartDetail");
@@ -429,15 +442,34 @@ class CartController extends Controller
                 array_push($cartItemsBySeller, $cartDetail);
                 $allCartItems[$sellerId] = $cartItemsBySeller;
             }
+            
+            $emailHandler = new EmailHandler($dbConnection);
+            $emailFile = "email/layout.php";
+            $this->f3->set('title', 'New Order');
+            $this->f3->set('emailType', 'newOrder');
+
+            $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
+
+            $allProducts = [];
+            $mapCurrencyIdTotal = [];
 
             $mapSellerIdOrderId = [];
             foreach($allSellers as $seller) {
                 $sellerId = $seller->sellerId;
                 $cartItemsBySeller = $allCartItems[$sellerId];
 
+                $currencyId = $mapSellerIdCurrency[$sellerId]->id;
+
                 $total = 0;
                 foreach($cartItemsBySeller as $cartItem) {
                     $total += $cartItem->quantity * $cartItem->unitPrice;
+                    array_push($allProducts, $cartItem);
+                }
+
+                if(array_key_exists($currencyId, $mapCurrencyIdTotal)) {
+                    $mapCurrencyIdTotal[$currencyId] += $total;
+                } else {
+                    $mapCurrencyIdTotal[$currencyId] = $total;
                 }
                 
                 // TODO: Adjust sellerBranchId logic
@@ -456,15 +488,53 @@ class CartController extends Controller
                 
                 // TODO: Adjust serial logic
                 $dbOrder->serial = mt_rand(100000, 999999);
+
+                // TODO: Change paymentMethodId logic
+                $dbOrder->paymentMethodId = 1;
                 
-                $dbOrder->currencyId = $mapSellerIdCurrency[$sellerId]->id;
+                $dbOrder->currencyId = $currencyId;
                 $dbOrder->subtotal = $total;
                 $dbOrder->total = $total;
                 $dbOrder->addReturnID();
 
                 $mapSellerIdOrderId[$sellerId] = $dbOrder->id;
+
+                $this->f3->set('products', $cartItemsBySeller);
+                $this->f3->set('currencySymbol', $mapSellerIdCurrency[$sellerId]->symbol);
+                $this->f3->set('total', $total);
+
+                $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $sellerId);
+                foreach($arrEntityUserProfile as $entityUserProfile) {
+                    $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName); 
+                }
+                $htmlContent = View::instance()->render($emailFile);
+
+                $emailHandler->sendEmail(Constants::EMAIL_NEW_ORDER, "New Order", $htmlContent);
+                $emailHandler->resetTos();
             }
+
+            $totalUSD = 0;
+            foreach($mapCurrencyIdCurrency as $currencyId => $currency) {
+                if(array_key_exists($currencyId, $mapCurrencyIdTotal)) {
+                    $subTotal = $mapCurrencyIdTotal[$currencyId];
+                    $totalUSD += $subTotal + $currency->conversionToUSD; 
+                }
+            }
+
+            $total = $totalUSD / $buyerCurrency->conversionToUSD;
+
+            $this->f3->set('products', $allProducts);
+            $this->f3->set('currencySymbol', $buyerCurrency->symbol);
+            $this->f3->set('total', $total);
             
+            $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $account->entityId);
+            foreach($arrEntityUserProfile as $entityUserProfile) {
+                $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName); 
+            }
+            $htmlContent = View::instance()->render($emailFile);
+
+            $emailHandler->sendEmail(Constants::EMAIL_NEW_ORDER, "New Order", $htmlContent);
+
             $commands = [];
             foreach($arrCartDetail as $cartDetail) {
                 $orderId = $mapSellerIdOrderId[$cartDetail->entityId];
@@ -489,9 +559,19 @@ class CartController extends Controller
     function testMail()
     {
         global $dbConnection;
+        
+        $emailFile = "email/layout.php";
+        $this->f3->set('title', 'New Order');
+        $this->f3->set('emailType', 'newOrder');
+        $this->f3->set('products', 'products');
+        $this->f3->set('currencySymbol', 'newOrder');
+        $this->f3->set('total', 'newOrder');
+
+        $htmlContent = View::instance()->render($emailFile);
 
         $emailHandler = new EmailHandler($dbConnection);
         $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
-        $emailHandler->sendEmail("Test subject", "Test body");
+        // $emailHandler->sendEmail(Constants::EMAIL_NEW_ORDER, "Test subject", $htmlContent);
+        echo $htmlContent;
     }
 }

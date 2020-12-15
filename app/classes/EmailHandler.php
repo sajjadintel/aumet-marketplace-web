@@ -50,7 +50,7 @@ class EmailHandler
         return $this->exception;
     }
 
-    function sendEmail($subject, $html)
+    public function sendEmail($emailType, $subject, $html)
     {
         if (count($this->arrTos) <= 0) {
             return -1;
@@ -69,21 +69,26 @@ class EmailHandler
             );
             $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
             $response = $sendgrid->send($email);
-            return $response->statusCode();
+            $statusCode = $response->statusCode();
+
+            $emailTos = implode(", ", array_keys($this->arrTos));
+            $this->logEmailTransaction($emailType, $emailTos, $subject, $html, $statusCode);
+            
+            return $statusCode;
         } catch (Exception $e) {
             $this->exception = $e;
             return -1;
         }
     }
     
-    function logEmailTransaction($emailType, $userId, $userEmail, $emailContent, $emailStatusCode)
+    public function logEmailTransaction($emailType, $emailTos, $emailSubject, $emailContent, $emailStatusCode)
     {
-        $dbLog = new AbstractModel($this->db, "emailLogs");
-        $dbLog->userId = $userId;
-        $dbLog->email = $userEmail;
+        $dbLog = new BaseModel($this->db, "emailLog");
         $dbLog->type = $emailType;
+        $dbLog->tos = $emailTos;
+        $dbLog->subject = $emailSubject;
         $dbLog->content = $emailContent;
-        $dbLog->status = $emailStatusCode;
+        $dbLog->statusCode = $emailStatusCode;
         $dbLog->add();
     }
 }

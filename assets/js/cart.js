@@ -40,9 +40,21 @@ var Cart = (function () {
 	var _addItemSuccessCallback = function (webResponse) {
 		_itemsCount++;
 		_topbarItemText.html(_itemsCount);
+
+		// Update cart count
+		let cartCount = webResponse.data > 9 ? "9+" : webResponse.data;
+		if(webResponse.data !== 0) $("#cartCount").css("display", "flex");
+		else $("#cartCount").css("display", "none");
+		$("#cartCount").html(cartCount);
 	};
 
 	var _removeItemSuccessCallback = function (webResponse) {
+		// Update cart count
+		let cartCount = webResponse.data > 9 ? "9+" : webResponse.data;
+		if(webResponse.data !== 0) $("#cartCount").css("display", "flex");
+		else $("#cartCount").css("display", "none");
+		$("#cartCount").html(cartCount);
+		
 		WebApp.loadPage('/web/cart');
 	};
 
