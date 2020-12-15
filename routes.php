@@ -109,6 +109,8 @@ $f3->route('POST /web/distributor/customer/feedback', 'CustomersController->post
 // START dashboard
 $f3->route('POST /web/distributor/order/recent', 'OrderController->postDistributorOrdersRecent');
 $f3->route('POST /web/distributor/product/bestselling', 'ProductsController->postDistributorProductsBestSelling');
+
+$f3->route('POST /web/pharmacy/order/recent', 'OrderController->postPharmacyOrdersRecent');
 // END dashboard
 
 $f3->route('GET /web/notification/order/new', 'OrderController->getNotifcationsDistributorOrdersNew');

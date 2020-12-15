@@ -40,8 +40,12 @@ var CartCheckout = (function () {
 	var _removeItemModal = function (itemId) {
 		WebApp.get('/web/cart/remove/confirm/' + itemId, WebApp.openModal);
 	};
-
-	var _removeItemSuccess = function () {
+	var _removeItemSuccess = function (webResponse) {
+		// Update cart count
+		let cartCount = webResponse.data > 9 ? "9+" : webResponse.data;
+		if(webResponse.data !== 0) $("#cartCount").css("display", "flex");
+		else $("#cartCount").css("display", "none");
+		$("#cartCount").html(cartCount);
 		WebApp.loadPage('/web/cart/checkout');
 	};
 
@@ -106,8 +110,8 @@ var CartCheckout = (function () {
 		removeItemModal: function (itemId) {
 			_removeItemModal(itemId)
 		},
-		removeItemSuccess: function () {
-			_removeItemSuccess()
+		removeItemSuccess: function (webResponse) {
+			_removeItemSuccess(webResponse)
 		},
 		submitOrderModal: function () {
 			_submitOrderModal()

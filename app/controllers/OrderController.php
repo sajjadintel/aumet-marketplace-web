@@ -323,6 +323,11 @@ class OrderController extends Controller {
         $this->jsonResponseAPI($response);
     }
 
+    function postPharmacyOrdersRecent()
+    {
+        $this->handlePostPharmacyOrders('recent');
+    }
+
     function postPharmacyOrdersPending()
     {
         $this->handlePostPharmacyOrders('pending');
@@ -347,6 +352,12 @@ class OrderController extends Controller {
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityBuyerId IN ($arrEntityId)";
         switch ($status) {
+            case 'new':
+                $query .= " AND statusId = 1";
+                break;
+            case 'recent':
+                $query .= " AND statusId IN (1, 2)";
+                break;
             case 'unpaid':
                 $query .= " AND statusId IN (6,8) ";
                 break;
@@ -601,6 +612,47 @@ class OrderController extends Controller {
             $dbRelation->updatedAt = date('Y-m-d H:i:s');
             $dbRelation->update();
         }
+
+        // orderStatusUpdateTitle
+        // Send mails to notify about order status update
+        $emailHandler = new EmailHandler($dbConnection);
+        $emailFile = "email/layout.php";
+        $this->f3->set('title', 'Order Status Update');
+        $this->f3->set('emailType', 'orderStatusUpdate');
+
+        $dbOrderStatus = new BaseModel($this->db, "orderStatus");
+        
+        $nameField = "name_" . $this->objUser->language;
+        $dbOrderStatus->name = $nameField;
+        
+        $allOrderStatus = $dbOrderStatus->all();
+        
+        $mapStatusIdName = [];
+        foreach($allOrderStatus as $orderStatus) {
+            $mapStatusIdName[$orderStatus->id] = $orderStatus->name;
+        }
+
+        $orderStatusUpdateTitle = "Order with serial " . $order->serial . " status has changed to " . $mapStatusIdName[$statusId];
+        $this->f3->set('orderStatusUpdateTitle', $orderStatusUpdateTitle);
+
+        $htmlContent = View::instance()->render($emailFile);
+
+        $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
+
+        $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $dbOrder->entityBuyerId);
+        foreach($arrEntityUserProfile as $entityUserProfile) {
+            $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName); 
+        }
+
+        $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, 'Order Status Update', $htmlContent);
+        $emailHandler->resetTos();
+
+        $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $dbOrder->entitySellerId);
+        foreach($arrEntityUserProfile as $entityUserProfile) {
+            $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName); 
+        }
+
+        $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, 'Order Status Update', $htmlContent);
 
         echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null, null);
         return;
