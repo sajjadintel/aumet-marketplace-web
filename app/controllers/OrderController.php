@@ -209,6 +209,30 @@ class OrderController extends Controller {
         }
     }
 
+    function getOrderMissingProducts()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $orderId = $this->f3->get('PARAMS.orderId');
+
+            $dbOrder = new BaseModel($this->db, "vwOrderEntityUser");
+            $arrOrder = $dbOrder->findWhere("id = '$orderId'");
+
+//            $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+            $dbOrderDetail = new BaseModel($this->db, "vwOrderMissingProductDetail");
+            $arrOrderDetail = $dbOrderDetail->findWhere("id = '$orderId'");
+
+
+            $data['order'] = $arrOrder[0];
+            $data['orderDetail'] = $arrOrderDetail;
+
+            echo $this->webResponse->jsonResponseV2(1, "", "", $data);
+            return;
+        }
+    }
+
     function postDistributorOrdersRecent()
     {
         $this->handlePostDistributorOrders('new');
@@ -247,13 +271,13 @@ class OrderController extends Controller {
                 $query .= " AND statusId = 1";
                 break;
             case 'unpaid':
-                $query .= " AND statusId = 6";
+                $query .= " AND statusId IN (6,8)";
                 break;
             case 'pending':
                 $query .= " AND statusId IN (2,3)";
                 break;
             case 'history':
-                $query .= " AND statusId IN (4,5,6,7)";
+                $query .= " AND statusId IN (4,5,6,7,8)";
                 break;
             default:
                 break;
@@ -324,13 +348,13 @@ class OrderController extends Controller {
         $query = "entityBuyerId IN ($arrEntityId)";
         switch ($status) {
             case 'unpaid':
-                $query .= " AND statusId = 6";
+                $query .= " AND statusId IN (6,8) ";
                 break;
             case 'pending':
                 $query .= " AND statusId IN (2,3)";
                 break;
             case 'history':
-                $query .= " AND statusId IN (4,5,6,7)";
+                $query .= " AND statusId IN (4,5,6,7,8)";
                 break;
             default:
                 break;
@@ -374,6 +398,74 @@ class OrderController extends Controller {
         );
 
         $this->jsonResponseAPI($response);
+    }
+
+    function postPharmacyMissingProducts()
+    {
+        $orderId = $this->f3->get("POST.orderId");
+        $missingProducts = $this->f3->get("POST.missingProductsRepeater");
+        if ($this->checkForProductsDuplication($missingProducts)) {
+            echo $this->webResponse->jsonResponseV2(2, "Error", $this->f3->get('vMissingProduct_ErrorDuplicateProducts'));
+            return;
+        }
+
+        $dbOrder = new BaseModel($this->db, "order");
+        $dbOrder->getByField("id", $orderId);
+
+        $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+        $arrOrderDetail = $dbOrderDetail->findWhere("id = '$orderId'");
+
+
+        foreach ($missingProducts as $missingProduct) {
+            if (!(is_numeric($missingProduct['productId']) && $missingProduct['productId'] > 0)) {
+                echo $this->webResponse->jsonResponseV2(2, "Error", "Invalid Product id");
+                return;
+            }
+            $serverProduct = $this->getProductFromArrayById($missingProduct['productId'], $arrOrderDetail);
+            if ($missingProduct['quantity'] > $serverProduct['quantity'] || $missingProduct['quantity'] <= 0) {
+                echo $this->webResponse->jsonResponseV2(2, "Error", $this->f3->get('vMissingProduct_ErrorInvalidQuantity') . $serverProduct['productNameEn']);
+                return;
+            }
+        }
+
+        foreach ($missingProducts as $missingProduct) {
+            $dbMissingProduct = new BaseModel($this->db, "orderMissingProduct");
+            $dbMissingProduct->orderId = $orderId;
+            $dbMissingProduct->statusId = 1;
+            $dbMissingProduct->buyerUserId = $this->objUser->id;
+            $dbMissingProduct->productId = $missingProduct['productId'];
+            $dbMissingProduct->quantity = $missingProduct['quantity'];
+            $dbMissingProduct->add();
+        }
+
+
+        $dbOrder->statusId = 8; // Missing Products
+        $dbOrder->edit();
+
+        $missingProductsToEmail = $missingProducts;
+        // TODO: Email To Distributor
+
+        echo $this->webResponse->jsonResponseV2(1, "Success", "");
+    }
+
+    private function getProductFromArrayById($productId, $products)
+    {
+        foreach ($products as $product) {
+            if ($product['productCode'] == $productId)
+                return $product;
+        }
+        return null;
+    }
+
+    private function checkForProductsDuplication($missingProducts)
+    {
+        $dupe_array = array();
+        foreach ($missingProducts as $val) {
+            if (++$dupe_array[$val['productId']] > 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

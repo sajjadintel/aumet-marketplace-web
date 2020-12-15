@@ -67,7 +67,18 @@ class AuthController extends Controller
         $this->rerouteAuth();
     }
 
-    function postSignIn_NoFirbase()
+    function getSignUp()
+    {
+        if ($this->isAuth) {
+            $this->f3->reroute('/web');
+        } else {
+            $this->f3->set('vAuthFile', 'signup');
+
+            echo View::instance()->render('public/auth/layout.php');
+        }
+    }
+
+    function postSignIn_NoFirebase()
     {
         $email = $this->f3->get("POST.email");
         $password = $this->f3->get("POST.password");
@@ -82,12 +93,12 @@ class AuthController extends Controller
             if (password_verify($password, $dbUser->password)) {
 
                 $this->configUser($dbUser);
-
-                $this->webResponse->errorCode = 1;
+                $this->webResponse->errorCode = 0;
                 echo $this->webResponse->jsonResponse();
             } else {
-                $this->webResponse->errorCode = 2;
+                $this->webResponse->errorCode = 1;
                 $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
+                $this->webResponse->data = $dbUser;
                 echo $this->webResponse->jsonResponse();
             }
         }
@@ -109,7 +120,7 @@ class AuthController extends Controller
             global $dbConnection;
 
             $dbUser = new BaseModel($dbConnection, "user");
-            $dbUser->getByField("uid", $uid);
+            $dbUser->getWhere("uid = '$uid' AND statusId = 3");
             if ($dbUser->dry()) {
 
                 $this->webResponse->errorCode = 1;
@@ -169,6 +180,11 @@ class AuthController extends Controller
         $dbUserAccount->getByField("userId", $objUser->id);
         $objUser->accountId = $dbUserAccount->accountId;
 
+        // Get cart count
+        $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
+        $arrCartDetail = $dbCartDetail->getByField("accountId", $objUser->accountId);
+        $objUser->cartCount = count($arrCartDetail);
+
         $this->isAuth = true;
 
         $dbUser->loginCounter++;
@@ -204,17 +220,6 @@ class AuthController extends Controller
         $this->f3->set('SESSION.arrEntities', $arrEntities);
     }
 
-    function getSignUp()
-    {
-        if ($this->isAuth) {
-            $this->f3->reroute('/web');
-        } else {
-            $this->f3->set('vAuthFile', 'signup');
-
-            echo View::instance()->render('public/auth/layout.php');
-        }
-    }
-
     function getForgottenPassword()
     {
         if ($this->isAuth) {
@@ -230,21 +235,6 @@ class AuthController extends Controller
         $this->isAuth = false;
         $this->f3->clear('SESSION.objUser');
     }
-
-    function refreshUserData()
-    {
-        $dbUser = new BaseModel($this->db, "users");
-        $dbUser->getByField("id", $this->f3->get('SESSION.userId'));
-
-        if ($dbUser->dry()) {
-            return FALSE;
-        } else {
-            $this->setUserSession($dbUser);
-            return TRUE;
-        }
-    }
-
-
 
     function postSignUp()
     {
@@ -262,7 +252,7 @@ class AuthController extends Controller
             $email = $this->f3->get("POST.email");
             $password = $this->f3->get("POST.password");
 
-            $dbUser = new BaseModel($this->db, "users");
+            $dbUser = new BaseModel($this->db, "user");
             $dbUser->getByField("email", $email);
             if (!$dbUser->dry()) {
                 echo $this->jsonResponse(false, "Email address exists, Please signin instead");
@@ -271,13 +261,10 @@ class AuthController extends Controller
                 $dbUser->email = $email;
                 $dbUser->password = password_hash($password, PASSWORD_DEFAULT);
                 $dbUser->codeId = $dbCode->id;
-                $dbUser->plainPassword = $password;
-                $dbUser->typeId = 5;
+                $dbUser->typeId = 1;
                 if ($dbUser->addReturnID()) {
 
                     $this->sendWelcomeEmail($dbUser);
-
-                    $this->setUserSession($dbUser);
 
                     echo $this->jsonResponse(true);
                 } else {

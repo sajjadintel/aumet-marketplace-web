@@ -6,6 +6,7 @@ $f3->route('GET /', 'LandingController->get');
 $f3->route('GET /@lang', 'LandingController->get');
 
 $f3->route('GET /web/auth/signin', 'AuthController->getSignIn');
+$f3->route('POST /web/auth/signin_nofirebase', 'AuthController->postSignIn_NoFirebase');
 $f3->route('POST /web/auth/signin', 'AuthController->postSignIn');
 
 $f3->route('GET /web/auth/signup', 'AuthController->getSignUp');
@@ -35,6 +36,7 @@ $f3->route('GET /web/customercare', 'CustomerCareController->get');
 
 $f3->route('GET /web/cart', 'CartController->get');
 $f3->route('POST /web/cart/add', 'CartController->postAddItem');
+$f3->route('POST /web/cart/bonus/add', 'CartController->postAddBonusItem');
 $f3->route('GET /web/cart/status', 'CartController->getStatus');
 $f3->route('POST /web/cart/remove', 'CartController->postRemoveItem');
 $f3->route('GET /web/cart/remove/confirm/@itemId', 'CartController->getRemoveItemConfirmation');
@@ -57,6 +59,8 @@ $f3->route('GET /web/distributor/order/print/@orderId', 'OrderController->getPri
 $f3->route('GET /web/distributor/order/confirm/@orderId/@statusId', 'OrderController->getOrderConfirmation');
 $f3->route('GET /web/distributor/order/confirm/@orderId/@statusId/dashboard', 'OrderController->getOrderConfirmationDashboard');
 $f3->route('POST /web/distributor/order/new', 'OrderController->postDistributorOrdersNew');
+
+$f3->route('GET /web/distributor/orderMissingProducts/@orderId', 'OrderController->getOrderMissingProducts');
 
 $f3->route('POST /web/distributor/order/pending', 'OrderController->postDistributorOrdersPending');
 $f3->route('POST /web/distributor/order/unpaid', 'OrderController->postDistributorOrdersUnpaid');
@@ -118,4 +122,14 @@ $f3->route('POST /web/pharmacy/order/pending', 'OrderController->postPharmacyOrd
 $f3->route('POST /web/pharmacy/order/unpaid', 'OrderController->postPharmacyOrdersUnpaid');
 $f3->route('POST /web/pharmacy/order/history', 'OrderController->postPharmacyOrdersHistory');
 
+$f3->route('POST /web/pharmacy/order/missingProducts', 'OrderController->postPharmacyMissingProducts');
+
 $f3->route('GET /web/pharmacy/order/print/@orderId', 'OrderController->getPrintOrderPharmacyInvoice');
+
+$f3->route('GET /web/pharmacy/feedback/pending', 'FeedbackController->getPharmacyFeedbacksPending');
+$f3->route('GET /web/pharmacy/feedback/history', 'FeedbackController->getPharmacyFeedbacksHistory');
+$f3->route('GET /web/pharmacy/feedback/@orderId', 'FeedbackController->getPharmacyFeedback');
+$f3->route('POST /web/pharmacy/feedback', 'FeedbackController->postPharmacyFeedback');
+
+$f3->route('POST /web/pharmacy/feedback/pending', 'FeedbackController->postPharmacyFeedbacksPending');
+$f3->route('POST /web/pharmacy/feedback/history', 'FeedbackController->postPharmacyFeedbacksHistory');

@@ -55,8 +55,8 @@ var Cart = (function () {
 		WebApp.post('/web/cart/add', { entityId: entityId, productId: productId, quantity: quantityInputId == null ? 1 : $(quantityInputId).val() }, _addItemSuccessCallback);
 	};
 
-	var _addBonusItem = function (entityId, productId, quantity, freeQuantity) {
-		// WebApp.post('/web/cart/add', { entityId, productId, quantity, freeQuantity }, _addItemSuccessCallback);
+	var _addBonusItem = function (entityId, productId, bonusId) {
+		WebApp.post('/web/cart/bonus/add', { entityId, productId, bonusId }, _addItemSuccessCallback);
 	};
 
 	var _removeItem = function (id) {
@@ -79,8 +79,8 @@ var Cart = (function () {
 		addItem: function (entityId, productId, quantityInputId = null) {
 			_addItem(entityId, productId, quantityInputId);
 		},
-		addBonusItem: function (entityId, productId, quantity, freeQuantity) {
-			_addBonusItem(entityId, productId, quantity, freeQuantity)
+		addBonusItem: function (entityId, productId, bonusId) {
+			_addBonusItem(entityId, productId, bonusId)
 		},
 		removeItem: function (id) {
 			_removeItem(id);

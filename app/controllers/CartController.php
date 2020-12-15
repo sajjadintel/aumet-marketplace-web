@@ -69,6 +69,10 @@ class CartController extends Controller {
                 $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
                 $dbCartDetail->save();
 
+                // Get cart count
+                $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+                $this->objUser->cartCount = count($arrCartDetail);
+
                 $this->webResponse->errorCode = 1;
                 $this->webResponse->title = "";
                 $this->webResponse->data = $dbProduct->name;
@@ -91,6 +95,10 @@ class CartController extends Controller {
             $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
             $dbCartDetail->getByField("id", $id);
             $dbCartDetail->erase();
+
+            // Get cart count
+            $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+            $this->objUser->cartCount = count($arrCartDetail);
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
@@ -115,6 +123,61 @@ class CartController extends Controller {
             $this->webResponse->data = new stdClass();
             $this->webResponse->data->itemsCount = $ItemsCount;
             echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function postAddBonusItem()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/cart");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+
+            $entityId = $this->f3->get('POST.entityId');
+            $productId = $this->f3->get('POST.productId');
+            $bonusId = $this->f3->get('POST.bonusId');
+            
+            global $dbConnection;
+
+            $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
+            $dbEntityProduct->getWhere("entityId=$entityId and productId=$productId");
+
+            if ($dbEntityProduct->dry()) {
+                $this->webResponse->errorCode = 2;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "No Product";
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $dbEntity = new BaseModel($dbConnection, "entity");
+                $dbEntity->name = "name_" . $this->objUser->language;
+                $dbEntity->getById($entityId);
+
+                $dbProduct = new BaseModel($dbConnection, "product");
+                $dbProduct->name = "name_" . $this->objUser->language;
+                $dbProduct->getById($productId);
+
+                $dbBonus = new BaseModel($dbConnection, "entityProductSellBonusDetail");
+                $dbBonus->getById($bonusId);
+
+                $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
+                $dbCartDetail->accountId = $this->objUser->accountId;
+                $dbCartDetail->entityProductId = $dbEntityProduct->id;
+                $dbCartDetail->userId = $this->objUser->id;
+                $dbCartDetail->quantity = $dbBonus->minOrder;
+                $dbCartDetail->quantityFree = $dbBonus->bonus;
+                $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
+                
+                $dbCartDetail->addReturnID();
+
+                // Get cart count
+                $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+                $this->objUser->cartCount = count($arrCartDetail);
+
+                $this->webResponse->errorCode = 1;
+                $this->webResponse->title = "";
+                $this->webResponse->data = $dbProduct->name;
+                echo $this->webResponse->jsonResponse();
+            }
         }
     }
 
@@ -154,6 +217,20 @@ class CartController extends Controller {
                 array_push($cartItemsBySeller, $cartDetail);
                 $allCartItems[$sellerId] = $cartItemsBySeller;
             }
+
+            foreach($allCartItems as $sellerId => $cartItemsBySeller) {
+                // Sort cart items to get product followed by its bonuses
+                usort($cartItemsBySeller, function($c1, $c2) {
+                    $productIdDIff = $c1->entityProductId - $c2->entityProductId;
+                    if($productIdDIff === 0) {
+                        return $c1->quantityFree - $c2->quantityFree;
+                    } else {
+                        return $productIdDIff;
+                    }
+                });
+                $allCartItems[$sellerId] = $cartItemsBySeller;
+            }
+
             $this->f3->set('allCartItems', $allCartItems);
             $this->f3->set('allSellers', $allSellers);
 
@@ -377,6 +454,7 @@ class CartController extends Controller {
                 $dbOrder->userBuyerId = $this->objUser->id;
                 $dbOrder->userSellerId = null;
                 $dbOrder->statusId = 1;
+                $dbOrder->paymentMethodId = 1;
 
                 // TODO: Adjust serial logic
                 $dbOrder->serial = mt_rand(100000, 999999);
@@ -394,9 +472,10 @@ class CartController extends Controller {
                 $orderId = $mapSellerIdOrderId[$cartDetail->entityId];
                 $entityProductId = $cartDetail->entityProductId;
                 $quantity = $cartDetail->quantity;
+                $quantityFree = $cartDetail->quantityFree;
                 $unitPrice = $cartDetail->unitPrice;
 
-                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `unitPrice`) VALUES ('" . $orderId . "', '" . $entityProductId . "', '" . $quantity . "', '" . $unitPrice . "');";
+                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `quantityFree`, `unitPrice`) VALUES ('".$orderId."', '".$entityProductId."', '".$quantity."', '".$quantityFree."', '".$unitPrice."');";
                 array_push($commands, $query);
             }
 
@@ -457,4 +536,12 @@ class CartController extends Controller {
         }
     }
 
+    function testMail()
+    {
+        global $dbConnection;
+
+        $emailHandler = new EmailHandler($dbConnection);
+        $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+        $emailHandler->sendEmail("Test subject", "Test body");
+    }
 }
