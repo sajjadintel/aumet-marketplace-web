@@ -555,23 +555,4 @@ class CartController extends Controller
             echo $this->webResponse->jsonResponse();
         }
     }
-
-    function testMail()
-    {
-        global $dbConnection;
-        
-        $emailFile = "email/layout.php";
-        $this->f3->set('title', 'New Order');
-        $this->f3->set('emailType', 'newOrder');
-        $this->f3->set('products', 'products');
-        $this->f3->set('currencySymbol', 'newOrder');
-        $this->f3->set('total', 'newOrder');
-
-        $htmlContent = View::instance()->render($emailFile);
-
-        $emailHandler = new EmailHandler($dbConnection);
-        $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
-        // $emailHandler->sendEmail(Constants::EMAIL_NEW_ORDER, "Test subject", $htmlContent);
-        echo $htmlContent;
-    }
 }
