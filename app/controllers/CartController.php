@@ -191,12 +191,12 @@ class CartController extends Controller
             global $dbConnection;
 
             $dbCartDetail = new BaseModel($dbConnection, "vwCartDetail");
-            
+
             $nameField = "productName_" . $this->objUser->language;
             $dbCartDetail->name = $nameField;
-            
+
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-            
+
             // Group cart items by seller id
             $allCartItems = [];
             $allSellers = [];
@@ -238,7 +238,7 @@ class CartController extends Controller
             // Get all currencies
             $dbCurrencies = new BaseModel($dbConnection, "currency");
             $allCurrencies = $dbCurrencies->all();
-            
+
             $mapCurrencyIdCurrency = [];
             foreach($allCurrencies as $currency) {
                 $currencyObj = new stdClass();
@@ -253,13 +253,13 @@ class CartController extends Controller
             // Get currency by entity
             $dbEntities = new BaseModel($dbConnection, "entity");
             $allEntities = $dbEntities->all();
-            
+
             $mapSellerIdCurrency = [];
             foreach($allEntities as $entity) {
                 $mapSellerIdCurrency[$entity->id] = $mapCurrencyIdCurrency[$entity->currencyId];
             }
             $this->f3->set('mapSellerIdCurrency', $mapSellerIdCurrency);
-            
+
             // Set buyer currency
             $dbAccount = new BaseModel($dbConnection, "account");
             $account = $dbAccount->getById($this->objUser->accountId)[0];
@@ -306,7 +306,7 @@ class CartController extends Controller
             $quantity = $this->f3->get('POST.quantity');
 
             global $dbConnection;
-            
+
             $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
             $dbEntityProduct->getWhere("entityId=$sellerId and productId=$productId");
 
@@ -338,7 +338,7 @@ class CartController extends Controller
         } else {
             $total = $this->f3->get('POST.total');
             $mapSellerIdTotal = $this->f3->get('POST.mapSellerIdTotal');
-            
+
             $modal = new stdClass();
             $modal->modalTitle = $this->f3->get('vModule_cartCheckout_orderConfirmationTitle');
             $modal->modalText = $this->f3->get('vModule_cartCheckout_orderConfirmation');
@@ -365,7 +365,7 @@ class CartController extends Controller
             echo View::instance()->render('app/layout/layout.php');
         } else {
             global $dbConnection;
-            
+
             // Get user account
             $dbAccount = new BaseModel($dbConnection, "account");
             $account = $dbAccount->getById($this->objUser->accountId)[0];
@@ -379,7 +379,9 @@ class CartController extends Controller
             $dbOrderGrand->buyerEntityId = $account->entityId;
             $dbOrderGrand->buyerBranchId = $entityBranch->id;
             $dbOrderGrand->buyerUserId = $this->objUser->id;
+            $dbOrderGrand->paymentMethodId = 1;
             $dbOrderGrand->addReturnID();
+            $grandOrderId = $dbOrderGrand->id;
 
             $dbCartDetail = new BaseModel($dbConnection, "vwCartDetail");
             $nameField = "productName_" . $this->objUser->language;
@@ -389,7 +391,7 @@ class CartController extends Controller
             // Get all currencies
             $dbCurrencies = new BaseModel($dbConnection, "currency");
             $allCurrencies = $dbCurrencies->all();
-            
+
             $mapCurrencyIdCurrency = [];
             foreach($allCurrencies as $currency) {
                 $mapCurrencyIdCurrency[$currency->id] = $currency;
@@ -398,12 +400,12 @@ class CartController extends Controller
             // Get currency by entity
             $dbEntities = new BaseModel($dbConnection, "entity");
             $allEntities = $dbEntities->all();
-            
+
             $mapSellerIdCurrency = [];
             foreach($allEntities as $entity) {
                 $mapSellerIdCurrency[$entity->id] = $mapCurrencyIdCurrency[$entity->currencyId];
             }
-            
+
             // Get buyer currency
             $dbAccount = new BaseModel($dbConnection, "account");
             $account = $dbAccount->getById($this->objUser->accountId)[0];
@@ -439,13 +441,13 @@ class CartController extends Controller
                 foreach($cartItemsBySeller as $cartItem) {
                     $total += $cartItem->quantity * $cartItem->unitPrice;
                 }
-                
+
                 // TODO: Adjust sellerBranchId logic
                 $sellerEntityBranch = $dbEntityBranch->getByField("entityId", $sellerId)[0];
 
                 // Add to order
                 $dbOrder = new BaseModel($dbConnection, "order");
-                $dbOrder->orderGrandId = $dbOrderGrand->id; 
+                $dbOrder->orderGrandId = $grandOrderId;
                 $dbOrder->entityBuyerId = $account->entityId;
                 $dbOrder->entitySellerId = $sellerId;
                 $dbOrder->branchBuyerId = $entityBranch->id;
@@ -457,7 +459,7 @@ class CartController extends Controller
 
                 // TODO: Adjust serial logic
                 $dbOrder->serial = mt_rand(100000, 999999);
-                
+
                 $dbOrder->currencyId = $mapSellerIdCurrency[$sellerId]->id;
                 $dbOrder->subtotal = $total;
                 $dbOrder->total = $total;
@@ -465,7 +467,7 @@ class CartController extends Controller
 
                 $mapSellerIdOrderId[$sellerId] = $dbOrder->id;
             }
-            
+
             $commands = [];
             foreach($arrCartDetail as $cartDetail) {
                 $orderId = $mapSellerIdOrderId[$cartDetail->entityId];
@@ -477,12 +479,16 @@ class CartController extends Controller
                 $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `quantityFree`, `unitPrice`) VALUES ('".$orderId."', '".$entityProductId."', '".$quantity."', '".$quantityFree."', '".$unitPrice."');";
                 array_push($commands, $query);
             }
-            
+
             $this->db->exec($commands);
+
+            $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
+            $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+            $dbCartDetail->delete();
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
-            $this->webResponse->data = "Done";
+            $this->webResponse->data = $grandOrderId;
             echo $this->webResponse->jsonResponse();
         }
     }
