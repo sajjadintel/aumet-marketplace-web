@@ -3,7 +3,7 @@
 	<!--begin::CartCheckout-->
 	<div class="topbar-item">
 		<div class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1" id="kt_quick_cart_toggle" onclick="window.location.href = '/web/cart/checkout'">
-			<span class="svg-icon svg-icon-xl svg-icon-primary">
+			<span class="svg-icon svg-icon-xl svg-icon-primary" style="display: flex; align-items: center;">
 				<!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Cart3.svg-->
 				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 					<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -13,6 +13,15 @@
 					</g>
 				</svg>
 				<!--end::Svg Icon-->
+				<?php if($objUser->cartCount > 0) : ?>
+					<span class="label label-danger ml-2">
+					<?php if($objUser->cartCount > 9) : ?>
+						9+
+					<?php else : ?>
+						<?php echo $objUser->cartCount ?>
+					<?php endif; ?>
+					</span>
+				<?php endif; ?>
 			</span>
 		</div>
 	</div>
