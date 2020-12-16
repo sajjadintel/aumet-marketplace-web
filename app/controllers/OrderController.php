@@ -1,6 +1,7 @@
 <?php
 
-class OrderController extends Controller {
+class OrderController extends Controller
+{
     function getDistributorOrdersNew()
     {
         $this->handleGetDistributorOrders('new');
@@ -220,7 +221,7 @@ class OrderController extends Controller {
             $dbOrder = new BaseModel($this->db, "vwOrderEntityUser");
             $arrOrder = $dbOrder->findWhere("id = '$orderId'");
 
-//            $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+            //            $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
             $dbOrderDetail = new BaseModel($this->db, "vwOrderMissingProductDetail");
             $arrOrderDetail = $dbOrderDetail->findWhere("id = '$orderId'");
 
@@ -277,7 +278,7 @@ class OrderController extends Controller {
                 $query .= " AND statusId IN (2,3)";
                 break;
             case 'history':
-                $query .= " AND statusId IN (4,5,6,7,8)";
+                $query .= " AND statusId IN (4,5,6,7,8,9)";
                 break;
             default:
                 break;
@@ -365,7 +366,7 @@ class OrderController extends Controller {
                 $query .= " AND statusId IN (2,3)";
                 break;
             case 'history':
-                $query .= " AND statusId IN (4,5,6,7,8)";
+                $query .= " AND statusId IN (4,5,6,7,8,9)";
                 break;
             default:
                 break;
@@ -615,41 +616,41 @@ class OrderController extends Controller {
 
         // orderStatusUpdateTitle
         // Send mails to notify about order status update
-        $emailHandler = new EmailHandler($dbConnection);
+        $emailHandler = new EmailHandler($this->db);
         $emailFile = "email/layout.php";
         $this->f3->set('title', 'Order Status Update');
         $this->f3->set('emailType', 'orderStatusUpdate');
 
         $dbOrderStatus = new BaseModel($this->db, "orderStatus");
-        
+
         $nameField = "name_" . $this->objUser->language;
         $dbOrderStatus->name = $nameField;
-        
+
         $allOrderStatus = $dbOrderStatus->all();
-        
+
         $mapStatusIdName = [];
-        foreach($allOrderStatus as $orderStatus) {
+        foreach ($allOrderStatus as $orderStatus) {
             $mapStatusIdName[$orderStatus->id] = $orderStatus->name;
         }
 
-        $orderStatusUpdateTitle = "Order with serial " . $order->serial . " status has changed to " . $mapStatusIdName[$statusId];
+        $orderStatusUpdateTitle = "Order with serial " . $dbOrder->serial . " status has changed to " . $mapStatusIdName[$statusId];
         $this->f3->set('orderStatusUpdateTitle', $orderStatusUpdateTitle);
 
         $htmlContent = View::instance()->render($emailFile);
 
-        $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
+        $dbEntityUserProfile = new BaseModel($this->db, "vwEntityUserProfile");
 
         $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $dbOrder->entityBuyerId);
-        foreach($arrEntityUserProfile as $entityUserProfile) {
-            $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName); 
+        foreach ($arrEntityUserProfile as $entityUserProfile) {
+            $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
         }
 
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, 'Order Status Update', $htmlContent);
         $emailHandler->resetTos();
 
         $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $dbOrder->entitySellerId);
-        foreach($arrEntityUserProfile as $entityUserProfile) {
-            $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName); 
+        foreach ($arrEntityUserProfile as $entityUserProfile) {
+            $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
         }
 
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, 'Order Status Update', $htmlContent);
@@ -765,5 +766,4 @@ class OrderController extends Controller {
 
         $pdf->Output();
     }
-
 }
