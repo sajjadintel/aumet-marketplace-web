@@ -585,9 +585,7 @@ class CartController extends Controller {
             $grandOrder = $dbOrderGrand->getWhere($query);
 
             if (sizeof($grandOrder) === 0) {
-                $this->webResponse->errorCode = 2;
-                $this->webResponse->title = "";
-                $this->webResponse->message = "Permission denied!";
+                $this->webResponse->errorCode = 0;
                 echo $this->webResponse->jsonResponse();
                 return;
             }
