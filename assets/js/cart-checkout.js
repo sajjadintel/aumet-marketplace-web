@@ -36,21 +36,25 @@ var CartCheckout = (function () {
 			_topbarItemTextContainer.removeClass(_addPulse).removeClass(_addPulseColor);
 		}
 	};
-	
+
 	var _removeItemModal = function (itemId) {
 		WebApp.get('/web/cart/remove/confirm/' + itemId, WebApp.openModal);
 	};
-	
-	var _removeItemSuccess = function () {
+	var _removeItemSuccess = function (webResponse) {
+		// Update cart count
+		let cartCount = webResponse.data > 9 ? "9+" : webResponse.data;
+		if(webResponse.data !== 0) $("#cartCount").css("display", "flex");
+		else $("#cartCount").css("display", "none");
+		$("#cartCount").html(cartCount);
 		WebApp.loadPage('/web/cart/checkout');
 	};
-	
+
 	var _submitOrderModal = function() {
 		WebApp.get('/web/cart/checkout/submit/confirm', WebApp.openModal);
 	};
 
-	var _submitOrderSuccess = function() {
-		WebApp.alertSuccess('Order submitted successfully')
+	var _submitOrderSuccess = function(webResponse) {
+		WebApp.redirect('/web/thankyou/' + webResponse.data);
 	}
 
 	var _updateQuantity = function(productId, increment, stock, cartDetailId, sellerId, updateTotalPrice) {
@@ -69,7 +73,7 @@ var CartCheckout = (function () {
 		let productId = cartDetail.productId;
 		let quantity = cartDetail.quantity;
 		let sellerId = cartDetail.entityId;
-		
+
 		// Update quantity input
 		let quantityId = "#quantity-" + productId;
 		$(quantityId).val(quantity);
@@ -79,7 +83,7 @@ var CartCheckout = (function () {
 		let unitPrice = $(productPriceId).attr("data-unitPrice");
 		let currency = $(productPriceId).attr("data-currency");
 		let productPrice = (quantity * unitPrice).toFixed(2);
-		
+
 		$(productPriceId).attr("data-productPrice", productPrice);
 		$(productPriceId).html(productPrice + " " + currency);
 
@@ -94,7 +98,7 @@ var CartCheckout = (function () {
 		let subTotalPriceId = "#subTotalPrice-" + sellerId;
 		$(subTotalPriceId).attr("data-subTotalPrice", subTotalPrice)
 		$(subTotalPriceId).html(subTotalPrice + " " + currency);
-		
+
 		updateTotalPrice();
 	}
 
@@ -106,14 +110,14 @@ var CartCheckout = (function () {
 		removeItemModal: function (itemId) {
 			_removeItemModal(itemId)
 		},
-		removeItemSuccess: function () {
-			_removeItemSuccess()
+		removeItemSuccess: function (webResponse) {
+			_removeItemSuccess(webResponse)
 		},
 		submitOrderModal: function () {
 			_submitOrderModal()
 		},
-		submitOrderSuccess: function () {
-			_submitOrderSuccess()
+		submitOrderSuccess: function (webResponse) {
+			_submitOrderSuccess(webResponse)
 		},
 		updateQuantity: function(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice) {
 			_updateQuantity(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice)

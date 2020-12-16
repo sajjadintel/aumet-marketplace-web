@@ -303,6 +303,7 @@ var SearchDataTable = (function () {
 
 	var _productAddBonusModalOpen = function (webResponse) {
 		$('#addBonusProductId').val(webResponse.data.product.id);
+		$('#addBonusEntityId').val(webResponse.data.product.entityId);
 
 		$('#addBonusModalTitle').html(WebAppLocals.getMessage('addBonusTitle'));
 
@@ -321,17 +322,16 @@ var SearchDataTable = (function () {
 		$('#addBonusModal').appendTo('body').modal('show');
 	};
 
-	var _productAddBonus = function() {
+	var _productAddBonus = function(addButtonName) {
+		let bonusRepeaterIndex = addButtonName.charAt(14);
+
+		let bonusIdName = "bonusRepeater[" + bonusRepeaterIndex + "][bonusId]";
+		let bonusId = $($('[name ="' + bonusIdName + '"]')[0]).val();
+
 		let productId = $('#addBonusProductId').val();
-		let bonusId = $('#bonusId').val();
-		let addBonusProductId = $("#addBonusProductId").val();
-		console.log("addBonusProductId");
-		console.log(addBonusProductId);
-		console.log("productId");
-		console.log(productId);
-		console.log("bonusId");
-		console.log(bonusId);
-		$('#addBonusModal').appendTo('body').modal('hide');
+		let entityId = $('#addBonusEntityId').val();
+
+		SearchDataTable.onClickAddBonusToCart(entityId, productId, bonusId);
 	}
 
 	var _initSearchFilter = function () {
@@ -399,8 +399,9 @@ var SearchDataTable = (function () {
 			Cart.addItem(row.entityId, row.productId, '#quantity-' + row.id);
 			WebApp.reloadDatatable();
 		},
-		onClickAddBonusToCart: function (entityId, productId, quantity, freeQuantity) {
-			Cart.addItemBonus(entityId, productId, quantity, freeQuantity);
+		onClickAddBonusToCart: function (entityId, productId, bonusId) {
+			Cart.addBonusItem(entityId, productId, bonusId);
+			$('#addBonusModal').appendTo('body').modal('hide');
 			WebApp.reloadDatatable();
 		},
 		onBonusOptionCallback: function (row, bonusOption) {
@@ -456,8 +457,8 @@ var SearchDataTable = (function () {
 		productAddBonusModalOpen: function (webResponse) {
 			_productAddBonusModalOpen(webResponse)
 		},
-		productAddBonus: function() {
-			_productAddBonus()
+		productAddBonus: function(addButtonName) {
+			_productAddBonus(addButtonName)
 		}
 	};
 })();

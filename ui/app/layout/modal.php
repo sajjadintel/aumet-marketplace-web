@@ -97,6 +97,87 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="feedbackModalTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row form-group">
+                            <div class="col-md-6 form-label" id="feedbackModalCustomerNameLabel"></div>
+                            <div class="col-md-6 form-text" id="feedbackModalCustomerNameText"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row form-group">
+                            <div class="col-md-6 form-label" id="feedbackModalStatusLabel"></div>
+                            <div class="col-md-6 form-text" id="feedbackModalStatusText"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row form-group">
+                            <div class="col-md-6 form-label" id="feedbackModalTotalLabel"></div>
+                            <div class="col-md-6 form-text" id="feedbackModalTotalText"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row form-group">
+                            <div class="col-md-6 form-label" id="feedbackModalDateLabel"></div>
+                            <div class="col-md-6 form-text" id="feedbackModalDateText"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row form-group">
+                            <div class="col-md-6 form-label" id="feedbackModalBranchLabel"></div>
+                            <div class="col-md-6 form-text" id="feedbackModalBranchText"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row form-group">
+                            <div class="col-md-6 form-label" id="feedbackModalAddressLabel"></div>
+                            <div class="col-md-6 form-text" id="feedbackModalAddressText"></div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="col-md-12">
+                        <div class="row form-group">
+                            <div class="col-md-12 form-label" id="feedbackModalRatingLabel">Rating:</div>
+                            <div class="col-md-12"><span id="feedbackModalRating" data-stars="0"></span></div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="row form-group">
+                            <div class="col-md-12 form-label" id="feedbackModalCommentLabel">Comment:</div>
+                            <div class="col-md-12"><input id="feedbackModalComment" class="form-control" type="text" /></div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-12 mt-10 text-center">
+                        <a id="feedbackModalSave" class="btn btn-sm btn-primary btn-hover-primary" title="Print Order">
+                            <i class="nav-icon la la-save p-0"></i>
+                            Save Feedback
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="modal fade" id="genericModal" tabindex="-1" role="dialog" aria-labelledby="genericModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content" id="genericModalContent">

@@ -133,6 +133,10 @@ var DistributorOrdersDataTable = (function () {
 								title: WebAppLocals.getMessage('orderStatus_Paid'),
 								class: ' label-success',
 							},
+							8: {
+								title: WebAppLocals.getMessage('orderStatus_MissingProducts'),
+								class: ' label-danger',
+							},
 						};
 
 						var output = '';
@@ -353,6 +357,9 @@ var DistributorOrdersDataTable = (function () {
 				break;
 			case 7:
 				status = WebAppLocals.getMessage('orderStatus_Paid');
+				break;
+			case 8:
+				status = WebAppLocals.getMessage('orderStatus_MissingProducts');
 				break;
 			case 9:
 				status = WebAppLocals.getMessage('orderStatus_Canceled_Pharmacy');

@@ -32,7 +32,7 @@ class DashboardController extends Controller
                 $this->f3->set('dashboard_new_customer', is_null($dbDataNewCustomer['newCustomerCount']) ? 0 : $dbDataNewCustomer['newCustomerCount']);
 
                 $this->f3->set('dashboard_revenueYesterday', is_null($dbDataYesterday['revenue']) ? 0 : $dbDataYesterday['revenue']);
-                $this->f3->set('dashboard_order', is_null($dbDataYesterday['orderCount']) ? 0 : $dbDataYesterday['orderCount']);
+                $this->f3->set('dashboard_orderYesterday', is_null($dbDataYesterday['orderCount']) ? 0 : $dbDataYesterday['orderCount']);
                 $this->f3->set('dashboard_customerYesterday', is_null($dbDataYesterday['customerCount']) ? 0 : $dbDataYesterday['customerCount']);
                 $this->f3->set('dashboard_new_customerYesterday', is_null($dbDataNewCustomerYesterday['newCustomerCount']) ? 0 : $dbDataNewCustomerYesterday['newCustomerCount']);
 
@@ -41,6 +41,23 @@ class DashboardController extends Controller
                 $this->webResponse->data = View::instance()->render('app/dashboard/seller.php');
                 echo $this->webResponse->jsonResponse();
             } else {
+                $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+                // $query = "entityBuyerId IN ($arrEntityId)";
+                $query = "entitySellerId IN ($arrEntityId)";
+
+                // TODO: Fix view logic (add invoice and filter by entityBuyerId)
+                $dbData = new BaseModel($this->db, "vwDashboardToday");
+                $dbData->getWhere($query);
+
+                $dbDataYesterday = new BaseModel($this->db, "vwDashboardYesterday");
+                $dbDataYesterday->getWhere($query);
+
+                $this->f3->set('dashboard_order', is_null($dbData['orderCount']) ? 0 : $dbData['orderCount']);
+                // $this->f3->set('dashboard_invoice', is_null($dbData['invoice']) ? 0 : $dbData['invoice']);
+                
+                $this->f3->set('dashboard_orderYesterday', is_null($dbDataYesterday['orderCount']) ? 0 : $dbDataYesterday['orderCount']);
+                // $this->f3->set('dashboard_invoiceYesterday', is_null($dbDataYesterday['invoice']) ? 0 : $dbDataYesterday['invoice']);
+                
                 $this->webResponse->errorCode = 1;
                 $this->webResponse->title = $this->f3->get('vTitle_dashboard');
                 $this->webResponse->data = View::instance()->render('app/dashboard/buyer.php');

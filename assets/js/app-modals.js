@@ -125,6 +125,9 @@ var WebAppModals = (function () {
 			case 7:
 				status = WebAppLocals.getMessage('orderStatus_Paid');
 				break;
+			case 8:
+				status = WebAppLocals.getMessage('orderStatus_MissingProducts');
+				break;
 			case 9:
 				status = WebAppLocals.getMessage('orderStatus_Canceled_Pharmacy');
 				break;
@@ -177,8 +180,11 @@ var WebAppModals = (function () {
 		orderStatusModal: function (orderId, statusId) {
 			_orderStatusModal(orderId, statusId);
 		},
-		orderViewModal: function (orderId, isPharmacy = false) {
-			_orderViewModal(orderId, isPharmacy);
+		orderViewModal: function (orderId) {
+			_orderViewModal(orderId, false);
+		},
+		orderViewPharmacyModal: function (orderId) {
+			_orderViewModal(orderId, true);
 		},
 	};
 })();
