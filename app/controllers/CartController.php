@@ -445,6 +445,8 @@ class CartController extends Controller {
             
             $emailHandler = new EmailHandler($dbConnection);
             $emailFile = "email/layout.php";
+            $this->f3->set('rootDomainUrl', getenv('DOMAIN_URL'));
+            $this->f3->set('emailAssetsDirectory', getenv('DOMAIN_URL') . "assets");
             $this->f3->set('title', 'New Order');
             $this->f3->set('emailType', 'newOrder');
 
@@ -499,7 +501,6 @@ class CartController extends Controller {
                 $dbOrder->addReturnID();
 
                 $mapSellerIdOrderId[$sellerId] = $dbOrder->id;
-
                 $this->f3->set('products', $cartItemsBySeller);
                 $this->f3->set('currencySymbol', $mapSellerIdCurrency[$sellerId]->symbol);
                 $this->f3->set('total', $total);
@@ -510,7 +511,17 @@ class CartController extends Controller {
                 }
                 $htmlContent = View::instance()->render($emailFile);
 
-                $emailHandler->sendEmail(Constants::EMAIL_NEW_ORDER, "New Order", $htmlContent);
+                $subject = "New Order";
+                if (getenv('ENV') != Constants::ENV_PROD) {
+                    $subject .= " - (Test: ".getenv('ENV').")";
+                    
+                    
+                    $emailHandler->resetTos();
+                    $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane"); 
+                    $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                }
+
+                $emailHandler->sendEmail(Constants::EMAIL_NEW_ORDER, $subject, $htmlContent);
                 $emailHandler->resetTos();
             }
 
@@ -534,7 +545,16 @@ class CartController extends Controller {
             }
             $htmlContent = View::instance()->render($emailFile);
 
-            $emailHandler->sendEmail(Constants::EMAIL_NEW_ORDER, "New Order", $htmlContent);
+            $subject = "New Order";
+            if (getenv('ENV') != Constants::ENV_PROD) {
+                $subject .= " - (Test: ".getenv('ENV').")";
+                
+                
+                $emailHandler->resetTos();
+                $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane"); 
+                $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick"); 
+            }
+            $emailHandler->sendEmail(Constants::EMAIL_NEW_ORDER, $subject, $htmlContent);
 
             $commands = [];
             foreach ($arrCartDetail as $cartDetail) {

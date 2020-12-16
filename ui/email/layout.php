@@ -99,7 +99,7 @@
     </tr>
     </tbody>
 </table>
-<?php include_once "$emailType.php"; ?>
+<?php include "$emailType.php"; ?>
 <!-- footer-light-3cols -->
 <table width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation">
     <tbody>
