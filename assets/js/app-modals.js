@@ -125,6 +125,9 @@ var WebAppModals = (function () {
 			case 7:
 				status = WebAppLocals.getMessage('orderStatus_Paid');
 				break;
+			case 9:
+				status = WebAppLocals.getMessage('orderStatus_Canceled_Pharmacy');
+				break;
 		}
 		$('#viewModalTitle').html(WebAppLocals.getMessage('orderDetails'));
 		$('#modalBranchLabel').html(WebAppLocals.getMessage('branch'));

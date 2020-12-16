@@ -253,7 +253,7 @@ class OrderController extends Controller {
                 $query .= " AND statusId IN (2,3)";
                 break;
             case 'history':
-                $query .= " AND statusId IN (4,5,6,7)";
+                $query .= " AND statusId IN (4,5,6,7,9)";
                 break;
             default:
                 break;
@@ -330,7 +330,7 @@ class OrderController extends Controller {
                 $query .= " AND statusId IN (2,3)";
                 break;
             case 'history':
-                $query .= " AND statusId IN (4,5,6,7)";
+                $query .= " AND statusId IN (4,5,6,7,9)";
                 break;
             default:
                 break;
