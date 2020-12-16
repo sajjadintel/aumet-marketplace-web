@@ -445,8 +445,7 @@ class CartController extends Controller {
             
             $emailHandler = new EmailHandler($dbConnection);
             $emailFile = "email/layout.php";
-            $this->f3->set('rootDomainUrl', getenv('DOMAIN_URL'));
-            $this->f3->set('emailAssetsDirectory', getenv('DOMAIN_URL') . "assets");
+            $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
             $this->f3->set('title', 'New Order');
             $this->f3->set('emailType', 'newOrder');
 
@@ -514,11 +513,12 @@ class CartController extends Controller {
                 $subject = "New Order";
                 if (getenv('ENV') != Constants::ENV_PROD) {
                     $subject .= " - (Test: ".getenv('ENV').")";
-                    
-                    
-                    $emailHandler->resetTos();
-                    $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane"); 
-                    $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+
+                    if (getenv('ENV') == Constants::ENV_LOC){
+                        $emailHandler->resetTos();
+                        $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+                        $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                    }
                 }
 
                 $emailHandler->sendEmail(Constants::EMAIL_NEW_ORDER, $subject, $htmlContent);
@@ -548,11 +548,11 @@ class CartController extends Controller {
             $subject = "New Order";
             if (getenv('ENV') != Constants::ENV_PROD) {
                 $subject .= " - (Test: ".getenv('ENV').")";
-                
-                
-                $emailHandler->resetTos();
-                $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane"); 
-                $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick"); 
+                if (getenv('ENV') == Constants::ENV_LOC){
+                    $emailHandler->resetTos();
+                    $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+                    $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                }
             }
             $emailHandler->sendEmail(Constants::EMAIL_NEW_ORDER, $subject, $htmlContent);
 

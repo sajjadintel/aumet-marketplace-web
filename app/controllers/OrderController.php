@@ -616,8 +616,7 @@ class OrderController extends Controller {
         // Send mails to notify about order status update
         $emailHandler = new EmailHandler($dbConnection);
         $emailFile = "email/layout.php";
-        $this->f3->set('rootDomainUrl', getenv('DOMAIN_URL'));
-        $this->f3->set('emailAssetsDirectory', getenv('DOMAIN_URL') . "assets");
+        $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
         $this->f3->set('title', 'Order Status Update');
         $this->f3->set('emailType', 'orderStatusUpdate');
 
@@ -648,11 +647,11 @@ class OrderController extends Controller {
         $subject = "Order Status Update";
         if (getenv('ENV') != Constants::ENV_PROD) {
             $subject .= " - (Test: ".getenv('ENV').")";
-            
-            
-            $emailHandler->resetTos();
-            $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane"); 
-            $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick"); 
+            if (getenv('ENV') == Constants::ENV_LOC){
+                $emailHandler->resetTos();
+                $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+                $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+            }
         }
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
         $emailHandler->resetTos();
@@ -665,11 +664,11 @@ class OrderController extends Controller {
         $subject = "Order Status Update";
         if (getenv('ENV') != Constants::ENV_PROD) {
             $subject .= " - (Test: ".getenv('ENV').")";
-            
-            
-            $emailHandler->resetTos();
-            $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane"); 
-            $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick"); 
+            if (getenv('ENV') == Constants::ENV_LOC){
+                $emailHandler->resetTos();
+                $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+                $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+            }
         }
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
 
