@@ -614,7 +614,7 @@ class OrderController extends Controller {
         }
 
         // Send mails to notify about order status update
-        $emailHandler = new EmailHandler($dbConnection);
+        $emailHandler = new EmailHandler($this->db);
         $emailFile = "email/layout.php";
         $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
         $this->f3->set('title', 'Order Status Update');
@@ -632,12 +632,23 @@ class OrderController extends Controller {
             $mapStatusIdName[$orderStatus->id] = $orderStatus->name;
         }
 
-        $orderStatusUpdateTitle = "Order with serial " . $order->serial . " status has changed to " . $mapStatusIdName[$statusId];
+        $orderStatusUpdateTitle = "Order with serial " . $dbOrder->serial . " status has changed to " . $mapStatusIdName[strval($statusId)];
         $this->f3->set('orderStatusUpdateTitle', $orderStatusUpdateTitle);
+
+        $dbCurrency = new BaseModel($this->db, "currency");
+        $currency = $dbCurrency->getWhere("id = $dbOrder->currencyId");
+
+        $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+        $dbOrderDetail->name = "productName" . ucfirst($this->objUser->language);
+        $arrOrderDetail = $dbOrderDetail->getByField("id", $orderId);
+
+        $this->f3->set('products', $arrOrderDetail);
+        $this->f3->set('currencySymbol', $currency->symbol);
+        $this->f3->set('total', $dbOrder->total);
 
         $htmlContent = View::instance()->render($emailFile);
 
-        $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
+        $dbEntityUserProfile = new BaseModel($this->db, "vwEntityUserProfile");
 
         $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $dbOrder->entityBuyerId);
         foreach($arrEntityUserProfile as $entityUserProfile) {
