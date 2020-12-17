@@ -135,7 +135,7 @@ function compress_htmlcode($codedata)
                 <div class="text-center p-10">
                     <p class="font-weight-bolder font-size-h3"><?php echo $vModule_cartCheckout_empty ?></p>
 
-                    <a href="/web/product/search" id="editQuantityBonusAdd" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-primary">
+                    <a href="javascript:;" onclick="WebApp.loadPage('/web/product/search')" class="btn btn-sm font-weight-bolder btn-primary">
                         Browse Products
                     </a>
 
