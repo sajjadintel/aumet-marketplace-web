@@ -146,8 +146,14 @@ function compress_htmlcode($codedata)
             targets: 1,
             title: WebAppLocals.getMessage('productName'),
             data: 'productName_en',
-            render: function(data, type, row, meta) {
-                var output = row['productName_' + docLang];
+            render: function (data, type, row, meta) {
+                var output = '<span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                    row.entityId +
+                    '/product/' +
+                    row.productId +
+                    '\')"> ' +
+                    row['productName_' + docLang]
+                    + '</span>';
                 return output;
             },
         }, {
@@ -156,9 +162,15 @@ function compress_htmlcode($codedata)
             data: 'image',
             orderable: false,
             render: function(data, type, row, meta) {
-                var output = '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
+                var output = '<a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                    row.entityId +
+                    '/product/' +
+                    row.productId +
+                    '\')"> ' +
+                    '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
                     row.image +
-                    '\')" ></div></div>';
+                    '\')" ></div></div>'
+                    + '</a>';
 
                 return output
             }
@@ -248,7 +260,7 @@ function compress_htmlcode($codedata)
             orderable: false,
             render: function(data, type, row, meta) {
                 var vQuantity = '';
-                
+
                 var rowQuantity = 1;
                 if(row.quantity) {
                     rowQuantity = row.quantity
@@ -273,7 +285,7 @@ function compress_htmlcode($codedata)
             data: 'id',
             orderable: false,
             render: function(data, type, row, meta) {
-                
+
                 var btnAddMoreToCart =
                     '<a href="javascript:;" onclick=\'SearchDataTable.onClickAddMoreToCart(' +
                     JSON.stringify(row) +
@@ -325,7 +337,7 @@ function compress_htmlcode($codedata)
                         <path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero"/>\
                         <path d="M10.5,10.5 L10.5,9.5 C10.5,9.22385763 10.7238576,9 11,9 C11.2761424,9 11.5,9.22385763 11.5,9.5 L11.5,10.5 L12.5,10.5 C12.7761424,10.5 13,10.7238576 13,11 C13,11.2761424 12.7761424,11.5 12.5,11.5 L11.5,11.5 L11.5,12.5 C11.5,12.7761424 11.2761424,13 11,13 C10.7238576,13 10.5,12.7761424 10.5,12.5 L10.5,11.5 L9.5,11.5 C9.22385763,11.5 9,11.2761424 9,11 C9,10.7238576 9.22385763,10.5 9.5,10.5 L10.5,10.5 Z" fill="#000000" opacity="0.3"/>\
                         </g></svg></span></a>';
-                    
+
                 var btnShowBonuses =
                     '<a href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.productId + ')\'\
                     class="btn btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="View">\
@@ -455,7 +467,7 @@ function compress_htmlcode($codedata)
         var initiate = function() {
             WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
         };
-        
+
         return {
             init: function() {
                 initiate();

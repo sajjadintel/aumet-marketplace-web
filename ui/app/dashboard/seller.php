@@ -299,18 +299,36 @@
             }, {
                 targets: 1,
                 title: WebAppLocals.getMessage('productName'),
-                data: 'productName_en'
+                data: 'productName_en',
+                render: function(data, type, row, meta) {
+                    var output = '<span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        row.entityId +
+                        '/product/' +
+                        row.productId +
+                        '\')"> ' +
+                        row['productName_' + docLang]
+                        + '</span>';
+                    return output;
+                }
             }, {
                 targets: 2,
                 title: '',
                 data: 'image',
                 orderable: false,
                 render: function(data, type, row, meta) {
-                    var output =
+                    var output = '<a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                    row.entityId +
+                    '/product/' +
+                    row.productId +
+                    '\')"> ' +
+
                         '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
                         row.image +
-                        '\')" ></div></div>';
-                    return output
+                        '\')" ></div></div>'
+
+                        + '</a>';
+
+                    return output;
                 }
             }, {
                 targets: 3,
