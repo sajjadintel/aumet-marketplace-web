@@ -11,7 +11,7 @@ class SearchController extends Controller
             global $dbConnection;
 
             $dbEntities = new BaseModel($dbConnection, "entity");
-            $dbEntities->name = "name_ar";
+            $dbEntities->name = "name_" . $this->objUser->language;
             $arrEntities = $dbEntities->getWhere("typeId=10", "name_ar");
             $this->f3->set('arrEntities', $arrEntities);
 

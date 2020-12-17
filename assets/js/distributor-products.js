@@ -51,44 +51,22 @@ var DistributorProductsDataTable = (function () {
 					autoHide: false,
 				},
 				{
-					targets: 1,
 					field: 'productName_en', // + docLang,
 					title: WebAppLocals.getMessage('productName'),
 					autoHide: false,
-					data: 'productName_en',
-					render: function(data, type, row, meta) {
-						return 'asdfasdf';
-						// var output = '<a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
-						// 	row.entityId +
-						// 	'/product/' +
-						// 	row.productId +
-						// 	'\')"> ' +
-						// 	row['productName_' + docLang]
-						// 	+ '</a>';
-						// return output;
-					},
 				},
 				{
-					targets: 2,
 					field: 'image',
 					title: '',
 					autoHide: true,
 					sortable: false,
-					render: function(data, type, row, meta) {
-						var output = '<a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
-							row.entityId +
-							'/product/' +
-							row.productId +
-							'\')"> ' +
-
+					template: function (row) {
+						return (
 							'<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
 							row.image +
 							'\')" ></div></div>'
-
-							+ '</a>';
-
-						return output;
-					}
+						);
+					},
 				},
 				{
 					field: 'scientificName',
