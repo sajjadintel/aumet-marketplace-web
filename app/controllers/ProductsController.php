@@ -16,6 +16,24 @@ class ProductsController extends Controller {
 
             $dbEntityProduct = new BaseModel($dbConnection, "vwEntityProductSell");
             $dbEntityProduct->getWhere("entityId=$entityId and productId=$productId");
+
+            $dbCartDetail = new BaseModel($this->db, "cartDetail");
+            $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+
+                if ($dbEntityProduct['bonusTypeId'] == 2) {
+                    $dbEntityProduct['bonusOptions'] = json_decode($dbEntityProduct['bonusConfig']);
+                }
+
+            $dbEntityProduct['cart'] = 0;
+                if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
+                    foreach ($arrCartDetail as $objCartItem) {
+                        if ($objCartItem['entityProductId'] == $dbEntityProduct['id']) {
+                            $dbEntityProduct['cart'] += $objCartItem['quantity'];
+                            $dbEntityProduct['cart'] += $objCartItem['quantityFree'];
+                        }
+                    }
+                }
+
             $this->f3->set('objEntityProduct', $dbEntityProduct);
 
             $dbEntityProductRelated = new BaseModel($dbConnection, "vwEntityProductSell");
