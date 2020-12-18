@@ -10,11 +10,6 @@ class SearchController extends Controller
 
             global $dbConnection;
 
-            $dbEntities = new BaseModel($dbConnection, "entity");
-            $dbEntities->name = "name_" . $this->objUser->language;
-            $arrEntities = $dbEntities->getWhere("typeId=10", "name_ar");
-            $this->f3->set('arrEntities', $arrEntities);
-
             $dbStockStatus = new BaseModel($dbConnection, "stockStatus");
             $dbStockStatus->name = "name_" . $this->objUser->language;
             $arrStockStatus = $dbStockStatus->all("id asc");
@@ -206,6 +201,11 @@ class SearchController extends Controller
     {
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $this->handleGetListFilters("vwEntityRelation", ['sellerName_en', 'sellerName_fr', 'sellerName_ar'], 'sellerName_' . $this->objUser->language, 'entitySellerId', "entityBuyerId IN ($arrEntityId)");
+    }
+
+    function getAllSellerList()
+    {
+        $this->handleGetListFilters("entity", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
     }
 
     function postSearchProducts()

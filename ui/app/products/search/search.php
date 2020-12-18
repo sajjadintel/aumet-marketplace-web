@@ -71,9 +71,7 @@ function compress_htmlcode($codedata)
                         </span>
                     </div>
                     <select class="select2 form-control" id="searchProductsDistributorNameInput" multiple="" name="distributorName" data-select2-id="searchProductsDistributorNameInput" tabindex="-1" aria-hidden="true">
-                        <?php foreach ($arrEntities as $objItem) : ?>
-                            <option value="<?php echo $objItem->id ?>"><?php echo $objItem->name ?></option>
-                        <?php endforeach; ?>
+
                     </select>
                 </div>
             </div>
@@ -436,7 +434,19 @@ function compress_htmlcode($codedata)
 
         var _selectDistributor = $('#searchProductsDistributorNameInput').select2({
             placeholder: "<?php echo $vModule_search_distributorNamePlaceholder ?>",
-            tags: true
+            tags: true,
+            ajax: {
+                url: '/web/order/Distributor/listAll',
+                dataType: 'json',
+                processResults: function(response) {
+                    return {
+                        results: response.data.results,
+                        pagination: {
+                            more: response.data.pagination
+                        }
+                    }
+                }
+            }
         });
 
         _selectDistributor.on("select2:select", function(e) {
