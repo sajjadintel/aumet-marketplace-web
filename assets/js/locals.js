@@ -175,6 +175,11 @@ var WebAppLocals = (function () {
 			ar: 'ألغيت',
 			fr: '',
 		},
+		orderStatus_Canceled_Pharmacy: {
+			en: 'Canceled Pharmacy',
+			ar: '', // TODO: Translate
+			fr: '',
+		},
 		orderStatus_Received: {
 			en: 'Received',
 			ar: 'تم الاستلام',

@@ -361,6 +361,9 @@ var DistributorOrdersDataTable = (function () {
 			case 8:
 				status = WebAppLocals.getMessage('orderStatus_MissingProducts');
 				break;
+			case 9:
+				status = WebAppLocals.getMessage('orderStatus_Canceled_Pharmacy');
+				break;
 		}
 		$('#viewModalTitle').html(WebAppLocals.getMessage('orderDetails'));
 		$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityBuyer'));
