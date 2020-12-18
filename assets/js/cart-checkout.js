@@ -102,6 +102,17 @@ var CartCheckout = (function () {
 		updateTotalPrice();
 	}
 
+	var _updateNote = function(productId, cartDetailId, sellerId) {
+		let noteId = "#note-" + productId;
+		let currentValue = $(noteId).val();
+
+		WebApp.post('/web/cart/checkout/note', { cartDetailId, sellerId, productId, note: currentValue }, (webResponse) => _updateNoteCallback(webResponse));
+	}
+
+	var _updateNoteCallback = function(webResponse) {
+
+	}
+
 	// Public Functions
 	return {
 		init: function () {
@@ -121,6 +132,9 @@ var CartCheckout = (function () {
 		},
 		updateQuantity: function(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice) {
 			_updateQuantity(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice)
+		},
+		updateNote: function(productId, cardDetailId, sellerId) {
+			_updateNote(productId, cardDetailId, sellerId)
 		}
 	};
 })();

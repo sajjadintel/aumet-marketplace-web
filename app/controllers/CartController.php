@@ -138,7 +138,7 @@ class CartController extends Controller {
             $entityId = $this->f3->get('POST.entityId');
             $productId = $this->f3->get('POST.productId');
             $bonusId = $this->f3->get('POST.bonusId');
-            
+
             global $dbConnection;
 
             $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
@@ -168,7 +168,7 @@ class CartController extends Controller {
                 $dbCartDetail->quantity = $dbBonus->minOrder;
                 $dbCartDetail->quantityFree = $dbBonus->bonus;
                 $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
-                
+
                 $dbCartDetail->addReturnID();
 
                 // Get cart count
@@ -221,11 +221,11 @@ class CartController extends Controller {
                 $allCartItems[$sellerId] = $cartItemsBySeller;
             }
 
-            foreach($allCartItems as $sellerId => $cartItemsBySeller) {
+            foreach ($allCartItems as $sellerId => $cartItemsBySeller) {
                 // Sort cart items to get product followed by its bonuses
-                usort($cartItemsBySeller, function($c1, $c2) {
+                usort($cartItemsBySeller, function ($c1, $c2) {
                     $productIdDIff = $c1->entityProductId - $c2->entityProductId;
-                    if($productIdDIff === 0) {
+                    if ($productIdDIff === 0) {
                         return $c1->quantityFree - $c2->quantityFree;
                     } else {
                         return $productIdDIff;
@@ -267,7 +267,7 @@ class CartController extends Controller {
             $account = $dbAccount->getById($this->objUser->accountId)[0];
             $buyerCurrency = $mapSellerIdCurrency[$account->entityId];
             $this->f3->set('buyerCurrency', $buyerCurrency);
-            
+
             // Set paymenet methods
             $dbPaymentMethod = new BaseModel($dbConnection, "orderPaymentMethod");
             $nameField = "name_" . $this->objUser->language;
@@ -338,6 +338,34 @@ class CartController extends Controller {
         }
     }
 
+    function postNoteCartCheckoutUpdate()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/cart/checkout");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $productId = $this->f3->get('POST.productId');
+            $sellerId = $this->f3->get('POST.sellerId');
+            $cartDetailId = $this->f3->get('POST.cartDetailId');
+            $note = $this->f3->get('POST.note');
+
+            global $dbConnection;
+
+            $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
+            $dbEntityProduct->getWhere("entityId=$sellerId and productId=$productId");
+
+            $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
+            $dbCartDetail->getById($cartDetailId);
+            $dbCartDetail->note = $note;
+            $dbCartDetail->update();
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = null;
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
     function getCartCheckoutSubmitConfirmation()
     {
         if (!$this->f3->ajax()) {
@@ -387,10 +415,10 @@ class CartController extends Controller {
             $dbOrderGrand->buyerEntityId = $account->entityId;
             $dbOrderGrand->buyerBranchId = $entityBranch->id;
             $dbOrderGrand->buyerUserId = $this->objUser->id;
-          
+
             // TODO: Change paymentMethodId logic
             $dbOrderGrand->paymentMethodId = 1;
-          
+
             $dbOrderGrand->addReturnID();
             $grandOrderId = $dbOrderGrand->id;
 
@@ -442,7 +470,7 @@ class CartController extends Controller {
                 array_push($cartItemsBySeller, $cartDetail);
                 $allCartItems[$sellerId] = $cartItemsBySeller;
             }
-            
+
             $emailHandler = new EmailHandler($dbConnection);
             $emailFile = "email/layout.php";
             $this->f3->set('title', 'New Order');
@@ -466,7 +494,7 @@ class CartController extends Controller {
                     array_push($allProducts, $cartItem);
                 }
 
-                if(array_key_exists($currencyId, $mapCurrencyIdTotal)) {
+                if (array_key_exists($currencyId, $mapCurrencyIdTotal)) {
                     $mapCurrencyIdTotal[$currencyId] += $total;
                 } else {
                     $mapCurrencyIdTotal[$currencyId] = $total;
@@ -492,7 +520,7 @@ class CartController extends Controller {
 
                 // TODO: Change paymentMethodId logic
                 $dbOrder->paymentMethodId = 1;
-                
+
                 $dbOrder->currencyId = $currencyId;
                 $dbOrder->subtotal = $total;
                 $dbOrder->total = $total;
@@ -505,8 +533,8 @@ class CartController extends Controller {
                 $this->f3->set('total', $total);
 
                 $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $sellerId);
-                foreach($arrEntityUserProfile as $entityUserProfile) {
-                    $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName); 
+                foreach ($arrEntityUserProfile as $entityUserProfile) {
+                    $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
                 }
                 $htmlContent = View::instance()->render($emailFile);
 
@@ -515,10 +543,10 @@ class CartController extends Controller {
             }
 
             $totalUSD = 0;
-            foreach($mapCurrencyIdCurrency as $currencyId => $currency) {
-                if(array_key_exists($currencyId, $mapCurrencyIdTotal)) {
+            foreach ($mapCurrencyIdCurrency as $currencyId => $currency) {
+                if (array_key_exists($currencyId, $mapCurrencyIdTotal)) {
                     $subTotal = $mapCurrencyIdTotal[$currencyId];
-                    $totalUSD += $subTotal + $currency->conversionToUSD; 
+                    $totalUSD += $subTotal + $currency->conversionToUSD;
                 }
             }
 
@@ -527,10 +555,10 @@ class CartController extends Controller {
             $this->f3->set('products', $allProducts);
             $this->f3->set('currencySymbol', $buyerCurrency->symbol);
             $this->f3->set('total', $total);
-            
+
             $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $account->entityId);
-            foreach($arrEntityUserProfile as $entityUserProfile) {
-                $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName); 
+            foreach ($arrEntityUserProfile as $entityUserProfile) {
+                $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
             }
             $htmlContent = View::instance()->render($emailFile);
 
@@ -544,7 +572,7 @@ class CartController extends Controller {
                 $quantityFree = $cartDetail->quantityFree;
                 $unitPrice = $cartDetail->unitPrice;
 
-                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `quantityFree`, `unitPrice`) VALUES ('".$orderId."', '".$entityProductId."', '".$quantity."', '".$quantityFree."', '".$unitPrice."');";
+                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `quantityFree`, `unitPrice`) VALUES ('" . $orderId . "', '" . $entityProductId . "', '" . $quantity . "', '" . $quantityFree . "', '" . $unitPrice . "');";
                 array_push($commands, $query);
             }
 

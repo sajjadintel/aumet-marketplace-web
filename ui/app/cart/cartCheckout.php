@@ -49,6 +49,7 @@ function compress_htmlcode($codedata)
                                 <tr>
                                     <th width="50%"><?php echo $vModule_product_name ?></th>
                                     <th class="text-center" width="20%"><?php echo $vModule_cart_quantity ?></th>
+                                    <th class="text-center" width="20%"><?php echo $vModule_cart_note ?></th>
                                     <th class="text-right" width="15%"><?php echo $vModule_cart_unitPrice ?></th>
                                     <th class="text-right" width="15%"><?php echo $vModule_cart_productOrderPrice ?></th>
                                 </tr>
@@ -87,6 +88,11 @@ function compress_htmlcode($codedata)
                                                 </a>
                                             <?php endif; ?>
                                         </td>
+
+                                        <td class="text-center align-middle">
+                                                <input style="width: 100%;" type="text" id="note-<?php echo $item->productId ?>" onfocusout="CartCheckout.updateNote(<?php echo $item->productId ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>)" class="mr-2 font-weight-bolder quantity" value="<?php echo $item->note ?>" name="note">
+                                        </td>
+
                                         <td class="text-right align-middle font-weight-bolder font-size-h5"><?php echo $item->unitPrice . " " . $currencySymbol  ?></td>
                                         <td class="text-right align-middle font-weight-bolder font-size-h5 productPrice-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" data-unitPrice="<?php echo $item->unitPrice ?>" data-productPrice="<?php echo $item->quantity * $item->unitPrice ?>" id="productPrice-<?php echo $item->productId ?>"><?php echo $item->quantity * $item->unitPrice . " " . $currencySymbol ?></td>
                                         <td class="text-right align-middle">
