@@ -644,7 +644,9 @@ class OrderController extends Controller {
 
         $this->f3->set('products', $arrOrderDetail);
         $this->f3->set('currencySymbol', $currency->symbol);
-        $this->f3->set('total', $dbOrder->total);
+        $this->f3->set('subTotal', $subTotal);
+        $this->f3->set('tax', $tax);
+        $this->f3->set('total', $total);
 
         $htmlContent = View::instance()->render($emailFile);
 
