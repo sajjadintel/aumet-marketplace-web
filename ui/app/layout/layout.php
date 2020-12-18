@@ -234,7 +234,7 @@ function compress_htmlcode($codedata)
 
 					<!--end::Container-->
 				</div>
-                <div>
+                <div class="search-wrapper">
                     <select
                         class="select2 form-control"
                         id="searchBarInput"

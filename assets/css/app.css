@@ -92,3 +92,9 @@ label.myLabel input[type='file'] {
 	display: flex;
 	justify-content: end;
 }
+
+.search-wrapper {
+	max-width: 1024px;
+	width: 100%;
+	align-self: center;
+}
