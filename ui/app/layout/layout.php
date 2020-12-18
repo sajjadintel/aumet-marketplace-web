@@ -225,12 +225,26 @@ function compress_htmlcode($codedata)
 						<!--begin::Header Menu Wrapper-->
 						<?php include_once 'headerMenu.php'; ?>
 						<!--end::Header Menu Wrapper-->
-						<!--begin::Topbar-->
+
+
+                        <!--begin::Topbar-->
 						<?php include_once 'headerTopbar.php'; ?>
 						<!--end::Topbar-->
 					</div>
+
 					<!--end::Container-->
 				</div>
+                <div>
+                    <select
+                        class="select2 form-control"
+                        id="searchBarInput"
+                        name="searchBar"
+                        multiple=""
+                        data-select2-id="searchBarInput"
+                        tabindex="-1"
+                        aria-hidden="true">
+                    </select>
+                </div>
 				<!--end::Header-->
 				<!--begin::Content-->
 				<div class="content d-flex flex-column flex-column-fluid" id="pageContent">
@@ -320,7 +334,32 @@ function compress_htmlcode($codedata)
 		jQuery(document).ready(function() {
 			WebApp.init();
 		});
-	</script>
+
+
+        var _selectSeller = $('#searchBarInput').select2({
+            placeholder: "<?php echo $vModule_search_title ?>",
+
+            ajax: {
+                url: '/web/searchbar',
+                dataType: 'json',
+                processResults: function (response) {
+                    return {
+                        results: response.data.results,
+                        pagination: {
+                            more: response.data.pagination
+                        }
+                    }
+                }
+            }
+        });
+        _selectSeller.on("select2:select", function (e) {
+            var productId = $("#searchBarInput").val()[0];
+            $("#searchBarInput").val(null).trigger("change");
+            WebApp.loadSubPage('/web/entity/0/product/' + productId);
+        });
+        $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
+
+    </script>
 </body>
 <!--end::Body-->
 

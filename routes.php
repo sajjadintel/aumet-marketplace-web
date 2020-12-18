@@ -31,6 +31,8 @@ $f3->route('GET /web/product/country/list', 'SearchController->getProductCountry
 $f3->route('GET /web/order/customer/list', 'SearchController->getOrderBuyerList');
 $f3->route('GET /web/order/Distributor/list', 'SearchController->getOrderSellerList');
 
+$f3->route('GET /web/searchbar', 'SearchController->handleSearchBar');
+
 
 $f3->route('GET /web/customercare', 'CustomerCareController->get');
 

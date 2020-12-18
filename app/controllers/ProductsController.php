@@ -14,8 +14,13 @@ class ProductsController extends Controller {
 
             global $dbConnection;
 
+            if ($entityId == 0)
+                $query = "productId=$productId";
+            else
+                $query = "entityId=$entityId and productId=$productId";
+
             $dbEntityProduct = new BaseModel($dbConnection, "vwEntityProductSell");
-            $dbEntityProduct->getWhere("entityId=$entityId and productId=$productId");
+            $dbEntityProduct->getWhere($query);
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
