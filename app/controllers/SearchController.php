@@ -1,7 +1,6 @@
 <?php
 
-class SearchController extends Controller
-{
+class SearchController extends Controller {
     function getSearchProducts()
     {
         if (!$this->f3->ajax()) {
@@ -160,6 +159,118 @@ class SearchController extends Controller
         $this->handleGetListFilters("vwEntityRelation", ['sellerName_en', 'sellerName_fr', 'sellerName_ar'], 'sellerName_' . $this->objUser->language, 'entitySellerId', "entityBuyerId IN ($arrEntityId)");
     }
 
+
+    function getCategoryList()
+    {
+        if ($this->f3->ajax()) {
+            $where = "";
+            $term = $_GET['term'];
+            if (isset($term) && $term != "" && $term != null) {
+                $where = "name_en like '%$term%' AND parent_id IS NULL";
+            } else {
+                $where = " parent_id IS NULL";
+            }
+
+            $page = $_GET['page'];
+            if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
+                $page = $page - 1;
+            } else {
+                $page = 0;
+            }
+
+            $pageSize = 10;
+
+            global $dbConnection;
+
+            $select2Result = new stdClass();
+            $select2Result->results = [];
+            $select2Result->pagination = false;
+
+            $dbProducts = new BaseModel($dbConnection, "category");
+            $dbProducts->name = "name_en";
+            $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
+            $resultsCount = 0;
+            while (!$dbProducts->dry()) {
+                $resultsCount++;
+                $select2ResultItem = new stdClass();
+                $select2ResultItem->id = $dbProducts->id;
+                $select2ResultItem->text = $dbProducts->name;
+                $select2Result->results[] = $select2ResultItem;
+                $dbProducts->next();
+            }
+
+            if ($resultsCount >= $pageSize) {
+                $select2Result->pagination = true;
+            }
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = $select2Result;
+        } else {
+            $this->webResponse->errorCode = 1;
+        }
+        echo $this->webResponse->jsonResponse();
+    }
+
+
+    function getSubCategoryList()
+    {
+        if ($this->f3->ajax()) {
+            $where = "";
+            $term = $_GET['term'];
+            if (isset($term) && $term != "" && $term != null) {
+                $where = "name_en like '%$term%' AND parent_id IS NOT NULL";
+            } else {
+                $where = " parent_id IS NOT NULL";
+            }
+            $parentId = $_GET['parent_id'];
+            if (isset($parentId) && $parentId != "" && $parentId != "null" &&$parentId != "[]" && $parentId != null) {
+                $parentId = json_decode($parentId);
+                $where .= " AND parent_id in (" . implode(",", $parentId) . ")";
+            }
+
+
+            $page = $_GET['page'];
+            if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
+                $page = $page - 1;
+            } else {
+                $page = 0;
+            }
+
+            $pageSize = 10;
+
+            global $dbConnection;
+
+            $select2Result = new stdClass();
+            $select2Result->results = [];
+            $select2Result->pagination = false;
+
+            $dbProducts = new BaseModel($dbConnection, "category");
+            $dbProducts->name = "name_en";
+            $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
+            $resultsCount = 0;
+            while (!$dbProducts->dry()) {
+                $resultsCount++;
+                $select2ResultItem = new stdClass();
+                $select2ResultItem->id = $dbProducts->id;
+                $select2ResultItem->text = $dbProducts->name;
+                $select2Result->results[] = $select2ResultItem;
+                $dbProducts->next();
+            }
+
+            if ($resultsCount >= $pageSize) {
+                $select2Result->pagination = true;
+            }
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = $select2Result;
+        } else {
+            $this->webResponse->errorCode = 1;
+        }
+        echo $this->webResponse->jsonResponse();
+    }
+
     function postSearchProducts()
     {
         ## Read values from Datatables
@@ -187,6 +298,16 @@ class SearchController extends Controller
             $stockOption = $datatable->query['stockOption'];
             if (isset($stockOption) && $stockOption == 1) {
                 $query .= " AND stockStatusId = 1 ";
+            }
+
+            $categoryId = $datatable->query['categoryId'];
+            if (isset($categoryId) && is_array($categoryId)) {
+                $query .= " AND categoryId in (" . implode(",", $categoryId) . ")";
+            }
+
+            $subCategoryId = $datatable->query['subCategoryId'];
+            if (isset($subCategoryId) && is_array($subCategoryId)) {
+                $query .= " AND subCategoryId in (" . implode(",", $subCategoryId) . ")";
             }
         }
 

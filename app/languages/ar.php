@@ -66,6 +66,8 @@ return array(
     'vModule_search_title' => 'البحث في المنتجات',
     'vModule_search_header' => 'يمكنك البحث عن المنتجات من خلال اسم المنتج أو الاسم العلمي للمنتج او اسم الموزع',
     'vModule_search_brandNameplaceholder' => 'الأسماء التجارية',
+    'vModule_search_categoryplaceholder' => 'Category', // todo translate
+    'vModule_search_subcategoryplaceholder' => 'Sub Category', // todo translate
     'vModule_search_scientificNamePlaceholder' => 'الأسماء العلمية',
     'vModule_search_distributorNamePlaceholder' => 'قائمة الموزعين',
     'vModule_search_buyerNamePlaceholder' => 'قائمة المشترين',
