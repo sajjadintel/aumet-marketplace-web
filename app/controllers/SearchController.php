@@ -94,7 +94,7 @@ class SearchController extends Controller {
             $where = "";
             $term = $_GET['term'];
             if (isset($term) && $term != "" && $term != null) {
-                $where = "name_en like '%$term%'";
+                $where = "name_" . $this->objUser->language . " like '%$term%'";
             }
             $page = $_GET['page'];
             if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
@@ -112,7 +112,7 @@ class SearchController extends Controller {
             $select2Result->pagination = false;
 
             $dbProducts = new BaseModel($dbConnection, "product");
-            $dbProducts->name = "name_en";
+            $dbProducts->name = "name_" . $this->objUser->language;
             $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
             $resultsCount = 0;
             while (!$dbProducts->dry()) {
@@ -166,7 +166,7 @@ class SearchController extends Controller {
             $where = "";
             $term = $_GET['term'];
             if (isset($term) && $term != "" && $term != null) {
-                $where = "name_en like '%$term%' AND parent_id IS NULL";
+                $where = "name_" . $this->objUser->language . " like '%$term%' AND parent_id IS NULL";
             } else {
                 $where = " parent_id IS NULL";
             }
@@ -187,7 +187,7 @@ class SearchController extends Controller {
             $select2Result->pagination = false;
 
             $dbProducts = new BaseModel($dbConnection, "category");
-            $dbProducts->name = "name_en";
+            $dbProducts->name = "name_" . $this->objUser->language;
             $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
             $resultsCount = 0;
             while (!$dbProducts->dry()) {
@@ -219,12 +219,12 @@ class SearchController extends Controller {
             $where = "";
             $term = $_GET['term'];
             if (isset($term) && $term != "" && $term != null) {
-                $where = "name_en like '%$term%' AND parent_id IS NOT NULL";
+                $where = "name_" . $this->objUser->language . " like '%$term%' AND parent_id IS NOT NULL";
             } else {
                 $where = " parent_id IS NOT NULL";
             }
             $parentId = $_GET['parent_id'];
-            if (isset($parentId) && $parentId != "" && $parentId != "null" &&$parentId != "[]" && $parentId != null) {
+            if (isset($parentId) && $parentId != "" && $parentId != "null" && $parentId != "[]" && $parentId != null) {
                 $parentId = json_decode($parentId);
                 $where .= " AND parent_id in (" . implode(",", $parentId) . ")";
             }
@@ -246,7 +246,7 @@ class SearchController extends Controller {
             $select2Result->pagination = false;
 
             $dbProducts = new BaseModel($dbConnection, "category");
-            $dbProducts->name = "name_en";
+            $dbProducts->name = "name_" . $this->objUser->language;
             $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
             $resultsCount = 0;
             while (!$dbProducts->dry()) {
