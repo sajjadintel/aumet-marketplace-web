@@ -139,7 +139,7 @@ class SearchController extends Controller {
 
     function getProductScientificNameList()
     {
-        $this->handleGetListFilters("scientificName", 'name', 'name');
+        $this->handleGetListFilters("scientificNameWithProduct", 'name', 'name');
     }
 
     function getProductCountryList()
