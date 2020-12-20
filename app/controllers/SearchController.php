@@ -212,6 +212,56 @@ class SearchController extends Controller {
         echo $this->webResponse->jsonResponse();
     }
 
+    function getAllCategoryList()
+    {
+        if ($this->f3->ajax()) {
+            $where = "";
+            $term = $_GET['term'];
+            if (isset($term) && $term != "" && $term != null) {
+                $where = "name_" . $this->objUser->language . " like '%$term%'";
+            }
+
+            $page = $_GET['page'];
+            if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
+                $page = $page - 1;
+            } else {
+                $page = 0;
+            }
+
+            $pageSize = 10;
+
+            global $dbConnection;
+
+            $select2Result = new stdClass();
+            $select2Result->results = [];
+            $select2Result->pagination = false;
+
+            $dbProducts = new BaseModel($dbConnection, "category");
+            $dbProducts->name = "name_" . $this->objUser->language;
+            $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
+            $resultsCount = 0;
+            while (!$dbProducts->dry()) {
+                $resultsCount++;
+                $select2ResultItem = new stdClass();
+                $select2ResultItem->id = $dbProducts->id;
+                $select2ResultItem->text = $dbProducts->name;
+                $select2Result->results[] = $select2ResultItem;
+                $dbProducts->next();
+            }
+
+            if ($resultsCount >= $pageSize) {
+                $select2Result->pagination = true;
+            }
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = $select2Result;
+        } else {
+            $this->webResponse->errorCode = 1;
+        }
+        echo $this->webResponse->jsonResponse();
+    }
+
 
     function getSubCategoryList()
     {
@@ -302,13 +352,9 @@ class SearchController extends Controller {
 
             $categoryId = $datatable->query['categoryId'];
             if (isset($categoryId) && is_array($categoryId)) {
-                $query .= " AND categoryId in (" . implode(",", $categoryId) . ")";
+                $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
 
-            $subCategoryId = $datatable->query['subCategoryId'];
-            if (isset($subCategoryId) && is_array($subCategoryId)) {
-                $query .= " AND subCategoryId in (" . implode(",", $subCategoryId) . ")";
-            }
         }
 
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");

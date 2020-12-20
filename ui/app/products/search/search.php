@@ -118,25 +118,6 @@ function compress_htmlcode($codedata)
             </div>
 
 
-            <div class="d-flex flex-column-fluid">
-                <div class="input-group input-group-lg mr-5">
-                    <div class="input-group-prepend pt-3 pl-1 pr-1">
-                        <span class="svg-icon svg-icon-xl">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <rect x="0" y="0" width="24" height="24" />
-                                    <path d="M13,5 L15,5 L15,20 L13,20 L13,5 Z M5,5 L5,20 L3,20 C2.44771525,20 2,19.5522847 2,19 L2,6 C2,5.44771525 2.44771525,5 3,5 L5,5 Z M16,5 L18,5 L18,20 L16,20 L16,5 Z M20,5 L21,5 C21.5522847,5 22,5.44771525 22,6 L22,19 C22,19.5522847 21.5522847,20 21,20 L20,20 L20,5 Z" fill="#000000" />
-                                    <polygon fill="#000000" opacity="0.3" points="9 5 9 20 7 20 7 5" />
-                                </g>
-                            </svg>
-                        </span>
-                    </div>
-                    <select class="select2 form-control" id="searchProductsSubCategoryInput" multiple="" name="subCategory" data-select2-id="searchProductsSubCategoryInput" tabindex="-1" aria-hidden="true">
-                    </select>
-                </div>
-            </div>
-
-
         </form>
         <a href="#" class="btn btn-text-danger btn-hover-text-primary font-weight-bold w-100 mt-5 m-auto"><?php echo $vModule_search_unavailableHeader ?></a>
     </div>
@@ -403,8 +384,7 @@ function compress_htmlcode($codedata)
             scientificNameId: [],
             entityId: [],
             stockOption: 1,
-            categoryId: null,
-            subCategoryId: null
+            categoryId: null
         };
 
         var _selectBrand = $('#searchProductsBrandNameInput').select2({
@@ -439,7 +419,7 @@ function compress_htmlcode($codedata)
             placeholder: "<?php echo $vModule_search_categoryplaceholder ?>",
             tags: true,
             ajax: {
-                url: '/web/product/category/list',
+                url: '/web/product/allcategory/list',
                 dataType: 'json',
                 processResults: function(response) {
                     return {
@@ -459,43 +439,6 @@ function compress_htmlcode($codedata)
 
         _category.on("select2:unselect", function(e) {
             searchQuery.categoryId = $("#searchProductsCategoryInput").val();
-            WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
-        });
-
-
-        var _subCategory = $('#searchProductsSubCategoryInput').select2({
-            placeholder: "<?php echo $vModule_search_subcategoryplaceholder ?>",
-            tags: true,
-            ajax: {
-                url: '/web/product/subcategory/list',
-                dataType: 'json',
-                cache: false,
-                data: function (term, page) {
-                    return {
-                        q: term,
-                        page: page,
-                        page_limit: 10,
-                        parent_id: JSON.stringify(searchQuery.categoryId)
-                    };
-                },
-                processResults: function(response) {
-                    return {
-                        results: response.data.results,
-                        pagination: {
-                            more: response.data.pagination
-                        }
-                    }
-                }
-            }
-        });
-
-        _subCategory.on("select2:select", function(e) {
-            searchQuery.subCategoryId = $("#searchProductsSubCategoryInput").val();
-            WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
-        });
-
-        _subCategory.on("select2:unselect", function(e) {
-            searchQuery.subCategoryId = $("#searchProductsSubCategoryInput").val();
             WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
         });
 
