@@ -415,22 +415,53 @@ function compress_htmlcode($codedata)
         });
 
 
+        function formatResult(node) {
+            var $result = $('<span style="padding-left:' + (20 * (node.level - 1)) + 'px;">' + node.text + '</span>');
+            return $result;
+        }
+
         var _category = $('#searchProductsCategoryInput').select2({
             placeholder: "<?php echo $vModule_search_categoryplaceholder ?>",
             tags: true,
+            templateResult: formatResult,
             ajax: {
-                url: '/web/product/allcategory/list',
+                url: '/web/product/category/list',
                 dataType: 'json',
                 processResults: function(response) {
                     return {
-                        results: response.data.results,
+                        results: manipulateData(response.data.results),
                         pagination: {
                             more: response.data.pagination
                         }
                     }
-                }
+                },
             }
         });
+
+
+
+        var lastParent = 0;
+
+        function manipulateData(data) {
+            console.log(data);
+
+            var output = [];
+            console.log('length', data.length);
+            for (var i = 0; i < data.length; i++) {
+                var element = data[i];
+                console.log('item',i , element);
+
+                if (lastParent != element.parent_id) {
+                    console.log('data parent' + element.parent_name);
+                    lastParent = element.parent_id;
+                    output.push({id: element.parent_id, text: element.parent_name, level: 1});
+                }
+                console.log('data self ' + element.name);
+                output.push({id: element.id, text: element.name, level: 2});
+            }
+            console.log(output);
+            return output;
+        }
 
         _category.on("select2:select", function(e) {
             searchQuery.categoryId = $("#searchProductsCategoryInput").val();
