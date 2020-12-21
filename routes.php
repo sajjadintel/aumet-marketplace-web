@@ -31,6 +31,9 @@ $f3->route('GET /web/product/scientificname/list', 'SearchController->getProduct
 $f3->route('GET /web/product/country/list', 'SearchController->getProductCountryList');
 $f3->route('GET /web/order/customer/list', 'SearchController->getOrderBuyerList');
 $f3->route('GET /web/order/Distributor/list', 'SearchController->getOrderSellerList');
+$f3->route('GET /web/order/Distributor/listAll', 'SearchController->getAllSellerList');
+
+$f3->route('GET /web/searchbar', 'SearchController->handleSearchBar');
 
 
 $f3->route('GET /web/customercare', 'CustomerCareController->get');
@@ -41,6 +44,7 @@ $f3->route('GET /web/cart/status', 'CartController->getStatus');
 $f3->route('POST /web/cart/remove', 'CartController->postRemoveItem');
 $f3->route('GET /web/cart/remove/confirm/@itemId', 'CartController->getRemoveItemConfirmation');
 $f3->route('POST /web/cart/checkout/update', 'CartController->postCartCheckoutUpdate');
+$f3->route('POST /web/cart/checkout/note', 'CartController->postNoteCartCheckoutUpdate');
 $f3->route('GET /web/cart/checkout', 'CartController->getCartCheckout');
 $f3->route('POST /web/cart/checkout/submit', 'CartController->postCartCheckoutSubmit');
 $f3->route('GET /web/cart/checkout/submit/confirm', 'CartController->getCartCheckoutSubmitConfirmation');

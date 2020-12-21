@@ -240,6 +240,11 @@ var WebAppLocals = (function () {
 			ar: 'الكمية المطلوبة',
 			fr: '',
 		},
+		note: {
+			en: 'Note',
+			ar: '', // TODO: Add translation
+			fr: '',
+		},
 		minOrder: {
 			en: 'Minimum Order',
 			ar: 'أقل كمية',
