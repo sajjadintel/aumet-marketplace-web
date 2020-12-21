@@ -134,6 +134,62 @@ class CartController extends Controller {
         }
     }
 
+    function postAddBonusItem()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/cart");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+
+            $entityId = $this->f3->get('POST.entityId');
+            $productId = $this->f3->get('POST.productId');
+            $bonusId = $this->f3->get('POST.bonusId');
+
+            global $dbConnection;
+
+            $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
+            $dbEntityProduct->getWhere("entityId=$entityId and productId=$productId");
+
+            if ($dbEntityProduct->dry()) {
+                $this->webResponse->errorCode = 2;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "No Product";
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $dbEntity = new BaseModel($dbConnection, "entity");
+                $dbEntity->name = "name_" . $this->objUser->language;
+                $dbEntity->getById($entityId);
+
+                $dbProduct = new BaseModel($dbConnection, "product");
+                $dbProduct->name = "name_" . $this->objUser->language;
+                $dbProduct->getById($productId);
+
+                $dbBonus = new BaseModel($dbConnection, "entityProductSellBonusDetail");
+                $dbBonus->getById($bonusId);
+
+                $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
+                $dbCartDetail->accountId = $this->objUser->accountId;
+                $dbCartDetail->entityProductId = $dbEntityProduct->id;
+                $dbCartDetail->userId = $this->objUser->id;
+                $dbCartDetail->quantity = $dbBonus->minOrder;
+                $dbCartDetail->quantityFree = $dbBonus->bonus;
+                $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
+
+                $dbCartDetail->addReturnID();
+
+                // Get cart count
+                $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+                $cartCount = count($arrCartDetail);
+                $this->objUser->cartCount = $cartCount;
+
+                $this->webResponse->errorCode = 1;
+                $this->webResponse->title = "";
+                $this->webResponse->data = $cartCount;
+                echo $this->webResponse->jsonResponse();
+            }
+        }
+    }
+
     function getCartCheckout()
     {
         if (!$this->f3->ajax()) {
@@ -171,11 +227,11 @@ class CartController extends Controller {
                 $allCartItems[$sellerId] = $cartItemsBySeller;
             }
 
-            foreach($allCartItems as $sellerId => $cartItemsBySeller) {
+            foreach ($allCartItems as $sellerId => $cartItemsBySeller) {
                 // Sort cart items to get product followed by its bonuses
-                usort($cartItemsBySeller, function($c1, $c2) {
-                    $productIdDiff = $c1->entityProductId - $c2->entityProductId;
-                    if($productIdDiff === 0) {
+                usort($cartItemsBySeller, function ($c1, $c2) {
+                    $productIdDIff = $c1->entityProductId - $c2->entityProductId;
+                    if ($productIdDIff === 0) {
                         return $c1->quantityFree - $c2->quantityFree;
                     } else {
                         return $productIdDiff;
@@ -217,7 +273,7 @@ class CartController extends Controller {
             $account = $dbAccount->getById($this->objUser->accountId)[0];
             $buyerCurrency = $mapSellerIdCurrency[$account->entityId];
             $this->f3->set('buyerCurrency', $buyerCurrency);
-            
+
             // Set paymenet methods
             $dbPaymentMethod = new BaseModel($dbConnection, "orderPaymentMethod");
             $nameField = "name_" . $this->objUser->language;
@@ -302,6 +358,34 @@ class CartController extends Controller {
         }
     }
 
+    function postNoteCartCheckoutUpdate()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/cart/checkout");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $productId = $this->f3->get('POST.productId');
+            $sellerId = $this->f3->get('POST.sellerId');
+            $cartDetailId = $this->f3->get('POST.cartDetailId');
+            $note = $this->f3->get('POST.note');
+
+            global $dbConnection;
+
+            $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
+            $dbEntityProduct->getWhere("entityId=$sellerId and productId=$productId");
+
+            $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
+            $dbCartDetail->getById($cartDetailId);
+            $dbCartDetail->note = $note;
+            $dbCartDetail->update();
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = null;
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
     function getCartCheckoutSubmitConfirmation()
     {
         if (!$this->f3->ajax()) {
@@ -351,10 +435,10 @@ class CartController extends Controller {
             $dbOrderGrand->buyerEntityId = $account->entityId;
             $dbOrderGrand->buyerBranchId = $entityBranch->id;
             $dbOrderGrand->buyerUserId = $this->objUser->id;
-          
+
             // TODO: Change paymentMethodId logic
             $dbOrderGrand->paymentMethodId = 1;
-          
+
             $dbOrderGrand->addReturnID();
             $grandOrderId = $dbOrderGrand->id;
 
@@ -406,7 +490,7 @@ class CartController extends Controller {
                 array_push($cartItemsBySeller, $cartDetail);
                 $allCartItems[$sellerId] = $cartItemsBySeller;
             }
-            
+
             $emailHandler = new EmailHandler($dbConnection);
             $emailFile = "email/layout.php";
             $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
@@ -450,7 +534,7 @@ class CartController extends Controller {
                     $mapCurrencyIdTax[$currencyId] = $tax;
                 }
 
-                if(array_key_exists($currencyId, $mapCurrencyIdTotal)) {
+                if (array_key_exists($currencyId, $mapCurrencyIdTotal)) {
                     $mapCurrencyIdTotal[$currencyId] += $total;
                 } else {
                     $mapCurrencyIdTotal[$currencyId] = $total;
@@ -476,7 +560,7 @@ class CartController extends Controller {
 
                 // TODO: Change paymentMethodId logic
                 $dbOrder->paymentMethodId = 1;
-                
+
                 $dbOrder->currencyId = $currencyId;
                 $dbOrder->subtotal = $subTotal;
                 $dbOrder->vat = $tax;
@@ -491,8 +575,8 @@ class CartController extends Controller {
                 $this->f3->set('total', round($total, 2));
 
                 $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $sellerId);
-                foreach($arrEntityUserProfile as $entityUserProfile) {
-                    $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName); 
+                foreach ($arrEntityUserProfile as $entityUserProfile) {
+                    $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
                 }
                 $htmlContent = View::instance()->render($emailFile);
 
@@ -542,8 +626,8 @@ class CartController extends Controller {
             $this->f3->set('total', round($total, 2));
             
             $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $account->entityId);
-            foreach($arrEntityUserProfile as $entityUserProfile) {
-                $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName); 
+            foreach ($arrEntityUserProfile as $entityUserProfile) {
+                $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
             }
             $htmlContent = View::instance()->render($emailFile);
 
@@ -578,11 +662,12 @@ class CartController extends Controller {
                 $orderId = $mapSellerIdOrderId[$cartDetail->entityId];
                 $entityProductId = $cartDetail->entityProductId;
                 $quantity = $cartDetail->quantity;
+                $note = $cartDetail->note;
                 $quantityFree = $cartDetail->quantityFree;
                 $unitPrice = $cartDetail->unitPrice;
                 $tax = $mapProductIdVat[$entityProductId];
 
-                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `quantityFree`, `unitPrice`, `tax`) VALUES ('".$orderId."', '".$entityProductId."', '".$quantity."', '".$quantityFree."', '".$unitPrice."', '".$tax."');";
+                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `note`, `quantityFree`, `unitPrice`, `tax`) VALUES ('" . $orderId . "', '" . $entityProductId . "', '" . $quantity . "', '" . $note . "', '" . $quantityFree . "', '" . $unitPrice ."', '".$tax."');";
                 array_push($commands, $query);
             }
 

@@ -86,3 +86,15 @@ label.myLabel input[type='file'] {
 #feedbackModalRatingLabel, #feedbackModalCommentLabel{
 	margin-bottom: 10px;
 }
+
+.cart-buttons-product-detail{
+	margin-top: 20px;
+	display: flex;
+	justify-content: end;
+}
+
+.search-wrapper {
+	max-width: 1024px;
+	width: 100%;
+	align-self: center;
+}
