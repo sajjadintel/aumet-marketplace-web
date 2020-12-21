@@ -499,9 +499,9 @@ function compress_htmlcode($codedata)
         });
 
 
-        /* convert categories format so
-        * 1- sub category name is parent - sub
-        * 2- add parent category is first of sub categories  */
+        /* Convert categories format:
+        * 1- Change sub category name to: "parent - sub"
+        * 2- Add parent category above sub categories  */
         function convertDataFormat(data) {
             var output = [];
             for (var i = 0; i < data.length; i++) {
