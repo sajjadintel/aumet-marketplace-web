@@ -71,7 +71,8 @@ return array(
     'vModule_search_scientificNamePlaceholder' => 'الأسماء العلمية',
     'vModule_search_distributorNamePlaceholder' => 'قائمة الموزعين',
     'vModule_search_buyerNamePlaceholder' => 'قائمة المشترين',
-    'vModule_search_sellerNamePlaceholder' => '', // todo translate
+    'vModule_search_productPlaceholder' => '', // TODO: add translation
+    'vModule_search_sellerNamePlaceholder' => 'Filter by Distributor', // TODO: add translation
     'vModule_search_stockStatusPlaceholder' => 'توفر المنتج',
     'vModule_search_stockStatus_Available' => 'المتوفر فقط',
     'vModule_search_stockStatus_others' => 'الجميع',
@@ -88,6 +89,13 @@ return array(
     'vModule_order_header_unpaid' => 'يمكنك عرض طلباتك غير المدفوعة',
     'vModule_order_header_pending' => 'يمكنك عرض الطلبات المعلقة الخاصة بك',
     'vModule_order_header_history' => 'يمكنك عرض محفوظات طلبك',
+
+    'vModule_pharmacy_feedback_title' => 'Feedback List', // TODO: add translation
+    'vModule_pharmacy_feedback_header_pending' => 'You can view your feedback pending', // TODO: add translation
+    'vModule_pharmacy_feedback_header_history' => 'You can view your feedback history', // TODO: add translation
+
+    'alreadySentFeedback' => 'Already sent a feedback!', // TODO: add translation
+    'feedbackSaved' => 'Feedback saved!', // TODO: add translation
 
     'vOrderStatusConfirmation' => 'هل أنت متأكد أنك تريد نقل هذا الطلب إلى {0}؟',
     'vOrderStatus_New' => 'جديد',
@@ -121,8 +129,13 @@ return array(
     'vModule_cart_proceedToCheckOut' => 'إرسال قائمة الطلبات',
     'vModule_cart_quantity' => 'الكمية',
     'vModule_cart_unitPrice' => 'سعر الوحدة',
+    'vModule_cart_tax' => 'ضريبة',
     'vModule_cart_totalPrice' => 'السعر الاجمالي',
     'vModule_cart_grandTotal' => 'المجموع الكلي',
+    'vModule_cart_total' => 'مجموع',
+    'vModule_cart_subTotal' => 'المجموع الفرعي',
+    'vModule_cart_grandSubTotal' => 'المجموع الفرعي',
+    'vModule_cart_formula' => 'معادلة',
     'vModule_cart_productOrderPrice' => 'سعر الكمية',
     'vModule_cart_entityOrderPrice' => 'قيمة فاتورة الموزع',
     'vModule_cart_term' => 'الأسعار أعلاه قابلة للتغيير تبعا لتوقيت تحديث الاسعار من قبل الموزع',
@@ -160,5 +173,7 @@ return array(
 
     'vButton_update' => 'تحديث',
     'vButton_add' => 'أضف',
+    'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ', // TODO: add translation
+    'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!', // TODO: add translation
     'vButton_confirm' => 'تأكيد',
 );

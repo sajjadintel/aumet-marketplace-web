@@ -66,6 +66,9 @@ var DistributorDashboardDataTable = (function () {
 			case 7:
 				status = WebAppLocals.getMessage('orderStatus_Paid');
 				break;
+			case 8:
+				status = WebAppLocals.getMessage('orderStatus_MissingProducts');
+				break;
 			case 9:
 				status = WebAppLocals.getMessage('orderStatus_Canceled_Pharmacy');
 				break;

@@ -515,6 +515,10 @@ var WebApp = (function () {
 		}, 5000);
 	};
 
+	var _redirect = function (url) {
+		$(location).attr('href', url);
+	};
+
 	// Public Functions
 	return {
 		init: function () {
@@ -580,6 +584,9 @@ var WebApp = (function () {
 		},
 		ReloadDatatableServerside: function (vElementId) {
 			_reloadDatatable('serverside', vElementId);
+		},
+		redirect: function (url) {
+			_redirect( url);
 		},
 		reloadDatatable: function (webResponse) {
 			if ($('#popupModal').is(':visible')) {

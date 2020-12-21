@@ -255,19 +255,55 @@ class SearchController extends Controller {
         $totalFiltered = $dbProducts->count($query);
         $data = $dbProducts->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
 
+        $allProductId = [];
+        foreach($data as $product) {
+            array_push($allProductId, $product['id']);
+        }
+        $allProductId = implode(",", $allProductId);
+
         $dbCartDetail = new BaseModel($this->db, "cartDetail");
         $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+
+        $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+        $arrBonus = $dbBonus->findWhere("entityProductId IN ($allProductId) AND isActive = 1");
+
+        $mapProductIdBonuses = [];
+
+        foreach($arrBonus as $bonus) {
+            $productId = $bonus['entityProductId'];
+            $allBonuses = [];
+            if(array_key_exists($productId, $mapProductIdBonuses)) {
+                $allBonuses = $mapProductIdBonuses[$productId];
+            }
+            array_push($allBonuses, $bonus);
+            $mapProductIdBonuses[$productId] = $allBonuses;
+        }
 
         for ($i = 0; $i < count($data); $i++) {
             if ($data[$i]['bonusTypeId'] == 2) {
                 $data[$i]['bonusOptions'] = json_decode($data[$i]['bonusConfig']);
+                $data[$i]['bonuses'] = $mapProductIdBonuses[$data[$i]['id']];
             }
 
+            $quantityFree = 0;
             $data[$i]['cart'] = 0;
             if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
                 foreach ($arrCartDetail as $objCartItem) {
                     if ($objCartItem['entityProductId'] == $data[$i]['id']) {
-                        $data[$i]['cart'] = $objCartItem['quantity'];
+                        $data[$i]['cart'] += $objCartItem['quantity'];
+                        $data[$i]['cart'] += $objCartItem['quantityFree'];
+                        $quantityFree = $objCartItem['quantityFree'];
+                        break;
+                    }
+                }
+            }
+
+            $data[$i]['activeBonus'] = null;
+            if($quantityFree > 0) {
+                $allBonuses = $data[$i]['bonuses'];
+                foreach($allBonuses as $bonus) {
+                    if($bonus['bonus'] === $quantityFree) {
+                        $data[$i]['activeBonus'] = $bonus;
                         break;
                     }
                 }

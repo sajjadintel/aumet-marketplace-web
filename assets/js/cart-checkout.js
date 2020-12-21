@@ -36,21 +36,25 @@ var CartCheckout = (function () {
 			_topbarItemTextContainer.removeClass(_addPulse).removeClass(_addPulseColor);
 		}
 	};
-	
+
 	var _removeItemModal = function (itemId) {
 		WebApp.get('/web/cart/remove/confirm/' + itemId, WebApp.openModal);
 	};
-	
-	var _removeItemSuccess = function () {
+	var _removeItemSuccess = function (webResponse) {
+		// Update cart count
+		let cartCount = webResponse.data > 9 ? "9+" : webResponse.data;
+		if(webResponse.data !== 0) $("#cartCount").css("display", "flex");
+		else $("#cartCount").css("display", "none");
+		$("#cartCount").html(cartCount);
 		WebApp.loadPage('/web/cart/checkout');
 	};
-	
+
 	var _submitOrderModal = function() {
 		WebApp.get('/web/cart/checkout/submit/confirm', WebApp.openModal);
 	};
 
-	var _submitOrderSuccess = function() {
-		WebApp.alertSuccess('Order submitted successfully')
+	var _submitOrderSuccess = function(webResponse) {
+		WebApp.redirect('/web/thankyou/' + webResponse.data);
 	}
 
 	var _updateQuantity = function(productId, increment, stock, cartDetailId, sellerId, updateTotalPrice) {
@@ -68,33 +72,57 @@ var CartCheckout = (function () {
 
 		let productId = cartDetail.productId;
 		let quantity = cartDetail.quantity;
+		let quantityFree = cartDetail.quantityFree;
 		let sellerId = cartDetail.entityId;
-		
+
 		// Update quantity input
 		let quantityId = "#quantity-" + productId;
 		$(quantityId).val(quantity);
+
+		// Update quantity free
+		let quantityFreeId = "#quantityFree-" + productId;
+		$(quantityFreeId).html(quantityFree);
+
+		let quantityFreeHolderId = "#quantityFreeHolder-" + productId;
+		$(quantityFreeHolderId).css("display", quantityFree > 0 ? "block" : "none");
 
 		// Update product price
 		let productPriceId = "#productPrice-" + productId;
 		let unitPrice = $(productPriceId).attr("data-unitPrice");
 		let currency = $(productPriceId).attr("data-currency");
 		let productPrice = (quantity * unitPrice).toFixed(2);
-		
+
 		$(productPriceId).attr("data-productPrice", productPrice);
 		$(productPriceId).html(productPrice + " " + currency);
 
-		// Update sub total price
-		let productPriceClass = ".productPrice-" + sellerId;
+		// Update total price
+		let tax = 0;
 		let subTotalPrice = 0;
+		let productPriceClass = ".productPrice-" + sellerId;
 		$(productPriceClass).each(function(index, element) {
-			subTotalPrice += parseFloat($(element).attr("data-productPrice"));
+			let price = parseFloat($(element).attr("data-productPrice"));
+			subTotalPrice += price;
+			tax += price * parseFloat($(element).attr("data-vat")) / 100;
 		});
+		
+		
+		let totalPrice = subTotalPrice + tax;
 
+		tax = tax.toFixed(2);
+		let taxId = "#tax-" + sellerId;
+		$(taxId).attr("data-vat", tax)
+		$(taxId).html(tax + " " + currency);
+		
 		subTotalPrice = subTotalPrice.toFixed(2);
 		let subTotalPriceId = "#subTotalPrice-" + sellerId;
 		$(subTotalPriceId).attr("data-subTotalPrice", subTotalPrice)
 		$(subTotalPriceId).html(subTotalPrice + " " + currency);
-		
+
+		totalPrice = totalPrice.toFixed(2);
+		let totalPriceId = "#totalPrice-" + sellerId;
+		$(totalPriceId).attr("data-totalPrice", totalPrice)
+		$(totalPriceId).html(totalPrice + " " + currency);
+
 		updateTotalPrice();
 	}
 
@@ -106,14 +134,14 @@ var CartCheckout = (function () {
 		removeItemModal: function (itemId) {
 			_removeItemModal(itemId)
 		},
-		removeItemSuccess: function () {
-			_removeItemSuccess()
+		removeItemSuccess: function (webResponse) {
+			_removeItemSuccess(webResponse)
 		},
 		submitOrderModal: function () {
 			_submitOrderModal()
 		},
-		submitOrderSuccess: function () {
-			_submitOrderSuccess()
+		submitOrderSuccess: function (webResponse) {
+			_submitOrderSuccess(webResponse)
 		},
 		updateQuantity: function(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice) {
 			_updateQuantity(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice)

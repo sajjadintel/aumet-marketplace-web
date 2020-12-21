@@ -1,6 +1,7 @@
 <?php
 
-class OrderController extends Controller {
+class OrderController extends Controller
+{
     function getDistributorOrdersNew()
     {
         $this->handleGetDistributorOrders('new');
@@ -209,6 +210,30 @@ class OrderController extends Controller {
         }
     }
 
+    function getOrderMissingProducts()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $orderId = $this->f3->get('PARAMS.orderId');
+
+            $dbOrder = new BaseModel($this->db, "vwOrderEntityUser");
+            $arrOrder = $dbOrder->findWhere("id = '$orderId'");
+
+            //            $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+            $dbOrderDetail = new BaseModel($this->db, "vwOrderMissingProductDetail");
+            $arrOrderDetail = $dbOrderDetail->findWhere("id = '$orderId'");
+
+
+            $data['order'] = $arrOrder[0];
+            $data['orderDetail'] = $arrOrderDetail;
+
+            echo $this->webResponse->jsonResponseV2(1, "", "", $data);
+            return;
+        }
+    }
+
     function postDistributorOrdersRecent()
     {
         $this->handlePostDistributorOrders('new');
@@ -247,13 +272,13 @@ class OrderController extends Controller {
                 $query .= " AND statusId = 1";
                 break;
             case 'unpaid':
-                $query .= " AND statusId = 6";
+                $query .= " AND statusId IN (6,8)";
                 break;
             case 'pending':
                 $query .= " AND statusId IN (2,3)";
                 break;
             case 'history':
-                $query .= " AND statusId IN (4,5,6,7,9)";
+                $query .= " AND statusId IN (4,5,6,7,8,9)";
                 break;
             default:
                 break;
@@ -299,6 +324,11 @@ class OrderController extends Controller {
         $this->jsonResponseAPI($response);
     }
 
+    function postPharmacyOrdersRecent()
+    {
+        $this->handlePostPharmacyOrders('recent');
+    }
+
     function postPharmacyOrdersPending()
     {
         $this->handlePostPharmacyOrders('pending');
@@ -323,14 +353,20 @@ class OrderController extends Controller {
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityBuyerId IN ($arrEntityId)";
         switch ($status) {
+            case 'new':
+                $query .= " AND statusId = 1";
+                break;
+            case 'recent':
+                $query .= " AND statusId IN (1, 2)";
+                break;
             case 'unpaid':
-                $query .= " AND statusId = 6";
+                $query .= " AND statusId IN (6,8) ";
                 break;
             case 'pending':
                 $query .= " AND statusId IN (2,3)";
                 break;
             case 'history':
-                $query .= " AND statusId IN (4,5,6,7,9)";
+                $query .= " AND statusId IN (4,5,6,7,8,9)";
                 break;
             default:
                 break;
@@ -374,6 +410,74 @@ class OrderController extends Controller {
         );
 
         $this->jsonResponseAPI($response);
+    }
+
+    function postPharmacyMissingProducts()
+    {
+        $orderId = $this->f3->get("POST.orderId");
+        $missingProducts = $this->f3->get("POST.missingProductsRepeater");
+        if ($this->checkForProductsDuplication($missingProducts)) {
+            echo $this->webResponse->jsonResponseV2(2, "Error", $this->f3->get('vMissingProduct_ErrorDuplicateProducts'));
+            return;
+        }
+
+        $dbOrder = new BaseModel($this->db, "order");
+        $dbOrder->getByField("id", $orderId);
+
+        $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+        $arrOrderDetail = $dbOrderDetail->findWhere("id = '$orderId'");
+
+
+        foreach ($missingProducts as $missingProduct) {
+            if (!(is_numeric($missingProduct['productId']) && $missingProduct['productId'] > 0)) {
+                echo $this->webResponse->jsonResponseV2(2, "Error", "Invalid Product id");
+                return;
+            }
+            $serverProduct = $this->getProductFromArrayById($missingProduct['productId'], $arrOrderDetail);
+            if ($missingProduct['quantity'] > $serverProduct['quantity'] || $missingProduct['quantity'] <= 0) {
+                echo $this->webResponse->jsonResponseV2(2, "Error", $this->f3->get('vMissingProduct_ErrorInvalidQuantity') . $serverProduct['productNameEn']);
+                return;
+            }
+        }
+
+        foreach ($missingProducts as $missingProduct) {
+            $dbMissingProduct = new BaseModel($this->db, "orderMissingProduct");
+            $dbMissingProduct->orderId = $orderId;
+            $dbMissingProduct->statusId = 1;
+            $dbMissingProduct->buyerUserId = $this->objUser->id;
+            $dbMissingProduct->productId = $missingProduct['productId'];
+            $dbMissingProduct->quantity = $missingProduct['quantity'];
+            $dbMissingProduct->add();
+        }
+
+
+        $dbOrder->statusId = 8; // Missing Products
+        $dbOrder->edit();
+
+        $missingProductsToEmail = $missingProducts;
+        // TODO: Email To Distributor
+
+        echo $this->webResponse->jsonResponseV2(1, "Success", "");
+    }
+
+    private function getProductFromArrayById($productId, $products)
+    {
+        foreach ($products as $product) {
+            if ($product['productCode'] == $productId)
+                return $product;
+        }
+        return null;
+    }
+
+    private function checkForProductsDuplication($missingProducts)
+    {
+        $dupe_array = array();
+        foreach ($missingProducts as $val) {
+            if (++$dupe_array[$val['productId']] > 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -510,6 +614,78 @@ class OrderController extends Controller {
             $dbRelation->update();
         }
 
+        // Send mails to notify about order status update
+        $emailHandler = new EmailHandler($this->db);
+        $emailFile = "email/layout.php";
+        $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
+        $this->f3->set('title', 'Order Status Update');
+        $this->f3->set('emailType', 'orderStatusUpdate');
+
+        $dbOrderStatus = new BaseModel($this->db, "orderStatus");
+
+        $nameField = "name_" . $this->objUser->language;
+        $dbOrderStatus->name = $nameField;
+
+        $allOrderStatus = $dbOrderStatus->all();
+
+        $mapStatusIdName = [];
+        foreach ($allOrderStatus as $orderStatus) {
+            $mapStatusIdName[$orderStatus->id] = $orderStatus->name;
+        }
+
+        $orderStatusUpdateTitle = "Order with serial " . $dbOrder->serial . " status has changed to " . $mapStatusIdName[strval($statusId)];
+        $this->f3->set('orderStatusUpdateTitle', $orderStatusUpdateTitle);
+
+        $dbCurrency = new BaseModel($this->db, "currency");
+        $currency = $dbCurrency->getWhere("id = $dbOrder->currencyId");
+
+        $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+        $dbOrderDetail->name = "productName" . ucfirst($this->objUser->language);
+        $arrOrderDetail = $dbOrderDetail->getByField("id", $orderId);
+
+        $this->f3->set('products', $arrOrderDetail);
+        $this->f3->set('currencySymbol', $currency->symbol);
+        $this->f3->set('subTotal', $subTotal);
+        $this->f3->set('tax', $tax);
+        $this->f3->set('total', $total);
+
+        $htmlContent = View::instance()->render($emailFile);
+
+        $dbEntityUserProfile = new BaseModel($this->db, "vwEntityUserProfile");
+
+        $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $dbOrder->entityBuyerId);
+        foreach ($arrEntityUserProfile as $entityUserProfile) {
+            $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
+        }
+
+        $subject = "Order Status Update";
+        if (getenv('ENV') != Constants::ENV_PROD) {
+            $subject .= " - (Test: ".getenv('ENV').")";
+            if (getenv('ENV') == Constants::ENV_LOC){
+                $emailHandler->resetTos();
+                $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+                $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+            }
+        }
+        $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
+        $emailHandler->resetTos();
+
+        $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $dbOrder->entitySellerId);
+        foreach ($arrEntityUserProfile as $entityUserProfile) {
+            $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
+        }
+
+        $subject = "Order Status Update";
+        if (getenv('ENV') != Constants::ENV_PROD) {
+            $subject .= " - (Test: ".getenv('ENV').")";
+            if (getenv('ENV') == Constants::ENV_LOC){
+                $emailHandler->resetTos();
+                $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+                $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+            }
+        }
+        $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
+
         echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null, null);
         return;
     }
@@ -621,5 +797,4 @@ class OrderController extends Controller {
 
         $pdf->Output();
     }
-
 }

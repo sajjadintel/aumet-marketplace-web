@@ -11,7 +11,8 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12 form-group">
-                        <input type="hidden" class="form-control" name="id" id="addBonusProductId">
+                        <input type="hidden" class="form-control" name="productId" id="addBonusProductId">
+                        <input type="hidden" class="form-control" name="entityId" id="addBonusEntityId">
                         <div id="addBonusListRepeater">
                             <div class="row">
                                 <div data-repeater-list="bonusRepeater" class="col-lg-12">
@@ -28,7 +29,7 @@
                                             <div class="d-md-none mb-2"></div>
                                         </div>
                                         <div class="col-lg-4">
-                                            <a href="javascript:;" onclick="SearchDataTable.productAddBonus()" id="addBonusAction" class="btn btn-sm font-weight-bolder btn-light-primary">
+                                            <a onclick="SearchDataTable.productAddBonus(this.name)" name="addButton" id="addBonusAction" class="btn btn-sm font-weight-bolder btn-light-primary">
                                                 <i class="la la-plus"></i>Add</a>
                                         </div>
                                     </div>
