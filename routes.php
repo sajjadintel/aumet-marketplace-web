@@ -26,6 +26,9 @@ $f3->route('POST /web/product/search', 'SearchController->postSearchProducts');
 $f3->route('GET /web/entity/@entityId/product/@productId', 'ProductsController->getEntityProduct');
 
 $f3->route('GET /web/product/brandname/list', 'SearchController->getProductBrandNameList');
+$f3->route('GET /web/product/category/list', 'SearchController->getCategoryList');
+$f3->route('GET /web/product/subcategory/list', 'SearchController->getSubCategoryList');
+$f3->route('GET /web/product/allcategory/list', 'SearchController->getAllCategoryList');
 $f3->route('GET /web/product/scientificname/list', 'SearchController->getProductScientificNameList');
 $f3->route('GET /web/product/country/list', 'SearchController->getProductCountryList');
 $f3->route('GET /web/order/customer/list', 'SearchController->getOrderBuyerList');
@@ -39,7 +42,6 @@ $f3->route('GET /web/customercare', 'CustomerCareController->get');
 
 $f3->route('GET /web/cart', 'CartController->get');
 $f3->route('POST /web/cart/add', 'CartController->postAddItem');
-$f3->route('POST /web/cart/bonus/add', 'CartController->postAddBonusItem');
 $f3->route('GET /web/cart/status', 'CartController->getStatus');
 $f3->route('POST /web/cart/remove', 'CartController->postRemoveItem');
 $f3->route('GET /web/cart/remove/confirm/@itemId', 'CartController->getRemoveItemConfirmation');

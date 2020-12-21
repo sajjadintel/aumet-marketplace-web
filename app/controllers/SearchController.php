@@ -1,7 +1,6 @@
 <?php
 
-class SearchController extends Controller
-{
+class SearchController extends Controller {
     function getSearchProducts()
     {
         if (!$this->f3->ajax()) {
@@ -138,7 +137,7 @@ class SearchController extends Controller
             $where = "";
             $term = $_GET['term'];
             if (isset($term) && $term != "" && $term != null) {
-                $where = "name_en like '%$term%'";
+                $where = "name_" . $this->objUser->language . " like '%$term%'";
             }
             $page = $_GET['page'];
             if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
@@ -156,7 +155,7 @@ class SearchController extends Controller
             $select2Result->pagination = false;
 
             $dbProducts = new BaseModel($dbConnection, "product");
-            $dbProducts->name = "name_en";
+            $dbProducts->name = "name_" . $this->objUser->language;
             $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
             $resultsCount = 0;
             while (!$dbProducts->dry()) {
@@ -183,7 +182,7 @@ class SearchController extends Controller
 
     function getProductScientificNameList()
     {
-        $this->handleGetListFilters("scientificName", 'name', 'name');
+        $this->handleGetListFilters("scientificNameWithProduct", 'name', 'name');
     }
 
     function getProductCountryList()
@@ -206,6 +205,167 @@ class SearchController extends Controller
     function getAllSellerList()
     {
         $this->handleGetListFilters("entity", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
+    }
+  
+    function getCategoryList()
+    {
+        if ($this->f3->ajax()) {
+            $where = "";
+            $term = $_GET['term'];
+            if (isset($term) && $term != "" && $term != null) {
+                $where = "name_" . $this->objUser->language . " like '%$term%' AND parent_id IS NULL";
+            } else {
+                $where = " parent_id IS NULL";
+            }
+
+            $page = $_GET['page'];
+            if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
+                $page = $page - 1;
+            } else {
+                $page = 0;
+            }
+
+            $pageSize = 10;
+
+            global $dbConnection;
+
+            $select2Result = new stdClass();
+            $select2Result->results = [];
+            $select2Result->pagination = false;
+
+            $dbProducts = new BaseModel($dbConnection, "category");
+            $dbProducts->name = "name_" . $this->objUser->language;
+            $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
+            $resultsCount = 0;
+            while (!$dbProducts->dry()) {
+                $resultsCount++;
+                $select2ResultItem = new stdClass();
+                $select2ResultItem->id = $dbProducts->id;
+                $select2ResultItem->text = $dbProducts->name;
+                $select2Result->results[] = $select2ResultItem;
+                $dbProducts->next();
+            }
+
+            if ($resultsCount >= $pageSize) {
+                $select2Result->pagination = true;
+            }
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = $select2Result;
+        } else {
+            $this->webResponse->errorCode = 1;
+        }
+        echo $this->webResponse->jsonResponse();
+    }
+
+    function getAllCategoryList()
+    {
+        if ($this->f3->ajax()) {
+            $where = "";
+            $term = $_GET['term'];
+            if (isset($term) && $term != "" && $term != null) {
+                $where = "name_" . $this->objUser->language . " like '%$term%'";
+            }
+
+            $page = $_GET['page'];
+            if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
+                $page = $page - 1;
+            } else {
+                $page = 0;
+            }
+
+            $pageSize = 10;
+
+            global $dbConnection;
+
+            $select2Result = new stdClass();
+            $select2Result->results = [];
+            $select2Result->pagination = false;
+
+            $dbProducts = new BaseModel($dbConnection, "category");
+            $dbProducts->name = "name_" . $this->objUser->language;
+            $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
+            $resultsCount = 0;
+            while (!$dbProducts->dry()) {
+                $resultsCount++;
+                $select2ResultItem = new stdClass();
+                $select2ResultItem->id = $dbProducts->id;
+                $select2ResultItem->text = $dbProducts->name;
+                $select2Result->results[] = $select2ResultItem;
+                $dbProducts->next();
+            }
+
+            if ($resultsCount >= $pageSize) {
+                $select2Result->pagination = true;
+            }
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = $select2Result;
+        } else {
+            $this->webResponse->errorCode = 1;
+        }
+        echo $this->webResponse->jsonResponse();
+    }
+
+
+    function getSubCategoryList()
+    {
+        if ($this->f3->ajax()) {
+            $where = "";
+            $term = $_GET['term'];
+            if (isset($term) && $term != "" && $term != null) {
+                $where = "name_" . $this->objUser->language . " like '%$term%' AND parent_id IS NOT NULL";
+            } else {
+                $where = " parent_id IS NOT NULL";
+            }
+            $parentId = $_GET['parent_id'];
+            if (isset($parentId) && $parentId != "" && $parentId != "null" && $parentId != "[]" && $parentId != null) {
+                $parentId = json_decode($parentId);
+                $where .= " AND parent_id in (" . implode(",", $parentId) . ")";
+            }
+
+
+            $page = $_GET['page'];
+            if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
+                $page = $page - 1;
+            } else {
+                $page = 0;
+            }
+
+            $pageSize = 10;
+
+            global $dbConnection;
+
+            $select2Result = new stdClass();
+            $select2Result->results = [];
+            $select2Result->pagination = false;
+
+            $dbProducts = new BaseModel($dbConnection, "category");
+            $dbProducts->name = "name_" . $this->objUser->language;
+            $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
+            $resultsCount = 0;
+            while (!$dbProducts->dry()) {
+                $resultsCount++;
+                $select2ResultItem = new stdClass();
+                $select2ResultItem->id = $dbProducts->id;
+                $select2ResultItem->text = $dbProducts->name;
+                $select2Result->results[] = $select2ResultItem;
+                $dbProducts->next();
+            }
+
+            if ($resultsCount >= $pageSize) {
+                $select2Result->pagination = true;
+            }
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = $select2Result;
+        } else {
+            $this->webResponse->errorCode = 1;
+        }
+        echo $this->webResponse->jsonResponse();
     }
 
     function postSearchProducts()
@@ -236,6 +396,12 @@ class SearchController extends Controller
             if (isset($stockOption) && $stockOption == 1) {
                 $query .= " AND stockStatusId = 1 ";
             }
+
+            $categoryId = $datatable->query['categoryId'];
+            if (isset($categoryId) && is_array($categoryId)) {
+                $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
+            }
+
         }
 
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
@@ -246,20 +412,56 @@ class SearchController extends Controller
         $totalFiltered = $dbProducts->count($query);
         $data = $dbProducts->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
 
+        $allProductId = [];
+        foreach($data as $product) {
+            array_push($allProductId, $product['id']);
+        }
+        $allProductId = implode(",", $allProductId);
+
         $dbCartDetail = new BaseModel($this->db, "cartDetail");
         $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+
+        $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+        $arrBonus = $dbBonus->findWhere("entityProductId IN ($allProductId) AND isActive = 1");
+
+        $mapProductIdBonuses = [];
+
+        foreach($arrBonus as $bonus) {
+            $productId = $bonus['entityProductId'];
+            $allBonuses = [];
+            if(array_key_exists($productId, $mapProductIdBonuses)) {
+                $allBonuses = $mapProductIdBonuses[$productId];
+            }
+            array_push($allBonuses, $bonus);
+            $mapProductIdBonuses[$productId] = $allBonuses;
+        }
 
         for ($i = 0; $i < count($data); $i++) {
             if ($data[$i]['bonusTypeId'] == 2) {
                 $data[$i]['bonusOptions'] = json_decode($data[$i]['bonusConfig']);
+                $data[$i]['bonuses'] = $mapProductIdBonuses[$data[$i]['id']];
             }
 
+            $quantityFree = 0;
             $data[$i]['cart'] = 0;
             if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
                 foreach ($arrCartDetail as $objCartItem) {
                     if ($objCartItem['entityProductId'] == $data[$i]['id']) {
                         $data[$i]['cart'] += $objCartItem['quantity'];
                         $data[$i]['cart'] += $objCartItem['quantityFree'];
+                        $quantityFree = $objCartItem['quantityFree'];
+                        break;
+                    }
+                }
+            }
+
+            $data[$i]['activeBonus'] = null;
+            if($quantityFree > 0) {
+                $allBonuses = $data[$i]['bonuses'];
+                foreach($allBonuses as $bonus) {
+                    if($bonus['bonus'] === $quantityFree) {
+                        $data[$i]['activeBonus'] = $bonus;
+                        break;
                     }
                 }
             }

@@ -66,6 +66,8 @@ return array(
     'vModule_search_title' => 'البحث في المنتجات',
     'vModule_search_header' => 'يمكنك البحث عن المنتجات من خلال اسم المنتج أو الاسم العلمي للمنتج او اسم الموزع',
     'vModule_search_brandNameplaceholder' => 'الأسماء التجارية',
+    'vModule_search_categoryplaceholder' => 'Category', // todo translate
+    'vModule_search_subcategoryplaceholder' => 'Sub Category', // todo translate
     'vModule_search_scientificNamePlaceholder' => 'الأسماء العلمية',
     'vModule_search_distributorNamePlaceholder' => 'قائمة الموزعين',
     'vModule_search_buyerNamePlaceholder' => 'قائمة المشترين',
@@ -128,8 +130,13 @@ return array(
     'vModule_cart_quantity' => 'الكمية',
     'vModule_cart_note' => 'Note', // TODO: Add Translation
     'vModule_cart_unitPrice' => 'سعر الوحدة',
+    'vModule_cart_tax' => 'ضريبة',
     'vModule_cart_totalPrice' => 'السعر الاجمالي',
     'vModule_cart_grandTotal' => 'المجموع الكلي',
+    'vModule_cart_total' => 'مجموع',
+    'vModule_cart_subTotal' => 'المجموع الفرعي',
+    'vModule_cart_grandSubTotal' => 'المجموع الفرعي',
+    'vModule_cart_formula' => 'معادلة',
     'vModule_cart_productOrderPrice' => 'سعر الكمية',
     'vModule_cart_entityOrderPrice' => 'قيمة فاتورة الموزع',
     'vModule_cart_term' => 'الأسعار أعلاه قابلة للتغيير تبعا لتوقيت تحديث الاسعار من قبل الموزع',

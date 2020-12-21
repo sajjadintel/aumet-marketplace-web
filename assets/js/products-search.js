@@ -296,14 +296,10 @@ var SearchDataTable = (function () {
 			],
 		});
 	};
-	
-	var _productAddBonusModal = function (productId) {
-		WebApp.get('/web/distributor/product/quantity/' + productId, _productAddBonusModalOpen);
-	};
 
-	var _productAddBonusModalOpen = function (webResponse) {
-		$('#addBonusProductId').val(webResponse.data.product.id);
-		$('#addBonusEntityId').val(webResponse.data.product.entityId);
+	var _productAddBonusModal = function (productId, entityId, bonuses) {
+		$('#addBonusProductId').val(productId);
+		$('#addBonusEntityId').val(entityId);
 
 		$('#addBonusModalTitle').html(WebAppLocals.getMessage('addBonusTitle'));
 
@@ -316,7 +312,7 @@ var SearchDataTable = (function () {
 				$(this).slideDown();
 			},
 		});
-		repeater.setList(webResponse.data.bonus);
+		repeater.setList(bonuses);
 
 		$('#addBonusDone').html(WebAppLocals.getMessage('addBonusDone'));
 		$('#addBonusModal').appendTo('body').modal('show');
@@ -326,12 +322,25 @@ var SearchDataTable = (function () {
 		let bonusRepeaterIndex = addButtonName.charAt(14);
 
 		let bonusIdName = "bonusRepeater[" + bonusRepeaterIndex + "][bonusId]";
-		let bonusId = $($('[name ="' + bonusIdName + '"]')[0]).val();
+		
+		let bonusMinOrderName = "bonusRepeater[" + bonusRepeaterIndex + "][minOrder]";
+		let bonusMinOrder = $($('[name ="' + bonusMinOrderName + '"]')[0]).val();
+		
+		let bonusBonusName = "bonusRepeater[" + bonusRepeaterIndex + "][bonus]";
+		let bonusBonus = $($('[name ="' + bonusBonusName + '"]')[0]).val();
 
 		let productId = $('#addBonusProductId').val();
-		let entityId = $('#addBonusEntityId').val();
 
-		SearchDataTable.onClickAddBonusToCart(entityId, productId, bonusId);
+		let quantityId = "#quantity-" + productId;
+		$(quantityId).val(bonusMinOrder);
+		
+		let quantityFreeInputId = "#quantityFreeInput-" + productId;
+		$(quantityFreeInputId).val(bonusBonus);
+		
+		let quantityFreeHolderId = "#quantityFreeHolder-" + productId;
+		$(quantityFreeHolderId).html(bonusBonus);
+
+		$('#addBonusModal').appendTo('body').modal('hide');
 	}
 
 	var _initSearchFilter = function () {
@@ -392,16 +401,11 @@ var SearchDataTable = (function () {
 			_init(objQuery);
 		},
 		onClickAddToCart: function (row) {
-			Cart.addItem(row.entityId, row.productId, '#quantity-' + row.id);
+			Cart.addItem(row.entityId, row.productId, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
 			WebApp.reloadDatatable();
 		},
 		onClickAddMoreToCart: function (row) {
-			Cart.addItem(row.entityId, row.productId, '#quantity-' + row.id);
-			WebApp.reloadDatatable();
-		},
-		onClickAddBonusToCart: function (entityId, productId, bonusId) {
-			Cart.addBonusItem(entityId, productId, bonusId);
-			$('#addBonusModal').appendTo('body').modal('hide');
+			Cart.addItem(row.entityId, row.productId, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
 			WebApp.reloadDatatable();
 		},
 		onBonusOptionCallback: function (row, bonusOption) {
@@ -438,6 +442,8 @@ var SearchDataTable = (function () {
 					$(bonusOptionLabelId).removeClass('label-light').addClass('label-primary');
 				}
 				$('#bonus-' + row.id).html(bonus);
+
+				$('#quantityFreeInput-' + row.id).val('');
 			}
 		},
 		setReadParams: function (objQuery) {
@@ -451,11 +457,8 @@ var SearchDataTable = (function () {
 		hideColumn: function (columnName) {
 			datatable.hideColumn(columnName);
 		},
-		productAddBonusModal: function(productId) {
-			_productAddBonusModal(productId)
-		},
-		productAddBonusModalOpen: function (webResponse) {
-			_productAddBonusModalOpen(webResponse)
+		productAddBonusModal: function(productId, entityId, bonuses) {
+			_productAddBonusModal(productId, entityId, bonuses)
 		},
 		productAddBonus: function(addButtonName) {
 			_productAddBonus(addButtonName)

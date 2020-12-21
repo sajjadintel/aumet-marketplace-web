@@ -614,10 +614,10 @@ class OrderController extends Controller
             $dbRelation->update();
         }
 
-        // orderStatusUpdateTitle
         // Send mails to notify about order status update
         $emailHandler = new EmailHandler($this->db);
         $emailFile = "email/layout.php";
+        $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
         $this->f3->set('title', 'Order Status Update');
         $this->f3->set('emailType', 'orderStatusUpdate');
 
@@ -633,8 +633,21 @@ class OrderController extends Controller
             $mapStatusIdName[$orderStatus->id] = $orderStatus->name;
         }
 
-        $orderStatusUpdateTitle = "Order with serial " . $dbOrder->serial . " status has changed to " . $mapStatusIdName[$statusId];
+        $orderStatusUpdateTitle = "Order with serial " . $dbOrder->serial . " status has changed to " . $mapStatusIdName[strval($statusId)];
         $this->f3->set('orderStatusUpdateTitle', $orderStatusUpdateTitle);
+
+        $dbCurrency = new BaseModel($this->db, "currency");
+        $currency = $dbCurrency->getWhere("id = $dbOrder->currencyId");
+
+        $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+        $dbOrderDetail->name = "productName" . ucfirst($this->objUser->language);
+        $arrOrderDetail = $dbOrderDetail->getByField("id", $orderId);
+
+        $this->f3->set('products', $arrOrderDetail);
+        $this->f3->set('currencySymbol', $currency->symbol);
+        $this->f3->set('subTotal', $subTotal);
+        $this->f3->set('tax', $tax);
+        $this->f3->set('total', $total);
 
         $htmlContent = View::instance()->render($emailFile);
 
@@ -645,7 +658,16 @@ class OrderController extends Controller
             $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
         }
 
-        $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, 'Order Status Update', $htmlContent);
+        $subject = "Order Status Update";
+        if (getenv('ENV') != Constants::ENV_PROD) {
+            $subject .= " - (Test: ".getenv('ENV').")";
+            if (getenv('ENV') == Constants::ENV_LOC){
+                $emailHandler->resetTos();
+                $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+                $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+            }
+        }
+        $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
         $emailHandler->resetTos();
 
         $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $dbOrder->entitySellerId);
@@ -653,7 +675,16 @@ class OrderController extends Controller
             $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
         }
 
-        $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, 'Order Status Update', $htmlContent);
+        $subject = "Order Status Update";
+        if (getenv('ENV') != Constants::ENV_PROD) {
+            $subject .= " - (Test: ".getenv('ENV').")";
+            if (getenv('ENV') == Constants::ENV_LOC){
+                $emailHandler->resetTos();
+                $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+                $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+            }
+        }
+        $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
 
         echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null, null);
         return;

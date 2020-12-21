@@ -23,7 +23,7 @@
                       <tr>
                         <td class="o_bb-primary" height="40" width="32" style="border-bottom: 1px solid #126de5;">&nbsp; </td>
                         <td rowspan="2" class="o_sans o_text o_text-secondary o_px o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;padding-left: 16px;padding-right: 16px;padding-top: 16px;padding-bottom: 16px;">
-                          <img src="images/shopping_cart-48-primary.png" width="48" height="48" alt="" style="max-width: 48px;-ms-interpolation-mode: bicubic;vertical-align: middle;border: 0;line-height: 100%;height: auto;outline: none;text-decoration: none;">
+                          <img src="<?php echo $domainUrl; ?>assets/img/shopping_cart.png" width="48" height="48" alt="" style="max-width: 48px;-ms-interpolation-mode: bicubic;vertical-align: middle;border: 0;line-height: 100%;height: auto;outline: none;text-decoration: none;">
                         </td>
                         <td class="o_bb-primary" height="40" width="32" style="border-bottom: 1px solid #126de5;">&nbsp; </td>
                       </tr>
@@ -174,19 +174,31 @@
                   <table class="o_right" role="presentation" cellspacing="0" cellpadding="0" border="0" style="text-align: right;margin-left: auto;margin-right: 0;">
                     <tbody>
                       <tr>
-                        <td width="252" class="o_px o_pb o_pt-xs o_bg-ultra_light o_br" align="left" style="background-color: #ebf5fa;border-radius: 4px;padding-left: 16px;padding-right: 16px;padding-top: 8px;padding-bottom: 16px;">
-                          <table width="100%" role="presentation" cellspacing="0" cellpadding="0" border="0">
-                            <tbody>
-                              <tr>
-                                <td width="50%" class="o_pt" align="left" style="padding-top: 16px;">
-                                  <p class="o_sans o_text o_text-secondary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;"><strong>Total Due</strong></p>
-                                </td>
-                                <td width="50%" class="o_pt" align="right" style="padding-top: 16px;">
-                                  <p class="o_sans o_text o_text-primary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #126de5;"><strong><?php echo $total . " " . $currencySymbol ?></strong></p>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
+                        <td width="50%" class="o_pt-xs" align="left" style="padding-top: 8px;">
+                          <p class="o_sans o_text o_text-secondary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;">Grand SubTotal</p>
+                        </td>
+                        <td width="50%" class="o_pt-xs" align="right" style="padding-top: 8px;">
+                          <p class="o_sans o_text o_text-secondary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;"><?php echo $subTotal . " " . $currencySymbol ?></p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="50%" class="o_pt-xs" align="left" style="padding-top: 8px;">
+                          <p class="o_sans o_text o_text-secondary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;">Tax</p>
+                        </td>
+                        <td width="50%" class="o_pt-xs" align="right" style="padding-top: 8px;">
+                          <p class="o_sans o_text o_text-secondary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;"><?php echo $tax . " " . $currencySymbol ?></p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="o_pt o_bb-light" style="border-bottom: 1px solid #d3dce0;padding-top: 16px;">&nbsp; </td>
+                        <td class="o_pt o_bb-light" style="border-bottom: 1px solid #d3dce0;padding-top: 16px;">&nbsp; </td>
+                      </tr>
+                      <tr>
+                        <td width="50%" class="o_pt" align="left" style="padding-top: 16px;">
+                          <p class="o_sans o_text o_text-secondary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;"><strong>Grand Total</strong></p>
+                        </td>
+                        <td width="50%" class="o_pt" align="right" style="padding-top: 16px;">
+                          <p class="o_sans o_text o_text-primary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #126de5;"><strong><?php echo $total . " " . $currencySymbol ?></strong></p>
                         </td>
                       </tr>
                     </tbody>

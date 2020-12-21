@@ -72,11 +72,19 @@ var CartCheckout = (function () {
 
 		let productId = cartDetail.productId;
 		let quantity = cartDetail.quantity;
+		let quantityFree = cartDetail.quantityFree;
 		let sellerId = cartDetail.entityId;
 
 		// Update quantity input
 		let quantityId = "#quantity-" + productId;
 		$(quantityId).val(quantity);
+
+		// Update quantity free
+		let quantityFreeId = "#quantityFree-" + productId;
+		$(quantityFreeId).html(quantityFree);
+
+		let quantityFreeHolderId = "#quantityFreeHolder-" + productId;
+		$(quantityFreeHolderId).css("display", quantityFree > 0 ? "block" : "none");
 
 		// Update product price
 		let productPriceId = "#productPrice-" + productId;
@@ -87,17 +95,33 @@ var CartCheckout = (function () {
 		$(productPriceId).attr("data-productPrice", productPrice);
 		$(productPriceId).html(productPrice + " " + currency);
 
-		// Update sub total price
-		let productPriceClass = ".productPrice-" + sellerId;
+		// Update total price
+		let tax = 0;
 		let subTotalPrice = 0;
+		let productPriceClass = ".productPrice-" + sellerId;
 		$(productPriceClass).each(function(index, element) {
-			subTotalPrice += parseFloat($(element).attr("data-productPrice"));
+			let price = parseFloat($(element).attr("data-productPrice"));
+			subTotalPrice += price;
+			tax += price * parseFloat($(element).attr("data-vat")) / 100;
 		});
+		
+		
+		let totalPrice = subTotalPrice + tax;
 
+		tax = tax.toFixed(2);
+		let taxId = "#tax-" + sellerId;
+		$(taxId).attr("data-vat", tax)
+		$(taxId).html(tax + " " + currency);
+		
 		subTotalPrice = subTotalPrice.toFixed(2);
 		let subTotalPriceId = "#subTotalPrice-" + sellerId;
 		$(subTotalPriceId).attr("data-subTotalPrice", subTotalPrice)
 		$(subTotalPriceId).html(subTotalPrice + " " + currency);
+
+		totalPrice = totalPrice.toFixed(2);
+		let totalPriceId = "#totalPrice-" + sellerId;
+		$(totalPriceId).attr("data-totalPrice", totalPrice)
+		$(totalPriceId).html(totalPrice + " " + currency);
 
 		updateTotalPrice();
 	}

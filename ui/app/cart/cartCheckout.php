@@ -50,8 +50,9 @@ function compress_htmlcode($codedata)
                                     <th width="50%"><?php echo $vModule_product_name ?></th>
                                     <th class="text-center" width="20%"><?php echo $vModule_cart_quantity ?></th>
                                     <th class="text-center" width="20%"><?php echo $vModule_cart_note ?></th>
-                                    <th class="text-right" width="15%"><?php echo $vModule_cart_unitPrice ?></th>
-                                    <th class="text-right" width="15%"><?php echo $vModule_cart_productOrderPrice ?></th>
+                                    <th class="text-right" width="10%"><?php echo $vModule_cart_unitPrice ?></th>
+                                    <th class="text-right" width="10%"><?php echo $vModule_cart_tax ?></th>
+                                    <th class="text-right" width="10%"><?php echo $vModule_cart_productOrderPrice ?></th>
                                 </tr>
                             </thead>
 
@@ -71,22 +72,18 @@ function compress_htmlcode($codedata)
                                             <div>
                                                 <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->productId ?>')" class="text-dark text-hover-primary"><?php echo $item->name ?></a>
                                                 <?php if($item->quantityFree > 0) : ?>
-                                                    <p class="text-danger">Free <?php echo $item->name ?> x<?php echo $item->quantityFree ?></p>
+                                                    <p id="quantityFreeHolder-<?php echo $item->productId ?>" class="text-danger">Free <?php echo $item->name ?> x<span id="quantityFree-<?php echo $item->productId ?>"><?php echo $item->quantityFree ?></span></p>
                                                 <?php endif; ?>
                                             </div>
                                         </td>
                                         <td class="text-center align-middle">
-                                            <?php if($item->quantityFree > 0) : ?>
-                                                <input style="width: 40%;" type="number" id="quantityBonus-<?php echo $item->productId ?>"  class="mr-2 font-weight-bolder quantity" value="<?php echo $item->quantity ?>" name="quantity" disabled>
-                                            <?php else : ?>
-                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->productId ?>, -1, <?php echo $item->stock?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon mr-2">
-                                                    <i class="ki ki-minus icon-xs"></i>
-                                                </a>
-                                                <input style="width: 40%;" type="number" id="quantity-<?php echo $item->productId ?>" onfocusout="CartCheckout.updateQuantity(<?php echo $item->productId ?>, 0, <?php echo $item->stock?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="mr-2 font-weight-bolder quantity" min="0" max="<?php echo $item->stock ?>" value="<?php echo $item->quantity ?>" name="quantity">
-                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->productId ?>, 1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon">
-                                                    <i class="ki ki-plus icon-xs"></i>
-                                                </a>
-                                            <?php endif; ?>
+                                            <a onclick="CartCheckout.updateQuantity(<?php echo $item->productId ?>, -1, <?php echo $item->stock?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon mr-2">
+                                                <i class="ki ki-minus icon-xs"></i>
+                                            </a>
+                                            <input style="width: 40%;" type="number" id="quantity-<?php echo $item->productId ?>" onfocusout="CartCheckout.updateQuantity(<?php echo $item->productId ?>, 0, <?php echo $item->stock?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="mr-2 font-weight-bolder quantity" min="0" max="<?php echo $item->stock ?>" value="<?php echo $item->quantity ?>" name="quantity">
+                                            <a onclick="CartCheckout.updateQuantity(<?php echo $item->productId ?>, 1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon">
+                                                <i class="ki ki-plus icon-xs"></i>
+                                            </a>
                                         </td>
 
                                         <td class="text-center align-middle">
@@ -94,7 +91,8 @@ function compress_htmlcode($codedata)
                                         </td>
 
                                         <td class="text-right align-middle font-weight-bolder font-size-h5"><?php echo $item->unitPrice . " " . $currencySymbol  ?></td>
-                                        <td class="text-right align-middle font-weight-bolder font-size-h5 productPrice-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" data-unitPrice="<?php echo $item->unitPrice ?>" data-productPrice="<?php echo $item->quantity * $item->unitPrice ?>" id="productPrice-<?php echo $item->productId ?>"><?php echo $item->quantity * $item->unitPrice . " " . $currencySymbol ?></td>
+                                        <td class="text-right align-middle font-weight-bolder font-size-h5 productVat-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" id="productVat-<?php echo $item->productId ?>"><?php echo $item->vat . "%" ?></td>
+                                        <td class="text-right align-middle font-weight-bolder font-size-h5 productPrice-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" data-vat="<?php echo $item->vat ?>" data-unitPrice="<?php echo $item->unitPrice ?>" data-productPrice="<?php echo $item->quantity * $item->unitPrice ?>" id="productPrice-<?php echo $item->productId ?>"><?php echo $item->quantity * $item->unitPrice . " " . $currencySymbol ?></td>
                                         <td class="text-right align-middle">
                                             <a href="javascript:;" onclick="CartCheckout.removeItemModal(<?php echo $item->id ?>)" class="btn btn-sm btn-light btn-text-danger btn-hover-primary btn-icon  mr-2" title="">
                                                 <span class="svg-icon svg-icon-md">
@@ -110,7 +108,12 @@ function compress_htmlcode($codedata)
                                         </td>
                                     </tr>
                                     <?php
-                                        $subTotalPrice += ($item->quantity  * $item->unitPrice);
+                                        $productPrice = $item->quantity  * $item->unitPrice;
+                                        $productTax = ($item->vat / 100)  * $productPrice;
+
+                                        $subTotalPrice += $productPrice;
+                                        $tax += $productTax;
+                                        $totalPrice += ($productTax  + $productPrice);
                                     ?>
                                 <?php endforeach; ?>
                                 <tr>
@@ -120,8 +123,16 @@ function compress_htmlcode($codedata)
                         </table>
                         <div class="text-right pr-10">
                             <p class="font-weight-bolder font-size-h4">
-                                <span class="text-primary"><?php echo $vModule_cart_totalPrice ?></span>
+                                <span class="text-primary"><?php echo $vModule_cart_subTotal ?></span>
                                 <span class="subTotalPrice" data-subTotalPrice="<?php echo $subTotalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="subTotalPrice-<?php echo $seller->sellerId ?>"><?php echo $subTotalPrice . " " . $currencySymbol ?></span>
+                            </p>
+                            <p class="font-weight-bolder font-size-h4">
+                                <span class="text-primary"><?php echo $vModule_cart_tax ?></span>
+                                <span class="tax" data-vat="<?php echo $tax ?>" data-currencyId="<?php echo $currencyId ?>" id="tax-<?php echo $seller->sellerId ?>"><?php echo $tax . " " . $currencySymbol ?></span>
+                            </p>
+                            <p class="font-weight-bolder font-size-h4">
+                                <span class="text-primary"><?php echo $vModule_cart_total ?></span>
+                                <span class="totalPrice" data-totalPrice="<?php echo $totalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="totalPrice-<?php echo $seller->sellerId ?>"><?php echo $totalPrice . " " . $currencySymbol ?></span>
                             </p>
                         </div>
                     </div>
@@ -130,7 +141,9 @@ function compress_htmlcode($codedata)
                 
 
                 <div class="text-right p-10">
-                    <p class="font-weight-bolder font-size-h4" id="formula"></p>
+                    <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_formula ?> </span> <span id="formula"></span></p>
+                    <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_grandSubTotal ?> </span> <span id="grandSubTotal"></span></p>
+                    <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_tax ?> </span> <span id="tax"></span></p>
                     <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_grandTotal ?> </span> <span id="grandTotal"></span></p>
                     <a class="btn btn-success font-weight-bolder px-8" onclick="CartCheckout.submitOrderModal()">
                         <?php echo $vModule_cartCheckout_submitOrder ?>
@@ -170,21 +183,60 @@ function compress_htmlcode($codedata)
         let buyerCurrency = JSON.parse(buyerCurrencyStr);
         let symbol = buyerCurrency.symbol;
 
-        let allPrices = {};
+        let allSubPrices = {};
         $(".subTotalPrice").each(function(index, element) {
             let currencyId = parseInt($(element).attr("data-currencyId"));
             let subTotalPrice = parseFloat($(element).attr("data-subTotalPrice"));
-            if(allPrices[currencyId]) {
-                allPrices[currencyId] += subTotalPrice;
+            if(allSubPrices[currencyId]) {
+                allSubPrices[currencyId] += subTotalPrice;
             } else {
-                allPrices[currencyId] = subTotalPrice;;
+                allSubPrices[currencyId] = subTotalPrice;
+            }
+        });
+        
+        let allTax = {};
+        $(".tax").each(function(index, element) {
+            let currencyId = parseInt($(element).attr("data-currencyId"));
+            let tax = parseFloat($(element).attr("data-vat"));
+            if(allTax[currencyId]) {
+                allTax[currencyId] += tax;
+            } else {
+                allTax[currencyId] = tax;
             }
         });
 
+        let allPrices = {};
+        $(".totalPrice").each(function(index, element) {
+            let currencyId = parseInt($(element).attr("data-currencyId"));
+            let totalPrice = parseFloat($(element).attr("data-totalPrice"));
+            if(allPrices[currencyId]) {
+                allPrices[currencyId] += totalPrice;
+            } else {
+                allPrices[currencyId] = totalPrice;
+            }
+        });
+
+        let grandSubTotalUSD = 0;
+        let grandTaxUSD = 0;
         let grandTotalUSD = 0;
         let allFormula = [];
         Object.keys(mapCurrencyIdCurrency).forEach((currencyId) => {
             let currency = mapCurrencyIdCurrency[currencyId];
+            
+            let subTotalPrice = allSubPrices[currencyId];
+            if(subTotalPrice && subTotalPrice > 0) {
+                let subTotalPriceStr = subTotalPrice.toFixed(2);
+                subTotalPrice = parseFloat(subTotalPriceStr);
+                grandSubTotalUSD += subTotalPrice * currency.conversionToUSD;
+            }
+
+            let tax = allTax[currencyId];
+            if(tax && tax > 0) {
+                let taxStr = tax.toFixed(2);
+                tax = parseFloat(taxStr);
+                grandTaxUSD += tax * currency.conversionToUSD;
+            }
+            
             let price = allPrices[currencyId];
             if(price && price > 0) {
                 let priceStr = price.toFixed(2);
@@ -197,9 +249,18 @@ function compress_htmlcode($codedata)
         let formula = allFormula.join(" + ");
         $("#formula").html(formula);
         
+        let grandSubTotal = grandSubTotalUSD / buyerCurrency.conversionToUSD;
+        let grandSubTotalStr = grandSubTotal.toFixed(2);
+        $("#grandSubTotal").html(grandSubTotalStr + " " + buyerCurrency.symbol);
+        
+        let grandTax = grandTaxUSD / buyerCurrency.conversionToUSD;
+        let grandTaxStr = grandTax.toFixed(2);
+        $("#tax").html(grandTaxStr + " " + buyerCurrency.symbol);
+
         let grandTotal = grandTotalUSD / buyerCurrency.conversionToUSD;
         let grandTotalStr = grandTotal.toFixed(2);
         $("#grandTotal").html(grandTotalStr + " " + buyerCurrency.symbol);
+
         return grandTotalStr;
     }
 </script>

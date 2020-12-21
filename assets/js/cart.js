@@ -58,17 +58,20 @@ var Cart = (function () {
 		WebApp.loadPage('/web/cart');
 	};
 
-	var _addItem = function (entityId, productId, quantityInputId = null) {
+	var _addItem = function (entityId, productId, quantityInputId = null, quantityFreeInputId = null) {
 		if (_itemsCount <= 0) {
 			_topBarItemSvgIcon.removeClass(_svgIconNoColor_NoItems).addClass(_svgIconNoColor_Items);
 			_topbarItemTextContainer.addClass(_addPulse).addClass(_addPulseColor);
 			_topbarItemText.show();
 		}
-		WebApp.post('/web/cart/add', { entityId: entityId, productId: productId, quantity: quantityInputId == null ? 1 : $(quantityInputId).val() }, _addItemSuccessCallback);
-	};
-
-	var _addBonusItem = function (entityId, productId, bonusId) {
-		WebApp.post('/web/cart/bonus/add', { entityId, productId, bonusId }, _addItemSuccessCallback);
+		
+		let body = {
+			entityId,
+			productId,
+			quantity: quantityInputId == null ? 1 : $(quantityInputId).val(),
+			quantityFree: quantityFreeInputId == null ? 0 : $(quantityFreeInputId).val()
+		};
+		WebApp.post('/web/cart/add', body, _addItemSuccessCallback);
 	};
 
 	var _removeItem = function (id) {
@@ -88,11 +91,8 @@ var Cart = (function () {
 		init: function () {
 			_int();
 		},
-		addItem: function (entityId, productId, quantityInputId = null) {
-			_addItem(entityId, productId, quantityInputId);
-		},
-		addBonusItem: function (entityId, productId, bonusId) {
-			_addBonusItem(entityId, productId, bonusId)
+		addItem: function (entityId, productId, quantityInputId = null, quantityFreeInputId = null) {
+			_addItem(entityId, productId, quantityInputId, quantityFreeInputId);
 		},
 		removeItem: function (id) {
 			_removeItem(id);
