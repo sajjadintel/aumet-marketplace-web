@@ -420,6 +420,9 @@ function compress_htmlcode($codedata)
             return $result;
         }
 
+        var lastParent = 0;
+        var categories = [];
+
         var _category = $('#searchProductsCategoryInput').select2({
             placeholder: "<?php echo $vModule_search_categoryplaceholder ?>",
             tags: true,
@@ -427,9 +430,26 @@ function compress_htmlcode($codedata)
             ajax: {
                 url: '/web/product/category/list',
                 dataType: 'json',
-                processResults: function(response) {
+                delay: 250,
+                data: function (params) {
+                    var query = {
+                        term: params.term,
+                        page: params.page || 1
+                    };
+                    if (query.page == 1) {
+                        lastParent = 0;
+                    }
+                    return query;
+                },
+                processResults: function (response) {
+                    var data = convertDataFormat(response.data.results);
+                    if (lastParent == 0)
+                        categories = data;
+                    else
+                        categories.push(...data);
+
                     return {
-                        results: manipulateData(response.data.results),
+                        results: data,
                         pagination: {
                             more: response.data.pagination
                         }
@@ -439,36 +459,95 @@ function compress_htmlcode($codedata)
         });
 
 
-
-        var lastParent = 0;
-
-        function manipulateData(data) {
-            console.log(data);
-
+        /* convert categories format so
+        * 1- sub category name is parent - sub
+        * 2- add parent category is first of sub categories  */
+        function convertDataFormat(data) {
             var output = [];
-            console.log('length', data.length);
             for (var i = 0; i < data.length; i++) {
                 var element = data[i];
-                console.log('item',i , element);
 
                 if (lastParent != element.parent_id) {
-                    console.log('data parent' + element.parent_name);
                     lastParent = element.parent_id;
-                    output.push({id: element.parent_id, text: element.parent_name, level: 1});
+                    output.push({id: element.parent_id, text: element.parent_name, level: 1, parent_id: 0});
                 }
-                console.log('data self ' + element.name);
-                output.push({id: element.id, text: element.name, level: 2});
+                output.push({id: element.id, text: element.parent_name + " - " + element.name, level: 2, parent_id: element.parent_id});
             }
-            console.log(output);
             return output;
         }
 
-        _category.on("select2:select", function(e) {
+        /* remove sub categories if parent is selected */
+        function filterSubCategories(selectedIds) {
+            var filteredCategories = [];
+            /* convert category ids to objects to have all data of category */
+            var selectedItems = convertCategoryIdsToObjects(selectedIds);
+            /* get only parent categories */
+            var parentIds = getCategoryParentIds(selectedItems);
+
+            /* only select parent categories and sub categories that theirs parent is not selected */
+            for (var i = 0; i < selectedItems.length; i++) {
+                if (!isSubcategoryExistsInParents(selectedItems[i], parentIds)) {
+                    filteredCategories.push(selectedItems[i]);
+                }
+            }
+            /* convert category objets to ids to be the select2 format */
+            return convertCategoryObjectsToIds(filteredCategories);
+        }
+
+        /* get category object corresponding to id given */
+        function getCategoryById(id) {
+            for (var i = 0; i < categories.length; i++) {
+                if (categories[i].id == id) {
+                    return categories[i];
+                }
+            }
+        }
+
+        function convertCategoryIdsToObjects(ids) {
+            var objects = [];
+            for (var i = 0; i < ids.length; i++) {
+                objects.push(getCategoryById(ids[i]))
+            }
+            return objects;
+        }
+
+        function convertCategoryObjectsToIds(categories) {
+            var ids = [];
+            for (var i = 0; i < categories.length; i++) {
+                ids.push(categories[i].id);
+            }
+            return ids;
+        }
+
+        function getCategoryParentIds(selectedItems) {
+            var parentIds = [];
+            for (var i = 0; i < selectedItems.length; i++) {
+                if (selectedItems[i].parent_id == 0) {
+                    parentIds.push(selectedItems[i]);
+                }
+            }
+            return parentIds;
+        }
+
+        function isSubcategoryExistsInParents(category, parents) {
+            for (var i = 0; i < parents.length; i++) {
+                if (parents[i].id == category.parent_id) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
+        _category.on("select2:select", function (e) {
+            var filteredData = filterSubCategories(_category.val());
+            _category.val(filteredData).trigger('change');
+
             searchQuery.categoryId = $("#searchProductsCategoryInput").val();
             WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
         });
 
-        _category.on("select2:unselect", function(e) {
+        _category.on("select2:unselect", function (e) {
             searchQuery.categoryId = $("#searchProductsCategoryInput").val();
             WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
         });
