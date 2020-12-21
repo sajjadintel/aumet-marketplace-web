@@ -25,6 +25,11 @@ var WebAppLocals = (function () {
 			ar: 'شاهد',
 			fr: '',
 		},
+		feedback: {
+			en: 'Feedback',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
 		edit: {
 			en: 'Edit',
 			ar: 'تعديل',
@@ -85,6 +90,11 @@ var WebAppLocals = (function () {
 			ar: 'الموزع',
 			fr: '',
 		},
+		branchSeller: {
+			en: 'Branch',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
 		userBuyer: {
 			en: 'Reference',
 			ar: 'المرجع',
@@ -108,6 +118,21 @@ var WebAppLocals = (function () {
 		orderDetails: {
 			en: 'Order Details',
 			ar: 'تفاصيل الطلب',
+			fr: '',
+		},
+		orderMissingProduct: {
+			en: 'Missing Product',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
+		orderReportMissing: {
+			en: 'Report Missing',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
+		orderFeedback: {
+			en: 'Order Feedback',
+			ar: '', // TODO: add translation
 			fr: '',
 		},
 		orderLogs: {
@@ -163,6 +188,11 @@ var WebAppLocals = (function () {
 		orderStatus_Paid: {
 			en: 'Paid',
 			ar: 'مدفوع',
+			fr: '',
+		},
+		orderStatus_MissingProducts: {
+			en: 'Missing Products',
+			ar: '', // TODO: add translation
 			fr: '',
 		},
 		orderStatus_PayOrder: {
@@ -303,6 +333,16 @@ var WebAppLocals = (function () {
 		orderRating: {
 			en: 'Rating',
 			ar: 'التصنيف',
+			fr: '',
+		},
+		missingProduct: {
+			en: 'Missing Product',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
+		orderComment: {
+			en: 'Feedback',
+			ar: '', // TODO: add translation
 			fr: '',
 		},
 		stockUpdateProcessing: {

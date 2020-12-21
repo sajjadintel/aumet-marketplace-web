@@ -178,6 +178,10 @@ function compress_htmlcode($codedata)
                           title: WebAppLocals.getMessage('orderStatus_Paid'),
                           class: ' label-success',
                       },
+                      8: {
+                          title: WebAppLocals.getMessage('orderStatus_MissingProducts'),
+                          class: ' label-danger',
+                      }
                   };
 
                   var output = '<div><span class="label label-lg font-weight-bold ' + status[row.statusId].class + ' label-inline">' + status[row.statusId].title + '</span></div>';
@@ -235,18 +239,42 @@ function compress_htmlcode($codedata)
                       WebAppLocals.getMessage('print') +
                       '</a>';
                   var btnView =
-                      '<a href="javascript:;" onclick=\'WebAppModals.orderViewModal(' +
-                      row.id + ', true' +
+                      '<a href="javascript:;" onclick=\'WebAppModals.orderViewPharmacyModal(' +
+                      row.id +
                       ')\' \
                           class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
                           <i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
                       WebAppLocals.getMessage('view') +
                       '</a>';
 
+                 var reportMissing =
+                      '<a href="javascript:;" onclick=\'WebMissingProductModals.orderMissingProductPharmacyModal(' +
+                      row.id +
+                      ')\' \
+                          class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
+                          <i class="nav-icon la la-box p-0"></i> &nbsp&nbsp' +
+                      WebAppLocals.getMessage('orderReportMissing') +
+                      '</a>';
+
+                 var missingProduct =
+                      '<a href="javascript:;" onclick=\'OrderMissingProductListModals.orderMissingProductListPharmacyModal(' +
+                      row.id +
+                      ')\' \
+                          class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
+                          <i class="nav-icon la la-box p-0"></i> &nbsp&nbsp' +
+                      WebAppLocals.getMessage('orderMissingProduct') +
+                      '</a>';
+
                   var outActions = '';
 
                   outActions += btnView;
                   outActions += btnPrint;
+
+                  if (row.statusId === 4 || row.statusId === 6)
+                      outActions += reportMissing;
+
+                  if (row.statusId === 8)
+                      outActions += missingProduct;
 
                   return outActions;
               },
@@ -310,3 +338,4 @@ function compress_htmlcode($codedata)
       PageClass.init();
 	</script>
 <?php ob_end_flush(); ?>
+<? include_once 'missing-product-modal.php'; ?>
