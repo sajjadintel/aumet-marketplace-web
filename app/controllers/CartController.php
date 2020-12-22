@@ -573,6 +573,7 @@ class CartController extends Controller {
                 $this->f3->set('subTotal', round($subTotal, 2));
                 $this->f3->set('tax', round($tax, 2));
                 $this->f3->set('total', round($total, 2));
+                $this->f3->set('ordersUrl', "web/distributor/order/new");
 
                 $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $sellerId);
                 foreach ($arrEntityUserProfile as $entityUserProfile) {
@@ -586,7 +587,7 @@ class CartController extends Controller {
 
                     if (getenv('ENV') == Constants::ENV_LOC){
                         $emailHandler->resetTos();
-                        $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+                        $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                         $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
                     }
                 }
@@ -624,6 +625,7 @@ class CartController extends Controller {
             $this->f3->set('subTotal', round($subTotal, 2));
             $this->f3->set('tax', round($tax, 2));
             $this->f3->set('total', round($total, 2));
+            $this->f3->set('ordersUrl', "web/pharmacy/order/history");
             
             $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $account->entityId);
             foreach ($arrEntityUserProfile as $entityUserProfile) {
@@ -636,7 +638,6 @@ class CartController extends Controller {
                 $subject .= " - (Test: ".getenv('ENV').")";
                 if (getenv('ENV') == Constants::ENV_LOC){
                     $emailHandler->resetTos();
-                    $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
                     $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                     $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
                 }
