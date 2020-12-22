@@ -145,6 +145,19 @@ function compress_htmlcode($codedata)
                     <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_grandSubTotal ?> </span> <span id="grandSubTotal"></span></p>
                     <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_tax ?> </span> <span id="tax"></span></p>
                     <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_grandTotal ?> </span> <span id="grandTotal"></span></p>
+                    <div class="radio-inline py-10" style="justify-content: flex-end;">
+                        <?php foreach($allPaymentMethods as $paymentMethod) : ?>
+                            <label class="radio radio-success">
+                                <?php if($paymentMethod->id == 1) : ?>
+                                    <input type="radio" name="paymentMethod" id="paymentMethod-<?php echo $paymentMethod->id; ?>" checked/>
+                                <?php else: ?>
+                                    <input type="radio" name="paymentMethod" id="paymentMethod-<?php echo $paymentMethod->id; ?>"/>
+                                <?php endif; ?>
+                                <span></span>
+                                <?php echo $paymentMethod->name; ?>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
                     <a class="btn btn-success font-weight-bolder px-8" onclick="CartCheckout.submitOrderModal()">
                         <?php echo $vModule_cartCheckout_submitOrder ?>
                     </a>
