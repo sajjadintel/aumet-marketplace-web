@@ -583,8 +583,13 @@ class OrderController extends Controller
                 $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
 
                 $dbProduct->stock -= $dbOrderItems->quantity;
+                $dbProduct->totalOrderCount += 1;
+                $dbProduct->totalOrderQuantity += $dbOrderItems->quantity;
                 $dbProduct->update();
 
+                if ($dbProduct->stock <= 5 * $dbProduct->totalOrderQuantity / $dbProduct->totalOrderCount) {
+                    //todo send mail
+                }
                 $dbProduct->next();
             }
 
