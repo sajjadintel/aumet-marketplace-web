@@ -152,6 +152,7 @@ return array(
     'vModule_cartCheckout_orderConfirmation' => 'هل أنت متأكد أنك تريد تقديم هذا الطلب؟',
     'vModule_cartCheckout_successTitle' => 'أجل النجاح',
     'vModule_cartCheckout_successContent' => 'تم تقديم طلبك بنجاح !',
+    'vModule_cartCheckout_paymentMethodTitle' => 'طريقة الدفع',
 
     'vModule_bonus_bonusTextTemplate' => 'كل %q: %b',
 
