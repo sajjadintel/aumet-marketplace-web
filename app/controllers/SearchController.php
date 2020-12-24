@@ -206,7 +206,7 @@ class SearchController extends Controller {
     {
         $this->handleGetListFilters("entity", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
     }
-  
+
     function getCategoryList()
     {
         if ($this->f3->ajax()) {
@@ -283,77 +283,20 @@ class SearchController extends Controller {
             $select2Result->results = [];
             $select2Result->pagination = false;
 
-            $dbProducts = new BaseModel($dbConnection, "category");
+            $dbProducts = new BaseModel($dbConnection, "vwCategory");
             $dbProducts->name = "name_" . $this->objUser->language;
-            $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
-            $resultsCount = 0;
-            while (!$dbProducts->dry()) {
-                $resultsCount++;
-                $select2ResultItem = new stdClass();
-                $select2ResultItem->id = $dbProducts->id;
-                $select2ResultItem->text = $dbProducts->name;
-                $select2Result->results[] = $select2ResultItem;
-                $dbProducts->next();
-            }
-
-            if ($resultsCount >= $pageSize) {
-                $select2Result->pagination = true;
-            }
-
-            $this->webResponse->errorCode = 1;
-            $this->webResponse->title = "";
-            $this->webResponse->data = $select2Result;
-        } else {
-            $this->webResponse->errorCode = 1;
-        }
-        echo $this->webResponse->jsonResponse();
-    }
-
-
-    function getSubCategoryList()
-    {
-        if ($this->f3->ajax()) {
-            $where = "";
-            $term = $_GET['term'];
-            if (isset($term) && $term != "" && $term != null) {
-                $where = "name_" . $this->objUser->language . " like '%$term%' AND parent_id IS NOT NULL";
-            } else {
-                $where = " parent_id IS NOT NULL";
-            }
-            $parentId = $_GET['parent_id'];
-            if (isset($parentId) && $parentId != "" && $parentId != "null" && $parentId != "[]" && $parentId != null) {
-                $parentId = json_decode($parentId);
-                $where .= " AND parent_id in (" . implode(",", $parentId) . ")";
-            }
-
-
-            $page = $_GET['page'];
-            if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
-                $page = $page - 1;
-            } else {
-                $page = 0;
-            }
-
-            $pageSize = 10;
-
-            global $dbConnection;
-
-            $select2Result = new stdClass();
-            $select2Result->results = [];
-            $select2Result->pagination = false;
-
-            $dbProducts = new BaseModel($dbConnection, "category");
-            $dbProducts->name = "name_" . $this->objUser->language;
-            $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
-            $resultsCount = 0;
-            while (!$dbProducts->dry()) {
-                $resultsCount++;
-                $select2ResultItem = new stdClass();
-                $select2ResultItem->id = $dbProducts->id;
-                $select2ResultItem->text = $dbProducts->name;
-                $select2Result->results[] = $select2ResultItem;
-                $dbProducts->next();
-            }
+            $dbProducts->parent_name = "parent_name_" . $this->objUser->language;
+            $select2Result->results =$dbProducts->findWhere($where, "parent_id ASC, name_{$this->objUser->language} ASC", $pageSize, $page * $pageSize);
+            $resultsCount = count($select2Result->results);
+//            while (!$dbProducts->dry()) {
+//                $resultsCount++;
+//                $select2ResultItem = new stdClass();
+//                $select2ResultItem->id = $dbProducts->id;
+//                $select2ResultItem->text = $dbProducts->name;
+//                $select2Result->results[] = $select2ResultItem;
+//                $select2Result->results[] = $dbProducts;
+//                $dbProducts->next();
+//            }
 
             if ($resultsCount >= $pageSize) {
                 $select2Result->pagination = true;
