@@ -454,8 +454,7 @@ class OrderController extends Controller
         $dbOrder->statusId = 8; // Missing Products
         $dbOrder->edit();
 
-        $missingProductsToEmail = $missingProducts;
-        // TODO: Email To Distributor
+        NotificationHelper::orderMissingProductsNotification($this->f3, $this->db, $orderId);
 
         echo $this->webResponse->jsonResponseV2(1, "Success", "");
     }
@@ -573,6 +572,8 @@ class OrderController extends Controller
             return;
         }
 
+        $lowStockProducts = [];
+
         // Add other management information
         // If order is Complete, adjust stocks and relation (unpaid total)
         // If order is Paid, adjust relation (paid total)
@@ -587,11 +588,14 @@ class OrderController extends Controller
                 $dbProduct->totalOrderQuantity += $dbOrderItems->quantity;
                 $dbProduct->update();
 
-                if ($dbProduct->stock <= 5 * $dbProduct->totalOrderQuantity / $dbProduct->totalOrderCount) {
-                    //todo send mail
-                }
+                if ($dbProduct->stock <= 5 * $dbProduct->totalOrderQuantity / $dbProduct->totalOrderCount)
+                    $lowStockProducts[] = $dbProduct->id;
+
                 $dbProduct->next();
             }
+
+            if (sizeof($lowStockProducts) > 0)
+                NotificationHelper::lowStockNotification($this->f3, $this->db, $lowStockProducts);
 
             $dbRelation = new BaseModel($this->db, "entityRelation");
             $dbRelation->getWhere("entityBuyerId = $dbOrder->entityBuyerId AND entitySellerId = $dbOrder->entitySellerId");
