@@ -162,6 +162,7 @@ return array(
     'vModule_cartCheckout_orderConfirmation' => 'Are you sure you want to submit this order?',
     'vModule_cartCheckout_successTitle' => 'Order Sucess',
     'vModule_cartCheckout_successContent' => 'Your order has been submitted successfully !',
+    'vModule_cartCheckout_paymentMethodTitle' => 'Payment Method',
 
     'vModule_bonus_bonusTextTemplate' => 'For %q: %b',
 

@@ -50,7 +50,10 @@ var CartCheckout = (function () {
 	};
 
 	var _submitOrderModal = function() {
-		WebApp.get('/web/cart/checkout/submit/confirm', WebApp.openModal);
+		let paymentMethodInputId = $("input[name='paymentMethod']:checked").attr("id");
+		let allParts = paymentMethodInputId.split("-");
+		let paymentMethodId = allParts[1];
+		WebApp.get('/web/cart/checkout/submit/confirm/' + paymentMethodId, WebApp.openModal);
 	};
 
 	var _submitOrderSuccess = function(webResponse) {

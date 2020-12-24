@@ -392,21 +392,13 @@ class CartController extends Controller {
             $this->f3->set("pageURL", "/web/cart/checkout");
             echo View::instance()->render('app/layout/layout.php');
         } else {
-            $total = $this->f3->get('POST.total');
-            $mapSellerIdTotal = $this->f3->get('POST.mapSellerIdTotal');
-
             $modal = new stdClass();
             $modal->modalTitle = $this->f3->get('vModule_cartCheckout_orderConfirmationTitle');
             $modal->modalText = $this->f3->get('vModule_cartCheckout_orderConfirmation');
-            $modal->modalRoute = '/web/cart/checkout/submit';
+            $modal->modalRoute = '/web/cart/checkout/submit/' . $this->f3->get('PARAMS.paymentMethodId');
             $modal->modalButton = $this->f3->get('vButton_confirm');
             $modal->id = $this->objUser->accountId;
             $modal->fnCallback = 'CartCheckout.submitOrderSuccess';
-
-            $body = new stdClass();
-            $body->total = $total;
-            $body->mapSellerIdTotal = $mapSellerIdTotal;
-            $modal->body = json_encode($body);
 
             $this->f3->set('modalArr', $modal);
             echo $this->webResponse->jsonResponseV2(1, "", "", $modal);
@@ -420,6 +412,9 @@ class CartController extends Controller {
             $this->f3->set("pageURL", "/web/cart/checkout");
             echo View::instance()->render('app/layout/layout.php');
         } else {
+
+            $paymentMethodId = $this->f3->get('PARAMS.paymentMethodId');
+
             global $dbConnection;
 
             // Get user account
@@ -436,8 +431,7 @@ class CartController extends Controller {
             $dbOrderGrand->buyerBranchId = $entityBranch->id;
             $dbOrderGrand->buyerUserId = $this->objUser->id;
 
-            // TODO: Change paymentMethodId logic
-            $dbOrderGrand->paymentMethodId = 1;
+            $dbOrderGrand->paymentMethodId = $paymentMethodId;
 
             $dbOrderGrand->addReturnID();
             $grandOrderId = $dbOrderGrand->id;
@@ -553,13 +547,10 @@ class CartController extends Controller {
                 $dbOrder->userBuyerId = $this->objUser->id;
                 $dbOrder->userSellerId = null;
                 $dbOrder->statusId = 1;
-                $dbOrder->paymentMethodId = 1;
+                $dbOrder->paymentMethodId = $paymentMethodId;
 
                 // TODO: Adjust serial logic
                 $dbOrder->serial = mt_rand(100000, 999999);
-
-                // TODO: Change paymentMethodId logic
-                $dbOrder->paymentMethodId = 1;
 
                 $dbOrder->currencyId = $currencyId;
                 $dbOrder->subtotal = $subTotal;
@@ -573,6 +564,7 @@ class CartController extends Controller {
                 $this->f3->set('subTotal', round($subTotal, 2));
                 $this->f3->set('tax', round($tax, 2));
                 $this->f3->set('total', round($total, 2));
+                $this->f3->set('ordersUrl', "web/distributor/order/new");
 
                 $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $sellerId);
                 foreach ($arrEntityUserProfile as $entityUserProfile) {
@@ -586,7 +578,7 @@ class CartController extends Controller {
 
                     if (getenv('ENV') == Constants::ENV_LOC){
                         $emailHandler->resetTos();
-                        $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+                        $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                         $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
                     }
                 }
@@ -624,6 +616,7 @@ class CartController extends Controller {
             $this->f3->set('subTotal', round($subTotal, 2));
             $this->f3->set('tax', round($tax, 2));
             $this->f3->set('total', round($total, 2));
+            $this->f3->set('ordersUrl', "web/pharmacy/order/history");
             
             $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $account->entityId);
             foreach ($arrEntityUserProfile as $entityUserProfile) {
@@ -636,7 +629,6 @@ class CartController extends Controller {
                 $subject .= " - (Test: ".getenv('ENV').")";
                 if (getenv('ENV') == Constants::ENV_LOC){
                     $emailHandler->resetTos();
-                    $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
                     $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                     $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
                 }

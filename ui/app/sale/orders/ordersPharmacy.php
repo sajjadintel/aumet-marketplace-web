@@ -181,10 +181,14 @@ function compress_htmlcode($codedata)
                       8: {
                           title: WebAppLocals.getMessage('orderStatus_MissingProducts'),
                           class: ' label-danger',
+                      },
+                      9: {
+                          title: WebAppLocals.getMessage('orderStatus_Canceled_Pharmacy'),
+                          class: ' label-danger',
                       }
                   };
 
-                  var output = '<div><span class="label label-lg font-weight-bold ' + status[row.statusId].class + ' label-inline">' + status[row.statusId].title + '</span></div>';
+                  var output = '<div><span class="label label-lg font-weight-bold ' + status[row.statusId].class + ' label-inline" style="width: max-content;">' + status[row.statusId].title + '</span></div>';
                   return output;
               },
           }, {
