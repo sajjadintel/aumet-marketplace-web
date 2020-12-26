@@ -645,9 +645,42 @@ class OrderController extends Controller
 
         $this->f3->set('products', $arrOrderDetail);
         $this->f3->set('currencySymbol', $currency->symbol);
-        $this->f3->set('subTotal', $subTotal);
-        $this->f3->set('tax', $tax);
-        $this->f3->set('total', $total);
+        $this->f3->set('subTotal', $dbOrder->subtotal);
+        $this->f3->set('tax', $dbOrder->vat);
+        $this->f3->set('total', $dbOrder->total);
+
+        $ordersUrl = "web/pharmacy/order/";
+        switch ($statusId) {
+            case 1;
+                $ordersUrl .= "history";
+                break;
+            case 2;
+                $ordersUrl .= "pending";
+                break;
+            case 3;
+                $ordersUrl .= "pending";
+                break;
+            case 4;
+                $ordersUrl .= "history";
+                break;
+            case 5;
+                $ordersUrl .= "history";
+                break;
+            case 6;
+                $ordersUrl .= "unpaid";
+                break;
+            case 7;
+                $ordersUrl .= "history";
+                break;
+            case 8;
+                $ordersUrl .= "history";
+                break;
+            case 9;
+                $ordersUrl .= "history";
+                break;
+        }
+
+        $this->f3->set('ordersUrl', $ordersUrl);
 
         $htmlContent = View::instance()->render($emailFile);
 
@@ -663,12 +696,46 @@ class OrderController extends Controller
             $subject .= " - (Test: ".getenv('ENV').")";
             if (getenv('ENV') == Constants::ENV_LOC){
                 $emailHandler->resetTos();
-                $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+                $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
             }
         }
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
         $emailHandler->resetTos();
+
+        
+        $ordersUrl = "web/distributor/order/";
+        switch ($statusId) {
+            case 1;
+                $ordersUrl .= "new";
+                break;
+            case 2;
+                $ordersUrl .= "pending";
+                break;
+            case 3;
+                $ordersUrl .= "pending";
+                break;
+            case 4;
+                $ordersUrl .= "history";
+                break;
+            case 5;
+                $ordersUrl .= "history";
+                break;
+            case 6;
+                $ordersUrl .= "unpaid";
+                break;
+            case 7;
+                $ordersUrl .= "history";
+                break;
+            case 8;
+                $ordersUrl .= "unpaid";
+                break;
+            case 9;
+                $ordersUrl .= "history";
+                break;
+        }
+
+        $this->f3->set('ordersUrl', $ordersUrl);
 
         $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $dbOrder->entitySellerId);
         foreach ($arrEntityUserProfile as $entityUserProfile) {
@@ -680,7 +747,7 @@ class OrderController extends Controller
             $subject .= " - (Test: ".getenv('ENV').")";
             if (getenv('ENV') == Constants::ENV_LOC){
                 $emailHandler->resetTos();
-                $emailHandler->appendToAddress("antoineaboucherfane@gmail.com", "Antoine Abou Cherfane");
+                $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
             }
         }
