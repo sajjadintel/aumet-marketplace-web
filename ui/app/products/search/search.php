@@ -93,7 +93,7 @@ function compress_htmlcode($codedata)
                             </span>
                         </span>
                     </div>
-                    <input id="searchStockStatus" data-switch="true" type="checkbox" checked="checked" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="70" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
+                    <input id="searchStockStatus" data-switch="true" type="checkbox" checked="checked" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="50" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
                 </div>
             </div>
 
@@ -455,29 +455,139 @@ function compress_htmlcode($codedata)
         });
 
 
+        function formatResult(node) {
+            var $result = $('<span style="padding-left:' + (20 * (node.level - 1)) + 'px;">' + node.text + '</span>');
+            return $result;
+        }
+
+        var lastParent = 0;
+        var categories = [];
+
         var _category = $('#searchProductsCategoryInput').select2({
             placeholder: "<?php echo $vModule_search_categoryplaceholder ?>",
             tags: true,
+            templateResult: formatResult,
             ajax: {
-                url: '/web/product/allcategory/list',
+                url: '/web/product/category/list',
                 dataType: 'json',
-                processResults: function(response) {
+                delay: 250,
+                data: function (params) {
+                    var query = {
+                        term: params.term,
+                        page: params.page || 1
+                    };
+                    if (query.page == 1) {
+                        lastParent = 0;
+                    }
+                    return query;
+                },
+                processResults: function (response) {
+                    var data = convertDataFormat(response.data.results);
+                    if (lastParent == 0)
+                        categories = data;
+                    else
+                        categories.push(...data);
+
                     return {
-                        results: response.data.results,
+                        results: data,
                         pagination: {
                             more: response.data.pagination
                         }
                     }
-                }
+                },
             }
         });
 
-        _category.on("select2:select", function(e) {
+
+        /* Convert categories format:
+        * 1- Change sub category name to: "parent - sub"
+        * 2- Add parent category above sub categories  */
+        function convertDataFormat(data) {
+            var output = [];
+            for (var i = 0; i < data.length; i++) {
+                var element = data[i];
+
+                if (lastParent != element.parent_id) {
+                    lastParent = element.parent_id;
+                    output.push({id: element.parent_id, text: element.parent_name, level: 1, parent_id: 0});
+                }
+                output.push({id: element.id, text: element.parent_name + " - " + element.name, level: 2, parent_id: element.parent_id});
+            }
+            return output;
+        }
+
+        /* remove sub categories if parent is selected */
+        function filterSubCategories(selectedIds) {
+            var filteredCategories = [];
+            /* convert category ids to objects to have all data of category */
+            var selectedItems = convertCategoryIdsToObjects(selectedIds);
+            /* get only parent categories */
+            var parentIds = getCategoryParentIds(selectedItems);
+
+            /* only select parent categories and sub categories that theirs parent is not selected */
+            for (var i = 0; i < selectedItems.length; i++) {
+                if (!isSubcategoryExistsInParents(selectedItems[i], parentIds)) {
+                    filteredCategories.push(selectedItems[i]);
+                }
+            }
+            /* convert category objets to ids to be the select2 format */
+            return convertCategoryObjectsToIds(filteredCategories);
+        }
+
+        /* get category object corresponding to id given */
+        function getCategoryById(id) {
+            for (var i = 0; i < categories.length; i++) {
+                if (categories[i].id == id) {
+                    return categories[i];
+                }
+            }
+        }
+
+        function convertCategoryIdsToObjects(ids) {
+            var objects = [];
+            for (var i = 0; i < ids.length; i++) {
+                objects.push(getCategoryById(ids[i]))
+            }
+            return objects;
+        }
+
+        function convertCategoryObjectsToIds(categories) {
+            var ids = [];
+            for (var i = 0; i < categories.length; i++) {
+                ids.push(categories[i].id);
+            }
+            return ids;
+        }
+
+        function getCategoryParentIds(selectedItems) {
+            var parentIds = [];
+            for (var i = 0; i < selectedItems.length; i++) {
+                if (selectedItems[i].parent_id == 0) {
+                    parentIds.push(selectedItems[i]);
+                }
+            }
+            return parentIds;
+        }
+
+        function isSubcategoryExistsInParents(category, parents) {
+            for (var i = 0; i < parents.length; i++) {
+                if (parents[i].id == category.parent_id) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
+        _category.on("select2:select", function (e) {
+            var filteredData = filterSubCategories(_category.val());
+            _category.val(filteredData).trigger('change');
+
             searchQuery.categoryId = $("#searchProductsCategoryInput").val();
             WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
         });
 
-        _category.on("select2:unselect", function(e) {
+        _category.on("select2:unselect", function (e) {
             searchQuery.categoryId = $("#searchProductsCategoryInput").val();
             WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
         });
