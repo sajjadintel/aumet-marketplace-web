@@ -164,6 +164,8 @@ return array(
     'vModule_cartCheckout_successContent' => 'Your order has been submitted successfully !',
     'vModule_cartCheckout_paymentMethodTitle' => 'Payment Method',
 
+    'vModule_thankyou_viewOrder' => 'View my orders',
+
     'vModule_bonus_bonusTextTemplate' => 'For %q: %b',
 
     'vModule_order_dateFrom' => 'Get Orders Starting Date',
