@@ -387,7 +387,7 @@ function compress_htmlcode($codedata)
                         <path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero"/>\
                         <path d="M10.5,10.5 L10.5,9.5 C10.5,9.22385763 10.7238576,9 11,9 C11.2761424,9 11.5,9.22385763 11.5,9.5 L11.5,10.5 L12.5,10.5 C12.7761424,10.5 13,10.7238576 13,11 C13,11.2761424 12.7761424,11.5 12.5,11.5 L11.5,11.5 L11.5,12.5 C11.5,12.7761424 11.2761424,13 11,13 C10.7238576,13 10.5,12.7761424 10.5,12.5 L10.5,11.5 L9.5,11.5 C9.22385763,11.5 9,11.2761424 9,11 C9,10.7238576 9.22385763,10.5 9.5,10.5 L10.5,10.5 Z" fill="#000000" opacity="0.3"/>\
                         </g></svg></span></a>';
-              
+
                 var btnShowBonuses =
                     '<a href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.productId + ')\'\
                     class="btn btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="View">\
@@ -521,12 +521,10 @@ function compress_htmlcode($codedata)
             var filteredCategories = [];
             /* convert category ids to objects to have all data of category */
             var selectedItems = convertCategoryIdsToObjects(selectedIds);
-            /* get only parent categories */
-            var parentIds = getCategoryParentIds(selectedItems);
 
             /* only select parent categories and sub categories that theirs parent is not selected */
             for (var i = 0; i < selectedItems.length; i++) {
-                if (!isSubcategoryExistsInParents(selectedItems[i], parentIds)) {
+                if (isSubCategory(selectedItems[i]) || isParentSubCategoryExists(selectedItems[i], selectedItems)) {
                     filteredCategories.push(selectedItems[i]);
                 }
             }
@@ -569,14 +567,22 @@ function compress_htmlcode($codedata)
             return parentIds;
         }
 
-        function isSubcategoryExistsInParents(category, parents) {
-            for (var i = 0; i < parents.length; i++) {
-                if (parents[i].id == category.parent_id) {
-                    return true;
+
+    function isParentSubCategoryExists(category, categories) {
+        if (category.parent_id == 0) {
+            for (var i = 0; i < categories.length; i++) {
+                if (categories[i].parent_id == category.id) {
+                    return false;
                 }
             }
-            return false;
         }
+        return true;
+    }
+
+    function isSubCategory(category) {
+        return category.parent_id != 0
+    }
+
 
 
         _category.on("select2:select", function (e) {
