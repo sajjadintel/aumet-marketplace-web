@@ -54,6 +54,9 @@ class SearchController extends Controller {
             $resultsCount++;
             $select2ResultItem = new stdClass();
             $select2ResultItem->id = $dbNames['id'];
+            $select2ResultItem->image = $dbNames['image'];
+            $select2ResultItem->unitPrice = $dbNames['unitPrice'];
+            $select2ResultItem->stockStatusId = $dbNames['stockStatusId'];
             $select2ResultItem->text = $dbNames[$queryDisplay];
             $select2Result->results[] = $select2ResultItem;
             $dbNames->next();

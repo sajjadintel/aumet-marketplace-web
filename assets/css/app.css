@@ -108,18 +108,13 @@ label.myLabel input[type='file'] {
 }
 
 .search-input {
-	background-color: #f00;
-	height: 20px;
 	padding: 0 !important;
 	margin: 0 !important;
-	width: 100%;
-	min-width: 100%;
-	display: block;
 }
 
 .search-icon {
 	float: left;
-	margin-right: -30px;
+	margin:0 -30px 0 20px;
 	z-index: 1;
 }
 
@@ -131,4 +126,16 @@ label.myLabel input[type='file'] {
 	.search-wrapper {
 		max-width: 500px;
 	}
+}
+
+.text-primary {
+	color: #13b9a9;
+}
+
+.text-danger {
+	color: #F64E60;
+}
+
+.text-warning {
+	color: #FFA800;
 }

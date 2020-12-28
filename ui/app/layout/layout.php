@@ -273,7 +273,7 @@ function compress_htmlcode($codedata)
 
 	<!--end::Quick Cart-->
 	<!--begin::Quick Panel-->
-	<?php //include_once 'quickPanel.php'; 
+	<?php //include_once 'quickPanel.php';
 	?>
 	<!--end::Quick Panel-->
 	<!--begin::Chat Panel-->
@@ -295,7 +295,7 @@ function compress_htmlcode($codedata)
 	</div>
 	<!--end::Scrolltop-->
 	<!--begin::Sticky Toolbar-->
-	<?php //include_once 'stickyToolbar.php'; 
+	<?php //include_once 'stickyToolbar.php';
 	?>
 	<!--end::Sticky Toolbar-->
 
@@ -341,6 +341,7 @@ function compress_htmlcode($codedata)
 
         var _selectSeller = $('#searchBarInput').select2({
             placeholder: "<?php echo $vModule_search_title ?>",
+            templateResult: formatResult,
 
             ajax: {
                 url: '/web/searchbar',
@@ -361,6 +362,33 @@ function compress_htmlcode($codedata)
             WebApp.loadSubPage('/web/entity/0/product/' + productId);
         });
         $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
+
+        function formatResult(node) {
+            if (node.text == "Searching…") {
+                return 'Searching…';
+            }
+
+            var status = {
+                1: {
+                    class: ' text-primary',
+                },
+                2: {
+                    class: ' text-danger',
+                },
+                3: {
+                    class: ' text-warning',
+                },
+            };
+
+            var result = $('<div style="display:flex;align-items:  center">' +
+                '<img style="width:60px;height:60px" src="' + node.image + '"/> ' +
+                '<div style="margin: 0 0 0 20px;">' +
+                '   <div class="' + status[node.stockStatusId].class + '">' + node.text + '</div>' +
+                '   <div>' + node.unitPrice + '</div> ' +
+                '</div>' +
+                '</div>');
+            return result;
+        }
 
     </script>
 </body>
