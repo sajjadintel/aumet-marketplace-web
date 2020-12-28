@@ -227,6 +227,20 @@ function compress_htmlcode($codedata)
 						<!--end::Header Menu Wrapper-->
 
 
+                        <div class="search-wrapper">
+                            <i class="fa fa-search text-muted search-icon"></i>
+
+                            <select
+                                class="select2 form-control search-input"
+                                id="searchBarInput"
+                                name="searchBar"
+                                multiple=""
+                                data-select2-id="searchBarInput"
+                                tabindex="-1"
+                                aria-hidden="true">
+                            </select>
+                        </div>
+
                         <!--begin::Topbar-->
 						<?php include_once 'headerTopbar.php'; ?>
 						<!--end::Topbar-->
@@ -234,17 +248,6 @@ function compress_htmlcode($codedata)
 
 					<!--end::Container-->
 				</div>
-                <div class="search-wrapper">
-                    <select
-                        class="select2 form-control"
-                        id="searchBarInput"
-                        name="searchBar"
-                        multiple=""
-                        data-select2-id="searchBarInput"
-                        tabindex="-1"
-                        aria-hidden="true">
-                    </select>
-                </div>
 				<!--end::Header-->
 				<!--begin::Content-->
 				<div class="content d-flex flex-column flex-column-fluid" id="pageContent">

@@ -73,7 +73,7 @@ return array(
 
     'vBack' => 'Go Back',
 
-    'vModule_search_title' => 'Search in Products',
+    'vModule_search_title' => 'Search for products...',
     'vModule_search_header' => 'You can search in the products using the product name, scientific name, or distributor name',
     'vModule_search_brandNameplaceholder' => 'Brand Name',
     'vModule_search_categoryplaceholder' => 'Category',

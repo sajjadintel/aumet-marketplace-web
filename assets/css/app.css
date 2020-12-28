@@ -83,18 +83,52 @@ label.myLabel input[type='file'] {
 #feedbackModalRating > i {
 	font-size: 30px;
 }
-#feedbackModalRatingLabel, #feedbackModalCommentLabel{
+
+#feedbackModalRatingLabel, #feedbackModalCommentLabel {
 	margin-bottom: 10px;
 }
 
-.cart-buttons-product-detail{
+.cart-buttons-product-detail {
 	margin-top: 20px;
 	display: flex;
 	justify-content: end;
 }
 
 .search-wrapper {
-	max-width: 1024px;
 	width: 100%;
 	align-self: center;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	flex: 1;
+}
+
+.select2-search__field {
+	width: 100% !important;
+}
+
+.search-input {
+	background-color: #f00;
+	height: 20px;
+	padding: 0 !important;
+	margin: 0 !important;
+	width: 100%;
+	min-width: 100%;
+	display: block;
+}
+
+.search-icon {
+	float: left;
+	margin-right: -30px;
+	z-index: 1;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+	padding: 0 1rem 0 30px !important;
+}
+
+@media (min-width: 992px) {
+	.search-wrapper {
+		max-width: 500px;
+	}
 }
