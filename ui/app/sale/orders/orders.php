@@ -319,12 +319,12 @@ function compress_htmlcode($codedata)
         });
         _selectBuyer.on("select2:select", function(e) {
             searchQuery.entityBuyerId = $("#searchOrdersBuyerInput").val();
-            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery);
+            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, null, [[0, 'desc']]);
 
         });
         _selectBuyer.on("select2:unselect", function(e) {
             searchQuery.entityBuyerId = $("#searchOrdersBuyerInput").val();
-            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery);
+            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, null, [[0, 'desc']]);
         });
 
         $('#searchOrdersDateInput').daterangepicker({
@@ -334,13 +334,13 @@ function compress_htmlcode($codedata)
         }, function(start, end, label) {
             searchQuery.startDate = start.format('YYYY-MM-DD');
             searchQuery.endDate = end.format('YYYY-MM-DD');
-            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery);
+            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, null, [[0, 'desc']]);
         });
 
         $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
         var initiate = function() {
-            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery);
+            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, null, [[0, 'desc']]);
         };
         return {
             init: function() {

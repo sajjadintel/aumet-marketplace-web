@@ -406,7 +406,7 @@
         ];
 
         var initiate = function() {
-            WebApp.CreateDatatableServerside("Recent Orders", "#order_datatable", "/web/distributor/order/recent", columnDefsOrders);
+            WebApp.CreateDatatableServerside("Recent Orders", "#order_datatable", "/web/distributor/order/recent", columnDefsOrders, null, null, [[0, 'desc']]);
             WebApp.CreateDatatableServerside("Best Selling Products", "#products_datatable", "/web/distributor/product/bestselling", columnDefsProducts);
         };
         return {
