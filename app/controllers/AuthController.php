@@ -183,7 +183,12 @@ class AuthController extends Controller
         // Get cart count
         $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
         $arrCartDetail = $dbCartDetail->getByField("accountId", $objUser->accountId);
-        $objUser->cartCount = count($arrCartDetail);
+        $cartCount = 0;
+        foreach($arrCartDetail as $cartDetail) {
+            $cartCount += $cartDetail->quantity;
+            $cartCount += $cartDetail->quantityFree;
+        }
+        $objUser->cartCount = $cartCount;
 
         $this->isAuth = true;
 

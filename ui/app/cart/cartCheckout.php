@@ -32,6 +32,9 @@ function compress_htmlcode($codedata)
 
             <div class="card card-custom" style="margin-bottom: 20px;">
             <?php if(count($allCartItems) > 0): ?>
+            <?php
+                $allCurrencyId = [];
+            ?>
             <?php foreach ($allSellers as $seller) : ?>
 
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
@@ -58,10 +61,14 @@ function compress_htmlcode($codedata)
 
                             <tbody>
                                 <?php
+                                    $totalPrice = 0;
                                     $subTotalPrice = 0;
                                     $currency = $mapSellerIdCurrency[$seller->sellerId];
                                     $currencySymbol = $currency->symbol;
                                     $currencyId = $currency->id;
+                                    if(!in_array($currencyId, $allCurrencyId)) {
+                                        array_push($allCurrencyId, $currencyId);
+                                    }
                                 ?>
                                 <?php foreach ($allCartItems[$seller->sellerId] as $item) : ?>
                                     <tr>
@@ -80,7 +87,7 @@ function compress_htmlcode($codedata)
                                             <a onclick="CartCheckout.updateQuantity(<?php echo $item->productId ?>, -1, <?php echo $item->stock?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon mr-2">
                                                 <i class="ki ki-minus icon-xs"></i>
                                             </a>
-                                            <input style="width: 40%;" type="number" id="quantity-<?php echo $item->productId ?>" onfocusout="CartCheckout.updateQuantity(<?php echo $item->productId ?>, 0, <?php echo $item->stock?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="mr-2 font-weight-bolder quantity" min="0" max="<?php echo $item->stock ?>" value="<?php echo $item->quantity ?>" name="quantity">
+                                            <input style="width: 40%;" type="number" id="quantity-<?php echo $item->productId ?>" onfocus="this.oldvalue = this.value;" onfocusout="CartCheckout.updateQuantity(<?php echo $item->productId ?>, 0, <?php echo $item->stock?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, this.oldvalue)" class="mr-2 font-weight-bolder quantity" min="0" max="<?php echo $item->stock ?>" value="<?php echo $item->quantity ?>" name="quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                                             <a onclick="CartCheckout.updateQuantity(<?php echo $item->productId ?>, 1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon">
                                                 <i class="ki ki-plus icon-xs"></i>
                                             </a>
@@ -135,16 +142,21 @@ function compress_htmlcode($codedata)
                                 <span class="totalPrice" data-totalPrice="<?php echo $totalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="totalPrice-<?php echo $seller->sellerId ?>"><?php echo $totalPrice . " " . $currencySymbol ?></span>
                             </p>
                         </div>
+                        <div class="mt-20" style="border-top: 1px solid #EBEDF3;"></div>
                     </div>
                 </div>
             <?php endforeach; ?>
                 
 
                 <div class="text-right p-10">
-                    <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_formula ?> </span> <span id="formula"></span></p>
-                    <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_grandSubTotal ?> </span> <span id="grandSubTotal"></span></p>
-                    <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_tax ?> </span> <span id="tax"></span></p>
-                    <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_grandTotal ?> </span> <span id="grandTotal"></span></p>
+                    <?php if(count($allSellers) > 1) : ?>
+                        <?php if(count($allCurrencyId) > 1) : ?>
+                            <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_formula ?> </span> <span id="formula"></span></p>
+                        <?php endif; ?>
+                        <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_grandSubTotal ?> </span> <span id="grandSubTotal"></span></p>
+                        <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_tax ?> </span> <span id="tax"></span></p>
+                        <p class="font-weight-bolder font-size-h4"> <span class="text-primary"><?php echo $vModule_cart_grandTotal ?> </span> <span id="grandTotal"></span></p>
+                    <?php endif; ?>
                     <div class="radio-inline py-10" style="justify-content: flex-end;">
                         <label class="mr-5 radio radio-success"><?php echo $vModule_cartCheckout_paymentMethodTitle ?></label>
                         <?php foreach($allPaymentMethods as $paymentMethod) : ?>
@@ -187,6 +199,7 @@ function compress_htmlcode($codedata)
 <script>
     $(document).ready(function() {
         updateTotalPrice();
+        preventEmptyInput();
     });
 
     function updateTotalPrice() {
@@ -277,4 +290,15 @@ function compress_htmlcode($codedata)
 
         return grandTotalStr;
     }
+
+    function preventEmptyInput() {
+        const numInputs = document.querySelectorAll('input[type=number]')
+
+        numInputs.forEach(function(input) {
+            input.addEventListener('change', function(ev) {
+                if(!ev.target.value) ev.target.value = 0
+            })
+        })
+    }
+
 </script>

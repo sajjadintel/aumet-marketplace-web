@@ -280,8 +280,6 @@ function compress_htmlcode($codedata)
             render: function(data, type, row, meta) {
                 let output = "";
                 if(row.bonusTypeId === 2) {
-                    console.log('row');
-                    console.log(row);
                     let btnText = row.activeBonus? row.activeBonus.minOrder + " / +" + row.activeBonus.bonus : "Select";
                     let allBonuses = row.bonuses.filter((bonus) => !row.activeBonus || row.activeBonus.id !== bonus.id);
                     let btnShowBonuses =
@@ -310,8 +308,9 @@ function compress_htmlcode($codedata)
                     let vQuantity =
                         '<input id="quantity-' +
                         row.id +
-                        '" type="number" style="width: 70px; direction: ltr" value="' +
+                        '" type="number" min="0" style="width: 70px; direction: ltr" value="' +
                         rowQuantity +
+                        '" onkeypress="return event.charCode >= 48 && event.charCode <= 57"' +
                         '" oninput=\'SearchDataTable.changeProductQuantityCallback(' +
                         JSON.stringify(row) +
                         " )' >";
