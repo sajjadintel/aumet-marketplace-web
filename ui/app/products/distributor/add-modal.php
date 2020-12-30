@@ -11,8 +11,28 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" class="form-control" name="id" id="addProductId">
-                    <input type="hidden" name="fnCallback" class="modalValueCallback" id="addProductCallback" value="WebApp.reloadDatatable" />
+                    <input type="hidden" name="fnCallback" class="modalValueCallback" id="addProductCallback" value="DistributorProductsDataTable.reloadDatatable" />
                     <div class="row">
+                        <div class="col-md-12 form-group">
+                            <div class="image-input image-input-empty image-input-outline">
+                                <div class="image-input-wrapper" id="addProductImageHolder"></div>
+                                <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
+                                       data-action="change" data-toggle="tooltip" title=""
+                                       data-original-title="Change avatar">
+                                    <i class="fa fa-pen icon-sm text-muted"></i>
+                                    <input type="file" name="profile_avatar" accept=".png, .jpg, .jpeg" id="addProductImage"/>
+                                    <input type="hidden" name="image" id="addProductImageInput"/>
+                                </label>
+                                <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
+                                      data-action="cancel" data-toggle="tooltip" title="Cancel avatar">
+                                    <i class="ki ki-bold-close icon-xs text-muted"></i>
+                                </span>
+                                <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
+                                      data-action="remove" data-toggle="tooltip" title="Remove avatar">
+                                    <i class="ki ki-bold-close icon-xs text-muted"></i>
+                                </span>
+                            </div>
+                        </div>
                         <div class="col-md-6 form-group">
                             <label for="addProductScientificName" class="form-control-label">Scientific Name</label>
                             <select class="select2 form-control" id="addProductScientificName" name="scientificNameId" data-select2-id="addProductScientificName" tabindex="-1" aria-hidden="true">

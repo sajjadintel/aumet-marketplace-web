@@ -443,7 +443,23 @@ var SearchDataTable = (function () {
 				}
 				$('#bonus-' + row.id).html(bonus);
 
-				$('#quantityFreeInput-' + row.id).val('');
+
+				let bonusVal = '';
+				let bestBonus = 0;
+				row.bonuses.forEach((bonusOption) => {
+					if (newQuantity >= bonusOption.minOrder && bonusOption.minOrder > bestBonus) {
+						bonusVal = bonusOption.bonus;
+						bestBonus = bonusOption.minOrder;
+					}
+				});
+				let activeBonus = row.activeBonus?.minOrder || 0;
+				if(activeBonus >= bestBonus) {
+					bonusVal = '';
+					bestBonus = 0;
+				}
+
+				$("#quantityFreeHolder-" + row.id).html(bonusVal);
+				$('#quantityFreeInput-' + row.id).val(bonusVal);
 			}
 		},
 		setReadParams: function (objQuery) {
