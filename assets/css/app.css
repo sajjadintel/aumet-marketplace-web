@@ -101,6 +101,7 @@ label.myLabel input[type='file'] {
 	flex-direction: row;
 	align-items: center;
 	flex: 1;
+	z-index:10;
 }
 
 .select2-search__field {
@@ -112,16 +113,28 @@ label.myLabel input[type='file'] {
 	margin: 0 !important;
 }
 
+.search-input-mobile {
+	padding: 0 !important;
+	margin: 0 20px 0 0 !important;
+}
+
 .search-icon {
 	float: left;
-	margin:0 -30px 0 20px;
+	margin: 0 -30px 0 20px;
 	z-index: 1;
+	color: #13b9a9;
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__rendered {
 	padding: 0 1rem 0 30px !important;
 }
 
+@media (max-width: 992px) {
+	.search-wrapper-desktop{
+		visibility: hidden;
+		display: none;
+	}
+}
 @media (min-width: 992px) {
 	.search-wrapper {
 		max-width: 500px;

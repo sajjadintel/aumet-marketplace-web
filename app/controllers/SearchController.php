@@ -57,6 +57,7 @@ class SearchController extends Controller {
             $select2ResultItem->image = $dbNames['image'];
             $select2ResultItem->unitPrice = $dbNames['unitPrice'];
             $select2ResultItem->stockStatusId = $dbNames['stockStatusId'];
+            $select2ResultItem->currency = $dbNames['currency'];
             $select2ResultItem->text = $dbNames[$queryDisplay];
             $select2Result->results[] = $select2ResultItem;
             $dbNames->next();

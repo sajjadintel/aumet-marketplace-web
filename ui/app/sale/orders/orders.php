@@ -331,6 +331,9 @@ function compress_htmlcode($codedata)
             opens: 'left',
             startDate: moment('2020-01-01'),
             endDate: moment(),
+            locale: {
+                format: 'DD/MM/YYYY',
+            }
         }, function(start, end, label) {
             searchQuery.startDate = start.format('YYYY-MM-DD');
             searchQuery.endDate = end.format('YYYY-MM-DD');
