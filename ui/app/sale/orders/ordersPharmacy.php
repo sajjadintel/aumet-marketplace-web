@@ -151,8 +151,8 @@ function compress_htmlcode($codedata)
               render: function (data, type, row, meta) {
                   var status = {
                       1: {
-                          title: WebAppLocals.getMessage('orderStatus_New'),
-                          class: ' label-primary',
+                          title: WebAppLocals.getMessage('orderStatus_Pending'),
+                          class: ' label-primary2',
                       },
                       2: {
                           title: WebAppLocals.getMessage('orderStatus_OnHold'),
@@ -321,6 +321,9 @@ function compress_htmlcode($codedata)
               opens: 'left',
               startDate: moment('2020-01-01'),
               endDate: moment(),
+              locale: {
+                  format: 'DD/MM/YYYY',
+              }
           }, function (start, end, label) {
               searchQuery.startDate = start.format('YYYY-MM-DD');
               searchQuery.endDate = end.format('YYYY-MM-DD');

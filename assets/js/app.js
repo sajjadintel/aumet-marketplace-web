@@ -57,7 +57,7 @@ var WebApp = (function () {
 		}).then((result) => {
 			KTUtil.scrollTop();
 			if (result.value) {
-				WebApp.loadPage('/web/distributor/order/new');
+				WebApp.loadPage('/web/distributor/order/pending');
 			}
 		});
 	};

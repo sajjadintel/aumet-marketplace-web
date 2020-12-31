@@ -81,7 +81,7 @@ var KTAppsEducationSchoolTeacher = function() {
 					title: 'Joined',
 					type: 'date',
 					width: 100,
-					format: 'MM/DD/YYYY',
+					format: 'DD/MM/YYYY',
 					template: function(row) {
 						var output = '';
 

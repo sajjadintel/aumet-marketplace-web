@@ -152,3 +152,8 @@ label.myLabel input[type='file'] {
 .text-warning {
 	color: #FFA800;
 }
+
+.label-primary2 {
+	color: #FFFFFF;
+	background-color: #219186;
+}

@@ -54,7 +54,6 @@ $f3->route('GET /web/demo/editor/scientificnames', 'DemoController->get');
 
 
 // START APM-10 APM-11 APM-35 
-$f3->route('GET /web/distributor/order/new', 'OrderController->getDistributorOrdersNew');
 $f3->route('GET /web/distributor/order/pending', 'OrderController->getDistributorOrdersPending');
 $f3->route('GET /web/distributor/order/unpaid', 'OrderController->getDistributorOrdersUnpaid');
 $f3->route('GET /web/distributor/order/history', 'OrderController->getDistributorOrdersHistory');
@@ -62,7 +61,6 @@ $f3->route('GET /web/distributor/order/@orderId', 'OrderController->getOrderDeta
 $f3->route('GET /web/distributor/order/print/@orderId', 'OrderController->getPrintOrderInvoice');
 $f3->route('GET /web/distributor/order/confirm/@orderId/@statusId', 'OrderController->getOrderConfirmation');
 $f3->route('GET /web/distributor/order/confirm/@orderId/@statusId/dashboard', 'OrderController->getOrderConfirmationDashboard');
-$f3->route('POST /web/distributor/order/new', 'OrderController->postDistributorOrdersNew');
 
 $f3->route('GET /web/distributor/orderMissingProducts/@orderId', 'OrderController->getOrderMissingProducts');
 

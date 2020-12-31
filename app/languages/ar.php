@@ -98,7 +98,7 @@ return array(
     'feedbackSaved' => 'Feedback saved!', // TODO: add translation
 
     'vOrderStatusConfirmation' => 'هل أنت متأكد أنك تريد نقل هذا الطلب إلى {0}؟',
-    'vOrderStatus_New' => 'جديد',
+    'vOrderStatus_Pending' => 'Pending', // TODO: add translation
     'vOrderStatus_OnHold' => 'في الانتظار',
     'vOrderStatus_Processing' => 'معالجة',
     'vOrderStatus_Completed' => 'منجز',

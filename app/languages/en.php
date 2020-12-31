@@ -108,7 +108,7 @@ return array(
     'feedbackSaved' => 'Feedback saved!',
 
     'vOrderStatusConfirmation' => 'Are you sure you want to move this order to {0}?',
-    'vOrderStatus_New' => 'New',
+    'vOrderStatus_Pending' => 'Pending',
     'vOrderStatus_OnHold' => 'On Hold',
     'vOrderStatus_Processing' => 'Processing',
     'vOrderStatus_Completed' => 'Completed',
