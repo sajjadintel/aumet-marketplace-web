@@ -40,18 +40,18 @@ function compress_htmlcode($codedata)
 
                         <div class="card-body px-12 py-10 bg-primary">
                             <h3 class="font-weight-bolder font-size-h2 mb-1">
-                                <a href="#" class="text-dark"><?php echo $objEntityProduct->productName_en ?></a>
+                                <a href="#" class="text-dark"><?php echo $objEntityProduct->{"productName_" . $_SESSION['userLang']} ?></a>
                             </h3>
                             <div class="text-light font-size-h4 mb-9"><?php echo $objEntityProduct->unitPrice ?></div>
                             <div class="font-size-sm mb-8"></div>
 
                             <div class="d-flex mb-3">
                                 <span class="text-light flex-root font-weight-bold"><?php echo $vModule_product_madeIn ?></span>
-                                <span class="text-dark flex-root font-weight-bold"><?php echo $objEntityProduct->madeInCountryName_en ?></span>
+                                <span class="text-dark flex-root font-weight-bold"><?php echo $objEntityProduct->{"madeInCountryName_" . $_SESSION['userLang']} ?></span>
                             </div>
                             <div class="d-flex mb-3">
                                 <span class="text-light flex-root font-weight-bold"><?php echo $vModule_product_distributor ?></span>
-                                <span class="text-dark flex-root font-weight-bold"><?php echo $objEntityProduct->entityName_ar ?></span>
+                                <span class="text-dark flex-root font-weight-bold"><?php echo $objEntityProduct->{"entityName_" . $_SESSION['userLang']} ?></span>
                             </div>
                             <div class="d-flex mb-3">
                                 <span class="text-light flex-root font-weight-bold"><?php echo $vModule_product_scientificName ?></span>
@@ -59,7 +59,7 @@ function compress_htmlcode($codedata)
                             </div>
                             <div class="d-flex mb-3">
                                 <span class="text-light flex-root font-weight-bold"><?php echo $vModule_product_stockStatus ?></span>
-                                <span class="text-dark flex-root font-weight-bold"><?php echo $objEntityProduct->stockStatusName_ar ?></span>
+                                <span class="text-dark flex-root font-weight-bold"><?php echo $objEntityProduct->{"stockStatusName_" . $_SESSION['userLang']} ?></span>
                             </div>
                             <div class="d-flex mb-3">
                                 <span class="text-light flex-root font-weight-bold"><?php echo $vModule_product_stockStatusDate ?></span>
@@ -156,6 +156,7 @@ function compress_htmlcode($codedata)
         var row = <?= json_encode(['entityId' => $objEntityProduct->entityId, 'productId' => $objEntityProduct->productId, 'quantity' => 1]);?>;
         var stockStatusId = <?= $objEntityProduct->stockStatusId?>;
         var cart = <?= $objEntityProduct->cart?>;
+        var userObject = <?php echo json_encode($_SESSION['objUser']); ?>;
 
         function setUpButtons() {
 
@@ -199,20 +200,22 @@ function compress_htmlcode($codedata)
 
             var outActions = '';
 
-            switch (stockStatusId) {
-                case 1:
-                    if (cart > 0) {
-                        outActions += btnAddMoreToCart;
-                    } else {
-                        outActions += btnAddToCart;
-                    }
-                    break;
-                case 2:
-                    outActions += btnNotifyMe;
-                    break;
-                case 3:
-                    outActions += btnNotifyMe;
-                    break;
+            if (userObject.roleId == 40) {
+                switch (stockStatusId) {
+                    case 1:
+                        if (cart > 0) {
+                            outActions += btnAddMoreToCart;
+                        } else {
+                            outActions += btnAddToCart;
+                        }
+                        break;
+                    case 2:
+                        outActions += btnNotifyMe;
+                        break;
+                    case 3:
+                        outActions += btnNotifyMe;
+                        break;
+                }
             }
 
             $("#product-actions").html(outActions);

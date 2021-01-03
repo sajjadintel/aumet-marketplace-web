@@ -181,15 +181,25 @@ var WebApp = (function () {
 
 						$(_pageContainerId).html(webResponse.data);
 
-						window.history.pushState(
-							{
+						console.log('pushState', {id: _id, url: url, title: title,}, title, url);
+
+						history.pushState({
 								id: _id,
 								url: url,
 								title: title,
 							},
 							title,
-							url
-						);
+							url);
+
+						// window.history.pushState(
+						// 	{
+						// 		id: _id,
+						// 		url: url,
+						// 		title: title,
+						// 	},
+						// 	title,
+						// 	url
+						// );
 
 						if (typeof fnCallback === 'function') {
 							fnCallback();

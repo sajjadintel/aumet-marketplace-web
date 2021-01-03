@@ -666,8 +666,7 @@ class CartController extends Controller {
             $this->db->exec($commands);
 
             $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
-            $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-            $dbCartDetail->delete();
+            $dbCartDetail->erase("accountId=". $this->objUser->accountId);
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";

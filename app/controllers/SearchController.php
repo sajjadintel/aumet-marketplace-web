@@ -208,7 +208,7 @@ class SearchController extends Controller {
 
     function getAllSellerList()
     {
-        $this->handleGetListFilters("entity", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
+        $this->handleGetListFilters("entity", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'typeId=10');
     }
 
     function getCategoryList()

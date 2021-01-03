@@ -227,6 +227,11 @@ class OrderController extends Controller
         }
     }
 
+    function postDistributorOrdersRecent()
+    {
+        $this->handlePostDistributorOrders('pending');
+    }
+
     function postDistributorOrdersPending()
     {
         $this->handlePostDistributorOrders('pending');
