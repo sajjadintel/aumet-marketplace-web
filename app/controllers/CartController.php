@@ -35,7 +35,6 @@ class CartController extends Controller {
             $entityId = $this->f3->get('POST.entityId');
             $productId = $this->f3->get('POST.productId');
             $quantity = $this->f3->get('POST.quantity');
-            $quantityFree = $this->f3->get('POST.quantityFree');
 
             if (!is_numeric($quantity) || $quantity == 0) {
                 $quantity = 1;
@@ -45,6 +44,9 @@ class CartController extends Controller {
 
             $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
             $dbEntityProduct->getWhere("entityId=$entityId and productId=$productId");
+
+            $dbVwEntityProduct = new GenericModel($this->db, "vwEntityProductSell");
+            $dbVwEntityProduct->getWhere("productId=$productId");
 
             if ($dbEntityProduct->dry()) {
                 $this->webResponse->errorCode = 2;
@@ -67,10 +69,9 @@ class CartController extends Controller {
                 $dbCartDetail->userId = $this->objUser->id;
                 $dbCartDetail->quantity = $dbCartDetail->quantity + $quantity;
 
-                if(!$quantityFree) {
-                    $quantityFree = $dbCartDetail->quantityFree;
+                if ($dbVwEntityProduct->bonusTypeId == 2) {
+                    $dbCartDetail->quantityFree = $this->calculateBonus($dbCartDetail->quantity, json_decode($dbVwEntityProduct->bonusConfig));
                 }
-                $dbCartDetail->quantityFree = $quantityFree;
 
                 $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
                 $dbCartDetail->save();
@@ -86,6 +87,26 @@ class CartController extends Controller {
                 echo $this->webResponse->jsonResponse();
             }
         }
+    }
+
+    private function calculateBonus($quantity, $bonuses)
+    {
+        usort($bonuses, fn($a, $b) => $a->minOrder < $b->minOrder);
+        foreach ($bonuses as $bonus) {
+            if ($quantity >= $bonus->minOrder) {
+                $formula = $bonus->formula;
+                $formula = str_replace('quantity', $quantity, $formula);
+                $formula = str_replace('minOrder', $bonus->minOrder, $formula);
+                $formula = str_replace('bonus', $bonus->bonus, $formula);
+                if (strpos($formula, ';') === false) {
+                    $formula .= ';';
+                }
+                $formula = '$response = ' . $formula;
+                eval($formula);
+                return $response;
+            }
+        }
+        return 0;
     }
 
     function postRemoveItem()
