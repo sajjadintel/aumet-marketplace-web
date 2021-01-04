@@ -65,11 +65,34 @@ class CartController extends Controller {
                 $dbCartDetail->accountId = $this->objUser->accountId;
                 $dbCartDetail->entityProductId = $dbEntityProduct->id;
                 $dbCartDetail->userId = $this->objUser->id;
-                $dbCartDetail->quantity = $dbCartDetail->quantity + $quantity;
+
+                $newQuantity = $dbCartDetail->quantity + $quantity;
+                $dbCartDetail->quantity = $newQuantity;
+
+                $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+                $arrBonus = $dbBonus->findWhere("entityProductId = '$dbEntityProduct->id' AND isActive = 1");
+                
+                $maxMinOrder = 0;
+                foreach($arrBonus as $bonus) {
+                    if($bonus['minOrder'] <= $newQuantity && $maxMinOrder < $bonus['minOrder']) {
+                        $maxMinOrder = $bonus['minOrder'];
+                        $quantityFree = $bonus['bonus'];
+                    }
+                }
 
                 if(!$quantityFree) {
                     $quantityFree = $dbCartDetail->quantityFree;
                 }
+
+                $total = $quantityFree + $newQuantity;
+                if($total > $dbEntityProduct->stock) {
+                    $this->webResponse->errorCode = 2;
+                    $this->webResponse->title = "";
+                    $this->webResponse->message = "Not enough stock available (max: $dbEntityProduct->stock)";
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+
                 $dbCartDetail->quantityFree = $quantityFree;
 
                 $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
@@ -77,7 +100,11 @@ class CartController extends Controller {
 
                 // Get cart count
                 $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-                $cartCount = count($arrCartDetail);
+                $cartCount = 0;
+                foreach($arrCartDetail as $cartDetail) {
+                    $cartCount += $cartDetail->quantity;
+                    $cartCount += $cartDetail->quantityFree;
+                }
                 $this->objUser->cartCount = $cartCount;
 
                 $this->webResponse->errorCode = 1;
@@ -105,7 +132,11 @@ class CartController extends Controller {
 
             // Get cart count
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-            $cartCount = count($arrCartDetail);
+            $cartCount = 0;
+            foreach($arrCartDetail as $cartDetail) {
+                $cartCount += $cartDetail->quantity;
+                $cartCount += $cartDetail->quantityFree;
+            }
             $this->objUser->cartCount = $cartCount;
 
             $this->webResponse->errorCode = 1;
@@ -179,7 +210,11 @@ class CartController extends Controller {
 
                 // Get cart count
                 $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-                $cartCount = count($arrCartDetail);
+                $cartCount = 0;
+                foreach($arrCartDetail as $cartDetail) {
+                    $cartCount += $cartDetail->quantity;
+                    $cartCount += $cartDetail->quantityFree;
+                }
                 $this->objUser->cartCount = $cartCount;
 
                 $this->webResponse->errorCode = 1;
@@ -333,23 +368,42 @@ class CartController extends Controller {
                 }
             }
 
-            $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
-            $dbEntityProduct->getWhere("entityId=$sellerId and productId=$productId");
-
             $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
             $dbCartDetail->getById($cartDetailId);
             $dbCartDetail->quantity = $quantity;
             $dbCartDetail->quantityFree = $quantityFree;
+            
+            $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
+            $dbEntityProduct->getWhere("productId=$productId");
+
+            $total = $quantityFree + $quantity;
+            if($total > $dbEntityProduct->stock) {
+                $this->webResponse->errorCode = 2;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "Not enough stock available (max: $dbEntityProduct->stock)";
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
+
             $dbCartDetail->update();
 
             $dbCartDetailFull = new BaseModel($dbConnection, "vwCartDetail");
             $cartDetailFull = $dbCartDetailFull->getById($cartDetailId)[0];
             
+            // Get cart count
+            $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+            $cartCount = 0;
+            foreach($arrCartDetail as $cartDetail) {
+                $cartCount += $cartDetail->quantity;
+                $cartCount += $cartDetail->quantityFree;
+            }
+
             $cartDetail = new stdClass();
             $cartDetail->productId = $cartDetailFull['productId'];
             $cartDetail->quantity = $cartDetailFull['quantity'];
             $cartDetail->quantityFree = $cartDetailFull['quantityFree'];
             $cartDetail->entityId = $cartDetailFull['entityId'];
+            $cartDetail->cartCount = $cartCount;
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
@@ -572,7 +626,7 @@ class CartController extends Controller {
                 }
                 $htmlContent = View::instance()->render($emailFile);
 
-                $subject = "New Order";
+                $subject = "Aumet - New Order Confirmation";
                 if (getenv('ENV') != Constants::ENV_PROD) {
                     $subject .= " - (Test: ".getenv('ENV').")";
 
@@ -624,7 +678,7 @@ class CartController extends Controller {
             }
             $htmlContent = View::instance()->render($emailFile);
 
-            $subject = "New Order";
+            $subject = "Aumet - you've got a new order!";
             if (getenv('ENV') != Constants::ENV_PROD) {
                 $subject .= " - (Test: ".getenv('ENV').")";
                 if (getenv('ENV') == Constants::ENV_LOC){

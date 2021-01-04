@@ -187,7 +187,7 @@ var DistributorProductsDataTable = (function () {
 
 						var btnEdit =
 							'<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditModal(' +
-							row.id +
+							row.productId +
 							')\' \
 						class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
 						<i class="nav-icon la la-edit p-0"></i> ' +
@@ -196,7 +196,7 @@ var DistributorProductsDataTable = (function () {
 
 						var btnEditQuantity =
 							'<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditQuantityModal(' +
-							row.id +
+							row.productId +
 							')\' \
 						class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
 						<i class="nav-icon la la-box p-0"></i> ' +
@@ -222,7 +222,6 @@ var DistributorProductsDataTable = (function () {
 						// 		outActions += btnNotifyMe;
 						// 		break;
 						// }
-
 						outActions += btnEdit;
 						outActions += btnEditQuantity;
 
@@ -252,7 +251,7 @@ var DistributorProductsDataTable = (function () {
 
 	var _productEditModalOpen = function (webResponse) {
 		$('#editModalForm').attr('action', '/web/distributor/product/edit');
-		$('#editProductId').val(webResponse.data.product.id);
+		$('#editProductId').val(webResponse.data.product.productId);
 
 		$('#editModalTitle').html(WebAppLocals.getMessage('edit'));
 		$("label[for='editProductScientificName']").text(WebAppLocals.getMessage('productScientificName'));
@@ -273,13 +272,16 @@ var DistributorProductsDataTable = (function () {
 		$('#editModalAction').html(WebAppLocals.getMessage('edit'));
 		$('#editModal').appendTo('body').modal('show');
 
-		changeImageHolder(webResponse.data.product.image);
-		$('#editProductImage').on("change", changeProductImage);
+		_changeImageHolder(webResponse.data.product.image, "edit");
+		$('#editProductImage').on("change",  (ev) => _changeProductImage(ev, "edit"));
+
+		_addModalValidation('edit');
+		_checkModalForm('edit');
 	};
 
 	var _productEditQuantityModalOpen = function (webResponse) {
 		$('#editQuantityModalForm').attr('action', '/web/distributor/product/editQuantity');
-		$('#editQuantityProductId').val(webResponse.data.product.id);
+		$('#editQuantityProductId').val(webResponse.data.product.productId);
 
 		$('#editQuantityModalTitle').html(WebAppLocals.getMessage('editQuantity'));
 
@@ -358,29 +360,34 @@ var DistributorProductsDataTable = (function () {
 
 		$('#addModalAction').html(WebAppLocals.getMessage('add'));
 		$('#addModal').appendTo('body').modal('show');
+
+		_changeImageHolder('', "add");
+		$('#addProductImage').on("change", (ev) => _changeProductImage(ev, "add"));
+
+		_addModalValidation('add');
+		_checkModalForm('add');
 	};
 
-	var _productImageUpload = function (webResponse) {
-		changeImageHolder(webResponse.data);
+	var _productImageUpload = function (webResponse, mode) {
+		_changeImageHolder(webResponse.data, mode);
 	}
 
-	function changeImageHolder(image) {
+	var _changeImageHolder = function (image, mode) {
 		let backgroundImageVal = "/theme/assets/media/users/blank.png";
 		if(image) {
 			let imageVal = image;
-			if(!isValidUrl(image)) imageVal = "/assets/" + image;
+			if(!_isValidUrl(image)) imageVal = "/assets/" + image;
 			backgroundImageVal = imageVal;
 		}
-		$('#productImageHolder').css("background-image", "url(" + backgroundImageVal + ")");
-		$('#productImage').val(image);
+		$('#' + mode + 'ProductImageHolder').css("background-image", "url(" + backgroundImageVal + ")");
+		$('#' + mode + 'ProductImageInput').val(image);
 	}
 
-	function changeProductImage(ev) {
+	var _changeProductImage = function (ev, mode) {
 		let file = ev.target.files[0];
 		let ext = file.type.split("/")[1];
 
-		let id = $('#editProductId').val();
-		let imageName = id + "-" + new Date().getTime() + "." + ext;
+		let imageName = new Date().getTime() + "." + ext;
 		let image = new File([file], imageName, {type: file.type});
 		
 		let formData = new FormData();
@@ -394,17 +401,52 @@ var DistributorProductsDataTable = (function () {
 			contentType: false,
 			processData: false,
 		}).done(function (webResponse) {
-			_productImageUpload(webResponse);
+			_productImageUpload(webResponse, mode);
 		});
 	}
 
-	function isValidUrl(string) {
+	var _isValidUrl = function (string) {
 		try {
 		  new URL(string);
 		} catch (ex) {
 		  return false;  
 		}
 		return true;
+	}
+
+	var _addModalValidation = function (mode) {
+		$('#' + mode + 'ProductScientificName').on('change', (ev) => _checkModalForm(mode));
+		$('#' + mode + 'ProductCountry').on('change', (ev) => _checkModalForm(mode));
+		$('#' + mode + 'ProductNameAr').on('change', (ev) => _checkModalForm(mode));
+		$('#' + mode + 'ProductNameEn').on('change', (ev) => _checkModalForm(mode));
+		$('#' + mode + 'ProductNameFr').on('change', (ev) => _checkModalForm(mode));
+		$('#' + mode + 'UnitPrice').on('change', (ev) => _checkModalForm(mode));
+		
+		if(mode === "add") {
+			$('#' + mode + 'Stock').on('change', (ev) => _checkModalForm(mode));
+		}
+	}
+
+	var _checkModalForm = function (mode) {
+		let valid = true;
+		
+		let scientificName = $('#' + mode + 'ProductScientificName').val();
+		let productCountry = $('#' + mode + 'ProductCountry').val();
+		let productNameAr = $('#' + mode + 'ProductNameAr').val();
+		let productNameEn = $('#' + mode + 'ProductNameEn').val();
+		let productNameFr = $('#' + mode + 'ProductNameFr').val();
+		let unitPrice = $('#' + mode + 'UnitPrice').val();
+
+		if(!scientificName || !productCountry || !productNameAr || !productNameEn || !productNameFr || !unitPrice) {
+			valid = false;
+		}
+
+		if(valid && mode === "add") {
+			let stock = $('#' + mode + 'Stock').val();
+			if(!stock) valid = false;
+		}
+
+		$('#' + mode + 'ModalAction').prop("disabled", !valid);
 	}
 
 	return {

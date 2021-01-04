@@ -253,7 +253,7 @@ var EntityUsersDataTable = (function () {
 
 	var _productEditModalOpen = function (webResponse) {
 		$('#editModalForm').attr('action', '/web/distributor/product/edit');
-		$('#editProductId').val(webResponse.data.product.id);
+		$('#editProductId').val(webResponse.data.product.productId);
 
 		$('#editModalTitle').html(WebAppLocals.getMessage('edit'));
 		$("label[for='editProductScientificName']").text(WebAppLocals.getMessage('productScientificName'));
@@ -277,7 +277,7 @@ var EntityUsersDataTable = (function () {
 
 	var _productEditQuantityModalOpen = function (webResponse) {
 		$('#editQuantityModalForm').attr('action', '/web/distributor/product/editQuantity');
-		$('#editQuantityProductId').val(webResponse.data.product.id);
+		$('#editQuantityProductId').val(webResponse.data.product.productId);
 
 		$('#editQuantityModalTitle').html(WebAppLocals.getMessage('editQuantity'));
 

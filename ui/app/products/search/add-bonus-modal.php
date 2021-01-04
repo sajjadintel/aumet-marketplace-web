@@ -41,7 +41,7 @@
             </div>
             <div class="modal-footer">
                 <div class="modal-close-button">
-                    <button type="button" class="btn btn-primary font-weight-bold modalAction" id="addBonusDone">Done</button>
+                    <button type="button" class="btn btn-primary font-weight-bold" id="addBonusDone" data-dismiss="modal">Done</button>
                 </div>
             </div>
         </div>
