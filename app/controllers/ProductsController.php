@@ -278,13 +278,13 @@ class ProductsController extends Controller {
             $this->f3->set("pageURL", "/web/distributor/product");
             echo View::instance()->render('app/layout/layout.php');
         } else {
-            $id = $this->f3->get('POST.id');
+            $productId = $this->f3->get('POST.id');
 
             $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
-            $dbEntityProduct->getWhere("productId=$id");
+            $dbEntityProduct->getWhere("productId=$productId");
 
             $dbProduct = new BaseModel($this->db, "product");
-            $dbProduct->getWhere("id=$id");
+            $dbProduct->getWhere("id=$productId");
 
             if ($dbEntityProduct->dry() || $dbProduct->dry()) {
                 $this->webResponse->errorCode = 2;
@@ -300,16 +300,27 @@ class ProductsController extends Controller {
                 $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
 
-                $dbEntityProduct->unitPrice = $unitPrice;
+                if(!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice) {
+                    $this->webResponse->errorCode = 2;
+                    $this->webResponse->title = "";
+                    $this->webResponse->message = "Some mandatory fields are missing";
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+
                 $dbProduct->name_en = $name_en;
                 $dbProduct->name_fr = $name_fr;
                 $dbProduct->name_ar = $name_ar;
                 $dbProduct->scientificNameId = $scientificNameId;
                 $dbProduct->madeInCountryId = $madeInCountryId;
-
                 $dbProduct->image = $image;
 
                 $dbProduct->update();
+
+                $dbEntityProduct->unitPrice = $unitPrice;
+                $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
+
+                $dbEntityProduct->update();
 
                 $this->webResponse->errorCode = 1;
                 $this->webResponse->title = "";
@@ -406,7 +417,16 @@ class ProductsController extends Controller {
             $name_ar = $this->f3->get('POST.name_ar');
             $name_fr = $this->f3->get('POST.name_fr');
             $image = $this->f3->get('POST.image');
+            $unitPrice = $this->f3->get('POST.unitPrice');
+            $stock = $this->f3->get('POST.stock');
 
+            if(!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$stock) {
+                $this->webResponse->errorCode = 2;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "Some mandatory fields are missing";
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
 
             $dbProduct = new BaseModel($this->db, "product");
             $dbProduct->scientificNameId = $scientificNameId;
@@ -419,8 +439,6 @@ class ProductsController extends Controller {
             $dbProduct->addReturnID();
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
             $entityId = $arrEntityId;
-            $unitPrice = $this->f3->get('POST.unitPrice');
-            $stock = $this->f3->get('POST.stock');
 
 
             $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
