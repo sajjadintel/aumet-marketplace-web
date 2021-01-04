@@ -45,9 +45,6 @@ class CartController extends Controller {
             $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
             $dbEntityProduct->getWhere("entityId=$entityId and productId=$productId");
 
-            $dbVwEntityProduct = new GenericModel($this->db, "vwEntityProductSell");
-            $dbVwEntityProduct->getWhere("productId=$productId");
-
             if ($dbEntityProduct->dry()) {
                 $this->webResponse->errorCode = 2;
                 $this->webResponse->title = "";
@@ -67,18 +64,43 @@ class CartController extends Controller {
                 $dbCartDetail->accountId = $this->objUser->accountId;
                 $dbCartDetail->entityProductId = $dbEntityProduct->id;
                 $dbCartDetail->userId = $this->objUser->id;
-                $dbCartDetail->quantity = $dbCartDetail->quantity + $quantity;
 
-                if ($dbVwEntityProduct->bonusTypeId == 2) {
-                    $dbCartDetail->quantityFree = $this->calculateBonus($dbCartDetail->quantity, json_decode($dbVwEntityProduct->bonusConfig));
+
+                $newQuantity = $dbCartDetail->quantity + $quantity;
+                $dbCartDetail->quantity = $newQuantity;
+
+                if ($dbEntityProduct->bonusTypeId == 2) {
+                    $dbBonus = new GenericModel($this->db, "entityProductSellBonusDetail");
+                    $arrBonus = $dbBonus->findWhere("entityProductId = '$dbEntityProduct->id' AND isActive = 1", 'minOrder DESC');
+
+                    $entityProductBonusType = new GenericModel($this->db, "entityProductBonusType");
+                    $entityProductBonusType->getWhere("id = '$dbEntityProduct->bonusTypeId'");
+
+                    $quantityFree = $this->calculateBonus($dbCartDetail->quantity, $arrBonus, $entityProductBonusType->formula);
                 }
+
+
+                $total = $quantityFree + $newQuantity;
+                if($total > $dbEntityProduct->stock) {
+                    $this->webResponse->errorCode = 2;
+                    $this->webResponse->title = "";
+                    $this->webResponse->message = "Not enough stock available (max: $dbEntityProduct->stock)";
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+
+                $dbCartDetail->quantityFree = $quantityFree;
 
                 $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
                 $dbCartDetail->save();
 
                 // Get cart count
                 $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-                $cartCount = count($arrCartDetail);
+                $cartCount = 0;
+                foreach($arrCartDetail as $cartDetail) {
+                    $cartCount += $cartDetail->quantity;
+                    $cartCount += $cartDetail->quantityFree;
+                }
                 $this->objUser->cartCount = $cartCount;
 
                 $this->webResponse->errorCode = 1;
@@ -89,15 +111,13 @@ class CartController extends Controller {
         }
     }
 
-    private function calculateBonus($quantity, $bonuses)
+    private function calculateBonus($quantity, $bonuses, $formula)
     {
-        usort($bonuses, fn($a, $b) => $a->minOrder < $b->minOrder);
         foreach ($bonuses as $bonus) {
-            if ($quantity >= $bonus->minOrder) {
-                $formula = $bonus->formula;
+            if ($quantity >= $bonus['minOrder']) {
                 $formula = str_replace('quantity', $quantity, $formula);
-                $formula = str_replace('minOrder', $bonus->minOrder, $formula);
-                $formula = str_replace('bonus', $bonus->bonus, $formula);
+                $formula = str_replace('minOrder', $bonus['minOrder'], $formula);
+                $formula = str_replace('bonus', $bonus['bonus'], $formula);
                 if (strpos($formula, ';') === false) {
                     $formula .= ';';
                 }
@@ -126,7 +146,11 @@ class CartController extends Controller {
 
             // Get cart count
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-            $cartCount = count($arrCartDetail);
+            $cartCount = 0;
+            foreach($arrCartDetail as $cartDetail) {
+                $cartCount += $cartDetail->quantity;
+                $cartCount += $cartDetail->quantityFree;
+            }
             $this->objUser->cartCount = $cartCount;
 
             $this->webResponse->errorCode = 1;
@@ -200,7 +224,11 @@ class CartController extends Controller {
 
                 // Get cart count
                 $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-                $cartCount = count($arrCartDetail);
+                $cartCount = 0;
+                foreach($arrCartDetail as $cartDetail) {
+                    $cartCount += $cartDetail->quantity;
+                    $cartCount += $cartDetail->quantityFree;
+                }
                 $this->objUser->cartCount = $cartCount;
 
                 $this->webResponse->errorCode = 1;
@@ -344,7 +372,7 @@ class CartController extends Controller {
 
             $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
             $arrBonus = $dbBonus->findWhere("entityProductId = '$productId' AND isActive = 1");
-            
+
             $quantityFree = 0;
             $maxMinOrder = 0;
             foreach($arrBonus as $bonus) {
@@ -354,23 +382,42 @@ class CartController extends Controller {
                 }
             }
 
-            $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
-            $dbEntityProduct->getWhere("entityId=$sellerId and productId=$productId");
-
             $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
             $dbCartDetail->getById($cartDetailId);
             $dbCartDetail->quantity = $quantity;
             $dbCartDetail->quantityFree = $quantityFree;
+
+            $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
+            $dbEntityProduct->getWhere("productId=$productId");
+
+            $total = $quantityFree + $quantity;
+            if($total > $dbEntityProduct->stock) {
+                $this->webResponse->errorCode = 2;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "Not enough stock available (max: $dbEntityProduct->stock)";
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
+
             $dbCartDetail->update();
 
             $dbCartDetailFull = new BaseModel($dbConnection, "vwCartDetail");
             $cartDetailFull = $dbCartDetailFull->getById($cartDetailId)[0];
-            
+
+            // Get cart count
+            $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+            $cartCount = 0;
+            foreach($arrCartDetail as $cartDetail) {
+                $cartCount += $cartDetail->quantity;
+                $cartCount += $cartDetail->quantityFree;
+            }
+
             $cartDetail = new stdClass();
             $cartDetail->productId = $cartDetailFull['productId'];
             $cartDetail->quantity = $cartDetailFull['quantity'];
             $cartDetail->quantityFree = $cartDetailFull['quantityFree'];
             $cartDetail->entityId = $cartDetailFull['entityId'];
+            $cartDetail->cartCount = $cartCount;
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
@@ -529,12 +576,12 @@ class CartController extends Controller {
                 $subTotal = 0;
                 $tax = 0;
                 foreach ($cartItemsBySeller as $cartItem) {
-                    $productPrice = $cartItem->quantity * $cartItem->unitPrice; 
+                    $productPrice = $cartItem->quantity * $cartItem->unitPrice;
                     $subTotal += $productPrice;
                     $tax += $productPrice * $cartItem->vat / 100;
                     array_push($allProducts, $cartItem);
                 }
-                
+
                 $total = $subTotal + $tax;
 
                 if(array_key_exists($currencyId, $mapCurrencyIdSubTotal)) {
@@ -593,7 +640,7 @@ class CartController extends Controller {
                 }
                 $htmlContent = View::instance()->render($emailFile);
 
-                $subject = "New Order";
+                $subject = "Aumet - New Order Confirmation";
                 if (getenv('ENV') != Constants::ENV_PROD) {
                     $subject .= " - (Test: ".getenv('ENV').")";
 
@@ -614,17 +661,17 @@ class CartController extends Controller {
             foreach($mapCurrencyIdCurrency as $currencyId => $currency) {
                 if(array_key_exists($currencyId, $mapCurrencyIdSubTotal)) {
                     $subTotal = $mapCurrencyIdSubTotal[$currencyId];
-                    $subTotalUSD += $subTotal + $currency->conversionToUSD; 
+                    $subTotalUSD += $subTotal + $currency->conversionToUSD;
                 }
-                
+
                 if(array_key_exists($currencyId, $mapCurrencyIdTax)) {
                     $tax = $mapCurrencyIdTax[$currencyId];
-                    $taxUSD += $tax + $currency->conversionToUSD; 
+                    $taxUSD += $tax + $currency->conversionToUSD;
                 }
-                
+
                 if(array_key_exists($currencyId, $mapCurrencyIdTotal)) {
                     $total = $mapCurrencyIdTotal[$currencyId];
-                    $totalUSD += $total + $currency->conversionToUSD; 
+                    $totalUSD += $total + $currency->conversionToUSD;
                 }
             }
 
@@ -638,14 +685,14 @@ class CartController extends Controller {
             $this->f3->set('tax', round($tax, 2));
             $this->f3->set('total', round($total, 2));
             $this->f3->set('ordersUrl', "web/pharmacy/order/history");
-            
+
             $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $account->entityId);
             foreach ($arrEntityUserProfile as $entityUserProfile) {
                 $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
             }
             $htmlContent = View::instance()->render($emailFile);
 
-            $subject = "New Order";
+            $subject = "Aumet - you've got a new order!";
             if (getenv('ENV') != Constants::ENV_PROD) {
                 $subject .= " - (Test: ".getenv('ENV').")";
                 if (getenv('ENV') == Constants::ENV_LOC){

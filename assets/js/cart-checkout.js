@@ -60,18 +60,29 @@ var CartCheckout = (function () {
 		WebApp.redirect('/web/thankyou/' + webResponse.data);
 	}
 
-	var _updateQuantity = function(productId, increment, stock, cartDetailId, sellerId, updateTotalPrice) {
+	var _updateQuantity = function(productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, oldValue = null) {
 		let quantityId = "#quantity-" + productId;
-		let currentValue = parseInt($(quantityId).val());
+		let currentValue = 0;
+		if($(quantityId).val() > 0) currentValue = parseInt($(quantityId).val());
 		let newValue = currentValue + increment;
-		if(newValue > stock) newValue = stock;
-		else if(newValue < 0) newValue = 0;
+		if(newValue < 0) newValue = 0;
+		else if(newValue > stock && oldValue) $(quantityId).val(oldValue);
 
-		WebApp.post('/web/cart/checkout/update', { cartDetailId, sellerId, productId, quantity: newValue }, (webResponse) => _updateQuantityCallback(webResponse, updateTotalPrice));
+		if(newValue === 0) {
+			_removeItemModal(cartDetailId);
+		} else {
+			WebApp.post('/web/cart/checkout/update', { cartDetailId, sellerId, productId, quantity: newValue }, (webResponse) => _updateQuantityCallback(webResponse, updateTotalPrice));
+		}
 	}
 
 	var _updateQuantityCallback = function(webResponse, updateTotalPrice) {
 		let cartDetail = webResponse.data;
+		
+		// Update cart count
+		let cartCount = cartDetail.cartCount > 9 ? "9+" : cartDetail.cartCount;
+		if(webResponse.data !== 0) $("#cartCount").css("display", "flex");
+		else $("#cartCount").css("display", "none");
+		$("#cartCount").html(cartCount);
 
 		let productId = cartDetail.productId;
 		let quantity = cartDetail.quantity;
@@ -157,8 +168,8 @@ var CartCheckout = (function () {
 		submitOrderSuccess: function (webResponse) {
 			_submitOrderSuccess(webResponse)
 		},
-		updateQuantity: function(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice) {
-			_updateQuantity(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice)
+		updateQuantity: function(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice, oldValue) {
+			_updateQuantity(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice, oldValue)
 		},
 		updateNote: function(productId, cardDetailId, sellerId) {
 			_updateNote(productId, cardDetailId, sellerId)

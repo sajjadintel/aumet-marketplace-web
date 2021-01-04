@@ -64,6 +64,8 @@ var Cart = (function () {
 			_topbarItemTextContainer.addClass(_addPulse).addClass(_addPulseColor);
 			_topbarItemText.show();
 		}
+
+		if(quantityInputId != null && $(quantityInputId).val() < 1) return;
 		
 		let body = {
 			entityId,

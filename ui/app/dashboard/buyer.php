@@ -118,7 +118,46 @@
             title: WebAppLocals.getMessage('orderStatus'),
             data: 'status',
             render: function(data, type, row, meta) {
-                var output = row.status;
+                var status = {
+                    1: {
+                        title: WebAppLocals.getMessage('orderStatus_New'),
+                        class: ' label-primary',
+                    },
+                    2: {
+                        title: WebAppLocals.getMessage('orderStatus_OnHold'),
+                        class: ' label-warning',
+                    },
+                    3: {
+                        title: WebAppLocals.getMessage('orderStatus_Processing'),
+                        class: ' label-primary',
+                    },
+                    4: {
+                        title: WebAppLocals.getMessage('orderStatus_Completed'),
+                        class: ' label-primary',
+                    },
+                    5: {
+                        title: WebAppLocals.getMessage('orderStatus_Canceled'),
+                        class: ' label-danger',
+                    },
+                    6: {
+                        title: WebAppLocals.getMessage('orderStatus_Received'),
+                        class: ' label-primary',
+                    },
+                    7: {
+                        title: WebAppLocals.getMessage('orderStatus_Paid'),
+                        class: ' label-success',
+                    },
+                    8: {
+                        title: WebAppLocals.getMessage('orderStatus_MissingProducts'),
+                        class: ' label-danger',
+                    },
+                    9: {
+                        title: WebAppLocals.getMessage('orderStatus_Canceled_Pharmacy'),
+                        class: ' label-danger',
+                    },
+                };
+
+                var output = '<div><span class="label label-lg font-weight-bold ' + status[row.statusId].class + ' label-inline">' + status[row.statusId].title + '</span></div>';
                 return output;
             },
         }, {
