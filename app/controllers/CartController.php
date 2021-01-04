@@ -636,7 +636,7 @@ class CartController extends Controller {
                 }
                 $htmlContent = View::instance()->render($emailFile);
 
-                $subject = "Aumet - New Order Confirmation";
+                $subject = "Aumet - New Order Confirmation (" . $dbOrder->id . ")";
                 if (getenv('ENV') != Constants::ENV_PROD) {
                     $subject .= " - (Test: ".getenv('ENV').")";
 
@@ -694,7 +694,7 @@ class CartController extends Controller {
             }
             $htmlContent = View::instance()->render($emailFile);
 
-            $subject = "Aumet - you've got a new order!";
+            $subject = "Aumet - you've got a new order! (" . $grandOrderId . ")";
             if (getenv('ENV') != Constants::ENV_PROD) {
                 $subject .= " - (Test: ".getenv('ENV').")";
                 if (getenv('ENV') == Constants::ENV_LOC){
