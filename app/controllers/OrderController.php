@@ -342,7 +342,7 @@ class OrderController extends Controller
                 $query .= " AND statusId IN (2)";
                 break;
             case 'unpaid':
-                $query .= " AND statusId IN (6,8) ";
+                $query .= " AND statusId IN (4,6,8) ";
                 break;
             case 'pending':
                 $query .= " AND statusId IN (1,2,3)";
