@@ -530,7 +530,7 @@ class OrderController extends Controller
                     return;
                 }
 
-                $dbProduct->next();
+                $dbOrderItems->next();
             }
         }
 
@@ -573,7 +573,7 @@ class OrderController extends Controller
                 if ($dbProduct->stock <= 5 * $dbProduct->totalOrderQuantity / $dbProduct->totalOrderCount)
                     $lowStockProducts[] = $dbProduct->id;
 
-                $dbProduct->next();
+                $dbOrderItems->next();
             }
 
             if (sizeof($lowStockProducts) > 0)

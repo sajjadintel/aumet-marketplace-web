@@ -271,8 +271,8 @@ function compress_htmlcode($codedata)
 
                   var outActions = '';
 
-                  outActions += btnView;
-                  outActions += btnPrint;
+                  /* outActions += btnView;
+                  outActions += btnPrint; */
 
                   if (row.statusId === 4 || row.statusId === 6)
                       outActions += reportMissing;

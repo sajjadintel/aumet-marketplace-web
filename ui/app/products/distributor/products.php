@@ -246,12 +246,12 @@ function compress_htmlcode($codedata)
             });
             _selectBrand.on("select2:select", function(e) {
                 searchQuery.productId = $("#searchProductsBrandNameInput").val();
-                DistributorProductsDataTable.setReadParams(searchQuery);
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
 
             });
             _selectBrand.on("select2:unselect", function(e) {
                 searchQuery.productId = $("#searchProductsBrandNameInput").val();
-                DistributorProductsDataTable.setReadParams(searchQuery);
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
             });
 
 
@@ -273,21 +273,16 @@ function compress_htmlcode($codedata)
             });
             _selectScientific.on("select2:select", function(e) {
                 searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-                DistributorProductsDataTable.setReadParams(searchQuery);
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
             });
             _selectScientific.on("select2:unselect", function(e) {
                 searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-                DistributorProductsDataTable.setReadParams(searchQuery);
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
             });
 
             $('#searchStockStatus').bootstrapSwitch().on("switchChange.bootstrapSwitch", function(event, state) {
                 searchQuery.stockOption = state ? 1 : 0;
-                DistributorProductsDataTable.setReadParams(searchQuery);
-                if (state) {
-                    DistributorProductsDataTable.hideColumn('stockStatusId');
-                } else {
-                    DistributorProductsDataTable.showColumn('stockStatusId');
-                }
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
             });
 
             var _selectScientificEdit = $('#editProductScientificName').select2({

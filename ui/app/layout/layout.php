@@ -321,6 +321,7 @@ function compress_htmlcode($codedata)
     <script type="text/javascript" src="/assets/js/missing-product-list-modals.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/autocomplete.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/products-search.js<?php echo $platformVersion ?>"></script>
+    <script type="text/javascript" src="/assets/js/distributor-products.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/distributor-customers.js<?php echo $platformVersion ?>"></script>
 
 
@@ -342,10 +343,10 @@ function compress_htmlcode($codedata)
 
             query: function (options) {
 
-                if (options.term.replace(/ /g, "").length > 0) {
+                if (options.term && options.term.replace(/ /g, "").length > 0) {
                     $.ajax({
                         url: '/web/searchbar',
-                        data: {q: options.term},
+                        data: {term: options.term},
                         dataType: 'json',
                         type: 'get',
                         success: function (data) {
@@ -376,10 +377,10 @@ function compress_htmlcode($codedata)
 
             query: function (options) {
 
-                if (options.term.replace(/ /g, "").length > 0) {
+                if (options.term && options.term.replace(/ /g, "").length > 0) {
                     $.ajax({
                         url: '/web/searchbar',
-                        data: {q: options.term},
+                        data: {term: options.term},
                         dataType: 'json',
                         type: 'get',
                         success: function (data) {
