@@ -63,7 +63,7 @@ return array(
 
     'vBack' => 'رجوع',
 
-    'vModule_search_title' => 'البحث في المنتجات',
+    'vModule_search_title' => 'Search for products...', // TODO: add translation
     'vModule_search_header' => 'يمكنك البحث عن المنتجات من خلال اسم المنتج أو الاسم العلمي للمنتج او اسم الموزع',
     'vModule_search_brandNameplaceholder' => 'الأسماء التجارية',
     'vModule_search_categoryplaceholder' => 'Category', // todo translate
@@ -98,7 +98,7 @@ return array(
     'feedbackSaved' => 'Feedback saved!', // TODO: add translation
 
     'vOrderStatusConfirmation' => 'هل أنت متأكد أنك تريد نقل هذا الطلب إلى {0}؟',
-    'vOrderStatus_New' => 'جديد',
+    'vOrderStatus_Pending' => 'Pending', // TODO: add translation
     'vOrderStatus_OnHold' => 'في الانتظار',
     'vOrderStatus_Processing' => 'معالجة',
     'vOrderStatus_Completed' => 'منجز',
@@ -153,6 +153,8 @@ return array(
     'vModule_cartCheckout_successTitle' => 'أجل النجاح',
     'vModule_cartCheckout_successContent' => 'تم تقديم طلبك بنجاح !',
     'vModule_cartCheckout_paymentMethodTitle' => 'طريقة الدفع',
+
+    'vModule_thankyou_viewOrder' => 'View my orders', // TODO: Translate
 
     'vModule_bonus_bonusTextTemplate' => 'كل %q: %b',
 

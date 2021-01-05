@@ -35,7 +35,6 @@ class CartController extends Controller {
             $entityId = $this->f3->get('POST.entityId');
             $productId = $this->f3->get('POST.productId');
             $quantity = $this->f3->get('POST.quantity');
-            $quantityFree = $this->f3->get('POST.quantityFree');
 
             if (!is_numeric($quantity) || $quantity == 0) {
                 $quantity = 1;
@@ -66,23 +65,20 @@ class CartController extends Controller {
                 $dbCartDetail->entityProductId = $dbEntityProduct->id;
                 $dbCartDetail->userId = $this->objUser->id;
 
+
                 $newQuantity = $dbCartDetail->quantity + $quantity;
                 $dbCartDetail->quantity = $newQuantity;
 
-                $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
-                $arrBonus = $dbBonus->findWhere("entityProductId = '$dbEntityProduct->id' AND isActive = 1");
-                
-                $maxMinOrder = 0;
-                foreach($arrBonus as $bonus) {
-                    if($bonus['minOrder'] <= $newQuantity && $maxMinOrder < $bonus['minOrder']) {
-                        $maxMinOrder = $bonus['minOrder'];
-                        $quantityFree = $bonus['bonus'];
-                    }
+                if ($dbEntityProduct->bonusTypeId == 2) {
+                    $dbBonus = new GenericModel($this->db, "entityProductSellBonusDetail");
+                    $arrBonus = $dbBonus->findWhere("entityProductId = '$dbEntityProduct->id' AND isActive = 1", 'minOrder DESC');
+
+                    $entityProductBonusType = new GenericModel($this->db, "entityProductBonusType");
+                    $entityProductBonusType->getWhere("id = '$dbEntityProduct->bonusTypeId'");
+
+                    $quantityFree = $this->calculateBonus($dbCartDetail->quantity, $arrBonus, $entityProductBonusType->formula);
                 }
 
-                if(!$quantityFree) {
-                    $quantityFree = $dbCartDetail->quantityFree;
-                }
 
                 $total = $quantityFree + $newQuantity;
                 if($total > $dbEntityProduct->stock) {
@@ -113,6 +109,24 @@ class CartController extends Controller {
                 echo $this->webResponse->jsonResponse();
             }
         }
+    }
+
+    private function calculateBonus($quantity, $bonuses, $formula)
+    {
+        foreach ($bonuses as $bonus) {
+            if ($quantity >= $bonus['minOrder']) {
+                $formula = str_replace('quantity', $quantity, $formula);
+                $formula = str_replace('minOrder', $bonus['minOrder'], $formula);
+                $formula = str_replace('bonus', $bonus['bonus'], $formula);
+                if (strpos($formula, ';') === false) {
+                    $formula .= ';';
+                }
+                $formula = '$response = ' . $formula;
+                eval($formula);
+                return $response;
+            }
+        }
+        return 0;
     }
 
     function postRemoveItem()
@@ -358,7 +372,7 @@ class CartController extends Controller {
 
             $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
             $arrBonus = $dbBonus->findWhere("entityProductId = '$productId' AND isActive = 1");
-            
+
             $quantityFree = 0;
             $maxMinOrder = 0;
             foreach($arrBonus as $bonus) {
@@ -372,7 +386,7 @@ class CartController extends Controller {
             $dbCartDetail->getById($cartDetailId);
             $dbCartDetail->quantity = $quantity;
             $dbCartDetail->quantityFree = $quantityFree;
-            
+
             $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
             $dbEntityProduct->getWhere("productId=$productId");
 
@@ -389,7 +403,7 @@ class CartController extends Controller {
 
             $dbCartDetailFull = new BaseModel($dbConnection, "vwCartDetail");
             $cartDetailFull = $dbCartDetailFull->getById($cartDetailId)[0];
-            
+
             // Get cart count
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
             $cartCount = 0;
@@ -572,12 +586,12 @@ class CartController extends Controller {
                 $subTotal = 0;
                 $tax = 0;
                 foreach ($cartItemsBySeller as $cartItem) {
-                    $productPrice = $cartItem->quantity * $cartItem->unitPrice; 
+                    $productPrice = $cartItem->quantity * $cartItem->unitPrice;
                     $subTotal += $productPrice;
                     $tax += $productPrice * $cartItem->vat / 100;
                     array_push($allProducts, $cartItem);
                 }
-                
+
                 $total = $subTotal + $tax;
 
                 if(array_key_exists($currencyId, $mapCurrencyIdSubTotal)) {
@@ -663,12 +677,12 @@ class CartController extends Controller {
                     $subTotal = $mapCurrencyIdSubTotal[$currencyId];
                     $subTotalUSD += $subTotal * $currency->conversionToUSD; 
                 }
-                
+
                 if(array_key_exists($currencyId, $mapCurrencyIdTax)) {
                     $tax = $mapCurrencyIdTax[$currencyId];
                     $taxUSD += $tax * $currency->conversionToUSD; 
                 }
-                
+
                 if(array_key_exists($currencyId, $mapCurrencyIdTotal)) {
                     $total = $mapCurrencyIdTotal[$currencyId];
                     $totalUSD += $total * $currency->conversionToUSD; 
@@ -738,8 +752,7 @@ class CartController extends Controller {
             $this->db->exec($commands);
 
             $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
-            $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-            $dbCartDetail->delete();
+            $dbCartDetail->erase("accountId=". $this->objUser->accountId);
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";

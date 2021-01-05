@@ -2,10 +2,6 @@
 
 class OrderController extends Controller
 {
-    function getDistributorOrdersNew()
-    {
-        $this->handleGetDistributorOrders('new');
-    }
 
     function getDistributorOrdersPending()
     {
@@ -70,9 +66,6 @@ class OrderController extends Controller
             $title = $this->f3->get('vModule_order_title');
 
             switch ($status) {
-                case 'new':
-                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_new'));
-                    break;
                 case 'pending':
                     $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_pending'));
                     break;
@@ -236,12 +229,7 @@ class OrderController extends Controller
 
     function postDistributorOrdersRecent()
     {
-        $this->handlePostDistributorOrders('new');
-    }
-
-    function postDistributorOrdersNew()
-    {
-        $this->handlePostDistributorOrders('new');
+        $this->handlePostDistributorOrders('pending');
     }
 
     function postDistributorOrdersPending()
@@ -268,14 +256,11 @@ class OrderController extends Controller
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entitySellerId IN ($arrEntityId)";
         switch ($status) {
-            case 'new':
-                $query .= " AND statusId = 1";
-                break;
             case 'unpaid':
                 $query .= " AND statusId IN (6,8)";
                 break;
             case 'pending':
-                $query .= " AND statusId IN (2,3)";
+                $query .= " AND statusId IN (1,2,3)";
                 break;
             case 'history':
                 $query .= " AND statusId IN (4,5,6,7,8,9)";
@@ -353,17 +338,14 @@ class OrderController extends Controller
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityBuyerId IN ($arrEntityId)";
         switch ($status) {
-            case 'new':
-                $query .= " AND statusId = 1";
-                break;
             case 'recent':
-                $query .= " AND statusId IN (1, 2)";
+                $query .= " AND statusId IN (2)";
                 break;
             case 'unpaid':
                 $query .= " AND statusId IN (6,8) ";
                 break;
             case 'pending':
-                $query .= " AND statusId IN (2,3)";
+                $query .= " AND statusId IN (1,2,3)";
                 break;
             case 'history':
                 $query .= " AND statusId IN (1,4,5,6,7,8,9)";

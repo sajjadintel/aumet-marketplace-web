@@ -8,7 +8,7 @@
             <div class="col-md-3">
                 <div class="card card-custom bg-NavyBlue card-stretch gutter-b">
                     <div class="card-body my-4">
-                        <a href="/web/distributor/order/new" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Orders</a>
+                        <a href="/web/distributor/order/pending" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Orders</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
                                 <?php if ($dashboard_order > $dashboard_orderYesterday) {
@@ -29,7 +29,7 @@
             <div class="col-md-3">
                 <div class="card card-custom bg-Blue card-stretch gutter-b">
                     <div class="card-body my-4">
-                        <a href="web/distributor/order/new" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Revenue</a>
+                        <a href="web/distributor/order/pending" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Revenue</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
                                 <?php if ($dashboard_revenue > $dashboard_revenueYesterday) {
@@ -406,7 +406,7 @@
         ];
 
         var initiate = function() {
-            WebApp.CreateDatatableServerside("Recent Orders", "#order_datatable", "/web/distributor/order/recent", columnDefsOrders);
+            WebApp.CreateDatatableServerside("Recent Orders", "#order_datatable", "/web/distributor/order/recent", columnDefsOrders, null, null, [[0, 'desc']]);
             WebApp.CreateDatatableServerside("Best Selling Products", "#products_datatable", "/web/distributor/product/bestselling", columnDefsProducts);
         };
         return {

@@ -57,7 +57,7 @@ var WebApp = (function () {
 		}).then((result) => {
 			KTUtil.scrollTop();
 			if (result.value) {
-				WebApp.loadPage('/web/distributor/order/new');
+				WebApp.loadPage('/web/distributor/order/pending');
 			}
 		});
 	};
@@ -181,15 +181,25 @@ var WebApp = (function () {
 
 						$(_pageContainerId).html(webResponse.data);
 
-						window.history.pushState(
-							{
+						console.log('pushState', {id: _id, url: url, title: title,}, title, url);
+
+						history.pushState({
 								id: _id,
 								url: url,
 								title: title,
 							},
 							title,
-							url
-						);
+							url);
+
+						// window.history.pushState(
+						// 	{
+						// 		id: _id,
+						// 		url: url,
+						// 		title: title,
+						// 	},
+						// 	title,
+						// 	url
+						// );
 
 						if (typeof fnCallback === 'function') {
 							fnCallback();
@@ -363,7 +373,7 @@ var WebApp = (function () {
 		);
 	};
 
-	var _createDatatableServerside = function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
+	var _createDatatableServerside = function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null, defaultOrder = null) {
 		_blurPage();
 		_blockPage();
 
@@ -379,7 +389,7 @@ var WebApp = (function () {
 			responsive: true,
 			scrollX: false,
 			orderCellsTop: true,
-			order: [[0, 'asc']],
+			order: defaultOrder || [[0, 'asc']],
 			destroy: true,
 			language: {
 				lengthMenu: '_MENU_',
@@ -572,9 +582,9 @@ var WebApp = (function () {
 		openModal: function (webResponse) {
 			_openModal(webResponse);
 		},
-		CreateDatatableServerside: function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
+		CreateDatatableServerside: function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null, defaultOrder = null) {
 			console.log(vParams);
-			_createDatatableServerside(vTableName, vElementId, vUrl, vColumnDefs, vParams, vAdditionalOptions);
+			_createDatatableServerside(vTableName, vElementId, vUrl, vColumnDefs, vParams, vAdditionalOptions, defaultOrder);
 		},
 		CreateDatatableLocal: function (vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions = null) {
 			_createDatatableLocal(vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions);

@@ -106,8 +106,8 @@ var PharmacyOrdersDataTable = (function () {
                     template: function (row) {
                         var status = {
                             1: {
-                                title: WebAppLocals.getMessage('orderStatus_New'),
-                                class: ' label-primary',
+                                title: WebAppLocals.getMessage('orderStatus_Pending'),
+                                class: ' label-primary2',
                             },
                             2: {
                                 title: WebAppLocals.getMessage('orderStatus_OnHold'),
