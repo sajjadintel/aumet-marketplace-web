@@ -175,7 +175,11 @@ return array(
 
     'vButton_update' => 'تحديث',
     'vButton_add' => 'أضف',
+    'vButton_bulk_add' => 'إضافة مجمعة',
+    'vButton_confirm' => 'تأكيد',
+    
     'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ', // TODO: add translation
     'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!', // TODO: add translation
-    'vButton_confirm' => 'تأكيد',
+
+    'vModule_bulk_add_title' => 'إضافة مجمعة',
 );

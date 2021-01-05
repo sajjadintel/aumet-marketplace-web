@@ -184,6 +184,7 @@ return array(
 
     'vButton_update' => 'Update',
     'vButton_add' => 'Add',
+    'vButton_bulk_add' => 'Bulk Add',
     'vButton_confirm' => 'Confirm',
 
     'vModule_feedback_title' => 'Customer Orders Feedback',
@@ -191,4 +192,6 @@ return array(
 
     'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ',
     'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!',
+
+    'vModule_bulk_add_title' => 'Bulk Add',
 );
