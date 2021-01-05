@@ -557,6 +557,7 @@ class CartController extends Controller {
 
             $allProducts = [];
             $allSellerNames = [];
+            $allOrderId = [];
             $mapCurrencyIdSubTotal = [];
             $mapCurrencyIdTax = [];
             $mapCurrencyIdTotal = [];
@@ -651,6 +652,7 @@ class CartController extends Controller {
                 $emailHandler->resetTos();
 
                 array_push($allSellerNames, $seller->name);
+                array_push($allOrderId, $dbOrder->id);
             }
 
             $subTotalUSD = 0;
@@ -694,7 +696,7 @@ class CartController extends Controller {
             }
             $htmlContent = View::instance()->render($emailFile);
 
-            $subject = "Aumet - you've got a new order! (" . $grandOrderId . ")";
+            $subject = "Aumet - you've got a new order! (" . implode(", ", $allOrderId) . ")";
             if (getenv('ENV') != Constants::ENV_PROD) {
                 $subject .= " - (Test: ".getenv('ENV').")";
                 if (getenv('ENV') == Constants::ENV_LOC){
