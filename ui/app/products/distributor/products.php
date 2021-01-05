@@ -81,12 +81,17 @@ function compress_htmlcode($codedata)
                     <div class="input-group input-group-lg">
                         <div class="input-group-prepend ">
 
-                            <label class="myLabel">
-                                <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="DistributorProductsDataTable.productAddModal()">
-                                    <i class="nav-icon la la-plus p-0"></i> <?php echo $vButton_add; ?>
-                                </a>
-                            </label>
-                        </div>
+                        <label class="myLabel">
+                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="DistributorProductsDataTable.productAddModal()">
+                                <i class="nav-icon la la-plus p-0"></i> <?php echo $vButton_add; ?>
+                            </a>
+                        </label>
+                        
+                        <label class="myLabel">
+                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Bulk Add Products" onclick="WebApp.loadPage('/web/distributor/product/bulk/add/upload')">
+                                <i class="nav-icon la la-boxes p-0"></i> <?php echo $vButton_bulk_add; ?>
+                            </a>
+                        </label>
                     </div>
                 </div>
 

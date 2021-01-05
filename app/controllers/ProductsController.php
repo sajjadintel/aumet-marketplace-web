@@ -457,7 +457,7 @@ class ProductsController extends Controller {
 
             // Set validation and formula
             Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
-            Excel::setCellFormulaVLookup($sheet, 'D3', count($allStockStatus), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
+            Excel::setCellFormulaVLookup($sheet, 'D3', count($allProducts), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -609,7 +609,6 @@ class ProductsController extends Controller {
                     continue;
                 }
 
-                $dbStockUpdateUpload->recordsCount++;
                 $cellIterator = $row->getCellIterator();
                 $cellIterator->setIterateOnlyExistingCells(FALSE);
 
@@ -707,6 +706,8 @@ class ProductsController extends Controller {
                     break;
                 }
 
+                $dbStockUpdateUpload->recordsCount++;
+
                 if (!$dbEntityProductSell->dry() && ($fieldsChanged || $stockFieldsChanged) && count($errors) === 0) {
                     $currentDate = date("Y-m-d H:i:s");
                     if ($fieldsChanged) {
@@ -778,7 +779,7 @@ class ProductsController extends Controller {
 
                 // Set validation and formula
                 Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
-                Excel::setCellFormulaVLookup($sheet, 'D3', count($allStockStatus), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
+                Excel::setCellFormulaVLookup($sheet, 'D3', count($allProducts), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
 
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -846,7 +847,7 @@ class ProductsController extends Controller {
             // Update counts and rates
             $dbStockUpdateUpload->completedCount = $successRecords;
             $dbStockUpdateUpload->failedCount = $failedRecords;
-            $dbStockUpdateUpload->unchagedCount = $unchangedRecords;
+            $dbStockUpdateUpload->unchangedCount = $unchangedRecords;
 
             if ($successRecords + $failedRecords !== 0) {
                 $dbStockUpdateUpload->importSuccessRate = round($successRecords / ($successRecords + $failedRecords), 2) * 100;
@@ -1066,7 +1067,6 @@ class ProductsController extends Controller {
                     continue;
                 }
 
-                $dbBonusUpdateUpload->recordsCount++;
                 $cellIterator = $row->getCellIterator();
                 $cellIterator->setIterateOnlyExistingCells(FALSE);
 
@@ -1119,6 +1119,8 @@ class ProductsController extends Controller {
                 if ($finished) {
                     break;
                 }
+
+                $dbBonusUpdateUpload->recordsCount++;
 
                 array_push($allBonuses, $singleBonus);
                 array_push($allErrors, $errors);
@@ -1252,6 +1254,426 @@ class ProductsController extends Controller {
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
             $this->webResponse->data = View::instance()->render('app/products/bonus/uploadResult.php');
+            echo $this->webResponse->jsonResponse();;
+        } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
+        }
+    }
+
+    function getBulkAddUpload()
+    {
+        if (!$this->f3->ajax()) {
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = $this->f3->get('vModule_bulk_add_title');
+            $this->webResponse->data = View::instance()->render('app/products/bulkAdd/upload.php');
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function getBulkAddDownload()
+    {
+        if ($this->f3->ajax()) {
+            // Setup excel sheet
+            $sheetnameUserInput = 'User Input';
+            $sheetnameDatabaseInput = 'Database Input';
+            $sheetnameVariables = 'Variables';
+
+            // Prepare data for variables sheet
+            $arrScientificName = [
+                ['Name', 'Value']
+            ];
+            $arrCountry = [
+                ['Name', 'Value']
+            ];
+
+            $dbScientificName = new BaseModel($this->db, "scientificName");
+            $allScientificName = $dbScientificName->findAll("name asc");
+
+            $scientificNum = 2;
+            foreach ($allScientificName as $scientificName) {
+                $scientificNum++;
+                $arrScientificName[] = array($scientificName['name'], $scientificName['id']);
+            }
+
+            $dbCountry = new BaseModel($this->db, "country");
+            $dbCountry->name = "name_" . $this->objUser->language;
+            $allCountry = $dbCountry->findAll("name asc");
+
+            $countryNum = 2;
+            foreach ($allCountry as $country) {
+                $countryNum++;
+                $arrCountry[] = array($country['name'], $country['id']);
+            }
+
+            $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-add-sample.xlsx';
+            $spreadsheet = Excel::loadFile($sampleFilePath);
+
+            // Change active sheet to variables
+            $sheet = $spreadsheet->setActiveSheetIndex(2);
+
+            // Set scientific names and countries in excel
+            $sheet->fromArray($arrScientificName, NULL, 'A2', true);
+            $sheet->fromArray($arrCountry, NULL, 'D2', true);
+
+            // Change active sheet to database input
+            $sheet = $spreadsheet->setActiveSheetIndex(1);
+
+            // Set validation and formula
+            Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
+            Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
+
+            // Hide database and variables sheet
+            Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
+            Excel::hideSheetByName($spreadsheet, $sheetnameVariables);
+
+            // Change active sheet to user input
+            $sheet = $spreadsheet->setActiveSheetIndex(0);
+
+            // Set data validation for scientific names and countries
+            Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
+            Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
+
+            // Create excel sheet
+            $productsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsx";
+            Excel::saveSpreadsheetToPath($spreadsheet, $productsSheetUrl);
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "Bulk Download";
+            $this->webResponse->data = "/" . $productsSheetUrl;
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function postBulkAddUpload()
+    {
+        $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
+        $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
+        // basename($_FILES["file"]["name"])
+
+        $targetFile = $this->getUploadDirectory() . "reports/products-add/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
+
+        if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
+                global $dbConnection;
+                $dbBulkAddUpload = new BaseModel($dbConnection, "bulkAddUpload");
+                $dbBulkAddUpload->userId = $this->objUser->id;
+                $dbBulkAddUpload->filePath = $targetFile;
+                $dbBulkAddUpload->entityId = $this->objUser->entityId;
+                $dbBulkAddUpload->addReturnID();
+                echo "OK";
+            }
+        }
+    }
+
+    function postBulkAddUploadProcess()
+    {
+        ini_set('max_execution_time', 1000);
+        ini_set('mysql.connect_timeout', 1000);
+
+        global $dbConnection;
+
+        $dbBulkAddUpload = new BaseModel($dbConnection, "bulkAddUpload");
+
+        $dbBulkAddUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
+
+        try {
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $entityId = $arrEntityId;
+
+            $spreadsheet = Excel::loadFile($dbBulkAddUpload->filePath);
+
+            // Change active sheet to database input
+            $sheet = $spreadsheet->setActiveSheetIndex(1);
+
+            // Get all scientific names
+            $dbScientificName = new BaseModel($this->db, "scientificName");
+            $allScientificName = $dbScientificName->findAll("name asc");
+
+            $allScientificId = [];
+            $mapScientificNameId = [];
+            $mapScientificIdName = [];
+            foreach ($allScientificName as $scientificName) {
+                array_push($allScientificId, $scientificName['id']);
+                $mapScientificNameId[$scientificName['name']] = $scientificName['id'];
+                $mapScientificIdName[$scientificName['id']] = $scientificName['name'];
+            }
+
+            // Get all countries
+            $dbCountry = new BaseModel($this->db, "country");
+            $dbCountry->name = "name_" . $this->objUser->language;
+            $allCountry = $dbCountry->findAll("name asc");
+
+            $allCountryId = [];
+            $mapCountryNameId = [];
+            $mapCountryIdName = [];
+            foreach ($allCountry as $country) {
+                array_push($allCountryId, $country['id']);
+                $mapCountryNameId[$country['name']] = $country['id'];
+                $mapCountryIdName[$country['id']] = $country['name'];
+            }
+
+            $fields = [
+                "A" => "scientificNameId",
+                "B" => "madeInCountryId",
+                "C" => "name_ar",
+                "D" => "name_en",
+                "E" => "name_fr",
+                "F" => "unitPrice",
+                "G" => "stock"
+            ];
+
+            $successProducts = [];
+            $failedProducts = [];
+
+            $allErrors = [];
+
+            $dbBulkAddUpload->recordsCount = 0;
+            $successRecords = 0;
+            $failedRecords = 0;
+            $unchangedRecords = 0;
+
+            $firstRow = true;
+            $secondRow = false;
+            $finished = false;
+            foreach ($sheet->getRowIterator() as $row) {
+                if ($firstRow) {
+                    $firstRow = false;
+                    $secondRow = true;
+                    continue;
+                } else if ($secondRow) {
+                    $secondRow = false;
+                    continue;
+                }
+
+                $dbProduct = new BaseModel($this->db, "product");
+                $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
+                
+                $product = [];
+
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(FALSE);
+
+                $errors = [];
+
+                foreach ($cellIterator as $cell) {
+                    $cellLetter = $cell->getColumn();
+                    $cellValue = $cell->getCalculatedValue();
+
+                    if($cellValue === "#REF!") {
+                        $cellValue = $cell->getOldCalculatedValue();
+                    }
+
+                    array_push($product, $cellValue);
+
+                    switch ($cellLetter) {
+                        case "A":
+                            if (!in_array($cellValue, $allScientificId)) {
+                                $finished = true;
+                            } else {
+                                $dbProduct->scientificNameId = $cellValue;
+                            }
+                            break;
+                        case "B":
+                            if (!in_array($cellValue, $allCountryId)) {
+                                array_push($errors, "Made In invalid");
+                            } else {
+                                $dbProduct->madeInCountryId = $cellValue;
+                            }
+                            break;
+                        case "C":
+                            if (!$cellValue) {
+                                array_push($errors, "Brand Name AR required");
+                            } else {
+                                $dbProduct->name_ar = $cellValue;
+                            }
+                            break;
+                        case "D":
+                            if (!$cellValue) {
+                                array_push($errors, "Brand Name EN required");
+                            } else {
+                                $dbProduct->name_en = $cellValue;
+                            }
+                            break;
+                        case "E":
+                            if (!$cellValue) {
+                                array_push($errors, "Brand Name FR required");
+                            } else {
+                                $dbProduct->name_fr = $cellValue;
+                            }
+                            break;
+                        case "F":
+                            if (!is_numeric($cellValue) || (float) $cellValue < 0) {
+                                array_push($errors, "Unit Price must be a positive number");
+                            } else {
+                                $dbEntityProduct->unitPrice = round((float) $cellValue, 2);
+                            }
+                            break;
+                        case "G":
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                                array_push($errors, "Available Quantity must be a positive whole number");
+                            } else {
+                                $dbEntityProduct->stock  = (int) $cellValue;
+                            }
+                            break;
+                    }
+                }
+
+                if ($finished) {
+                    break;
+                }
+
+                $dbBulkAddUpload->recordsCount++;
+
+                if(count($errors) === 0) {
+                    $dbProduct->addReturnID();
+
+                    $dbEntityProduct->productId = $dbProduct->id;
+                    $dbEntityProduct->entityId = $entityId;
+                    $dbEntityProduct->stockStatusId = 1;
+                    $dbEntityProduct->bonusTypeId = 1;
+                    $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
+                    $dbEntityProduct->add();
+
+                    array_push($successProducts, $product);
+                    $successRecords++;
+                } else {
+                    array_push($failedProducts, $product);
+                    array_push($allErrors, $errors);
+                    $failedRecords++;
+                }
+            }
+
+            if (count($failedProducts) > 0) {
+                // Setup excel sheet
+                $sheetnameUserInput = 'User Input';
+                $sheetnameDatabaseInput = 'Database Input';
+                $sheetnameVariables = 'Variables';
+
+                // Prepare data for variables sheet
+                $arrScientificName = [
+                    ['Name', 'Value']
+                ];
+                $arrCountry = [
+                    ['Name', 'Value']
+                ];
+
+                $scientificNum = 2;
+                foreach ($allScientificName as $scientificName) {
+                    $scientificNum++;
+                    $arrScientificName[] = array($scientificName['name'], $scientificName['id']);
+                }
+
+                $countryNum = 2;
+                foreach ($allCountry as $country) {
+                    $countryNum++;
+                    $arrCountry[] = array($country['name'], $country['id']);
+                }
+
+                $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-add-sample.xlsx';
+                $spreadsheet = Excel::loadFile($sampleFilePath);
+
+                // Change active sheet to variables
+                $sheet = $spreadsheet->setActiveSheetIndex(2);
+
+                // Set scientific names and countries in excel
+                $sheet->fromArray($arrScientificName, NULL, 'A2', true);
+                $sheet->fromArray($arrCountry, NULL, 'D2', true);
+
+                // Change active sheet to database input
+                $sheet = $spreadsheet->setActiveSheetIndex(1);
+
+                // Set validation and formula
+                Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
+                Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
+
+                // Hide database and variables sheet
+                Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
+                Excel::hideSheetByName($spreadsheet, $sheetnameVariables);
+
+                // Change active sheet to user input
+                $sheet = $spreadsheet->setActiveSheetIndex(0);
+
+                // Set data validation for scientific names and countries
+                Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
+                Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
+
+                $sheet->setCellValue('H2', 'Error');
+                $sheet->getStyle('H2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
+
+                // Add all products to multidimensional array
+                $multiProducts = [];
+                $fields = [
+                    "scientificNameId",
+                    "madeInCountryId",
+                    "name_ar",
+                    "name_en",
+                    "name_fr",
+                    "unitPrice",
+                    "stock"
+                ];
+                $i = 3;
+                for ($i = 0; $i < count($failedProducts); $i++) {
+                    $product = $failedProducts[$i];
+                    $singleProduct = [];
+                    $j = 0;
+                    foreach ($fields as $field) {
+                        $cellValue = "";
+                        if ($field == "scientificNameId") {
+                            $cellValue = $mapScientificIdName[$product[$j]];
+                        } else if ($field == "madeInCountryId") {
+                            $cellValue = $mapCountryIdName[$product[$j]];
+                        } else if($product[$j] !== 0) {
+                            $cellValue = $product[$j];
+                        }
+                        array_push($singleProduct, $cellValue);
+                        $j++;
+                    }
+                    $errors = $allErrors[$i];
+                    $error = join(", ", $errors);
+                    array_push($singleProduct, $error);
+
+                    array_push($multiProducts, $singleProduct);
+                }
+                // Fill rows with products
+                $sheet->fromArray($multiProducts, NULL, 'A3', true);
+
+                // Create excel sheet
+                $failedProductsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsx";
+                Excel::saveSpreadsheetToPath($spreadsheet, $failedProductsSheetUrl);
+            }
+
+            // Update logs
+            if (count($successProducts) > 0) {
+                $dbBulkAddUpload->successLog = json_encode($successProducts);
+            }
+
+            if (count($failedProducts) > 0) {
+                $dbBulkAddUpload->failedLog = json_encode($failedProducts);
+            }
+
+            // Update counts and rates
+            $dbBulkAddUpload->completedCount = $successRecords;
+            $dbBulkAddUpload->failedCount = $failedRecords;
+
+            if ($successRecords + $failedRecords !== 0) {
+                $dbBulkAddUpload->importSuccessRate = round($successRecords / ($successRecords + $failedRecords), 2) * 100;
+                $dbBulkAddUpload->importFailureRate = round($failedRecords / ($successRecords + $failedRecords), 2) * 100;
+            } else {
+                $dbBulkAddUpload->importSuccessRate = 0;
+                $dbBulkAddUpload->importFailureRate = 0;
+            }
+
+            $this->f3->set("objBulkAddUpload", $dbBulkAddUpload);
+            if (!is_null($failedProductsSheetUrl)) {
+                $this->f3->set("failedProductsSheetUrl", "/" . $failedProductsSheetUrl);
+            }
+
+            $dbBulkAddUpload->update();
+
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = "";
+            $this->webResponse->data = View::instance()->render('app/products/bulkAdd/uploadResult.php');
             echo $this->webResponse->jsonResponse();;
         } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
         }
