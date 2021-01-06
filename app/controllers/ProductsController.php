@@ -44,6 +44,18 @@ class ProductsController extends Controller
             $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere("stockStatusId=1 and scientificNameId =$dbEntityProduct->scientificNameId and id != $dbEntityProduct->id");
             $this->f3->set('arrRelatedEntityProduct', $arrRelatedEntityProduct);
 
+            $found = false;
+            foreach($arrRelatedEntityProduct as $objItem) {
+                if(array_key_exists((string) $objItem->entityId, $this->f3->get('SESSION.arrEntities'))) {
+                    $found = true;
+                    break;
+                }
+            }
+
+            if(!$found) {
+                return;
+            }
+
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = $this->f3->get('vTitle_entityProductDetail');
             $this->webResponse->data = View::instance()->render('app/products/single/entityProduct.php');
