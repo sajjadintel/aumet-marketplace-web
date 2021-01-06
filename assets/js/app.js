@@ -130,7 +130,7 @@ var WebApp = (function () {
 		})
 			.done(function (webResponse) {
 				if (webResponse && typeof webResponse === 'object') {
-					if (webResponse.errorCode == 1) {
+					if (webResponse.errorCode == 1 || webResponse.errorCode == 3) {
 						if (typeof fnCallback === 'function') {
 							fnCallback(webResponse);
 						}
