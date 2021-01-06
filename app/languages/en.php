@@ -138,6 +138,7 @@ return array(
     'vModule_cart_continueShopping' => 'Add More to Cart',
     'vModule_cart_proceedToCheckOut' => 'Proceed to Checkout',
     'vModule_cart_quantity' => 'Quantity',
+    'vModule_cart_bonus' => 'Bonus',
     'vModule_cart_note' => 'Note',
     'vModule_cart_unitPrice' => 'Unit Price',
     'vModule_cart_tax' => 'Tax',
