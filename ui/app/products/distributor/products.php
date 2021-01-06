@@ -226,7 +226,6 @@ function compress_htmlcode($codedata)
                 scientificNameId: [],
                 stockOption: 1
             };
-            var $repeater;
 
             var _selectBrand = $('#searchProductsBrandNameInput').select2({
                 placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
@@ -351,19 +350,6 @@ function compress_htmlcode($codedata)
                         }
                     }
                 }
-            });
-
-
-            $repeater = $('#editQuantityBonusListRepeater').repeater({
-                isFirstItemUndeletable: true,
-                show: function() {
-                    $(this).slideDown();
-                },
-                hide: function(deleteElement) {
-                    if (confirm('Are you sure you want to delete this element?')) {
-                        $(this).slideUp(deleteElement);
-                    }
-                },
             });
 
             $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");

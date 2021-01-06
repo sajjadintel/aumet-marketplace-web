@@ -13,14 +13,12 @@ class ProductsController extends Controller
             $entityId = $this->f3->get('PARAMS.entityId');
             $productId = $this->f3->get('PARAMS.productId');
 
-            global $dbConnection;
-
             if ($entityId == 0)
                 $query = "productId=$productId";
             else
                 $query = "entityId=$entityId and productId=$productId";
 
-            $dbEntityProduct = new BaseModel($dbConnection, "vwEntityProductSell");
+            $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
             $dbEntityProduct->getWhere($query);
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
@@ -42,7 +40,7 @@ class ProductsController extends Controller
 
             $this->f3->set('objEntityProduct', $dbEntityProduct);
 
-            $dbEntityProductRelated = new BaseModel($dbConnection, "vwEntityProductSell");
+            $dbEntityProductRelated = new BaseModel($this->db, "vwEntityProductSell");
             $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere("stockStatusId=1 and scientificNameId =$dbEntityProduct->scientificNameId and id != $dbEntityProduct->id");
             $this->f3->set('arrRelatedEntityProduct', $arrRelatedEntityProduct);
 
@@ -547,8 +545,7 @@ class ProductsController extends Controller
 
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-                global $dbConnection;
-                $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+                $dbStockUpdateUpload = new BaseModel($this->db, "stockUpdateUpload");
                 $dbStockUpdateUpload->userId = $this->objUser->id;
                 $dbStockUpdateUpload->filePath = $targetFile;
                 $dbStockUpdateUpload->entityId = $this->objUser->entityId;
@@ -563,9 +560,7 @@ class ProductsController extends Controller
         ini_set('max_execution_time', 1000);
         ini_set('mysql.connect_timeout', 1000);
 
-        global $dbConnection;
-
-        $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+        $dbStockUpdateUpload = new BaseModel($this->db, "stockUpdateUpload");
 
         $dbStockUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
 
@@ -1020,8 +1015,7 @@ class ProductsController extends Controller
 
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-                global $dbConnection;
-                $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+                $dbStockUpdateUpload = new BaseModel($this->db, "stockUpdateUpload");
                 $dbStockUpdateUpload->userId = $this->objUser->id;
                 $dbStockUpdateUpload->filePath = $targetFile;
                 $dbStockUpdateUpload->entityId = $this->objUser->entityId;
@@ -1036,9 +1030,7 @@ class ProductsController extends Controller
         ini_set('max_execution_time', 1000);
         ini_set('mysql.connect_timeout', 1000);
 
-        global $dbConnection;
-
-        $dbBonusUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+        $dbBonusUpdateUpload = new BaseModel($this->db, "stockUpdateUpload");
 
         $dbBonusUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
 
@@ -1381,8 +1373,7 @@ class ProductsController extends Controller
 
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-                global $dbConnection;
-                $dbBulkAddUpload = new BaseModel($dbConnection, "bulkAddUpload");
+                $dbBulkAddUpload = new BaseModel($this->db, "bulkAddUpload");
                 $dbBulkAddUpload->userId = $this->objUser->id;
                 $dbBulkAddUpload->filePath = $targetFile;
                 $dbBulkAddUpload->entityId = $this->objUser->entityId;
@@ -1397,9 +1388,7 @@ class ProductsController extends Controller
         ini_set('max_execution_time', 1000);
         ini_set('mysql.connect_timeout', 1000);
 
-        global $dbConnection;
-
-        $dbBulkAddUpload = new BaseModel($dbConnection, "bulkAddUpload");
+        $dbBulkAddUpload = new BaseModel($this->db, "bulkAddUpload");
 
         $dbBulkAddUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
 
