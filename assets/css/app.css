@@ -101,7 +101,7 @@ label.myLabel input[type='file'] {
 	flex-direction: row;
 	align-items: center;
 	flex: 1;
-	z-index:10;
+	z-index: 10;
 }
 
 .select2-search__field {
@@ -130,11 +130,12 @@ label.myLabel input[type='file'] {
 }
 
 @media (max-width: 992px) {
-	.search-wrapper-desktop{
+	.search-wrapper-desktop {
 		visibility: hidden;
 		display: none;
 	}
 }
+
 @media (min-width: 992px) {
 	.search-wrapper {
 		max-width: 500px;
@@ -168,4 +169,33 @@ label.myLabel input[type='file'] {
 .thankyou-page-button {
 	display: flex;
 	justify-content: center;
+}
+
+.select2-selection {
+	height: 100% !important;
+}
+
+.add-to-cart-wrapper {
+	border: #c4c4c4 solid 2px;
+	border-radius: 6px;
+	overflow: hidden;
+	display: flex;
+	flex-direction: row;
+	font-size: 18px;
+}
+
+.add-to-cart-wrapper > div {
+	background: #d0f4f1;
+	color:#3f998a;
+	width: 120px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.add-to-cart-wrapper > input {
+	border: none;
+	width: 100px;
+	height: 50px;
 }

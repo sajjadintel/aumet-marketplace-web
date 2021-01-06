@@ -138,6 +138,10 @@ var WebApp = (function () {
 						_unblockPage();
 					} else if (webResponse.errorCode == 0) {
 						window.location.href = '/web';
+					} else if (webResponse.errorCode == 3) {
+						_unblurPage();
+						_unblockPage();
+						_alertSuccess(webResponse.message);
 					} else {
 						_unblurPage();
 						_unblockPage();

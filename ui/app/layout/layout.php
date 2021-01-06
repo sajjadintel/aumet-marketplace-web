@@ -343,10 +343,10 @@ function compress_htmlcode($codedata)
 
             query: function (options) {
 
-                if (options.term.replace(/ /g, "").length > 0) {
+                if (options.term && options.term.replace(/ /g, "").length > 0) {
                     $.ajax({
                         url: '/web/searchbar',
-                        data: {q: options.term},
+                        data: {term: options.term},
                         dataType: 'json',
                         type: 'get',
                         success: function (data) {
@@ -377,10 +377,10 @@ function compress_htmlcode($codedata)
 
             query: function (options) {
 
-                if (options.term.replace(/ /g, "").length > 0) {
+                if (options.term && options.term.replace(/ /g, "").length > 0) {
                     $.ajax({
                         url: '/web/searchbar',
-                        data: {q: options.term},
+                        data: {term: options.term},
                         dataType: 'json',
                         type: 'get',
                         success: function (data) {

@@ -342,7 +342,7 @@ class OrderController extends Controller
                 $query .= " AND statusId IN (2)";
                 break;
             case 'unpaid':
-                $query .= " AND statusId IN (6,8) ";
+                $query .= " AND statusId IN (4,6,8) ";
                 break;
             case 'pending':
                 $query .= " AND statusId IN (1,2,3)";
@@ -510,7 +510,7 @@ class OrderController extends Controller
         $dbOrder->getById($orderId);
 
         if ($dbOrder->dry()) {
-            echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notFound', $this->f3->get('vEntity_order')), '', null);
+            echo $this->webResponse->jsonResponseV2(2, $this->f3->get('vResponse_notFound', $this->f3->get('vEntity_order')), '', null);
             return;
         }
 
@@ -526,11 +526,11 @@ class OrderController extends Controller
                 $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
 
                 if ($dbProduct->dry() || $dbProduct->stockStatusId != 1 || $dbProduct->stock < $dbOrderItems->quantity) {
-                    echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $this->f3->get('vResponse_productsMissing'), null);
+                    echo $this->webResponse->jsonResponseV2(2, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $this->f3->get('vResponse_productsMissing'), null);
                     return;
                 }
 
-                $dbProduct->next();
+                $dbOrderItems->next();
             }
         }
 
@@ -539,7 +539,7 @@ class OrderController extends Controller
         $dbOrder->userSellerId = $this->objUser->id;
 
         if (!$dbOrder->update()) {
-            echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $dbOrder->exception(), null);
+            echo $this->webResponse->jsonResponseV2(2, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $dbOrder->exception(), null);
             return;
         }
 
@@ -550,7 +550,7 @@ class OrderController extends Controller
 
 
         if (!$dbOrderLog->add()) {
-            echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notAdded', $this->f3->get('vEntity_orderLog')), $dbOrderLog->exception(), null);
+            echo $this->webResponse->jsonResponseV2(2, $this->f3->get('vResponse_notAdded', $this->f3->get('vEntity_orderLog')), $dbOrderLog->exception(), null);
             return;
         }
 
@@ -573,7 +573,7 @@ class OrderController extends Controller
                 if ($dbProduct->stock <= 5 * $dbProduct->totalOrderQuantity / $dbProduct->totalOrderCount)
                     $lowStockProducts[] = $dbProduct->id;
 
-                $dbProduct->next();
+                $dbOrderItems->next();
             }
 
             if (sizeof($lowStockProducts) > 0)
@@ -744,7 +744,7 @@ class OrderController extends Controller
         }
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
 
-        echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null, null);
+        echo $this->webResponse->jsonResponseV2(3, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null);
         return;
     }
 
