@@ -86,18 +86,7 @@ var DistributorProductsDataTable = (function () {
         $("label[for='editQuantityBonusDelete']").text(WebAppLocals.getMessage('delete'));
         $("label[for='editQuantityBonusAdd']").text(WebAppLocals.getMessage('add'));
 
-        var repeater = $('#editQuantityBonusListRepeater').repeater({
-            isFirstItemUndeletable: true,
-            show: function() {
-                $(this).slideDown();
-            },
-            hide: function(deleteElement) {
-                if (confirm('Are you sure you want to delete this element?')) {
-                    $(this).slideUp(deleteElement);
-                }
-            },
-        });
-        repeater.setList(webResponse.data.bonus);
+        $repeater.setList(webResponse.data.bonus);
 
         $("label[for='editQuantityBonusType']").text(WebAppLocals.getMessage('bonus'));
 
