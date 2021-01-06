@@ -82,6 +82,7 @@ $f3->route('GET /web/distributor/product/@productId', 'ProductsController->getPr
 $f3->route('GET /web/distributor/product/quantity/@productId', 'ProductsController->getProductQuantityDetails');
 
 $f3->route('POST /web/distributor/product', 'ProductsController->postDistributorProducts');
+$f3->route('GET /web/distributor/product/list', 'ProductsController->getProductList');
 $f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDistributorProduct');
 $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDistributorProduct');
 $f3->route('POST /web/distributor/product/image', 'ProductsController->postProductImage');
@@ -92,6 +93,11 @@ $f3->route('GET /web/distributor/product/bulk/add/download', 'ProductsController
 $f3->route('GET /web/distributor/product/bulk/add/upload', 'ProductsController->getBulkAddUpload');
 $f3->route('POST /web/distributor/product/bulk/add/upload', 'ProductsController->postBulkAddUpload');
 $f3->route('POST /web/distributor/product/bulk/add/upload/process', 'ProductsController->postBulkAddUploadProcess');
+
+// Bulk add images 
+$f3->route('GET /web/distributor/product/bulk/add/image/upload', 'ProductsController->getBulkAddImageUpload');
+$f3->route('POST /web/distributor/product/bulk/add/image/upload', 'ProductsController->postBulkAddImageUpload');
+$f3->route('POST /web/distributor/product/bulk/add/image/upload/process', 'ProductsController->postBulkAddImageUploadProcess');
 
 // Stock update
 $f3->route('GET /web/distributor/product/stock/download', 'ProductsController->getStockDownload');

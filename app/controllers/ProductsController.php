@@ -1748,8 +1748,95 @@ class ProductsController extends Controller {
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
             $this->webResponse->data = View::instance()->render('app/products/bulkAdd/uploadResult.php');
-            echo $this->webResponse->jsonResponse();;
+            echo $this->webResponse->jsonResponse();
         } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
         }
+    }
+
+    function getBulkAddImageUpload()
+    {
+        if (!$this->f3->ajax()) {
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = $this->f3->get('vModule_bulk_add_image_title');
+            $this->webResponse->data = View::instance()->render('app/products/bulkAddImage/upload.php');
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+    
+    function postBulkAddImageUpload()
+    {
+        $mapNewOldFileName = [];
+        $error = false;
+
+        $fileCount = count($_FILES["file"]["name"]);
+        for($i = 0; $i < $fileCount; $i++) {
+            $success = false;
+
+            $fileName = pathinfo(basename($_FILES["file"]["name"][$i]), PATHINFO_FILENAME);
+            $ext = pathinfo(basename($_FILES["file"]["name"][$i]), PATHINFO_EXTENSION);
+            
+            $newFileName = $fileName . "-" . time() . ".$ext";
+            $targetFile = $this->getRootDirectory() . "/assets/img/products/" . $newFileName;
+
+            if ($ext == "png" || $ext == "jpg" || $ext == "jpeg") {
+                if (move_uploaded_file($_FILES["file"]["tmp_name"][$i], $targetFile)) {
+                    $mapNewOldFileName[$newFileName] = $fileName;
+                    $success = true;
+                }
+            }
+
+            if(!$success) {
+                $error = true;
+                break;
+            }
+        }
+
+        if(!$error) {
+            echo json_encode($mapNewOldFileName);
+        }
+    }
+
+    function postBulkAddImageUploadProcess()
+    {
+        $mapNewOldFileNameStr = $this->f3->get('POST.mapNewOldFileName');
+        $mapNewOldFileName = json_decode($mapNewOldFileNameStr);
+
+        // Get all product ids
+        $allProductId = [];
+        $dbProduct = new BaseModel($this->db, "product");
+        $allProduct = $dbProduct->findAll("id asc");
+
+        // Check if file name starts with an existing product id
+        $mapFileNameProduct = [];
+        foreach($mapNewOldFileName as $newFileName => $oldFileName) {
+            $product = new stdClass();
+            $allParts = explode("-", $oldFileName);
+            if(count($allParts) > 1 && filter_var($allParts[0], FILTER_VALIDATE_INT)) {
+                $productIdInitial = (int) $allParts[0];
+                foreach($allProduct as $prod) {
+                    if($productIdInitial == $prod->id) {
+                        $product->id = $prod->id;
+                        $product->name = $prod->name;
+                        break;
+                    }
+                }
+            }
+
+            $mapFileNameProduct[$newFileName] = $product;
+        }
+
+        $this->f3->set("mapFileNameProduct", $mapFileNameProduct);
+
+        $this->webResponse->errorCode = 1;
+        $this->webResponse->title = "";
+        $this->webResponse->data = View::instance()->render('app/products/bulkAddImage/uploadResult.php');
+        echo $this->webResponse->jsonResponse();
+    }
+
+    function getProductList()
+    {
+        $this->handleGetListFilters("product", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
     }
 }

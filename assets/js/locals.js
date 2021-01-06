@@ -70,6 +70,11 @@ var WebAppLocals = (function () {
 			ar: 'خيارات',
 			fr: '',
 		},
+		product: {
+			en: 'Product',
+			ar: 'المنتج',
+			fr: '',
+		},
 		productName: {
 			en: 'Brand Name',
 			ar: 'الاسم التجاري',
@@ -395,11 +400,16 @@ var WebAppLocals = (function () {
 			ar: 'إضافة مكافأة',
 			fr: '',
 		},
-		addBonusDone: {
+		done: {
 			en: 'Done',
 			ar: 'منجز',
 			fr: '',
 		},
+		addImageTitle: {
+			en: 'Add Images',
+			ar: 'إضافة الصور',
+			fr: '',
+		}
 
 	};
 
