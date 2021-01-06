@@ -37,12 +37,10 @@ class OrderController extends Controller
     function getNotifcationsDistributorOrdersNew()
     {
 
-        global $dbConnection;
-
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "notificationFlag = 1 and entitySellerId IN ($arrEntityId)";
 
-        $dbOrder = new BaseModel($dbConnection, "order");
+        $dbOrder = new BaseModel($this->db, "order");
         $dbOrder->getWhere($query);
         $count = 0;
         while (!$dbOrder->dry()) {
@@ -642,31 +640,31 @@ class OrderController extends Controller
 
         $ordersUrl = "web/pharmacy/order/";
         switch ($statusId) {
-            case 1;
+            case 1:
                 $ordersUrl .= "history";
                 break;
-            case 2;
+            case 2:
                 $ordersUrl .= "pending";
                 break;
-            case 3;
+            case 3:
                 $ordersUrl .= "pending";
                 break;
-            case 4;
+            case 4:
                 $ordersUrl .= "history";
                 break;
-            case 5;
+            case 5:
                 $ordersUrl .= "history";
                 break;
-            case 6;
+            case 6:
                 $ordersUrl .= "unpaid";
                 break;
-            case 7;
+            case 7:
                 $ordersUrl .= "history";
                 break;
-            case 8;
+            case 8:
                 $ordersUrl .= "history";
                 break;
-            case 9;
+            case 9:
                 $ordersUrl .= "history";
                 break;
         }
@@ -697,31 +695,31 @@ class OrderController extends Controller
         
         $ordersUrl = "web/distributor/order/";
         switch ($statusId) {
-            case 1;
+            case 1:
                 $ordersUrl .= "new";
                 break;
-            case 2;
+            case 2:
                 $ordersUrl .= "pending";
                 break;
-            case 3;
+            case 3:
                 $ordersUrl .= "pending";
                 break;
-            case 4;
+            case 4:
                 $ordersUrl .= "history";
                 break;
-            case 5;
+            case 5:
                 $ordersUrl .= "history";
                 break;
-            case 6;
+            case 6:
                 $ordersUrl .= "unpaid";
                 break;
-            case 7;
+            case 7:
                 $ordersUrl .= "history";
                 break;
-            case 8;
+            case 8:
                 $ordersUrl .= "unpaid";
                 break;
-            case 9;
+            case 9:
                 $ordersUrl .= "history";
                 break;
         }

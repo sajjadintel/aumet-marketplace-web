@@ -83,9 +83,7 @@ class AuthController extends Controller
         $email = $this->f3->get("POST.email");
         $password = $this->f3->get("POST.password");
 
-        global $dbConnection;
-
-        $dbUser = new BaseModel($dbConnection, "user");
+        $dbUser = new BaseModel($this->db, "user");
         $dbUser->getByField("email", $email);
         if ($dbUser->dry()) {
             echo $this->jsonResponse(false, null, $this->f3->get("vMessage_invalidLogin"));
@@ -117,9 +115,7 @@ class AuthController extends Controller
             $uid = $verifiedIdToken->getClaim('sub');
             $user = $auth->getUser($uid);
 
-            global $dbConnection;
-
-            $dbUser = new BaseModel($dbConnection, "user");
+            $dbUser = new BaseModel($this->db, "user");
             $dbUser->getWhere("uid = '$uid' AND statusId = 3");
             if ($dbUser->dry()) {
 
@@ -145,8 +141,6 @@ class AuthController extends Controller
     {
         $objUser = new stdClass();
 
-        global $dbConnection;
-
         $objUser->id = $dbUser->id;
         $objUser->email = $dbUser->email;
         $objUser->mobile = $dbUser->mobile;
@@ -157,13 +151,13 @@ class AuthController extends Controller
 
         $this->f3->set('LANGUAGE', $objUser->language);
 
-        $dbUserRole = new BaseModel($dbConnection, "userRole");
+        $dbUserRole = new BaseModel($this->db, "userRole");
         $dbUserRole->name = "name_" . $objUser->language;
         $dbUserRole->getById($objUser->roleId);
         $objUser->roleName = $dbUserRole->name;
         $objUser->isSystemRole = $dbUserRole->isSystem;
 
-        $dbMenuConfig = new BaseModel($dbConnection, "menuConfig");
+        $dbMenuConfig = new BaseModel($this->db, "menuConfig");
         if ($objUser->isSystemRole == 1) {
             $dbMenuConfig->getWhere("userRoleId=$objUser->roleId and entityTypeId=0");
         } else {
@@ -172,16 +166,16 @@ class AuthController extends Controller
         $objUser->menuId = $dbMenuConfig->menuId;
         $objUser->entityTypeId = $dbMenuConfig->entityTypeId;
 
-        $dbMenu = new BaseModel($dbConnection, "menu");
+        $dbMenu = new BaseModel($this->db, "menu");
         $dbMenu->getById($objUser->menuId);
         $objUser->menuCode = $dbMenu->code;
 
-        $dbUserAccount = new BaseModel($dbConnection, "userAccount");
+        $dbUserAccount = new BaseModel($this->db, "userAccount");
         $dbUserAccount->getByField("userId", $objUser->id);
         $objUser->accountId = $dbUserAccount->accountId;
 
         // Get cart count
-        $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
+        $dbCartDetail = new BaseModel($this->db, "cartDetail");
         $arrCartDetail = $dbCartDetail->getByField("accountId", $objUser->accountId);
         $cartCount = 0;
         foreach($arrCartDetail as $cartDetail) {
@@ -210,10 +204,10 @@ class AuthController extends Controller
                 break;
         }
 
-        $dbAccount = new BaseModel($dbConnection, "account");
+        $dbAccount = new BaseModel($this->db, "account");
         $dbAccount->getByField("id", $dbUserAccount->accountId);
 
-        $dbEntity = new BaseModel($dbConnection, "entity");
+        $dbEntity = new BaseModel($this->db, "entity");
         $dbEntity->name = "name_" . $objUser->language;
         $dbEntity->getByField("id", $dbAccount->entityId);
         $arrEntities = [];
