@@ -27,10 +27,8 @@ class DemoController extends Controller
             updateDateTime datetime
             note varchar(500)
          */
-
-        global $dbConnection;
-
-        $dbOrder = new BaseModel($dbConnection, "order");
+        
+        $dbOrder = new BaseModel($this->db, "order");
         $dbOrder->entityBuyerId = $entityBuyerId;
         $dbOrder->entitySellerId = 1;
         $dbOrder->userBuyerId = 3;
@@ -59,10 +57,10 @@ class DemoController extends Controller
 
             $arrProdSelected[] = $pid;
 
-            $dbOrderDetailProduct = new BaseModel($dbConnection, "entityProductSell");
+            $dbOrderDetailProduct = new BaseModel($this->db, "entityProductSell");
             $dbOrderDetailProduct->getById($pid);
 
-            $dbOrderDetail = new BaseModel($dbConnection, "orderDetail");
+            $dbOrderDetail = new BaseModel($this->db, "orderDetail");
             $dbOrderDetail->orderId = $dbOrder->id;
             $dbOrderDetail->entityProductId = $dbOrderDetailProduct->id;
             $dbOrderDetail->quantity  = rand(8,30);

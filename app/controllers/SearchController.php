@@ -6,10 +6,7 @@ class SearchController extends Controller {
         if (!$this->f3->ajax()) {
             echo View::instance()->render('app/layout/layout.php');
         } else {
-
-            global $dbConnection;
-
-            $dbStockStatus = new BaseModel($dbConnection, "stockStatus");
+            $dbStockStatus = new BaseModel($this->db, "stockStatus");
             $dbStockStatus->name = "name_" . $this->objUser->language;
             $arrStockStatus = $dbStockStatus->all("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
@@ -152,13 +149,11 @@ class SearchController extends Controller {
 
             $pageSize = 10;
 
-            global $dbConnection;
-
             $select2Result = new stdClass();
             $select2Result->results = [];
             $select2Result->pagination = false;
 
-            $dbProducts = new BaseModel($dbConnection, "product");
+            $dbProducts = new BaseModel($this->db, "product");
             $dbProducts->name = "name_" . $this->objUser->language;
             $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
             $resultsCount = 0;
@@ -231,13 +226,11 @@ class SearchController extends Controller {
 
             $pageSize = 10;
 
-            global $dbConnection;
-
             $select2Result = new stdClass();
             $select2Result->results = [];
             $select2Result->pagination = false;
 
-            $dbProducts = new BaseModel($dbConnection, "category");
+            $dbProducts = new BaseModel($this->db, "category");
             $dbProducts->name = "name_" . $this->objUser->language;
             $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
             $resultsCount = 0;
@@ -281,13 +274,11 @@ class SearchController extends Controller {
 
             $pageSize = 10;
 
-            global $dbConnection;
-
             $select2Result = new stdClass();
             $select2Result->results = [];
             $select2Result->pagination = false;
 
-            $dbProducts = new BaseModel($dbConnection, "vwCategory");
+            $dbProducts = new BaseModel($this->db, "vwCategory");
             $dbProducts->name = "name_" . $this->objUser->language;
             $dbProducts->parent_name = "parent_name_" . $this->objUser->language;
             $select2Result->results =$dbProducts->findWhere($where, "parent_id ASC, name_{$this->objUser->language} ASC", $pageSize, $page * $pageSize);

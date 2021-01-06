@@ -128,11 +128,13 @@
     </div>
 </div>
 <style>
-    #order_datatable_wrapper td {
-        font-size: 11px;
-    }
-    #products_datatable_wrapper td {
-        font-size: 11px;
+    @media only screen and (max-width: 1800px) {
+        #order_datatable_wrapper td {
+            font-size: 11px;
+        }
+        #products_datatable_wrapper td {
+            font-size: 11px;
+        }
     }
 </style>
 <script>
@@ -392,7 +394,7 @@
                 title: WebAppLocals.getMessage('price'),
                 data: 'unitPrice',
                 orderable: false,
-                width: '50px',
+                width: '65px',
                 render: function(data, type, row, meta) {
                     var output = '';
                     if (row.stockUpdateDateTime) {
@@ -403,8 +405,16 @@
             }
         ];
 
+        var dbAdditionalOptions = {
+            datatableOptions: {
+                order: [
+                    [0, 'desc']
+                ]
+            }
+        };
+
         var initiate = function() {
-            WebApp.CreateDatatableServerside("Recent Orders", "#order_datatable", "/web/distributor/order/recent", columnDefsOrders, null, null, [[0, 'desc']]);
+            WebApp.CreateDatatableServerside("Recent Orders", "#order_datatable", "/web/distributor/order/recent", columnDefsOrders, null, dbAdditionalOptions);
             WebApp.CreateDatatableServerside("Best Selling Products", "#products_datatable", "/web/distributor/product/bestselling", columnDefsProducts);
         };
         return {
