@@ -480,8 +480,8 @@ class ProductsController extends Controller
             $sheet = $spreadsheet->setActiveSheetIndex(1);
 
             // Set validation and formula
-            Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
-            Excel::setCellFormulaVLookup($sheet, 'D3', count($allProducts), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
+            Excel::setCellFormulaVLookup($sheet, 'A3', count($productsNum), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
+            Excel::setCellFormulaVLookup($sheet, 'D3', count($productsNum), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -491,8 +491,8 @@ class ProductsController extends Controller
             $sheet = $spreadsheet->setActiveSheetIndex(0);
 
             // Set data validation for products and stock availability
-            Excel::setDataValidation($sheet, 'A3', 'A' . count($allProducts), 'TYPE_LIST', 'Variables!$A$3:$A$' . $productsNum);
-            Excel::setDataValidation($sheet, 'D3', 'D' . count($allProducts), 'TYPE_LIST', 'Variables!$D$3:$D$' . $stockAvailabilityNum);
+            Excel::setDataValidation($sheet, 'A3', 'A' . count($productsNum), 'TYPE_LIST', 'Variables!$A$3:$A$' . $productsNum);
+            Excel::setDataValidation($sheet, 'D3', 'D' . count($productsNum), 'TYPE_LIST', 'Variables!$D$3:$D$' . $stockAvailabilityNum);
 
             // Add all products to multidimensional array
             $multiProducts = [];
@@ -799,8 +799,8 @@ class ProductsController extends Controller
                 $sheet = $spreadsheet->setActiveSheetIndex(1);
 
                 // Set validation and formula
-                Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
-                Excel::setCellFormulaVLookup($sheet, 'D3', count($allProducts), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
+                Excel::setCellFormulaVLookup($sheet, 'A3', count($failedProducts) + 2, "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
+                Excel::setCellFormulaVLookup($sheet, 'D3', count($failedProducts) + 2, "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
 
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -810,8 +810,8 @@ class ProductsController extends Controller
                 $sheet = $spreadsheet->setActiveSheetIndex(0);
 
                 // Set data validation for products and stock availability
-                Excel::setDataValidation($sheet, 'A3', 'A' . count($failedProducts), 'TYPE_LIST', 'Variables!$A$3:$A$' . $productsNum);
-                Excel::setDataValidation($sheet, 'D3', 'D' . count($failedProducts), 'TYPE_LIST', 'Variables!$D$3:$D$' . $stockAvailabilityNum);
+                Excel::setDataValidation($sheet, 'A3', 'A' . count($failedProducts) + 2, 'TYPE_LIST', 'Variables!$A$3:$A$' . $productsNum);
+                Excel::setDataValidation($sheet, 'D3', 'D' . count($failedProducts) + 2, 'TYPE_LIST', 'Variables!$D$3:$D$' . $stockAvailabilityNum);
 
                 $sheet->setCellValue('G2', 'Error');
                 $sheet->getStyle('G2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);

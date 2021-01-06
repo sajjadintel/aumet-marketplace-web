@@ -16,7 +16,7 @@ var WebApp = (function () {
 
 	var _alertError = function (msg) {
 		Swal.fire({
-			text: msg,
+			html: msg,
 			icon: 'error',
 			buttonsStyling: false,
 			confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
