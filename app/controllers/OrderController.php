@@ -517,19 +517,29 @@ class OrderController extends Controller
         if ($statusId == Constants::ORDER_STATUS_COMPLETED) {
             $dbOrderItems = new BaseModel($this->db, "orderDetail");
             $dbProduct = new BaseModel($this->db, "entityProductSell");
+            $dbProductSummary = new BaseModel($this->db, "product");
+            $dbProductSummary->name = "name_" . $this->objUser->language;
             // check all items if stock is available
             $dbOrderItems->getWhere("orderId = $orderId");
 
+            $missingProductsMsg = [];
             while (!$dbOrderItems->dry()) {
                 $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
+                $dbProductSummary->getWhere("id = $dbOrderItems->entityProductId");
 
                 if ($dbProduct->dry() || $dbProduct->stockStatusId != 1 || $dbProduct->stock < $dbOrderItems->quantity) {
-                    echo $this->webResponse->jsonResponseV2(2, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $this->f3->get('vResponse_productsMissing'), null);
-                    return;
+                    $productMsg = $dbProductSummary->name." - requested ".$dbOrderItems->quantity.", only ".$dbProduct->stock." available";
+                    array_push($missingProductsMsg, $productMsg);
                 }
 
                 $dbOrderItems->next();
             }
+        }
+
+        if(count($missingProductsMsg) > 0) {
+            $msg = $this->f3->get('vEntity_order')."<br>".implode("<br>", $missingProductsMsg);
+            echo $this->webResponse->jsonResponseV2(2, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $msg, null);
+            return;
         }
 
         $dbOrder->updateDateTime = date("Y-m-d H:i:s");
