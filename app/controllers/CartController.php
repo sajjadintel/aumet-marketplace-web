@@ -70,10 +70,10 @@ class CartController extends Controller {
                 $dbCartDetail->quantity = $newQuantity;
 
                 if ($dbEntityProduct->bonusTypeId == 2) {
-                    $dbBonus = new GenericModel($this->db, "entityProductSellBonusDetail");
+                    $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
                     $arrBonus = $dbBonus->findWhere("entityProductId = '$dbEntityProduct->id' AND isActive = 1", 'minOrder DESC');
 
-                    $entityProductBonusType = new GenericModel($this->db, "entityProductBonusType");
+                    $entityProductBonusType = new BaseModel($this->db, "entityProductBonusType");
                     $entityProductBonusType->getWhere("id = '$dbEntityProduct->bonusTypeId'");
 
                     $quantityFree = $this->calculateBonus($dbCartDetail->quantity, $arrBonus, $entityProductBonusType->formula);

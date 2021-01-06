@@ -1,6 +1,7 @@
 <?php
 
-class ProductsController extends Controller {
+class ProductsController extends Controller
+{
 
     function getEntityProduct()
     {
@@ -25,19 +26,19 @@ class ProductsController extends Controller {
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
 
-                if ($dbEntityProduct['bonusTypeId'] == 2) {
-                    $dbEntityProduct['bonusOptions'] = json_decode($dbEntityProduct['bonusConfig']);
-                }
+            if ($dbEntityProduct['bonusTypeId'] == 2) {
+                $dbEntityProduct['bonusOptions'] = json_decode($dbEntityProduct['bonusConfig']);
+            }
 
             $dbEntityProduct['cart'] = 0;
-                if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
-                    foreach ($arrCartDetail as $objCartItem) {
-                        if ($objCartItem['entityProductId'] == $dbEntityProduct['id']) {
-                            $dbEntityProduct['cart'] += $objCartItem['quantity'];
-                            $dbEntityProduct['cart'] += $objCartItem['quantityFree'];
-                        }
+            if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
+                foreach ($arrCartDetail as $objCartItem) {
+                    if ($objCartItem['entityProductId'] == $dbEntityProduct['id']) {
+                        $dbEntityProduct['cart'] += $objCartItem['quantity'];
+                        $dbEntityProduct['cart'] += $objCartItem['quantityFree'];
                     }
                 }
+            }
 
             $this->f3->set('objEntityProduct', $dbEntityProduct);
 
@@ -129,6 +130,31 @@ class ProductsController extends Controller {
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityId IN ($arrEntityId)";
 
+        if (is_array($datatable->query)) {
+            $productId = $datatable->query['productId'];
+            if (isset($productId) && is_array($productId)) {
+                $query .= " AND id in (" . implode(",", $productId) . ")";
+            }
+
+            $scientificNameId = $datatable->query['scientificNameId'];
+            if (isset($scientificNameId) && is_array($scientificNameId)) {
+                $query .= " AND scientificNameId in (" . implode(",", $scientificNameId) . ")";
+            }
+
+            $stockOption = $datatable->query['stockOption'];
+            if (isset($stockOption) && $stockOption == 1) {
+                $query .= " AND stockStatusId = 1 ";
+            }
+
+            $categoryId = $datatable->query['categoryId'];
+            if (isset($categoryId) && is_array($categoryId)) {
+                $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
+            }
+
+        }
+
+
+
         $fullQuery = $query;
 
         $dbData = new BaseModel($this->db, "vwEntityProductSell");
@@ -163,7 +189,7 @@ class ProductsController extends Controller {
             return true;
         }, $overwrite, true);
 
-        $path = "img/products/" . $imageName;
+        $path = "/assets/img/products/" . $imageName;
 
         $this->webResponse->errorCode = 1;
         $this->webResponse->title = "Product Image Upload";
@@ -226,7 +252,7 @@ class ProductsController extends Controller {
                 $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
 
-                if(!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice) {
+                if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice) {
                     $this->webResponse->errorCode = 2;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Some mandatory fields are missing";
@@ -346,7 +372,7 @@ class ProductsController extends Controller {
             $unitPrice = $this->f3->get('POST.unitPrice');
             $stock = $this->f3->get('POST.stock');
 
-            if(!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$stock) {
+            if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$stock) {
                 $this->webResponse->errorCode = 2;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Some mandatory fields are missing";
@@ -442,7 +468,7 @@ class ProductsController extends Controller {
                 $mapStockIdName[$stockStatus['id']] = $stockStatus['name'];
             }
 
-            $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-stock-sample.xlsx';
+            $sampleFilePath = getenv('DOMAIN_URL') . 'app/files/samples/products-stock-sample.xlsx';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
@@ -764,7 +790,7 @@ class ProductsController extends Controller {
                     $mapStockIdName[$stockStatus['id']] = $stockStatus['name'];
                 }
 
-                $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-stock-sample.xlsx';
+                $sampleFilePath = getenv('DOMAIN_URL') . 'app/files/samples/products-stock-sample.xlsx';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
@@ -914,7 +940,7 @@ class ProductsController extends Controller {
                 $mapProductIdName[$product['id']] = $product[$nameField];
             }
 
-            $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-bonus-sample.xlsx';
+            $sampleFilePath = getenv('DOMAIN_URL') . 'app/files/samples/products-bonus-sample.xlsx';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
@@ -1150,7 +1176,7 @@ class ProductsController extends Controller {
                     $mapProductIdName[$product['productId']] = $product[$nameField];
                 }
 
-                $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-bonus-sample.xlsx';
+                $sampleFilePath = getenv('DOMAIN_URL') . 'app/files/samples/products-bonus-sample.xlsx';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
@@ -1306,7 +1332,7 @@ class ProductsController extends Controller {
                 $arrCountry[] = array($country['name'], $country['id']);
             }
 
-            $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-add-sample.xlsx';
+            $sampleFilePath = getenv('DOMAIN_URL') . 'app/files/samples/products-add-sample.xlsx';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
@@ -1448,7 +1474,7 @@ class ProductsController extends Controller {
 
                 $dbProduct = new BaseModel($this->db, "product");
                 $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
-                
+
                 $product = [];
 
                 $cellIterator = $row->getCellIterator();
@@ -1460,7 +1486,7 @@ class ProductsController extends Controller {
                     $cellLetter = $cell->getColumn();
                     $cellValue = $cell->getCalculatedValue();
 
-                    if($cellValue === "#REF!") {
+                    if ($cellValue === "#REF!") {
                         $cellValue = $cell->getOldCalculatedValue();
                     }
 
@@ -1525,7 +1551,7 @@ class ProductsController extends Controller {
 
                 $dbBulkAddUpload->recordsCount++;
 
-                if(count($errors) === 0) {
+                if (count($errors) === 0) {
                     $dbProduct->addReturnID();
 
                     $dbEntityProduct->productId = $dbProduct->id;
@@ -1570,7 +1596,7 @@ class ProductsController extends Controller {
                     $arrCountry[] = array($country['name'], $country['id']);
                 }
 
-                $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-add-sample.xlsx';
+                $sampleFilePath = getenv('DOMAIN_URL') . 'app/files/samples/products-bonus-sample.xlsx';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
@@ -1623,7 +1649,7 @@ class ProductsController extends Controller {
                             $cellValue = $mapScientificIdName[$product[$j]];
                         } else if ($field == "madeInCountryId") {
                             $cellValue = $mapCountryIdName[$product[$j]];
-                        } else if($product[$j] !== 0) {
+                        } else if ($product[$j] !== 0) {
                             $cellValue = $product[$j];
                         }
                         array_push($singleProduct, $cellValue);
