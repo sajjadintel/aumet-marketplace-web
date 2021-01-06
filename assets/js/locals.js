@@ -70,6 +70,11 @@ var WebAppLocals = (function () {
 			ar: 'خيارات',
 			fr: '',
 		},
+		name: {
+			en: 'Name',
+			ar: 'الاسم',
+			fr: '',
+		},
 		productName: {
 			en: 'Brand Name',
 			ar: 'الاسم التجاري',
@@ -220,6 +225,11 @@ var WebAppLocals = (function () {
 			ar: 'عنوان',
 			fr: '',
 		},
+		price: {
+			en: 'Price',
+			ar: 'السعر',
+			fr: '',
+		},
 		unitPrice: {
 			en: 'Unit Price',
 			ar: 'سعر الوحدة',
@@ -248,6 +258,11 @@ var WebAppLocals = (function () {
 		minOrder: {
 			en: 'Minimum Order',
 			ar: 'أقل كمية',
+			fr: '',
+		},
+		date: {
+			en: 'Date',
+			ar: 'تاريخ',
 			fr: '',
 		},
 		expiryDate: {
@@ -288,6 +303,11 @@ var WebAppLocals = (function () {
 		quantityAvailable: {
 			en: 'Available Quality',
 			ar: 'الكمية المتوفرة',
+			fr: '',
+		},
+		availability: {
+			en: 'Availability',
+			ar: 'التوفر',
 			fr: '',
 		},
 		stockAvailability: {
