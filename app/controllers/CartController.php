@@ -636,6 +636,24 @@ class CartController extends Controller {
                 $dbOrder->total = $total;
                 $dbOrder->addReturnID();
 
+                // Add the relation
+                $dbRelation = new BaseModel($this->db, "entityRelation");
+                $dbRelation->getWhere("entityBuyerId = $dbOrder->entityBuyerId AND entitySellerId = $dbOrder->entitySellerId");
+
+                if ($dbRelation->dry()) {
+                    $dbRelation->entityBuyerId = $dbOrder->entityBuyerId;
+                    $dbRelation->entitySellerId = $dbOrder->entitySellerId;
+                    $dbRelation->currencyId = $dbOrder->currencyId;
+                    $dbRelation->orderCount = 1;
+                    $dbRelation->orderTotal = $dbOrder->total;
+                    $dbRelation->add();
+                } else {
+                    $dbRelation->orderCount++;
+                    $dbRelation->orderTotal += $dbOrder->total;
+                    $dbRelation->updatedAt = date('Y-m-d H:i:s');
+                    $dbRelation->update();
+                }
+
                 $mapSellerIdOrderId[$sellerId] = $dbOrder->id;
                 $this->f3->set('products', $cartItemsBySeller);
                 $this->f3->set('currencySymbol', $mapSellerIdCurrency[$sellerId]->symbol);
