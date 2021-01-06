@@ -71,7 +71,7 @@ function compress_htmlcode($codedata)
                         <div id="product-actions" class="cart-buttons-product-detail">
 
                             <div class="add-to-cart-wrapper">
-                                <input id="quantity-<?php echo $objEntityProduct->id?>"  type="number" min="0"  value="1" />
+                                <input id="quantity-<?php echo $objEntityProduct->id ?>" type="number" min="1" value="1" />
                                 <div id="addToCart" onclick="addToCart()">Add to Cart</div>
                             </div>
                         </div>
@@ -163,34 +163,47 @@ function compress_htmlcode($codedata)
     </div>
 </div>
 
-    <script>
-        var row = <?= json_encode(['id' => $objEntityProduct->id, 'entityId' => $objEntityProduct->entityId, 'productId' => $objEntityProduct->productId, 'quantity' => 1]);?>;
-        var stockStatusId = <?= $objEntityProduct->stockStatusId?>;
-        var userObject = <?php echo json_encode($_SESSION['objUser']); ?>;
+<script>
+    var row = <?= json_encode(['id' => $objEntityProduct->id, 'entityId' => $objEntityProduct->entityId, 'productId' => $objEntityProduct->productId, 'quantity' => 1]); ?>;
+    var stockStatusId = <?= $objEntityProduct->stockStatusId ?>;
+    var cart = <?= $objEntityProduct->cart ?>;
+    var userObject = <?php echo json_encode($_SESSION['objUser']); ?>;
 
+    
         function setUpButtons() {
-            if (userObject.roleId == 40) {
-                switch (stockStatusId) {
-                    case 1:
-                        $("#product-actions").show();
-                        break;
-                    case 2:
-                        $("#product-actions").hide();
-                        break;
-                    case 3:
-                        $("#product-actions").hide();
-                        break;
-                }
-            } else {
-                $("#product-actions").hide();
+        var outActions = '';
+
+        if (userObject.roleId == 40) {
+            switch (stockStatusId) {
+                case 1:
+                    $("#product-actions").show();
+                    /*if (cart > 0) {
+                           outActions += btnAddMoreToCart;
+                       } else {
+                           outActions += btnAddToCart;
+                       } */
+                    break;
+                case 2:
+                    $("#product-actions").hide();
+                    /*        outActions += btnNotifyMe; */
+                    break;
+                case 3:
+                    $("#product-actions").hide();
+                    /*   outActions += btnNotifyMe; */
+                    break;
             }
+        } else {
+            $("#product-actions").hide();
         }
 
-        function addToCart() {
-            SearchDataTable.onClickAddMoreToCart(row);
-        }
+        /*  $("#product-actions").html(outActions); */
+    }
 
-        setUpButtons();
-    </script>
-    <!--end::Container-->
+    function addToCart() {
+        SearchDataTable.onClickAddMoreToCart(row);
+    }
+
+    setUpButtons();
+</script>
+<!--end::Container-->
 <?php ob_end_flush(); ?>

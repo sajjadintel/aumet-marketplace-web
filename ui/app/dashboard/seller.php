@@ -127,7 +127,16 @@
         </div>
     </div>
 </div>
-
+<style>
+    @media only screen and (max-width: 1800px) {
+        #order_datatable_wrapper td {
+            font-size: 11px;
+        }
+        #products_datatable_wrapper td {
+            font-size: 11px;
+        }
+    }
+</style>
 <script>
     var PageClass = function() {
         var elementId = "#order_datatable";
@@ -140,33 +149,37 @@
             targets: 0,
             title: '#',
             data: 'id',
+            orderable: false,
             render: function(data, type, row, meta) {
-                var output = '(' + row.id + ') - #' + row.serial;
+                var output = '#' + row.id ;
                 return output;
             }
         }, {
             targets: 1,
             title: WebAppLocals.getMessage('entityBuyer'),
             data: 'entityBuyer',
+            orderable: false,
             render: function(data, type, row, meta) {
                 var output = row.entityBuyer;
                 return output;
             },
         }, {
             targets: 2,
-            title: WebAppLocals.getMessage('insertDate'),
+            title: WebAppLocals.getMessage('date'),
             data: 'insertDateTime',
+            orderable: false,
             render: function(data, type, row, meta) {
                 var output = '';
                 if (row.insertDateTime) {
-                    output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.insertDateTime).format('DD / MM / YYYY') + '</span>';
+                    output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.insertDateTime).format('DD/MM/YYYY') + '</span>';
                 };
                 return output
             }
         }, {
             targets: 3,
-            title: WebAppLocals.getMessage('orderTotalWithVAT'),
+            title: WebAppLocals.getMessage('orderTotal'),
             data: 'total',
+            orderable: false,
             render: function(data, type, row, meta) {
                 var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
                 return output;
@@ -180,9 +193,7 @@
                 var dropdownStart =
                     '<div class="dropdown dropdown-inline">\
                             <a href="javascript:;" class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" data-toggle="dropdown">\
-								<i class="nav-icon la la-ellipsis-h p-0"></i> &nbsp&nbsp' +
-                    WebAppLocals.getMessage('actions') +
-                    '</a>\
+								<i class="nav-icon la la-ellipsis-h p-0"></i></a>\
                             <div class="dropdown-menu dropdown-menu-md">\
                                 <ul class="navi flex-column navi-hover py-2">';
                 var dropdownEnd = '</ul>\
@@ -195,17 +206,13 @@
                     '<a href="/web/distributor/order/print/' +
                     row.id +
                     '" target="_blank" class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="Print Order">\
-						<i class="nav-icon la la-print p-0"></i> &nbsp&nbsp' +
-                    WebAppLocals.getMessage('print') +
-                    '</a>';
+						<i class="nav-icon la la-print p-0"></i></a>';
                 var btnView =
                     '<a href="javascript:;" onclick=\'WebAppModals.orderViewModal(' +
                     row.id +
                     ')\' \
 						class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
-						<i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
-                    WebAppLocals.getMessage('view') +
-                    '</a>';
+						<i class="nav-icon la la-eye p-0"></i></a>';
 
                 var btnOrderProcess =
                     '<a class="navi-link" href="javascript:;" onclick=\'WebAppModals.orderStatusModal(' +
@@ -287,61 +294,50 @@
 
         var columnDefsProducts = [{
                 className: "export_datatable",
-                targets: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+                targets: [0, 1, 2, 3, 4, 5, 6]
             },
             {
                 "className": "none",
-                "targets": [4, 5, 7]
+                "targets": [2, 3, 5]
             }, {
                 targets: 0,
-                title: '#',
-                data: 'id'
-            }, {
-                targets: 1,
-                title: WebAppLocals.getMessage('productName'),
+                title: WebAppLocals.getMessage('name'),
                 data: 'productName_en',
+                orderable: false,
                 render: function(data, type, row, meta) {
-                    var output = '<span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                    var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        row.entityId +
+                        '/product/' +
+                        row.productId +
+                        '\')"> ' +
+                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
+                        row.image +
+                        '\')" ></div></div>'
+                        + '</a></div>';
+                    output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
                         row.productId +
                         '\')"> ' +
                         row['productName_' + docLang]
-                        + '</span>';
+                        + '</span></div></div>';
                     return output;
                 }
+            }, {
+                targets: 1,
+                title: WebAppLocals.getMessage('quantity'),
+                data: 'quantityOrdered',
+                orderable: false,
             }, {
                 targets: 2,
-                title: '',
-                data: 'image',
-                orderable: false,
-                render: function(data, type, row, meta) {
-                    var output = '<a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
-                    row.entityId +
-                    '/product/' +
-                    row.productId +
-                    '\')"> ' +
-
-                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
-                        row.image +
-                        '\')" ></div></div>'
-
-                        + '</a>';
-
-                    return output;
-                }
-            }, {
-                targets: 3,
-                title: WebAppLocals.getMessage('quantityOrdered'),
-                data: 'quantityOrdered'
-            }, {
-                targets: 4,
                 title: WebAppLocals.getMessage('productScientificName'),
                 data: 'scientificName',
+                orderable: false,
             }, {
-                targets: 5,
+                targets: 3,
                 title: WebAppLocals.getMessage('expiryDate'),
                 data: 'expiryDate',
+                orderable: false,
                 render: function(data, type, row, meta) {
                     var output = '';
                     if (row.expiryDate) {
@@ -350,10 +346,11 @@
                     return output
                 }
             }, {
-                targets: 6,
-                title: WebAppLocals.getMessage('stockAvailability'),
+                targets: 4,
+                title: WebAppLocals.getMessage('availability'),
                 orderable: false,
                 data: 'stockStatusId',
+                width: '120px',
                 render: function(data, type, row, meta) {
                     var status = {
                         1: {
@@ -381,9 +378,10 @@
                     return output;
                 }
             }, {
-                targets: 7,
+                targets: 5,
                 title: WebAppLocals.getMessage('stockUpdateDateTime'),
                 data: 'stockUpdateDateTime',
+                orderable: false,
                 render: function(data, type, row, meta) {
                     var output = '';
                     if (row.stockUpdateDateTime) {
@@ -392,21 +390,31 @@
                     return output;
                 }
             }, {
-                targets: 8,
-                title: WebAppLocals.getMessage('unitPrice'),
+                targets: 6,
+                title: WebAppLocals.getMessage('price'),
                 data: 'unitPrice',
+                orderable: false,
+                width: '65px',
                 render: function(data, type, row, meta) {
                     var output = '';
                     if (row.stockUpdateDateTime) {
-                        output = '<span class="font-size-sm">' + row.currency + '</span>' + ' <b class="font-size-h4">' + row.unitPrice + '</b>';
+                        output = row.currency + ' <strong>' + row.unitPrice + '</strong>';
                     }
                     return output;
                 }
             }
         ];
 
+        var dbAdditionalOptions = {
+            datatableOptions: {
+                order: [
+                    [0, 'desc']
+                ]
+            }
+        };
+
         var initiate = function() {
-            WebApp.CreateDatatableServerside("Recent Orders", "#order_datatable", "/web/distributor/order/recent", columnDefsOrders, null, null, [[0, 'desc']]);
+            WebApp.CreateDatatableServerside("Recent Orders", "#order_datatable", "/web/distributor/order/recent", columnDefsOrders, null, dbAdditionalOptions);
             WebApp.CreateDatatableServerside("Best Selling Products", "#products_datatable", "/web/distributor/product/bestselling", columnDefsProducts);
         };
         return {

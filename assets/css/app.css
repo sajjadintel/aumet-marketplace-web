@@ -84,7 +84,8 @@ label.myLabel input[type='file'] {
 	font-size: 30px;
 }
 
-#feedbackModalRatingLabel, #feedbackModalCommentLabel {
+#feedbackModalRatingLabel,
+#feedbackModalCommentLabel {
 	margin-bottom: 10px;
 }
 
@@ -147,15 +148,15 @@ label.myLabel input[type='file'] {
 }
 
 .text-danger {
-	color: #F64E60;
+	color: #f64e60;
 }
 
 .text-warning {
-	color: #FFA800;
+	color: #ffa800;
 }
 
 .label-primary2 {
-	color: #FFFFFF;
+	color: #ffffff;
 	background-color: #219186;
 }
 
@@ -186,7 +187,7 @@ label.myLabel input[type='file'] {
 
 .add-to-cart-wrapper > div {
 	background: #d0f4f1;
-	color:#3f998a;
+	color: #3f998a;
 	width: 120px;
 	display: flex;
 	justify-content: center;
@@ -198,4 +199,5 @@ label.myLabel input[type='file'] {
 	border: none;
 	width: 100px;
 	height: 50px;
+	padding-left: 10px;
 }

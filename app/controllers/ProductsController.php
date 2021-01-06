@@ -1,6 +1,7 @@
 <?php
 
-class ProductsController extends Controller {
+class ProductsController extends Controller
+{
 
     function getEntityProduct()
     {
@@ -12,36 +13,34 @@ class ProductsController extends Controller {
             $entityId = $this->f3->get('PARAMS.entityId');
             $productId = $this->f3->get('PARAMS.productId');
 
-            global $dbConnection;
-
             if ($entityId == 0)
                 $query = "productId=$productId";
             else
                 $query = "entityId=$entityId and productId=$productId";
 
-            $dbEntityProduct = new BaseModel($dbConnection, "vwEntityProductSell");
+            $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
             $dbEntityProduct->getWhere($query);
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
 
-                if ($dbEntityProduct['bonusTypeId'] == 2) {
-                    $dbEntityProduct['bonusOptions'] = json_decode($dbEntityProduct['bonusConfig']);
-                }
+            if ($dbEntityProduct['bonusTypeId'] == 2) {
+                $dbEntityProduct['bonusOptions'] = json_decode($dbEntityProduct['bonusConfig']);
+            }
 
             $dbEntityProduct['cart'] = 0;
-                if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
-                    foreach ($arrCartDetail as $objCartItem) {
-                        if ($objCartItem['entityProductId'] == $dbEntityProduct['id']) {
-                            $dbEntityProduct['cart'] += $objCartItem['quantity'];
-                            $dbEntityProduct['cart'] += $objCartItem['quantityFree'];
-                        }
+            if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
+                foreach ($arrCartDetail as $objCartItem) {
+                    if ($objCartItem['entityProductId'] == $dbEntityProduct['id']) {
+                        $dbEntityProduct['cart'] += $objCartItem['quantity'];
+                        $dbEntityProduct['cart'] += $objCartItem['quantityFree'];
                     }
                 }
+            }
 
             $this->f3->set('objEntityProduct', $dbEntityProduct);
 
-            $dbEntityProductRelated = new BaseModel($dbConnection, "vwEntityProductSell");
+            $dbEntityProductRelated = new BaseModel($this->db, "vwEntityProductSell");
             $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere("stockStatusId=1 and scientificNameId =$dbEntityProduct->scientificNameId and id != $dbEntityProduct->id");
             $this->f3->set('arrRelatedEntityProduct', $arrRelatedEntityProduct);
 
@@ -188,7 +187,7 @@ class ProductsController extends Controller {
             return true;
         }, $overwrite, true);
 
-        $path = "img/products/" . $imageName;
+        $path = "/assets/img/products/" . $imageName;
 
         $this->webResponse->errorCode = 1;
         $this->webResponse->title = "Product Image Upload";
@@ -251,7 +250,7 @@ class ProductsController extends Controller {
                 $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
 
-                if(!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice) {
+                if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice) {
                     $this->webResponse->errorCode = 2;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Some mandatory fields are missing";
@@ -371,7 +370,7 @@ class ProductsController extends Controller {
             $unitPrice = $this->f3->get('POST.unitPrice');
             $stock = $this->f3->get('POST.stock');
 
-            if(!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$stock) {
+            if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$stock) {
                 $this->webResponse->errorCode = 2;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Some mandatory fields are missing";
@@ -467,7 +466,7 @@ class ProductsController extends Controller {
                 $mapStockIdName[$stockStatus['id']] = $stockStatus['name'];
             }
 
-            $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-stock-sample.xlsx';
+            $sampleFilePath = 'app/files/samples/products-stock-sample.xlsx';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
@@ -542,12 +541,11 @@ class ProductsController extends Controller {
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
         // basename($_FILES["file"]["name"])
 
-        $targetFile = $this->getUploadDirectory() . "reports/products-stock/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
+        $targetFile = "files/uploads/reports/products-stock/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
 
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-                global $dbConnection;
-                $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+                $dbStockUpdateUpload = new BaseModel($this->db, "stockUpdateUpload");
                 $dbStockUpdateUpload->userId = $this->objUser->id;
                 $dbStockUpdateUpload->filePath = $targetFile;
                 $dbStockUpdateUpload->entityId = $this->objUser->entityId;
@@ -562,9 +560,7 @@ class ProductsController extends Controller {
         ini_set('max_execution_time', 1000);
         ini_set('mysql.connect_timeout', 1000);
 
-        global $dbConnection;
-
-        $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+        $dbStockUpdateUpload = new BaseModel($this->db, "stockUpdateUpload");
 
         $dbStockUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
 
@@ -789,7 +785,7 @@ class ProductsController extends Controller {
                     $mapStockIdName[$stockStatus['id']] = $stockStatus['name'];
                 }
 
-                $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-stock-sample.xlsx';
+                $sampleFilePath = 'app/files/samples/products-stock-sample.xlsx';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
@@ -939,7 +935,7 @@ class ProductsController extends Controller {
                 $mapProductIdName[$product['id']] = $product[$nameField];
             }
 
-            $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-bonus-sample.xlsx';
+            $sampleFilePath = 'app/files/samples/products-bonus-sample.xlsx';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
@@ -1015,12 +1011,11 @@ class ProductsController extends Controller {
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
         // basename($_FILES["file"]["name"])
 
-        $targetFile = $this->getUploadDirectory() . "reports/products-bonus/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
+        $targetFile = "files/uploads/reports/products-bonus/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
 
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-                global $dbConnection;
-                $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+                $dbStockUpdateUpload = new BaseModel($this->db, "stockUpdateUpload");
                 $dbStockUpdateUpload->userId = $this->objUser->id;
                 $dbStockUpdateUpload->filePath = $targetFile;
                 $dbStockUpdateUpload->entityId = $this->objUser->entityId;
@@ -1035,9 +1030,7 @@ class ProductsController extends Controller {
         ini_set('max_execution_time', 1000);
         ini_set('mysql.connect_timeout', 1000);
 
-        global $dbConnection;
-
-        $dbBonusUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+        $dbBonusUpdateUpload = new BaseModel($this->db, "stockUpdateUpload");
 
         $dbBonusUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
 
@@ -1175,7 +1168,7 @@ class ProductsController extends Controller {
                     $mapProductIdName[$product['productId']] = $product[$nameField];
                 }
 
-                $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-bonus-sample.xlsx';
+                $sampleFilePath = 'app/files/samples/products-bonus-sample.xlsx';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
@@ -1331,7 +1324,7 @@ class ProductsController extends Controller {
                 $arrCountry[] = array($country['name'], $country['id']);
             }
 
-            $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-add-sample.xlsx';
+            $sampleFilePath = 'app/files/samples/products-add-sample.xlsx';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
@@ -1376,12 +1369,11 @@ class ProductsController extends Controller {
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
         // basename($_FILES["file"]["name"])
 
-        $targetFile = $this->getUploadDirectory() . "reports/products-add/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
+        $targetFile = "files/uploads/reports/products-add/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
 
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-                global $dbConnection;
-                $dbBulkAddUpload = new BaseModel($dbConnection, "bulkAddUpload");
+                $dbBulkAddUpload = new BaseModel($this->db, "bulkAddUpload");
                 $dbBulkAddUpload->userId = $this->objUser->id;
                 $dbBulkAddUpload->filePath = $targetFile;
                 $dbBulkAddUpload->entityId = $this->objUser->entityId;
@@ -1396,9 +1388,7 @@ class ProductsController extends Controller {
         ini_set('max_execution_time', 1000);
         ini_set('mysql.connect_timeout', 1000);
 
-        global $dbConnection;
-
-        $dbBulkAddUpload = new BaseModel($dbConnection, "bulkAddUpload");
+        $dbBulkAddUpload = new BaseModel($this->db, "bulkAddUpload");
 
         $dbBulkAddUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
 
@@ -1473,7 +1463,7 @@ class ProductsController extends Controller {
 
                 $dbProduct = new BaseModel($this->db, "product");
                 $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
-                
+
                 $product = [];
 
                 $cellIterator = $row->getCellIterator();
@@ -1485,7 +1475,7 @@ class ProductsController extends Controller {
                     $cellLetter = $cell->getColumn();
                     $cellValue = $cell->getCalculatedValue();
 
-                    if($cellValue === "#REF!") {
+                    if ($cellValue === "#REF!") {
                         $cellValue = $cell->getOldCalculatedValue();
                     }
 
@@ -1550,7 +1540,7 @@ class ProductsController extends Controller {
 
                 $dbBulkAddUpload->recordsCount++;
 
-                if(count($errors) === 0) {
+                if (count($errors) === 0) {
                     $dbProduct->addReturnID();
 
                     $dbEntityProduct->productId = $dbProduct->id;
@@ -1595,7 +1585,7 @@ class ProductsController extends Controller {
                     $arrCountry[] = array($country['name'], $country['id']);
                 }
 
-                $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-add-sample.xlsx';
+                $sampleFilePath = 'app/files/samples/products-add-sample.xlsx';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
@@ -1648,7 +1638,7 @@ class ProductsController extends Controller {
                             $cellValue = $mapScientificIdName[$product[$j]];
                         } else if ($field == "madeInCountryId") {
                             $cellValue = $mapCountryIdName[$product[$j]];
-                        } else if($product[$j] !== 0) {
+                        } else if ($product[$j] !== 0) {
                             $cellValue = $product[$j];
                         }
                         array_push($singleProduct, $cellValue);
