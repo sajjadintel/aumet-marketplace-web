@@ -73,7 +73,7 @@ return array(
 
     'vBack' => 'Go Back',
 
-    'vModule_search_title' => 'Search in Products',
+    'vModule_search_title' => 'Search for products...',
     'vModule_search_header' => 'You can search in the products using the product name, scientific name, or distributor name',
     'vModule_search_brandNameplaceholder' => 'Brand Name',
     'vModule_search_categoryplaceholder' => 'Category',
@@ -108,7 +108,7 @@ return array(
     'feedbackSaved' => 'Feedback saved!',
 
     'vOrderStatusConfirmation' => 'Are you sure you want to move this order to {0}?',
-    'vOrderStatus_New' => 'New',
+    'vOrderStatus_Pending' => 'Pending',
     'vOrderStatus_OnHold' => 'On Hold',
     'vOrderStatus_Processing' => 'Processing',
     'vOrderStatus_Completed' => 'Completed',
@@ -164,6 +164,8 @@ return array(
     'vModule_cartCheckout_successContent' => 'Your order has been submitted successfully !',
     'vModule_cartCheckout_paymentMethodTitle' => 'Payment Method',
 
+    'vModule_thankyou_viewOrder' => 'View my orders',
+
     'vModule_bonus_bonusTextTemplate' => 'For %q: %b',
 
     'vModule_order_dateFrom' => 'Get Orders Starting Date',
@@ -184,6 +186,7 @@ return array(
 
     'vButton_update' => 'Update',
     'vButton_add' => 'Add',
+    'vButton_bulk_add' => 'Bulk Add',
     'vButton_confirm' => 'Confirm',
 
     'vModule_feedback_title' => 'Customer Orders Feedback',
@@ -191,4 +194,6 @@ return array(
 
     'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ',
     'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!',
+
+    'vModule_bulk_add_title' => 'Bulk Add',
 );

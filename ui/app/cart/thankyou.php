@@ -26,6 +26,10 @@ function compress_htmlcode($codedata)
                         </p>
                     </div>
 
+                    <div class="thankyou-page-button">
+                        <a href="javascript:;" onclick="WebApp.loadPage('/web/pharmacy/order/pending')" class="btn btn-success font-weight-bolder px-8"><?php echo $vModule_thankyou_viewOrder ?></a>
+                    </div>
+
                     <?php foreach ($allOrders as $order) : ?>
 
                         <div class="text-center p-10">

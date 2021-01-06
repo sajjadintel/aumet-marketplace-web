@@ -47,7 +47,10 @@ var KTFormWidgetsValidation = function () {
         $('#kt_daterangepicker').daterangepicker({
             buttonClasses: ' btn',
             applyClass: 'btn-primary',
-            cancelClass: 'btn-light-primary'
+            cancelClass: 'btn-light-primary',
+            locale: {
+                format: 'DD/MM/YYYY',
+            }
         }, function(start, end, label) {
             var input = $('#kt_daterangepicker').find('.form-control');
             input.val( start.format('YYYY/MM/DD') + ' / ' + end.format('YYYY/MM/DD'));

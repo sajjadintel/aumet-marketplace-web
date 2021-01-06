@@ -54,7 +54,6 @@ $f3->route('GET /web/demo/editor/scientificnames', 'DemoController->get');
 
 
 // START APM-10 APM-11 APM-35 
-$f3->route('GET /web/distributor/order/new', 'OrderController->getDistributorOrdersNew');
 $f3->route('GET /web/distributor/order/pending', 'OrderController->getDistributorOrdersPending');
 $f3->route('GET /web/distributor/order/unpaid', 'OrderController->getDistributorOrdersUnpaid');
 $f3->route('GET /web/distributor/order/history', 'OrderController->getDistributorOrdersHistory');
@@ -62,7 +61,6 @@ $f3->route('GET /web/distributor/order/@orderId', 'OrderController->getOrderDeta
 $f3->route('GET /web/distributor/order/print/@orderId', 'OrderController->getPrintOrderInvoice');
 $f3->route('GET /web/distributor/order/confirm/@orderId/@statusId', 'OrderController->getOrderConfirmation');
 $f3->route('GET /web/distributor/order/confirm/@orderId/@statusId/dashboard', 'OrderController->getOrderConfirmationDashboard');
-$f3->route('POST /web/distributor/order/new', 'OrderController->postDistributorOrdersNew');
 
 $f3->route('GET /web/distributor/orderMissingProducts/@orderId', 'OrderController->getOrderMissingProducts');
 
@@ -87,18 +85,20 @@ $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDi
 $f3->route('POST /web/distributor/product/image', 'ProductsController->postProductImage');
 $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->postEditQuantityDistributorProduct');
 
-// stock download
-$f3->route('GET /web/distributor/product/stock/download', 'ProductsController->getStockDownload');
+// Bulk add 
+$f3->route('GET /web/distributor/product/bulk/add/download', 'ProductsController->getBulkAddDownload');
+$f3->route('GET /web/distributor/product/bulk/add/upload', 'ProductsController->getBulkAddUpload');
+$f3->route('POST /web/distributor/product/bulk/add/upload', 'ProductsController->postBulkAddUpload');
+$f3->route('POST /web/distributor/product/bulk/add/upload/process', 'ProductsController->postBulkAddUploadProcess');
 
-// stock upload
+// Stock update
+$f3->route('GET /web/distributor/product/stock/download', 'ProductsController->getStockDownload');
 $f3->route('GET /web/distributor/product/stock/upload', 'ProductsController->getStockUpload');
 $f3->route('POST /web/distributor/product/stock/upload', 'ProductsController->postStockUpload');
 $f3->route('POST /web/distributor/product/stock/upload/process', 'ProductsController->postStockUploadProcess');
 
-// bonus stock download
+// Bonus update
 $f3->route('GET /web/distributor/product/bonus/download', 'ProductsController->getBonusDownload');
-
-// bonus stock upload
 $f3->route('GET /web/distributor/product/bonus/upload', 'ProductsController->getBonusUpload');
 $f3->route('POST /web/distributor/product/bonus/upload', 'ProductsController->postBonusUpload');
 $f3->route('POST /web/distributor/product/bonus/upload/process', 'ProductsController->postBonusUploadProcess');

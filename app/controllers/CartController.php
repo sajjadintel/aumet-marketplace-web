@@ -35,7 +35,6 @@ class CartController extends Controller {
             $entityId = $this->f3->get('POST.entityId');
             $productId = $this->f3->get('POST.productId');
             $quantity = $this->f3->get('POST.quantity');
-            $quantityFree = $this->f3->get('POST.quantityFree');
 
             if (!is_numeric($quantity) || $quantity == 0) {
                 $quantity = 1;
@@ -66,23 +65,20 @@ class CartController extends Controller {
                 $dbCartDetail->entityProductId = $dbEntityProduct->id;
                 $dbCartDetail->userId = $this->objUser->id;
 
+
                 $newQuantity = $dbCartDetail->quantity + $quantity;
                 $dbCartDetail->quantity = $newQuantity;
 
-                $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
-                $arrBonus = $dbBonus->findWhere("entityProductId = '$dbEntityProduct->id' AND isActive = 1");
-                
-                $maxMinOrder = 0;
-                foreach($arrBonus as $bonus) {
-                    if($bonus['minOrder'] <= $newQuantity && $maxMinOrder < $bonus['minOrder']) {
-                        $maxMinOrder = $bonus['minOrder'];
-                        $quantityFree = $bonus['bonus'];
-                    }
+                if ($dbEntityProduct->bonusTypeId == 2) {
+                    $dbBonus = new GenericModel($this->db, "entityProductSellBonusDetail");
+                    $arrBonus = $dbBonus->findWhere("entityProductId = '$dbEntityProduct->id' AND isActive = 1", 'minOrder DESC');
+
+                    $entityProductBonusType = new GenericModel($this->db, "entityProductBonusType");
+                    $entityProductBonusType->getWhere("id = '$dbEntityProduct->bonusTypeId'");
+
+                    $quantityFree = $this->calculateBonus($dbCartDetail->quantity, $arrBonus, $entityProductBonusType->formula);
                 }
 
-                if(!$quantityFree) {
-                    $quantityFree = $dbCartDetail->quantityFree;
-                }
 
                 $total = $quantityFree + $newQuantity;
                 if($total > $dbEntityProduct->stock) {
@@ -113,6 +109,24 @@ class CartController extends Controller {
                 echo $this->webResponse->jsonResponse();
             }
         }
+    }
+
+    private function calculateBonus($quantity, $bonuses, $formula)
+    {
+        foreach ($bonuses as $bonus) {
+            if ($quantity >= $bonus['minOrder']) {
+                $formula = str_replace('quantity', $quantity, $formula);
+                $formula = str_replace('minOrder', $bonus['minOrder'], $formula);
+                $formula = str_replace('bonus', $bonus['bonus'], $formula);
+                if (strpos($formula, ';') === false) {
+                    $formula .= ';';
+                }
+                $formula = '$response = ' . $formula;
+                eval($formula);
+                return $response;
+            }
+        }
+        return 0;
     }
 
     function postRemoveItem()
@@ -265,8 +279,8 @@ class CartController extends Controller {
             foreach ($allCartItems as $sellerId => $cartItemsBySeller) {
                 // Sort cart items to get product followed by its bonuses
                 usort($cartItemsBySeller, function ($c1, $c2) {
-                    $productIdDIff = $c1->entityProductId - $c2->entityProductId;
-                    if ($productIdDIff === 0) {
+                    $productIdDiff = $c1->entityProductId - $c2->entityProductId;
+                    if ($productIdDiff === 0) {
                         return $c1->quantityFree - $c2->quantityFree;
                     } else {
                         return $productIdDiff;
@@ -358,7 +372,7 @@ class CartController extends Controller {
 
             $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
             $arrBonus = $dbBonus->findWhere("entityProductId = '$productId' AND isActive = 1");
-            
+
             $quantityFree = 0;
             $maxMinOrder = 0;
             foreach($arrBonus as $bonus) {
@@ -372,7 +386,7 @@ class CartController extends Controller {
             $dbCartDetail->getById($cartDetailId);
             $dbCartDetail->quantity = $quantity;
             $dbCartDetail->quantityFree = $quantityFree;
-            
+
             $dbEntityProduct = new BaseModel($dbConnection, "entityProductSell");
             $dbEntityProduct->getWhere("productId=$productId");
 
@@ -389,7 +403,7 @@ class CartController extends Controller {
 
             $dbCartDetailFull = new BaseModel($dbConnection, "vwCartDetail");
             $cartDetailFull = $dbCartDetailFull->getById($cartDetailId)[0];
-            
+
             // Get cart count
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
             $cartCount = 0;
@@ -506,11 +520,17 @@ class CartController extends Controller {
 
             // Get currency by entity
             $dbEntities = new BaseModel($dbConnection, "entity");
+            $nameField = "name_" . $this->objUser->language;
+            $dbEntities->name = $nameField;
             $allEntities = $dbEntities->all();
 
+            $buyerName = "";
             $mapSellerIdCurrency = [];
             foreach ($allEntities as $entity) {
                 $mapSellerIdCurrency[$entity->id] = $mapCurrencyIdCurrency[$entity->currencyId];
+                if($entity->id === $account->entityId) {
+                    $buyerName = $entity->name;
+                }
             }
 
             // Get buyer currency
@@ -532,6 +552,7 @@ class CartController extends Controller {
 
                     $seller = new stdClass();
                     $seller->sellerId = $sellerId;
+                    $seller->name = $cartDetail->$nameField;
                     array_push($allSellers, $seller);
                 }
 
@@ -544,10 +565,13 @@ class CartController extends Controller {
             $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
             $this->f3->set('title', 'New Order');
             $this->f3->set('emailType', 'newOrder');
+            $this->f3->set('orderSubmittedAt', date("Y-m-d H:i:s"));
 
             $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
 
             $allProducts = [];
+            $allSellerNames = [];
+            $allOrderId = [];
             $mapCurrencyIdSubTotal = [];
             $mapCurrencyIdTax = [];
             $mapCurrencyIdTotal = [];
@@ -562,12 +586,12 @@ class CartController extends Controller {
                 $subTotal = 0;
                 $tax = 0;
                 foreach ($cartItemsBySeller as $cartItem) {
-                    $productPrice = $cartItem->quantity * $cartItem->unitPrice; 
+                    $productPrice = $cartItem->quantity * $cartItem->unitPrice;
                     $subTotal += $productPrice;
                     $tax += $productPrice * $cartItem->vat / 100;
                     array_push($allProducts, $cartItem);
                 }
-                
+
                 $total = $subTotal + $tax;
 
                 if(array_key_exists($currencyId, $mapCurrencyIdSubTotal)) {
@@ -619,6 +643,7 @@ class CartController extends Controller {
                 $this->f3->set('tax', round($tax, 2));
                 $this->f3->set('total', round($total, 2));
                 $this->f3->set('ordersUrl', "web/distributor/order/new");
+                $this->f3->set('name', "Buyer name: " . $buyerName);
 
                 $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $sellerId);
                 foreach ($arrEntityUserProfile as $entityUserProfile) {
@@ -626,7 +651,7 @@ class CartController extends Controller {
                 }
                 $htmlContent = View::instance()->render($emailFile);
 
-                $subject = "Aumet - New Order Confirmation";
+                $subject = "Aumet - New Order Confirmation (" . $dbOrder->id . ")";
                 if (getenv('ENV') != Constants::ENV_PROD) {
                     $subject .= " - (Test: ".getenv('ENV').")";
 
@@ -639,6 +664,9 @@ class CartController extends Controller {
 
                 $emailHandler->sendEmail(Constants::EMAIL_NEW_ORDER, $subject, $htmlContent);
                 $emailHandler->resetTos();
+
+                array_push($allSellerNames, $seller->name);
+                array_push($allOrderId, $dbOrder->id);
             }
 
             $subTotalUSD = 0;
@@ -647,22 +675,22 @@ class CartController extends Controller {
             foreach($mapCurrencyIdCurrency as $currencyId => $currency) {
                 if(array_key_exists($currencyId, $mapCurrencyIdSubTotal)) {
                     $subTotal = $mapCurrencyIdSubTotal[$currencyId];
-                    $subTotalUSD += $subTotal + $currency->conversionToUSD; 
+                    $subTotalUSD += $subTotal * $currency->conversionToUSD; 
                 }
-                
+
                 if(array_key_exists($currencyId, $mapCurrencyIdTax)) {
                     $tax = $mapCurrencyIdTax[$currencyId];
-                    $taxUSD += $tax + $currency->conversionToUSD; 
+                    $taxUSD += $tax * $currency->conversionToUSD; 
                 }
-                
+
                 if(array_key_exists($currencyId, $mapCurrencyIdTotal)) {
                     $total = $mapCurrencyIdTotal[$currencyId];
-                    $totalUSD += $total + $currency->conversionToUSD; 
+                    $totalUSD += $total * $currency->conversionToUSD; 
                 }
             }
 
             $subTotal = $subTotalUSD / $buyerCurrency->conversionToUSD;
-            $tax = $tax / $buyerCurrency->conversionToUSD;
+            $tax = $taxUSD / $buyerCurrency->conversionToUSD;
             $total = $totalUSD / $buyerCurrency->conversionToUSD;
 
             $this->f3->set('products', $allProducts);
@@ -671,6 +699,10 @@ class CartController extends Controller {
             $this->f3->set('tax', round($tax, 2));
             $this->f3->set('total', round($total, 2));
             $this->f3->set('ordersUrl', "web/pharmacy/order/history");
+
+            $name = count($allSellerNames) > 1? "Seller names: " : "Seller name: ";
+            $name .= implode(", ", $allSellerNames);
+            $this->f3->set('name', $name);
             
             $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $account->entityId);
             foreach ($arrEntityUserProfile as $entityUserProfile) {
@@ -678,7 +710,7 @@ class CartController extends Controller {
             }
             $htmlContent = View::instance()->render($emailFile);
 
-            $subject = "Aumet - you've got a new order!";
+            $subject = "Aumet - you've got a new order! (" . implode(", ", $allOrderId) . ")";
             if (getenv('ENV') != Constants::ENV_PROD) {
                 $subject .= " - (Test: ".getenv('ENV').")";
                 if (getenv('ENV') == Constants::ENV_LOC){
@@ -720,8 +752,7 @@ class CartController extends Controller {
             $this->db->exec($commands);
 
             $dbCartDetail = new BaseModel($dbConnection, "cartDetail");
-            $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-            $dbCartDetail->delete();
+            $dbCartDetail->erase("accountId=". $this->objUser->accountId);
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = "";
