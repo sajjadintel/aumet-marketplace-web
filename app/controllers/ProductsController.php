@@ -468,7 +468,7 @@ class ProductsController extends Controller
                 $mapStockIdName[$stockStatus['id']] = $stockStatus['name'];
             }
 
-            $sampleFilePath = getenv('DOMAIN_URL') . 'app/files/samples/products-stock-sample.xlsx';
+            $sampleFilePath = 'app/files/samples/products-stock-sample.xlsx';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
@@ -543,7 +543,7 @@ class ProductsController extends Controller
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
         // basename($_FILES["file"]["name"])
 
-        $targetFile = $this->getUploadDirectory() . "reports/products-stock/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
+        $targetFile = "files/uploads/reports/products-stock/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
 
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
@@ -790,7 +790,7 @@ class ProductsController extends Controller
                     $mapStockIdName[$stockStatus['id']] = $stockStatus['name'];
                 }
 
-                $sampleFilePath = getenv('DOMAIN_URL') . 'app/files/samples/products-stock-sample.xlsx';
+                $sampleFilePath = 'app/files/samples/products-stock-sample.xlsx';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
