@@ -14,7 +14,7 @@ function compress_htmlcode($codedata)
 ?>
     <!--begin::Container-->
     <div class="container-fluid">
-        <div class="d-flex align-items-stretch text-center flex-column">
+        <div class="d-flex align-items-stretch flex-column">
 
             <form class="d-flex position-relative w-100 m-auto">
 

@@ -375,24 +375,24 @@ function compress_htmlcode($codedata)
             placeholder: "<?php echo $vModule_search_title ?>",
             templateResult: formatResult,
 
-            query: function (options) {
-
-                if (options.term && options.term.replace(/ /g, "").length > 0) {
-                    $.ajax({
-                        url: '/web/searchbar',
-                        data: {term: options.term},
-                        dataType: 'json',
-                        type: 'get',
-                        success: function (data) {
-                            console.log(data);
-                            options.callback({
-                                results: data.data.results,
-                                pagination: {
-                                    more: data.data.pagination
-                                }
-                            });
+            ajax: {
+                url: '/web/searchbar',
+                dataType: 'json',
+                data: function (params) {
+                    if (params.term.trim().length  < 1) {
+                        throw false;
+                    }
+                    return {
+                        term: params.term.trim()
+                    };
+                },
+                processResults: function (response) {
+                    return {
+                        results: response.data.results,
+                        pagination: {
+                            more: response.data.pagination
                         }
-                    });
+                    }
                 }
             }
         });
