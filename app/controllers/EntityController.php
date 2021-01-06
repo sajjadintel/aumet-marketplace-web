@@ -7,10 +7,7 @@ class EntityController extends Controller
         if (!$this->f3->ajax()) {
             echo View::instance()->render('app/layout/layout.php');
         } else {
-
-            global $dbConnection;
-
-            $dbStockStatus = new BaseModel($dbConnection, "stockStatus");
+            $dbStockStatus = new BaseModel($this->db, "stockStatus");
             $dbStockStatus->name = "name_" . $this->objUser->language;
             $arrStockStatus = $dbStockStatus->all("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
@@ -77,9 +74,7 @@ class EntityController extends Controller
             echo View::instance()->render('app/layout/layout.php');
         } else {
 
-            global $dbConnection;
-
-            $dbStockStatus = new BaseModel($dbConnection, "stockStatus");
+            $dbStockStatus = new BaseModel($this->db, "stockStatus");
             $dbStockStatus->name = "name_" . $this->objUser->language;
             $arrStockStatus = $dbStockStatus->all("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
