@@ -290,6 +290,13 @@ function compress_htmlcode($codedata)
               endDate: null
           };
 
+          var dbAdditionalOptions = {
+              datatableOptions: {
+                  order: [
+                      [0, 'desc']
+                  ]
+              }
+          };
 
           var _selectSeller = $('#searchOrdersBuyerInput').select2({
               placeholder: "<?php echo $vModule_search_sellerNamePlaceholder ?>",
@@ -309,12 +316,12 @@ function compress_htmlcode($codedata)
           });
           _selectSeller.on("select2:select", function (e) {
               searchQuery.entitySellerId = $("#searchOrdersBuyerInput").val();
-              WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, null, [[0, 'desc']]);
+              WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
 
           });
           _selectSeller.on("select2:unselect", function (e) {
               searchQuery.entitySellerId = $("#searchOrdersBuyerInput").val();
-              WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, null, [[0, 'desc']]);
+              WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
           });
 
           $('#searchOrdersDateInput').daterangepicker({
@@ -327,13 +334,13 @@ function compress_htmlcode($codedata)
           }, function (start, end, label) {
               searchQuery.startDate = start.format('YYYY-MM-DD');
               searchQuery.endDate = end.format('YYYY-MM-DD');
-              WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, null, [[0, 'desc']]);
+              WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
           });
 
           $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
           var initiate = function () {
-              WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, null, [[0, 'desc']]);
+              WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
           };
           return {
               init: function () {
