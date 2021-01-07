@@ -12,15 +12,15 @@ function compress_htmlcode($codedata)
     return $codedata;
 }
 ?>
-<!--begin::Container-->
-<div class="container-fluid">
-    <div class="d-flex align-items-stretch text-center flex-column">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <div class="d-flex align-items-stretch flex-column">
 
-        <form class="d-flex position-relative w-100 m-auto">
+            <form class="d-flex position-relative w-100 m-auto">
 
-            <div class="d-flex flex-column-fluid">
-                <div class="input-group input-group-lg mr-5">
-                    <div class="input-group-prepend pt-3 pl-1 pr-1">
+                <div class="d-flex flex-column-fluid">
+                    <div class="input-group input-group-lg mr-5">
+                        <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -30,15 +30,15 @@ function compress_htmlcode($codedata)
                                 </g>
                             </svg>
                         </span>
+                        </div>
+                        <select class="select2 form-control" id="searchProductsBrandNameInput" multiple="" name="brandName" data-select2-id="searchProductsBrandNameInput" tabindex="-1" aria-hidden="true">
+                        </select>
                     </div>
-                    <select class="select2 form-control" id="searchProductsBrandNameInput" multiple="" name="brandName" data-select2-id="searchProductsBrandNameInput" tabindex="-1" aria-hidden="true">
-                    </select>
                 </div>
-            </div>
 
-            <div class="d-flex flex-column-fluid">
-                <div class="input-group input-group-lg mr-5">
-                    <div class="input-group-prepend pt-3 pl-1 pr-1">
+                <div class="d-flex flex-column-fluid">
+                    <div class="input-group input-group-lg mr-5">
+                        <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -49,16 +49,16 @@ function compress_htmlcode($codedata)
                                 </g>
                             </svg>
                         </span>
+                        </div>
+                        <select class="select2 form-control" id="searchProductsScieceNameInput" multiple="" name="scientificName" data-select2-id="searchProductsScieceNameInput" tabindex="-1" aria-hidden="true">
+
+                        </select>
                     </div>
-                    <select class="select2 form-control" id="searchProductsScieceNameInput" multiple="" name="scientificName" data-select2-id="searchProductsScieceNameInput" tabindex="-1" aria-hidden="true">
-
-                    </select>
                 </div>
-            </div>
 
-            <div class="d-flex flex-column-fluid">
-                <div class="input-group input-group-lg">
-                    <div class="input-group-prepend ">
+                <div class="d-flex flex-column-fluid">
+                    <div class="input-group input-group-lg">
+                        <div class="input-group-prepend ">
                         <span class="input-group-text border-0 py-1 px-3">
                             <span class="svg-icon svg-icon-xl">
 
@@ -72,14 +72,14 @@ function compress_htmlcode($codedata)
 
                             </span>
                         </span>
+                        </div>
+                        <input id="searchStockStatus" data-switch="true" type="checkbox" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="70" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
                     </div>
-                    <input id="searchStockStatus" data-switch="true" type="checkbox" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="70" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
                 </div>
-            </div>
 
-            <div class="d-flex flex-column-fluid">
-                <div class="input-group input-group-lg">
-                    <div class="input-group-prepend ">
+                <div class="d-flex flex-column-fluid">
+                    <div class="input-group input-group-lg">
+                        <div class="input-group-prepend ">
 
                         <label class="myLabel">
                             <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="DistributorProductsDataTable.productAddModal()">
@@ -100,175 +100,279 @@ function compress_htmlcode($codedata)
                         </label>
                     </div>
                 </div>
+
+
+            </form>
+        </div>
+
+        <div class="card card-custom gutter-b mt-10">
+            <div class="card-body">
+                <!--begin: Datatable-->
+                <table
+                    id="datatable"
+                    class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
+                </table>
+                <!--end: Datatable-->
             </div>
-
-
-        </form>
-    </div>
-
-    <div class="card card-custom gutter-b mt-10">
-        <div class="card-body">
-            <!--begin: Datatable-->
-            <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
-            <!--end: Datatable-->
         </div>
     </div>
-</div>
-<!--end::Container-->
-<script>
-    var searchQuery = {
-        productId: [],
-        scientificNameId: [],
-        stockOption: 1
-    };
-    var $repeater;
+    <!--end::Container-->
+    <script>
+        var PageClass = function () {
+            var elementId = "#datatable";
+            var url = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 
-    var _selectBrand = $('#searchProductsBrandNameInput').select2({
-        placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
+            var columnDefs = [{
+                className: "export_datatable",
+                targets: [0, 1, 2, 3, 4]
+            }, {
+                targets: 0,
+                title: WebAppLocals.getMessage('productName'),
+                data: 'productName_en',
+                render: function (data, type, row, meta) {
+                    var output = '<div style="display:flex;flex-direction:row;align-items: center"><div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
+                        row.image +
+                        '\')" ></div></div>';
+                    output += row.productName_en+'</div>';
+                    return output;
+                },
+            }, {
+                targets: 1,
+                title: WebAppLocals.getMessage('productScientificName'),
+                data: 'scientificName',
+                render: function (data, type, row, meta) {
+                    var output = row.scientificName;
+                    return output
+                }
+            }, {
+                targets: 2,
+                title: WebAppLocals.getMessage('stockAvailability'),
+                data: 'stockStatusId',
+                render: function (data, type, row, meta) {
+                    var status = {
+                        1: {
+                            title: WebAppLocals.getMessage('stockAvailability_available'),
+                            class: ' label-primary',
+                        },
+                        2: {
+                            title: WebAppLocals.getMessage('stockAvailability_notAvailable'),
+                            class: ' label-danger',
+                        },
+                        3: {
+                            title: WebAppLocals.getMessage('stockAvailability_availableSoon'),
+                            class: ' label-warning',
+                        },
+                    };
 
-        ajax: {
-            url: '/web/product/brandname/list',
-            dataType: 'json',
-            processResults: function(response) {
-                return {
-                    results: response.data.results,
-                    pagination: {
-                        more: response.data.pagination
+                    var output = '';
+
+                    output +=
+                        '<div><span class="label label-lg font-weight-bold ' +
+                        status[row.stockStatusId].class +
+                        ' label-inline">' +
+                        status[row.stockStatusId].title +
+                        '</span></div>';
+
+                    return output;
+                }
+            }, {
+                targets: 3,
+                title: WebAppLocals.getMessage('stockUpdateDateTime'),
+                data: 'stockUpdateDateTime',
+                render: function (data, type, row, meta) {
+                    if (row.stockUpdateDateTime) {
+                        return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
+                    } else {
+                        return '';
                     }
                 }
-            }
-        }
-    });
-    _selectBrand.on("select2:select", function(e) {
-        searchQuery.productId = $("#searchProductsBrandNameInput").val();
-        DistributorProductsDataTable.setReadParams(searchQuery);
+            }, {
+                targets: 4,
+                title: WebAppLocals.getMessage('unitPrice'),
+                data: 'unitPrice',
+                render: function (data, type, row, meta) {
+                    return '<span class="font-size-sm">' + row.currency + '</span>' + ' <b class="font-size-h4">' + row.unitPrice + '</b>';
+                }
+            }, {
+                targets: 5,
+                title: '',
+                data: 'id',
+                orderable: false,
+                render: function (data, type, row, meta) {
+                    var outActions = '';
 
-    });
-    _selectBrand.on("select2:unselect", function(e) {
-        searchQuery.productId = $("#searchProductsBrandNameInput").val();
-        DistributorProductsDataTable.setReadParams(searchQuery);
-    });
+                    var btnEdit =
+                        '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditModal(' +
+                        row.productId +
+                        ')\' \
+                    class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
+                    <i class="nav-icon la la-edit p-0"></i> ' +
+                        WebAppLocals.getMessage('edit') +
+                        '</a>';
+
+                    var btnEditQuantity =
+                        '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditQuantityModal(' +
+                        row.productId +
+                        ')\' \
+                    class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
+                    <i class="nav-icon la la-box p-0"></i> ' +
+                        WebAppLocals.getMessage('editQuantity') +
+                        '</a>';
+
+                    outActions += btnEdit;
+                    outActions += btnEditQuantity;
+
+                    return outActions;
+                },
+            }];
 
 
-    var _selectScientific = $('#searchProductsScieceNameInput').select2({
-        placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+            var searchQuery = {
+                productId: [],
+                scientificNameId: [],
+                stockOption: 1
+            };
 
-        ajax: {
-            url: '/web/product/scientificname/list',
-            dataType: 'json',
-            processResults: function(response) {
-                return {
-                    results: response.data.results,
-                    pagination: {
-                        more: response.data.pagination
+            var _selectBrand = $('#searchProductsBrandNameInput').select2({
+                placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
+
+                ajax: {
+                    url: '/web/product/brandname/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
                     }
                 }
-            }
-        }
-    });
-    _selectScientific.on("select2:select", function(e) {
-        searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-        DistributorProductsDataTable.setReadParams(searchQuery);
-    });
-    _selectScientific.on("select2:unselect", function(e) {
-        searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-        DistributorProductsDataTable.setReadParams(searchQuery);
-    });
+            });
+            _selectBrand.on("select2:select", function(e) {
+                searchQuery.productId = $("#searchProductsBrandNameInput").val();
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
 
-    $('#searchStockStatus').bootstrapSwitch().on("switchChange.bootstrapSwitch", function(event, state) {
-        searchQuery.stockOption = state ? 1 : 0;
-        DistributorProductsDataTable.setReadParams(searchQuery);
-        if (state) {
-            DistributorProductsDataTable.hideColumn('stockStatusId');
-        } else {
-            DistributorProductsDataTable.showColumn('stockStatusId');
-        }
-    });
+            });
+            _selectBrand.on("select2:unselect", function(e) {
+                searchQuery.productId = $("#searchProductsBrandNameInput").val();
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
+            });
 
-    var _selectScientificEdit = $('#editProductScientificName').select2({
-        placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
 
-        ajax: {
-            url: '/web/product/scientificname/list',
-            dataType: 'json',
-            processResults: function(response) {
-                return {
-                    results: response.data.results,
-                    pagination: {
-                        more: response.data.pagination
+            var _selectScientific = $('#searchProductsScieceNameInput').select2({
+                placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+
+                ajax: {
+                    url: '/web/product/scientificname/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
                     }
                 }
-            }
-        }
-    });
+            });
+            _selectScientific.on("select2:select", function(e) {
+                searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
+            });
+            _selectScientific.on("select2:unselect", function(e) {
+                searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
+            });
 
-    var _selectScientificAdd = $('#addProductScientificName').select2({
-        placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+            $('#searchStockStatus').bootstrapSwitch().on("switchChange.bootstrapSwitch", function(event, state) {
+                searchQuery.stockOption = state ? 1 : 0;
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
+            });
 
-        ajax: {
-            url: '/web/product/scientificname/list',
-            dataType: 'json',
-            processResults: function(response) {
-                return {
-                    results: response.data.results,
-                    pagination: {
-                        more: response.data.pagination
+            var _selectScientificEdit = $('#editProductScientificName').select2({
+                placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+
+                ajax: {
+                    url: '/web/product/scientificname/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
                     }
                 }
-            }
-        }
-    });
+            });
 
-    var _selectCountryEdit = $('#editProductCountry').select2({
-        placeholder: "<?php echo $vModule_search_countryPlaceholder ?>",
+            var _selectScientificAdd = $('#addProductScientificName').select2({
+                placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
 
-        ajax: {
-            url: '/web/product/country/list',
-            dataType: 'json',
-            processResults: function(response) {
-                return {
-                    results: response.data.results,
-                    pagination: {
-                        more: response.data.pagination
+                ajax: {
+                    url: '/web/product/scientificname/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
                     }
                 }
-            }
-        }
-    });
+            });
 
-    var _selectCountryAdd = $('#addProductCountry').select2({
-        placeholder: "<?php echo $vModule_search_countryPlaceholder ?>",
+            var _selectCountryEdit = $('#editProductCountry').select2({
+                placeholder: "<?php echo $vModule_search_countryPlaceholder ?>",
 
-        ajax: {
-            url: '/web/product/country/list',
-            dataType: 'json',
-            processResults: function(response) {
-                return {
-                    results: response.data.results,
-                    pagination: {
-                        more: response.data.pagination
+                ajax: {
+                    url: '/web/product/country/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
                     }
                 }
-            }
-        }
-    });
+            });
+
+            var _selectCountryAdd = $('#addProductCountry').select2({
+                placeholder: "<?php echo $vModule_search_countryPlaceholder ?>",
+
+                ajax: {
+                    url: '/web/product/country/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
 
-    $repeater = $('#editQuantityBonusListRepeater').repeater({
-        isFirstItemUndeletable: true,
-        show: function() {
-            $(this).slideDown();
-        },
-        hide: function(deleteElement) {
-            if (confirm('Are you sure you want to delete this element?')) {
-                $(this).slideUp(deleteElement);
-            }
-        },
-    });
+            var initiate = function () {
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
+            };
+            return {
+                init: function () {
+                    initiate();
+                },
+            };
+        }();
 
-    $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
-    DistributorProductsDataTable.init(searchQuery);
-</script>
+        PageClass.init();
+    </script>
 <?php ob_end_flush(); ?>
 <?php include_once 'edit-modal.php';
 include_once 'edit-quantity-modal.php';

@@ -6,13 +6,13 @@ var KTInputmask = function () {
     var demos = function () {
         // date format
         $("#kt_inputmask_1").inputmask("99/99/9999", {
-            "placeholder": "mm/dd/yyyy",
+            "placeholder": "DD/MM/YYYY",
             autoUnmask: true
         });
 
         // custom placeholder        
         $("#kt_inputmask_2").inputmask("99/99/9999", {
-            "placeholder": "mm/dd/yyyy",
+            "placeholder": "DD/MM/YYYY",
         });
         
         // phone number format

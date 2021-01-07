@@ -101,8 +101,8 @@ function compress_htmlcode($codedata)
             render: function(data, type, row, meta) {
                 var status = {
                     1: {
-                        title: WebAppLocals.getMessage('orderStatus_New'),
-                        class: ' label-primary',
+                        title: WebAppLocals.getMessage('orderStatus_Pending'),
+                        class: ' label-primary2',
                     },
                     2: {
                         title: WebAppLocals.getMessage('orderStatus_OnHold'),
@@ -300,6 +300,13 @@ function compress_htmlcode($codedata)
             endDate: null
         };
 
+        var dbAdditionalOptions = {
+            datatableOptions: {
+                order: [
+                    [0, 'desc']
+                ]
+            }
+        };
 
         var _selectBuyer = $('#searchOrdersBuyerInput').select2({
             placeholder: "<?php echo $vModule_search_buyerNamePlaceholder ?>",
@@ -319,28 +326,31 @@ function compress_htmlcode($codedata)
         });
         _selectBuyer.on("select2:select", function(e) {
             searchQuery.entityBuyerId = $("#searchOrdersBuyerInput").val();
-            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery);
+            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
 
         });
         _selectBuyer.on("select2:unselect", function(e) {
             searchQuery.entityBuyerId = $("#searchOrdersBuyerInput").val();
-            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery);
+            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
         });
 
         $('#searchOrdersDateInput').daterangepicker({
             opens: 'left',
             startDate: moment('2020-01-01'),
             endDate: moment(),
+            locale: {
+                format: 'DD/MM/YYYY',
+            }
         }, function(start, end, label) {
             searchQuery.startDate = start.format('YYYY-MM-DD');
             searchQuery.endDate = end.format('YYYY-MM-DD');
-            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery);
+            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
         });
 
         $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
         var initiate = function() {
-            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery);
+            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
         };
         return {
             init: function() {

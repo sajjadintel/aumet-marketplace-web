@@ -16,7 +16,7 @@ var WebApp = (function () {
 
 	var _alertError = function (msg) {
 		Swal.fire({
-			text: msg,
+			html: msg,
 			icon: 'error',
 			buttonsStyling: false,
 			confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
@@ -57,7 +57,7 @@ var WebApp = (function () {
 		}).then((result) => {
 			KTUtil.scrollTop();
 			if (result.value) {
-				WebApp.loadPage('/web/distributor/order/new');
+				WebApp.loadPage('/web/distributor/order/pending');
 			}
 		});
 	};
@@ -130,7 +130,7 @@ var WebApp = (function () {
 		})
 			.done(function (webResponse) {
 				if (webResponse && typeof webResponse === 'object') {
-					if (webResponse.errorCode == 1) {
+					if (webResponse.errorCode == 1 || webResponse.errorCode == 3) {
 						if (typeof fnCallback === 'function') {
 							fnCallback(webResponse);
 						}
@@ -138,6 +138,10 @@ var WebApp = (function () {
 						_unblockPage();
 					} else if (webResponse.errorCode == 0) {
 						window.location.href = '/web';
+					} else if (webResponse.errorCode == 3) {
+						_unblurPage();
+						_unblockPage();
+						_alertSuccess(webResponse.message);
 					} else {
 						_unblurPage();
 						_unblockPage();
@@ -181,15 +185,25 @@ var WebApp = (function () {
 
 						$(_pageContainerId).html(webResponse.data);
 
-						window.history.pushState(
-							{
+						console.log('pushState', {id: _id, url: url, title: title,}, title, url);
+
+						history.pushState({
 								id: _id,
 								url: url,
 								title: title,
 							},
 							title,
-							url
-						);
+							url);
+
+						// window.history.pushState(
+						// 	{
+						// 		id: _id,
+						// 		url: url,
+						// 		title: title,
+						// 	},
+						// 	title,
+						// 	url
+						// );
 
 						if (typeof fnCallback === 'function') {
 							fnCallback();

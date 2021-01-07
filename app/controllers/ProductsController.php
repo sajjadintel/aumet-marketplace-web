@@ -1,6 +1,7 @@
 <?php
 
-class ProductsController extends Controller {
+class ProductsController extends Controller
+{
 
     function getEntityProduct()
     {
@@ -12,38 +13,50 @@ class ProductsController extends Controller {
             $entityId = $this->f3->get('PARAMS.entityId');
             $productId = $this->f3->get('PARAMS.productId');
 
-            global $dbConnection;
-
             if ($entityId == 0)
                 $query = "productId=$productId";
             else
                 $query = "entityId=$entityId and productId=$productId";
 
-            $dbEntityProduct = new BaseModel($dbConnection, "vwEntityProductSell");
+            $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
             $dbEntityProduct->getWhere($query);
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
 
-                if ($dbEntityProduct['bonusTypeId'] == 2) {
-                    $dbEntityProduct['bonusOptions'] = json_decode($dbEntityProduct['bonusConfig']);
-                }
+            if ($dbEntityProduct['bonusTypeId'] == 2) {
+                $dbEntityProduct['bonusOptions'] = json_decode($dbEntityProduct['bonusConfig']);
+            }
 
             $dbEntityProduct['cart'] = 0;
-                if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
-                    foreach ($arrCartDetail as $objCartItem) {
-                        if ($objCartItem['entityProductId'] == $dbEntityProduct['id']) {
-                            $dbEntityProduct['cart'] += $objCartItem['quantity'];
-                            $dbEntityProduct['cart'] += $objCartItem['quantityFree'];
-                        }
+            if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
+                foreach ($arrCartDetail as $objCartItem) {
+                    if ($objCartItem['entityProductId'] == $dbEntityProduct['id']) {
+                        $dbEntityProduct['cart'] += $objCartItem['quantity'];
+                        $dbEntityProduct['cart'] += $objCartItem['quantityFree'];
                     }
                 }
+            }
 
             $this->f3->set('objEntityProduct', $dbEntityProduct);
 
-            $dbEntityProductRelated = new BaseModel($dbConnection, "vwEntityProductSell");
+            $dbEntityProductRelated = new BaseModel($this->db, "vwEntityProductSell");
             $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere("stockStatusId=1 and scientificNameId =$dbEntityProduct->scientificNameId and id != $dbEntityProduct->id");
             $this->f3->set('arrRelatedEntityProduct', $arrRelatedEntityProduct);
+
+            $found = false;
+            foreach($arrRelatedEntityProduct as $objItem) {
+                if(array_key_exists((string) $objItem->entityId, $this->f3->get('SESSION.arrEntities'))) {
+                    $found = true;
+                    break;
+                }
+            }
+
+            if(!$found && $this->objUser->menuId === 1) {
+                $this->webResponse->errorCode = 0;
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = $this->f3->get('vTitle_entityProductDetail');
@@ -122,105 +135,56 @@ class ProductsController extends Controller {
 
     function postDistributorProducts()
     {
+        ## Read values from Datatables
+        $datatable = new Datatable($_POST);
+        $query = "";
+
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityId IN ($arrEntityId)";
 
-        $datatable = array_merge(array('pagination' => array(), 'sort' => array(), 'query' => array()), $_REQUEST);
-
-        if ($datatable['query'] != "") {
-
-            $productId = $datatable['query']['productId'];
-            if (isset($productId)) {
-                if (is_array($productId)) {
-                    $query .= " AND id in (" . implode(",", $productId) . ")";
-                } else {
-                    $query .= " AND id = $productId";
-                }
+        if (is_array($datatable->query)) {
+            $productId = $datatable->query['productId'];
+            if (isset($productId) && is_array($productId)) {
+                $query .= " AND id in (" . implode(",", $productId) . ")";
             }
 
-            $scientificNameId = $datatable['query']['scientificNameId'];
-            if (isset($scientificNameId)) {
-                if (is_array($scientificNameId)) {
-                    $query .= " AND scientificNameId in (" . implode(",", $scientificNameId) . ")";
-                } else {
-                    $query .= " AND scientificNameId = $scientificNameId";
-                }
+            $scientificNameId = $datatable->query['scientificNameId'];
+            if (isset($scientificNameId) && is_array($scientificNameId)) {
+                $query .= " AND scientificNameId in (" . implode(",", $scientificNameId) . ")";
             }
 
-            $entityId = $datatable['query']['entityId'];
-            if (isset($entityId)) {
-                if (is_array($entityId)) {
-                    $query .= " AND entityId in (" . implode(",", $entityId) . ")";
-                } else {
-                    $query .= " AND entityId = $entityId";
-                }
+            $stockOption = $datatable->query['stockOption'];
+            if (isset($stockOption) && $stockOption == 1) {
+                $query .= " AND stockStatusId = 1 ";
             }
 
-            if ($datatable['query']['stockOption'] == 1) {
-                $query .= " AND stockStatusId=1";
+            $categoryId = $datatable->query['categoryId'];
+            if (isset($categoryId) && is_array($categoryId)) {
+                $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
+
         }
 
-        $sort = !empty($datatable['sort']['sort']) ? $datatable['sort']['sort'] : 'asc';
-        $field = !empty($datatable['sort']['field']) ? $datatable['sort']['field'] : 'id';
 
-        $meta = array();
-        $page = !empty($datatable['pagination']['page']) ? (int)$datatable['pagination']['page'] : 1;
-        $perpage = !empty($datatable['pagination']['perpage']) ? (int)$datatable['pagination']['perpage'] : 10;
 
-        $offset = ($page - 1) * $perpage;
-        $total = 0;
+        $fullQuery = $query;
 
-        $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
+        $dbData = new BaseModel($this->db, "vwEntityProductSell");
+        $data = [];
 
-        if (!$dbProducts->exists($field)) {
-            $field = 'id';
-        }
-        if ($query == "") {
-            $total = $dbProducts->count();
-            $data = $dbProducts->findAll("$field $sort", $perpage, $offset);
-        } else {
-            $total = $dbProducts->count($query);
-            $data = $dbProducts->findWhere($query, "$field $sort", $perpage, $offset);
-        }
+        $totalRecords = $dbData->count($fullQuery);
+        $totalFiltered = $dbData->count($query);
+        $data = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
 
-        $pages = 1;
-
-        // $perpage 0; get all data
-        if ($perpage > 0) {
-            $pages = ceil($total / $perpage); // calculate total pages
-            $page = max($page, 1); // get 1 page when $_REQUEST['page'] <= 0
-            $page = min($page, $pages); // get last page when $_REQUEST['page'] > $totalPages
-            $offset = ($page - 1) * $perpage;
-            if ($offset < 0) {
-                $offset = 0;
-            }
-
-            //$data = array_slice($data, $offset, $perpage, true);
-        }
-
-        $meta = array(
-            'page' => $page,
-            'pages' => $pages,
-            'perpage' => $perpage,
-            'total' => $total,
+        ## Response
+        $response = array(
+            "draw" => intval($datatable->draw),
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $totalFiltered,
+            "data" => $data
         );
 
-        header('Content-Type: application/json');
-        header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description');
-
-        $result = array(
-            'q' => $query,
-            'meta' => $meta + array(
-                    'sort' => $sort,
-                    'field' => $field,
-                ),
-            'data' => $data
-        );
-
-        echo json_encode($result, JSON_PRETTY_PRINT);
+        $this->jsonResponseAPI($response);
     }
 
     function postProductImage()
@@ -237,7 +201,7 @@ class ProductsController extends Controller {
             return true;
         }, $overwrite, true);
 
-        $path = "img/products/" . $imageName;
+        $path = "/assets/img/products/" . $imageName;
 
         $this->webResponse->errorCode = 1;
         $this->webResponse->title = "Product Image Upload";
@@ -300,7 +264,7 @@ class ProductsController extends Controller {
                 $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
 
-                if(!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice) {
+                if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice) {
                     $this->webResponse->errorCode = 2;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Some mandatory fields are missing";
@@ -420,7 +384,7 @@ class ProductsController extends Controller {
             $unitPrice = $this->f3->get('POST.unitPrice');
             $stock = $this->f3->get('POST.stock');
 
-            if(!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$stock) {
+            if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$stock) {
                 $this->webResponse->errorCode = 2;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Some mandatory fields are missing";
@@ -516,7 +480,7 @@ class ProductsController extends Controller {
                 $mapStockIdName[$stockStatus['id']] = $stockStatus['name'];
             }
 
-            $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-stock-sample.xlsx';
+            $sampleFilePath = 'app/files/samples/products-stock-sample.xlsx';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
@@ -530,8 +494,8 @@ class ProductsController extends Controller {
             $sheet = $spreadsheet->setActiveSheetIndex(1);
 
             // Set validation and formula
-            Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
-            Excel::setCellFormulaVLookup($sheet, 'D3', count($allProducts), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
+            Excel::setCellFormulaVLookup($sheet, 'A3', $productsNum, "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
+            Excel::setCellFormulaVLookup($sheet, 'D3', $productsNum, "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -541,8 +505,8 @@ class ProductsController extends Controller {
             $sheet = $spreadsheet->setActiveSheetIndex(0);
 
             // Set data validation for products and stock availability
-            Excel::setDataValidation($sheet, 'A3', 'A' . count($allProducts), 'TYPE_LIST', 'Variables!$A$3:$A$' . $productsNum);
-            Excel::setDataValidation($sheet, 'D3', 'D' . count($allProducts), 'TYPE_LIST', 'Variables!$D$3:$D$' . $stockAvailabilityNum);
+            Excel::setDataValidation($sheet, 'A3', 'A' . $productsNum, 'TYPE_LIST', 'Variables!$A$3:$A$' . $productsNum);
+            Excel::setDataValidation($sheet, 'D3', 'D' . $productsNum, 'TYPE_LIST', 'Variables!$D$3:$D$' . $stockAvailabilityNum);
 
             // Add all products to multidimensional array
             $multiProducts = [];
@@ -591,12 +555,11 @@ class ProductsController extends Controller {
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
         // basename($_FILES["file"]["name"])
 
-        $targetFile = $this->getUploadDirectory() . "reports/products-stock/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
+        $targetFile = "files/uploads/reports/products-stock/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
 
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-                global $dbConnection;
-                $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+                $dbStockUpdateUpload = new BaseModel($this->db, "stockUpdateUpload");
                 $dbStockUpdateUpload->userId = $this->objUser->id;
                 $dbStockUpdateUpload->filePath = $targetFile;
                 $dbStockUpdateUpload->entityId = $this->objUser->entityId;
@@ -611,9 +574,7 @@ class ProductsController extends Controller {
         ini_set('max_execution_time', 1000);
         ini_set('mysql.connect_timeout', 1000);
 
-        global $dbConnection;
-
-        $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+        $dbStockUpdateUpload = new BaseModel($this->db, "stockUpdateUpload");
 
         $dbStockUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
 
@@ -641,12 +602,8 @@ class ProductsController extends Controller {
             $allStockStatus = $dbStockStatus->findAll("id asc");
 
             $allStockStatusId = [];
-            $allStockStatusName = [];
-            $mapStockStatusNameId = [];
             foreach ($allStockStatus as $stockStatus) {
                 array_push($allStockStatusId, $stockStatus['id']);
-                array_push($allStockStatusName, $stockStatus['name']);
-                $mapStockStatusNameId[$stockStatus['name']] = $stockStatus['id'];
             }
 
             $fields = [
@@ -731,14 +688,10 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "D":
-                            if (!in_array($cellValue, $allStockStatusId) && !in_array($cellValue, $allStockStatusName)) {
+                            if (!in_array($cellValue, $allStockStatusId)) {
                                 array_push($errors, "Stock Availability invalid");
                             } else {
-                                if (is_int($cellValue)) {
-                                    $stockStatusId = $cellValue;
-                                } else {
-                                    $stockStatusId = $mapStockStatusNameId[$cellValue];
-                                }
+                                $stockStatusId = $cellValue;
                                 if ($dbEntityProductSell->stockStatusId != $stockStatusId) {
                                     $stockFieldsChanged = true;
                                     $dbEntityProductSell->stockStatusId = $stockStatusId;
@@ -838,7 +791,7 @@ class ProductsController extends Controller {
                     $mapStockIdName[$stockStatus['id']] = $stockStatus['name'];
                 }
 
-                $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-stock-sample.xlsx';
+                $sampleFilePath = 'app/files/samples/products-stock-sample.xlsx';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
@@ -852,8 +805,8 @@ class ProductsController extends Controller {
                 $sheet = $spreadsheet->setActiveSheetIndex(1);
 
                 // Set validation and formula
-                Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
-                Excel::setCellFormulaVLookup($sheet, 'D3', count($allProducts), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
+                Excel::setCellFormulaVLookup($sheet, 'A3', (count($failedProducts) + 2), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
+                Excel::setCellFormulaVLookup($sheet, 'D3', (count($failedProducts) + 2), "'User Input'!D", 'Variables!$D$3:$E$' . $stockAvailabilityNum);
 
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -863,8 +816,8 @@ class ProductsController extends Controller {
                 $sheet = $spreadsheet->setActiveSheetIndex(0);
 
                 // Set data validation for products and stock availability
-                Excel::setDataValidation($sheet, 'A3', 'A' . count($failedProducts), 'TYPE_LIST', 'Variables!$A$3:$A$' . $productsNum);
-                Excel::setDataValidation($sheet, 'D3', 'D' . count($failedProducts), 'TYPE_LIST', 'Variables!$D$3:$D$' . $stockAvailabilityNum);
+                Excel::setDataValidation($sheet, 'A3', 'A' . (count($failedProducts) + 2), 'TYPE_LIST', 'Variables!$A$3:$A$' . $productsNum);
+                Excel::setDataValidation($sheet, 'D3', 'D' . (count($failedProducts) + 2), 'TYPE_LIST', 'Variables!$D$3:$D$' . $stockAvailabilityNum);
 
                 $sheet->setCellValue('G2', 'Error');
                 $sheet->getStyle('G2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
@@ -988,7 +941,7 @@ class ProductsController extends Controller {
                 $mapProductIdName[$product['id']] = $product[$nameField];
             }
 
-            $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-bonus-sample.xlsx';
+            $sampleFilePath = 'app/files/samples/products-bonus-sample.xlsx';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
@@ -1064,12 +1017,11 @@ class ProductsController extends Controller {
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
         // basename($_FILES["file"]["name"])
 
-        $targetFile = $this->getUploadDirectory() . "reports/products-bonus/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
+        $targetFile = "files/uploads/reports/products-bonus/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
 
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-                global $dbConnection;
-                $dbStockUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+                $dbStockUpdateUpload = new BaseModel($this->db, "stockUpdateUpload");
                 $dbStockUpdateUpload->userId = $this->objUser->id;
                 $dbStockUpdateUpload->filePath = $targetFile;
                 $dbStockUpdateUpload->entityId = $this->objUser->entityId;
@@ -1084,9 +1036,7 @@ class ProductsController extends Controller {
         ini_set('max_execution_time', 1000);
         ini_set('mysql.connect_timeout', 1000);
 
-        global $dbConnection;
-
-        $dbBonusUpdateUpload = new BaseModel($dbConnection, "stockUpdateUpload");
+        $dbBonusUpdateUpload = new BaseModel($this->db, "stockUpdateUpload");
 
         $dbBonusUpdateUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
 
@@ -1224,7 +1174,7 @@ class ProductsController extends Controller {
                     $mapProductIdName[$product['productId']] = $product[$nameField];
                 }
 
-                $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-bonus-sample.xlsx';
+                $sampleFilePath = 'app/files/samples/products-bonus-sample.xlsx';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
@@ -1380,7 +1330,7 @@ class ProductsController extends Controller {
                 $arrCountry[] = array($country['name'], $country['id']);
             }
 
-            $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-add-sample.xlsx';
+            $sampleFilePath = 'app/files/samples/products-add-sample.xlsx';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
@@ -1425,12 +1375,11 @@ class ProductsController extends Controller {
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
         // basename($_FILES["file"]["name"])
 
-        $targetFile = $this->getUploadDirectory() . "reports/products-add/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
+        $targetFile = "files/uploads/reports/products-add/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
 
         if ($ext == "xlsx" || $ext == "xls" || $ext == "csv") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-                global $dbConnection;
-                $dbBulkAddUpload = new BaseModel($dbConnection, "bulkAddUpload");
+                $dbBulkAddUpload = new BaseModel($this->db, "bulkAddUpload");
                 $dbBulkAddUpload->userId = $this->objUser->id;
                 $dbBulkAddUpload->filePath = $targetFile;
                 $dbBulkAddUpload->entityId = $this->objUser->entityId;
@@ -1445,9 +1394,7 @@ class ProductsController extends Controller {
         ini_set('max_execution_time', 1000);
         ini_set('mysql.connect_timeout', 1000);
 
-        global $dbConnection;
-
-        $dbBulkAddUpload = new BaseModel($dbConnection, "bulkAddUpload");
+        $dbBulkAddUpload = new BaseModel($this->db, "bulkAddUpload");
 
         $dbBulkAddUpload->getByField("userId", $this->objUser->id, "insertDateTime desc");
 
@@ -1522,7 +1469,7 @@ class ProductsController extends Controller {
 
                 $dbProduct = new BaseModel($this->db, "product");
                 $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
-                
+
                 $product = [];
 
                 $cellIterator = $row->getCellIterator();
@@ -1534,7 +1481,7 @@ class ProductsController extends Controller {
                     $cellLetter = $cell->getColumn();
                     $cellValue = $cell->getCalculatedValue();
 
-                    if($cellValue === "#REF!") {
+                    if ($cellValue === "#REF!") {
                         $cellValue = $cell->getOldCalculatedValue();
                     }
 
@@ -1599,7 +1546,7 @@ class ProductsController extends Controller {
 
                 $dbBulkAddUpload->recordsCount++;
 
-                if(count($errors) === 0) {
+                if (count($errors) === 0) {
                     $dbProduct->addReturnID();
 
                     $dbEntityProduct->productId = $dbProduct->id;
@@ -1644,7 +1591,7 @@ class ProductsController extends Controller {
                     $arrCountry[] = array($country['name'], $country['id']);
                 }
 
-                $sampleFilePath = $this->getRootDirectory() . '\app\files\samples\products-add-sample.xlsx';
+                $sampleFilePath = 'app/files/samples/products-add-sample.xlsx';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
@@ -1697,7 +1644,7 @@ class ProductsController extends Controller {
                             $cellValue = $mapScientificIdName[$product[$j]];
                         } else if ($field == "madeInCountryId") {
                             $cellValue = $mapCountryIdName[$product[$j]];
-                        } else if($product[$j] !== 0) {
+                        } else if ($product[$j] !== 0) {
                             $cellValue = $product[$j];
                         }
                         array_push($singleProduct, $cellValue);

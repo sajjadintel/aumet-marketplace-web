@@ -61,7 +61,7 @@ var KTDatatableTranslationDemo = function() {
                 field: 'ShipDate',
                 title: 'Ship Date',
                 type: 'date',
-                format: 'MM/DD/YYYY',
+                format: 'DD/MM/YYYY',
             }, {
                 field: 'CompanyName',
                 title: 'Company Name',

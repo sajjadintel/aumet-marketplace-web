@@ -2,10 +2,6 @@
 
 class OrderController extends Controller
 {
-    function getDistributorOrdersNew()
-    {
-        $this->handleGetDistributorOrders('new');
-    }
 
     function getDistributorOrdersPending()
     {
@@ -41,12 +37,10 @@ class OrderController extends Controller
     function getNotifcationsDistributorOrdersNew()
     {
 
-        global $dbConnection;
-
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "notificationFlag = 1 and entitySellerId IN ($arrEntityId)";
 
-        $dbOrder = new BaseModel($dbConnection, "order");
+        $dbOrder = new BaseModel($this->db, "order");
         $dbOrder->getWhere($query);
         $count = 0;
         while (!$dbOrder->dry()) {
@@ -70,9 +64,6 @@ class OrderController extends Controller
             $title = $this->f3->get('vModule_order_title');
 
             switch ($status) {
-                case 'new':
-                    $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_new'));
-                    break;
                 case 'pending':
                     $this->f3->set('vModule_order_header', $this->f3->get('vModule_order_header_pending'));
                     break;
@@ -236,12 +227,7 @@ class OrderController extends Controller
 
     function postDistributorOrdersRecent()
     {
-        $this->handlePostDistributorOrders('new');
-    }
-
-    function postDistributorOrdersNew()
-    {
-        $this->handlePostDistributorOrders('new');
+        $this->handlePostDistributorOrders('pending');
     }
 
     function postDistributorOrdersPending()
@@ -268,17 +254,14 @@ class OrderController extends Controller
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entitySellerId IN ($arrEntityId)";
         switch ($status) {
-            case 'new':
-                $query .= " AND statusId = 1";
-                break;
             case 'unpaid':
                 $query .= " AND statusId IN (6,8)";
                 break;
             case 'pending':
-                $query .= " AND statusId IN (2,3)";
+                $query .= " AND statusId IN (1,2,3)";
                 break;
             case 'history':
-                $query .= " AND statusId IN (4,5,6,7,8,9)";
+                $query .= " AND statusId IN (1,2,3,4,5,6,7,8,9)";
                 break;
             default:
                 break;
@@ -353,20 +336,17 @@ class OrderController extends Controller
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityBuyerId IN ($arrEntityId)";
         switch ($status) {
-            case 'new':
-                $query .= " AND statusId = 1";
-                break;
             case 'recent':
-                $query .= " AND statusId IN (1, 2)";
+                $query .= " AND statusId IN (2)";
                 break;
             case 'unpaid':
-                $query .= " AND statusId IN (6,8) ";
+                $query .= " AND statusId IN (4,6,8) ";
                 break;
             case 'pending':
-                $query .= " AND statusId IN (2,3)";
+                $query .= " AND statusId IN (1,2,3)";
                 break;
             case 'history':
-                $query .= " AND statusId IN (1,4,5,6,7,8,9)";
+                $query .= " AND statusId IN (1,2,3,4,5,6,7,8,9)";
                 break;
             default:
                 break;
@@ -528,28 +508,39 @@ class OrderController extends Controller
         $dbOrder->getById($orderId);
 
         if ($dbOrder->dry()) {
-            echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notFound', $this->f3->get('vEntity_order')), '', null);
+            echo $this->webResponse->jsonResponseV2(2, $this->f3->get('vResponse_notFound', $this->f3->get('vEntity_order')), '', null);
             return;
         }
+
+        $missingProductsMsg = [];
 
         // Add conditions for checks on Order
         // If Order to change to Complete, check if Stock is available for all the items
         if ($statusId == Constants::ORDER_STATUS_COMPLETED) {
             $dbOrderItems = new BaseModel($this->db, "orderDetail");
             $dbProduct = new BaseModel($this->db, "entityProductSell");
+            $dbProductSummary = new BaseModel($this->db, "product");
+            $dbProductSummary->name = "name_" . $this->objUser->language;
             // check all items if stock is available
             $dbOrderItems->getWhere("orderId = $orderId");
 
             while (!$dbOrderItems->dry()) {
                 $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
+                $dbProductSummary->getWhere("id = $dbOrderItems->entityProductId");
 
                 if ($dbProduct->dry() || $dbProduct->stockStatusId != 1 || $dbProduct->stock < $dbOrderItems->quantity) {
-                    echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $this->f3->get('vResponse_productsMissing'), null);
-                    return;
+                    $productMsg = $dbProductSummary->name . " - requested " . $dbOrderItems->quantity . ", only " . $dbProduct->stock . " available";
+                    array_push($missingProductsMsg, $productMsg);
                 }
 
-                $dbProduct->next();
+                $dbOrderItems->next();
             }
+        }
+
+        if (count($missingProductsMsg) > 0) {
+            $msg = $this->f3->get('vEntity_order') . "<br>" . implode("<br>", $missingProductsMsg);
+            echo $this->webResponse->jsonResponseV2(2, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $msg, null);
+            return;
         }
 
         $dbOrder->updateDateTime = date("Y-m-d H:i:s");
@@ -557,7 +548,7 @@ class OrderController extends Controller
         $dbOrder->userSellerId = $this->objUser->id;
 
         if (!$dbOrder->update()) {
-            echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $dbOrder->exception(), null);
+            echo $this->webResponse->jsonResponseV2(2, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $dbOrder->exception(), null);
             return;
         }
 
@@ -568,7 +559,7 @@ class OrderController extends Controller
 
 
         if (!$dbOrderLog->add()) {
-            echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_notAdded', $this->f3->get('vEntity_orderLog')), $dbOrderLog->exception(), null);
+            echo $this->webResponse->jsonResponseV2(2, $this->f3->get('vResponse_notAdded', $this->f3->get('vEntity_orderLog')), $dbOrderLog->exception(), null);
             return;
         }
 
@@ -591,7 +582,7 @@ class OrderController extends Controller
                 if ($dbProduct->stock <= 5 * $dbProduct->totalOrderQuantity / $dbProduct->totalOrderCount)
                     $lowStockProducts[] = $dbProduct->id;
 
-                $dbProduct->next();
+                $dbOrderItems->next();
             }
 
             if (sizeof($lowStockProducts) > 0)
@@ -660,31 +651,31 @@ class OrderController extends Controller
 
         $ordersUrl = "web/pharmacy/order/";
         switch ($statusId) {
-            case 1;
+            case 1:
                 $ordersUrl .= "history";
                 break;
-            case 2;
+            case 2:
                 $ordersUrl .= "pending";
                 break;
-            case 3;
+            case 3:
                 $ordersUrl .= "pending";
                 break;
-            case 4;
+            case 4:
                 $ordersUrl .= "history";
                 break;
-            case 5;
+            case 5:
                 $ordersUrl .= "history";
                 break;
-            case 6;
+            case 6:
                 $ordersUrl .= "unpaid";
                 break;
-            case 7;
+            case 7:
                 $ordersUrl .= "history";
                 break;
-            case 8;
+            case 8:
                 $ordersUrl .= "history";
                 break;
-            case 9;
+            case 9:
                 $ordersUrl .= "history";
                 break;
         }
@@ -702,8 +693,8 @@ class OrderController extends Controller
 
         $subject = "Order Status Update";
         if (getenv('ENV') != Constants::ENV_PROD) {
-            $subject .= " - (Test: ".getenv('ENV').")";
-            if (getenv('ENV') == Constants::ENV_LOC){
+            $subject .= " - (Test: " . getenv('ENV') . ")";
+            if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->resetTos();
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
@@ -712,34 +703,34 @@ class OrderController extends Controller
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
         $emailHandler->resetTos();
 
-        
+
         $ordersUrl = "web/distributor/order/";
         switch ($statusId) {
-            case 1;
+            case 1:
                 $ordersUrl .= "new";
                 break;
-            case 2;
+            case 2:
                 $ordersUrl .= "pending";
                 break;
-            case 3;
+            case 3:
                 $ordersUrl .= "pending";
                 break;
-            case 4;
+            case 4:
                 $ordersUrl .= "history";
                 break;
-            case 5;
+            case 5:
                 $ordersUrl .= "history";
                 break;
-            case 6;
+            case 6:
                 $ordersUrl .= "unpaid";
                 break;
-            case 7;
+            case 7:
                 $ordersUrl .= "history";
                 break;
-            case 8;
+            case 8:
                 $ordersUrl .= "unpaid";
                 break;
-            case 9;
+            case 9:
                 $ordersUrl .= "history";
                 break;
         }
@@ -753,8 +744,8 @@ class OrderController extends Controller
 
         $subject = "Order Status Update";
         if (getenv('ENV') != Constants::ENV_PROD) {
-            $subject .= " - (Test: ".getenv('ENV').")";
-            if (getenv('ENV') == Constants::ENV_LOC){
+            $subject .= " - (Test: " . getenv('ENV') . ")";
+            if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->resetTos();
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
@@ -762,7 +753,7 @@ class OrderController extends Controller
         }
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
 
-        echo $this->webResponse->jsonResponseV2(1, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null, null);
+        echo $this->webResponse->jsonResponseV2(3, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null);
         return;
     }
 

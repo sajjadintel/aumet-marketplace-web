@@ -37,7 +37,7 @@
                       </tr>
                     </tbody>
                   </table>
-                  <h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 30px;line-height: 39px;">New Order</h2>
+                  <h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 30px;line-height: 39px;">Pending Order</h2>
                 </div>
                 <!--[if mso]></td></tr></table><![endif]-->
               </td>
