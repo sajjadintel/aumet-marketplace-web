@@ -124,10 +124,22 @@ function compress_htmlcode($codedata)
                 title: WebAppLocals.getMessage('productName'),
                 data: 'productName_en',
                 render: function (data, type, row, meta) {
-                    var output = '<div style="display:flex;flex-direction:row;align-items: center"><div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
+                    var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        row.entityId +
+                        '/product/' +
+                        row.productId +
+                        '\')"> ' +
+                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
                         row.image +
-                        '\')" ></div></div>';
-                    output += row.productName_en+'</div>';
+                        '\')" ></div></div>'
+                        + '</a></div>';
+                    output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        row.entityId +
+                        '/product/' +
+                        row.productId +
+                        '\')"> ' +
+                        row['productName_' + docLang]
+                        + '</span></div></div>';
                     return output;
                 },
             }, {

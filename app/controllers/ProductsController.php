@@ -37,19 +37,10 @@ class ProductsController extends Controller
                     }
                 }
             }
-
-            $this->f3->set('objEntityProduct', $dbEntityProduct);
-
-            $dbEntityProductRelated = new BaseModel($this->db, "vwEntityProductSell");
-            $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere("stockStatusId=1 and scientificNameId =$dbEntityProduct->scientificNameId and id != $dbEntityProduct->id");
-            $this->f3->set('arrRelatedEntityProduct', $arrRelatedEntityProduct);
-
+            
             $found = false;
-            foreach($arrRelatedEntityProduct as $objItem) {
-                if(array_key_exists((string) $objItem->entityId, $this->f3->get('SESSION.arrEntities'))) {
-                    $found = true;
-                    break;
-                }
+            if(array_key_exists((string) $dbEntityProduct->entityId, $this->f3->get('SESSION.arrEntities'))) {
+                $found = true;
             }
 
             if(!$found && $this->objUser->menuId === 1) {
@@ -57,6 +48,12 @@ class ProductsController extends Controller
                 echo $this->webResponse->jsonResponse();
                 return;
             }
+
+            $this->f3->set('objEntityProduct', $dbEntityProduct);
+
+            $dbEntityProductRelated = new BaseModel($this->db, "vwEntityProductSell");
+            $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere("stockStatusId=1 and scientificNameId =$dbEntityProduct->scientificNameId and id != $dbEntityProduct->id");
+            $this->f3->set('arrRelatedEntityProduct', $arrRelatedEntityProduct);
 
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = $this->f3->get('vTitle_entityProductDetail');
@@ -271,6 +268,14 @@ class ProductsController extends Controller
                     echo $this->webResponse->jsonResponse();
                     return;
                 }
+                
+                if(!is_numeric($unitPrice) || $unitPrice <= 0) {
+                    $this->webResponse->errorCode = 2;
+                    $this->webResponse->title = "";
+                    $this->webResponse->message = "Unit Price must be a positive number";
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
 
                 $dbProduct->name_en = $name_en;
                 $dbProduct->name_fr = $name_fr;
@@ -319,6 +324,47 @@ class ProductsController extends Controller
                 $bonusTypeId = $this->f3->get('POST.bonusType');
                 $bonusRepeater = $this->f3->get('POST.bonusRepeater');
 
+                if(!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) {
+                    $this->webResponse->errorCode = 2;
+                    $this->webResponse->title = "";
+                    $this->webResponse->message = "Stock must be a positive number";
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+
+                $validMinOrder = true;
+                $validBonus = true;
+                foreach ($bonusRepeater as $bonus) {
+                    if(!filter_var($bonus['minOrder'], FILTER_VALIDATE_INT) || $bonus['minOrder'] < 0) {
+                        $validMinOrder = false;
+                    }
+                    
+                    if(!filter_var($bonus['bonus'], FILTER_VALIDATE_INT) || $bonus['bonus'] < 0) {
+                        $validBonus = false;
+                    }
+
+                    if($validMinOrder && $validBonus) {
+                        break;
+                    }
+                }
+
+                if(!$validMinOrder || !$validBonus) {
+                    $message = "";
+                    if(!$validMinOrder && !$validBonus) {
+                        $message = "Min Order and Bonus must be positive numbers";
+                    } else if(!$validMinOrder) {
+                        $message = "Min Order must be a positive number";
+                    } else {
+                        $message = "Bonus must be a positive number";
+                    }
+    
+                    $this->webResponse->errorCode = 2;
+                    $this->webResponse->title = "";
+                    $this->webResponse->message = $message;
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+                
                 if ($stock > 0) {
                     $stockStatusId = 1;
                 } else {
@@ -388,6 +434,23 @@ class ProductsController extends Controller
                 $this->webResponse->errorCode = 2;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Some mandatory fields are missing";
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
+
+            if((!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) || (!is_numeric($unitPrice) || $unitPrice <= 0)) {
+                $message = "";
+                if((!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) && (!is_numeric($unitPrice) || $unitPrice <= 0)) {
+                    $message = "Stock and Unit Price must be positive numbers";
+                } else if(!is_numeric($unitPrice) || $unitPrice <= 0) {
+                    $message = "Unit Price must be a positive number";
+                } else {
+                    $message = "Stock must be a positive number";
+                }
+
+                $this->webResponse->errorCode = 2;
+                $this->webResponse->title = "";
+                $this->webResponse->message = $message;
                 echo $this->webResponse->jsonResponse();
                 return;
             }
@@ -1108,7 +1171,7 @@ class ProductsController extends Controller
                                 $finished = true;
                                 break;
                             } else {
-                                if (array_key_exists($cellValue, $mapProductIdProduct)) {
+                                if (array_key_exists((string) $cellValue, $mapProductIdProduct)) {
                                     $dbProduct = $mapProductIdProduct[$cellValue];
                                     array_push($productIdsWithBonus, $cellValue);
                                 } else {
@@ -1117,24 +1180,27 @@ class ProductsController extends Controller
                             }
                             break;
                         case "B":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
                                 array_push($errors, "Minimum Quantity must be a positive whole number");
                             } else {
                                 $minOrder = (int)$cellValue;
                                 $allQuant = $mapProductIdMinQuant[$dbProduct['productId']];
-                                if (in_array($minOrder, $allQuant)) {
-                                    array_push($errors, "Minimum Quantity should be unique by product");
-                                } else {
-                                    array_push($allQuant, $minOrder);
-                                    $mapProductIdMinQuant[$dbProduct['productId']] = $allQuant;
+                                
+                                if(!is_null($dbProduct)) {
+                                    if (in_array($minOrder, $allQuant)) {
+                                        array_push($errors, "Minimum Quantity should be unique by product");
+                                    } else {
+                                        array_push($allQuant, $minOrder);
+                                        $mapProductIdMinQuant[$dbProduct['productId']] = $allQuant;
+                                    }
                                 }
                             }
                             break;
                         case "C":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
                                 array_push($errors, "Bonus Quantity must be a positive whole number");
                             } else {
-                                $bonus = (int)$cellValue;
+                                $bonus = (int) $cellValue;
                             }
                             break;
                     }
