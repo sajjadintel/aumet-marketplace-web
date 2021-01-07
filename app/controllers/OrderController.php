@@ -512,6 +512,8 @@ class OrderController extends Controller
             return;
         }
 
+        $missingProductsMsg = [];
+
         // Add conditions for checks on Order
         // If Order to change to Complete, check if Stock is available for all the items
         if ($statusId == Constants::ORDER_STATUS_COMPLETED) {
@@ -522,13 +524,12 @@ class OrderController extends Controller
             // check all items if stock is available
             $dbOrderItems->getWhere("orderId = $orderId");
 
-            $missingProductsMsg = [];
             while (!$dbOrderItems->dry()) {
                 $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
                 $dbProductSummary->getWhere("id = $dbOrderItems->entityProductId");
 
                 if ($dbProduct->dry() || $dbProduct->stockStatusId != 1 || $dbProduct->stock < $dbOrderItems->quantity) {
-                    $productMsg = $dbProductSummary->name." - requested ".$dbOrderItems->quantity.", only ".$dbProduct->stock." available";
+                    $productMsg = $dbProductSummary->name . " - requested " . $dbOrderItems->quantity . ", only " . $dbProduct->stock . " available";
                     array_push($missingProductsMsg, $productMsg);
                 }
 
@@ -536,8 +537,8 @@ class OrderController extends Controller
             }
         }
 
-        if(count($missingProductsMsg) > 0) {
-            $msg = $this->f3->get('vEntity_order')."<br>".implode("<br>", $missingProductsMsg);
+        if (count($missingProductsMsg) > 0) {
+            $msg = $this->f3->get('vEntity_order') . "<br>" . implode("<br>", $missingProductsMsg);
             echo $this->webResponse->jsonResponseV2(2, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $msg, null);
             return;
         }
@@ -692,8 +693,8 @@ class OrderController extends Controller
 
         $subject = "Order Status Update";
         if (getenv('ENV') != Constants::ENV_PROD) {
-            $subject .= " - (Test: ".getenv('ENV').")";
-            if (getenv('ENV') == Constants::ENV_LOC){
+            $subject .= " - (Test: " . getenv('ENV') . ")";
+            if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->resetTos();
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
@@ -702,7 +703,7 @@ class OrderController extends Controller
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
         $emailHandler->resetTos();
 
-        
+
         $ordersUrl = "web/distributor/order/";
         switch ($statusId) {
             case 1:
@@ -743,8 +744,8 @@ class OrderController extends Controller
 
         $subject = "Order Status Update";
         if (getenv('ENV') != Constants::ENV_PROD) {
-            $subject .= " - (Test: ".getenv('ENV').")";
-            if (getenv('ENV') == Constants::ENV_LOC){
+            $subject .= " - (Test: " . getenv('ENV') . ")";
+            if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->resetTos();
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
