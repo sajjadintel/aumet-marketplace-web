@@ -377,7 +377,7 @@ var WebApp = (function () {
 		);
 	};
 
-	var _createDatatableServerside = function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null, defaultOrder = null) {
+	var _createDatatableServerside = function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
 		_blurPage();
 		_blockPage();
 
@@ -393,7 +393,7 @@ var WebApp = (function () {
 			responsive: true,
 			scrollX: false,
 			orderCellsTop: true,
-			order: defaultOrder || [[0, 'asc']],
+			order: [[0, 'asc']],
 			destroy: true,
 			language: {
 				lengthMenu: '_MENU_',
@@ -586,9 +586,9 @@ var WebApp = (function () {
 		openModal: function (webResponse) {
 			_openModal(webResponse);
 		},
-		CreateDatatableServerside: function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null, defaultOrder = null) {
+		CreateDatatableServerside: function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
 			console.log(vParams);
-			_createDatatableServerside(vTableName, vElementId, vUrl, vColumnDefs, vParams, vAdditionalOptions, defaultOrder);
+			_createDatatableServerside(vTableName, vElementId, vUrl, vColumnDefs, vParams, vAdditionalOptions);
 		},
 		CreateDatatableLocal: function (vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions = null) {
 			_createDatatableLocal(vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions);
