@@ -250,9 +250,14 @@ var WebAppLocals = (function () {
 			ar: 'الكمية المطلوبة',
 			fr: '',
 		},
+		quantityFree: {
+			en: 'Quantity Free',
+			ar: 'Quantity Free', // TODO: Add translation
+			fr: '',
+		},
 		note: {
 			en: 'Note',
-			ar: '', // TODO: Add translation
+			ar: 'Note', // TODO: Add translation
 			fr: '',
 		},
 		minOrder: {

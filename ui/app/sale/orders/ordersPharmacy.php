@@ -115,12 +115,15 @@ function compress_htmlcode($codedata)
 
           var columnDefs = [{
               className: "export_datatable",
-              targets: [0, 1, 2, 3]
+              targets: [0, 1, 2, 3, 8, 9, 10, 11, 12, 13]
           }, {
               targets: 0,
               title: '#',
               data: 'id',
               render: function (data, type, row, meta) {
+                  if (!row.entitySeller)
+                      return row.id;
+
                   var output = '(' + row.id + ') - #' + row.serial;
                   return output;
               }
@@ -129,6 +132,8 @@ function compress_htmlcode($codedata)
               title: WebAppLocals.getMessage('entitySeller'),
               data: 'entitySeller',
               render: function (data, type, row, meta) {
+                  if (!row.entitySeller)
+                      return '';
                   var output = row.entitySeller;
                   return output;
               },
@@ -137,11 +142,12 @@ function compress_htmlcode($codedata)
               title: WebAppLocals.getMessage('insertDate'),
               data: 'insertDateTime',
               render: function (data, type, row, meta) {
+                  if (!row.entitySeller)
+                      return '';
                   var output = '';
                   if (row.insertDateTime) {
                       output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.insertDateTime).format('DD / MM / YYYY') + '</span>';
                   }
-                  ;
                   return output
               }
           }, {
@@ -149,6 +155,9 @@ function compress_htmlcode($codedata)
               title: WebAppLocals.getMessage('orderStatus'),
               data: 'statusId',
               render: function (data, type, row, meta) {
+                  if (!row.statusId)
+                      return '';
+
                   var status = {
                       1: {
                           title: WebAppLocals.getMessage('orderStatus_Pending'),
@@ -196,6 +205,9 @@ function compress_htmlcode($codedata)
               title: WebAppLocals.getMessage('orderTotal'),
               data: 'total',
               render: function (data, type, row, meta) {
+                  if (!row.entitySeller)
+                      return '';
+
                   var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
                   return output;
               },
@@ -204,6 +216,9 @@ function compress_htmlcode($codedata)
               title: WebAppLocals.getMessage('tax'),
               data: 'tax',
               render: function (data, type, row, meta) {
+                  if (!row.entitySeller)
+                      return '';
+
                   var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
                   return output;
               },
@@ -212,6 +227,9 @@ function compress_htmlcode($codedata)
               title: WebAppLocals.getMessage('orderTotalWithVAT'),
               data: 'total',
               render: function (data, type, row, meta) {
+                  if (!row.entitySeller)
+                      return '';
+
                   var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
                   return output;
               },
@@ -221,6 +239,9 @@ function compress_htmlcode($codedata)
               data: 'id',
               orderable: false,
               render: function (data, type, row, meta) {
+                  if (!row.entitySeller)
+                      return '';
+
                   var dropdownStart =
                       '<div class="dropdown dropdown-inline">\
                               <a href="javascript:;" class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" data-toggle="dropdown">\
@@ -282,7 +303,83 @@ function compress_htmlcode($codedata)
 
                   return outActions;
               },
-          }];
+          },
+              {
+                  targets: 8,
+                  title: WebAppLocals.getMessage('productName'),
+                  data: 'productName',
+                  visible:false,
+                  render: function (data, type, row, meta) {
+                      if (!row.productName)
+                          return '';
+
+                      return row.productName;
+                  },
+              },
+              {
+                  targets: 9,
+                  title: WebAppLocals.getMessage('unitPrice'),
+                  data: 'unitPrice',
+                  visible:false,
+                  render: function (data, type, row, meta) {
+                      if (!row.productName)
+                          return '';
+
+                      return row.unitPrice + row.currency;
+                  },
+              },
+              {
+                  targets: 10,
+                  title: WebAppLocals.getMessage('quantity'),
+                  data: 'quantity',
+                  visible:false,
+                  render: function (data, type, row, meta) {
+                      if (!row.productName)
+                          return '';
+
+                      return row.quantity;
+                  },
+              },
+              {
+                  targets: 11,
+                  title: WebAppLocals.getMessage('quantityFree'),
+                  data: 'quantityFree',
+                  visible:false,
+                  render: function (data, type, row, meta) {
+                      if (!row.productName)
+                          return '';
+
+                      return row.quantityFree;
+                  },
+              },
+              {
+                  targets: 12,
+                  title: WebAppLocals.getMessage('tax'),
+                  data: 'tax',
+                  visible:false,
+                  render: function (data, type, row, meta) {
+                      if (!row.productName)
+                          return '';
+
+                      return row.tax + '%';
+                  },
+              },
+              {
+                  targets: 13,
+                  title: WebAppLocals.getMessage('orderTotalWithVAT'),
+                  data: 'quantity',
+                  visible:false,
+                  render: function (data, type, row, meta) {
+                      if (!row.productName)
+                          return '';
+
+                      var total = row.quantity * row.unitPrice;
+                      return Math.round((parseFloat(total) + Number.EPSILON) * 100) / 100;
+                  },
+              },
+
+
+          ];
 
           var searchQuery = {
               entitySellerId: [],
@@ -294,7 +391,12 @@ function compress_htmlcode($codedata)
               datatableOptions: {
                   order: [
                       [0, 'desc']
-                  ]
+                  ],
+                  rowCallback: function( row, data, index ) {
+                      if (!data['entitySeller']) {
+                          $(row).hide();
+                      }
+                  },
               }
           };
 
@@ -348,7 +450,9 @@ function compress_htmlcode($codedata)
               },
           };
       }();
-
+      $.fn.dataTable.ext.errMode = function ( settings, helpPage, message ) {
+          console.log(message);
+      };
       PageClass.init();
 	</script>
 <?php ob_end_flush(); ?>

@@ -1,7 +1,6 @@
 <?php
 
-class OrderController extends Controller
-{
+class OrderController extends Controller {
 
     function getDistributorOrdersPending()
     {
@@ -375,18 +374,27 @@ class OrderController extends Controller
 
         $dbData = new BaseModel($this->db, "vwOrderEntityUser");
 
-        $data = [];
-
         $totalRecords = $dbData->count($fullQuery);
         $totalFiltered = $dbData->count($query);
-        $data = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
+        $orders = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
+
+        $ordersWithOrderDetail = [];
+        foreach ($orders as $order) {
+            $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+            $dbOrderDetail->productName = "productName" . ucfirst($this->objUser->language);
+            $arrOrderDetail = $dbOrderDetail->findWhere("id = '{$order['id']}'");
+
+            $ordersWithOrderDetail[] = $order;
+            $ordersWithOrderDetail = array_merge($ordersWithOrderDetail, $arrOrderDetail);
+            $ordersWithOrderDetail[] = ['id' => ''];
+        }
 
         ## Response
         $response = array(
             "draw" => intval($datatable->draw),
             "recordsTotal" => $totalRecords,
             "recordsFiltered" => $totalFiltered,
-            "data" => $data
+            "data" => $ordersWithOrderDetail
         );
 
         $this->jsonResponseAPI($response);
@@ -528,7 +536,7 @@ class OrderController extends Controller
                 $dbProductSummary->getWhere("id = $dbOrderItems->entityProductId");
 
                 if ($dbProduct->dry() || $dbProduct->stockStatusId != 1 || $dbProduct->stock < $dbOrderItems->quantity) {
-                    $productMsg = $dbProductSummary->name." - requested ".$dbOrderItems->quantity.", only ".$dbProduct->stock." available";
+                    $productMsg = $dbProductSummary->name . " - requested " . $dbOrderItems->quantity . ", only " . $dbProduct->stock . " available";
                     array_push($missingProductsMsg, $productMsg);
                 }
 
@@ -536,8 +544,8 @@ class OrderController extends Controller
             }
         }
 
-        if(count($missingProductsMsg) > 0) {
-            $msg = $this->f3->get('vEntity_order')."<br>".implode("<br>", $missingProductsMsg);
+        if (count($missingProductsMsg) > 0) {
+            $msg = $this->f3->get('vEntity_order') . "<br>" . implode("<br>", $missingProductsMsg);
             echo $this->webResponse->jsonResponseV2(2, $this->f3->get('vResponse_notUpdated', $this->f3->get('vEntity_order')), $msg, null);
             return;
         }
@@ -692,8 +700,8 @@ class OrderController extends Controller
 
         $subject = "Order Status Update";
         if (getenv('ENV') != Constants::ENV_PROD) {
-            $subject .= " - (Test: ".getenv('ENV').")";
-            if (getenv('ENV') == Constants::ENV_LOC){
+            $subject .= " - (Test: " . getenv('ENV') . ")";
+            if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->resetTos();
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
@@ -702,7 +710,7 @@ class OrderController extends Controller
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
         $emailHandler->resetTos();
 
-        
+
         $ordersUrl = "web/distributor/order/";
         switch ($statusId) {
             case 1:
@@ -743,8 +751,8 @@ class OrderController extends Controller
 
         $subject = "Order Status Update";
         if (getenv('ENV') != Constants::ENV_PROD) {
-            $subject .= " - (Test: ".getenv('ENV').")";
-            if (getenv('ENV') == Constants::ENV_LOC){
+            $subject .= " - (Test: " . getenv('ENV') . ")";
+            if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->resetTos();
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
