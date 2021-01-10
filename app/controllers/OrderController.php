@@ -386,7 +386,6 @@ class OrderController extends Controller {
 
             $ordersWithOrderDetail[] = $order;
             $ordersWithOrderDetail = array_merge($ordersWithOrderDetail, $arrOrderDetail);
-            $ordersWithOrderDetail[] = ['id' => ''];
         }
 
         ## Response

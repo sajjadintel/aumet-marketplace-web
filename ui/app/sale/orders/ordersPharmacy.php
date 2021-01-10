@@ -122,7 +122,7 @@ function compress_htmlcode($codedata)
               data: 'id',
               render: function (data, type, row, meta) {
                   if (!row.entitySeller)
-                      return row.id;
+                      return row.productCode;
 
                   var output = '(' + row.id + ') - #' + row.serial;
                   return output;
