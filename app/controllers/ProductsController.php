@@ -61,10 +61,6 @@ class ProductsController extends Controller
             $arrStockStatus = $dbStockStatus->findAll("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
 
-            $dbScientificName = new BaseModel($this->db, "scientificName");
-            $arrScientificName = $dbScientificName->findAll();
-
-
             $this->webResponse->errorCode = 1;
             $this->webResponse->title = $this->f3->get('vModule_product_title');
             $this->webResponse->data = View::instance()->render('app/products/distributor/products.php');
