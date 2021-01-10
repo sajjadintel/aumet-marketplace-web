@@ -447,6 +447,10 @@ var WebApp = (function () {
 			_unblockPage();
 		});
 
+		$.fn.dataTable.ext.errMode = function (settings, helpPage, message) {
+			console.log(message);
+		};
+
 		return datatableVar;
 	};
 

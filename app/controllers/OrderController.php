@@ -384,8 +384,11 @@ class OrderController extends Controller {
             $dbOrderDetail->productName = "productName" . ucfirst($this->objUser->language);
             $arrOrderDetail = $dbOrderDetail->findWhere("id = '{$order['id']}'");
 
-            $ordersWithOrderDetail[] = $order;
-            $ordersWithOrderDetail = array_merge($ordersWithOrderDetail, $arrOrderDetail);
+            for ($i = 0; $i < count($arrOrderDetail); $i++) {
+                $orderDetail = array_merge($order, $arrOrderDetail[$i]);
+                $orderDetail['isVisible'] = $i === 0;
+                $ordersWithOrderDetail[] = array_merge($order, $orderDetail);
+            }
         }
 
         ## Response

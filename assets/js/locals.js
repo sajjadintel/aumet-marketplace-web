@@ -115,6 +115,16 @@ var WebAppLocals = (function () {
 			ar: 'طلب',
 			fr: '',
 		},
+		orderId: {
+			en: 'Order ID',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
+		productId: {
+			en: 'Product ID',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
 		orderCount: {
 			en: 'Order Count',
 			ar: 'عدد الطلبات',
