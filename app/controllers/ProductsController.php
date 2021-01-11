@@ -191,7 +191,7 @@ class ProductsController extends Controller
     {
         $imageName = $this->f3->get('POST.imageName');
 
-        $uploadDir = $this->getRootDirectory() . "/assets/img/products/";
+        $uploadDir = "assets/img/products/";
         $this->f3->set('UPLOADS', $uploadDir);
 
         $overwrite = true;
@@ -1725,7 +1725,7 @@ class ProductsController extends Controller
             $ext = pathinfo(basename($_FILES["file"]["name"][$i]), PATHINFO_EXTENSION);
             
             $newFileName = $fileName . "-" . time() . ".$ext";
-            $targetFile = $this->getRootDirectory() . "/assets/img/products/" . $newFileName;
+            $targetFile = "assets/img/products/" . $newFileName;
 
             if ($ext == "png" || $ext == "jpg" || $ext == "jpeg") {
                 if (move_uploaded_file($_FILES["file"]["tmp_name"][$i], $targetFile)) {
