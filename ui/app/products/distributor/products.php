@@ -115,6 +115,8 @@ function compress_htmlcode($codedata)
         var PageClass = function () {
             var elementId = "#datatable";
             var url = '<?php echo $_SERVER['REQUEST_URI']; ?>';
+            console.log("url");
+            console.log(url);
 
             var columnDefs = [{
                 className: "export_datatable",
