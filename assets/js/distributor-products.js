@@ -128,6 +128,7 @@ var DistributorProductsDataTable = (function () {
         $("label[for='addProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
         $("label[for='addUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
         $("label[for='addStock']").text(WebAppLocals.getMessage('quantityAvailable'));
+        $("label[for='addMaximumOrderQuantity']").text(WebAppLocals.getMessage('maximumOrderQuantity'));
 
         $('#addModalAction').html(WebAppLocals.getMessage('add'));
         $('#addModal').appendTo('body').modal('show');
@@ -195,6 +196,7 @@ var DistributorProductsDataTable = (function () {
 
         if(mode === "add") {
             $('#' + mode + 'Stock').on('change', (ev) => _checkModalForm(mode));
+            $('#' + mode + 'MaximumOrderQuantity').on('change', (ev) => _checkModalForm(mode));
         }
     }
 
@@ -214,7 +216,8 @@ var DistributorProductsDataTable = (function () {
 
         if(valid && mode === "add") {
             let stock = $('#' + mode + 'Stock').val();
-            if(!stock) valid = false;
+            let maximumOrderQuantity = $('#' + mode + 'MaximumOrderQuantity').val();
+            if(!stock || !maximumOrderQuantity) valid = false;
         }
 
         $('#' + mode + 'ModalAction').prop("disabled", !valid);
