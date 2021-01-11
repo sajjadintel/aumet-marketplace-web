@@ -1445,7 +1445,8 @@ class ProductsController extends Controller
                 "D" => "name_en",
                 "E" => "name_fr",
                 "F" => "unitPrice",
-                "G" => "stock"
+                "G" => "stock",
+                "H" => "maximumOrderQuantity"
             ];
 
             $successProducts = [];
@@ -1541,6 +1542,13 @@ class ProductsController extends Controller
                                 $dbEntityProduct->stock  = (int) $cellValue;
                             }
                             break;
+                        case "H":
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                                array_push($errors, "Maximum Order Quantity must be a positive whole number");
+                            } else {
+                                $dbEntityProduct->maximumOrderQuantity  = (int) $cellValue;
+                            }
+                            break;
                     }
                 }
 
@@ -1623,8 +1631,8 @@ class ProductsController extends Controller
                 Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
                 Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
 
-                $sheet->setCellValue('H2', 'Error');
-                $sheet->getStyle('H2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
+                $sheet->setCellValue('I2', 'Error');
+                $sheet->getStyle('I2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
 
                 // Add all products to multidimensional array
                 $multiProducts = [];
@@ -1635,7 +1643,8 @@ class ProductsController extends Controller
                     "name_en",
                     "name_fr",
                     "unitPrice",
-                    "stock"
+                    "stock",
+                    "maximumOrderQuantity"
                 ];
                 $i = 3;
                 for ($i = 0; $i < count($failedProducts); $i++) {
