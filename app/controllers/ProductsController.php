@@ -1753,19 +1753,21 @@ class ProductsController extends Controller
         // Get all product ids
         $allProductId = [];
         $dbProduct = new BaseModel($this->db, "product");
+        $dbProduct->name = "name_" . $this->objUser->language;
         $allProduct = $dbProduct->findAll("id asc");
 
         // Check if file name starts with an existing product id
         $mapFileNameProduct = [];
         foreach($mapNewOldFileName as $newFileName => $oldFileName) {
-            $product = new stdClass();
+            $product = null;
             $allParts = explode("-", $oldFileName);
             if(count($allParts) > 1 && filter_var($allParts[0], FILTER_VALIDATE_INT)) {
                 $productIdInitial = (int) $allParts[0];
                 foreach($allProduct as $prod) {
-                    if($productIdInitial == $prod->id) {
-                        $product->id = $prod->id;
-                        $product->name = $prod->name;
+                    if($productIdInitial == $prod['id']) {
+                        $product = new stdClass();
+                        $product->id = $prod['id'];
+                        $product->name = $prod['name'];
                         break;
                     }
                 }
@@ -1773,7 +1775,7 @@ class ProductsController extends Controller
 
             $mapFileNameProduct[$newFileName] = $product;
         }
-
+        
         $this->f3->set("mapFileNameProduct", $mapFileNameProduct);
 
         $this->webResponse->errorCode = 1;
@@ -1785,5 +1787,26 @@ class ProductsController extends Controller
     function getProductList()
     {
         $this->handleGetListFilters("product", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
+    }
+
+    function postBulkAddImage()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/product/bulk/add/image/upload");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $mapProductIdImage = $this->f3->get('POST.mapProductIdImage');
+
+            $dbProduct = new BaseModel($this->db, "product");
+            foreach($mapProductIdImage as $productId => $image) {
+                $dbProduct->getWhere("id = $productId");
+                if(!$dbProduct->dry()) {
+                    $dbProduct->image = $image;
+                    $dbProduct->update();
+                }
+            }
+
+            echo $this->webResponse->jsonResponseV2(1, "Success", $this->f3->get('vResponse_imagesAdded'));
+        }
     }
 }

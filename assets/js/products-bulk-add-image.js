@@ -47,10 +47,8 @@ var ProductsBulkAddImage = function () {
     var _processUpload = function(webReponse){
         $('#productsBulkAddImageProcessResultContainer').html(webReponse.data);
 
-        
-        $('.productName').each(function(i, elem) {
-            console.log('elem');
-            console.log(elem);
+        let valid = true;
+        $('.productId').each(function(i, elem) {
             $(elem).select2({
                 placeholder: WebAppLocals.getMessage('product'),
         
@@ -70,19 +68,59 @@ var ProductsBulkAddImage = function () {
 
             var productId = $(elem).attr('data-productId');
             var productName = $(elem).attr('data-productName');
-            console.log("productId")
-            console.log(productId);
             if(productId) {
                 $(elem).append(new Option(productName, productId));
                 $(elem).val(productId);
+            } else {
+                valid = false;
             }
 		
         });
+
+        $('.productId').each(function(i, elem) {
+            $(elem).on('change', (ev) => _checkModalForm());
+        });
+        $('#addImageDone').prop("disabled", !valid);
 
 		$('#addImageModalTitle').html(WebAppLocals.getMessage('addImageTitle'));
 		$('#addImageDone').html(WebAppLocals.getMessage('done'));
 		$('#addImageModal').appendTo('body').modal('show');
     };
+
+    var _checkModalForm = function () {
+        let valid = true;
+
+        $('.productId').each(function(i, elem) {
+            if(!$(elem).val()) valid = false;
+        });
+
+        $('#addImageDone').prop("disabled", !valid);
+    }
+
+    var _deleteRow = function (index) {
+        if($('.productRow').length > 1) {
+            $("#productRow-" + index).remove();
+            _checkModalForm();
+        } else {
+		    $('#addImageModal').appendTo('body').modal('hide');
+        }
+    }
+
+    var _submit = function () {
+        let mapProductIdImage = {};
+        $('.productRow').each(function(index, element) {
+            let rowId = $(element).attr('id');
+            let allParts = rowId.split("-");
+            let id = allParts[1];
+
+            let productId = $('#productId-' + id).val();
+            let image = $('#productImage-' + id).val();
+
+            mapProductIdImage[productId] = image;
+        })
+
+        WebApp.post('/web/distributor/product/bulk/add/image', { mapProductIdImage }, null);
+    }
 
     return {
         init: function () {
@@ -90,6 +128,12 @@ var ProductsBulkAddImage = function () {
         },
         processUpload: function (webReponse) {
             _processUpload(webReponse);
+        },
+        deleteRow: function (index) {
+            _deleteRow(index);
+        },
+        submit: function () {
+            _submit();
         }
     };
 }();

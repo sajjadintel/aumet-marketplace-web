@@ -23,6 +23,7 @@ function compress_htmlcode($codedata)
                 </div>
             </div>
 
+
             <div class="d-flex align-items-center flex-column mt-10">
                 <div class="dropzone dropzone-default dropzone-success" id="dropZoneProductsBulkAddImage">
                     <div class="dropzone-msg dz-message needsclick">
@@ -32,6 +33,9 @@ function compress_htmlcode($codedata)
                 </div>
             </div>
 
+            <div class="mt-10">
+                <p><?php echo $vModule_bulk_add_image_info ?></p>
+            </div>
 
         </div>
     </div>

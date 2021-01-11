@@ -187,4 +187,8 @@ return array(
 
     'vModule_bulk_add_title' => 'إضافة مجمعة',
     'vModule_bulk_add_image_title' => 'إضافة صور مجمعة',
+
+    'vModule_bulk_add_image_info' => 'للحصول على أفضل استخدام ، تأكد من أن اسم صورتك يبدأ بـ "productId-" لتحديد منتج تلقائيًا بعد التحميل.',
+    
+    'vResponse_imagesAdded' => 'تمت إضافة الصور بنجاح',
 );

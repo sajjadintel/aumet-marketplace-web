@@ -199,4 +199,7 @@ return array(
 
     'vModule_bulk_add_title' => 'Bulk Add',
     'vModule_bulk_add_image_title' => 'Bulk Add Images',
+    'vModule_bulk_add_image_info' => 'For best use, make sure your image name starts with "productId-" to automatically select a product after the upload.',
+    
+    'vResponse_imagesAdded' => 'Images added successfully',
 );

@@ -21,6 +21,8 @@ class Constants
     const ORDER_STATUS_CANCELED = 5;
     const ORDER_STATUS_RECEIVED = 6;
     const ORDER_STATUS_PAID = 7;
+    const ORDER_STATUS_MISSING_PRODUCTS = 8;
+    const ORDER_STATUS_CANCELED_PHARMACY = 9;
 
     ## Email Types
     const EMAIL_NEW_ORDER = 'New Order';
