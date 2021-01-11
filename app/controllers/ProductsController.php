@@ -263,8 +263,9 @@ class ProductsController extends Controller
                 $name_ar = $this->f3->get('POST.name_ar');
                 $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
+                $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
 
-                if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice) {
+                if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$maximumOrderQuantity) {
                     $this->webResponse->errorCode = 2;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Some mandatory fields are missing";
@@ -283,6 +284,7 @@ class ProductsController extends Controller
 
                 $dbEntityProduct->unitPrice = $unitPrice;
                 $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
+                $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
 
                 $dbEntityProduct->update();
 
