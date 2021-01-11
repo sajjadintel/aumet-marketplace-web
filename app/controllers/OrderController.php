@@ -522,6 +522,8 @@ class OrderController extends Controller {
             return;
         }
 
+        $missingProductsMsg = [];
+
         // Add conditions for checks on Order
         // If Order to change to Complete, check if Stock is available for all the items
         if ($statusId == Constants::ORDER_STATUS_COMPLETED) {
@@ -532,7 +534,6 @@ class OrderController extends Controller {
             // check all items if stock is available
             $dbOrderItems->getWhere("orderId = $orderId");
 
-            $missingProductsMsg = [];
             while (!$dbOrderItems->dry()) {
                 $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
                 $dbProductSummary->getWhere("id = $dbOrderItems->entityProductId");
