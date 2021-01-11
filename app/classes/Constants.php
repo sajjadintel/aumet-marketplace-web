@@ -27,4 +27,9 @@ class Constants
     const EMAIL_LOW_STOCK = 'Low Stock';
     const EMAIL_MISSING_PRODUCTS = 'Missing Products';
     const EMAIL_ORDER_STATUS_UPDATE = 'Order Status Update';
+
+    ### Status Codes
+    const STATUS_CODE_REDIRECT_TO_WEB = 0;
+    const STATUS_SUCCESS = 1;
+    const STATUS_ERROR = 2;
 }

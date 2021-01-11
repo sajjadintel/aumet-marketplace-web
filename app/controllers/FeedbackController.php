@@ -32,7 +32,7 @@ class FeedbackController extends Controller {
                     $this->f3->set('vModule_order_header', 'Unknown List');
                     break;
             }
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $title;
             $this->webResponse->data = View::instance()->render($renderFile);
             echo $this->webResponse->jsonResponse();
@@ -146,7 +146,7 @@ class FeedbackController extends Controller {
             $orderRating = $orderRating->findWhere("orderId = '$orderId' AND userId= '$userId'");
 
             if ($orderRating != null) {
-                $this->webResponse->errorCode = 1;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get("alreadySentFeedback");
                 echo $this->webResponse->jsonResponse();
                 return;
@@ -160,7 +160,7 @@ class FeedbackController extends Controller {
 
             $dbProduct->add();
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get("feedbackSaved");
             echo $this->webResponse->jsonResponse();
         }
