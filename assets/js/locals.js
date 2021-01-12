@@ -330,6 +330,11 @@ var WebAppLocals = (function () {
 			ar: 'التوفر',
 			fr: '',
 		},
+		stockQuantity: {
+			en: 'Stock Quantity',
+			ar: 'كمية المخزون',
+			fr: '',
+		},
 		stockAvailability: {
 			en: 'Stock Availability',
 			ar: 'توفر المنتج',
