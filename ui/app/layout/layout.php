@@ -373,7 +373,6 @@ function compress_htmlcode($codedata)
         });
 
         $("#searchBarInputDesktopIcon").click(function () {
-            _autocompleteDesktop.abortAjax();
             WebApp.loadPage('/web/product/search?query=' + $('#searchBarInputDesktop').val());
         });
 
