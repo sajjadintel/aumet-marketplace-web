@@ -340,6 +340,8 @@ class SearchController extends Controller {
                 $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
 
+            $query .= " AND statusId = 1";
+
         }
 
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");

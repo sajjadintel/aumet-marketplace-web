@@ -43,7 +43,7 @@ class ProductsController extends Controller
                 $found = true;
             }
 
-            if(!$found && $this->objUser->menuId === 1) {
+            if($dbEntityProduct['statusId'] === 0 || (!$found && $this->objUser->menuId === 1)) {
                 $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
                 echo $this->webResponse->jsonResponse();
                 return;
@@ -158,6 +158,8 @@ class ProductsController extends Controller
                 $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
 
+            $query .= " AND statusId = 1";
+
         }
 
 
@@ -211,6 +213,7 @@ class ProductsController extends Controller
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityId IN ($arrEntityId)";
+        $query .= " AND statusId = 1";
         $meta = array();
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
 
