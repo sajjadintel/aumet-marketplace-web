@@ -148,11 +148,16 @@ var DistributorProductsDataTable = (function () {
 
     var _changeImageHolder = function (image, mode) {
         let backgroundImageVal = "/theme/assets/media/users/blank.png";
+        console.log("mode");
+        console.log(mode);
+        console.log("image");
+        console.log(image);
         if(image) {
-            let imageVal = image;
-            if(!_isValidUrl(image)) imageVal = "/assets/" + image;
-            backgroundImageVal = imageVal;
+            console.log("in if statement");
+            backgroundImageVal = image;
         }
+        console.log("backgroundImageVal");
+        console.log(backgroundImageVal);
         $('#' + mode + 'ProductImageHolder').css("background-image", "url(" + backgroundImageVal + ")");
         $('#' + mode + 'ProductImageInput').val(image);
     }
@@ -177,15 +182,6 @@ var DistributorProductsDataTable = (function () {
         }).done(function (webResponse) {
             _productImageUpload(webResponse, mode);
         });
-    }
-
-    var _isValidUrl = function (string) {
-        try {
-            new URL(string);
-        } catch (ex) {
-            return false;
-        }
-        return true;
     }
 
     var _addModalValidation = function (mode) {
