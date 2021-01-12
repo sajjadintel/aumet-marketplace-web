@@ -314,7 +314,7 @@ var SearchDataTable = (function () {
 		});
 		repeater.setList(bonuses);
 
-		$('#addBonusDone').html(WebAppLocals.getMessage('addBonusDone'));
+		$('#addBonusDone').html(WebAppLocals.getMessage('done'));
 		$('#addBonusModal').appendTo('body').modal('show');
 	};
 

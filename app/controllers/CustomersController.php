@@ -9,7 +9,7 @@ class CustomersController extends Controller {
         } else {
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_feedback_title');
             $this->webResponse->data = View::instance()->render('app/entity/feedback/list.php');
             echo $this->webResponse->jsonResponse();
