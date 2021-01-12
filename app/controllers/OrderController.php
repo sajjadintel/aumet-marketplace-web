@@ -49,7 +49,7 @@ class OrderController extends Controller
             $dbOrder->update();
             $dbOrder->next();
         }
-        $this->webResponse->errorCode = 1;
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         $this->webResponse->title = "";
         $this->webResponse->data = $count;
         echo $this->webResponse->jsonResponse();
@@ -77,7 +77,7 @@ class OrderController extends Controller
                     $this->f3->set('vModule_order_header', 'Unknown List');
                     break;
             }
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $title;
             $this->webResponse->data = View::instance()->render($renderFile);
             echo $this->webResponse->jsonResponse();
@@ -106,7 +106,7 @@ class OrderController extends Controller
                     $this->f3->set('vModule_order_header', 'Unknown List');
                     break;
             }
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $title;
             $this->webResponse->data = View::instance()->render($renderFile);
             echo $this->webResponse->jsonResponse();
