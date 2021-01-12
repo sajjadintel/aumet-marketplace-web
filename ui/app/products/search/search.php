@@ -58,9 +58,12 @@ function compress_htmlcode($codedata)
                     </div>
                 </div>
 
-                <div class="d-flex flex-column-fluid">
-                    <div class="input-group input-group-lg mr-5">
-                        <div class="input-group-prepend pt-3 pl-1 pr-1">
+                <?php
+                $roleId = $_SESSION['objUser']->roleId;
+                if (!Helper::isDistributor($roleId)) { ?>
+                    <div class="d-flex flex-column-fluid">
+                        <div class="input-group input-group-lg mr-5">
+                            <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -70,12 +73,12 @@ function compress_htmlcode($codedata)
                                 </g>
                             </svg>
                         </span>
+                            </div>
+                            <select class="select2 form-control" id="searchProductsDistributorNameInput" multiple="" name="distributorName" data-select2-id="searchProductsDistributorNameInput" tabindex="-1" aria-hidden="true">
+                            </select>
                         </div>
-                        <select class="select2 form-control" id="searchProductsDistributorNameInput" multiple="" name="distributorName" data-select2-id="searchProductsDistributorNameInput" tabindex="-1" aria-hidden="true">
-
-                        </select>
                     </div>
-                </div>
+                <?php } ?>
 
                 <div class="d-flex flex-column-fluid">
                     <div class="input-group input-group-lg">

@@ -20,13 +20,21 @@ class SearchController extends Controller {
 
     function handleSearchBar()
     {
-        $where = "";
+        $where = "1=1 ";
         $term = $_GET['query'];
         if (isset($term) && $term != "" && $term != null) {
-            $where .= " scientificName LIKE '%{$term}%'";
+            $where .= "AND ( scientificName LIKE '%{$term}%'";
             $where .= " OR productName_ar LIKE '%{$term}%'";
             $where .= " OR productName_en LIKE '%{$term}%'";
-            $where .= " OR productName_fr LIKE '%{$term}%'";
+            $where .= " OR productName_fr LIKE '%{$term}%' ) ";
+        }
+
+        $roleId = $this->f3->get('SESSION.objUser')->roleId;
+
+        // if distributor
+        if ($roleId == 10 || $roleId == 20 || $roleId == 30) {
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $where .= " AND entityId IN ($arrEntityId)";
         }
 
         $page = $_GET['page'];
@@ -43,7 +51,7 @@ class SearchController extends Controller {
         $queryDisplay = 'productName_' . $this->objUser->language;
 
         $dbNames = new BaseModel($this->db, 'vwEntityProductSell');
-        $dbNames->getWhere($where,$queryDisplay, $pageSize, $page * $pageSize);
+        $dbNames->getWhere($where, $queryDisplay, $pageSize, $page * $pageSize);
         $resultsCount = 0;
         while (!$dbNames->dry()) {
             $resultsCount++;
@@ -271,7 +279,7 @@ class SearchController extends Controller {
             $dbProducts = new BaseModel($this->db, "vwCategory");
             $dbProducts->name = "name_" . $this->objUser->language;
             $dbProducts->parent_name = "parent_name_" . $this->objUser->language;
-            $select2Result->results =$dbProducts->findWhere($where, "parent_id ASC, name_{$this->objUser->language} ASC", $pageSize, $page * $pageSize);
+            $select2Result->results = $dbProducts->findWhere($where, "parent_id ASC, name_{$this->objUser->language} ASC", $pageSize, $page * $pageSize);
             $resultsCount = count($select2Result->results);
 //            while (!$dbProducts->dry()) {
 //                $resultsCount++;
@@ -304,6 +312,16 @@ class SearchController extends Controller {
 
         $fullQuery = $query;
 
+
+        $roleId = $this->f3->get('SESSION.objUser')->roleId;
+
+        // if distributor
+        $isDistributor = false;
+        if ($roleId == 10 || $roleId == 20 || $roleId == 30) {
+            $isDistributor = true;
+        }
+
+
         if (is_array($datatable->query)) {
             $productId = $datatable->query['productId'];
             if (isset($productId) && is_array($productId)) {
@@ -315,9 +333,11 @@ class SearchController extends Controller {
                 $query .= " AND scientificNameId in (" . implode(",", $scientificNameId) . ")";
             }
 
-            $entityId = $datatable->query['entityId'];
-            if (isset($entityId) && is_array($entityId)) {
-                $query .= " AND entityId in (" . implode(",", $entityId) . ")";
+            if (!$isDistributor) {
+                $entityId = $datatable->query['entityId'];
+                if (isset($entityId) && is_array($entityId)) {
+                    $query .= " AND entityId in (" . implode(",", $entityId) . ")";
+                }
             }
 
             $stockOption = $datatable->query['stockOption'];
@@ -334,8 +354,16 @@ class SearchController extends Controller {
 
         }
 
+        $roleId = $this->f3->get('SESSION.objUser')->roleId;
+
+        if ($isDistributor) {
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $query .= " AND entityId IN ($arrEntityId)";
+        }
+
         $queryParam = $datatable->query['query'];
-        if ($queryParam != null && $queryParam != 'null') {
+        if ($queryParam != null && $queryParam != 'null' && trim($queryParam) != '') {
+            $queryParam = trim($queryParam);
             $query .= " AND ( scientificName LIKE '%{$queryParam}%'";
             $query .= " OR productName_ar LIKE '%{$queryParam}%'";
             $query .= " OR productName_en LIKE '%{$queryParam}%'";
@@ -351,7 +379,7 @@ class SearchController extends Controller {
         $data = $dbProducts->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
 
         $allProductId = [];
-        foreach($data as $product) {
+        foreach ($data as $product) {
             array_push($allProductId, $product['id']);
         }
         $allProductId = implode(",", $allProductId);
@@ -359,19 +387,21 @@ class SearchController extends Controller {
         $dbCartDetail = new BaseModel($this->db, "cartDetail");
         $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
 
-        $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
-        $arrBonus = $dbBonus->findWhere("entityProductId IN ($allProductId) AND isActive = 1");
+        if ($allProductId != null) {
+            $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+            $arrBonus = $dbBonus->findWhere("entityProductId IN ($allProductId) AND isActive = 1");
 
-        $mapProductIdBonuses = [];
+            $mapProductIdBonuses = [];
 
-        foreach($arrBonus as $bonus) {
-            $productId = $bonus['entityProductId'];
-            $allBonuses = [];
-            if(array_key_exists($productId, $mapProductIdBonuses)) {
-                $allBonuses = $mapProductIdBonuses[$productId];
+            foreach ($arrBonus as $bonus) {
+                $productId = $bonus['entityProductId'];
+                $allBonuses = [];
+                if (array_key_exists($productId, $mapProductIdBonuses)) {
+                    $allBonuses = $mapProductIdBonuses[$productId];
+                }
+                array_push($allBonuses, $bonus);
+                $mapProductIdBonuses[$productId] = $allBonuses;
             }
-            array_push($allBonuses, $bonus);
-            $mapProductIdBonuses[$productId] = $allBonuses;
         }
 
         for ($i = 0; $i < count($data); $i++) {
@@ -394,10 +424,10 @@ class SearchController extends Controller {
             }
 
             $data[$i]['activeBonus'] = null;
-            if($quantityFree > 0) {
+            if ($quantityFree > 0) {
                 $allBonuses = $data[$i]['bonuses'];
-                foreach($allBonuses as $bonus) {
-                    if($bonus['bonus'] === $quantityFree) {
+                foreach ($allBonuses as $bonus) {
+                    if ($bonus['bonus'] === $quantityFree) {
                         $data[$i]['activeBonus'] = $bonus;
                         break;
                     }
