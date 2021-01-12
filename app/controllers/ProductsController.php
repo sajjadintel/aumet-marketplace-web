@@ -74,8 +74,6 @@ class ProductsController extends Controller
 
             $dbScientificName = new BaseModel($this->db, "scientificName");
             $arrScientificName = $dbScientificName->findAll();
-
-
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_product_title');
             $this->webResponse->data = View::instance()->render('app/products/distributor/products.php');
