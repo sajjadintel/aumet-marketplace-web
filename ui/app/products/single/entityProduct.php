@@ -104,7 +104,9 @@ function compress_htmlcode($codedata)
                                     <th class=""><?php echo $vModule_product_madeIn ?></th>
                                     <th class=""><?php echo $vModule_product_stockStatusDate ?></th>
                                     <th class=""><?php echo $vModule_product_unitPrice ?></th>
-                                    <th class=""><?php echo $vModule_cart_quantity ?></th>
+                                    <?php if($objUser->menuId !== 1): ?>
+                                        <th class=""><?php echo $vModule_cart_quantity ?></th>
+                                    <?php endif; ?>
 <!--                                    <th class="">--><?php //echo $vModule_cart_bonus ?><!--</th>-->
                                     <th></th>
                                 </tr>
@@ -131,10 +133,14 @@ function compress_htmlcode($codedata)
                                         <td class="align-middle font-weight-bolder font-size-h5"><?php echo date("Y / m / d", strtotime($objItem->stockUpdateDateTime)) ?></td>
                                         <td class="align-middle font-weight-bolder font-size-h5"><?php echo $objItem->unitPrice  . ' ' . $objEntityProduct->currency ?></td>
                                         <td class="align-middle font-weight-bolder font-size-h5">
-                                            <input id="quantity-<?php echo $objItem->id ?>" type="number" min="0" value="1" />
+                                            <input id="quantity-<?php echo $objItem->id ?>" type="number" min="0" value="1" max="<?php echo min($objItem->stock, $objItem->maximumOrderQuantity); ?>"/>
                                         </td>
 
+
                                         <?php if($objUser->menuId !== 1): ?>
+                                            <td class="align-middle font-weight-bolder font-size-h5">
+                                                <input id="quantity-<?php echo $objItem->id ?>" type="number" min="0" value="1" />
+                                            </td>
                                             <td class="align-middle">
                                                 <a href="javascript:;" onclick="Cart.addItem(<?php echo $objItem->entityId ?>,<?php echo $objItem->productId ?>, '#quantity-<?php echo $objItem->id ?>')" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon  mr-2" title="Add to cart">
                                                     <span class="svg-icon svg-icon-md">

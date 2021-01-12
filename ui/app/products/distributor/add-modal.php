@@ -65,6 +65,10 @@
                             <label for="addStock" class="form-control-label">Stock</label>
                             <input type="number" class="form-control" name="stock" id="addStock" min="0" step="1" onchange="this.value = this.value > 0? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                         </div>
+                        <div class="col-md-6 form-group">
+                            <label for="addMaximumOrderQuantity" class="form-control-label">Maximum Order Quantity</label>
+                            <input type="number" class="form-control" name="maximumOrderQuantity" id="addMaximumOrderQuantity" min="0" step="1" onchange="this.value = this.value > 0? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

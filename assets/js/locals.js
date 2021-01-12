@@ -120,6 +120,16 @@ var WebAppLocals = (function () {
 			ar: 'طلب',
 			fr: '',
 		},
+		orderId: {
+			en: 'Order ID',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
+		productId: {
+			en: 'Product ID',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
 		orderCount: {
 			en: 'Order Count',
 			ar: 'عدد الطلبات',
@@ -255,9 +265,14 @@ var WebAppLocals = (function () {
 			ar: 'الكمية المطلوبة',
 			fr: '',
 		},
+		quantityFree: {
+			en: 'Quantity Free',
+			ar: 'Quantity Free', // TODO: Add translation
+			fr: '',
+		},
 		note: {
 			en: 'Note',
-			ar: '', // TODO: Add translation
+			ar: 'Note', // TODO: Add translation
 			fr: '',
 		},
 		minOrder: {
@@ -429,8 +444,12 @@ var WebAppLocals = (function () {
 			en: 'Add Images',
 			ar: 'إضافة الصور',
 			fr: '',
+		},
+		maximumOrderQuantity: {
+			en: 'Maximum Order Quantity',
+			ar: 'كمية الطلب القصوى',
+			fr: ''
 		}
-
 	};
 
 	var _symbolsLocals = {

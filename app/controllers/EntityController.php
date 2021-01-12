@@ -12,7 +12,7 @@ class EntityController extends Controller
             $arrStockStatus = $dbStockStatus->all("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_customer_title');
             $this->webResponse->data = View::instance()->render('app/entity/customers/customers.php');
             echo $this->webResponse->jsonResponse();
@@ -79,7 +79,7 @@ class EntityController extends Controller
             $arrStockStatus = $dbStockStatus->all("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_users_title');
             $this->webResponse->data = View::instance()->render('app/users/list.php');
             echo $this->webResponse->jsonResponse();

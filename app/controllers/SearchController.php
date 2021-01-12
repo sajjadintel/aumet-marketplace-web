@@ -11,7 +11,7 @@ class SearchController extends Controller {
             $arrStockStatus = $dbStockStatus->all("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_search_title');
             $this->webResponse->data = View::instance()->render('app/products/search/search.php');
             echo $this->webResponse->jsonResponse();
@@ -64,7 +64,69 @@ class SearchController extends Controller {
             $select2Result->pagination = true;
         }
 
-        $this->webResponse->errorCode = 1;
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+        $this->webResponse->title = "";
+        $this->webResponse->data = $select2Result;
+        echo $this->webResponse->jsonResponse();
+    }
+
+    function handleGetListFilters($table, $queryTerms, $queryDisplay, $queryId = 'id', $additionalQuery = null)
+    {
+        $where = "";
+        if ($additionalQuery != null) {
+            $where = $additionalQuery;
+        }
+        $term = $_GET['term'];
+        if (isset($term) && $term != "" && $term != null) {
+            if ($additionalQuery != null) {
+                $where .= " AND (";
+            }
+            if (is_array($queryTerms)) {
+                $i = 0;
+                foreach ($queryTerms as $queryTerm) {
+                    if ($i != 0) {
+                        $where .= ' OR ';
+                    }
+                    $where .= "$queryTerm LIKE '%$term%'";
+                    $i++;
+                }
+            } else {
+                $where .= "$queryTerms LIKE '%$term%'";
+            }
+            if ($additionalQuery != null) {
+                $where .= ")";
+            }
+        }
+        $page = $_GET['page'];
+        if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
+            $page = $page - 1;
+        } else {
+            $page = 0;
+        }
+
+        $pageSize = 10;
+
+        $select2Result = new stdClass();
+        $select2Result->results = [];
+        $select2Result->pagination = false;
+
+        $dbNames = new BaseModel($this->db, $table);
+        $dbNames->getWhere($where, $queryDisplay, $pageSize, $page * $pageSize);
+        $resultsCount = 0;
+        while (!$dbNames->dry()) {
+            $resultsCount++;
+            $select2ResultItem = new stdClass();
+            $select2ResultItem->id = $dbNames[$queryId];
+            $select2ResultItem->text = $dbNames[$queryDisplay];
+            $select2Result->results[] = $select2ResultItem;
+            $dbNames->next();
+        }
+
+        if ($resultsCount >= $pageSize) {
+            $select2Result->pagination = true;
+        }
+
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         $this->webResponse->title = "";
         $this->webResponse->data = $select2Result;
         echo $this->webResponse->jsonResponse();
@@ -108,11 +170,11 @@ class SearchController extends Controller {
                 $select2Result->pagination = true;
             }
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = $select2Result;
         } else {
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         }
         echo $this->webResponse->jsonResponse();
     }
@@ -185,11 +247,11 @@ class SearchController extends Controller {
                 $select2Result->pagination = true;
             }
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = $select2Result;
         } else {
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         }
         echo $this->webResponse->jsonResponse();
     }
@@ -235,11 +297,11 @@ class SearchController extends Controller {
                 $select2Result->pagination = true;
             }
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = $select2Result;
         } else {
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         }
         echo $this->webResponse->jsonResponse();
     }

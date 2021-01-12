@@ -31,6 +31,7 @@ var DistributorProductsDataTable = (function () {
         $("label[for='editProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
         $("label[for='editProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
         $("label[for='editUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
+        $("label[for='editMaximumOrderQuantity']").text(WebAppLocals.getMessage('maximumOrderQuantity'));
 
         $('#editProductScientificName').append(new Option(webResponse.data.product.scientificName, webResponse.data.product.scientificNameId));
         $('#editProductScientificName').val(webResponse.data.product.scientificNameId);
@@ -40,6 +41,7 @@ var DistributorProductsDataTable = (function () {
         $('#editProductNameEn').val(webResponse.data.product.productName_en);
         $('#editProductNameFr').val(webResponse.data.product.productName_fr);
         $('#editUnitPrice').val(webResponse.data.product.unitPrice);
+        $('#editMaximumOrderQuantity').val(webResponse.data.product.maximumOrderQuantity);
         $('#editModalAction').html(WebAppLocals.getMessage('edit'));
         $('#editModal').appendTo('body').modal('show');
 
@@ -128,6 +130,7 @@ var DistributorProductsDataTable = (function () {
         $("label[for='addProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
         $("label[for='addUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
         $("label[for='addStock']").text(WebAppLocals.getMessage('quantityAvailable'));
+        $("label[for='addMaximumOrderQuantity']").text(WebAppLocals.getMessage('maximumOrderQuantity'));
 
         $('#addModalAction').html(WebAppLocals.getMessage('add'));
         $('#addModal').appendTo('body').modal('show');
@@ -188,6 +191,7 @@ var DistributorProductsDataTable = (function () {
         $('#' + mode + 'ProductNameEn').on('change', (ev) => _checkModalForm(mode));
         $('#' + mode + 'ProductNameFr').on('change', (ev) => _checkModalForm(mode));
         $('#' + mode + 'UnitPrice').on('change', (ev) => _checkModalForm(mode));
+        $('#' + mode + 'MaximumOrderQuantity').on('change', (ev) => _checkModalForm(mode));
 
         if(mode === "add") {
             $('#' + mode + 'Stock').on('change', (ev) => _checkModalForm(mode));
@@ -203,8 +207,9 @@ var DistributorProductsDataTable = (function () {
         let productNameEn = $('#' + mode + 'ProductNameEn').val();
         let productNameFr = $('#' + mode + 'ProductNameFr').val();
         let unitPrice = $('#' + mode + 'UnitPrice').val();
+        let maximumOrderQuantity = $('#' + mode + 'MaximumOrderQuantity').val();
 
-        if(!scientificName || !productCountry || !productNameAr || !productNameEn || !productNameFr || !unitPrice) {
+        if(!scientificName || !productCountry || !productNameAr || !productNameEn || !productNameFr || !unitPrice || !maximumOrderQuantity) {
             valid = false;
         }
 

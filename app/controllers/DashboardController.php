@@ -36,7 +36,7 @@ class DashboardController extends Controller
                 $this->f3->set('dashboard_customerYesterday', is_null($dbDataYesterday['customerCount']) ? 0 : $dbDataYesterday['customerCount']);
                 $this->f3->set('dashboard_new_customerYesterday', is_null($dbDataNewCustomerYesterday['newCustomerCount']) ? 0 : $dbDataNewCustomerYesterday['newCustomerCount']);
 
-                $this->webResponse->errorCode = 1;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_dashboard');
                 $this->webResponse->data = View::instance()->render('app/dashboard/seller.php');
                 echo $this->webResponse->jsonResponse();
@@ -56,7 +56,7 @@ class DashboardController extends Controller
                 $this->f3->set('dashboard_orderYesterday', is_null($dbDataYesterday['orderCount']) ? 0 : $dbDataYesterday['orderCount']);
                 $this->f3->set('dashboard_invoiceYesterday', is_null($dbDataYesterday['invoice']) ? 0 : $dbDataYesterday['invoice']);
                 
-                $this->webResponse->errorCode = 1;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_dashboard');
                 $this->webResponse->data = View::instance()->render('app/dashboard/buyer.php');
                 echo $this->webResponse->jsonResponse();

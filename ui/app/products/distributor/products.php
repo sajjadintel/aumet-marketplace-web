@@ -128,16 +128,36 @@ function compress_htmlcode($codedata)
             }, {
                 targets: 0,
                 title: WebAppLocals.getMessage('productName'),
-                data: 'productName_en',
+                data: 'id',
+                visible: false,
                 render: function (data, type, row, meta) {
-                    var output = '<div style="display:flex;flex-direction:row;align-items: center"><div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
-                        row.image +
-                        '\')" ></div></div>';
-                    output += row.productName_en+'</div>';
-                    return output;
+                    return row.id;
                 },
             }, {
                 targets: 1,
+                title: WebAppLocals.getMessage('productName'),
+                data: 'productName_en',
+                render: function (data, type, row, meta) {
+                    var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        row.entityId +
+                        '/product/' +
+                        row.productId +
+                        '\')"> ' +
+                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
+                        row.image +
+                        '\')" ></div></div>'
+                        + '</a></div>';
+                    output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        row.entityId +
+                        '/product/' +
+                        row.productId +
+                        '\')"> ' +
+                        row['productName_' + docLang]
+                        + '</span></div></div>';
+                    return output;
+                },
+            }, {
+                targets: 2,
                 title: WebAppLocals.getMessage('productScientificName'),
                 data: 'scientificName',
                 render: function (data, type, row, meta) {
@@ -145,7 +165,7 @@ function compress_htmlcode($codedata)
                     return output
                 }
             }, {
-                targets: 2,
+                targets: 3,
                 title: WebAppLocals.getMessage('stockAvailability'),
                 data: 'stockStatusId',
                 render: function (data, type, row, meta) {
@@ -176,7 +196,7 @@ function compress_htmlcode($codedata)
                     return output;
                 }
             }, {
-                targets: 3,
+                targets: 4,
                 title: WebAppLocals.getMessage('stockUpdateDateTime'),
                 data: 'stockUpdateDateTime',
                 render: function (data, type, row, meta) {
@@ -187,14 +207,14 @@ function compress_htmlcode($codedata)
                     }
                 }
             }, {
-                targets: 4,
+                targets: 5,
                 title: WebAppLocals.getMessage('unitPrice'),
                 data: 'unitPrice',
                 render: function (data, type, row, meta) {
                     return '<span class="font-size-sm">' + row.currency + '</span>' + ' <b class="font-size-h4">' + row.unitPrice + '</b>';
                 }
             }, {
-                targets: 5,
+                targets: 6,
                 title: '',
                 data: 'id',
                 orderable: false,
@@ -230,7 +250,16 @@ function compress_htmlcode($codedata)
             var searchQuery = {
                 productId: [],
                 scientificNameId: [],
-                stockOption: 1
+                stockOption: 1,
+
+            };
+
+            var dbAdditionalOptions = {
+                datatableOptions: {
+                    order: [
+                        [0, 'desc']
+                    ],
+                }
             };
 
             var _selectBrand = $('#searchProductsBrandNameInput').select2({
@@ -251,12 +280,12 @@ function compress_htmlcode($codedata)
             });
             _selectBrand.on("select2:select", function(e) {
                 searchQuery.productId = $("#searchProductsBrandNameInput").val();
-                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery,dbAdditionalOptions);
 
             });
             _selectBrand.on("select2:unselect", function(e) {
                 searchQuery.productId = $("#searchProductsBrandNameInput").val();
-                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery,dbAdditionalOptions);
             });
 
 
@@ -278,16 +307,16 @@ function compress_htmlcode($codedata)
             });
             _selectScientific.on("select2:select", function(e) {
                 searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery,dbAdditionalOptions);
             });
             _selectScientific.on("select2:unselect", function(e) {
                 searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery,dbAdditionalOptions);
             });
 
             $('#searchStockStatus').bootstrapSwitch().on("switchChange.bootstrapSwitch", function(event, state) {
                 searchQuery.stockOption = state ? 1 : 0;
-                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery,dbAdditionalOptions);
             });
 
             var _selectScientificEdit = $('#editProductScientificName').select2({
@@ -362,7 +391,7 @@ function compress_htmlcode($codedata)
 
 
             var initiate = function () {
-                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery);
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery,dbAdditionalOptions);
             };
             return {
                 init: function () {
