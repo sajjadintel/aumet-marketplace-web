@@ -21,7 +21,7 @@ class SearchController extends Controller {
     function handleSearchBar()
     {
         $where = "";
-        $term = $_GET['term'];
+        $term = $_GET['query'];
         if (isset($term) && $term != "" && $term != null) {
             $where .= " scientificName LIKE '%{$term}%'";
             $where .= " OR productName_ar LIKE '%{$term}%'";
@@ -38,9 +38,7 @@ class SearchController extends Controller {
 
         $pageSize = 10;
 
-        $select2Result = new stdClass();
-        $select2Result->results = [];
-        $select2Result->pagination = false;
+        $select2Result = [];
 
         $queryDisplay = 'productName_' . $this->objUser->language;
 
@@ -50,23 +48,15 @@ class SearchController extends Controller {
         while (!$dbNames->dry()) {
             $resultsCount++;
             $select2ResultItem = new stdClass();
-            $select2ResultItem->id = $dbNames['id'];
-            $select2ResultItem->image = $dbNames['image'];
-            $select2ResultItem->unitPrice = $dbNames['unitPrice'];
-            $select2ResultItem->stockStatusId = $dbNames['stockStatusId'];
-            $select2ResultItem->currency = $dbNames['currency'];
-            $select2ResultItem->text = $dbNames[$queryDisplay];
-            $select2Result->results[] = $select2ResultItem;
+            $select2ResultItem->data = $dbNames['id'];
+            $select2ResultItem->value = $dbNames[$queryDisplay];
+            $select2Result[] = $select2ResultItem;
             $dbNames->next();
-        }
-
-        if ($resultsCount >= $pageSize) {
-            $select2Result->pagination = true;
         }
 
         $this->webResponse->errorCode = 1;
         $this->webResponse->title = "";
-        $this->webResponse->data = $select2Result;
+        $this->webResponse->suggestions = $select2Result;
         echo $this->webResponse->jsonResponse();
     }
 
@@ -340,6 +330,14 @@ class SearchController extends Controller {
                 $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
 
+        }
+
+        $queryParam = $datatable->query['query'];
+        if ($queryParam != null && $queryParam != 'null') {
+            $query .= " AND ( scientificName LIKE '%{$queryParam}%'";
+            $query .= " OR productName_ar LIKE '%{$queryParam}%'";
+            $query .= " OR productName_en LIKE '%{$queryParam}%'";
+            $query .= " OR productName_fr LIKE '%{$queryParam}%' ) ";
         }
 
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
