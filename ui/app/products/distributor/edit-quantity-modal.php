@@ -16,7 +16,7 @@
                     <div class="form-group row">
                         <label class="col-3 col-form-label">Stock Quantity:</label>
                         <div class="col-9">
-                            <input class="form-control fit-width " type="number" name="stock" id="editQuantityStock">
+                            <input class="form-control fit-width " type="number" name="stock" id="editQuantityStock" min="0" step="1" onchange="this.value = this.value > 0? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">>
                         </div>
                     </div>
 
@@ -50,12 +50,12 @@
                                             <input type="hidden" id="editQuantityBonusId" name="bonusId" class="form-control">
                                             <div class="col-md-4">
                                                 <label>Min Order:</label>
-                                                <input type="email" id="editQuantityBonusMinOrder" name="minOrder" class="form-control" placeholder="Enter Minimum Order Amount">
+                                                <input type="email" id="editQuantityBonusMinOrder" name="minOrder" class="form-control" placeholder="Enter Minimum Order Amount" min="0" step="1" onchange="this.value = this.value > 0? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
                                             <div class="col-md-4">
                                                 <label>Bonus:</label>
-                                                <input type="email" id="editQuantityBonusQuantity" name="bonus" class="form-control" placeholder="Enter Bonus Amount">
+                                                <input type="email" id="editQuantityBonusQuantity" name="bonus" class="form-control" placeholder="Enter Bonus Amount" min="0" step="1" onchange="this.value = this.value > 0? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
                                             <div class="col-md-2">
