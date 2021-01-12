@@ -435,7 +435,11 @@ var WebAppLocals = (function () {
 			ar: 'منجز',
 			fr: '',
 		},
-
+		maximumOrderQuantity: {
+			en: 'Maximum Order Quantity',
+			ar: 'كمية الطلب القصوى',
+			fr: ''
+		}
 	};
 
 	var _symbolsLocals = {

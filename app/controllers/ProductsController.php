@@ -258,8 +258,9 @@ class ProductsController extends Controller
                 $name_ar = $this->f3->get('POST.name_ar');
                 $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
+                $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
 
-                if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice) {
+                if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$maximumOrderQuantity) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Some mandatory fields are missing";
@@ -286,6 +287,7 @@ class ProductsController extends Controller
 
                 $dbEntityProduct->unitPrice = $unitPrice;
                 $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
+                $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
 
                 $dbEntityProduct->update();
 
@@ -427,8 +429,9 @@ class ProductsController extends Controller
             $image = $this->f3->get('POST.image');
             $unitPrice = $this->f3->get('POST.unitPrice');
             $stock = $this->f3->get('POST.stock');
+            $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
 
-            if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$stock) {
+            if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$stock || !$maximumOrderQuantity) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Some mandatory fields are missing";
@@ -474,6 +477,7 @@ class ProductsController extends Controller
             $dbEntityProduct->stockStatusId = 1;
             $dbEntityProduct->bonusTypeId = 1;
             $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
+            $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
 
             $dbEntityProduct->add();
 
@@ -1505,7 +1509,8 @@ class ProductsController extends Controller
                 "D" => "name_en",
                 "E" => "name_fr",
                 "F" => "unitPrice",
-                "G" => "stock"
+                "G" => "stock",
+                "H" => "maximumOrderQuantity"
             ];
 
             $successProducts = [];
@@ -1601,6 +1606,13 @@ class ProductsController extends Controller
                                 $dbEntityProduct->stock  = (int) $cellValue;
                             }
                             break;
+                        case "H":
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                                array_push($errors, "Maximum Order Quantity must be a positive whole number");
+                            } else {
+                                $dbEntityProduct->maximumOrderQuantity  = (int) $cellValue;
+                            }
+                            break;
                     }
                 }
 
@@ -1683,8 +1695,8 @@ class ProductsController extends Controller
                 Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
                 Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
 
-                $sheet->setCellValue('H2', 'Error');
-                $sheet->getStyle('H2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
+                $sheet->setCellValue('I2', 'Error');
+                $sheet->getStyle('I2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
 
                 // Add all products to multidimensional array
                 $multiProducts = [];
@@ -1695,7 +1707,8 @@ class ProductsController extends Controller
                     "name_en",
                     "name_fr",
                     "unitPrice",
-                    "stock"
+                    "stock",
+                    "maximumOrderQuantity"
                 ];
                 $i = 3;
                 for ($i = 0; $i < count($failedProducts); $i++) {

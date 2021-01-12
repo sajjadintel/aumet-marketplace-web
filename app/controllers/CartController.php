@@ -75,12 +75,12 @@ class CartController extends Controller {
                     $quantityFree = $this->calculateBonus($dbCartDetail->quantity, $arrBonus, $entityProductBonusType->formula);
                 }
 
-
+                $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
                 $total = $quantityFree + $newQuantity;
-                if($total > $dbEntityProduct->stock) {
+                if($total > $maxOrder) 
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
-                    $this->webResponse->message = "Not enough stock available (max: $dbEntityProduct->stock)";
+                    $this->webResponse->message = "Not allowed (max: $maxOrder)";
                     echo $this->webResponse->jsonResponse();
                     return;
                 }
@@ -376,11 +376,12 @@ class CartController extends Controller {
             $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
             $dbEntityProduct->getWhere("productId=$productId");
 
+            $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
             $total = $quantityFree + $quantity;
-            if($total > $dbEntityProduct->stock) {
+            if($total > $maxOrder) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
-                $this->webResponse->message = "Not enough stock available (max: $dbEntityProduct->stock)";
+                $this->webResponse->message = "Not allowed (max: $maxOrder)";
                 echo $this->webResponse->jsonResponse();
                 return;
             }

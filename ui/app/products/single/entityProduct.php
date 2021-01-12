@@ -132,7 +132,11 @@ function compress_htmlcode($codedata)
                                         <td class="align-middle font-weight-bolder font-size-h5"><?php echo $objItem->{"madeInCountryName_" . $_SESSION['userLang']} ?></td>
                                         <td class="align-middle font-weight-bolder font-size-h5"><?php echo date("Y / m / d", strtotime($objItem->stockUpdateDateTime)) ?></td>
                                         <td class="align-middle font-weight-bolder font-size-h5"><?php echo $objItem->unitPrice  . ' ' . $objEntityProduct->currency ?></td>
-                                        
+                                        <td class="align-middle font-weight-bolder font-size-h5">
+                                            <input id="quantity-<?php echo $objItem->id ?>" type="number" min="0" value="1" max="<?php echo min($objItem->stock, $objItem->maximumOrderQuantity); ?>"/>
+                                        </td>
+
+
                                         <?php if($objUser->menuId !== 1): ?>
                                             <td class="align-middle font-weight-bolder font-size-h5">
                                                 <input id="quantity-<?php echo $objItem->id ?>" type="number" min="0" value="1" />
