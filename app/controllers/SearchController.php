@@ -32,7 +32,7 @@ class SearchController extends Controller {
         $roleId = $this->f3->get('SESSION.objUser')->roleId;
 
         // if distributor
-        if ($roleId == 10 || $roleId == 20 || $roleId == 30) {
+        if (Helper::isDistributor($roleId)) {
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
             $where .= " AND entityId IN ($arrEntityId)";
         }
@@ -317,7 +317,7 @@ class SearchController extends Controller {
 
         // if distributor
         $isDistributor = false;
-        if ($roleId == 10 || $roleId == 20 || $roleId == 30) {
+        if (Helper::isDistributor($roleId)) {
             $isDistributor = true;
         }
 

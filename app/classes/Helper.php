@@ -40,4 +40,12 @@ class Helper {
         return false;
     }
 
+    public static function isPharmacy($roleId)
+    {
+        if ($roleId == 40) {
+            return true;
+        }
+        return false;
+    }
+
 }
