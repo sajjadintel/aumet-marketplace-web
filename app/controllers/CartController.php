@@ -16,7 +16,7 @@ class CartController extends Controller {
             $arrCartOffers = $dbCartOffers->getWhere("stockStatusId=1 ", "id asc", 3);
             $this->f3->set('arrCartOffers', $arrCartOffers);
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vTitle_cart');
             $this->webResponse->data = View::instance()->render('app/cart/cart.php');
             echo $this->webResponse->jsonResponse();
@@ -42,7 +42,7 @@ class CartController extends Controller {
             $dbEntityProduct->getWhere("entityId=$entityId and productId=$productId");
 
             if ($dbEntityProduct->dry()) {
-                $this->webResponse->errorCode = 2;
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "No Product";
                 echo $this->webResponse->jsonResponse();
@@ -77,8 +77,8 @@ class CartController extends Controller {
 
                 $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
                 $total = $quantityFree + $newQuantity;
-                if($total > $maxOrder) {
-                    $this->webResponse->errorCode = 2;
+                if($total > $maxOrder) 
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Not allowed (max: $maxOrder)";
                     echo $this->webResponse->jsonResponse();
@@ -99,7 +99,7 @@ class CartController extends Controller {
                 }
                 $this->objUser->cartCount = $cartCount;
 
-                $this->webResponse->errorCode = 1;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = "";
                 $this->webResponse->data = $cartCount;
                 echo $this->webResponse->jsonResponse();
@@ -147,7 +147,7 @@ class CartController extends Controller {
             }
             $this->objUser->cartCount = $cartCount;
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = $cartCount;
             echo $this->webResponse->jsonResponse();
@@ -163,7 +163,7 @@ class CartController extends Controller {
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
             $ItemsCount = $dbCartDetail->count("accountId=" . $this->objUser->accountId);
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = new stdClass();
             $this->webResponse->data->itemsCount = $ItemsCount;
@@ -186,7 +186,7 @@ class CartController extends Controller {
             $dbEntityProduct->getWhere("entityId=$entityId and productId=$productId");
 
             if ($dbEntityProduct->dry()) {
-                $this->webResponse->errorCode = 2;
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "No Product";
                 echo $this->webResponse->jsonResponse();
@@ -221,7 +221,7 @@ class CartController extends Controller {
                 }
                 $this->objUser->cartCount = $cartCount;
 
-                $this->webResponse->errorCode = 1;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = "";
                 $this->webResponse->data = $cartCount;
                 echo $this->webResponse->jsonResponse();
@@ -318,7 +318,7 @@ class CartController extends Controller {
             $allPaymentMethods = $dbPaymentMethod->all();
             $this->f3->set('allPaymentMethods', $allPaymentMethods);
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vTitle_cart');
             $this->webResponse->data = View::instance()->render('app/cart/cartCheckout.php');
             echo $this->webResponse->jsonResponse();
@@ -379,7 +379,7 @@ class CartController extends Controller {
             $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
             $total = $quantityFree + $quantity;
             if($total > $maxOrder) {
-                $this->webResponse->errorCode = 2;
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Not allowed (max: $maxOrder)";
                 echo $this->webResponse->jsonResponse();
@@ -406,7 +406,7 @@ class CartController extends Controller {
             $cartDetail->entityId = $cartDetailFull['entityId'];
             $cartDetail->cartCount = $cartCount;
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = $cartDetail;
             echo $this->webResponse->jsonResponse();
@@ -432,7 +432,7 @@ class CartController extends Controller {
             $dbCartDetail->note = $note;
             $dbCartDetail->update();
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = null;
             echo $this->webResponse->jsonResponse();
@@ -755,7 +755,7 @@ class CartController extends Controller {
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
             $dbCartDetail->erase("accountId=". $this->objUser->accountId);
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = $grandOrderId;
             echo $this->webResponse->jsonResponse();
@@ -770,7 +770,7 @@ class CartController extends Controller {
         } else {
 
             if (!$this->f3->get("PARAMS.grandOrderId") || !is_numeric($this->f3->get("PARAMS.grandOrderId"))) {
-                $this->webResponse->errorCode = 2;
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Invalid Grand Order Id";
                 echo $this->webResponse->jsonResponse();
@@ -785,7 +785,7 @@ class CartController extends Controller {
             $grandOrder = $dbOrderGrand->getWhere($query);
 
             if (sizeof($grandOrder) === 0) {
-                $this->webResponse->errorCode = 0;
+                $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
                 echo $this->webResponse->jsonResponse();
                 return;
             }
@@ -796,7 +796,7 @@ class CartController extends Controller {
 
             $this->f3->set('allOrders', $dbOrders);
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vTitle_cart');
             $this->webResponse->data = View::instance()->render('app/cart/thankyou.php');
             echo $this->webResponse->jsonResponse();

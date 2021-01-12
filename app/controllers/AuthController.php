@@ -91,10 +91,10 @@ class AuthController extends Controller
             if (password_verify($password, $dbUser->password)) {
 
                 $this->configUser($dbUser);
-                $this->webResponse->errorCode = 0;
+                $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
                 echo $this->webResponse->jsonResponse();
             } else {
-                $this->webResponse->errorCode = 1;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
                 $this->webResponse->data = $dbUser;
                 echo $this->webResponse->jsonResponse();
@@ -119,18 +119,18 @@ class AuthController extends Controller
             $dbUser->getWhere("uid = '$uid' AND statusId = 3");
             if ($dbUser->dry()) {
 
-                $this->webResponse->errorCode = 1;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
                 $this->webResponse->data = $user;
             } else {
                 $this->configUser($dbUser);
-                $this->webResponse->errorCode = 0;
+                $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
             }
         } catch (\InvalidArgumentException $e) {
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->message = $e->getMessage();
         } catch (InvalidToken $e) {
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->message = $e->getMessage();
         }
 
