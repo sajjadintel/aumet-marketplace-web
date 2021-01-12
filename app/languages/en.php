@@ -188,6 +188,7 @@ return array(
     'vButton_update' => 'Update',
     'vButton_add' => 'Add',
     'vButton_bulk_add' => 'Bulk Add',
+    'vButton_bulk_add_image' => 'Bulk Add Images',
     'vButton_confirm' => 'Confirm',
 
     'vModule_feedback_title' => 'Customer Orders Feedback',
@@ -197,4 +198,8 @@ return array(
     'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!',
 
     'vModule_bulk_add_title' => 'Bulk Add',
+    'vModule_bulk_add_image_title' => 'Bulk Add Images',
+    'vModule_bulk_add_image_info' => 'For best use, make sure your image name starts with "productId-" to automatically select a product after the upload.',
+    
+    'vResponse_imagesAdded' => 'Images added successfully',
 );

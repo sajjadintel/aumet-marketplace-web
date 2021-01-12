@@ -11,7 +11,7 @@ class SearchController extends Controller {
             $arrStockStatus = $dbStockStatus->all("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_search_title');
             $this->webResponse->data = View::instance()->render('app/products/search/search.php');
             echo $this->webResponse->jsonResponse();
@@ -54,7 +54,7 @@ class SearchController extends Controller {
             $dbNames->next();
         }
 
-        $this->webResponse->errorCode = 1;
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         $this->webResponse->title = "";
         $this->webResponse->suggestions = $select2Result;
         echo $this->webResponse->jsonResponse();
@@ -116,7 +116,7 @@ class SearchController extends Controller {
             $select2Result->pagination = true;
         }
 
-        $this->webResponse->errorCode = 1;
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         $this->webResponse->title = "";
         $this->webResponse->data = $select2Result;
         echo $this->webResponse->jsonResponse();
@@ -160,11 +160,11 @@ class SearchController extends Controller {
                 $select2Result->pagination = true;
             }
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = $select2Result;
         } else {
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         }
         echo $this->webResponse->jsonResponse();
     }
@@ -237,11 +237,11 @@ class SearchController extends Controller {
                 $select2Result->pagination = true;
             }
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = $select2Result;
         } else {
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         }
         echo $this->webResponse->jsonResponse();
     }
@@ -287,11 +287,11 @@ class SearchController extends Controller {
                 $select2Result->pagination = true;
             }
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = $select2Result;
         } else {
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         }
         echo $this->webResponse->jsonResponse();
     }
@@ -329,6 +329,8 @@ class SearchController extends Controller {
             if (isset($categoryId) && is_array($categoryId)) {
                 $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
+
+            $query .= " AND statusId = 1";
 
         }
 

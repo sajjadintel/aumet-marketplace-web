@@ -48,7 +48,7 @@ class OrderController extends Controller {
             $dbOrder->update();
             $dbOrder->next();
         }
-        $this->webResponse->errorCode = 1;
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         $this->webResponse->title = "";
         $this->webResponse->data = $count;
         echo $this->webResponse->jsonResponse();
@@ -76,7 +76,7 @@ class OrderController extends Controller {
                     $this->f3->set('vModule_order_header', 'Unknown List');
                     break;
             }
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $title;
             $this->webResponse->data = View::instance()->render($renderFile);
             echo $this->webResponse->jsonResponse();
@@ -105,7 +105,7 @@ class OrderController extends Controller {
                     $this->f3->set('vModule_order_header', 'Unknown List');
                     break;
             }
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $title;
             $this->webResponse->data = View::instance()->render($renderFile);
             echo $this->webResponse->jsonResponse();
@@ -661,32 +661,20 @@ class OrderController extends Controller {
 
         $ordersUrl = "web/pharmacy/order/";
         switch ($statusId) {
-            case 1:
+            case Constants::ORDER_STATUS_PENDING:
+            case Constants::ORDER_STATUS_COMPLETED:
+            case Constants::ORDER_STATUS_CANCELED:
+            case Constants::ORDER_STATUS_PAID:
+            case Constants::ORDER_STATUS_MISSING_PRODUCTS:
+            case Constants::ORDER_STATUS_CANCELED_PHARMACY:
                 $ordersUrl .= "history";
                 break;
-            case 2:
+            case Constants::ORDER_STATUS_ONHOLD:
+            case Constants::ORDER_STATUS_PROCESSING:
                 $ordersUrl .= "pending";
                 break;
-            case 3:
-                $ordersUrl .= "pending";
-                break;
-            case 4:
-                $ordersUrl .= "history";
-                break;
-            case 5:
-                $ordersUrl .= "history";
-                break;
-            case 6:
+            case Constants::ORDER_STATUS_RECEIVED:
                 $ordersUrl .= "unpaid";
-                break;
-            case 7:
-                $ordersUrl .= "history";
-                break;
-            case 8:
-                $ordersUrl .= "history";
-                break;
-            case 9:
-                $ordersUrl .= "history";
                 break;
         }
 
@@ -716,32 +704,22 @@ class OrderController extends Controller {
 
         $ordersUrl = "web/distributor/order/";
         switch ($statusId) {
-            case 1:
+            case Constants::ORDER_STATUS_PENDING:
                 $ordersUrl .= "new";
                 break;
-            case 2:
+            case Constants::ORDER_STATUS_ONHOLD:
+            case Constants::ORDER_STATUS_PROCESSING:
                 $ordersUrl .= "pending";
                 break;
-            case 3:
-                $ordersUrl .= "pending";
-                break;
-            case 4:
+            case Constants::ORDER_STATUS_COMPLETED:
+            case Constants::ORDER_STATUS_CANCELED:
+            case Constants::ORDER_STATUS_PAID:
+            case Constants::ORDER_STATUS_CANCELED_PHARMACY:
                 $ordersUrl .= "history";
                 break;
-            case 5:
-                $ordersUrl .= "history";
-                break;
-            case 6:
+            case Constants::ORDER_STATUS_RECEIVED:
+            case Constants::ORDER_STATUS_MISSING_PRODUCTS:
                 $ordersUrl .= "unpaid";
-                break;
-            case 7:
-                $ordersUrl .= "history";
-                break;
-            case 8:
-                $ordersUrl .= "unpaid";
-                break;
-            case 9:
-                $ordersUrl .= "history";
                 break;
         }
 

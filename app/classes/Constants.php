@@ -21,10 +21,17 @@ class Constants
     const ORDER_STATUS_CANCELED = 5;
     const ORDER_STATUS_RECEIVED = 6;
     const ORDER_STATUS_PAID = 7;
+    const ORDER_STATUS_MISSING_PRODUCTS = 8;
+    const ORDER_STATUS_CANCELED_PHARMACY = 9;
 
     ## Email Types
     const EMAIL_NEW_ORDER = 'New Order';
     const EMAIL_LOW_STOCK = 'Low Stock';
     const EMAIL_MISSING_PRODUCTS = 'Missing Products';
     const EMAIL_ORDER_STATUS_UPDATE = 'Order Status Update';
+
+    ### Status Codes
+    const STATUS_CODE_REDIRECT_TO_WEB = 0;
+    const STATUS_SUCCESS = 1;
+    const STATUS_ERROR = 2;
 }

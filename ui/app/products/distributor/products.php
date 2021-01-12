@@ -59,27 +59,6 @@ function compress_htmlcode($codedata)
                 <div class="d-flex flex-column-fluid">
                     <div class="input-group input-group-lg">
                         <div class="input-group-prepend ">
-                        <span class="input-group-text border-0 py-1 px-3">
-                            <span class="svg-icon svg-icon-xl">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                        <rect x="0" y="0" width="24" height="24" />
-                                        <rect fill="#000000" opacity="0.3" x="4" y="4" width="8" height="16" />
-                                        <path d="M6,18 L9,18 C9.66666667,18.1143819 10,18.4477153 10,19 C10,19.5522847 9.66666667,19.8856181 9,20 L4,20 L4,15 C4,14.3333333 4.33333333,14 5,14 C5.66666667,14 6,14.3333333 6,15 L6,18 Z M18,18 L18,15 C18.1143819,14.3333333 18.4477153,14 19,14 C19.5522847,14 19.8856181,14.3333333 20,15 L20,20 L15,20 C14.3333333,20 14,19.6666667 14,19 C14,18.3333333 14.3333333,18 15,18 L18,18 Z M18,6 L15,6 C14.3333333,5.88561808 14,5.55228475 14,5 C14,4.44771525 14.3333333,4.11438192 15,4 L20,4 L20,9 C20,9.66666667 19.6666667,10 19,10 C18.3333333,10 18,9.66666667 18,9 L18,6 Z M6,6 L6,9 C5.88561808,9.66666667 5.55228475,10 5,10 C4.44771525,10 4.11438192,9.66666667 4,9 L4,4 L9,4 C9.66666667,4 10,4.33333333 10,5 C10,5.66666667 9.66666667,6 9,6 L6,6 Z" fill="#000000" fill-rule="nonzero" />
-                                    </g>
-                                </svg>
-
-                            </span>
-                        </span>
-                        </div>
-                        <input id="searchStockStatus" data-switch="true" type="checkbox" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="70" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
-                    </div>
-                </div>
-
-                <div class="d-flex flex-column-fluid">
-                    <div class="input-group input-group-lg">
-                        <div class="input-group-prepend ">
 
                         <label class="myLabel">
                             <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="DistributorProductsDataTable.productAddModal()">
@@ -90,6 +69,12 @@ function compress_htmlcode($codedata)
                         <label class="myLabel">
                             <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Bulk Add Products" onclick="WebApp.loadPage('/web/distributor/product/bulk/add/upload')">
                                 <i class="nav-icon la la-boxes p-0"></i> <?php echo $vButton_bulk_add; ?>
+                            </a>
+                        </label>
+                        
+                        <label class="myLabel">
+                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Bulk Add Images for Products" onclick="WebApp.loadPage('/web/distributor/product/bulk/add/image/upload')">
+                                <i class="nav-icon la la-images p-0"></i> <?php echo $vButton_bulk_add_image; ?>
                             </a>
                         </label>
                     </div>
@@ -132,10 +117,22 @@ function compress_htmlcode($codedata)
                 title: WebAppLocals.getMessage('productName'),
                 data: 'productName_en',
                 render: function (data, type, row, meta) {
-                    var output = '<div style="display:flex;flex-direction:row;align-items: center"><div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
+                    var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        row.entityId +
+                        '/product/' +
+                        row.productId +
+                        '\')"> ' +
+                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
                         row.image +
-                        '\')" ></div></div>';
-                    output += row.productName_en+'</div>';
+                        '\')" ></div></div>'
+                        + '</a></div>';
+                    output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        row.entityId +
+                        '/product/' +
+                        row.productId +
+                        '\')"> ' +
+                        row['productName_' + docLang]
+                        + '</span></div></div>';
                     return output;
                 },
             }, {
@@ -148,33 +145,10 @@ function compress_htmlcode($codedata)
                 }
             }, {
                 targets: 3,
-                title: WebAppLocals.getMessage('stockAvailability'),
-                data: 'stockStatusId',
+                title: WebAppLocals.getMessage('stockQuantity'),
+                data: 'stock',
                 render: function (data, type, row, meta) {
-                    var status = {
-                        1: {
-                            title: WebAppLocals.getMessage('stockAvailability_available'),
-                            class: ' label-primary',
-                        },
-                        2: {
-                            title: WebAppLocals.getMessage('stockAvailability_notAvailable'),
-                            class: ' label-danger',
-                        },
-                        3: {
-                            title: WebAppLocals.getMessage('stockAvailability_availableSoon'),
-                            class: ' label-warning',
-                        },
-                    };
-
-                    var output = '';
-
-                    output +=
-                        '<div><span class="label label-lg font-weight-bold ' +
-                        status[row.stockStatusId].class +
-                        ' label-inline">' +
-                        status[row.stockStatusId].title +
-                        '</span></div>';
-
+                    var output = row.stock;
                     return output;
                 }
             }, {

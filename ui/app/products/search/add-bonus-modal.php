@@ -28,7 +28,7 @@
                                             <input type="email" id="addBonusQuantity" name="bonus" class="form-control" placeholder="Enter Bonus Amount" disabled>
                                             <div class="d-md-none mb-2"></div>
                                         </div>
-                                        <div class="col-lg-4">
+                                        <div class="col-md-4">
                                             <a onclick="SearchDataTable.productAddBonus(this.name)" name="addButton" id="addBonusAction" class="btn btn-sm font-weight-bolder btn-light-primary">
                                                 <i class="la la-plus"></i>Add</a>
                                         </div>

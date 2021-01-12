@@ -75,6 +75,11 @@ var WebAppLocals = (function () {
 			ar: 'الاسم',
 			fr: '',
 		},
+		product: {
+			en: 'Product',
+			ar: 'المنتج',
+			fr: '',
+		},
 		productName: {
 			en: 'Brand Name',
 			ar: 'الاسم التجاري',
@@ -325,6 +330,11 @@ var WebAppLocals = (function () {
 			ar: 'التوفر',
 			fr: '',
 		},
+		stockQuantity: {
+			en: 'Stock Quantity',
+			ar: 'كمية المخزون',
+			fr: '',
+		},
 		stockAvailability: {
 			en: 'Stock Availability',
 			ar: 'توفر المنتج',
@@ -430,12 +440,21 @@ var WebAppLocals = (function () {
 			ar: 'إضافة مكافأة',
 			fr: '',
 		},
-		addBonusDone: {
+		done: {
 			en: 'Done',
 			ar: 'منجز',
 			fr: '',
 		},
-
+		addImageTitle: {
+			en: 'Add Images',
+			ar: 'إضافة الصور',
+			fr: '',
+		},
+		maximumOrderQuantity: {
+			en: 'Maximum Order Quantity',
+			ar: 'كمية الطلب القصوى',
+			fr: ''
+		}
 	};
 
 	var _symbolsLocals = {

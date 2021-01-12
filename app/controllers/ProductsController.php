@@ -37,6 +37,17 @@ class ProductsController extends Controller
                     }
                 }
             }
+            
+            $found = false;
+            if(array_key_exists((string) $dbEntityProduct->entityId, $this->f3->get('SESSION.arrEntities'))) {
+                $found = true;
+            }
+
+            if($dbEntityProduct['statusId'] === 0 || (!$found && $this->objUser->menuId === 1)) {
+                $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
 
             $this->f3->set('objEntityProduct', $dbEntityProduct);
 
@@ -44,21 +55,7 @@ class ProductsController extends Controller
             $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere("stockStatusId=1 and scientificNameId =$dbEntityProduct->scientificNameId and id != $dbEntityProduct->id");
             $this->f3->set('arrRelatedEntityProduct', $arrRelatedEntityProduct);
 
-            $found = false;
-            foreach($arrRelatedEntityProduct as $objItem) {
-                if(array_key_exists((string) $objItem->entityId, $this->f3->get('SESSION.arrEntities'))) {
-                    $found = true;
-                    break;
-                }
-            }
-
-            if(!$found && $this->objUser->menuId === 1) {
-                $this->webResponse->errorCode = 0;
-                echo $this->webResponse->jsonResponse();
-                return;
-            }
-
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vTitle_entityProductDetail');
             $this->webResponse->data = View::instance()->render('app/products/single/entityProduct.php');
             echo $this->webResponse->jsonResponse();
@@ -75,7 +72,9 @@ class ProductsController extends Controller
             $arrStockStatus = $dbStockStatus->findAll("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
 
-            $this->webResponse->errorCode = 1;
+            $dbScientificName = new BaseModel($this->db, "scientificName");
+            $arrScientificName = $dbScientificName->findAll();
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_product_title');
             $this->webResponse->data = View::instance()->render('app/products/distributor/products.php');
             echo $this->webResponse->jsonResponse();
@@ -99,7 +98,7 @@ class ProductsController extends Controller
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
 
-            //$this->webResponse->errorCode = 1;
+            //$this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             //$this->webResponse->title = $this->f3->get('vModule_feedback_title');
             //$this->webResponse->data = View::instance()->render('app/products/distributor/modals/edit.php');
             //echo $this->webResponse->jsonResponse();
@@ -159,6 +158,8 @@ class ProductsController extends Controller
                 $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
 
+            $query .= " AND statusId = 1";
+
         }
 
 
@@ -187,7 +188,7 @@ class ProductsController extends Controller
     {
         $imageName = $this->f3->get('POST.imageName');
 
-        $uploadDir = $this->getRootDirectory() . "/assets/img/products/";
+        $uploadDir = "assets/img/products/";
         $this->f3->set('UPLOADS', $uploadDir);
 
         $overwrite = true;
@@ -199,7 +200,7 @@ class ProductsController extends Controller
 
         $path = "/assets/img/products/" . $imageName;
 
-        $this->webResponse->errorCode = 1;
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         $this->webResponse->title = "Product Image Upload";
         $this->webResponse->data = $path;
         echo $this->webResponse->jsonResponse();
@@ -212,6 +213,7 @@ class ProductsController extends Controller
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityId IN ($arrEntityId)";
+        $query .= " AND statusId = 1";
         $meta = array();
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
 
@@ -247,7 +249,7 @@ class ProductsController extends Controller
             $dbProduct->getWhere("id=$productId");
 
             if ($dbEntityProduct->dry() || $dbProduct->dry()) {
-                $this->webResponse->errorCode = 2;
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "No Product";
                 echo $this->webResponse->jsonResponse();
@@ -259,11 +261,20 @@ class ProductsController extends Controller
                 $name_ar = $this->f3->get('POST.name_ar');
                 $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
+                $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
 
-                if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice) {
-                    $this->webResponse->errorCode = 2;
+                if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$maximumOrderQuantity) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Some mandatory fields are missing";
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+                
+                if(!is_numeric($unitPrice) || $unitPrice <= 0) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->title = "";
+                    $this->webResponse->message = "Unit Price must be a positive number";
                     echo $this->webResponse->jsonResponse();
                     return;
                 }
@@ -279,10 +290,11 @@ class ProductsController extends Controller
 
                 $dbEntityProduct->unitPrice = $unitPrice;
                 $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
+                $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
 
                 $dbEntityProduct->update();
 
-                $this->webResponse->errorCode = 1;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = "";
                 $this->webResponse->data = $dbProduct->name_ar;
                 echo $this->webResponse->jsonResponse();
@@ -305,7 +317,7 @@ class ProductsController extends Controller
             $dbProduct->getWhere("id=$id");
 
             if ($dbEntityProduct->dry() || $dbProduct->dry()) {
-                $this->webResponse->errorCode = 2;
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "No Product";
                 echo $this->webResponse->jsonResponse();
@@ -315,6 +327,47 @@ class ProductsController extends Controller
                 $bonusTypeId = $this->f3->get('POST.bonusType');
                 $bonusRepeater = $this->f3->get('POST.bonusRepeater');
 
+                if(!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->title = "";
+                    $this->webResponse->message = "Stock must be a positive number";
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+
+                $validMinOrder = true;
+                $validBonus = true;
+                foreach ($bonusRepeater as $bonus) {
+                    if(!filter_var($bonus['minOrder'], FILTER_VALIDATE_INT) || $bonus['minOrder'] < 0) {
+                        $validMinOrder = false;
+                    }
+                    
+                    if(!filter_var($bonus['bonus'], FILTER_VALIDATE_INT) || $bonus['bonus'] < 0) {
+                        $validBonus = false;
+                    }
+
+                    if($validMinOrder && $validBonus) {
+                        break;
+                    }
+                }
+
+                if(!$validMinOrder || !$validBonus) {
+                    $message = "";
+                    if(!$validMinOrder && !$validBonus) {
+                        $message = "Min Order and Bonus must be positive numbers";
+                    } else if(!$validMinOrder) {
+                        $message = "Min Order must be a positive number";
+                    } else {
+                        $message = "Bonus must be a positive number";
+                    }
+    
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->title = "";
+                    $this->webResponse->message = $message;
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+                
                 if ($stock > 0) {
                     $stockStatusId = 1;
                 } else {
@@ -357,7 +410,7 @@ class ProductsController extends Controller
                     }
                 }
 
-                $this->webResponse->errorCode = 1;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = "";
                 $this->webResponse->data = $bonusRepeater;
                 echo $this->webResponse->jsonResponse();
@@ -379,11 +432,29 @@ class ProductsController extends Controller
             $image = $this->f3->get('POST.image');
             $unitPrice = $this->f3->get('POST.unitPrice');
             $stock = $this->f3->get('POST.stock');
+            $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
 
-            if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$stock) {
-                $this->webResponse->errorCode = 2;
+            if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$stock || !$maximumOrderQuantity) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Some mandatory fields are missing";
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
+
+            if((!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) || (!is_numeric($unitPrice) || $unitPrice <= 0)) {
+                $message = "";
+                if((!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) && (!is_numeric($unitPrice) || $unitPrice <= 0)) {
+                    $message = "Stock and Unit Price must be positive numbers";
+                } else if(!is_numeric($unitPrice) || $unitPrice <= 0) {
+                    $message = "Unit Price must be a positive number";
+                } else {
+                    $message = "Stock must be a positive number";
+                }
+
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->title = "";
+                $this->webResponse->message = $message;
                 echo $this->webResponse->jsonResponse();
                 return;
             }
@@ -409,10 +480,11 @@ class ProductsController extends Controller
             $dbEntityProduct->stockStatusId = 1;
             $dbEntityProduct->bonusTypeId = 1;
             $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
+            $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
 
             $dbEntityProduct->add();
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = $dbProduct['name_' . $this->objUser->language];
             echo $this->webResponse->jsonResponse();
@@ -424,7 +496,7 @@ class ProductsController extends Controller
         if (!$this->f3->ajax()) {
             echo View::instance()->render('app/layout/layout.php');
         } else {
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "Stock Update"; //$this->f3->get('vModule_stock_title');
             $this->webResponse->data = View::instance()->render('app/products/stock/upload.php');
             echo $this->webResponse->jsonResponse();
@@ -538,7 +610,7 @@ class ProductsController extends Controller
             $productsSheetUrl = "files/downloads/reports/products-stock/products-stock-" . $this->objUser->id . "-" . time() . ".xlsx";
             Excel::saveSpreadsheetToPath($spreadsheet, $productsSheetUrl);
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "Stock Download";
             $this->webResponse->data = "/" . $productsSheetUrl;
             echo $this->webResponse->jsonResponse();
@@ -887,7 +959,7 @@ class ProductsController extends Controller
 
             $dbStockUpdateUpload->update();
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = View::instance()->render('app/products/stock/uploadResult.php');
             echo $this->webResponse->jsonResponse();;
@@ -900,7 +972,7 @@ class ProductsController extends Controller
         if (!$this->f3->ajax()) {
             echo View::instance()->render('app/layout/layout.php');
         } else {
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "Bonus Update"; //$this->f3->get('vModule_bonus_title');
             $this->webResponse->data = View::instance()->render('app/products/bonus/upload.php');
             echo $this->webResponse->jsonResponse();
@@ -1000,7 +1072,7 @@ class ProductsController extends Controller
             $productsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-" . $this->objUser->id . "-" . time() . ".xlsx";
             Excel::saveSpreadsheetToPath($spreadsheet, $productsSheetUrl);
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "Bonus Download";
             $this->webResponse->data = "/" . $productsSheetUrl;
             echo $this->webResponse->jsonResponse();
@@ -1104,7 +1176,7 @@ class ProductsController extends Controller
                                 $finished = true;
                                 break;
                             } else {
-                                if (array_key_exists($cellValue, $mapProductIdProduct)) {
+                                if (array_key_exists((string) $cellValue, $mapProductIdProduct)) {
                                     $dbProduct = $mapProductIdProduct[$cellValue];
                                     array_push($productIdsWithBonus, $cellValue);
                                 } else {
@@ -1113,24 +1185,27 @@ class ProductsController extends Controller
                             }
                             break;
                         case "B":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
                                 array_push($errors, "Minimum Quantity must be a positive whole number");
                             } else {
                                 $minOrder = (int)$cellValue;
                                 $allQuant = $mapProductIdMinQuant[$dbProduct['productId']];
-                                if (in_array($minOrder, $allQuant)) {
-                                    array_push($errors, "Minimum Quantity should be unique by product");
-                                } else {
-                                    array_push($allQuant, $minOrder);
-                                    $mapProductIdMinQuant[$dbProduct['productId']] = $allQuant;
+                                
+                                if(!is_null($dbProduct)) {
+                                    if (in_array($minOrder, $allQuant)) {
+                                        array_push($errors, "Minimum Quantity should be unique by product");
+                                    } else {
+                                        array_push($allQuant, $minOrder);
+                                        $mapProductIdMinQuant[$dbProduct['productId']] = $allQuant;
+                                    }
                                 }
                             }
                             break;
                         case "C":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
                                 array_push($errors, "Bonus Quantity must be a positive whole number");
                             } else {
-                                $bonus = (int)$cellValue;
+                                $bonus = (int) $cellValue;
                             }
                             break;
                     }
@@ -1271,7 +1346,7 @@ class ProductsController extends Controller
 
             $dbBonusUpdateUpload->update();
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = View::instance()->render('app/products/bonus/uploadResult.php');
             echo $this->webResponse->jsonResponse();;
@@ -1284,7 +1359,7 @@ class ProductsController extends Controller
         if (!$this->f3->ajax()) {
             echo View::instance()->render('app/layout/layout.php');
         } else {
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_bulk_add_title');
             $this->webResponse->data = View::instance()->render('app/products/bulkAdd/upload.php');
             echo $this->webResponse->jsonResponse();
@@ -1358,7 +1433,7 @@ class ProductsController extends Controller
             $productsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsx";
             Excel::saveSpreadsheetToPath($spreadsheet, $productsSheetUrl);
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "Bulk Download";
             $this->webResponse->data = "/" . $productsSheetUrl;
             echo $this->webResponse->jsonResponse();
@@ -1437,7 +1512,8 @@ class ProductsController extends Controller
                 "D" => "name_en",
                 "E" => "name_fr",
                 "F" => "unitPrice",
-                "G" => "stock"
+                "G" => "stock",
+                "H" => "maximumOrderQuantity"
             ];
 
             $successProducts = [];
@@ -1533,6 +1609,13 @@ class ProductsController extends Controller
                                 $dbEntityProduct->stock  = (int) $cellValue;
                             }
                             break;
+                        case "H":
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                                array_push($errors, "Maximum Order Quantity must be a positive whole number");
+                            } else {
+                                $dbEntityProduct->maximumOrderQuantity  = (int) $cellValue;
+                            }
+                            break;
                     }
                 }
 
@@ -1615,8 +1698,8 @@ class ProductsController extends Controller
                 Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
                 Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
 
-                $sheet->setCellValue('H2', 'Error');
-                $sheet->getStyle('H2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
+                $sheet->setCellValue('I2', 'Error');
+                $sheet->getStyle('I2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
 
                 // Add all products to multidimensional array
                 $multiProducts = [];
@@ -1627,7 +1710,8 @@ class ProductsController extends Controller
                     "name_en",
                     "name_fr",
                     "unitPrice",
-                    "stock"
+                    "stock",
+                    "maximumOrderQuantity"
                 ];
                 $i = 3;
                 for ($i = 0; $i < count($failedProducts); $i++) {
@@ -1688,11 +1772,121 @@ class ProductsController extends Controller
 
             $dbBulkAddUpload->update();
 
-            $this->webResponse->errorCode = 1;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
             $this->webResponse->data = View::instance()->render('app/products/bulkAdd/uploadResult.php');
-            echo $this->webResponse->jsonResponse();;
+            echo $this->webResponse->jsonResponse();
         } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
+        }
+    }
+
+    function getBulkAddImageUpload()
+    {
+        if (!$this->f3->ajax()) {
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $this->webResponse->errorCode = 1;
+            $this->webResponse->title = $this->f3->get('vModule_bulk_add_image_title');
+            $this->webResponse->data = View::instance()->render('app/products/bulkAddImage/upload.php');
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+    
+    function postBulkAddImageUpload()
+    {
+        $mapNewOldFileName = [];
+        $error = false;
+
+        $fileCount = count($_FILES["file"]["name"]);
+        for($i = 0; $i < $fileCount; $i++) {
+            $success = false;
+
+            $fileName = pathinfo(basename($_FILES["file"]["name"][$i]), PATHINFO_FILENAME);
+            $ext = pathinfo(basename($_FILES["file"]["name"][$i]), PATHINFO_EXTENSION);
+            
+            $newFileName = $fileName . "-" . time() . ".$ext";
+            $targetFile = "assets/img/products/" . $newFileName;
+
+            if ($ext == "png" || $ext == "jpg" || $ext == "jpeg") {
+                if (move_uploaded_file($_FILES["file"]["tmp_name"][$i], $targetFile)) {
+                    $mapNewOldFileName[$newFileName] = $fileName;
+                    $success = true;
+                }
+            }
+
+            if(!$success) {
+                $error = true;
+                break;
+            }
+        }
+
+        if(!$error) {
+            echo json_encode($mapNewOldFileName);
+        }
+    }
+
+    function postBulkAddImageUploadProcess()
+    {
+        $mapNewOldFileNameStr = $this->f3->get('POST.mapNewOldFileName');
+        $mapNewOldFileName = json_decode($mapNewOldFileNameStr);
+
+        // Get all product ids
+        $allProductId = [];
+        $dbProduct = new BaseModel($this->db, "product");
+        $dbProduct->name = "name_" . $this->objUser->language;
+        $allProduct = $dbProduct->findAll("id asc");
+
+        // Check if file name starts with an existing product id
+        $mapFileNameProduct = [];
+        foreach($mapNewOldFileName as $newFileName => $oldFileName) {
+            $product = null;
+            $allParts = explode("-", $oldFileName);
+            if(count($allParts) > 1 && filter_var($allParts[0], FILTER_VALIDATE_INT)) {
+                $productIdInitial = (int) $allParts[0];
+                foreach($allProduct as $prod) {
+                    if($productIdInitial == $prod['id']) {
+                        $product = new stdClass();
+                        $product->id = $prod['id'];
+                        $product->name = $prod['name'];
+                        break;
+                    }
+                }
+            }
+
+            $mapFileNameProduct[$newFileName] = $product;
+        }
+        
+        $this->f3->set("mapFileNameProduct", $mapFileNameProduct);
+
+        $this->webResponse->errorCode = 1;
+        $this->webResponse->title = "";
+        $this->webResponse->data = View::instance()->render('app/products/bulkAddImage/uploadResult.php');
+        echo $this->webResponse->jsonResponse();
+    }
+
+    function getProductList()
+    {
+        $this->handleGetListFilters("product", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
+    }
+
+    function postBulkAddImage()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/product/bulk/add/image/upload");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $mapProductIdImage = $this->f3->get('POST.mapProductIdImage');
+
+            $dbProduct = new BaseModel($this->db, "product");
+            foreach($mapProductIdImage as $productId => $image) {
+                $dbProduct->getWhere("id = $productId");
+                if(!$dbProduct->dry()) {
+                    $dbProduct->image = $image;
+                    $dbProduct->update();
+                }
+            }
+
+            echo $this->webResponse->jsonResponseV2(1, "Success", $this->f3->get('vResponse_imagesAdded'));
         }
     }
 }
