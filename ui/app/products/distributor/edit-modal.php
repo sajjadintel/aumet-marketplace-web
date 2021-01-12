@@ -61,7 +61,11 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="editUnitPrice" class="form-control-label">Unit Price</label>
-                            <input type="text" class="form-control" name="unitPrice" id="editUnitPrice">
+                            <input type="number" class="form-control" name="unitPrice" id="editUnitPrice" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : 0;">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="editMaximumOrderQuantity" class="form-control-label">Maximum Order Quantity</label>
+                            <input type="number" class="form-control" name="maximumOrderQuantity" id="editMaximumOrderQuantity" min="0" step="1" onchange="this.value = this.value > 0? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                         </div>
                     </div>
                 </div>

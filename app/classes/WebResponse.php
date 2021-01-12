@@ -14,7 +14,7 @@ class WebResponse
 
     public function __construct()
     {
-        $this->errorCode = 0; // 0 means no error
+        $this->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB; // 0 means no error
         $this->message = "";
         $this->data = null;
         $this->title = null;

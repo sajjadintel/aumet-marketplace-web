@@ -59,11 +59,15 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="addUnitPrice" class="form-control-label">Unit Price</label>
-                            <input type="text" class="form-control" name="unitPrice" id="addUnitPrice">
+                            <input type="number" class="form-control" name="unitPrice" id="addUnitPrice" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : 0;">
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="addStock" class="form-control-label">Stock</label>
-                            <input type="number" class="form-control" name="stock" id="addStock">
+                            <input type="number" class="form-control" name="stock" id="addStock" min="0" step="1" onchange="this.value = this.value > 0? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="addMaximumOrderQuantity" class="form-control-label">Maximum Order Quantity</label>
+                            <input type="number" class="form-control" name="maximumOrderQuantity" id="addMaximumOrderQuantity" min="0" step="1" onchange="this.value = this.value > 0? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                         </div>
                     </div>
                 </div>

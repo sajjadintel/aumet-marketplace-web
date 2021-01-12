@@ -115,37 +115,49 @@ function compress_htmlcode($codedata)
 
           var columnDefs = [{
               className: "export_datatable",
-              targets: [0, 1, 2, 3]
-          }, {
+              targets: [1, 2, 3, 4, 9, 10, 11, 12, 13, 14]
+          },
+              {
               targets: 0,
               title: '#',
               data: 'id',
               render: function (data, type, row, meta) {
-                  var output = '(' + row.id + ') - #' + row.serial;
+                  var output = row.id;
                   return output;
               }
-          }, {
-              targets: 1,
+          },
+              {
+                  targets: 1,
+                  title: WebAppLocals.getMessage('orderId'),
+                  data: 'id',
+                  visible:false,
+                  render: function (data, type, row, meta) {
+                      return row.id;
+                  }
+                  },
+              {
+              targets: 2,
               title: WebAppLocals.getMessage('entitySeller'),
               data: 'entitySeller',
               render: function (data, type, row, meta) {
                   var output = row.entitySeller;
                   return output;
               },
-          }, {
-              targets: 2,
+          },
+              {
+              targets: 3,
               title: WebAppLocals.getMessage('insertDate'),
               data: 'insertDateTime',
               render: function (data, type, row, meta) {
                   var output = '';
                   if (row.insertDateTime) {
-                      output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.insertDateTime).format('DD / MM / YYYY') + '</span>';
+                      output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.insertDateTime).format('DD/MM/YYYY') + '</span>';
                   }
-                  ;
                   return output
               }
-          }, {
-              targets: 3,
+          },
+              {
+              targets: 4,
               title: WebAppLocals.getMessage('orderStatus'),
               data: 'statusId',
               render: function (data, type, row, meta) {
@@ -191,36 +203,43 @@ function compress_htmlcode($codedata)
                   var output = '<div><span class="label label-lg font-weight-bold ' + status[row.statusId].class + ' label-inline" style="width: max-content;">' + status[row.statusId].title + '</span></div>';
                   return output;
               },
-          }, {
-              targets: 4,
+          },
+              {
+              targets: 5,
               title: WebAppLocals.getMessage('orderTotal'),
               data: 'total',
               render: function (data, type, row, meta) {
                   var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
                   return output;
               },
-          }, {
-              targets: 5,
+          },
+              {
+              targets: 6,
               title: WebAppLocals.getMessage('tax'),
               data: 'tax',
               render: function (data, type, row, meta) {
                   var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
                   return output;
               },
-          }, {
-              targets: 6,
+          },
+              {
+              targets: 7,
               title: WebAppLocals.getMessage('orderTotalWithVAT'),
               data: 'total',
               render: function (data, type, row, meta) {
                   var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
                   return output;
               },
-          }, {
-              targets: 7,
+          },
+              {
+              targets: 8,
               title: '',
               data: 'id',
               orderable: false,
               render: function (data, type, row, meta) {
+                  if (!row.entitySeller)
+                      return '';
+
                   var dropdownStart =
                       '<div class="dropdown dropdown-inline">\
                               <a href="javascript:;" class="btn btn-sm navi-link btn-primary btn-hover-primary mr-2" data-toggle="dropdown">\
@@ -282,7 +301,64 @@ function compress_htmlcode($codedata)
 
                   return outActions;
               },
-          }];
+          },
+              {
+                  targets: 9,
+                  title: WebAppLocals.getMessage('productId'),
+                  data: 'productCode',
+                  visible:false,
+                  render: function (data, type, row, meta) {
+                      return row.productCode;
+                  },
+              },
+              {
+                  targets: 10,
+                  title: WebAppLocals.getMessage('productName'),
+                  data: 'productName',
+                  visible:false,
+                  render: function (data, type, row, meta) {
+                      return row.productName;
+                  },
+              },
+              {
+                  targets: 11,
+                  title: WebAppLocals.getMessage('unitPrice'),
+                  data: 'unitPrice',
+                  visible:false,
+                  render: function (data, type, row, meta) {
+                      return row.unitPrice + ' ' + row.currency;
+                  },
+              },
+              {
+                  targets: 12,
+                  title: WebAppLocals.getMessage('quantity'),
+                  data: 'quantity',
+                  visible:false,
+                  render: function (data, type, row, meta) {
+                      return row.quantity + row.quantityFree;
+                  },
+              },
+              {
+                  targets: 13,
+                  title: WebAppLocals.getMessage('tax'),
+                  data: 'tax',
+                  visible:false,
+                  render: function (data, type, row, meta) {
+                      return row.tax + '%';
+                  },
+              },
+              {
+                  targets: 14,
+                  title: WebAppLocals.getMessage('orderTotalWithVAT'),
+                  data: 'quantity',
+                  visible:false,
+                  render: function (data, type, row, meta) {
+                      var total = row.quantity * row.unitPrice;
+                      total = Math.round((parseFloat(total) + Number.EPSILON) * 100) / 100;
+                      return total + ' ' + row.currency;
+                  },
+              },
+          ];
 
           var searchQuery = {
               entitySellerId: [],
@@ -294,7 +370,12 @@ function compress_htmlcode($codedata)
               datatableOptions: {
                   order: [
                       [0, 'desc']
-                  ]
+                  ],
+                  rowCallback: function( row, data, index ) {
+                      if (!data['isVisible']) {
+                          $(row).hide();
+                      }
+                  },
               }
           };
 
