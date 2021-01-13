@@ -68,9 +68,6 @@ class DashboardController extends Controller {
         $supportReasonId = $this->f3->get("POST.supportReasonId");
         $email = $this->f3->get("POST.email");
         $phone = $this->f3->get("POST.phone");
-        $supportReasonId = 1;
-        $email = 'asdfasdf@asddf.asdf';
-        $phone = '2341234';
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
 
@@ -81,7 +78,7 @@ class DashboardController extends Controller {
         $supportLog->email = $email;
         $supportLog->phone = $phone;
         $supportLog->typeId = 1;
-//        $supportLog->add();
+        $supportLog->add();
 
         NotificationHelper::customerSupportNotification($this->f3, $this->db, $supportLog);
         NotificationHelper::customerSupportConfirmNotification($this->f3, $this->db, $supportLog);

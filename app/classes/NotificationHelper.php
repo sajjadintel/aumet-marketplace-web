@@ -101,9 +101,6 @@ class NotificationHelper {
 
         $htmlContent = View::instance()->render($emailFile);
 
-        echo $htmlContent;
-        exit;
-
         $subject = "Customer Support Request";
         if (getenv('ENV') != Constants::ENV_PROD) {
             $subject .= " - (Test: " . getenv('ENV') . ")";
