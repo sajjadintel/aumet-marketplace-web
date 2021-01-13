@@ -25,7 +25,7 @@
 
                         <div class="form-group">
                             <label class="support-modal-text"><?php echo $vSupport_telephone ?></label>
-                            <input name="phone" type="text" class="form-control" placeholder="eg 00977442424242" required />
+                            <input name="phone" type="number" class="form-control" placeholder="eg 00977442424242" required />
                         </div>
 
                         <div>
