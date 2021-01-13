@@ -56,7 +56,7 @@
                         <table cellspacing="0" cellpadding="0" border="0" role="presentation">
                             <tr>
                                 <td width="400" align="left" valign="top" style="padding: 0px 8px;"><![endif]-->
-                        <div class="o_col o_col-4" style="display: inline-block;vertical-align: top;width: 100%;max-width: 400px;">
+                        <div class="o_col o_col-4" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
                             <div class="o_px-xs o_sans o_text-xs o_left" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;text-align: left;padding-left: 8px;padding-right: 8px;">
                                 <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;">Email:</p>
                             </div>
@@ -81,7 +81,7 @@
                         <table cellspacing="0" cellpadding="0" border="0" role="presentation">
                             <tr>
                                 <td width="400" align="left" valign="top" style="padding: 0px 8px;"><![endif]-->
-                        <div class="o_col o_col-4" style="display: inline-block;vertical-align: top;width: 100%;max-width: 400px;">
+                        <div class="o_col o_col-4" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
                             <div class="o_px-xs o_sans o_text-xs o_left" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;text-align: left;padding-left: 8px;padding-right: 8px;">
                                 <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;">Phone:</p>
                             </div>
@@ -106,7 +106,7 @@
                         <table cellspacing="0" cellpadding="0" border="0" role="presentation">
                             <tr>
                                 <td width="400" align="left" valign="top" style="padding: 0px 8px;"><![endif]-->
-                        <div class="o_col o_col-4" style="display: inline-block;vertical-align: top;width: 100%;max-width: 400px;">
+                        <div class="o_col o_col-4" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
                             <div class="o_px-xs o_sans o_text-xs o_left" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;text-align: left;padding-left: 8px;padding-right: 8px;">
                                 <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;">Reason:</p>
                             </div>
