@@ -19,6 +19,14 @@ return array(
     'vLogin_helpAdv' => 'هل تواجه صعوبات في التسجيل؟',
     'vLogin_help' => 'اطلب المساعدة',
 
+    'vSupport_customerSupport' => 'Customer Support', // TODO: Translate
+    'vSupport_email' => 'Email:', // TODO: Translate
+    'vSupport_telephone' => 'Telephone no:', // TODO: Translate
+    'vSupport_request_call' => 'Request a Call', // TODO: Translate
+    'vSupport_title' => 'Title:', // TODO: Translate
+    'vSupport_submit' => 'Submit', // TODO: Translate
+    'vSupport_requestSent' => 'Request sent successfully!', // TODO: Translate
+
     'vLogin_signin' => 'تسجيل الدخول',
     'vLogin_signinWithGoole' => 'سجل من خلال جوجل',
     'vLogin_signout' => 'خروج',
