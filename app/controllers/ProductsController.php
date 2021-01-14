@@ -132,7 +132,7 @@ class ProductsController extends Controller
     {
         ## Read values from Datatables
         $datatable = new Datatable($_POST);
-        $query = "";
+        $query = "1=1 ";
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityId IN ($arrEntityId)";
@@ -157,12 +157,9 @@ class ProductsController extends Controller
             if (isset($categoryId) && is_array($categoryId)) {
                 $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
-
-            $query .= " AND statusId = 1";
-
         }
 
-
+        $query .= " AND statusId = 1";
 
         $fullQuery = $query;
 
@@ -477,6 +474,7 @@ class ProductsController extends Controller
             $dbEntityProduct->entityId = $entityId;
             $dbEntityProduct->unitPrice = $unitPrice;
             $dbEntityProduct->stock = $stock;
+            $dbEntityProduct->statusId = 1;
             $dbEntityProduct->stockStatusId = 1;
             $dbEntityProduct->bonusTypeId = 1;
             $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
