@@ -123,77 +123,81 @@ function compress_htmlcode($codedata)
                 </div>
 
 
-                <div>
-                    <div class="product-item-similar-header">
-                        <h3><?php echo $vModule_product_otherFromSameDistributor ?></h3>
+                <?php if ($arrProductFromThisDistributor != null && sizeof($arrProductFromThisDistributor) != 0) { ?>
+                    <div>
+                        <div class="product-item-similar-header">
+                            <h3><?php echo $vModule_product_otherFromSameDistributor ?></h3>
 
-                        <a href="javascript:;" onclick="viewAllSameDistributor()">View All</a>
-                    </div>
+                            <a href="javascript:;" onclick="viewAllSameDistributor()">View All</a>
+                        </div>
 
-                    <div class="row">
-                        <?php foreach ($arrProductFromThisDistributor as $objItem) : ?>
-                            <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-6 col-6" style="overflow: hidden">
-                                <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $objItem->entityId ?>/product/<?php echo $objItem->productId ?>')" class="text-dark text-hover-primary">
-                                    <div class="card card-custom product-item">
+                        <div class="row">
+                            <?php foreach ($arrProductFromThisDistributor as $objItem) : ?>
+                                <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-6 col-6" style="overflow: hidden">
+                                    <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $objItem->entityId ?>/product/<?php echo $objItem->productId ?>')" class="text-dark text-hover-primary">
+                                        <div class="card card-custom product-item">
 
-                                        <div class="image-wrapper">
-                                            <div class="image">
-                                                <img src="<?php echo $objItem->image ?>" style="">
+                                            <div class="image-wrapper">
+                                                <div class="image">
+                                                    <img src="<?php echo $objItem->image ?>" style="">
+                                                </div>
+                                                <div class="image-hover-wrapper">
+                                                    <div class="view-button">View</div>
+                                                </div>
                                             </div>
-                                            <div class="image-hover-wrapper">
-                                                <div class="view-button">View</div>
+
+                                            <div class="product-item-content">
+                                                <span class="title"><?php echo $objItem->{"productName_" . $_SESSION['userLang']} ?></span>
+                                                <span class="price"><?php echo $objItem->unitPrice . ' ' . $objEntityProduct->currency ?></span>
                                             </div>
+
                                         </div>
-
-                                        <div class="product-item-content">
-                                            <span class="title"><?php echo $objItem->{"productName_" . $_SESSION['userLang']} ?></span>
-                                            <span class="price"><?php echo $objItem->unitPrice . ' ' . $objEntityProduct->currency ?></span>
-                                        </div>
-
-                                    </div>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
-                </div>
+                <?php } ?>
 
-                <div>
-                    <div class="product-item-similar-header">
-                        <h3 class="products-item-title">
-                            <?php echo $vModule_product_other ?>
-                            <?php echo $objEntityProduct->scientificName ?>
-                        </h3>
+                <?php if ($arrRelatedEntityProduct != null && sizeof($arrRelatedEntityProduct) != 0) { ?>
+                    <div>
+                        <div class="product-item-similar-header">
+                            <h3 class="products-item-title">
+                                <?php echo $vModule_product_other ?>
+                                <?php echo $objEntityProduct->scientificName ?>
+                            </h3>
 
-                        <a href="javascript:;" onclick="viewAllSameScientificName()">View All</a>
-                    </div>
+                            <a href="javascript:;" onclick="viewAllSameScientificName()">View All</a>
+                        </div>
 
 
-                    <div class="row">
-                        <?php foreach ($arrRelatedEntityProduct as $objItem) : ?>
-                            <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-6 col-6" style="overflow: hidden">
-                                <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $objItem->entityId ?>/product/<?php echo $objItem->productId ?>')" class="text-dark text-hover-primary">
-                                    <div class="card card-custom product-item">
+                        <div class="row">
+                            <?php foreach ($arrRelatedEntityProduct as $objItem) : ?>
+                                <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-6 col-6" style="overflow: hidden">
+                                    <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $objItem->entityId ?>/product/<?php echo $objItem->productId ?>')" class="text-dark text-hover-primary">
+                                        <div class="card card-custom product-item">
 
-                                        <div class="image-wrapper">
-                                            <div class="image">
-                                                <img src="<?php echo $objItem->image ?>" style="">
+                                            <div class="image-wrapper">
+                                                <div class="image">
+                                                    <img src="<?php echo $objItem->image ?>" style="">
+                                                </div>
+                                                <div class="image-hover-wrapper">
+                                                    <div class="view-button">View</div>
+                                                </div>
                                             </div>
-                                            <div class="image-hover-wrapper">
-                                                <div class="view-button">View</div>
+
+                                            <div class="product-item-content">
+                                                <span class="title"><?php echo $objItem->{"productName_" . $_SESSION['userLang']} ?></span>
+                                                <span class="price"><?php echo $objItem->unitPrice . ' ' . $objEntityProduct->currency ?></span>
                                             </div>
-                                        </div>
 
-                                        <div class="product-item-content">
-                                            <span class="title"><?php echo $objItem->{"productName_" . $_SESSION['userLang']} ?></span>
-                                            <span class="price"><?php echo $objItem->unitPrice . ' ' . $objEntityProduct->currency ?></span>
                                         </div>
-
-                                    </div>
-                                </a>
-                            </div>
-                        <?php endforeach; ?>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
-                </div>
+                <?php } ?>
 
 
             </div>
