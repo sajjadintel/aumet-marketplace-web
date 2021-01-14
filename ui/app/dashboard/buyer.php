@@ -1,3 +1,33 @@
+<style>
+    .slick-dots {
+        position: absolute;
+        bottom: 20px;
+        display: block;
+        width: 100%;
+        padding: 10;
+        margin: 0;
+        list-style: none;
+        text-align: center;
+    }
+
+    .slick-dots li {
+        position: relative;
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin: 0 1px;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    .slick-dots li button:before {
+        color: #FFF;
+    }
+    
+    .slick-dots li.slick-active button:before {
+        color: #FFF;
+    }
+</style>
 <!--begin::Entry-->
 <div class="d-flex flex-column-fluid">
     <!--begin::Container-->
@@ -9,7 +39,7 @@
             <div class="col-9">
                 <div class="card card-custom card-body card-stretch gutter-b">
                     <!--begin::Banner-->
-                    <div class="mb-20">
+                    <div class="mb-10">
                         <div class="autoplay" style="height: 280px;">
                             <?php foreach($arrBanners as $banner) : ?>
                                 <div style="background-image: url('<?php echo $banner->image; ?>'); height: 280px;">
@@ -39,7 +69,7 @@
                         </div>
                     </div>
                     <!--begin::New Products-->
-                    <div class="mb-20">
+                    <div class="mb-10">
                         <div class="row pb-6" style="justify-content: space-between;">
                             <div class="col-3">
                                 <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_dashboardBuyer_newProducts ?></span>
