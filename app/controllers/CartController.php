@@ -77,7 +77,7 @@ class CartController extends Controller {
 
                 $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
                 $total = $quantityFree + $newQuantity;
-                if($total > $maxOrder) 
+                if($total > $maxOrder)
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Not allowed (max: $maxOrder)";
@@ -105,9 +105,8 @@ class CartController extends Controller {
                 echo $this->webResponse->jsonResponse();
             }
         }
-    }
 
-    private function calculateBonus($quantity, $bonuses, $formula)
+    function calculateBonus($quantity, $bonuses, $formula)
     {
         foreach ($bonuses as $bonus) {
             if ($quantity >= $bonus['minOrder']) {
@@ -676,17 +675,17 @@ class CartController extends Controller {
             foreach($mapCurrencyIdCurrency as $currencyId => $currency) {
                 if(array_key_exists($currencyId, $mapCurrencyIdSubTotal)) {
                     $subTotal = $mapCurrencyIdSubTotal[$currencyId];
-                    $subTotalUSD += $subTotal * $currency->conversionToUSD; 
+                    $subTotalUSD += $subTotal * $currency->conversionToUSD;
                 }
 
                 if(array_key_exists($currencyId, $mapCurrencyIdTax)) {
                     $tax = $mapCurrencyIdTax[$currencyId];
-                    $taxUSD += $tax * $currency->conversionToUSD; 
+                    $taxUSD += $tax * $currency->conversionToUSD;
                 }
 
                 if(array_key_exists($currencyId, $mapCurrencyIdTotal)) {
                     $total = $mapCurrencyIdTotal[$currencyId];
-                    $totalUSD += $total * $currency->conversionToUSD; 
+                    $totalUSD += $total * $currency->conversionToUSD;
                 }
             }
 
@@ -704,7 +703,7 @@ class CartController extends Controller {
             $name = count($allSellerNames) > 1? "Seller names: " : "Seller name: ";
             $name .= implode(", ", $allSellerNames);
             $this->f3->set('name', $name);
-            
+
             $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $account->entityId);
             foreach ($arrEntityUserProfile as $entityUserProfile) {
                 $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
