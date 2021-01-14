@@ -46,8 +46,8 @@
                                     <?php if ($objUser->language == "ar"): ?>
                                         <div style="height: 100%; display: flex; align-items: center; justify-content: flex-end;">
                                             <div class="col-5" style="margin-right: 50px; text-align: right;">
-                                                <h1 style="color: #FFF; font-size: 30px;"><?php echo $banner->title; ?></h1>
-                                                <h1 style="color: #FFF; font-size: 30px;"><?php echo $banner->subtitle; ?></h1>
+                                                <h1 style="color: #FFF; font-size: 30px; font-weight: 700;"><?php echo $banner->title; ?></h1>
+                                                <h1 style="color: #FFF; font-size: 30px; font-weight: 700;"><?php echo $banner->subtitle; ?></h1>
                                                 <?php if(!is_null($banner->buttonText)) : ?>
                                                     <button type="button" class="btn btn-primary btn-md mt-5" style="width: 140px; background-color: #1378BE; border-color: #1378BE;"  onclick="WebApp.loadSubPage('/web/entity/<?php echo $banner->entityId; ?>/product/<?php echo $banner->productId; ?>');"><?php echo $banner->buttonText; ?></button>
                                                 <?php endif; ?>
@@ -56,8 +56,8 @@
                                     <?php else : ?>
                                         <div style="height: 100%; display: flex; align-items: center;">
                                             <div class="col-5" style="margin-left: 50px">
-                                                <h1 style="color: #FFF; font-size: 30px;"><?php echo $banner->title; ?></h1>
-                                                <h1 style="color: #FFF; font-size: 30px;"><?php echo $banner->subtitle; ?></h1>
+                                                <h1 style="color: #FFF; font-size: 30px; font-weight: 700;"><?php echo $banner->title; ?></h1>
+                                                <h1 style="color: #FFF; font-size: 30px; font-weight: 700;"><?php echo $banner->subtitle; ?></h1>
                                                 <?php if(!is_null($banner->buttonText)) : ?>
                                                     <button type="button" class="btn btn-primary btn-md mt-5" style="width: 140px; background-color: #1378BE; border-color: #1378BE;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $banner->entityId; ?>/product/<?php echo $banner->productId; ?>');"><?php echo $banner->buttonText; ?></button>
                                                 <?php endif; ?>
