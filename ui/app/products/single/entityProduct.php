@@ -68,9 +68,7 @@ function compress_htmlcode($codedata)
                                                 </div>
                                             </div>
 
-                                            <?php if ($objEntityProduct->bonusTypeId == 2 && $objEntityProduct->bonusOptions != null) {
-
-                                                ?>
+                                            <?php if ($objEntityProduct->bonusTypeId == 2 && $objEntityProduct->bonusOptions != null) { ?>
                                                 <div class="bonus">
                                                     <div class="title"><?php echo $vModule_cart_bonus ?></div>
                                                     <div class="value"><?php echo $objEntityProduct->bonusOptions[0]->name ?></div>
@@ -96,7 +94,7 @@ function compress_htmlcode($codedata)
 
                                     <div class="d-flex mb-3">
                                         <span class="title"><?php echo $vModule_product_madeIn ?></span>
-                                        <div>
+                                        <div class="country">
                                             <img src="/assets/img/countries/<?php echo strtolower(Helper::getCountryIso($objEntityProduct->madeInCountryName_en)) ?>.svg" style="width:34px;height:18px;">
                                             <span class="value"><?php echo $objEntityProduct->{"madeInCountryName_" . $_SESSION['userLang']} ?></span>
                                         </div>
@@ -126,10 +124,10 @@ function compress_htmlcode($codedata)
 
 
                 <div>
-                    <div>
-                        <h3 class="products-item-title">
-                            <?php echo $vModule_product_otherFromSameDistributor ?>
-                        </h3>
+                    <div class="product-item-similar-header">
+                        <h3><?php echo $vModule_product_otherFromSameDistributor ?></h3>
+
+                        <a href="javascript:;" onclick="viewAllSameDistributor()">View All</a>
                     </div>
 
                     <div class="row">
@@ -160,12 +158,15 @@ function compress_htmlcode($codedata)
                 </div>
 
                 <div>
-                    <div>
+                    <div class="product-item-similar-header">
                         <h3 class="products-item-title">
                             <?php echo $vModule_product_other ?>
                             <?php echo $objEntityProduct->scientificName ?>
                         </h3>
+
+                        <a href="javascript:;" onclick="viewAllSameScientificName()">View All</a>
                     </div>
+
 
                     <div class="row">
                         <?php foreach ($arrRelatedEntityProduct as $objItem) : ?>
@@ -205,6 +206,14 @@ function compress_htmlcode($codedata)
 
         function addToCart() {
             SearchDataTable.onClickAddMoreToCart(row);
+        }
+
+        function viewAllSameDistributor() {
+            WebApp.loadPage('/web/product/search?distributorId=<?php echo $objEntityProduct->entityId ?>');
+        }
+
+        function viewAllSameScientificName() {
+            WebApp.loadPage('/web/product/search?scientificNameId=<?php echo $objEntityProduct->scientificNameId?>');
         }
 
     </script>

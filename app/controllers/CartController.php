@@ -111,15 +111,20 @@ class CartController extends Controller {
     {
         foreach ($bonuses as $bonus) {
             if ($quantity >= $bonus['minOrder']) {
-                $formula = str_replace('quantity', $quantity, $formula);
-                $formula = str_replace('minOrder', $bonus['minOrder'], $formula);
-                $formula = str_replace('bonus', $bonus['bonus'], $formula);
-                if (strpos($formula, ';') === false) {
-                    $formula .= ';';
+                $response = 0;
+                try {
+                    $formula = str_replace('quantity', $quantity, $formula);
+                    $formula = str_replace('minOrder', $bonus['minOrder'], $formula);
+                    $formula = str_replace('bonus', $bonus['bonus'], $formula);
+                    if (strpos($formula, ';') === false) {
+                        $formula .= ';';
+                    }
+                    $formula = '$response = ' . $formula;
+                    eval($formula);
+                    return $response;
+                } catch (Exception $e) {
+                    return 0;
                 }
-                $formula = '$response = ' . $formula;
-                eval($formula);
-                return $response;
             }
         }
         return 0;

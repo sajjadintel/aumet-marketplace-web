@@ -662,11 +662,17 @@ function compress_htmlcode($codedata)
                 updateDatatable();
             };
 
-            var query = '<?php echo isset($_GET['query']) ? $_GET['query'] : 'null';?>';
+            var query = <?php echo isset($_GET['query']) ? "'" . $_GET['query'] . "'" : 'null';?>;
+            var distributorId = <?php echo isset($_GET['distributorId']) ? "'" . $_GET['distributorId'] . "'" : 'null';?>;
+            var scientificNameId = <?php echo isset($_GET['scientificNameId']) ? "'" . $_GET['scientificNameId'] . "'" : 'null';?>;
 
             function updateDatatable() {
                 if (query != null)
                     searchQuery.query = query;
+                if (distributorId != null && !searchQuery.entityId.includes(distributorId))
+                    searchQuery.entityId.push(distributorId);
+                if (scientificNameId != null && !searchQuery.scientificNameId.includes(scientificNameId))
+                    searchQuery.scientificNameId.push(scientificNameId);
                 WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
 
             }

@@ -330,13 +330,6 @@ label.myLabel input[type='file'] {
 	align-items: center;
 }
 
-.products-item-title {
-	color: #3e434b;
-	font-size: 21px;
-	font-weight: bold;
-	margin: 60px 0 20px 0;
-}
-
 .product-price-wrapper {
 	background-color: #f8fafd;
 	border-radius: 10px;
@@ -403,6 +396,17 @@ label.myLabel input[type='file'] {
 	padding-left: 10px;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	/* display: none; <- Crashes Chrome on hover */
+	-webkit-appearance: none;
+	margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+	-moz-appearance: textfield; /* Firefox */
+}
+
 .cart-buttons-product-detail {
 	display: flex;
 	justify-content: space-between;
@@ -459,6 +463,28 @@ label.myLabel input[type='file'] {
 .product-item-details .value {
 	color: #5a6166;
 	font-size: 17px;
+}
+
+.product-item-details .country {
+	display: flex;
+	align-items: center;
+}
+
+.product-item-similar-header {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin: 60px 0 20px 0;
+}
+
+.product-item-similar-header h3 {
+	color: #3e434b;
+	font-size: 21px;
+	font-weight: bold;
+}
+
+.product-item-similar-header a {
+	font-size: 14px;
 }
 
 /* product page */
