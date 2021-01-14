@@ -31,11 +31,11 @@ function compress_htmlcode($codedata)
                     <div class="card-body d-flex rounded flex-column flex-md-row flex-lg-column flex-xxl-row">
                         <div class="row w-100 product-detail">
 
-                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 col-12">
+                            <div class="col-xxl-6 col-xl-6 col-lg-5 col-md-5 col-sm-12 col-xs-12 col-12">
                                 <img src="<?php echo $objEntityProduct->image ?>" alt="<?php echo $objEntityProduct->{"productName_" . $_SESSION['userLang']} ?>">
                             </div>
 
-                            <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 col-12">
+                            <div class="col-xxl-6 col-xl-6 col-lg-7 col-md-7 col-sm-12 col-xs-12 col-12">
                                 <div>
                                     <h3 class=" font-size-h2 mb-1">
                                         <span class="font-weight-boldest"><?php echo $objEntityProduct->scientificName ?></span>
