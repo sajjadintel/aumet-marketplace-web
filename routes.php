@@ -23,6 +23,7 @@ $f3->route('GET /web/dashboard', 'DashboardController->get');
 
 $f3->route('GET /web/product/search', 'SearchController->getSearchProducts');
 $f3->route('POST /web/product/search', 'SearchController->postSearchProducts');
+$f3->route('POST /web/product/search/@sort', 'SearchController->postSearchProducts');
 $f3->route('GET /web/entity/@entityId/product/@productId', 'ProductsController->getEntityProduct');
 
 $f3->route('GET /web/product/brandname/list', 'SearchController->getProductBrandNameList');

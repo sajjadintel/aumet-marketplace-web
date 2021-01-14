@@ -41,21 +41,69 @@ class DashboardController extends Controller
                 $this->webResponse->data = View::instance()->render('app/dashboard/seller.php');
                 echo $this->webResponse->jsonResponse();
             } else {
+                // Find buyer currency
+                $dbCurrencies = new BaseModel($this->db, "currency");
+                $allCurrencies = $dbCurrencies->all();
+
+                $mapCurrencyIdCurrency = [];
+                foreach ($allCurrencies as $currency) {
+                    $mapCurrencyIdCurrency[$currency['id']] = $currency;
+                }
+                
                 $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
-                $query = "entityBuyerId IN ($arrEntityId)";
-
-                $dbData = new BaseModel($this->db, "vwDashboardBuyerToday");
-                $dbData->getWhere($query);
-
-                $dbDataYesterday = new BaseModel($this->db, "vwDashboardBuyerYesterday");
-                $dbDataYesterday->getWhere($query);
-
-                $this->f3->set('dashboard_order', is_null($dbData['orderCount']) ? 0 : $dbData['orderCount']);
-                $this->f3->set('dashboard_invoice', is_null($dbData['invoice']) ? 0 : $dbData['invoice']);
                 
-                $this->f3->set('dashboard_orderYesterday', is_null($dbDataYesterday['orderCount']) ? 0 : $dbDataYesterday['orderCount']);
-                $this->f3->set('dashboard_invoiceYesterday', is_null($dbDataYesterday['invoice']) ? 0 : $dbDataYesterday['invoice']);
+                $dbEntities = new BaseModel($this->db, "entity");
+                $buyerEntity = $dbEntities->getWhere("id in ($arrEntityId)")[0];
                 
+                $buyerCurrency = $mapCurrencyIdCurrency[$buyerEntity['currencyId']];
+
+                // Get related banners
+                $dbBanners = new BaseModel($this->db, "entityDashboardBanner");
+                $dbBanners->image = $this->objUser->language == "ar"? "imageRtl" : "imageLtr";
+                $dbBanners->title = "title" . ucfirst($this->objUser->language);
+                $dbBanners->subtitle = "subtitle" . ucfirst($this->objUser->language);
+                $dbBanners->buttonText = "buttonText" . ucfirst($this->objUser->language);
+                $arrBanners = $dbBanners->getWhere("countryId = $buyerEntity->countryId", "id DESC", 5, 0);
+                $this->f3->set('arrBanners', $arrBanners);
+                
+
+                $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
+                $dbProducts->name = "productName_" . $this->objUser->language;
+
+                // Get newest products
+                $arrNewestProductsDb = $dbProducts->findWhere("statusId = 1", "insertDateTime DESC", 4, 0);
+                $arrNewestProducts = [];
+                foreach($arrNewestProductsDb as $productDb) {
+                    $product = new stdClass();
+                    $product->name = $productDb['name'];
+                    $product->image = $productDb['image'];
+
+                    $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];
+                    $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];
+                    $price = $priceUSD / $buyerCurrency['conversionToUSD'];
+                    $product->price = round($price, 2) . " " . $buyerCurrency['symbol'];
+                    
+                    array_push($arrNewestProducts, $product);
+                }
+                $this->f3->set('arrNewestProducts', $arrNewestProducts);
+
+                // Get top selling products
+                $arrTopSellingProductsDb = $dbProducts->findWhere("statusId = 1", "quantityOrdered DESC", 4, 0);
+                $arrTopSellingProducts = [];
+                foreach($arrTopSellingProductsDb as $productDb) {
+                    $product = new stdClass();
+                    $product->name = $productDb['name'];
+                    $product->image = $productDb['image'];
+
+                    $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];
+                    $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];
+                    $price = $priceUSD / $buyerCurrency['conversionToUSD'];
+                    $product->price = round($price, 2) . " " . $buyerCurrency['symbol'];
+                    
+                    array_push($arrTopSellingProducts, $product);
+                }
+                $this->f3->set('arrTopSellingProducts', $arrTopSellingProducts);
+
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_dashboard');
                 $this->webResponse->data = View::instance()->render('app/dashboard/buyer.php');

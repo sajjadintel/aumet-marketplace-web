@@ -132,7 +132,7 @@ class ProductsController extends Controller
     {
         ## Read values from Datatables
         $datatable = new Datatable($_POST);
-        $query = "";
+        $query = "1=1 ";
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityId IN ($arrEntityId)";
@@ -158,9 +158,9 @@ class ProductsController extends Controller
                 $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
 
-            $query .= " AND statusId = 1";
-
         }
+
+        $query .= " AND statusId = 1";
 
 
 

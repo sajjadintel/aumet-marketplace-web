@@ -308,6 +308,8 @@ class SearchController extends Controller {
 
     function postSearchProducts()
     {
+        $sortParam = $this->f3->get('PARAMS.sort');
+
         ## Read values from Datatables
         $datatable = new Datatable($_POST);
         $query = "1=1 ";
@@ -340,8 +342,16 @@ class SearchController extends Controller {
                 $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
 
-            $query .= " AND statusId = 1";
+        }
+        
+        $query .= " AND statusId = 1";
 
+        $order = "$datatable->sortBy $datatable->sortByOrder";
+
+        if($sortParam == "newest") {
+            $order = "insertDateTime DESC";
+        } else if($sortParam == "top-selling") {
+            $order = "quantityOrdered DESC";
         }
 
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
@@ -350,7 +360,7 @@ class SearchController extends Controller {
 
         $totalRecords = $dbProducts->count($fullQuery);
         $totalFiltered = $dbProducts->count($query);
-        $data = $dbProducts->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
+        $data = $dbProducts->findWhere($query, $order, $datatable->limit, $datatable->offset);
 
         $allProductId = [];
         foreach($data as $product) {

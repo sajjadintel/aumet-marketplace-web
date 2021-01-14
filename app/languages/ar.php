@@ -181,6 +181,7 @@ return array(
     'vButton_bulk_add' => 'إضافة مجمعة',
     'vButton_bulk_add_image' => 'إضافة صور مجمعة',
     'vButton_confirm' => 'تأكيد',
+    'vButton_view_all' => 'مشاهدة الكل',
     
     'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ', // TODO: add translation
     'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!', // TODO: add translation
@@ -191,4 +192,7 @@ return array(
     'vModule_bulk_add_image_info' => 'للحصول على أفضل استخدام ، تأكد من أن اسم صورتك يبدأ بـ "productId-" لتحديد منتج تلقائيًا بعد التحميل.',
     
     'vResponse_imagesAdded' => 'تمت إضافة الصور بنجاح',
+    
+    'vModule_dashboardBuyer_newProducts' => 'منتجات جديدة',
+    'vModule_dashboardBuyer_topSelling' => 'الأعلى مبيعا',
 );

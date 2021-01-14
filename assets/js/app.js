@@ -163,8 +163,21 @@ var WebApp = (function () {
 	var _loadPage = function (url, isSubPage = false, fnCallback = null) {
 		_blurPage();
 		_blockPage();
+		
+
+		var fullUrl;
+		if(url.includes("?")) {
+			var allParts = url.split("?");
+			var mainUrl = allParts.shift();
+			var queryParams = allParts.join("?");
+			
+			fullUrl = mainUrl + '?' + queryParams + '&_t=' + Date.now();
+		} else {
+			fullUrl = url + '?_t=' + Date.now();
+		}
+
 		$.ajax({
-			url: url + '?_t=' + Date.now(),
+			url: fullUrl,
 			type: 'GET',
 			dataType: 'json',
 			async: true,

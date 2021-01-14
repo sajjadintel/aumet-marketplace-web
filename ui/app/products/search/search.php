@@ -150,6 +150,9 @@ function compress_htmlcode($codedata)
     </style>
     <script>
         var PageClass = function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            var sortParam = urlParams.get('sort');
+        
             var elementId = "#datatable";
             var url = '/web/product/search';
 
@@ -653,8 +656,18 @@ function compress_htmlcode($codedata)
             });
 
             $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
+            
+            var allSortParams = [
+                "newest",
+                "top-selling"
+            ];
+            if(allSortParams.includes(sortParam)) {
+                url += "/" + sortParam;
+            }
 
             var initiate = function () {
+                console.log("{ ...window.location }");
+                console.log({ ...window.location });
                 WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
             };
 
