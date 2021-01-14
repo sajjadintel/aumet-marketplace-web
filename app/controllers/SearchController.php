@@ -347,11 +347,13 @@ class SearchController extends Controller {
         $query .= " AND statusId = 1";
 
         $order = "$datatable->sortBy $datatable->sortByOrder";
-
-        if($sortParam == "newest") {
-            $order = "insertDateTime DESC";
-        } else if($sortParam == "top-selling") {
-            $order = "quantityOrdered DESC";
+        
+        if($order == "productName_en asc") {
+            if($sortParam == "newest") {
+                $order = "insertDateTime DESC";
+            } else if($sortParam == "top-selling") {
+                $order = "quantityOrdered DESC";
+            }
         }
 
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");

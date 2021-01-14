@@ -18,7 +18,9 @@
                                             <div class="col-5" style="margin-right: 50px; text-align: right;">
                                                 <h1 style="color: #FFF; font-size: 30px;"><?php echo $banner->title; ?></h1>
                                                 <h1 style="color: #FFF; font-size: 30px;"><?php echo $banner->subtitle; ?></h1>
-                                                <button type="button" class="btn btn-primary btn-md mt-5" style="width: 140px; background-color: #1378BE; border-color: #1378BE;"  onclick="WebApp.loadSubPage('/web/entity/<?php echo $banner->entityId; ?>/product/<?php echo $banner->productId; ?>');"><?php echo $banner->buttonText; ?></button>
+                                                <?php if(!is_null($banner->buttonText)) : ?>
+                                                    <button type="button" class="btn btn-primary btn-md mt-5" style="width: 140px; background-color: #1378BE; border-color: #1378BE;"  onclick="WebApp.loadSubPage('/web/entity/<?php echo $banner->entityId; ?>/product/<?php echo $banner->productId; ?>');"><?php echo $banner->buttonText; ?></button>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     <?php else : ?>
@@ -26,14 +28,14 @@
                                             <div class="col-5" style="margin-left: 50px">
                                                 <h1 style="color: #FFF; font-size: 30px;"><?php echo $banner->title; ?></h1>
                                                 <h1 style="color: #FFF; font-size: 30px;"><?php echo $banner->subtitle; ?></h1>
-                                                <button type="button" class="btn btn-primary btn-md mt-5" style="width: 140px; background-color: #1378BE; border-color: #1378BE;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $banner->entityId; ?>/product/<?php echo $banner->productId; ?>');"><?php echo $banner->buttonText; ?></button>
+                                                <?php if(!is_null($banner->buttonText)) : ?>
+                                                    <button type="button" class="btn btn-primary btn-md mt-5" style="width: 140px; background-color: #1378BE; border-color: #1378BE;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $banner->entityId; ?>/product/<?php echo $banner->productId; ?>');"><?php echo $banner->buttonText; ?></button>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     <?php endif; ?>
                                 </div>
                             <?php endforeach; ?>
-                            <div style="background-color: cyan; height: 280px;"></div>
-                            <div style="background-color: lightgreen; height: 280px;"></div>
                         </div>
                     </div>
                     <!--begin::New Products-->
