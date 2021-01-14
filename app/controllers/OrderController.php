@@ -289,18 +289,29 @@ class OrderController extends Controller {
 
         $dbData = new BaseModel($this->db, "vwOrderEntityUser");
 
-        $data = [];
-
         $totalRecords = $dbData->count($fullQuery);
         $totalFiltered = $dbData->count($query);
-        $data = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
+        $orders = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
+
+        $ordersWithOrderDetail = [];
+        foreach ($orders as $order) {
+            $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+            $dbOrderDetail->productName = "productName" . ucfirst($this->objUser->language);
+            $arrOrderDetail = $dbOrderDetail->findWhere("id = '{$order['id']}'");
+
+            for ($i = 0; $i < count($arrOrderDetail); $i++) {
+                $orderDetail = array_merge($order, $arrOrderDetail[$i]);
+                $orderDetail['isVisible'] = $i === 0;
+                $ordersWithOrderDetail[] = array_merge($order, $orderDetail);
+            }
+        }
 
         ## Response
         $response = array(
             "draw" => intval($datatable->draw),
             "recordsTotal" => $totalRecords,
             "recordsFiltered" => $totalFiltered,
-            "data" => $data
+            "data" => $ordersWithOrderDetail
         );
 
         $this->jsonResponseAPI($response);
