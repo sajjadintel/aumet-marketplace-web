@@ -220,6 +220,7 @@ class ProductsController extends Controller {
             if (isset($categoryId) && is_array($categoryId)) {
                 $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
+
         }
 
         $query .= " AND statusId = 1";

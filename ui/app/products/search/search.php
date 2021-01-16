@@ -642,6 +642,17 @@ function compress_htmlcode($codedata)
             $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
             var initiate = function () {
+                var urlParams = new URLSearchParams(window.location.search);
+                var sortParam = urlParams.get('sort');
+        
+            
+                var allSortParams = [
+                    "newest",
+                    "top-selling"
+                ];
+                if(allSortParams.includes(sortParam)) {
+                    url += "/" + sortParam;
+                }
                 updateDatatable();
             };
 
@@ -666,7 +677,11 @@ function compress_htmlcode($codedata)
                 },
             };
         }();
-
-        PageClass.init();
     </script>
 <?php ob_end_flush(); ?>
+<?php include_once 'add-bonus-modal.php'; ?>
+<script>
+    $(document).ready(function() {
+        PageClass.init();
+    })
+</script>
