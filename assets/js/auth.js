@@ -318,7 +318,16 @@ var WebAuth = (function () {
 			if (validator) {
 				validator.validate().then(function (status) {
 					if (status == 'Valid') {
-						wizard.goTo(wizard.getNewStep());
+						if(wizard.getStep() == 1) {
+							let body = {
+								email: $("input[name=email]").val()
+							}
+							WebApp.post('/web/auth/signup/validate/email', body, function() {
+								wizard.goTo(wizard.getNewStep());
+							})
+						} else {
+							wizard.goTo(wizard.getNewStep());
+						}
 
 						KTUtil.scrollTop();
 					} else {

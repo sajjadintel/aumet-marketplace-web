@@ -307,7 +307,7 @@ class AuthController extends Controller
             // Add account
             $dbAccount = new BaseModel($this->db, "account");
             $dbAccount->entityId = $dbEntity->id;
-            $dbAccount->number = $dbEntity->id * 100;
+            $dbAccount->number = 100;
             $dbAccount->statusId = Constants::ACCOUNT_STATUS_ACTIVE;
             $dbAccount->addReturnID();
             
@@ -552,6 +552,25 @@ class AuthController extends Controller
 
         if($success) {
             echo $targetFile;
+        }
+    }
+
+    function postSignUpValidateEmail()
+    {
+        $email = $this->f3->get("POST.email");
+        
+        // Check if email is unique
+        $dbUser = new BaseModel($this->db, "user");
+        $dbUser->getByField("email", $email);
+
+        if(!$dbUser->dry()) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->title = "";
+            $this->webResponse->message = "Email address exists, Please signin instead";
+            echo $this->webResponse->jsonResponse();
+        } else {
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            echo $this->webResponse->jsonResponse();
         }
     }
 }
