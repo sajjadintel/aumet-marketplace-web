@@ -365,6 +365,8 @@ class SearchController extends Controller {
                 $order = "quantityOrdered DESC";
             }
         }
+        
+        $query .= " AND statusId = 1";
 
         $roleId = $this->f3->get('SESSION.objUser')->roleId;
 

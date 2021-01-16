@@ -225,7 +225,6 @@ class ProductsController extends Controller {
 
         $query .= " AND statusId = 1";
 
-
         $fullQuery = $query;
 
         $dbData = new BaseModel($this->db, "vwEntityProductSell");
@@ -542,6 +541,7 @@ class ProductsController extends Controller {
             $dbEntityProduct->entityId = $entityId;
             $dbEntityProduct->unitPrice = $unitPrice;
             $dbEntityProduct->stock = $stock;
+            $dbEntityProduct->statusId = 1;
             $dbEntityProduct->stockStatusId = 1;
             $dbEntityProduct->bonusTypeId = 1;
             $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();

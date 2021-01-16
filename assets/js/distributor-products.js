@@ -149,7 +149,6 @@ var DistributorProductsDataTable = (function () {
     var _changeImageHolder = function (image, mode) {
         let backgroundImageVal = "/theme/assets/media/users/blank.png";
         if(image) {
-            console.log("in if statement");
             backgroundImageVal = image;
         }
         $('#' + mode + 'ProductImageHolder').css("background-image", "url(" + backgroundImageVal + ")");
