@@ -163,8 +163,10 @@ var WebApp = (function () {
 	var _loadPage = function (url, isSubPage = false, fnCallback = null) {
 		_blurPage();
 		_blockPage();
+
+		url = url.includes('?') ? url : url + '?_t=' + Date.now();
 		$.ajax({
-			url: url + '?_t=' + Date.now(),
+			url: url,
 			type: 'GET',
 			dataType: 'json',
 			async: true,

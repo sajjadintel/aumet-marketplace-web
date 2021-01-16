@@ -58,9 +58,12 @@ function compress_htmlcode($codedata)
                     </div>
                 </div>
 
-                <div class="d-flex flex-column-fluid">
-                    <div class="input-group input-group-lg mr-5">
-                        <div class="input-group-prepend pt-3 pl-1 pr-1">
+                <?php
+                $roleId = $_SESSION['objUser']->roleId;
+                if (!Helper::isDistributor($roleId)) { ?>
+                    <div class="d-flex flex-column-fluid">
+                        <div class="input-group input-group-lg mr-5">
+                            <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -70,12 +73,12 @@ function compress_htmlcode($codedata)
                                 </g>
                             </svg>
                         </span>
+                            </div>
+                            <select class="select2 form-control" id="searchProductsDistributorNameInput" multiple="" name="distributorName" data-select2-id="searchProductsDistributorNameInput" tabindex="-1" aria-hidden="true">
+                            </select>
                         </div>
-                        <select class="select2 form-control" id="searchProductsDistributorNameInput" multiple="" name="distributorName" data-select2-id="searchProductsDistributorNameInput" tabindex="-1" aria-hidden="true">
-
-                        </select>
                     </div>
-                </div>
+                <?php } ?>
 
                 <div class="d-flex flex-column-fluid">
                     <div class="input-group input-group-lg">
@@ -411,7 +414,8 @@ function compress_htmlcode($codedata)
                 scientificNameId: [],
                 entityId: [],
                 stockOption: 1,
-                categoryId: null
+                categoryId: null,
+                query: null,
             };
 
             var _selectBrand = $('#searchProductsBrandNameInput').select2({
@@ -433,12 +437,12 @@ function compress_htmlcode($codedata)
 
             _selectBrand.on("select2:select", function (e) {
                 searchQuery.productId = $("#searchProductsBrandNameInput").val();
-                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
+                updateDatatable();
             });
 
             _selectBrand.on("select2:unselect", function (e) {
                 searchQuery.productId = $("#searchProductsBrandNameInput").val();
-                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
+                updateDatatable();
             });
 
 
@@ -576,12 +580,12 @@ function compress_htmlcode($codedata)
                 _category.val(filteredData).trigger('change');
 
                 searchQuery.categoryId = $("#searchProductsCategoryInput").val();
-                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
+                updateDatatable();
             });
 
             _category.on("select2:unselect", function (e) {
                 searchQuery.categoryId = $("#searchProductsCategoryInput").val();
-                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
+                updateDatatable();
             });
 
 
@@ -604,12 +608,12 @@ function compress_htmlcode($codedata)
 
             _selectScientific.on("select2:select", function (e) {
                 searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
+                updateDatatable();
             });
 
             _selectScientific.on("select2:unselect", function (e) {
                 searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
+                updateDatatable();
             });
 
             var _selectDistributor = $('#searchProductsDistributorNameInput').select2({
@@ -631,17 +635,17 @@ function compress_htmlcode($codedata)
 
             _selectDistributor.on("select2:select", function (e) {
                 searchQuery.entityId = $("#searchProductsDistributorNameInput").val();
-                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
+                updateDatatable();
             });
 
             _selectDistributor.on("select2:unselect", function (e) {
                 searchQuery.entityId = $("#searchProductsDistributorNameInput").val();
-                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
+                updateDatatable();
             });
 
             $('#searchStockStatus').bootstrapSwitch().on("switchChange.bootstrapSwitch", function (event, state) {
                 searchQuery.stockOption = state ? 1 : 0;
-                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
+                updateDatatable();
                 <?php /*
             if (state) {
                 SearchDataTable.hideColumn('stockStatusId');
@@ -655,8 +659,17 @@ function compress_htmlcode($codedata)
             $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
             var initiate = function () {
-                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
+                updateDatatable();
             };
+
+            var query = '<?php echo isset($_GET['query']) ? $_GET['query'] : 'null';?>';
+
+            function updateDatatable() {
+                if (query != null)
+                    searchQuery.query = query;
+                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
+
+            }
 
             return {
                 init: function () {

@@ -185,6 +185,7 @@ function compress_htmlcode($codedata)
         <script src="/theme/assets/js/scripts.bundle.min.js"></script>
         <script src="/assets/js/jquery.foggy.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/3.1.0/jquery.serializejson.min.js" integrity="sha512-4y8bsEzrXJqRyl2dqjdKk/DetH59JcFTtYNMsy5DUpvVV8CXiSrQ1gSCL3+dFgj1Xco0ONPizsYd6wX2eAXL2g==" crossorigin="anonymous"></script>
+        <script src="/assets/js/jquery.autocomplete.js"></script>
 
         <!--end::Global Theme Bundle-->
 
@@ -228,17 +229,8 @@ function compress_htmlcode($codedata)
 
 
                         <div class="search-wrapper search-wrapper-desktop">
-                            <i class="fa fa-search  search-icon"></i>
-
-                            <select
-                                class="select2 form-control search-input"
-                                id="searchBarInputDesktop"
-                                name="searchBar"
-                                multiple=""
-                                data-select2-id="searchBarInputDesktop"
-                                tabindex="-1"
-                                aria-hidden="true">
-                            </select>
+                            <i id="searchBarInputDesktopIcon" class="fa fa-search  search-icon"></i>
+                            <input class="form-control" id="searchBarInputDesktop" type="text" name="searchBarInputDesktop" autocomplete="off" />
                         </div>
 
                         <!--begin::Topbar-->
@@ -336,102 +328,57 @@ function compress_htmlcode($codedata)
             WebApp.init();
         });
 
+        var _autocompleteDesktop = $('#searchBarInputDesktop').autocomplete2({
+            serviceUrl: '/web/searchbar',
+            onSelect: function (suggestion) {
+                console.log('selected', suggestion);
+                WebApp.loadPage('/web/product/search?query=' + suggestion.value);
+            },
+            onSearchComplete: function (a, b, c) {
+                $('#searchBarInputDesktop').addClass('search-wrapper-open');
+                $('.autocomplete-suggestions').addClass('autocomplete-suggestions-open');
+            },
+            onHide: function (a, b) {
+                $('#searchBarInputDesktop').removeClass('search-wrapper-open');
+                $('.autocomplete-suggestions').removeClass('autocomplete-suggestions-open');
+            },
+        });
 
-        var _searchBarInput = $('#searchBarInput').select2({
-            placeholder: "<?php echo $vModule_search_title ?>",
-            templateResult: formatResult,
+        $('#searchBarInputMobile').autocomplete2({
+            serviceUrl: '/web/searchbar',
+            onSelect: function (suggestion) {
+                console.log('selected', suggestion);
+                WebApp.loadPage('/web/product/search?query=' + suggestion.value);
+            },
+            onSearchComplete: function (a, b, c) {
+                $('#searchBarInputMobile').addClass('search-wrapper-open');
+                $('.autocomplete-suggestions').addClass('autocomplete-suggestions-open');
+            },
+            onHide: function (a, b) {
+                $('#searchBarInputMobile').removeClass('search-wrapper-open');
+                $('.autocomplete-suggestions').removeClass('autocomplete-suggestions-open');
+            },
+        });
 
-            query: function (options) {
-
-                if (options.term && options.term.replace(/ /g, "").length > 0) {
-                    $.ajax({
-                        url: '/web/searchbar',
-                        data: {term: options.term},
-                        dataType: 'json',
-                        type: 'get',
-                        success: function (data) {
-                            console.log(data);
-                            options.callback({
-                                results: data.data.results,
-                                pagination: {
-                                    more: data.data.pagination
-                                }
-                            });
-                        }
-                    });
-                }
+        $('#searchBarInputDesktop').keyup(function (e) {
+            if (e.keyCode == 13) {
+                WebApp.loadPage('/web/product/search?query=' + $('#searchBarInputDesktop').val());
             }
         });
 
-
-        _searchBarInput.on("select2:select", function (e) {
-            var productId = $("#searchBarInput").val()[0];
-            $("#searchBarInput").val(null).trigger("change");
-            WebApp.loadSubPage('/web/entity/0/product/' + productId);
-        });
-
-
-        var _searchBarInputDesktop = $('#searchBarInputDesktop').select2({
-            placeholder: "<?php echo $vModule_search_title ?>",
-            templateResult: formatResult,
-
-            ajax: {
-                url: '/web/searchbar',
-                dataType: 'json',
-                data: function (params) {
-                    if (params.term.trim().length  < 1) {
-                        throw false;
-                    }
-                    return {
-                        term: params.term.trim()
-                    };
-                },
-                processResults: function (response) {
-                    return {
-                        results: response.data.results,
-                        pagination: {
-                            more: response.data.pagination
-                        }
-                    }
-                }
+        $('#searchBarInputMobile').keyup(function (e) {
+            if (e.keyCode == 13) {
+                WebApp.loadPage('/web/product/search?query=' + $('#searchBarInputMobile').val());
             }
         });
 
-
-        _searchBarInputDesktop.on("select2:select", function (e) {
-            var productId = $("#searchBarInputDesktop").val()[0];
-            $("#searchBarInputDesktop").val(null).trigger("change");
-            WebApp.loadSubPage('/web/entity/0/product/' + productId);
+        $("#searchBarInputDesktopIcon").click(function () {
+            WebApp.loadPage('/web/product/search?query=' + $('#searchBarInputDesktop').val());
         });
 
-        $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
-
-        function formatResult(node) {
-            if (node.text == "Searching…") {
-                return 'Searching…';
-            }
-
-            var status = {
-                1: {
-                    class: ' text-primary',
-                },
-                2: {
-                    class: ' text-danger',
-                },
-                3: {
-                    class: ' text-warning',
-                },
-            };
-
-            var result = $('<div style="display:flex;align-items:  center">' +
-                '<img style="width:60px;height:60px" src="' + node.image + '"/> ' +
-                '<div style="margin: 0 0 0 20px;">' +
-                '   <div class="' + status[node.stockStatusId].class + '">' + node.text + '</div>' +
-                '   <div>' + node.unitPrice + ' ' + node.currency + '</div> ' +
-                '</div>' +
-                '</div>');
-            return result;
-        }
+        $("#searchBarInputMobileIcon").click(function () {
+            WebApp.loadPage('/web/product/search?query=' + $('#searchBarInputMobile').val());
+        });
 
     </script>
     </body>

@@ -1,12 +1,13 @@
-<?php 
+<?php
 
 class Helper {
 
-    public static function idListFromArray($array){
+    public static function idListFromArray($array)
+    {
 
         $ids = '';
-        foreach ($array as $key => $value){
-            if ($ids != ''){
+        foreach ($array as $key => $value) {
+            if ($ids != '') {
                 $ids .= ', ';
             }
             $ids .= $key;
@@ -15,7 +16,8 @@ class Helper {
     }
 
     // formats money to a whole number or with 2 decimals
-    public static function formatMoney($number, $cents = 1) { // cents: 0=never, 1=if needed, 2=always
+    public static function formatMoney($number, $cents = 1)
+    { // cents: 0=never, 1=if needed, 2=always
         if (is_numeric($number)) { // a number
             if (!$number) { // zero
                 $money = ($cents == 2 ? '0.00' : '0'); // output zero
@@ -29,4 +31,21 @@ class Helper {
             return $money;
         } // numeric
     } // formatMoney
+
+    public static function isDistributor($roleId)
+    {
+        if ($roleId == 10 || $roleId == 20 || $roleId == 30) {
+            return true;
+        }
+        return false;
+    }
+
+    public static function isPharmacy($roleId)
+    {
+        if ($roleId == 40) {
+            return true;
+        }
+        return false;
+    }
+
 }
