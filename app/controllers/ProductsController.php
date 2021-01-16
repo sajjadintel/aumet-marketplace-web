@@ -360,7 +360,7 @@ class ProductsController extends Controller {
 
                 $dbEntityProduct->update();
 
-                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
                 $this->webResponse->title = "";
                 $this->webResponse->data = $dbProduct->name_ar;
                 echo $this->webResponse->jsonResponse();
@@ -479,7 +479,7 @@ class ProductsController extends Controller {
                     }
                 }
 
-                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
                 $this->webResponse->title = "";
                 $this->webResponse->data = $bonusRepeater;
                 echo $this->webResponse->jsonResponse();
@@ -554,7 +554,7 @@ class ProductsController extends Controller {
 
             $dbEntityProduct->add();
 
-            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
             $this->webResponse->title = "";
             $this->webResponse->data = $dbProduct['name_' . $this->objUser->language];
             echo $this->webResponse->jsonResponse();
