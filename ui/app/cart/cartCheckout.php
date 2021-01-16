@@ -50,12 +50,12 @@ function compress_htmlcode($codedata)
 
                             <thead>
                                 <tr>
-                                    <th width="50%"><?php echo $vModule_product_name ?></th>
-                                    <th class="text-center" width="20%"><?php echo $vModule_cart_quantity ?></th>
-                                    <th class="text-center" width="20%"><?php echo $vModule_cart_note ?></th>
-                                    <th class="text-right" width="10%"><?php echo $vModule_cart_unitPrice ?></th>
-                                    <th class="text-right" width="10%"><?php echo $vModule_cart_tax ?></th>
-                                    <th class="text-right" width="10%"><?php echo $vModule_cart_productOrderPrice ?></th>
+                                    <th width="32%"><?php echo $vModule_product_name ?></th>
+                                    <th class="text-center" width="15%"><?php echo $vModule_cart_quantity ?></th>
+                                    <th class="text-center" width="15%"><?php echo $vModule_cart_note ?></th>
+                                    <th class="text-right" width="15%"><?php echo $vModule_cart_unitPrice ?></th>
+                                    <th class="text-right" width="8%"><?php echo $vModule_cart_tax ?></th>
+                                    <th class="text-right" width="15%"><?php echo $vModule_cart_productOrderPrice ?></th>
                                 </tr>
                             </thead>
 

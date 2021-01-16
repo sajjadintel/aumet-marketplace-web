@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <!--end::Header-->
-                <form method="POST" action="/web/support" class="modalForm" id="supportModalForm">
+                <form method="POST" action="/web/notification/support" class="modalForm" id="supportModalForm">
                     <!--begin::Body-->
                     <div class="card-body">
                         <div class="form-group">
