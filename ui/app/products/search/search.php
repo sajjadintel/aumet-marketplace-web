@@ -687,4 +687,3 @@ function compress_htmlcode($codedata)
         PageClass.init();
     </script>
 <?php ob_end_flush(); ?>
-<?php include_once 'add-bonus-modal.php'; ?>

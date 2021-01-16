@@ -470,6 +470,12 @@ input[type=number] {
 	align-items: center;
 }
 
+.product-item-details .country img {
+	width: 34px;
+	height: 18px;
+	margin-right: 5px;
+}
+
 .product-item-similar-header {
 	display: flex;
 	flex-direction: row;
@@ -485,6 +491,17 @@ input[type=number] {
 
 .product-item-similar-header a {
 	font-size: 14px;
+}
+
+.other-offers th {
+	color: #a5a8ac !important;
+	font-size: 17px !important;
+	font-weight: bold !important;
+}
+.other-offers td {
+	color: #4a4a4a !important;
+	font-size: 16px !important;
+	font-weight: normal !important;
 }
 
 /* product page */
