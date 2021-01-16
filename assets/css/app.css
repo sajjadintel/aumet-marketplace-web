@@ -396,13 +396,6 @@ label.myLabel input[type='file'] {
 	padding-left: 10px;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-	/* display: none; <- Crashes Chrome on hover */
-	-webkit-appearance: none;
-	margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-}
-
 input[type=number] {
 	-moz-appearance: textfield; /* Firefox */
 }
@@ -502,6 +495,22 @@ input[type=number] {
 	color: #4a4a4a !important;
 	font-size: 16px !important;
 	font-weight: normal !important;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
+.quantityFreeInput:invalid + .quantityFreeHolder {
+	display: none;
 }
 
 /* product page */
