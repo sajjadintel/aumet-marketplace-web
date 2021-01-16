@@ -1,7 +1,6 @@
 <?php
 
-class Controller
-{
+class Controller {
 
     protected $f3;
     protected $db;
@@ -43,6 +42,12 @@ class Controller
             // switch($this->objUser->)
 
             $this->f3->set('objUser', $this->objUser);
+
+            $supportReasons = new BaseModel($this->db, 'supportReason');
+            $supportReasons->name = "name_" . $this->objUser->language;
+            $supportReasons = $supportReasons->find();
+
+            $this->f3->set('supportReasons', $supportReasons);
         } else {
             $this->isAuth = false;
         }
@@ -412,8 +417,6 @@ class Controller
                 header("Content-Disposition: attachment; filename=\"$saveFileName\"");
 
 
-
-
                 // set appropriate headers for attachment or streamed file
                 if ($is_attachment) {
                     header("Content-Disposition: attachment; filename=\"$saveFileName\"");
@@ -424,7 +427,6 @@ class Controller
 
 
                 header("Content-Type: application/pdf");
-
 
 
                 //check if http_range is sent by browser (or download manager)
@@ -561,7 +563,6 @@ class Controller
     {
 
 
-
         $email = new \SendGrid\Mail\Mail();
 
         $email->setFrom($fromEmail, $fromName);
@@ -592,7 +593,6 @@ class Controller
 
     function sendEmailFrom($fromEmail, $fromName, $subject, $html, $arrTo, $arrCC = null, $arrBCC = null)
     {
-
 
 
         $email = new \SendGrid\Mail\Mail();

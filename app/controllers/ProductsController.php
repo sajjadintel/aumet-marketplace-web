@@ -326,6 +326,9 @@ class ProductsController extends Controller
                 $stockStatusId = $this->f3->get('POST.stockStatus');
                 $bonusTypeId = $this->f3->get('POST.bonusType');
                 $bonusRepeater = $this->f3->get('POST.bonusRepeater');
+                if($bonusRepeater == null){
+                    $bonusRepeater = [];
+                }
 
                 if(!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;

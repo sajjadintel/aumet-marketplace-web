@@ -89,6 +89,7 @@ function compress_htmlcode($codedata)
         <!--end::Layout Themes-->
 
         <link href="/assets/css/app.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+        <link href="/assets/css/app<?php echo $_SESSION['userLangDirection'] == "ltr" ? "" : ".rtl" ?>.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
         <link href="/theme/assets/plugins/custom/datatables/datatables.bundle.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
 
         <link href="/assets/css/colors.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
@@ -270,6 +271,7 @@ function compress_htmlcode($codedata)
     <!--end::Quick Panel-->
     <!--begin::Chat Panel-->
     <?php include_once 'chatPanel.php'; ?>
+    <?php include_once 'supportPanel.php'; ?>
     <!--end::Chat Panel-->
     <!--begin::Scrolltop-->
     <div id="kt_scrolltop" class="scrolltop">
@@ -291,6 +293,9 @@ function compress_htmlcode($codedata)
     ?>
     <!--end::Sticky Toolbar-->
 
+    <div class="supportButton" data-toggle="modal" data-target="#support_modal">
+        <i class="la la-headset la-2x text-white"></i>
+    </div>
 
     <script>
         var docLang = "<?php echo $LANGUAGE; ?>";
