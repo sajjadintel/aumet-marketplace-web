@@ -14,7 +14,8 @@
         "setasign/fpdf": "^1.8",
         "tecnickcom/tcpdf": "^6.3.5",
 		"kreait/firebase-php": "^5.8",
-		"lcobucci/jwt": "3.4.1"
+		"lcobucci/jwt": "3.4.1",
+		"kenwheeler/slick": "1.6.*"
 	},
 	"license": "Aumet Inc All Rights Reserved",
 	"authors": [

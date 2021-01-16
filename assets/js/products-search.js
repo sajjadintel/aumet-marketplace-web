@@ -320,8 +320,6 @@ var SearchDataTable = (function () {
 
 	var _productAddBonus = function(addButtonName) {
 		let bonusRepeaterIndex = addButtonName.charAt(14);
-
-		let bonusIdName = "bonusRepeater[" + bonusRepeaterIndex + "][bonusId]";
 		
 		let bonusMinOrderName = "bonusRepeater[" + bonusRepeaterIndex + "][minOrder]";
 		let bonusMinOrder = $($('[name ="' + bonusMinOrderName + '"]')[0]).val();
