@@ -362,6 +362,7 @@ class ProductsController extends Controller {
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
                 $this->webResponse->title = "";
+                $this->webResponse->message = $this->f3->get('vModule_productEdited');
                 $this->webResponse->data = $dbProduct->name_ar;
                 echo $this->webResponse->jsonResponse();
             }
@@ -481,6 +482,7 @@ class ProductsController extends Controller {
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
                 $this->webResponse->title = "";
+                $this->webResponse->message = $this->f3->get('vModule_quantityEdited');
                 $this->webResponse->data = $bonusRepeater;
                 echo $this->webResponse->jsonResponse();
             }
@@ -556,6 +558,7 @@ class ProductsController extends Controller {
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
             $this->webResponse->title = "";
+            $this->webResponse->message = $this->f3->get('vModule_productAdded');
             $this->webResponse->data = $dbProduct['name_' . $this->objUser->language];
             echo $this->webResponse->jsonResponse();
         }

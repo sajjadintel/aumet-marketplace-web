@@ -105,6 +105,10 @@ return array(
     'stockAvailability_notAvailable' => 'Out of Stock',
     'stockAvailability_availableSoon' => 'Available Soon',
 
+    'vModule_productAdded' => 'Product is added successfully!',
+    'vModule_quantityEdited' => 'Product Quantity is edited successfully!',
+    'vModule_productEdited' => 'Product is edited successfully!',
+
     'vModule_order_title' => 'Order List',
     'vModule_order_header' => 'You can view your order list',
     'vModule_order_header_new' => 'You can view your new orders',
