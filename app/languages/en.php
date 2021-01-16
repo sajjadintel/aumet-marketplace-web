@@ -17,6 +17,14 @@ return array(
     'vLogin_helpAdv' => 'Facing issues in our Registration?',
     'vLogin_help' => 'Request Assistance',
 
+    'vSupport_customerSupport' => 'Customer Support',
+    'vSupport_email' => 'Email:',
+    'vSupport_telephone' => 'Telephone no:',
+    'vSupport_request_call' => 'Request a Call',
+    'vSupport_title' => 'Title:',
+    'vSupport_submit' => 'Submit',
+    'vSupport_requestSent' => 'Request sent successfully!',
+
     'vLogin_signin' => 'Sign In',
     'vLogin_signinWithGoogle' => 'Sign in with Google',
     'vLogin_signinWithPhone' => 'Sign in with Phone',

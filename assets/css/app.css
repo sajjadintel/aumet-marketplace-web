@@ -170,7 +170,7 @@ label.myLabel input[type='file'] {
 	margin: 0 -30px 0 20px;
 	z-index: 1;
 	color: #13b9a9;
-	cursor:pointer;
+	cursor: pointer;
 }
 
 
@@ -207,6 +207,7 @@ label.myLabel input[type='file'] {
 .autocomplete-suggestions-open {
 	border-radius: 0 0 0.42rem 0.42rem;
 }
+
 .search-wrapper-open {
 	border-radius: 0.42rem 0.42rem 0 0;
 }
@@ -216,7 +217,7 @@ label.myLabel input[type='file'] {
 	font-size: 13px;
 	white-space: nowrap;
 	overflow: hidden;
-	cursor:pointer;
+	cursor: pointer;
 }
 
 .autocomplete-selected {
@@ -235,4 +236,39 @@ label.myLabel input[type='file'] {
 .autocomplete-group strong {
 	display: block;
 	border-bottom: 1px solid #000;
+}
+
+.supportButton {
+	background-color: #4ab8a8;
+	border-radius: 5px;
+	width: 40px;
+	height: 40px;
+	position: fixed;
+	right: 30px;
+	bottom: 30px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+#support_modal > div {
+	min-width: 340px;
+	margin: 0 30px 80px 0;
+}
+
+.support-modal-title {
+	padding-left: 1.3rem;
+}
+
+.support-modal-text {
+	font-size: 15px !important;
+}
+
+.support-modal-select {
+	margin-bottom: 10px;
+}
+
+.support-modal-request-call-icon {
+	margin-right: 7px;
 }

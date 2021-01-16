@@ -1,7 +1,6 @@
 <?php
 
-class DashboardController extends Controller
-{
+class DashboardController extends Controller {
 
     function get()
     {
@@ -52,10 +51,10 @@ class DashboardController extends Controller
 
                 $this->f3->set('dashboard_order', is_null($dbData['orderCount']) ? 0 : $dbData['orderCount']);
                 $this->f3->set('dashboard_invoice', is_null($dbData['invoice']) ? 0 : $dbData['invoice']);
-                
+
                 $this->f3->set('dashboard_orderYesterday', is_null($dbDataYesterday['orderCount']) ? 0 : $dbDataYesterday['orderCount']);
                 $this->f3->set('dashboard_invoiceYesterday', is_null($dbDataYesterday['invoice']) ? 0 : $dbDataYesterday['invoice']);
-                
+
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_dashboard');
                 $this->webResponse->data = View::instance()->render('app/dashboard/buyer.php');
@@ -63,4 +62,28 @@ class DashboardController extends Controller
             }
         }
     }
+
+    function support()
+    {
+        $supportReasonId = $this->f3->get("POST.supportReasonId");
+        $email = $this->f3->get("POST.email");
+        $phone = $this->f3->get("POST.phone");
+
+        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+
+        $supportLog = new BaseModel($this->db, "supportLog");
+        $supportLog->entityId = $arrEntityId[0];
+        $supportLog->userId = $this->f3->get('SESSION.userId');
+        $supportLog->supportReasonId = $supportReasonId;
+        $supportLog->email = $email;
+        $supportLog->phone = $phone;
+        $supportLog->typeId = 1;
+        $supportLog->add();
+
+        NotificationHelper::customerSupportNotification($this->f3, $this->db, $supportLog);
+        NotificationHelper::customerSupportConfirmNotification($this->f3, $this->db, $supportLog);
+
+        echo $this->webResponse->jsonResponseV2(Constants::STATUS_SUCCESS_SHOW_DIALOG, "Success", $this->f3->get('vSupport_requestSent'));
+    }
+
 }
