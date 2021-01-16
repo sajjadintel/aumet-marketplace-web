@@ -74,6 +74,11 @@ class AuthController extends Controller
         } else {
             $this->f3->set('vAuthFile', 'signup');
 
+            $dbCountry = new BaseModel($this->db, "country");
+            $dbCountry->name = "name_en"; 
+            $arrCountry = $dbCountry->findAll();
+            $this->f3->set('arrCountry', $arrCountry);
+
             echo View::instance()->render('public/auth/layout.php');
         }
     }
@@ -237,39 +242,85 @@ class AuthController extends Controller
 
     function postSignUp()
     {
-        $code = $this->f3->get("POST.code");
+        $name = $this->f3->get("POST.name");
+		$mobile = $this->f3->get("POST.mobile");
+		$email = $this->f3->get("POST.email");
+		$password = $this->f3->get("POST.password");
+		$entityName = $this->f3->get("POST.entityName");
+		$tradeLicenseNumber = $this->f3->get("POST.tradeLicenseNumber");
+		$countryId = $this->f3->get("POST.country");
+		$city = $this->f3->get("POST.city");
+		$address = $this->f3->get("POST.address");
+        $pharmacyDocuments = $this->f3->get("POST.pharmacyDocuments");
 
-        $dbCode = new BaseModel($this->db, "codes");
-        $dbCode->getByField("code", $code);
+        // Check if email is unique
+        $dbUser = new BaseModel($this->db, "user");
+        $dbUser->getByField("email", $email);
 
-        if ($dbCode->dry()) {
-            echo $this->jsonResponse(false, "Code is invalid, Please signup with a valid code");
-        } else if ($dbCode->isActive == 0) {
-            echo $this->jsonResponse(false, "Code is invalid, Please signup with a valid code");
+        if(!$dbUser->dry()) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->title = "";
+            $this->webResponse->message = "Email address exists, Please signin instead";
+            echo $this->webResponse->jsonResponse();
         } else {
-            $fullname = $this->f3->get("POST.fullname");
-            $email = $this->f3->get("POST.email");
-            $password = $this->f3->get("POST.password");
+            // Get currency symbol
+            $dbCountry = new BaseModel($this->db, "country");
+            $country = $dbCountry->getById($countryId)[0];
+            $currencySymbol = $country['currency'];
+            
+            // Get currency id
+            $dbCurrency = new BaseModel($this->db, "currency");
+            $currency = $dbCurrency->getByField("symbol", $currencySymbol)[0];
+            $currencyId = $currency['id'];
 
-            $dbUser = new BaseModel($this->db, "user");
-            $dbUser->getByField("email", $email);
-            if (!$dbUser->dry()) {
-                echo $this->jsonResponse(false, "Email address exists, Please signin instead");
-            } else {
-                $dbUser->fullname = $fullname;
-                $dbUser->email = $email;
-                $dbUser->password = password_hash($password, PASSWORD_DEFAULT);
-                $dbUser->codeId = $dbCode->id;
-                $dbUser->typeId = 1;
-                if ($dbUser->addReturnID()) {
+            // Add user
+            $dbUser->email = $email;
+            $dbUser->password = password_hash($password, PASSWORD_DEFAULT);
+            $dbUser->statusId = Constants::USER_STATUS_WAITING_VERIFICATION;
+            $dbUser->fullname = $name;
+            $dbUser->mobile = $mobile;
+            $dbUser->roleId = Constants::USER_ROLE_PHARMACY_SYSTEM_ADMINISTRATOR;
+            $dbUser->language = "en";
+            $dbUser->addReturnID();
 
-                    $this->sendWelcomeEmail($dbUser);
-
-                    echo $this->jsonResponse(true);
-                } else {
-                    echo $this->jsonResponse(false, "Something went wrong, Try again later");
-                }
-            }
+            // Add entity
+            $dbEntity = new BaseModel($this->db, "entity");
+            $dbEntity->typeId = Constants::ENTITY_TYPE_PHARMACY;
+            $dbEntity->name_ar = $entityName;
+            $dbEntity->name_en = $entityName;
+            $dbEntity->name_fr = $entityName;
+            $dbEntity->countryId = $countryId;
+            $dbEntity->currencyId = $currencyId;
+            $dbEntity->addReturnID();
+            
+            // Add entity branch
+            $dbEntityBranch = new BaseModel($this->db, "entityBranch");
+            $dbEntityBranch->entityId = $dbEntity->id;
+            $dbEntityBranch->name_ar = $entityName;
+            $dbEntityBranch->name_en = $entityName;
+            $dbEntityBranch->name_fr = $entityName;
+            $dbEntityBranch->address_ar = $address;
+            $dbEntityBranch->address_en = $address;
+            $dbEntityBranch->address_fr = $address;
+            $dbEntityBranch->addReturnID();
+            
+            // Add account
+            $dbAccount = new BaseModel($this->db, "account");
+            $dbAccount->entityId = $dbEntity->id;
+            $dbAccount->number = $dbEntity->id * 100;
+            $dbAccount->statusId = Constants::ACCOUNT_STATUS_ACTIVE;
+            $dbAccount->addReturnID();
+            
+            // Add user account
+            $dbUserAccount = new BaseModel($this->db, "userAccount");
+            $dbUserAccount->userId = $dbUser->id;
+            $dbUserAccount->accountId = $dbAccount->id;
+            $dbUserAccount->statusId = Constants::ACCOUNT_STATUS_ACTIVE;
+            $dbUserAccount->addReturnID();
+            
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            $this->webResponse->message = $this->f3->get("vMessage_signupSuccessful");
+            echo $this->webResponse->jsonResponse();
         }
     }
 
@@ -472,5 +523,35 @@ class AuthController extends Controller
     function getEncryptedPassword()
     {
         echo password_hash("atrash", PASSWORD_DEFAULT);
+    }
+
+    function postSignUpDocumentUpload()
+    {
+        $allValidExtensions = [
+            "pdf",
+            "ppt",
+            "xcl",
+            "docx",
+            "jpeg",
+            "jpg",
+            "png",
+        ];
+        $success = false;
+
+        $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
+        $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
+        
+        $newFileName = $fileName . "-" . time() . ".$ext";
+        $targetFile = "files/uploads/documents/" . $newFileName;
+        
+        if (in_array($ext, $allValidExtensions)) {
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
+                $success = true;
+            }
+        }
+
+        if($success) {
+            echo $targetFile;
+        }
     }
 }

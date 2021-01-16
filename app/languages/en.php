@@ -13,6 +13,7 @@ return array(
     'vLogin_slogan' => 'Connecting healthcare end users and distributors through the largest online healthcare B2B marketplace',
 
     'vMessage_invalidLogin' => 'Invalid Email or Password',
+    'vMessage_signupSuccessful' => 'Registration successfully submitted. An admin will review your request and get back to you soon !',
 
     'vLogin_helpAdv' => 'Facing issues in our Registration?',
     'vLogin_help' => 'Request Assistance',
@@ -22,6 +23,7 @@ return array(
     'vLogin_signinWithPhone' => 'Sign in with Phone',
     'vLogin_signout' => 'Logout',
     'vLogin_signup' => 'Create Account',
+    'vLogin_signupPharmacy' => 'Create a Pharmacy Account',
     'vLogin_signupAdv' => 'Register Now',
     'vLogin_noAccountAdv' => "Don't you have an account yet?",
     'vLogin_email' => 'Work Email Address',
@@ -42,13 +44,6 @@ return array(
     'vChangePassword_title' => 'Change Password',
     'vChangePassword_subTitle' => 'Change Current Password',
 
-    'vSignup_AlreadyHaveAccount' => 'Do you have an account?',
-    'vSignup_firstName' => 'First Name',
-    'vSignup_lastName' => 'Last Name',
-    'vSignup_name' => 'Name',
-    'vSignup_mobile' => 'Phone Numer',
-    'vSignup_email' => 'Email Address',
-
     'vBack' => 'Go Back',
 
     'vSignup_wizardUserInfo' => 'Account Information',
@@ -59,17 +54,37 @@ return array(
     'vSignup_wizardSubscrptionInfoDesc' => 'Set up your Suscription Information',
     'vSignup_wizardReviewSubmit' => 'Sumit Review',
     'vSignup_wizardReviewSubmitDesc' => 'Send request for review',
+    'vSignup_wizardPersonalInfo' => 'Personal Information',
+    'vSignup_wizardPersonalInfoDesc' => 'Add your personal details',
+    'vSignup_wizardPharmacyInfo' => 'Pharmacy Information',
+    'vSignup_wizardPharmacyInfoDesc' => 'Add your pharmacy details',
 
     'vSignup_wizardNext' => 'Next Step',
     'vSignup_wizardPrev' => 'Previous Step',
     'vSignup_wizardSubmit' => 'Submit Request',
-
+    
+    'vSignup_wizardPharmacyInfoTitle' => 'Pharmacy Information',
+    'vSignup_wizardPharmacyInfoSubtitle' => 'Fill the following details',
+    
     'vSignup_AlreadyHaveAccount' => 'Do you have an account?',
     'vSignup_firstName' => 'First Name',
     'vSignup_lastName' => 'Last Name',
     'vSignup_name' => 'Name',
-    'vSignup_mobile' => 'Phone Numer',
+    'vSignup_mobile' => 'Mobile Phone Number',
     'vSignup_email' => 'Email Address',
+    'vSignup_password' => 'Password',
+    'vSignup_passwordConfirmation' => 'Password Confirmation',
+    'vSignup_pharmacyName' => 'Pharmacy Name',
+    'vSignup_tradeLicenseNumber' => 'Trade License Number',
+    'vSignup_country' => 'Country',
+    'vSignup_city' => 'City',
+    'vSignup_address' => 'Address',
+    'vSignup_pharmacyDocuments' => 'Pharmacy Trade License Document',
+    'vSignup_uploadDocuments' => 'Upload Documents',
+    
+    'vSignup_thankyouTitle' => 'Thanks for Registering!',
+    'vSignup_thankyouSubtitle' => 'We received your request, Our team is verifying your details and we will get back to you 48 hours.',
+    'vSignup_thankyouHome' => 'Go back to home',
 
     'vBack' => 'Go Back',
 
