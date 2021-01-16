@@ -155,6 +155,16 @@ var WebAppLocals = (function () {
 			ar: '', // TODO: add translation
 			fr: '',
 		},
+		missingProducts_deleteConfirmation: {
+			en: 'Are you sure you want to delete this element?',
+			ar: 'Are you sure you want to delete this element?', // TODO: add translation
+			fr: '',
+		},
+		missingProducts_filterByProduct: {
+			en: 'Filter by Product',
+			ar: 'Filter by Product', // TODO: add translation
+			fr: '',
+		},
 		orderLogs: {
 			en: 'Order Logs',
 			ar: 'سجلات الطلبات',
