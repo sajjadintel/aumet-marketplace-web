@@ -17,6 +17,9 @@ class ProductsController extends Controller {
                 $query = "entityId=$entityId and productId=$productId";
 
             $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
+            $dbEntityProduct->productName = "productName_" . $this->objUser->language;
+            $dbEntityProduct->entityName = "entityName_" . $this->objUser->language;
+            $dbEntityProduct->madeInCountryName = "madeInCountryName_" . $this->objUser->language;
             $dbEntityProduct->getWhere($query);
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
@@ -51,13 +54,69 @@ class ProductsController extends Controller {
             $this->f3->set('objEntityProduct', $dbEntityProduct);
 
             $dbEntityProductRelated = new BaseModel($this->db, "vwEntityProductSell");
-            $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere("stockStatusId=1 and scientificNameId =$dbEntityProduct->scientificNameId and id != $dbEntityProduct->id", null, 12);
+            $dbEntityProductRelated->productName = "productName_" . $this->objUser->language;
+            $dbEntityProductRelated->entityName = "entityName_" . $this->objUser->language;
+            $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere("stockStatusId=1 and scientificNameId =$dbEntityProduct->scientificNameId and id != $dbEntityProduct->id", 'id', 12);
             $this->f3->set('arrRelatedEntityProduct', $arrRelatedEntityProduct);
 
 
             $dbEntityProductFromThisDistributor = new BaseModel($this->db, "vwEntityProductSell");
+            $dbEntityProductFromThisDistributor->productName = "productName_" . $this->objUser->language;
+            $dbEntityProductFromThisDistributor->entityName = "entityName_" . $this->objUser->language;
             $dbEntityProductFromThisDistributor = $dbEntityProductFromThisDistributor->getWhere("stockStatusId=1 and entityId=$dbEntityProduct->entityId and id != $dbEntityProduct->id", 'id', 12);
             $this->f3->set('arrProductFromThisDistributor', $dbEntityProductFromThisDistributor);
+
+            $roleId = $this->f3->get('SESSION.objUser')->roleId;
+            if (Helper::isPharmacy($roleId)) {
+                $dbEntityProductOtherOffers = new BaseModel($this->db, "vwEntityProductSell");
+                $dbEntityProductOtherOffers->productName = "productName_" . $this->objUser->language;
+                $dbEntityProductOtherOffers->entityName = "entityName_" . $this->objUser->language;
+
+                $where = "( TRIM(productName_ar) LIKE '" . trim($dbEntityProduct->productName_ar) . "'";
+                $where .= " OR TRIM(productName_en) LIKE '" . mb_strtolower(trim($dbEntityProduct->productName_en)) . "'";
+                $where .= " OR TRIM(productName_fr) LIKE '" . mb_strtolower(trim($dbEntityProduct->productName_fr)) . "' ) ";
+                $where .= " AND id != $dbEntityProduct->id";
+
+                $dbEntityProductOtherOffers = $dbEntityProductOtherOffers->findWhere($where);
+
+
+                $allProductId = [];
+                foreach ($dbEntityProductOtherOffers as $product) {
+                    array_push($allProductId, $product['id']);
+                }
+                $allProductId = implode(",", $allProductId);
+
+                $dbCartDetail = new BaseModel($this->db, "cartDetail");
+                $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+
+                if ($allProductId != null) {
+                    $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+                    $arrBonus = $dbBonus->findWhere("entityProductId IN ($allProductId) AND isActive = 1");
+
+                    $mapProductIdBonuses = [];
+
+                    foreach ($arrBonus as $bonus) {
+                        $productId = $bonus['entityProductId'];
+                        $allBonuses = [];
+                        if (array_key_exists($productId, $mapProductIdBonuses)) {
+                            $allBonuses = $mapProductIdBonuses[$productId];
+                        }
+                        array_push($allBonuses, $bonus);
+                        $mapProductIdBonuses[$productId] = $allBonuses;
+                    }
+                }
+
+
+                for ($i = 0; $i < count($dbEntityProductOtherOffers); $i++) {
+                    if ($dbEntityProductOtherOffers[$i]['bonusTypeId'] == 2) {
+                        $dbEntityProductOtherOffers[$i]['bonusOptions'] = json_decode($dbEntityProductOtherOffers[$i]['bonusConfig']);
+                        $dbEntityProductOtherOffers[$i]['bonusConfig'] = $dbEntityProductOtherOffers[$i]['bonusOptions'];
+                        $dbEntityProductOtherOffers[$i]['bonuses'] = $mapProductIdBonuses[$dbEntityProductOtherOffers[$i]['id']];
+                    }
+                }
+
+                $this->f3->set('arrProductOtherOffers', $dbEntityProductOtherOffers);
+            }
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vTitle_entityProductDetail');
@@ -1027,7 +1086,7 @@ class ProductsController extends Controller {
             // Change active sheet to database input
             $sheet = $spreadsheet->setActiveSheetIndex(1);
 
-            // Set validation and formula 
+            // Set validation and formula
             Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
 
             // Hide database and variables sheet
@@ -1049,7 +1108,7 @@ class ProductsController extends Controller {
             // Set data validation for bonuses and stock availability
             Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $bonusesNum);
 
-            // Add all bonuses to multidimensional array 
+            // Add all bonuses to multidimensional array
             $multiBonuses = [];
             $fields = [
                 "entityProductId",
@@ -1263,7 +1322,7 @@ class ProductsController extends Controller {
                 // Change active sheet to database input
                 $sheet = $spreadsheet->setActiveSheetIndex(1);
 
-                // Set validation and formula 
+                // Set validation and formula
                 Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
 
                 // Hide database and variables sheet
@@ -1279,7 +1338,7 @@ class ProductsController extends Controller {
                 $sheet->setCellValue('D2', 'Error');
                 $sheet->getStyle('D2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
 
-                // Add all bonuses to multidimensional array 
+                // Add all bonuses to multidimensional array
                 $multiBonuses = [];
                 $fields = [
                     "productId",

@@ -396,13 +396,6 @@ label.myLabel input[type='file'] {
 	padding-left: 10px;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-	/* display: none; <- Crashes Chrome on hover */
-	-webkit-appearance: none;
-	margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-}
-
 input[type=number] {
 	-moz-appearance: textfield; /* Firefox */
 }
@@ -470,6 +463,12 @@ input[type=number] {
 	align-items: center;
 }
 
+.product-item-details .country img {
+	width: 34px;
+	height: 18px;
+	margin-right: 5px;
+}
+
 .product-item-similar-header {
 	display: flex;
 	flex-direction: row;
@@ -485,6 +484,33 @@ input[type=number] {
 
 .product-item-similar-header a {
 	font-size: 14px;
+}
+
+.other-offers th {
+	color: #a5a8ac !important;
+	font-size: 17px !important;
+	font-weight: bold !important;
+}
+.other-offers td {
+	color: #4a4a4a !important;
+	font-size: 16px !important;
+	font-weight: normal !important;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
+.quantityFreeInput:invalid + .quantityFreeHolder {
+	display: none;
 }
 
 /* product page */

@@ -134,23 +134,6 @@ function compress_htmlcode($codedata)
         </div>
     </div>
     <!--end::Container-->
-    <style>
-			/* Chrome, Safari, Edge, Opera */
-			input::-webkit-outer-spin-button,
-			input::-webkit-inner-spin-button {
-				-webkit-appearance: none;
-				margin: 0;
-			}
-
-			/* Firefox */
-			input[type=number] {
-				-moz-appearance: textfield;
-			}
-
-			.quantityFreeInput:invalid + .quantityFreeHolder {
-				display: none;
-			}
-    </style>
     <script>
         var PageClass = function () {
             var elementId = "#datatable";
@@ -687,4 +670,3 @@ function compress_htmlcode($codedata)
         PageClass.init();
     </script>
 <?php ob_end_flush(); ?>
-<?php include_once 'add-bonus-modal.php'; ?>
