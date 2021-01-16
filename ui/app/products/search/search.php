@@ -644,8 +644,8 @@ function compress_htmlcode($codedata)
             var initiate = function () {
                 var urlParams = new URLSearchParams(window.location.search);
                 var sortParam = urlParams.get('sort');
-        
-            
+
+
                 var allSortParams = [
                     "newest",
                     "top-selling"
@@ -677,11 +677,9 @@ function compress_htmlcode($codedata)
                 },
             };
         }();
+
+        $(document).ready(function() {
+            PageClass.init();
+        })
     </script>
 <?php ob_end_flush(); ?>
-<?php include_once 'add-bonus-modal.php'; ?>
-<script>
-    $(document).ready(function() {
-        PageClass.init();
-    })
-</script>

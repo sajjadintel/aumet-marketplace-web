@@ -1,7 +1,8 @@
 'use strict';
 // Class definition
 var DistributorProductsDataTable = (function () {
-    // Private functions
+
+    var repeater
 
     var _productEditModal = function (productId) {
         WebApp.get('/web/distributor/product/' + productId, _productEditModalOpen);
@@ -46,7 +47,7 @@ var DistributorProductsDataTable = (function () {
         $('#editModal').appendTo('body').modal('show');
 
         _changeImageHolder(webResponse.data.product.image, "edit");
-        $('#editProductImage').on("change",  (ev) => _changeProductImage(ev, "edit"));
+        $('#editProductImage').on("change", (ev) => _changeProductImage(ev, "edit"));
 
         _addModalValidation('edit');
         _checkModalForm('edit');
@@ -88,7 +89,6 @@ var DistributorProductsDataTable = (function () {
         $("label[for='editQuantityBonusDelete']").text(WebAppLocals.getMessage('delete'));
         $("label[for='editQuantityBonusAdd']").text(WebAppLocals.getMessage('add'));
 
-        $repeater.setList(webResponse.data.bonus);
 
         $("label[for='editQuantityBonusType']").text(WebAppLocals.getMessage('bonus'));
 
@@ -116,6 +116,22 @@ var DistributorProductsDataTable = (function () {
             });
 
         $('#editQuantityModalAction').html(WebAppLocals.getMessage('editQuantity'));
+
+        repeater = $('#editQuantityBonusListRepeater').repeater({
+            isFirstItemUndeletable: true,
+            show: function () {
+                $(this).slideDown();
+            },
+            hide: function (deleteElement) {
+                if (confirm('Are you sure you want to delete this element?')) {
+                    $(this).slideUp(deleteElement);
+                }
+            },
+        });
+
+        repeater.setList(webResponse.data.bonus);
+
+
         $('#editQuantityModal').appendTo('body').modal('show');
     };
 
@@ -148,7 +164,7 @@ var DistributorProductsDataTable = (function () {
 
     var _changeImageHolder = function (image, mode) {
         let backgroundImageVal = "/theme/assets/media/users/blank.png";
-        if(image) {
+        if (image) {
             backgroundImageVal = image;
         }
         $('#' + mode + 'ProductImageHolder').css("background-image", "url(" + backgroundImageVal + ")");
@@ -186,7 +202,7 @@ var DistributorProductsDataTable = (function () {
         $('#' + mode + 'UnitPrice').on('change', (ev) => _checkModalForm(mode));
         $('#' + mode + 'MaximumOrderQuantity').on('change', (ev) => _checkModalForm(mode));
 
-        if(mode === "add") {
+        if (mode === "add") {
             $('#' + mode + 'Stock').on('change', (ev) => _checkModalForm(mode));
         }
     }
@@ -202,13 +218,13 @@ var DistributorProductsDataTable = (function () {
         let unitPrice = $('#' + mode + 'UnitPrice').val();
         let maximumOrderQuantity = $('#' + mode + 'MaximumOrderQuantity').val();
 
-        if(!scientificName || !productCountry || !productNameAr || !productNameEn || !productNameFr || !unitPrice || !maximumOrderQuantity) {
+        if (!scientificName || !productCountry || !productNameAr || !productNameEn || !productNameFr || !unitPrice || !maximumOrderQuantity) {
             valid = false;
         }
 
-        if(valid && mode === "add") {
+        if (valid && mode === "add") {
             let stock = $('#' + mode + 'Stock').val();
-            if(!stock) valid = false;
+            if (!stock) valid = false;
         }
 
         $('#' + mode + 'ModalAction').prop("disabled", !valid);
