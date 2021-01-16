@@ -290,8 +290,8 @@ function compress_htmlcode($codedata)
 
                         var outActions = '';
 
-                        /* outActions += btnView;
-                        outActions += btnPrint; */
+                        outActions += btnView;
+                        /* outActions += btnPrint; */
 
                         if (row.statusId === 4 || row.statusId === 6)
                             outActions += reportMissing;
@@ -433,4 +433,3 @@ function compress_htmlcode($codedata)
         PageClass.init();
     </script>
 <?php ob_end_flush(); ?>
-<? include_once 'missing-product-modal.php'; ?>

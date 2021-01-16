@@ -15,15 +15,15 @@ $f3->route('GET /web/auth/forgot', 'AuthController->getForgottenPassword');
 $f3->route('GET /web/auth/signout', 'AuthController->getSignOut');
 
 $f3->route('GET /web', 'DashboardController->get');
-$f3->route('POST /web/support', 'DashboardController->support');
+$f3->route('GET /web/dashboard', 'DashboardController->getDashboard');
+$f3->route('POST /web/notification/support', 'NotificationController->support');
 
 $f3->route('GET /web/me/menu', 'UserController->getMenu');
 $f3->route('GET /web/me/switchLanguage/@lang', 'UserController->switchLanguage');
 
-$f3->route('GET /web/dashboard', 'DashboardController->get');
-
 $f3->route('GET /web/product/search', 'SearchController->getSearchProducts');
 $f3->route('POST /web/product/search', 'SearchController->postSearchProducts');
+$f3->route('POST /web/product/search/@sort', 'SearchController->postSearchProducts');
 $f3->route('GET /web/entity/@entityId/product/@productId', 'ProductsController->getEntityProduct');
 
 $f3->route('GET /web/product/brandname/list', 'SearchController->getProductBrandNameList');

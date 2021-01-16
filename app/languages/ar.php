@@ -101,6 +101,10 @@ return array(
     'stockAvailability_notAvailable' => 'غير متوفر',
     'stockAvailability_availableSoon' => 'متوفر قريبا',
 
+    'vModule_productAdded' => 'Product is added successfully!', // TODO: add translation
+    'vModule_quantityEdited' => 'Product Quantity is edited successfully!', // TODO: add translation
+    'vModule_productEdited' => 'Product is edited successfully!',// TODO: add translation
+
     'vModule_order_title' => 'لائحة الطلبات',
     'vModule_order_header' => 'يمكنك عرض قائمة بأوامرك',
     'vModule_order_header_new' => 'يمكنك عرض طلباتك الجديدة',
@@ -199,6 +203,7 @@ return array(
     'vButton_bulk_add' => 'إضافة مجمعة',
     'vButton_bulk_add_image' => 'إضافة صور مجمعة',
     'vButton_confirm' => 'تأكيد',
+    'vButton_view_all' => 'مشاهدة الكل',
     
     'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ', // TODO: add translation
     'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!', // TODO: add translation
@@ -209,4 +214,7 @@ return array(
     'vModule_bulk_add_image_info' => 'للحصول على أفضل استخدام ، تأكد من أن اسم صورتك يبدأ بـ "productId-" لتحديد منتج تلقائيًا بعد التحميل.',
     
     'vResponse_imagesAdded' => 'تمت إضافة الصور بنجاح',
+    
+    'vModule_dashboardBuyer_newProducts' => 'منتجات جديدة',
+    'vModule_dashboardBuyer_topSelling' => 'الأعلى مبيعا',
 );

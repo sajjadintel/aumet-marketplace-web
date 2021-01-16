@@ -105,6 +105,10 @@ return array(
     'stockAvailability_notAvailable' => 'Out of Stock',
     'stockAvailability_availableSoon' => 'Available Soon',
 
+    'vModule_productAdded' => 'Product is added successfully!',
+    'vModule_quantityEdited' => 'Product Quantity is edited successfully!',
+    'vModule_productEdited' => 'Product is edited successfully!',
+
     'vModule_order_title' => 'Order List',
     'vModule_order_header' => 'You can view your order list',
     'vModule_order_header_new' => 'You can view your new orders',
@@ -209,6 +213,7 @@ return array(
     'vButton_bulk_add' => 'Bulk Add',
     'vButton_bulk_add_image' => 'Bulk Add Images',
     'vButton_confirm' => 'Confirm',
+    'vButton_view_all' => 'View All',
 
     'vModule_feedback_title' => 'Customer Orders Feedback',
     'vModule_feedback_header' => 'The below customer feedback is delivered to you privately and they are not publicly available for any user',
@@ -221,4 +226,7 @@ return array(
     'vModule_bulk_add_image_info' => 'For best use, make sure your image name starts with "productId-" to automatically select a product after the upload.',
     
     'vResponse_imagesAdded' => 'Images added successfully',
+    
+    'vModule_dashboardBuyer_newProducts' => 'New Products',
+    'vModule_dashboardBuyer_topSelling' => 'Top Selling',
 );

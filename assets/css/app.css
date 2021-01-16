@@ -214,7 +214,7 @@ label.myLabel input[type='file'] {
 	height: 40px;
 	position: fixed;
 	right: 30px;
-	bottom: 30px;
+	bottom: 65px;
 	display: flex;
 	justify-content: center;
 	align-items: center;

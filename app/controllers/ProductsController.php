@@ -11,6 +11,8 @@ class ProductsController extends Controller {
             $entityId = $this->f3->get('PARAMS.entityId');
             $productId = $this->f3->get('PARAMS.productId');
 
+            $roleId = $this->f3->get('SESSION.objUser')->roleId;
+
             if ($entityId == 0)
                 $query = "productId=$productId";
             else
@@ -56,7 +58,11 @@ class ProductsController extends Controller {
             $dbEntityProductRelated = new BaseModel($this->db, "vwEntityProductSell");
             $dbEntityProductRelated->productName = "productName_" . $this->objUser->language;
             $dbEntityProductRelated->entityName = "entityName_" . $this->objUser->language;
-            $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere("stockStatusId=1 and scientificNameId =$dbEntityProduct->scientificNameId and id != $dbEntityProduct->id", 'id', 12);
+            $where = "stockStatusId=1 AND scientificNameId =$dbEntityProduct->scientificNameId AND id != $dbEntityProduct->id";
+            if (Helper::isDistributor($roleId))
+                $where .= " AND entityId=$dbEntityProduct->entityId";
+
+            $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere($where, 'id', 12);
             $this->f3->set('arrRelatedEntityProduct', $arrRelatedEntityProduct);
 
 
@@ -66,7 +72,6 @@ class ProductsController extends Controller {
             $dbEntityProductFromThisDistributor = $dbEntityProductFromThisDistributor->getWhere("stockStatusId=1 and entityId=$dbEntityProduct->entityId and id != $dbEntityProduct->id", 'id', 12);
             $this->f3->set('arrProductFromThisDistributor', $dbEntityProductFromThisDistributor);
 
-            $roleId = $this->f3->get('SESSION.objUser')->roleId;
             if (Helper::isPharmacy($roleId)) {
                 $dbEntityProductOtherOffers = new BaseModel($this->db, "vwEntityProductSell");
                 $dbEntityProductOtherOffers->productName = "productName_" . $this->objUser->language;
@@ -220,6 +225,7 @@ class ProductsController extends Controller {
             if (isset($categoryId) && is_array($categoryId)) {
                 $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
+
         }
 
         $query .= " AND statusId = 1";
@@ -354,8 +360,9 @@ class ProductsController extends Controller {
 
                 $dbEntityProduct->update();
 
-                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
                 $this->webResponse->title = "";
+                $this->webResponse->message = $this->f3->get('vModule_productEdited');
                 $this->webResponse->data = $dbProduct->name_ar;
                 echo $this->webResponse->jsonResponse();
             }
@@ -473,8 +480,9 @@ class ProductsController extends Controller {
                     }
                 }
 
-                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
                 $this->webResponse->title = "";
+                $this->webResponse->message = $this->f3->get('vModule_quantityEdited');
                 $this->webResponse->data = $bonusRepeater;
                 echo $this->webResponse->jsonResponse();
             }
@@ -548,8 +556,9 @@ class ProductsController extends Controller {
 
             $dbEntityProduct->add();
 
-            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
             $this->webResponse->title = "";
+            $this->webResponse->message = $this->f3->get('vModule_productAdded');
             $this->webResponse->data = $dbProduct['name_' . $this->objUser->language];
             echo $this->webResponse->jsonResponse();
         }
