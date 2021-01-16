@@ -72,11 +72,11 @@ function compress_htmlcode($codedata)
                             </a>
                         </label>
                         
-                        <label class="myLabel">
+                        <!-- <label class="myLabel">
                             <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Bulk Add Images for Products" onclick="WebApp.loadPage('/web/distributor/product/bulk/add/image/upload')">
                                 <i class="nav-icon la la-images p-0"></i> <?php echo $vButton_bulk_add_image; ?>
                             </a>
-                        </label>
+                        </label> -->
                     </div>
                 </div>
 
