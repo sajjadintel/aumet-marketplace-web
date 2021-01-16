@@ -134,23 +134,6 @@ function compress_htmlcode($codedata)
         </div>
     </div>
     <!--end::Container-->
-    <style>
-			/* Chrome, Safari, Edge, Opera */
-			input::-webkit-outer-spin-button,
-			input::-webkit-inner-spin-button {
-				-webkit-appearance: none;
-				margin: 0;
-			}
-
-			/* Firefox */
-			input[type=number] {
-				-moz-appearance: textfield;
-			}
-
-			.quantityFreeInput:invalid + .quantityFreeHolder {
-				display: none;
-			}
-    </style>
     <script>
         var PageClass = function () {
             var elementId = "#datatable";
@@ -662,11 +645,17 @@ function compress_htmlcode($codedata)
                 updateDatatable();
             };
 
-            var query = '<?php echo isset($_GET['query']) ? $_GET['query'] : 'null';?>';
+            var query = <?php echo isset($_GET['query']) ? "'" . $_GET['query'] . "'" : 'null';?>;
+            var distributorId = <?php echo isset($_GET['distributorId']) ? "'" . $_GET['distributorId'] . "'" : 'null';?>;
+            var scientificNameId = <?php echo isset($_GET['scientificNameId']) ? "'" . $_GET['scientificNameId'] . "'" : 'null';?>;
 
             function updateDatatable() {
                 if (query != null)
                     searchQuery.query = query;
+                if (distributorId != null && !searchQuery.entityId.includes(distributorId))
+                    searchQuery.entityId.push(distributorId);
+                if (scientificNameId != null && !searchQuery.scientificNameId.includes(scientificNameId))
+                    searchQuery.scientificNameId.push(scientificNameId);
                 WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
 
             }
@@ -681,4 +670,3 @@ function compress_htmlcode($codedata)
         PageClass.init();
     </script>
 <?php ob_end_flush(); ?>
-<?php include_once 'add-bonus-modal.php'; ?>

@@ -77,7 +77,7 @@ class CartController extends Controller {
 
                 $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
                 $total = $quantityFree + $newQuantity;
-                if($total > $maxOrder) 
+                if ($total > $maxOrder) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Not allowed (max: $maxOrder)";
@@ -93,7 +93,7 @@ class CartController extends Controller {
                 // Get cart count
                 $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
                 $cartCount = 0;
-                foreach($arrCartDetail as $cartDetail) {
+                foreach ($arrCartDetail as $cartDetail) {
                     $cartCount += $cartDetail->quantity;
                     $cartCount += $cartDetail->quantityFree;
                 }
@@ -107,19 +107,24 @@ class CartController extends Controller {
         }
     }
 
-    private function calculateBonus($quantity, $bonuses, $formula)
+    function calculateBonus($quantity, $bonuses, $formula)
     {
         foreach ($bonuses as $bonus) {
             if ($quantity >= $bonus['minOrder']) {
-                $formula = str_replace('quantity', $quantity, $formula);
-                $formula = str_replace('minOrder', $bonus['minOrder'], $formula);
-                $formula = str_replace('bonus', $bonus['bonus'], $formula);
-                if (strpos($formula, ';') === false) {
-                    $formula .= ';';
+                $response = 0;
+                try {
+                    $formula = str_replace('quantity', $quantity, $formula);
+                    $formula = str_replace('minOrder', $bonus['minOrder'], $formula);
+                    $formula = str_replace('bonus', $bonus['bonus'], $formula);
+                    if (strpos($formula, ';') === false) {
+                        $formula .= ';';
+                    }
+                    $formula = '$response = ' . $formula;
+                    eval($formula);
+                    return $response;
+                } catch (Exception $e) {
+                    return 0;
                 }
-                $formula = '$response = ' . $formula;
-                eval($formula);
-                return $response;
             }
         }
         return 0;
@@ -141,7 +146,7 @@ class CartController extends Controller {
             // Get cart count
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
             $cartCount = 0;
-            foreach($arrCartDetail as $cartDetail) {
+            foreach ($arrCartDetail as $cartDetail) {
                 $cartCount += $cartDetail->quantity;
                 $cartCount += $cartDetail->quantityFree;
             }
@@ -215,7 +220,7 @@ class CartController extends Controller {
                 // Get cart count
                 $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
                 $cartCount = 0;
-                foreach($arrCartDetail as $cartDetail) {
+                foreach ($arrCartDetail as $cartDetail) {
                     $cartCount += $cartDetail->quantity;
                     $cartCount += $cartDetail->quantityFree;
                 }
@@ -361,8 +366,8 @@ class CartController extends Controller {
 
             $quantityFree = 0;
             $maxMinOrder = 0;
-            foreach($arrBonus as $bonus) {
-                if($bonus['minOrder'] <= $quantity && $maxMinOrder < $bonus['minOrder']) {
+            foreach ($arrBonus as $bonus) {
+                if ($bonus['minOrder'] <= $quantity && $maxMinOrder < $bonus['minOrder']) {
                     $maxMinOrder = $bonus['minOrder'];
                     $quantityFree = $bonus['bonus'];
                 }
@@ -378,7 +383,7 @@ class CartController extends Controller {
 
             $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
             $total = $quantityFree + $quantity;
-            if($total > $maxOrder) {
+            if ($total > $maxOrder) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Not allowed (max: $maxOrder)";
@@ -394,7 +399,7 @@ class CartController extends Controller {
             // Get cart count
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
             $cartCount = 0;
-            foreach($arrCartDetail as $cartDetail) {
+            foreach ($arrCartDetail as $cartDetail) {
                 $cartCount += $cartDetail->quantity;
                 $cartCount += $cartDetail->quantityFree;
             }
@@ -511,7 +516,7 @@ class CartController extends Controller {
             $mapSellerIdCurrency = [];
             foreach ($allEntities as $entity) {
                 $mapSellerIdCurrency[$entity->id] = $mapCurrencyIdCurrency[$entity->currencyId];
-                if($entity->id === $account->entityId) {
+                if ($entity->id === $account->entityId) {
                     $buyerName = $entity->name;
                 }
             }
@@ -577,13 +582,13 @@ class CartController extends Controller {
 
                 $total = $subTotal + $tax;
 
-                if(array_key_exists($currencyId, $mapCurrencyIdSubTotal)) {
+                if (array_key_exists($currencyId, $mapCurrencyIdSubTotal)) {
                     $mapCurrencyIdSubTotal[$currencyId] += $subTotal;
                 } else {
                     $mapCurrencyIdSubTotal[$currencyId] = $subTotal;
                 }
 
-                if(array_key_exists($currencyId, $mapCurrencyIdTax)) {
+                if (array_key_exists($currencyId, $mapCurrencyIdTax)) {
                     $mapCurrencyIdTax[$currencyId] += $tax;
                 } else {
                     $mapCurrencyIdTax[$currencyId] = $tax;
@@ -654,9 +659,9 @@ class CartController extends Controller {
 
                 $subject = "Aumet - New Order Confirmation (" . $dbOrder->id . ")";
                 if (getenv('ENV') != Constants::ENV_PROD) {
-                    $subject .= " - (Test: ".getenv('ENV').")";
+                    $subject .= " - (Test: " . getenv('ENV') . ")";
 
-                    if (getenv('ENV') == Constants::ENV_LOC){
+                    if (getenv('ENV') == Constants::ENV_LOC) {
                         $emailHandler->resetTos();
                         $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                         $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
@@ -673,20 +678,20 @@ class CartController extends Controller {
             $subTotalUSD = 0;
             $taxUSD = 0;
             $totalUSD = 0;
-            foreach($mapCurrencyIdCurrency as $currencyId => $currency) {
-                if(array_key_exists($currencyId, $mapCurrencyIdSubTotal)) {
+            foreach ($mapCurrencyIdCurrency as $currencyId => $currency) {
+                if (array_key_exists($currencyId, $mapCurrencyIdSubTotal)) {
                     $subTotal = $mapCurrencyIdSubTotal[$currencyId];
-                    $subTotalUSD += $subTotal * $currency->conversionToUSD; 
+                    $subTotalUSD += $subTotal * $currency->conversionToUSD;
                 }
 
-                if(array_key_exists($currencyId, $mapCurrencyIdTax)) {
+                if (array_key_exists($currencyId, $mapCurrencyIdTax)) {
                     $tax = $mapCurrencyIdTax[$currencyId];
-                    $taxUSD += $tax * $currency->conversionToUSD; 
+                    $taxUSD += $tax * $currency->conversionToUSD;
                 }
 
-                if(array_key_exists($currencyId, $mapCurrencyIdTotal)) {
+                if (array_key_exists($currencyId, $mapCurrencyIdTotal)) {
                     $total = $mapCurrencyIdTotal[$currencyId];
-                    $totalUSD += $total * $currency->conversionToUSD; 
+                    $totalUSD += $total * $currency->conversionToUSD;
                 }
             }
 
@@ -701,10 +706,10 @@ class CartController extends Controller {
             $this->f3->set('total', round($total, 2));
             $this->f3->set('ordersUrl', "web/pharmacy/order/history");
 
-            $name = count($allSellerNames) > 1? "Seller names: " : "Seller name: ";
+            $name = count($allSellerNames) > 1 ? "Seller names: " : "Seller name: ";
             $name .= implode(", ", $allSellerNames);
             $this->f3->set('name', $name);
-            
+
             $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $account->entityId);
             foreach ($arrEntityUserProfile as $entityUserProfile) {
                 $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
@@ -713,8 +718,8 @@ class CartController extends Controller {
 
             $subject = "Aumet - you've got a new order! (" . implode(", ", $allOrderId) . ")";
             if (getenv('ENV') != Constants::ENV_PROD) {
-                $subject .= " - (Test: ".getenv('ENV').")";
-                if (getenv('ENV') == Constants::ENV_LOC){
+                $subject .= " - (Test: " . getenv('ENV') . ")";
+                if (getenv('ENV') == Constants::ENV_LOC) {
                     $emailHandler->resetTos();
                     $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                     $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
@@ -732,7 +737,7 @@ class CartController extends Controller {
             $arrProduct = $dbProduct->findWhere("productId IN ($allProductId)");
 
             $mapProductIdVat = [];
-            foreach($arrProduct as $product) {
+            foreach ($arrProduct as $product) {
                 $mapProductIdVat[$product['id']] = $product['vat'];
             }
 
@@ -746,14 +751,14 @@ class CartController extends Controller {
                 $unitPrice = $cartDetail->unitPrice;
                 $tax = $mapProductIdVat[$entityProductId];
 
-                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `note`, `quantityFree`, `unitPrice`, `tax`) VALUES ('" . $orderId . "', '" . $entityProductId . "', '" . $quantity . "', '" . $note . "', '" . $quantityFree . "', '" . $unitPrice ."', '".$tax."');";
+                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `note`, `quantityFree`, `unitPrice`, `tax`) VALUES ('" . $orderId . "', '" . $entityProductId . "', '" . $quantity . "', '" . $note . "', '" . $quantityFree . "', '" . $unitPrice . "', '" . $tax . "');";
                 array_push($commands, $query);
             }
 
             $this->db->exec($commands);
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
-            $dbCartDetail->erase("accountId=". $this->objUser->accountId);
+            $dbCartDetail->erase("accountId=" . $this->objUser->accountId);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
