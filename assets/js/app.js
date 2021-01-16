@@ -130,7 +130,7 @@ var WebApp = (function () {
 		})
 			.done(function (webResponse) {
 				if (webResponse && typeof webResponse === 'object') {
-					if (webResponse.errorCode == 1 || webResponse.errorCode == 3) {
+					if (webResponse.errorCode == 1) {
 						if (typeof fnCallback === 'function') {
 							fnCallback(webResponse);
 						}
@@ -139,6 +139,9 @@ var WebApp = (function () {
 					} else if (webResponse.errorCode == 0) {
 						window.location.href = '/web';
 					} else if (webResponse.errorCode == 3) {
+						if (typeof fnCallback === 'function') {
+							fnCallback(webResponse);
+						}
 						_unblurPage();
 						_unblockPage();
 						_alertSuccess(webResponse.message);
@@ -163,21 +166,10 @@ var WebApp = (function () {
 	var _loadPage = function (url, isSubPage = false, fnCallback = null) {
 		_blurPage();
 		_blockPage();
-		
 
-		var fullUrl;
-		if(url.includes("?")) {
-			var allParts = url.split("?");
-			var mainUrl = allParts.shift();
-			var queryParams = allParts.join("?");
-			
-			fullUrl = mainUrl + '?' + queryParams + '&_t=' + Date.now();
-		} else {
-			fullUrl = url + '?_t=' + Date.now();
-		}
-
+		url = url.includes('?') ? url : url + '?_t=' + Date.now();
 		$.ajax({
-			url: fullUrl,
+			url: url,
 			type: 'GET',
 			dataType: 'json',
 			async: true,

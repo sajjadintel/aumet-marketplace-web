@@ -4,19 +4,13 @@
         <img alt="Logo" src="/theme/assets/media/logos/logo-light.png" />
     </a>
 
-    <div class="search-wrapper">
-        <i class="fa fa-search  search-icon"></i>
 
-        <select
-            class="select2 form-control search-input-mobile"
-            id="searchBarInput"
-            name="searchBar"
-            multiple=""
-            data-select2-id="searchBarInput"
-            tabindex="-1"
-            aria-hidden="true">
-        </select>
+    <div class="search-wrapper">
+        <i id="searchBarInputMobileIcon" class="fa fa-search  search-icon"></i>
+        <input class="form-control" id="searchBarInputMobile" type="text" name="searchBarInputMobile" autocomplete="off"/>
     </div>
+
+
     <!--end::Logo-->
     <!--begin::Toolbar-->
     <div class="d-flex align-items-center">

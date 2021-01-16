@@ -19,6 +19,14 @@ return array(
     'vLogin_helpAdv' => 'هل تواجه صعوبات في التسجيل؟',
     'vLogin_help' => 'اطلب المساعدة',
 
+    'vSupport_customerSupport' => 'Customer Support', // TODO: Translate
+    'vSupport_email' => 'Email:', // TODO: Translate
+    'vSupport_telephone' => 'Telephone no:', // TODO: Translate
+    'vSupport_request_call' => 'Request a Call', // TODO: Translate
+    'vSupport_title' => 'Title:', // TODO: Translate
+    'vSupport_submit' => 'Submit', // TODO: Translate
+    'vSupport_requestSent' => 'Request sent successfully!', // TODO: Translate
+
     'vLogin_signin' => 'تسجيل الدخول',
     'vLogin_signinWithGoole' => 'سجل من خلال جوجل',
     'vLogin_signout' => 'خروج',
@@ -82,6 +90,16 @@ return array(
     'vModule_product_header' => 'يمكنك البحث عن المنتجات من خلال اسم المنتج أو الاسم العلمي للمنتج',
     'vModule_product_uploadStock' => 'تحديث المخزون',
     'vModule_product_uploadBonus' => 'تحديث البونص',
+    'vModule_product_other' => 'Other', // TODO: add translation
+    'vModule_product_otherFromSameDistributor' => 'Other products from the same distributor', // TODO: add translation
+    'vModule_product_allOffers' => 'All offers for ', // TODO: add translation
+    'vModule_product_addToCart' => 'Add to Cart', // TODO: add translation
+    'vModule_product_pricePerUnit' => 'Price Per Unit', // TODO: add translation
+    'vModule_product_distributorName' => 'Distributor Name', // TODO: add translation
+    'vModule_product_select' => 'Select', // TODO: add translation
+    'stockAvailability_available' => 'متوفر',
+    'stockAvailability_notAvailable' => 'غير متوفر',
+    'stockAvailability_availableSoon' => 'متوفر قريبا',
 
     'vModule_order_title' => 'لائحة الطلبات',
     'vModule_order_header' => 'يمكنك عرض قائمة بأوامرك',
