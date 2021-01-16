@@ -8,7 +8,7 @@ class DashboardController extends Controller {
             $this->f3->set("pageURL", "/web/dashboard");
             echo View::instance()->render('app/layout/layout.php');
         } else {
-            if ($this->objUser->menuId == 1) {
+            if ($this->objUser->menuId == Constants::MENU_DISTRIBUTOR) {
                 $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
                 $query = "entitySellerId IN ($arrEntityId)";
 

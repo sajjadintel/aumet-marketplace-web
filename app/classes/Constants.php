@@ -61,4 +61,9 @@ class Constants
     const ACCOUNT_STATUS_ACTIVE = 1;
     const ACCOUNT_STATUS_INACTIVE = 2;
     const ACCOUNT_STATUS_BLOCKED = 3;
+    
+    ### Menu
+    const MENU_DISTRIBUTOR = 1;
+    const MENU_PHARMACY = 2;
+    const MENU_ADMIN = 1000;
 }
