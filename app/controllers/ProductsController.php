@@ -1,11 +1,9 @@
 <?php
 
-class ProductsController extends Controller
-{
+class ProductsController extends Controller {
 
     function getEntityProduct()
     {
-
         if (!$this->f3->ajax()) {
             $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
             echo View::instance()->render('app/layout/layout.php');
@@ -19,13 +17,17 @@ class ProductsController extends Controller
                 $query = "entityId=$entityId and productId=$productId";
 
             $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
+            $dbEntityProduct->productName = "productName_" . $this->objUser->language;
+            $dbEntityProduct->entityName = "entityName_" . $this->objUser->language;
+            $dbEntityProduct->madeInCountryName = "madeInCountryName_" . $this->objUser->language;
             $dbEntityProduct->getWhere($query);
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
 
+
             if ($dbEntityProduct['bonusTypeId'] == 2) {
-                $dbEntityProduct['bonusOptions'] = json_decode($dbEntityProduct['bonusConfig']);
+                $dbEntityProduct['bonusOptions'] = json_decode($dbEntityProduct->bonusConfig);
             }
 
             $dbEntityProduct['cart'] = 0;
@@ -37,13 +39,13 @@ class ProductsController extends Controller
                     }
                 }
             }
-            
+
             $found = false;
-            if(array_key_exists((string) $dbEntityProduct->entityId, $this->f3->get('SESSION.arrEntities'))) {
+            if (array_key_exists((string)$dbEntityProduct->entityId, $this->f3->get('SESSION.arrEntities'))) {
                 $found = true;
             }
 
-            if($dbEntityProduct['statusId'] === 0 || (!$found && $this->objUser->menuId === 1)) {
+            if ($dbEntityProduct['statusId'] === 0 || (!$found && $this->objUser->menuId === 1)) {
                 $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
                 echo $this->webResponse->jsonResponse();
                 return;
@@ -52,8 +54,69 @@ class ProductsController extends Controller
             $this->f3->set('objEntityProduct', $dbEntityProduct);
 
             $dbEntityProductRelated = new BaseModel($this->db, "vwEntityProductSell");
-            $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere("stockStatusId=1 and scientificNameId =$dbEntityProduct->scientificNameId and id != $dbEntityProduct->id");
+            $dbEntityProductRelated->productName = "productName_" . $this->objUser->language;
+            $dbEntityProductRelated->entityName = "entityName_" . $this->objUser->language;
+            $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere("stockStatusId=1 and scientificNameId =$dbEntityProduct->scientificNameId and id != $dbEntityProduct->id", 'id', 12);
             $this->f3->set('arrRelatedEntityProduct', $arrRelatedEntityProduct);
+
+
+            $dbEntityProductFromThisDistributor = new BaseModel($this->db, "vwEntityProductSell");
+            $dbEntityProductFromThisDistributor->productName = "productName_" . $this->objUser->language;
+            $dbEntityProductFromThisDistributor->entityName = "entityName_" . $this->objUser->language;
+            $dbEntityProductFromThisDistributor = $dbEntityProductFromThisDistributor->getWhere("stockStatusId=1 and entityId=$dbEntityProduct->entityId and id != $dbEntityProduct->id", 'id', 12);
+            $this->f3->set('arrProductFromThisDistributor', $dbEntityProductFromThisDistributor);
+
+            $roleId = $this->f3->get('SESSION.objUser')->roleId;
+            if (Helper::isPharmacy($roleId)) {
+                $dbEntityProductOtherOffers = new BaseModel($this->db, "vwEntityProductSell");
+                $dbEntityProductOtherOffers->productName = "productName_" . $this->objUser->language;
+                $dbEntityProductOtherOffers->entityName = "entityName_" . $this->objUser->language;
+
+                $where = "( TRIM(productName_ar) LIKE '" . trim($dbEntityProduct->productName_ar) . "'";
+                $where .= " OR TRIM(productName_en) LIKE '" . mb_strtolower(trim($dbEntityProduct->productName_en)) . "'";
+                $where .= " OR TRIM(productName_fr) LIKE '" . mb_strtolower(trim($dbEntityProduct->productName_fr)) . "' ) ";
+                $where .= " AND id != $dbEntityProduct->id";
+
+                $dbEntityProductOtherOffers = $dbEntityProductOtherOffers->findWhere($where);
+
+
+                $allProductId = [];
+                foreach ($dbEntityProductOtherOffers as $product) {
+                    array_push($allProductId, $product['id']);
+                }
+                $allProductId = implode(",", $allProductId);
+
+                $dbCartDetail = new BaseModel($this->db, "cartDetail");
+                $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+
+                if ($allProductId != null) {
+                    $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+                    $arrBonus = $dbBonus->findWhere("entityProductId IN ($allProductId) AND isActive = 1");
+
+                    $mapProductIdBonuses = [];
+
+                    foreach ($arrBonus as $bonus) {
+                        $productId = $bonus['entityProductId'];
+                        $allBonuses = [];
+                        if (array_key_exists($productId, $mapProductIdBonuses)) {
+                            $allBonuses = $mapProductIdBonuses[$productId];
+                        }
+                        array_push($allBonuses, $bonus);
+                        $mapProductIdBonuses[$productId] = $allBonuses;
+                    }
+                }
+
+
+                for ($i = 0; $i < count($dbEntityProductOtherOffers); $i++) {
+                    if ($dbEntityProductOtherOffers[$i]['bonusTypeId'] == 2) {
+                        $dbEntityProductOtherOffers[$i]['bonusOptions'] = json_decode($dbEntityProductOtherOffers[$i]['bonusConfig']);
+                        $dbEntityProductOtherOffers[$i]['bonusConfig'] = $dbEntityProductOtherOffers[$i]['bonusOptions'];
+                        $dbEntityProductOtherOffers[$i]['bonuses'] = $mapProductIdBonuses[$dbEntityProductOtherOffers[$i]['id']];
+                    }
+                }
+
+                $this->f3->set('arrProductOtherOffers', $dbEntityProductOtherOffers);
+            }
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vTitle_entityProductDetail');
@@ -132,7 +195,7 @@ class ProductsController extends Controller
     {
         ## Read values from Datatables
         $datatable = new Datatable($_POST);
-        $query = "";
+        $query = "1=1 ";
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityId IN ($arrEntityId)";
@@ -157,12 +220,9 @@ class ProductsController extends Controller
             if (isset($categoryId) && is_array($categoryId)) {
                 $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
-
-            $query .= " AND statusId = 1";
-
         }
 
-
+        $query .= " AND statusId = 1";
 
         $fullQuery = $query;
 
@@ -270,8 +330,8 @@ class ProductsController extends Controller
                     echo $this->webResponse->jsonResponse();
                     return;
                 }
-                
-                if(!is_numeric($unitPrice) || $unitPrice <= 0) {
+
+                if (!is_numeric($unitPrice) || $unitPrice <= 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Unit Price must be a positive number";
@@ -326,8 +386,11 @@ class ProductsController extends Controller
                 $stockStatusId = $this->f3->get('POST.stockStatus');
                 $bonusTypeId = $this->f3->get('POST.bonusType');
                 $bonusRepeater = $this->f3->get('POST.bonusRepeater');
+                if ($bonusRepeater == null) {
+                    $bonusRepeater = [];
+                }
 
-                if(!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) {
+                if (!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Stock must be a positive number";
@@ -338,36 +401,36 @@ class ProductsController extends Controller
                 $validMinOrder = true;
                 $validBonus = true;
                 foreach ($bonusRepeater as $bonus) {
-                    if(!filter_var($bonus['minOrder'], FILTER_VALIDATE_INT) || $bonus['minOrder'] < 0) {
+                    if (!filter_var($bonus['minOrder'], FILTER_VALIDATE_INT) || $bonus['minOrder'] < 0) {
                         $validMinOrder = false;
                     }
-                    
-                    if(!filter_var($bonus['bonus'], FILTER_VALIDATE_INT) || $bonus['bonus'] < 0) {
+
+                    if (!filter_var($bonus['bonus'], FILTER_VALIDATE_INT) || $bonus['bonus'] < 0) {
                         $validBonus = false;
                     }
 
-                    if($validMinOrder && $validBonus) {
+                    if ($validMinOrder && $validBonus) {
                         break;
                     }
                 }
 
-                if(!$validMinOrder || !$validBonus) {
+                if (!$validMinOrder || !$validBonus) {
                     $message = "";
-                    if(!$validMinOrder && !$validBonus) {
+                    if (!$validMinOrder && !$validBonus) {
                         $message = "Min Order and Bonus must be positive numbers";
-                    } else if(!$validMinOrder) {
+                    } else if (!$validMinOrder) {
                         $message = "Min Order must be a positive number";
                     } else {
                         $message = "Bonus must be a positive number";
                     }
-    
+
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = $message;
                     echo $this->webResponse->jsonResponse();
                     return;
                 }
-                
+
                 if ($stock > 0) {
                     $stockStatusId = 1;
                 } else {
@@ -442,11 +505,11 @@ class ProductsController extends Controller
                 return;
             }
 
-            if((!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) || (!is_numeric($unitPrice) || $unitPrice <= 0)) {
+            if ((!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) || (!is_numeric($unitPrice) || $unitPrice <= 0)) {
                 $message = "";
-                if((!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) && (!is_numeric($unitPrice) || $unitPrice <= 0)) {
+                if ((!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) && (!is_numeric($unitPrice) || $unitPrice <= 0)) {
                     $message = "Stock and Unit Price must be positive numbers";
-                } else if(!is_numeric($unitPrice) || $unitPrice <= 0) {
+                } else if (!is_numeric($unitPrice) || $unitPrice <= 0) {
                     $message = "Unit Price must be a positive number";
                 } else {
                     $message = "Stock must be a positive number";
@@ -477,6 +540,7 @@ class ProductsController extends Controller
             $dbEntityProduct->entityId = $entityId;
             $dbEntityProduct->unitPrice = $unitPrice;
             $dbEntityProduct->stock = $stock;
+            $dbEntityProduct->statusId = 1;
             $dbEntityProduct->stockStatusId = 1;
             $dbEntityProduct->bonusTypeId = 1;
             $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
@@ -1021,7 +1085,7 @@ class ProductsController extends Controller
             // Change active sheet to database input
             $sheet = $spreadsheet->setActiveSheetIndex(1);
 
-            // Set validation and formula 
+            // Set validation and formula
             Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
 
             // Hide database and variables sheet
@@ -1043,7 +1107,7 @@ class ProductsController extends Controller
             // Set data validation for bonuses and stock availability
             Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $bonusesNum);
 
-            // Add all bonuses to multidimensional array 
+            // Add all bonuses to multidimensional array
             $multiBonuses = [];
             $fields = [
                 "entityProductId",
@@ -1176,7 +1240,7 @@ class ProductsController extends Controller
                                 $finished = true;
                                 break;
                             } else {
-                                if (array_key_exists((string) $cellValue, $mapProductIdProduct)) {
+                                if (array_key_exists((string)$cellValue, $mapProductIdProduct)) {
                                     $dbProduct = $mapProductIdProduct[$cellValue];
                                     array_push($productIdsWithBonus, $cellValue);
                                 } else {
@@ -1185,13 +1249,13 @@ class ProductsController extends Controller
                             }
                             break;
                         case "B":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Minimum Quantity must be a positive whole number");
                             } else {
                                 $minOrder = (int)$cellValue;
                                 $allQuant = $mapProductIdMinQuant[$dbProduct['productId']];
-                                
-                                if(!is_null($dbProduct)) {
+
+                                if (!is_null($dbProduct)) {
                                     if (in_array($minOrder, $allQuant)) {
                                         array_push($errors, "Minimum Quantity should be unique by product");
                                     } else {
@@ -1202,10 +1266,10 @@ class ProductsController extends Controller
                             }
                             break;
                         case "C":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Bonus Quantity must be a positive whole number");
                             } else {
-                                $bonus = (int) $cellValue;
+                                $bonus = (int)$cellValue;
                             }
                             break;
                     }
@@ -1257,7 +1321,7 @@ class ProductsController extends Controller
                 // Change active sheet to database input
                 $sheet = $spreadsheet->setActiveSheetIndex(1);
 
-                // Set validation and formula 
+                // Set validation and formula
                 Excel::setCellFormulaVLookup($sheet, 'A3', count($allProducts), "'User Input'!A", 'Variables!$A$3:$B$' . $productsNum);
 
                 // Hide database and variables sheet
@@ -1273,7 +1337,7 @@ class ProductsController extends Controller
                 $sheet->setCellValue('D2', 'Error');
                 $sheet->getStyle('D2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
 
-                // Add all bonuses to multidimensional array 
+                // Add all bonuses to multidimensional array
                 $multiBonuses = [];
                 $fields = [
                     "productId",
@@ -1596,24 +1660,24 @@ class ProductsController extends Controller
                             }
                             break;
                         case "F":
-                            if (!is_numeric($cellValue) || (float) $cellValue < 0) {
+                            if (!is_numeric($cellValue) || (float)$cellValue < 0) {
                                 array_push($errors, "Unit Price must be a positive number");
                             } else {
-                                $dbEntityProduct->unitPrice = round((float) $cellValue, 2);
+                                $dbEntityProduct->unitPrice = round((float)$cellValue, 2);
                             }
                             break;
                         case "G":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Available Quantity must be a positive whole number");
                             } else {
-                                $dbEntityProduct->stock  = (int) $cellValue;
+                                $dbEntityProduct->stock = (int)$cellValue;
                             }
                             break;
                         case "H":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float) $cellValue < 0) {
+                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Maximum Order Quantity must be a positive whole number");
                             } else {
-                                $dbEntityProduct->maximumOrderQuantity  = (int) $cellValue;
+                                $dbEntityProduct->maximumOrderQuantity = (int)$cellValue;
                             }
                             break;
                     }
@@ -1791,19 +1855,19 @@ class ProductsController extends Controller
             echo $this->webResponse->jsonResponse();
         }
     }
-    
+
     function postBulkAddImageUpload()
     {
         $mapNewOldFileName = [];
         $error = false;
 
         $fileCount = count($_FILES["file"]["name"]);
-        for($i = 0; $i < $fileCount; $i++) {
+        for ($i = 0; $i < $fileCount; $i++) {
             $success = false;
 
             $fileName = pathinfo(basename($_FILES["file"]["name"][$i]), PATHINFO_FILENAME);
             $ext = pathinfo(basename($_FILES["file"]["name"][$i]), PATHINFO_EXTENSION);
-            
+
             $newFileName = $fileName . "-" . time() . ".$ext";
             $targetFile = "assets/img/products/" . $newFileName;
 
@@ -1814,13 +1878,13 @@ class ProductsController extends Controller
                 }
             }
 
-            if(!$success) {
+            if (!$success) {
                 $error = true;
                 break;
             }
         }
 
-        if(!$error) {
+        if (!$error) {
             echo json_encode($mapNewOldFileName);
         }
     }
@@ -1838,13 +1902,13 @@ class ProductsController extends Controller
 
         // Check if file name starts with an existing product id
         $mapFileNameProduct = [];
-        foreach($mapNewOldFileName as $newFileName => $oldFileName) {
+        foreach ($mapNewOldFileName as $newFileName => $oldFileName) {
             $product = null;
             $allParts = explode("-", $oldFileName);
-            if(count($allParts) > 1 && filter_var($allParts[0], FILTER_VALIDATE_INT)) {
-                $productIdInitial = (int) $allParts[0];
-                foreach($allProduct as $prod) {
-                    if($productIdInitial == $prod['id']) {
+            if (count($allParts) > 1 && filter_var($allParts[0], FILTER_VALIDATE_INT)) {
+                $productIdInitial = (int)$allParts[0];
+                foreach ($allProduct as $prod) {
+                    if ($productIdInitial == $prod['id']) {
                         $product = new stdClass();
                         $product->id = $prod['id'];
                         $product->name = $prod['name'];
@@ -1855,7 +1919,7 @@ class ProductsController extends Controller
 
             $mapFileNameProduct[$newFileName] = $product;
         }
-        
+
         $this->f3->set("mapFileNameProduct", $mapFileNameProduct);
 
         $this->webResponse->errorCode = 1;
@@ -1878,9 +1942,9 @@ class ProductsController extends Controller
             $mapProductIdImage = $this->f3->get('POST.mapProductIdImage');
 
             $dbProduct = new BaseModel($this->db, "product");
-            foreach($mapProductIdImage as $productId => $image) {
+            foreach ($mapProductIdImage as $productId => $image) {
                 $dbProduct->getWhere("id = $productId");
-                if(!$dbProduct->dry()) {
+                if (!$dbProduct->dry()) {
                     $dbProduct->image = $image;
                     $dbProduct->update();
                 }

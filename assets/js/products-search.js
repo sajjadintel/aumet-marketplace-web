@@ -448,7 +448,7 @@ var SearchDataTable = (function () {
 				let bestBonus = 0;
 				row.bonuses && row.bonuses.forEach((bonusOption) => {
 					if (newQuantity >= bonusOption.minOrder && bonusOption.minOrder > bestBonus) {
-						bonusVal = bonusOption.bonus;
+						bonusVal = Math.floor(newQuantity / bonusOption.minOrder * bonusOption.bonus);
 						bestBonus = bonusOption.minOrder;
 					}
 				});
