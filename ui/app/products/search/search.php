@@ -254,7 +254,8 @@ function compress_htmlcode($codedata)
                 render: function (data, type, row, meta) {
                     let output = "";
                     if (row.bonusTypeId === 2 && row.bonuses != null) {
-                        let btnText = row.activeBonus ? row.activeBonus.minOrder + " / +" + row.activeBonus.bonus : "Select";
+                        /* let btnText = row.activeBonus ? row.activeBonus.minOrder + " / +" + row.activeBonus.bonus : "Select"; */
+                        let btnText = "Select";
                         let allBonuses = row.bonuses.filter((bonus) => !row.activeBonus || row.activeBonus.id !== bonus.id);
                         let btnShowBonuses =
                             '<a style="width: max-content;" href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.productId + ', ' + row.entityId + ', ' + JSON.stringify(allBonuses) + ')\'\
