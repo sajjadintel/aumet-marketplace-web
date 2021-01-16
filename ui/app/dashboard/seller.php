@@ -409,7 +409,12 @@
             datatableOptions: {
                 order: [
                     [0, 'desc']
-                ]
+                ],
+                rowCallback: function (row, data, index) {
+                    if (!data['isVisible']) {
+                        $(row).hide();
+                    }
+                },
             }
         };
 
