@@ -90,6 +90,10 @@ return array(
     'vModule_product_header' => 'يمكنك البحث عن المنتجات من خلال اسم المنتج أو الاسم العلمي للمنتج',
     'vModule_product_uploadStock' => 'تحديث المخزون',
     'vModule_product_uploadBonus' => 'تحديث البونص',
+    'vModule_product_other' => 'Other', // TODO: add translation
+    'vModule_product_otherFromSameDistributor' => 'Other products from the same distributor', // TODO: add translation
+    'vModule_product_addToCart' => 'Add to Cart', // TODO: add translation
+    'vModule_product_pricePerUnit' => 'Price Per Unit',  // TODO: add translation
 
     'vModule_order_title' => 'لائحة الطلبات',
     'vModule_order_header' => 'يمكنك عرض قائمة بأوامرك',
