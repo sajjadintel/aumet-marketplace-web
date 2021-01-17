@@ -464,6 +464,11 @@ var WebAppLocals = (function () {
 			en: 'Maximum Order Quantity',
 			ar: 'كمية الطلب القصوى',
 			fr: ''
+		},
+		city: {
+			en: 'City',
+			ar: 'مدينة',
+			fr: ''
 		}
 	};
 

@@ -3,6 +3,7 @@
 // Class Definition
 var WebAuth = (function () {
 	var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
+	var _pharmacyDocument;
 
 	var _handleFormSignin = function () {
 		console.log('Signin');
@@ -195,24 +196,17 @@ var WebAuth = (function () {
 		validations.push(
 			FormValidation.formValidation(form, {
 				fields: {
-					fname: {
+					name: {
 						validators: {
 							notEmpty: {
-								message: 'First name is required',
+								message: 'Name is required',
 							},
 						},
 					},
-					lname: {
+					mobile: {
 						validators: {
 							notEmpty: {
-								message: 'Last Name is required',
-							},
-						},
-					},
-					phone: {
-						validators: {
-							notEmpty: {
-								message: 'Phone is required',
+								message: 'Phone Number is required',
 							},
 						},
 					},
@@ -222,9 +216,26 @@ var WebAuth = (function () {
 								message: 'Email is required',
 							},
 							emailAddress: {
-								message: 'The value is not a valid email address',
+								message: 'Invalid email address',
 							},
 						},
+					},
+					password: {
+						validators: {
+							notEmpty: {
+								message: 'Password is required',
+							},
+						},
+					},
+					passwordConfirmation: {
+						validators: {
+							identical: {
+								compare: function() {
+									return form.querySelector('[name="password"]').value;
+								},
+								message: 'Password confirmation doesn\'t'
+							}
+						}
 					},
 				},
 				plugins: {
@@ -242,31 +253,17 @@ var WebAuth = (function () {
 		validations.push(
 			FormValidation.formValidation(form, {
 				fields: {
-					address1: {
+					entityName: {
 						validators: {
 							notEmpty: {
-								message: 'Address is required',
+								message: 'Pharmacy Name is required',
 							},
 						},
 					},
-					postcode: {
+					tradeLicenseNumber: {
 						validators: {
 							notEmpty: {
-								message: 'Postcode is required',
-							},
-						},
-					},
-					city: {
-						validators: {
-							notEmpty: {
-								message: 'City is required',
-							},
-						},
-					},
-					state: {
-						validators: {
-							notEmpty: {
-								message: 'State is required',
+								message: 'Trade License Number is required',
 							},
 						},
 					},
@@ -277,97 +274,17 @@ var WebAuth = (function () {
 							},
 						},
 					},
-				},
-				plugins: {
-					trigger: new FormValidation.plugins.Trigger(),
-					// Bootstrap Framework Integration
-					bootstrap: new FormValidation.plugins.Bootstrap({
-						//eleInvalidClass: '',
-						eleValidClass: '',
-					}),
-				},
-			})
-		);
-
-		// Step 3
-		validations.push(
-			FormValidation.formValidation(form, {
-				fields: {
-					delivery: {
+					city: {
 						validators: {
 							notEmpty: {
-								message: 'Delivery type is required',
+								message: 'City is required',
 							},
 						},
 					},
-					packaging: {
+					address: {
 						validators: {
 							notEmpty: {
-								message: 'Packaging type is required',
-							},
-						},
-					},
-					preferreddelivery: {
-						validators: {
-							notEmpty: {
-								message: 'Preferred delivery window is required',
-							},
-						},
-					},
-				},
-				plugins: {
-					trigger: new FormValidation.plugins.Trigger(),
-					// Bootstrap Framework Integration
-					bootstrap: new FormValidation.plugins.Bootstrap({
-						//eleInvalidClass: '',
-						eleValidClass: '',
-					}),
-				},
-			})
-		);
-
-		// Step 4
-		validations.push(
-			FormValidation.formValidation(form, {
-				fields: {
-					ccname: {
-						validators: {
-							notEmpty: {
-								message: 'Credit card name is required',
-							},
-						},
-					},
-					ccnumber: {
-						validators: {
-							notEmpty: {
-								message: 'Credit card number is required',
-							},
-							creditCard: {
-								message: 'The credit card number is not valid',
-							},
-						},
-					},
-					ccmonth: {
-						validators: {
-							notEmpty: {
-								message: 'Credit card month is required',
-							},
-						},
-					},
-					ccyear: {
-						validators: {
-							notEmpty: {
-								message: 'Credit card year is required',
-							},
-						},
-					},
-					cccvv: {
-						validators: {
-							notEmpty: {
-								message: 'Credit card CVV is required',
-							},
-							digits: {
-								message: 'The CVV value is not valid. Only numbers is allowed',
+								message: 'Address is required',
 							},
 						},
 					},
@@ -401,7 +318,16 @@ var WebAuth = (function () {
 			if (validator) {
 				validator.validate().then(function (status) {
 					if (status == 'Valid') {
-						wizard.goTo(wizard.getNewStep());
+						if(wizard.getStep() == 1) {
+							let body = {
+								email: $("input[name=email]").val()
+							}
+							WebApp.post('/web/auth/signup/validate/email', body, function() {
+								wizard.goTo(wizard.getNewStep());
+							})
+						} else {
+							wizard.goTo(wizard.getNewStep());
+						}
 
 						KTUtil.scrollTop();
 					} else {
@@ -430,33 +356,77 @@ var WebAuth = (function () {
 
 		// Submit event
 		wizardObj.on('submit', function (wizard) {
-			Swal.fire({
-				text: 'All is good! Please confirm the form submission.',
-				icon: 'success',
-				showCancelButton: true,
-				buttonsStyling: false,
-				confirmButtonText: 'Yes, submit!',
-				cancelButtonText: 'No, cancel',
-				customClass: {
-					confirmButton: 'btn font-weight-bold btn-primary',
-					cancelButton: 'btn font-weight-bold btn-default',
-				},
-			}).then(function (result) {
-				if (result.value) {
-					form.submit(); // Submit form
-				} else if (result.dismiss === 'cancel') {
-					Swal.fire({
-						text: 'Your form has not been submitted!.',
-						icon: 'error',
-						buttonsStyling: false,
-						confirmButtonText: 'Ok, got it!',
-						customClass: {
-							confirmButton: 'btn font-weight-bold btn-primary',
-						},
-					});
-				}
-			});
+			// Validate form before change wizard step
+			var validator = validations[validations.length - 1]; // get validator for currnt step
+
+			if (validator) {
+				validator.validate().then(function (status) {
+					if (status == 'Valid') {
+						Swal.fire({
+							text: 'All is good! Please confirm the form submission.',
+							icon: 'success',
+							showCancelButton: true,
+							buttonsStyling: false,
+							confirmButtonText: 'Yes, submit!',
+							cancelButtonText: 'No, cancel',
+							customClass: {
+								confirmButton: 'btn font-weight-bold btn-primary',
+								cancelButton: 'btn font-weight-bold btn-default',
+							},
+						}).then(function (result) {
+							if (result.value) {
+								_signUp()
+							} else if (result.dismiss === 'cancel') {
+								Swal.fire({
+									text: 'Your form has not been submitted!.',
+									icon: 'error',
+									buttonsStyling: false,
+									confirmButtonText: 'Ok, got it!',
+									customClass: {
+										confirmButton: 'btn font-weight-bold btn-primary',
+									},
+								});
+							}
+						});
+					} else {
+						Swal.fire({
+							text: 'Sorry, looks like there are some errors detected, please try again.',
+							icon: 'error',
+							buttonsStyling: false,
+							confirmButtonText: 'Ok, got it!',
+							customClass: {
+								confirmButton: 'btn font-weight-bold btn-light',
+							},
+						}).then(function () {
+							KTUtil.scrollTop();
+						});
+					}
+				});
+			}
 		});
+
+		// On country change event, fill city dropdown
+		$("select[name=country]").on("change", function() {
+			var countryId = $("select[name=country]").val();
+			if(countryId) {
+				WebApp.get("/web/auth/signup/cities/" + countryId, function(webResponse) {
+					$("select[name=city]").empty().append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
+					var allCities = webResponse.data;
+					allCities.forEach((city) => {
+						$("select[name=city]").append(new Option(city.name, city.id));
+					});
+					$("select[name=city]").prop("disabled", false);
+				});
+			} else {
+				$("select[name=city]").prop("disabled", true);
+				$("select[name=city]").empty().append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
+			}
+		})
+
+		// Fill default values from query params
+		var params = new URLSearchParams(window.location.search)
+		$("input[name=name]").val(params.get('name'));
+		$("input[name=email]").val(params.get('email'));
 	};
 
 	var _setupFirebase = function () {
@@ -498,17 +468,24 @@ var WebAuth = (function () {
 										firebase.analytics().logEvent('auth_ok');
 										window.location.href = '/web';
 									} else {
-										Swal.fire({
-											text: webResponse.message,
-											icon: 'error',
-											buttonsStyling: false,
-											confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
-											customClass: {
-												confirmButton: 'btn font-weight-bold btn-light-primary',
-											},
-										}).then(function () {
-											KTUtil.scrollTop();
-										});
+										if(webResponse.data) {
+											var url = '/web/auth/signup';
+											url += '?name=' + webResponse.data.displayName;
+											url += '&email=' + webResponse.data.email;
+											window.location.href = url;
+										} else {
+											Swal.fire({
+												text: webResponse.message,
+												icon: 'error',
+												buttonsStyling: false,
+												confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
+												customClass: {
+													confirmButton: 'btn font-weight-bold btn-light-primary',
+												},
+											}).then(function () {
+												KTUtil.scrollTop();
+											});
+										}
 									}
 								} else {
 									Swal.fire({
@@ -560,13 +537,103 @@ var WebAuth = (function () {
 		});
 	};
 
+	var _initializeDropzone = function () {
+		// Set the dropzone container id
+		var id = '#kt_dropzone';
+
+		// Set the preview element template
+		var previewNode = $(id + " .dropzone-item");
+		previewNode.id = "";
+		var previewTemplate = previewNode.parent('.dropzone-items').html();
+		previewNode.remove();
+
+		var myDropzone = new Dropzone(id, { // Make the whole body a dropzone
+			url: "/web/auth/signup/document/upload", // Set the url for your upload script location
+            acceptedFiles: ".pdf, .ppt, .xcl, .docx, .jpeg, .jpg, .png",
+			maxFilesize: 10, // Max filesize in MB
+			maxFiles: 1,
+			previewTemplate: previewTemplate,
+			previewsContainer: id + " .dropzone-items", // Define the container to display the previews
+			clickable: id + " .dropzone-select" // Define the element that should be used as click trigger to select files.
+		});
+
+		myDropzone.on("addedfile", function(file) {
+			// Hookup the start button
+			$(document).find( id + ' .dropzone-item').css('display', '');
+		});
+
+		// Update the total progress bar
+		myDropzone.on("totaluploadprogress", function(progress) {
+			$( id + " .progress-bar").css('width', progress + "%");
+		});
+
+		myDropzone.on("sending", function(file) {
+			// Show the total progress bar when upload starts
+			$( id + " .progress-bar").css('opacity', "1");
+		});
+
+		// Hide the total progress bar when nothing's uploading anymore
+		myDropzone.on("complete", function(progress) {
+			var thisProgressBar = id + " .dz-complete";
+			setTimeout(function(){
+				$( thisProgressBar + " .progress-bar, " + thisProgressBar + " .progress").css('opacity', '0');
+			}, 300)
+		});
+
+		// Add file to the list if success
+		myDropzone.on("success", function(file, response) {
+			_pharmacyDocument = response;
+		});
+
+		// Remove file from the list
+		myDropzone.on("removedfile", function(file) {
+			if(file.status === "success") {
+				_pharmacyDocument = null;
+			}
+		});
+	};
+
+	var _signUp = function () {
+		let body = {
+			pharmacyDocument: _pharmacyDocument 
+		};
+
+		let mapKeyElement = {
+			name: "input",
+			mobile: "input",
+			email: "input",
+			password: "input",
+			entityName: "input",
+			tradeLicenseNumber: "input",
+			country: "select",
+			city: "select",
+			address: "textarea",
+		};
+		
+		Object.keys(mapKeyElement).forEach((key) => {
+			body[key] = $("" + mapKeyElement[key] +  "[name=" + key + "]").val();
+		})
+
+		WebApp.post('/web/auth/signup', body, _signUpCallback);
+	}
+
+	var _signUpCallback = function(webResponse) {
+		KTUtil.scrollTop();
+		$("#signupContainer").remove();
+		$("#thankyouContainer").css("display", "block");
+	};
+
 	// Public Functions
 	return {
 		init: function () {
-			_setupFirebase();
+			if (window.location.href.indexOf('signin') > -1) {
+				_setupFirebase();
+			}
 
 			_handleFormForgot();
 			_handleFormSignup();
+
+			_initializeDropzone();
 		},
 		signIn: function () {
 			_handleFormSignin();

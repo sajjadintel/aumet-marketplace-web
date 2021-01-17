@@ -3,6 +3,7 @@
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Auth;
 use Firebase\Auth\Token\Exception\InvalidToken;
+use Ahc\Jwt\JWT;
 
 class AuthController extends Controller
 {
@@ -74,6 +75,11 @@ class AuthController extends Controller
         } else {
             $this->f3->set('vAuthFile', 'signup');
 
+            $dbCountry = new BaseModel($this->db, "country");
+            $dbCountry->name = "name_en"; 
+            $arrCountry = $dbCountry->findAll();
+            $this->f3->set('arrCountry', $arrCountry);
+
             echo View::instance()->render('public/auth/layout.php');
         }
     }
@@ -116,13 +122,16 @@ class AuthController extends Controller
             $user = $auth->getUser($uid);
 
             $dbUser = new BaseModel($this->db, "user");
-            $dbUser->getWhere("uid = '$uid' AND statusId = 3");
+            $dbUser->getWhere("(uid = '$uid' OR email = '$user->email') AND statusId = 3");
             if ($dbUser->dry()) {
-
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
                 $this->webResponse->data = $user;
             } else {
+                if(is_null($dbUser->uid)) {
+                    $dbUser->uid = $uid;
+                    $dbUser->update();
+                }
                 $this->configUser($dbUser);
                 $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
             }
@@ -237,78 +246,221 @@ class AuthController extends Controller
 
     function postSignUp()
     {
-        $code = $this->f3->get("POST.code");
+        $name = $this->f3->get("POST.name");
+		$mobile = $this->f3->get("POST.mobile");
+		$email = $this->f3->get("POST.email");
+		$password = $this->f3->get("POST.password");
+		$entityName = $this->f3->get("POST.entityName");
+		$tradeLicenseNumber = $this->f3->get("POST.tradeLicenseNumber");
+		$countryId = $this->f3->get("POST.country");
+		$cityId = $this->f3->get("POST.city");
+		$address = $this->f3->get("POST.address");
+        $pharmacyDocument = $this->f3->get("POST.pharmacyDocument");
 
-        $dbCode = new BaseModel($this->db, "codes");
-        $dbCode->getByField("code", $code);
+        // Check if email is unique
+        $dbUser = new BaseModel($this->db, "user");
+        $dbUser->getByField("email", $email);
 
-        if ($dbCode->dry()) {
-            echo $this->jsonResponse(false, "Code is invalid, Please signup with a valid code");
-        } else if ($dbCode->isActive == 0) {
-            echo $this->jsonResponse(false, "Code is invalid, Please signup with a valid code");
+        if(!$dbUser->dry()) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->title = "";
+            $this->webResponse->message = "Email address exists, Please signin instead";
+            echo $this->webResponse->jsonResponse();
         } else {
-            $fullname = $this->f3->get("POST.fullname");
-            $email = $this->f3->get("POST.email");
-            $password = $this->f3->get("POST.password");
+            // Get currency symbol
+            $dbCountry = new BaseModel($this->db, "country");
+            $country = $dbCountry->getById($countryId)[0];
+            $currencySymbol = $country['currency'];
+            
+            // Get currency id
+            $dbCurrency = new BaseModel($this->db, "currency");
+            $currency = $dbCurrency->getByField("symbol", $currencySymbol)[0];
+            $currencyId = $currency['id'];
 
-            $dbUser = new BaseModel($this->db, "user");
-            $dbUser->getByField("email", $email);
-            if (!$dbUser->dry()) {
-                echo $this->jsonResponse(false, "Email address exists, Please signin instead");
-            } else {
-                $dbUser->fullname = $fullname;
-                $dbUser->email = $email;
-                $dbUser->password = password_hash($password, PASSWORD_DEFAULT);
-                $dbUser->codeId = $dbCode->id;
-                $dbUser->typeId = 1;
-                if ($dbUser->addReturnID()) {
+            // Add user
+            $dbUser->email = $email;
+            $dbUser->password = password_hash($password, PASSWORD_DEFAULT);
+            $dbUser->statusId = Constants::USER_STATUS_WAITING_VERIFICATION;
+            $dbUser->fullname = $name;
+            $dbUser->mobile = $mobile;
+            $dbUser->roleId = Constants::USER_ROLE_PHARMACY_SYSTEM_ADMINISTRATOR;
+            $dbUser->language = "en";
+            $dbUser->addReturnID();
 
-                    $this->sendWelcomeEmail($dbUser);
+            // Add entity
+            $dbEntity = new BaseModel($this->db, "entity");
+            $dbEntity->typeId = Constants::ENTITY_TYPE_PHARMACY;
+            $dbEntity->name_ar = $entityName;
+            $dbEntity->name_en = $entityName;
+            $dbEntity->name_fr = $entityName;
+            $dbEntity->countryId = $countryId;
+            $dbEntity->currencyId = $currencyId;
+            $dbEntity->addReturnID();
+            
+            // Add entity branch
+            $dbEntityBranch = new BaseModel($this->db, "entityBranch");
+            $dbEntityBranch->entityId = $dbEntity->id;
+            $dbEntityBranch->name_ar = $entityName;
+            $dbEntityBranch->name_en = $entityName;
+            $dbEntityBranch->name_fr = $entityName;
+            $dbEntityBranch->cityId = $cityId;
+            $dbEntityBranch->address_ar = $address;
+            $dbEntityBranch->address_en = $address;
+            $dbEntityBranch->address_fr = $address;
+            $dbEntityBranch->tradeLicenseNumber = $tradeLicenseNumber;
+            $dbEntityBranch->tradeLicenseUrl = $pharmacyDocument;
+            $dbEntityBranch->addReturnID();
+            
+            // Add account
+            $dbAccount = new BaseModel($this->db, "account");
+            $dbAccount->entityId = $dbEntity->id;
+            $dbAccount->number = 100;
+            $dbAccount->statusId = Constants::ACCOUNT_STATUS_ACTIVE;
+            $dbAccount->addReturnID();
+            
+            // Add user account
+            $dbUserAccount = new BaseModel($this->db, "userAccount");
+            $dbUserAccount->userId = $dbUser->id;
+            $dbUserAccount->accountId = $dbAccount->id;
+            $dbUserAccount->statusId = Constants::ACCOUNT_STATUS_ACTIVE;
+            $dbUserAccount->addReturnID();
 
-                    echo $this->jsonResponse(true);
-                } else {
-                    echo $this->jsonResponse(false, "Something went wrong, Try again later");
-                }
-            }
+            // Send verification email
+            $allValues = new stdClass();
+            $allValues->name = $name;
+            $allValues->mobile = $mobile;
+            $allValues->email = $email;
+            $allValues->entityName = $entityName;
+            $allValues->tradeLicenseNumber = $tradeLicenseNumber;
+            $allValues->countryId = $countryId;
+            $allValues->cityId = $cityId;
+            $allValues->address = $address;
+            $allValues->tradeLicenseUrl = $pharmacyDocument;
+            $this->sendVerificationEmail($allValues, $dbUser->id, $dbEntity->id, $dbEntityBranch->id);
+            
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            $this->webResponse->message = $this->f3->get("vMessage_signupSuccessful");
+            echo $this->webResponse->jsonResponse();
         }
     }
 
-    function sendWelcomeEmail($dbUser)
+    function sendVerificationEmail($allValues, $userId, $entityId, $entityBranchId)
     {
-        if ($dbUser->isWelcomeEmail == 0) {
+        $emailHandler = new EmailHandler($this->db);
+        $emailFile = "email/layout.php";
+        $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
+        $this->f3->set('title', 'Pharmacy Account Verification');
+        $this->f3->set('emailType', 'pharmacyAccountVerification');
+    
+        $dbCountry = new BaseModel($this->db, "country");
+        $dbCountry->name = "name_en"; 
+        $country = $dbCountry->getById($allValues->countryId)[0];
+        $countryName = $country['name'];
 
-            $emailTitle = "أهلا بك في نظام النجوم العالمي لتصنيف الخدمات";
+        $dbCity = new BaseModel($this->db, "city");
+        $dbCity->name = "nameEn";
+        $city = $dbCity->getById($allValues->cityId)[0];
+        $cityName = $city['name'];
 
-            $bccEmails = [
-                "alaa@blueoceans.io" => "Alaa Al Atrash",
-                "Ahmed.Shaban@pmo.gov.ae" => "Ahmed Shaban",
-                "Hamda.AlAli@pmo.gov.ae" => "Hamda Al Ali"
-            ];
+        $arrFields = [
+            "Name" => $allValues->name,
+            "Mobile" => $allValues->mobile,
+            "Email" => $allValues->email,
+            "Pharmacy Name" => $allValues->entityName,
+            "Trade License Number" => $allValues->tradeLicenseNumber,
+            "Country" => $countryName,
+            "City" => $cityName,
+            "Address" => $allValues->address,
+        ];
 
-            $this->f3->set('vEmail_fullname', $dbUser->fullname);
-            $this->f3->set('vEmail_username', $dbUser->email);
-            $this->f3->set('vEmail_password', $dbUser->plainPassword);
+        $this->f3->set('arrFields', $arrFields);
 
-            $htmlContent = View::instance()->render('emails/ar/welcome.php');
+        $this->f3->set('tradeLicenseUrl', $allValues->tradeLicenseUrl);
 
-            $arrTo = [
-                $dbUser->email => $dbUser->fullname
-            ];
+        $payload = [
+            'userId' => $userId,
+            'entityId' => $entityId,
+            'entityBranchId' => $entityBranchId
+        ];
+        $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
+        $token = $jwt->encode($payload);
+        $this->f3->set('token', $token);
 
-            $emailStatusCode = $this->sendEmail($emailTitle, $htmlContent, $arrTo, null, $bccEmails);
+        $emailHandler->appendToAddress($allValues->email, $allValues->name);
+        $htmlContent = View::instance()->render($emailFile);
 
-            $dbTransaction = new BaseModel($this->db, "userEmailTransactions");
-            $dbTransaction->userId = $dbUser->id;
-            $dbTransaction->email = $dbUser->email;
-            $dbTransaction->typeId = 1;
-            $dbTransaction->content = $htmlContent;
-            $dbTransaction->status = $emailStatusCode;
+        $subject = "Aumet - Pharmacy Account Verification";
+        if (getenv('ENV') != Constants::ENV_PROD) {
+            $subject .= " - (Test: " . getenv('ENV') . ")";
 
-            $dbTransaction->addReturnID();
-
-            $dbUser->isWelcomeEmail = $emailStatusCode;
-            $dbUser->update();
+            if (getenv('ENV') == Constants::ENV_LOC) {
+                $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
+                $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+            }
         }
+        
+        $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_VERIFICATION, $subject, $htmlContent);
+    }
+
+    function sendApprovalEmail($allValues, $userId)
+    {
+        $emailHandler = new EmailHandler($this->db);
+        $emailFile = "email/layout.php";
+        $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
+        $this->f3->set('title', 'Pharmacy Account Approval');
+        $this->f3->set('emailType', 'pharmacyAccountApproval');
+    
+        $dbCountry = new BaseModel($this->db, "country");
+        $dbCountry->name = "name_en"; 
+        $country = $dbCountry->getById($allValues->countryId)[0];
+        $countryName = $country['name'];
+
+        $dbCity = new BaseModel($this->db, "city");
+        $dbCity->name = "nameEn";
+        $city = $dbCity->getById($allValues->cityId)[0];
+        $cityName = $city['name'];
+
+        $arrFields = [
+            "Name" => $allValues->name,
+            "Mobile" => $allValues->mobile,
+            "Email" => $allValues->email,
+            "Pharmacy Name" => $allValues->entityName,
+            "Trade License Number" => $allValues->tradeLicenseNumber,
+            "Country" => $countryName,
+            "City" => $cityName,
+            "Address" => $allValues->address,
+        ];
+
+        $this->f3->set('arrFields', $arrFields);
+
+        $this->f3->set('tradeLicenseUrl', $allValues->tradeLicenseUrl);
+
+        $payload = [
+            'userId' => $userId
+        ];
+        $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
+        $token = $jwt->encode($payload);
+        $this->f3->set('token', $token);
+
+        $emailList = explode(';', getenv('ADMIN_SUPPORT_EMAIL'));
+        for ($i = 0; $i < count($emailList); $i++) {
+            $currentEmail = explode(',', $emailList[$i]);
+            if(count($currentEmail) == 2) {
+                $emailHandler->appendToAddress($currentEmail[0], $currentEmail[1]);
+            }
+        }
+        $htmlContent = View::instance()->render($emailFile);
+
+        $subject = "Aumet - Pharmacy Account Approval";
+        if (getenv('ENV') != Constants::ENV_PROD) {
+            $subject .= " - (Test: " . getenv('ENV') . ")";
+
+            if (getenv('ENV') == Constants::ENV_LOC) {
+                $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
+                $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+            }
+        }
+        $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_APPROVAL, $subject, $htmlContent);
     }
 
     function postForgotPassword()
@@ -472,5 +624,195 @@ class AuthController extends Controller
     function getEncryptedPassword()
     {
         echo password_hash("atrash", PASSWORD_DEFAULT);
+    }
+
+    function postSignUpDocumentUpload()
+    {
+        $allValidExtensions = [
+            "pdf",
+            "ppt",
+            "xcl",
+            "docx",
+            "jpeg",
+            "jpg",
+            "png",
+        ];
+        $success = false;
+
+        $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
+        $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
+        
+        $newFileName = $fileName . "-" . time() . ".$ext";
+        $targetFile = "files/uploads/documents/" . $newFileName;
+        
+        if (in_array($ext, $allValidExtensions)) {
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
+                $success = true;
+            }
+        }
+
+        if($success) {
+            echo $targetFile;
+        }
+    }
+
+    function postSignUpValidateEmail()
+    {
+        $email = $this->f3->get("POST.email");
+        
+        // Check if email is unique
+        $dbUser = new BaseModel($this->db, "user");
+        $dbUser->getByField("email", $email);
+
+        if(!$dbUser->dry()) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->title = "";
+            $this->webResponse->message = "Email address exists, Please signin instead";
+            echo $this->webResponse->jsonResponse();
+        } else {
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function getSignUpCitiesByCountry()
+    {
+        $countryId = $this->f3->get("PARAMS.countryId");
+        
+        $dbCity = new BaseModel($this->db, "city");
+        $dbCity->name = "nameEn";
+        $dbCity->getByField("countryId", $countryId);
+
+        $arrCities = [];
+        while(!$dbCity->dry()) {
+            $city = new stdClass();
+            $city->id = $dbCity["id"];
+            $city->name = $dbCity["name"];
+
+            array_push($arrCities, $city);
+            
+            $dbCity->next();
+        }
+
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+        $this->webResponse->data = $arrCities;
+        echo $this->webResponse->jsonResponse();
+    }
+    
+    function getVerifyAccount()
+    {
+        $token = $this->f3->get("PARAMS.token");
+
+        try {
+            $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
+            $accessTokenPayload = $jwt->decode($token);
+        } catch (\Exception $e) {
+            echo "Invalid";
+            return;
+        }
+        if (!is_array($accessTokenPayload)) {
+            echo "Invalid";
+            return;
+        }
+
+        $userId = $accessTokenPayload["userId"];
+        $dbUser = new BaseModel($this->db, "user");
+        $dbUser->getById($userId);
+
+        $entityId = $accessTokenPayload["entityId"];
+        $dbEntity = new BaseModel($this->db, "entity");
+        $dbEntity->name = "name_en";
+        $dbEntity->getById($entityId);
+
+        $entityBranchId = $accessTokenPayload["entityBranchId"];
+        $dbEntityBranch = new BaseModel($this->db, "entityBranch");
+        $dbEntityBranch->address = "address_en";
+        $dbEntityBranch->getById($entityBranchId);
+
+
+        if($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry() || $dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
+            echo "Invalid";
+        } else {
+            $dbUser->statusId = Constants::USER_STATUS_PENDING_APPROVAL;
+            $dbUser->update();
+
+            $emailHandler = new EmailHandler($this->db);
+            $message = "Your account has been authenticated. You will be contacted by Aumet within 24 to 48 hours to activate your account";
+    
+            $emailHandler->appendToAddress($dbUser->email, $dbUser->fullname);
+            $subject = "Aumet - Pharmacy Account Verified";
+            if (getenv('ENV') != Constants::ENV_PROD) {
+                $subject .= " - (Test: " . getenv('ENV') . ")";
+
+                if (getenv('ENV') == Constants::ENV_LOC) {
+                    $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
+                    $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                }
+            }
+            
+            $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_VERIFIED, $subject, $message);
+
+            // Send approval email
+            $allValues = new stdClass();
+            $allValues->name = $dbUser->fullname;
+            $allValues->mobile = $dbUser->mobile;
+            $allValues->email = $dbUser->email;
+            $allValues->entityName = $dbEntity->name;
+            $allValues->tradeLicenseNumber = $dbEntityBranch->tradeLicenseNumber;
+            $allValues->countryId = $dbEntity->countryId;
+            $allValues->cityId = $dbEntityBranch->cityId;
+            $allValues->address = $dbEntityBranch->address;
+            $allValues->tradeLicenseUrl = $dbEntityBranch->tradeLicenseUrl;
+            $this->sendApprovalEmail($allValues, $dbUser->id);
+
+            echo $message;
+        }
+    }
+
+    function getApproveAccount()
+    {
+        $token = $this->f3->get("PARAMS.token");
+
+        try {
+            $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
+            $accessTokenPayload = $jwt->decode($token);
+        } catch (\Exception $e) {
+            echo "Invalid";
+            return;
+        }
+        if (!is_array($accessTokenPayload)) {
+            echo "Invalid";
+            return;
+        }
+
+        $userId = $accessTokenPayload["userId"];
+
+        $dbUser = new BaseModel($this->db, "user");
+        $dbUser->getById($userId);
+
+        if($dbUser->dry() || $dbUser->statusId != Constants::USER_STATUS_PENDING_APPROVAL) {
+            echo "Invalid";
+        } else {
+            $dbUser->statusId = Constants::USER_STATUS_ACCOUNT_ACTIVE;
+            $dbUser->update();
+
+            $emailHandler = new EmailHandler($this->db);
+            $message = "Your account has been approved. You can now login to our platform !";
+    
+            $emailHandler->appendToAddress($dbUser->email, $dbUser->fullname);
+            $subject = "Aumet - Pharmacy Account Approved";
+            if (getenv('ENV') != Constants::ENV_PROD) {
+                $subject .= " - (Test: " . getenv('ENV') . ")";
+
+                if (getenv('ENV') == Constants::ENV_LOC) {
+                    $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
+                    $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                }
+            }
+            
+            $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_APPROVED, $subject, $message);
+
+            echo "Approved";
+        }
     }
 }

@@ -10,7 +10,14 @@ $f3->route('POST /web/auth/signin_nofirebase', 'AuthController->postSignIn_NoFir
 $f3->route('POST /web/auth/signin', 'AuthController->postSignIn');
 
 $f3->route('GET /web/auth/signup', 'AuthController->getSignUp');
+$f3->route('POST /web/auth/signup', 'AuthController->postSignUp');
+$f3->route('POST /web/auth/signup/validate/email', 'AuthController->postSignUpValidateEmail');
+$f3->route('POST /web/auth/signup/validate/email', 'AuthController->postSignUpValidateEmail');
+$f3->route('GET /web/auth/signup/cities/@countryId', 'AuthController->getSignUpCitiesByCountry');
+$f3->route('POST /web/auth/signup/document/upload', 'AuthController->postSignUpDocumentUpload');
 $f3->route('GET /web/auth/forgot', 'AuthController->getForgottenPassword');
+$f3->route('GET /web/auth/verify/account/@token', 'AuthController->getVerifyAccount');
+$f3->route('GET /web/auth/approve/account/@token', 'AuthController->getApproveAccount');
 
 $f3->route('GET /web/auth/signout', 'AuthController->getSignOut');
 

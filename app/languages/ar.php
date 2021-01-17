@@ -15,6 +15,7 @@ return array(
     'vLogin_slogan' => 'أكبر سوق الكتروني للأدوية والمستلزمات الطبية',
 
     'vMessage_invalidLogin' => 'خطأ في اسم المستخدم أو كلمة مرور',
+    'vMessage_signupSuccessful' => 'تم التسجيل بنجاح. سيقوم أحد المسؤولين بمراجعة طلبك والرد عليك قريبًا!',
 
     'vLogin_helpAdv' => 'هل تواجه صعوبات في التسجيل؟',
     'vLogin_help' => 'اطلب المساعدة',
@@ -31,6 +32,7 @@ return array(
     'vLogin_signinWithGoole' => 'سجل من خلال جوجل',
     'vLogin_signout' => 'خروج',
     'vLogin_signup' => 'تسجيل حساب جديد',
+    'vLogin_signupPharmacy' => 'أنشئ حساب صيدلية',
     'vLogin_signupAdv' => 'سجل الآن',
     'vLogin_noAccountAdv' => 'لا يوجد لديك حساب!',
     'vLogin_email' => 'البريد الالكتروني',
@@ -57,17 +59,37 @@ return array(
     'vSignup_wizardSubscrptionInfoDesc' => 'قم بإعداد معلومات اشتراكك',
     'vSignup_wizardReviewSubmit' => 'تقديم الطلب',
     'vSignup_wizardReviewSubmitDesc' => 'قم بمراجعة وتقديم طلبك',
+    'vSignup_wizardPersonalInfo' => 'معلومات شخصية',
+    'vSignup_wizardPersonalInfoDesc' => 'أضف بياناتك الشخصية',
+    'vSignup_wizardPharmacyInfo' => 'معلومات الصيدلة',
+    'vSignup_wizardPharmacyInfoDesc' => 'أضف تفاصيل الصيدلية الخاصة بك',
 
     'vSignup_wizardNext' => 'الخطوة التالية',
     'vSignup_wizardPrev' => 'الخطوة السابقة',
     'vSignup_wizardSubmit' => 'تقديم الطلب',
+    
+    'vSignup_wizardPharmacyInfoTitle' => 'معلومات الصيدلة',
+    'vSignup_wizardPharmacyInfoSubtitle' => 'املأ التفاصيل التالية',
 
     'vSignup_AlreadyHaveAccount' => 'هل لديك حساب ؟',
     'vSignup_firstName' => 'الإسم الأول',
     'vSignup_lastName' => 'إسم العائلة',
     'vSignup_name' => 'الإسم',
-    'vSignup_mobile' => 'رقم الهاتف',
+    'vSignup_mobile' => 'رقم الهاتف المحمول',
     'vSignup_email' => 'البريد الالكتروني',
+    'vSignup_password' => 'كلمه السر',
+    'vSignup_passwordConfirmation' => 'تأكيد كلمة السر',
+    'vSignup_pharmacyName' => 'اسم الصيدلية',
+    'vSignup_tradeLicenseNumber' => 'رقم الرخصة التجارية',
+    'vSignup_country' => 'بلد',
+    'vSignup_city' => 'مدينة',
+    'vSignup_address' => 'عنوان',
+    'vSignup_pharmacyDocument' => 'وثيقة الرخصة التجارية الصيدلانية',
+    'vSignup_uploadDocument' => 'تحميل المستند',
+    
+    'vSignup_thankyouTitle' => 'شكرا على التسجيل!',
+    'vSignup_thankyouSubtitle' => 'تم إرسال بريد إلكتروني إليك للتحقق من حسابك.',
+    'vSignup_thankyouHome' => 'العودة إلى الصفحة الرئيسية',
 
     'vBack' => 'رجوع',
 
