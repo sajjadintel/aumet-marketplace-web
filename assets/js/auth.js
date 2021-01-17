@@ -3,7 +3,7 @@
 // Class Definition
 var WebAuth = (function () {
 	var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
-	var _mapUidDocumentName = {};
+	var _pharmacyDocument;
 
 	var _handleFormSignin = function () {
 		console.log('Signin');
@@ -404,6 +404,24 @@ var WebAuth = (function () {
 				});
 			}
 		});
+
+		// On country change event, fill city dropdown
+		$("select[name=country]").on("change", function() {
+			var countryId = $("select[name=country]").val();
+			if(countryId) {
+				WebApp.get("/web/auth/signup/cities/" + countryId, function(webResponse) {
+					$("select[name=city]").empty().append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
+					var allCities = webResponse.data;
+					allCities.forEach((city) => {
+						$("select[name=city]").append(new Option(city.name, city.id));
+					});
+					$("select[name=city]").prop("disabled", false);
+				});
+			} else {
+				$("select[name=city]").prop("disabled", true);
+				$("select[name=city]").empty().append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
+			}
+		})
 	};
 
 	var _setupFirebase = function () {
@@ -520,8 +538,8 @@ var WebAuth = (function () {
 		var myDropzone = new Dropzone(id, { // Make the whole body a dropzone
 			url: "/web/auth/signup/document/upload", // Set the url for your upload script location
             acceptedFiles: ".pdf, .ppt, .xcl, .docx, .jpeg, .jpg, .png",
-			parallelUploads: 20,
 			maxFilesize: 10, // Max filesize in MB
+			maxFiles: 1,
 			previewTemplate: previewTemplate,
 			previewsContainer: id + " .dropzone-items", // Define the container to display the previews
 			clickable: id + " .dropzone-select" // Define the element that should be used as click trigger to select files.
@@ -552,18 +570,20 @@ var WebAuth = (function () {
 
 		// Add file to the list if success
 		myDropzone.on("success", function(file, response) {
-			_mapUidDocumentName[file.upload.uuid] = response;
+			_pharmacyDocument = response;
 		});
 
 		// Remove file from the list
 		myDropzone.on("removedfile", function(file) {
-			delete _mapUidDocumentName[file.upload.uuid];
+			if(file.status === "success") {
+				_pharmacyDocument = null;
+			}
 		});
 	};
 
 	var _signUp = function () {
 		let body = {
-			pharmacyDocuments: Object.keys(_mapUidDocumentName).map((key) => _mapUidDocumentName[key]) 
+			pharmacyDocument: _pharmacyDocument 
 		};
 
 		let mapKeyElement = {
@@ -574,7 +594,7 @@ var WebAuth = (function () {
 			entityName: "input",
 			tradeLicenseNumber: "input",
 			country: "select",
-			city: "input",
+			city: "select",
 			address: "textarea",
 		};
 		

@@ -31,7 +31,7 @@
 							<!--begin::Form Group-->
 							<div class="form-group">
 								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_name ?></label>
-								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="name" placeholder="<?php echo $vSignup_name ?>" value="" />
+								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="name" placeholder="<?php echo $vSignup_name ?>" value="<?php echo $name ?>" />
 							</div>
 							<!--end::Form Group-->
 							<!--begin::Form Group-->
@@ -43,7 +43,7 @@
 							<!--begin::Form Group-->
 							<div class="form-group">
 								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_email ?></label>
-								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="email" placeholder="<?php echo $vSignup_email ?>" value="" style="direction: ltr;" />
+								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="email" placeholder="<?php echo $vSignup_email ?>" value="<?php echo $email ?>" style="direction: ltr;" />
 							</div>
 							<!--end::Form Group-->
 							<!--begin::Form Group-->
@@ -99,7 +99,9 @@
 									<!--begin::Form Group-->
 									<div class="form-group">
 										<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_city; ?></label>
-										<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="city" placeholder="<?php echo $vSignup_city; ?>" value="" style="direction: ltr;" />
+										<select name="city" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" disabled>
+											<option value=""><?php echo $vSignup_city; ?></option>
+										</select>
 									</div>
 									<!--end::Form Group-->
 								</div>
@@ -114,7 +116,7 @@
 							<!--begin::Form Group-->
 							<div class="form-group">
 								<div>
-									<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_pharmacyDocuments; ?></label>
+									<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_pharmacyDocument; ?></label>
 								</div>
 								
 								<div class="dropzone dropzone-multi" id="kt_dropzone" style="background-color: unset;">
@@ -131,7 +133,7 @@
 													</g>
 												</svg>
 												<!--end::Svg Icon-->
-											</span><?php echo $vSignup_uploadDocuments; ?>
+											</span><?php echo $vSignup_uploadDocument; ?>
 										</a>
 									</div>
 									<div class="dropzone-items">

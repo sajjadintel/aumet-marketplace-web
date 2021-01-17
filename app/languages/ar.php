@@ -84,8 +84,8 @@ return array(
     'vSignup_country' => 'بلد',
     'vSignup_city' => 'مدينة',
     'vSignup_address' => 'عنوان',
-    'vSignup_pharmacyDocuments' => 'وثيقة الرخصة التجارية الصيدلانية',
-    'vSignup_uploadDocuments' => 'تحميل المستندات',
+    'vSignup_pharmacyDocument' => 'وثيقة الرخصة التجارية الصيدلانية',
+    'vSignup_uploadDocument' => 'تحميل المستند',
     
     'vSignup_thankyouTitle' => 'شكرا على التسجيل!',
     'vSignup_thankyouSubtitle' => 'لقد تلقينا طلبك ، يقوم فريقنا بالتحقق من التفاصيل الخاصة بك وسنعاود الاتصال بك خلال ٤٨ ساعة.',

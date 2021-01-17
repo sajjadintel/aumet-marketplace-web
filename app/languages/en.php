@@ -87,8 +87,8 @@ return array(
     'vSignup_country' => 'Country',
     'vSignup_city' => 'City',
     'vSignup_address' => 'Address',
-    'vSignup_pharmacyDocuments' => 'Pharmacy Trade License Document',
-    'vSignup_uploadDocuments' => 'Upload Documents',
+    'vSignup_pharmacyDocument' => 'Pharmacy Trade License Document',
+    'vSignup_uploadDocument' => 'Upload Document',
     
     'vSignup_thankyouTitle' => 'Thanks for Registering!',
     'vSignup_thankyouSubtitle' => 'We received your request, Our team is verifying your details and we will get back to you 48 hours.',

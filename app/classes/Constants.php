@@ -31,6 +31,9 @@ class Constants
     const EMAIL_CUSTOMER_SUPPORT_REQUEST = 'Customer Support Request';
     const EMAIL_CUSTOMER_SUPPORT_CONFIRMATION = 'Customer Support Confirmation';
     const EMAIL_ORDER_STATUS_UPDATE = 'Order Status Update';
+    const EMAIL_PHARMACY_ACCOUNT_VERIFICATION = 'Pharmacy Account Verification';
+    const EMAIL_PHARMACY_ACCOUNT_VERIFIED = 'Pharmacy Account Verified';
+    const EMAIL_PHARMACY_ACCOUNT_APPROVAL = 'Pharmacy Account Approval';
 
     ### Status Codes
     const STATUS_CODE_REDIRECT_TO_WEB = 0;
