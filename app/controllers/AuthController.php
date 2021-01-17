@@ -730,8 +730,7 @@ class AuthController extends Controller
         $dbEntityBranch->getById($entityBranchId);
 
 
-        // if($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry() || $dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
-        if($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry()) {
+        if($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry() || $dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
             echo "Invalid";
         } else {
             $dbUser->statusId = Constants::USER_STATUS_PENDING_APPROVAL;
