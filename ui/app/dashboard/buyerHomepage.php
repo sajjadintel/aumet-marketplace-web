@@ -40,9 +40,10 @@
                 <div class="card card-custom card-body card-stretch gutter-b">
                     <!--begin::Banner-->
                     <div class="mb-10">
+                        <?php if(count($arrBanners) > 0): ?>
                         <div class="autoplay" style="height: 280px;">
                             <?php foreach($arrBanners as $banner) : ?>
-                                <div style="background-image: url('<?php echo $banner->image; ?>'); height: 280px;">
+                                <div style="background-image: url('<?php echo $banner->image; ?>'); height: 280px; background-size: 100% 100%;">
                                     <?php if ($objUser->language == "ar"): ?>
                                         <div style="height: 100%; display: flex; align-items: center; justify-content: flex-end;">
                                             <div class="col-5" style="margin-right: 50px; text-align: right;">
@@ -67,6 +68,7 @@
                                 </div>
                             <?php endforeach; ?>
                         </div>
+                        <?php endif; ?>
                     </div>
                     <!--begin::New Products-->
                     <div class="mb-10">

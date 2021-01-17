@@ -217,4 +217,6 @@ return array(
     
     'vModule_dashboardBuyer_newProducts' => 'منتجات جديدة',
     'vModule_dashboardBuyer_topSelling' => 'الأعلى مبيعا',
+    'vModule_dashboardBuyer_pendingOrders' => 'الأوامر المعلقة',
+    'vModule_dashboardBuyer_topDistributors' => 'أفضل الموزعين',
 );

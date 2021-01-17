@@ -105,7 +105,7 @@ class DashboardController extends Controller {
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_dashboard');
-                $this->webResponse->data = View::instance()->render('app/dashboard/buyer.php');
+                $this->webResponse->data = View::instance()->render('app/dashboard/buyerHomepage.php');
                 echo $this->webResponse->jsonResponse();
             }
         }
