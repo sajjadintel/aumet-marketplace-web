@@ -42,47 +42,50 @@ var CartCheckout = (function () {
 	};
 	var _removeItemSuccess = function (webResponse) {
 		// Update cart count
-		let cartCount = webResponse.data > 9 ? "9+" : webResponse.data;
-		if(webResponse.data !== 0) $("#cartCount").css("display", "flex");
-		else $("#cartCount").css("display", "none");
-		$("#cartCount").html(cartCount);
+		let cartCount = webResponse.data > 9 ? '9+' : webResponse.data;
+		if (webResponse.data !== 0) $('#cartCount').css('display', 'flex');
+		else $('#cartCount').css('display', 'none');
+		$('#cartCount').html(cartCount);
 		WebApp.loadPage('/web/cart/checkout');
 	};
 
-	var _submitOrderModal = function() {
-		let paymentMethodInputId = $("input[name='paymentMethod']:checked").attr("id");
-		let allParts = paymentMethodInputId.split("-");
+	var _submitOrderModal = function () {
+		let paymentMethodInputId = $("input[name='paymentMethod']:checked").attr('id');
+		let allParts = paymentMethodInputId.split('-');
 		let paymentMethodId = allParts[1];
 		WebApp.get('/web/cart/checkout/submit/confirm/' + paymentMethodId, WebApp.openModal);
 	};
 
-	var _submitOrderSuccess = function(webResponse) {
+	var _submitOrderSuccess = function (webResponse) {
+		Cart.emptyCart();
 		WebApp.redirect('/web/thankyou/' + webResponse.data);
-	}
+	};
 
-	var _updateQuantity = function(productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, oldValue = null) {
-		let quantityId = "#quantity-" + productId;
+	var _updateQuantity = function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, oldValue = null) {
+		let quantityId = '#quantity-' + productId;
 		let currentValue = 0;
-		if($(quantityId).val() > 0) currentValue = parseInt($(quantityId).val());
+		if ($(quantityId).val() > 0) currentValue = parseInt($(quantityId).val());
 		let newValue = currentValue + increment;
-		if(newValue < 0) newValue = 0;
-		else if(newValue > stock && oldValue) $(quantityId).val(oldValue);
+		if (newValue < 0) newValue = 0;
+		else if (newValue > stock && oldValue) $(quantityId).val(oldValue);
 
-		if(newValue === 0) {
+		if (newValue === 0) {
 			_removeItemModal(cartDetailId);
 		} else {
-			WebApp.post('/web/cart/checkout/update', { cartDetailId, sellerId, productId, quantity: newValue }, (webResponse) => _updateQuantityCallback(webResponse, updateTotalPrice));
+			WebApp.post('/web/cart/checkout/update', { cartDetailId, sellerId, productId, quantity: newValue }, (webResponse) =>
+				_updateQuantityCallback(webResponse, updateTotalPrice)
+			);
 		}
-	}
+	};
 
-	var _updateQuantityCallback = function(webResponse, updateTotalPrice) {
+	var _updateQuantityCallback = function (webResponse, updateTotalPrice) {
 		let cartDetail = webResponse.data;
-		
+
 		// Update cart count
-		let cartCount = cartDetail.cartCount > 9 ? "9+" : cartDetail.cartCount;
-		if(webResponse.data !== 0) $("#cartCount").css("display", "flex");
-		else $("#cartCount").css("display", "none");
-		$("#cartCount").html(cartCount);
+		let cartCount = cartDetail.cartCount > 9 ? '9+' : cartDetail.cartCount;
+		if (webResponse.data !== 0) $('#cartCount').css('display', 'flex');
+		else $('#cartCount').css('display', 'none');
+		$('#cartCount').html(cartCount);
 
 		let productId = cartDetail.productId;
 		let quantity = cartDetail.quantity;
@@ -90,66 +93,63 @@ var CartCheckout = (function () {
 		let sellerId = cartDetail.entityId;
 
 		// Update quantity input
-		let quantityId = "#quantity-" + productId;
+		let quantityId = '#quantity-' + productId;
 		$(quantityId).val(quantity);
 
 		// Update quantity free
-		let quantityFreeId = "#quantityFree-" + productId;
+		let quantityFreeId = '#quantityFree-' + productId;
 		$(quantityFreeId).html(quantityFree);
 
-		let quantityFreeHolderId = "#quantityFreeHolder-" + productId;
-		$(quantityFreeHolderId).css("display", quantityFree > 0 ? "block" : "none");
+		let quantityFreeHolderId = '#quantityFreeHolder-' + productId;
+		$(quantityFreeHolderId).css('display', quantityFree > 0 ? 'block' : 'none');
 
 		// Update product price
-		let productPriceId = "#productPrice-" + productId;
-		let unitPrice = $(productPriceId).attr("data-unitPrice");
-		let currency = $(productPriceId).attr("data-currency");
+		let productPriceId = '#productPrice-' + productId;
+		let unitPrice = $(productPriceId).attr('data-unitPrice');
+		let currency = $(productPriceId).attr('data-currency');
 		let productPrice = (quantity * unitPrice).toFixed(2);
 
-		$(productPriceId).attr("data-productPrice", productPrice);
-		$(productPriceId).html(productPrice + " " + currency);
+		$(productPriceId).attr('data-productPrice', productPrice);
+		$(productPriceId).html(productPrice + ' ' + currency);
 
 		// Update total price
 		let tax = 0;
 		let subTotalPrice = 0;
-		let productPriceClass = ".productPrice-" + sellerId;
-		$(productPriceClass).each(function(index, element) {
-			let price = parseFloat($(element).attr("data-productPrice"));
+		let productPriceClass = '.productPrice-' + sellerId;
+		$(productPriceClass).each(function (index, element) {
+			let price = parseFloat($(element).attr('data-productPrice'));
 			subTotalPrice += price;
-			tax += price * parseFloat($(element).attr("data-vat")) / 100;
+			tax += (price * parseFloat($(element).attr('data-vat'))) / 100;
 		});
-		
-		
+
 		let totalPrice = subTotalPrice + tax;
 
 		tax = tax.toFixed(2);
-		let taxId = "#tax-" + sellerId;
-		$(taxId).attr("data-vat", tax)
-		$(taxId).html(tax + " " + currency);
-		
+		let taxId = '#tax-' + sellerId;
+		$(taxId).attr('data-vat', tax);
+		$(taxId).html(tax + ' ' + currency);
+
 		subTotalPrice = subTotalPrice.toFixed(2);
-		let subTotalPriceId = "#subTotalPrice-" + sellerId;
-		$(subTotalPriceId).attr("data-subTotalPrice", subTotalPrice)
-		$(subTotalPriceId).html(subTotalPrice + " " + currency);
+		let subTotalPriceId = '#subTotalPrice-' + sellerId;
+		$(subTotalPriceId).attr('data-subTotalPrice', subTotalPrice);
+		$(subTotalPriceId).html(subTotalPrice + ' ' + currency);
 
 		totalPrice = totalPrice.toFixed(2);
-		let totalPriceId = "#totalPrice-" + sellerId;
-		$(totalPriceId).attr("data-totalPrice", totalPrice)
-		$(totalPriceId).html(totalPrice + " " + currency);
+		let totalPriceId = '#totalPrice-' + sellerId;
+		$(totalPriceId).attr('data-totalPrice', totalPrice);
+		$(totalPriceId).html(totalPrice + ' ' + currency);
 
 		updateTotalPrice();
-	}
+	};
 
-	var _updateNote = function(productId, cartDetailId, sellerId) {
-		let noteId = "#note-" + productId;
+	var _updateNote = function (productId, cartDetailId, sellerId) {
+		let noteId = '#note-' + productId;
 		let currentValue = $(noteId).val();
 
 		WebApp.post('/web/cart/checkout/note', { cartDetailId, sellerId, productId, note: currentValue }, (webResponse) => _updateNoteCallback(webResponse));
-	}
+	};
 
-	var _updateNoteCallback = function(webResponse) {
-
-	}
+	var _updateNoteCallback = function (webResponse) {};
 
 	// Public Functions
 	return {
@@ -157,22 +157,22 @@ var CartCheckout = (function () {
 			_int();
 		},
 		removeItemModal: function (itemId) {
-			_removeItemModal(itemId)
+			_removeItemModal(itemId);
 		},
 		removeItemSuccess: function (webResponse) {
-			_removeItemSuccess(webResponse)
+			_removeItemSuccess(webResponse);
 		},
 		submitOrderModal: function () {
-			_submitOrderModal()
+			_submitOrderModal();
 		},
 		submitOrderSuccess: function (webResponse) {
-			_submitOrderSuccess(webResponse)
+			_submitOrderSuccess(webResponse);
 		},
-		updateQuantity: function(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice, oldValue) {
-			_updateQuantity(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice, oldValue)
+		updateQuantity: function (productId, increment, stock, cardDetailId, sellerId, updateTotalPrice, oldValue) {
+			_updateQuantity(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice, oldValue);
 		},
-		updateNote: function(productId, cardDetailId, sellerId) {
-			_updateNote(productId, cardDetailId, sellerId)
-		}
+		updateNote: function (productId, cardDetailId, sellerId) {
+			_updateNote(productId, cardDetailId, sellerId);
+		},
 	};
 })();
