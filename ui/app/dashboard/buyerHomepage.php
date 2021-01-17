@@ -177,7 +177,16 @@
                     </div>
                     <div>
                         <?php foreach($arrTopDistributors as $entity) : ?>
-                            <div class="font-size-h5" style="padding-top: 20px;"><?php echo $entity->name; ?></div>
+                            <div class="font-size-h5" style="padding-top: 20px;display: flex;justify-content: space-between;align-items: center; cursor: pointer;" onclick="WebApp.loadPage('/web/product/search?distributorId=<?php echo $entity->id; ?>');">
+                                <div class="col-9">
+                                    <?php echo $entity->name; ?>
+                                </div>
+                                <div class="col-3">
+                                    <a class="btn btn-icon btn-light-success">
+                                        <i class="flaticon2-next"></i>
+                                    </a>
+                                </div>
+                            </div>
                         <?php endforeach; ?>
                     </div>
                 </div>

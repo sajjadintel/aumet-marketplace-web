@@ -151,6 +151,7 @@ class DashboardController extends Controller {
                 $arrTopDistributors = [];
                 foreach($mapEntityIdTotal as $entityId => $total) {
                     $entity = new stdClass();
+                    $entity->id = $entityId;
                     $entity->name = $mapEntityIdName[$entityId];
 
                     if(count($arrTopDistributors) < $topDistributorsCount) {
