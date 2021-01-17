@@ -431,7 +431,7 @@ class OrderController extends Controller {
 
 
         foreach ($missingProducts as $missingProduct) {
-            if (!(is_numeric($missingProduct['productId']) && $missingProduct['productId'] > 0)) {
+            if (!(is_numeric($missingProduct['productId']) || $missingProduct['productId'] < 0)) {
                 echo $this->webResponse->jsonResponseV2(2, "Error", "Invalid Product id");
                 return;
             }
@@ -465,7 +465,7 @@ class OrderController extends Controller {
     {
         $orderId = $this->f3->get("POST.orderId");
         $editQuantityProducts = $this->f3->get("POST.modifyQuantityOrderRepeater");
-        if ($this->checkForProductsDuplication($editQuantityProducts)) {
+        if ($this->checkForProductsDuplication($editQuantityProducts, 'productCode')) {
             echo $this->webResponse->jsonResponseV2(2, "Error", $this->f3->get('vMissingProduct_ErrorDuplicateProducts'));
             return;
         }
@@ -480,12 +480,12 @@ class OrderController extends Controller {
 
 
         foreach ($editQuantityProducts as $editQuantityProduct) {
-            if (!(is_numeric($editQuantityProduct['productId']) && $editQuantityProduct['productId'] > 0)) {
+            if (!(is_numeric($editQuantityProduct['productCode']) || $editQuantityProduct['productCode'] < 0)) {
                 echo $this->webResponse->jsonResponseV2(2, "Error", "Invalid Product id");
                 return;
             }
-            $serverProduct = $this->getProductFromArrayById($editQuantityProduct['productId'], $arrOrderDetail);
-            if ($editQuantityProduct['quantity'] > $serverProduct['requestedQuantity'] || $editQuantityProduct['quantity'] <= 0) {
+            $serverProduct = $this->getProductFromArrayById($editQuantityProduct['productCode'], $arrOrderDetail);
+            if ($editQuantityProduct['shippedQuantity'] > $serverProduct['requestedQuantity'] || $editQuantityProduct['shippedQuantity'] < 0) {
                 echo $this->webResponse->jsonResponseV2(2, "Error", $this->f3->get('vMissingProduct_ErrorInvalidQuantity') . $serverProduct['productName']);
                 return;
             }
@@ -496,14 +496,14 @@ class OrderController extends Controller {
         $priceDifferenceVat = 0;
         foreach ($editQuantityProducts as $editQuantityProduct) {
             $dbOrderDetail = new BaseModel($this->db, "orderDetail");
-            $dbOrderDetail->getWhere("orderId= {$dbOrder->id} AND entityProductId={$editQuantityProduct['productId']}");
+            $dbOrderDetail->getWhere("orderId= {$dbOrder->id} AND entityProductId={$editQuantityProduct['productCode']}");
             // calculate order entity quantity free based on new quantity and free ratio
-            $quantityFree = floor($editQuantityProduct['quantity'] * $dbOrderDetail->freeRatio);
-            $quantity = $editQuantityProduct['quantity'] - $quantityFree;
+            $quantityFree = floor($editQuantityProduct['shippedQuantity'] * $dbOrderDetail->freeRatio);
+            $quantity = $editQuantityProduct['shippedQuantity'] - $quantityFree;
 
             // get product vat
             $dbEntityProductSell = new BaseModel($this->db, "entityProductSell");
-            $dbEntityProductSell->getWhere("id={$editQuantityProduct['productId']}");
+            $dbEntityProductSell->getWhere("id={$editQuantityProduct['productCode']}");
             // calculate product price difference caused by quantity change
             $priceDifference += ($dbOrderDetail->quantity - $quantity) * $dbOrderDetail->unitPrice;
             // calculate product vat difference caused by quantity change
@@ -512,7 +512,7 @@ class OrderController extends Controller {
             // set order detail new quantity
             $dbOrderDetail->quantity = $quantity;
             $dbOrderDetail->quantityFree = $quantityFree;
-            $dbOrderDetail->shippedQuantity = $editQuantityProduct['quantity'];
+            $dbOrderDetail->shippedQuantity = $editQuantityProduct['shippedQuantity'];
             $dbOrderDetail->update();
 
             $modifiedProductIds[] = $dbOrderDetail->entityProductId;
@@ -543,11 +543,11 @@ class OrderController extends Controller {
         return null;
     }
 
-    private function checkForProductsDuplication($missingProducts)
+    private function checkForProductsDuplication($missingProducts, $key = 'productId')
     {
         $dupe_array = array();
         foreach ($missingProducts as $val) {
-            if (++$dupe_array[$val['productId']] > 1) {
+            if (++$dupe_array[$val[$key]] > 1) {
                 return true;
             }
         }

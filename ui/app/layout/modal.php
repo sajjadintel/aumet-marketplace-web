@@ -312,13 +312,13 @@
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
                                             <div class="col-md-4">
-                                                <label><?php echo $vModal_quantity?>:</label>
-                                                <input type="number" min="1" max="100000" id="missingProductQuantity" name="quantity" class="form-control missingProductQuantity" placeholder="<?php echo $vModal_enterMissingProduct?>">
+                                                <label><?php echo $vModal_quantity ?>:</label>
+                                                <input type="number" min="1" max="100000" id="missingProductQuantity" name="quantity" class="form-control missingProductQuantity" placeholder="<?php echo $vModal_enterMissingProduct ?>">
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
                                             <div class="col-md-2">
                                                 <a href="javascript:;" id="missingProductDelete" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger">
-                                                    <i class="la la-trash-o"></i><?php echo $vModal_delete?></a>
+                                                    <i class="la la-trash-o"></i><?php echo $vModal_delete ?></a>
                                             </div>
                                         </div>
                                     </div>
@@ -326,7 +326,7 @@
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <a href="javascript:;" id="missingProductAdd" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
-                                            <i class="la la-plus"></i><?php echo $vModal_add?></a>
+                                            <i class="la la-plus"></i><?php echo $vModal_add ?></a>
                                     </div>
                                 </div>
                             </div>
@@ -335,7 +335,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="modal-editQuantity-button">
-                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="missingProductModalAction"><?php echo $vModal_SaveChanges?></button>
+                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="missingProductModalAction"><?php echo $vModal_SaveChanges ?></button>
                     </div>
                 </div>
             </form>
@@ -425,7 +425,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="modal-editQuantity-button">
-                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="editQuantityModalAction"><?php echo $vModal_SaveChanges?></button>
+                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="editQuantityModalAction"><?php echo $vModal_SaveChanges ?></button>
                     </div>
                 </div>
             </form>
@@ -498,32 +498,18 @@
                                 <div class="row">
                                     <div data-repeater-list="modifyQuantityOrderRepeater" class="col-lg-12">
                                         <div data-repeater-item="" class="form-group row align-items-end">
+                                            <input type="hidden" id="modifyQuantityOrderId" name="productCode" class="form-control">
                                             <div class="col-md-4">
-                                                <label><?php echo $vModal_product ?>:</label>
-                                                <select
-                                                    class="select2 form-control"
-                                                    name="productId"
-                                                    tabindex="-1"
-                                                >
-                                                </select>
+                                                <label>product Name:</label>
+                                                <input type="text" id="modifyQuantityOrderProductName" name="productName" class="form-control" disabled>
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
                                             <div class="col-md-4">
-                                                <label><?php echo $vModal_quantity?>:</label>
-                                                <input type="number" min="1" max="100000" id="modifyQuantityOrderQuantity" name="quantity" class="form-control modifyQuantityOrderQuantity" placeholder="<?php echo $vModal_enterQuantity ?>">
+                                                <label>Quantity:</label>
+                                                <input type="text" id="modifyQuantityOrderQuantity" name="shippedQuantity" class="form-control" placeholder="Enter Quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                                                 <div class="d-md-none mb-2"></div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <a href="javascript:;" id="modifyQuantityOrderDelete" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger">
-                                                    <i class="la la-trash-o"></i><?php echo $vModal_delete?></a>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <a href="javascript:;" id="modifyQuantityOrderAdd" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
-                                            <i class="la la-plus"></i><?php echo $vModal_add?></a>
                                     </div>
                                 </div>
                             </div>
@@ -532,7 +518,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="modal-editQuantity-button">
-                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="modifyQuantityOrderModalAction"><?php echo $vModal_SaveChanges?></button>
+                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="modifyQuantityOrderModalAction"><?php echo $vModal_SaveChanges ?></button>
                     </div>
                 </div>
             </form>

@@ -492,8 +492,6 @@ var ModifyQuantityOrderModals = (function () {
             isFirstItemUndeletable: true,
             show: function () {
                 $(this).slideDown();
-                _validateInput(this);
-                _initSelect2(this);
             },
             hide: function (deleteElement) {
                 if (confirm(WebAppLocals.getMessage('missingProducts_deleteConfirmation'))) {
@@ -502,43 +500,14 @@ var ModifyQuantityOrderModals = (function () {
             },
         });
 
-
-        repeater.setList([]);
-
         products = webResponse.data.orderDetail;
 
-        products = $.map(products, function (obj) {
-            obj.text = obj.productName;
-            obj.id = obj.productCode;
-            return obj;
-        });
+        console.log(products);
+        repeater.setList(products);
 
         $('#modifyQuantityOrderModal').appendTo('body').modal('show');
-
     };
 
-
-    var _initSelect2 = function initSelect2(input) {
-        $(input).find('.select2').select2({
-            placeholder: WebAppLocals.getMessage('missingProducts_filterByProduct'),
-            data: products,
-        });
-    }
-
-    var _validateInput = function validateInput(input) {
-        $(input).find('.modifyQuantityOrderQuantity').keydown(function () {
-            // Save old value.
-            if (!$(this).val() || (parseInt($(this).val()) <= $(this).attr('max') && parseInt($(this).val()) >= $(this).attr('min')))
-                $(this).data("old", $(this).val());
-        });
-        $(input).find('.modifyQuantityOrderQuantity').keyup(function () {
-            // Check correct, else revert back to old value.
-            if (!$(this).val() || (parseInt($(this).val()) <= $(this).attr('max') && parseInt($(this).val()) >= $(this).attr('min')))
-                ;
-            else
-                $(this).val($(this).data("old"));
-        });
-    }
 
     return {
         openModal: function (orderId) {
