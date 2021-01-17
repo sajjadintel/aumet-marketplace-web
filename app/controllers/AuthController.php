@@ -76,7 +76,7 @@ class AuthController extends Controller
             $this->f3->set('vAuthFile', 'signup');
 
             $dbCountry = new BaseModel($this->db, "country");
-            $dbCountry->name = "name_en"; 
+            $dbCountry->name = "name_en";
             $arrCountry = $dbCountry->findAll();
             $this->f3->set('arrCountry', $arrCountry);
 
@@ -128,7 +128,7 @@ class AuthController extends Controller
                 $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
                 $this->webResponse->data = $user;
             } else {
-                if(is_null($dbUser->uid)) {
+                if (is_null($dbUser->uid)) {
                     $dbUser->uid = $uid;
                     $dbUser->update();
                 }
@@ -187,7 +187,7 @@ class AuthController extends Controller
         $dbCartDetail = new BaseModel($this->db, "cartDetail");
         $arrCartDetail = $dbCartDetail->getByField("accountId", $objUser->accountId);
         $cartCount = 0;
-        foreach($arrCartDetail as $cartDetail) {
+        foreach ($arrCartDetail as $cartDetail) {
             $cartCount += $cartDetail->quantity;
             $cartCount += $cartDetail->quantityFree;
         }
@@ -247,21 +247,21 @@ class AuthController extends Controller
     function postSignUp()
     {
         $name = $this->f3->get("POST.name");
-		$mobile = $this->f3->get("POST.mobile");
-		$email = $this->f3->get("POST.email");
-		$password = $this->f3->get("POST.password");
-		$entityName = $this->f3->get("POST.entityName");
-		$tradeLicenseNumber = $this->f3->get("POST.tradeLicenseNumber");
-		$countryId = $this->f3->get("POST.country");
-		$cityId = $this->f3->get("POST.city");
-		$address = $this->f3->get("POST.address");
+        $mobile = $this->f3->get("POST.mobile");
+        $email = $this->f3->get("POST.email");
+        $password = $this->f3->get("POST.password");
+        $entityName = $this->f3->get("POST.entityName");
+        $tradeLicenseNumber = $this->f3->get("POST.tradeLicenseNumber");
+        $countryId = $this->f3->get("POST.country");
+        $cityId = $this->f3->get("POST.city");
+        $address = $this->f3->get("POST.address");
         $pharmacyDocument = $this->f3->get("POST.pharmacyDocument");
 
         // Check if email is unique
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getByField("email", $email);
 
-        if(!$dbUser->dry()) {
+        if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
             $this->webResponse->message = "Email address exists, Please signin instead";
@@ -271,7 +271,7 @@ class AuthController extends Controller
             $dbCountry = new BaseModel($this->db, "country");
             $country = $dbCountry->getById($countryId)[0];
             $currencySymbol = $country['currency'];
-            
+
             // Get currency id
             $dbCurrency = new BaseModel($this->db, "currency");
             $currency = $dbCurrency->getByField("symbol", $currencySymbol)[0];
@@ -296,7 +296,7 @@ class AuthController extends Controller
             $dbEntity->countryId = $countryId;
             $dbEntity->currencyId = $currencyId;
             $dbEntity->addReturnID();
-            
+
             // Add entity branch
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
             $dbEntityBranch->entityId = $dbEntity->id;
@@ -310,14 +310,14 @@ class AuthController extends Controller
             $dbEntityBranch->tradeLicenseNumber = $tradeLicenseNumber;
             $dbEntityBranch->tradeLicenseUrl = $pharmacyDocument;
             $dbEntityBranch->addReturnID();
-            
+
             // Add account
             $dbAccount = new BaseModel($this->db, "account");
             $dbAccount->entityId = $dbEntity->id;
             $dbAccount->number = 100;
             $dbAccount->statusId = Constants::ACCOUNT_STATUS_ACTIVE;
             $dbAccount->addReturnID();
-            
+
             // Add user account
             $dbUserAccount = new BaseModel($this->db, "userAccount");
             $dbUserAccount->userId = $dbUser->id;
@@ -337,7 +337,7 @@ class AuthController extends Controller
             $allValues->address = $address;
             $allValues->tradeLicenseUrl = $pharmacyDocument;
             $this->sendVerificationEmail($allValues, $dbUser->id, $dbEntity->id, $dbEntityBranch->id);
-            
+
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->message = $this->f3->get("vMessage_signupSuccessful");
             echo $this->webResponse->jsonResponse();
@@ -351,9 +351,9 @@ class AuthController extends Controller
         $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
         $this->f3->set('title', 'Pharmacy Account Verification');
         $this->f3->set('emailType', 'pharmacyAccountVerification');
-    
+
         $dbCountry = new BaseModel($this->db, "country");
-        $dbCountry->name = "name_en"; 
+        $dbCountry->name = "name_en";
         $country = $dbCountry->getById($allValues->countryId)[0];
         $countryName = $country['name'];
 
@@ -398,7 +398,7 @@ class AuthController extends Controller
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
             }
         }
-        
+
         $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_VERIFICATION, $subject, $htmlContent);
     }
 
@@ -409,9 +409,9 @@ class AuthController extends Controller
         $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
         $this->f3->set('title', 'Pharmacy Account Approval');
         $this->f3->set('emailType', 'pharmacyAccountApproval');
-    
+
         $dbCountry = new BaseModel($this->db, "country");
-        $dbCountry->name = "name_en"; 
+        $dbCountry->name = "name_en";
         $country = $dbCountry->getById($allValues->countryId)[0];
         $countryName = $country['name'];
 
@@ -445,10 +445,13 @@ class AuthController extends Controller
         $emailList = explode(';', getenv('ADMIN_SUPPORT_EMAIL'));
         for ($i = 0; $i < count($emailList); $i++) {
             $currentEmail = explode(',', $emailList[$i]);
-            if(count($currentEmail) == 2) {
+            if (count($currentEmail) == 2) {
                 $emailHandler->appendToAddress($currentEmail[0], $currentEmail[1]);
+            } else {
+                $emailHandler->appendToAddress($currentEmail[0], $currentEmail[0]);
             }
         }
+
         $htmlContent = View::instance()->render($emailFile);
 
         $subject = "Aumet - Pharmacy Account Approval";
@@ -641,17 +644,17 @@ class AuthController extends Controller
 
         $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
-        
+
         $newFileName = $fileName . "-" . time() . ".$ext";
         $targetFile = "files/uploads/documents/" . $newFileName;
-        
+
         if (in_array($ext, $allValidExtensions)) {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
                 $success = true;
             }
         }
 
-        if($success) {
+        if ($success) {
             echo $targetFile;
         }
     }
@@ -659,12 +662,12 @@ class AuthController extends Controller
     function postSignUpValidateEmail()
     {
         $email = $this->f3->get("POST.email");
-        
+
         // Check if email is unique
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getByField("email", $email);
 
-        if(!$dbUser->dry()) {
+        if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
             $this->webResponse->message = "Email address exists, Please signin instead";
@@ -678,19 +681,19 @@ class AuthController extends Controller
     function getSignUpCitiesByCountry()
     {
         $countryId = $this->f3->get("PARAMS.countryId");
-        
+
         $dbCity = new BaseModel($this->db, "city");
         $dbCity->name = "nameEn";
         $dbCity->getByField("countryId", $countryId);
 
         $arrCities = [];
-        while(!$dbCity->dry()) {
+        while (!$dbCity->dry()) {
             $city = new stdClass();
             $city->id = $dbCity["id"];
             $city->name = $dbCity["name"];
 
             array_push($arrCities, $city);
-            
+
             $dbCity->next();
         }
 
@@ -698,7 +701,7 @@ class AuthController extends Controller
         $this->webResponse->data = $arrCities;
         echo $this->webResponse->jsonResponse();
     }
-    
+
     function getVerifyAccount()
     {
         $token = $this->f3->get("PARAMS.token");
@@ -730,7 +733,7 @@ class AuthController extends Controller
         $dbEntityBranch->getById($entityBranchId);
 
 
-        if($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry() || $dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
+        if ($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry() || $dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
             echo "Invalid";
         } else {
             $dbUser->statusId = Constants::USER_STATUS_PENDING_APPROVAL;
@@ -738,7 +741,7 @@ class AuthController extends Controller
 
             $emailHandler = new EmailHandler($this->db);
             $message = "Your account has been authenticated. You will be contacted by Aumet within 24 to 48 hours to activate your account";
-    
+
             $emailHandler->appendToAddress($dbUser->email, $dbUser->fullname);
             $subject = "Aumet - Pharmacy Account Verified";
             if (getenv('ENV') != Constants::ENV_PROD) {
@@ -749,7 +752,7 @@ class AuthController extends Controller
                     $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
                 }
             }
-            
+
             $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_VERIFIED, $subject, $message);
 
             // Send approval email
@@ -790,7 +793,7 @@ class AuthController extends Controller
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getById($userId);
 
-        if($dbUser->dry() || $dbUser->statusId != Constants::USER_STATUS_PENDING_APPROVAL) {
+        if ($dbUser->dry() || $dbUser->statusId != Constants::USER_STATUS_PENDING_APPROVAL) {
             echo "Invalid";
         } else {
             $dbUser->statusId = Constants::USER_STATUS_ACCOUNT_ACTIVE;
@@ -798,7 +801,7 @@ class AuthController extends Controller
 
             $emailHandler = new EmailHandler($this->db);
             $message = "Your account has been approved. You can now login to our platform !";
-    
+
             $emailHandler->appendToAddress($dbUser->email, $dbUser->fullname);
             $subject = "Aumet - Pharmacy Account Approved";
             if (getenv('ENV') != Constants::ENV_PROD) {
@@ -809,7 +812,7 @@ class AuthController extends Controller
                     $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
                 }
             }
-            
+
             $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_APPROVED, $subject, $message);
 
             echo "Approved";
