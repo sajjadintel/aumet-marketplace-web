@@ -276,8 +276,21 @@
             }
         }];
 
+        var dbAdditionalOptions = {
+            datatableOptions: {
+                order: [
+                    [0, 'desc']
+                ],
+                rowCallback: function (row, data, index) {
+                    if (!data['isVisible']) {
+                        $(row).hide();
+                    }
+                },
+            }
+        };
+
         var initiate = function() {
-            WebApp.CreateDatatableServerside("Recent Orders", "#order_datatable", "/web/pharmacy/order/recent", columnDefsOrders);
+            WebApp.CreateDatatableServerside("Recent Orders", "#order_datatable", "/web/pharmacy/order/recent", columnDefsOrders, null, dbAdditionalOptions);
         };
 
         return {
