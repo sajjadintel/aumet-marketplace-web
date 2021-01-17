@@ -62,21 +62,25 @@ class NotificationHelper {
 
         $emailHandler = new EmailHandler($dbConnection);
         $emailFile = "email/layout.php";
+        $title = "Missing Product in Order #" . $orderId;
         $f3->set('domainUrl', getenv('DOMAIN_URL'));
-        $f3->set('title', 'Missing Products');
+        $f3->set('title', $title);
         $f3->set('emailType', 'missingProducts');
         $f3->set('products', $dbMissingProduct);
 
 
         $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
         $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $dbMissingProduct->entityId);
+        $entityName = $arrEntityUserProfile[0]->entityName_en;
+        $f3->set('entityName', $entityName);
+
         foreach ($arrEntityUserProfile as $entityUserProfile) {
             $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
         }
 
         $htmlContent = View::instance()->render($emailFile);
 
-        $subject = "Missing Products";
+        $subject = $title;
         if (getenv('ENV') != Constants::ENV_PROD) {
             $subject .= " - (Test: " . getenv('ENV') . ")";
 
