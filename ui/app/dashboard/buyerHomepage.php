@@ -35,12 +35,12 @@
         <!--begin::Dashboard-->
         <div class="row">
 
-            <!--begin::Product-->
+            <!--begin::Main-->
             <div class="col-9">
                 <div class="card card-custom card-body card-stretch gutter-b">
                     <!--begin::Banner-->
+                    <?php if(count($arrBanners) > 0): ?>
                     <div class="mb-10">
-                        <?php if(count($arrBanners) > 0): ?>
                         <div class="autoplay" style="height: 280px;">
                             <?php foreach($arrBanners as $banner) : ?>
                                 <div style="background-image: url('<?php echo $banner->image; ?>'); height: 280px; background-size: 100% 100%;">
@@ -68,13 +68,13 @@
                                 </div>
                             <?php endforeach; ?>
                         </div>
-                        <?php endif; ?>
                     </div>
+                    <?php endif; ?>
                     <!--begin::New Products-->
                     <div class="mb-10">
-                        <div class="row pb-6" style="justify-content: space-between;">
+                        <div class="row pb-6" style="justify-content: space-between; align-items: center;">
                             <div class="col-3">
-                                <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_dashboardBuyer_newProducts ?></span>
+                                <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_newProducts ?></span>
                             </div>
                             <div class="col-3" style="display: flex; justify-content: flex-end;">
                                 <a class="btn btn-light-primary font-weight-bold mr-2" onclick="WebApp.loadPage('/web/product/search?sort=newest')">
@@ -96,9 +96,9 @@
                     </div>
                     <!--begin::Top Selling-->
                     <div>
-                        <div class="row pb-6" style="justify-content: space-between;">
+                        <div class="row pb-6" style="justify-content: space-between; align-items: center;">
                             <div class="col-3">
-                                <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_dashboardBuyer_topSelling ?></span>
+                                <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_topSelling ?></span>
                             </div>
                             <div class="col-3" style="display: flex; justify-content: flex-end;">
                                 <a class="btn btn-light-primary font-weight-bold mr-2" onclick="WebApp.loadPage('/web/product/search?sort=top-selling')">
@@ -120,11 +120,79 @@
                     </div>
                 </div>
             </div>
+            <!--begin::Right Side-->
+            <div class="col-3">
+                <!--begin::Pending Orders-->
+                <?php if(count($arrPendingOrders) > 0): ?>
+                <div class="card card-custom card-body card-stretch gutter-b" style="height: auto; padding-right: 1rem; padding-left: 1rem;">
+                    <div class="row" style="justify-content: space-between; align-items: center;">
+                        <div class="col-7">
+                            <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_pendingOrders ?></span>
+                        </div>
+                        <div class="col-5" style="display: flex; justify-content: flex-end;">
+                            <a class="btn btn-hover-bg-primary btn-text-primary btn-hover-text-white font-weight-bold mr-2" onclick="WebApp.loadPage('/web/pharmacy/order/pending')">
+                                <?php echo $vButton_view_all; ?>
+                            </a>
+                        </div>
+                    </div>
+                    <?php foreach($arrPendingOrders as $order) : ?>
+                        <div class="mt-10">
+                            <div class="row mb-5">
+                                <div class="col-7">
+                                    <span class="card-label font-weight-bolder font-size-h4"><?php echo $order['entitySeller']; ?></span>
+                                </div>
+                                <div class="col-5" style="display: flex; justify-content: flex-end;">
+                                    <span class="statusLabel label label-lg font-weight-bold label-inline" style="width: max-content;" data-statusId="<?php echo $order['statusId']; ?>"></span>
+                                </div>
+                            </div>
+                            <div style="background-color: #F0F0F0; padding-left: 1rem; padding-right: 1rem;">
+                                <?php foreach($mapOrderIdOrderDetails[$order['id']] as $orderDetail) : ?>
+                                    <div class="row" style="align-items: center;justify-content: center;padding: 1rem;">
+                                        <div class="col-9">
+                                            <?php echo $orderDetail['productName']; ?>
+                                        </div>
+                                        <div class="col-3">
+                                            x<?php echo $orderDetail['quantity'] + $orderDetail['quantityFree']; ?>
+                                        </div>
+                                    </div>
+                                    <div style="border-bottom: 1px solid #CFCFCF;" ></div>
+                                <?php endforeach; ?>
+                                <div class="row" style="align-items: center;justify-content: center;padding: 1rem;">
+                                    <div class="col-12 font-weight-bolder" style="text-align: right;">
+                                        Total: <?php echo $order['total'] . " " . $order['currency']; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+                <!--begin::Top Distributors-->
+                <?php if(count($arrTopDistributors) > 0): ?>
+                <div class="card card-custom card-body card-stretch gutter-b" style="height: auto; padding-right: 1rem; padding-left: 1rem;">
+                    <div class="row" style="justify-content: space-between; align-items: center;">
+                        <div class="col-12">
+                            <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_topDistributors ?></span>
+                        </div>
+                    </div>
+                    <div>
+                        <?php foreach($arrTopDistributors as $entity) : ?>
+                            <div class="font-size-h5" style="padding-top: 20px;"><?php echo $entity->name; ?></div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 </div>
 <script>
     $(document).ready(function() {
+        initAutoplay();
+        fillStatusLabel();
+    })
+
+    function initAutoplay() {
         $('.autoplay').slick({
             arrows: false,
             dots: true,
@@ -134,5 +202,52 @@
             fade: true,
             autoplaySpeed: 5000,
         });
-    })
+    }
+
+    function fillStatusLabel() {
+        var status = {
+            1: {
+                title: WebAppLocals.getMessage('orderStatus_Pending'),
+                class: ' label-primary2',
+            },
+            2: {
+                title: WebAppLocals.getMessage('orderStatus_OnHold'),
+                class: ' label-warning',
+            },
+            3: {
+                title: WebAppLocals.getMessage('orderStatus_Processing'),
+                class: ' label-primary',
+            },
+            4: {
+                title: WebAppLocals.getMessage('orderStatus_Completed'),
+                class: ' label-primary',
+            },
+            5: {
+                title: WebAppLocals.getMessage('orderStatus_Canceled'),
+                class: ' label-danger',
+            },
+            6: {
+                title: WebAppLocals.getMessage('orderStatus_Received'),
+                class: ' label-primary',
+            },
+            7: {
+                title: WebAppLocals.getMessage('orderStatus_Paid'),
+                class: ' label-success',
+            },
+            8: {
+                title: WebAppLocals.getMessage('orderStatus_MissingProducts'),
+                class: ' label-danger',
+            },
+            9: {
+                title: WebAppLocals.getMessage('orderStatus_Canceled_Pharmacy'),
+                class: ' label-danger',
+            }
+        };
+
+        $('.statusLabel').each(function(index, element) {
+            var statusId = $(element).attr("data-statusId");
+            $(element).addClass(status[statusId].class);
+            $(element).html(status[statusId].title);
+        });
+    }
 </script>

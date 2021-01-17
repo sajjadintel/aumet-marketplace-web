@@ -103,6 +103,66 @@ class DashboardController extends Controller {
                 }
                 $this->f3->set('arrTopSellingProducts', $arrTopSellingProducts);
 
+                // Get pending orders with details
+                $dbOrder = new BaseModel($this->db, "vwOrderEntityUser");
+                $arrPendingOrders = $dbOrder->findWhere("entityBuyerId IN ($arrEntityId) AND statusId IN (1,2,3)", "insertDateTime DESC", 3, 0);
+                $this->f3->set('arrPendingOrders', $arrPendingOrders);
+                
+                if(count($arrPendingOrders) > 0) {
+                    $mapOrderIdOrderDetails = [];
+                    foreach($arrPendingOrders as $order) {
+                        $mapOrderIdOrderDetails[$order["id"]] = [];
+                    }
+                    $allOrderId = implode(",", array_keys($mapOrderIdOrderDetails));
+    
+                    $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+                    $dbOrderDetail->productName = "productName" . ucfirst($this->objUser->language);
+                    $arrOrderDetails = $dbOrderDetail->findWhere("id IN ($allOrderId)");
+                    foreach($arrOrderDetails as $orderDetail) {
+                        $allOrderDetails = $mapOrderIdOrderDetails[$orderDetail["id"]];
+                        array_push($allOrderDetails, $orderDetail);
+                        $mapOrderIdOrderDetails[$orderDetail["id"]] = $allOrderDetails;
+                    }
+                    $this->f3->set('mapOrderIdOrderDetails', $mapOrderIdOrderDetails);
+                }
+
+                // Get top distributors
+                $dbEntityRelation = new BaseModel($this->db, "vwEntityRelation");
+                $dbEntityRelation->sellerName = "sellerName_" . $this->objUser->language;
+                $arrEntityRelation = $dbEntityRelation->findWhere("sellerCountryId = $buyerEntity->countryId");
+                
+                $mapEntityIdName = [];
+                $mapEntityIdTotal = [];
+                foreach($arrEntityRelation as $entityRelation) {
+                    $entitySellerId = $entityRelation["entitySellerId"];
+                    $mapEntityIdName[$entitySellerId] = $entityRelation["sellerName"];
+                    
+                    if(array_key_exists($entitySellerId, $mapEntityIdTotal)) {
+                        $orderTotalPaid = $mapEntityIdTotal[$entitySellerId];
+                        $orderTotalPaid += $entityRelation["orderTotalPaid"];
+                        $mapEntityIdTotal[$entitySellerId] = $orderTotalPaid; 
+                    } else {
+                        $mapEntityIdTotal[$entitySellerId] = $entityRelation["orderTotalPaid"];
+                    }
+                }
+                arsort($mapEntityIdTotal);
+
+                $topDistributorsCount = 5;
+                $arrTopDistributors = [];
+                foreach($mapEntityIdTotal as $entityId => $total) {
+                    $entity = new stdClass();
+                    $entity->name = $mapEntityIdName[$entityId];
+
+                    if(count($arrTopDistributors) < $topDistributorsCount) {
+                        array_push($arrTopDistributors, $entity);
+                    } else {
+                        break;
+                    }
+                }
+                $this->f3->set('arrTopDistributors', $arrTopDistributors);
+
+                
+
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_dashboard');
                 $this->webResponse->data = View::instance()->render('app/dashboard/buyerHomepage.php');
