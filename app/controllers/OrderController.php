@@ -531,7 +531,7 @@ class OrderController extends Controller {
 
         NotificationHelper::orderModifyShippedQuantityNotification($this->f3, $this->db, $dbOrder->id, $modifiedProductIds, $dbOrder->entitySellerId);
 
-        echo $this->webResponse->jsonResponseV2(1, "Success", "");
+        echo $this->webResponse->jsonResponseV2(Constants::STATUS_SUCCESS_SHOW_DIALOG, "Success", $this->f3->get('responseSuccess_modifyQuantity'));
     }
 
     private function getProductFromArrayById($productId, $products)

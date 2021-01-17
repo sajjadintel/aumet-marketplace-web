@@ -237,4 +237,6 @@ return array(
     'vModal_delete' => 'Delete',
     'vModal_add' => 'Add',
     'vModal_SaveChanges' => 'Save changes',
+
+    'responseSuccess_modifyQuantity' => 'Quantity order changed successfully!',
 );
