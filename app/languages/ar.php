@@ -237,6 +237,8 @@ return array(
     
     'vResponse_imagesAdded' => 'تمت إضافة الصور بنجاح',
     
-    'vModule_dashboardBuyer_newProducts' => 'منتجات جديدة',
-    'vModule_dashboardBuyer_topSelling' => 'الأعلى مبيعا',
+    'vModule_homepageBuyer_newProducts' => 'منتجات جديدة',
+    'vModule_homepageBuyer_topSelling' => 'الأعلى مبيعا',
+    'vModule_homepageBuyer_pendingOrders' => 'الأوامر المعلقة',
+    'vModule_homepageBuyer_topDistributors' => 'أفضل الموزعين',
 );

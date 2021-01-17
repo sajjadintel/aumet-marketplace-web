@@ -242,6 +242,8 @@ return array(
     
     'vResponse_imagesAdded' => 'Images added successfully',
     
-    'vModule_dashboardBuyer_newProducts' => 'New Products',
-    'vModule_dashboardBuyer_topSelling' => 'Top Selling',
+    'vModule_homepageBuyer_newProducts' => 'New Products',
+    'vModule_homepageBuyer_topSelling' => 'Top Selling',
+    'vModule_homepageBuyer_pendingOrders' => 'Pending Orders',
+    'vModule_homepageBuyer_topDistributors' => 'Top Distributors',
 );
