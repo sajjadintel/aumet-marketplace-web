@@ -77,7 +77,7 @@ class CartController extends Controller {
 
                 $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
                 $total = $quantityFree + $newQuantity;
-                if($total > $maxOrder) {
+                if ($total > $maxOrder) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Not allowed (max: $maxOrder)";
@@ -750,8 +750,11 @@ class CartController extends Controller {
                 $quantityFree = $cartDetail->quantityFree;
                 $unitPrice = $cartDetail->unitPrice;
                 $tax = $mapProductIdVat[$entityProductId];
+                $totalQuantity = $quantity + $quantityFree;
+                $freeRatio = $quantityFree / ($quantity + $quantityFree);
 
-                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `note`, `quantityFree`, `unitPrice`, `tax`) VALUES ('" . $orderId . "', '" . $entityProductId . "', '" . $quantity . "', '" . $note . "', '" . $quantityFree . "', '" . $unitPrice . "', '" . $tax . "');";
+                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `quantityFree`, `freeRatio`, `requestedQuantity`, `shippedQuantity`, `note`, `unitPrice`, `tax`) VALUES "
+                    . "('" . $orderId . "', '" . $entityProductId . "', '" . $quantity . "', '" . $quantityFree . "', '" . $freeRatio . "', '" . $totalQuantity . "', '" . $totalQuantity . "', '" . $note . "', '" . $unitPrice . "', '" . $tax . "');";
                 array_push($commands, $query);
             }
 

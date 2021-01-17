@@ -186,6 +186,7 @@ class OrderController extends Controller {
             $arrOrder = $dbOrder->findWhere("id = '$orderId'");
 
             $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+            $dbOrderDetail->productName = "productName" . ucfirst($this->objUser->language);
             $arrOrderDetail = $dbOrderDetail->findWhere("id = '$orderId'");
 
             $dbOrderLog = new BaseModel($this->db, "vwOrderLog");
@@ -435,7 +436,7 @@ class OrderController extends Controller {
                 return;
             }
             $serverProduct = $this->getProductFromArrayById($missingProduct['productId'], $arrOrderDetail);
-            if ($missingProduct['quantity'] > $serverProduct['quantity'] || $missingProduct['quantity'] <= 0) {
+            if ($missingProduct['quantity'] > $serverProduct['requestedQuantity'] || $missingProduct['quantity'] <= 0) {
                 echo $this->webResponse->jsonResponseV2(2, "Error", $this->f3->get('vMissingProduct_ErrorInvalidQuantity') . $serverProduct['productNameEn']);
                 return;
             }
@@ -456,6 +457,79 @@ class OrderController extends Controller {
         $dbOrder->edit();
 
         NotificationHelper::orderMissingProductsNotification($this->f3, $this->db, $orderId);
+
+        echo $this->webResponse->jsonResponseV2(1, "Success", "");
+    }
+
+    function postEditQuantityOrder()
+    {
+        $orderId = $this->f3->get("POST.orderId");
+        $editQuantityProducts = $this->f3->get("POST.modifyQuantityOrderRepeater");
+        if ($this->checkForProductsDuplication($editQuantityProducts)) {
+            echo $this->webResponse->jsonResponseV2(2, "Error", $this->f3->get('vMissingProduct_ErrorDuplicateProducts'));
+            return;
+        }
+
+        $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
+        $dbOrderDetail->productName = "productName" . ucfirst($this->objUser->language);
+        $arrOrderDetail = $dbOrderDetail->findWhere("id = '$orderId'");
+        //todo check entity
+
+        $dbOrder = new BaseModel($this->db, "order");
+        $dbOrder->getByField("id", $orderId);
+
+
+        foreach ($editQuantityProducts as $editQuantityProduct) {
+            if (!(is_numeric($editQuantityProduct['productId']) && $editQuantityProduct['productId'] > 0)) {
+                echo $this->webResponse->jsonResponseV2(2, "Error", "Invalid Product id");
+                return;
+            }
+            $serverProduct = $this->getProductFromArrayById($editQuantityProduct['productId'], $arrOrderDetail);
+            if ($editQuantityProduct['quantity'] > $serverProduct['requestedQuantity'] || $editQuantityProduct['quantity'] <= 0) {
+                echo $this->webResponse->jsonResponseV2(2, "Error", $this->f3->get('vMissingProduct_ErrorInvalidQuantity') . $serverProduct['productName']);
+                return;
+            }
+        }
+
+        $modifiedProductIds = [];
+        $priceDifference = 0;
+        $priceDifferenceVat = 0;
+        foreach ($editQuantityProducts as $editQuantityProduct) {
+            $dbOrderDetail = new BaseModel($this->db, "orderDetail");
+            $dbOrderDetail->getWhere("orderId= {$dbOrder->id} AND entityProductId={$editQuantityProduct['productId']}");
+            // calculate order entity quantity free based on new quantity and free ratio
+            $quantityFree = floor($editQuantityProduct['quantity'] * $dbOrderDetail->freeRatio);
+            $quantity = $editQuantityProduct['quantity'] - $quantityFree;
+
+            // get product vat
+            $dbEntityProductSell = new BaseModel($this->db, "entityProductSell");
+            $dbEntityProductSell->getWhere("id={$editQuantityProduct['productId']}");
+            // calculate product price difference caused by quantity change
+            $priceDifference += ($dbOrderDetail->quantity - $quantity) * $dbOrderDetail->unitPrice;
+            // calculate product vat difference caused by quantity change
+            $priceDifferenceVat += ($dbOrderDetail->quantity - $quantity) * $dbOrderDetail->unitPrice * $dbEntityProductSell->vat / 100;
+
+            // set order detail new quantity
+            $dbOrderDetail->quantity = $quantity;
+            $dbOrderDetail->quantityFree = $quantityFree;
+            $dbOrderDetail->shippedQuantity = $editQuantityProduct['quantity'];
+            $dbOrderDetail->update();
+
+            $modifiedProductIds[] = $dbOrderDetail->entityProductId;
+        }
+
+        $dbOrder->subtotal = round($dbOrder->subtotal - $priceDifference, 2);
+        $dbOrder->vat = round($dbOrder->vat - $priceDifferenceVat, 2);
+        $dbOrder->total = round($dbOrder->subtotal + $dbOrder->vat, 2);
+        $dbOrder->update();
+
+        $dbRelation = new BaseModel($this->db, "entityRelation");
+        $dbRelation->getWhere("entityBuyerId = $dbOrder->entityBuyerId AND entitySellerId = $dbOrder->entitySellerId");
+        $dbRelation->orderTotal -= ($priceDifference + $priceDifferenceVat);
+        $dbRelation->updatedAt = date('Y-m-d H:i:s');
+        $dbRelation->update();
+
+        NotificationHelper::orderModifyShippedQuantityNotification($this->f3, $this->db, $dbOrder->id, $modifiedProductIds, $dbOrder->entitySellerId);
 
         echo $this->webResponse->jsonResponseV2(1, "Success", "");
     }

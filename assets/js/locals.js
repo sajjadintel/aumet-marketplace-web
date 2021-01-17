@@ -200,6 +200,11 @@ var WebAppLocals = (function () {
 			ar: 'منجز',
 			fr: '',
 		},
+		order_modifyQuantity: {
+			en: 'Modify Quantity',
+			ar: 'Modify Quantity', // TODO: Translate
+			fr: '',
+		},
 		orderStatus_Canceled: {
 			en: 'Canceled',
 			ar: 'ألغيت',

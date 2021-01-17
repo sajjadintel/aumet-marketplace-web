@@ -217,4 +217,12 @@ return array(
     
     'vModule_dashboardBuyer_newProducts' => 'منتجات جديدة',
     'vModule_dashboardBuyer_topSelling' => 'الأعلى مبيعا',
+
+    'vModal_enterMissingProduct' => 'Enter Missing Products Number',
+    'vModal_enterQuantity' => 'Enter Quantity',
+    'vModal_product' => 'Product',
+    'vModal_quantity' => 'Quantity',
+    'vModal_delete' => 'Delete',
+    'vModal_add' => 'Add',
+    'vModal_SaveChanges' => 'Save changes',
 );

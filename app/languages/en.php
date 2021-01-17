@@ -229,4 +229,12 @@ return array(
     
     'vModule_dashboardBuyer_newProducts' => 'New Products',
     'vModule_dashboardBuyer_topSelling' => 'Top Selling',
+
+    'vModal_enterMissingProduct' => 'Enter Missing Products Number',
+    'vModal_enterQuantity' => 'Enter Quantity',
+    'vModal_product' => 'Product',
+    'vModal_quantity' => 'Quantity',
+    'vModal_delete' => 'Delete',
+    'vModal_add' => 'Add',
+    'vModal_SaveChanges' => 'Save changes',
 );

@@ -96,6 +96,57 @@ class NotificationHelper {
         $emailHandler->resetTos();
     }
 
+    /**
+     * Does something interesting
+     *
+     * @param \Base $f3 f3 instance
+     * @param BaseModel $dbConnection db connection instance
+     * @param int $orderId order id
+     * @param int[] $modifiedProductIds array of modified products
+     * @param int $entitySellerId entitySellerId
+     */
+    public static function orderModifyShippedQuantityNotification($f3, $dbConnection, $orderId, $modifiedProductIds, $entitySellerId)
+    {
+        $dbProduct = new BaseModel($dbConnection, "vwOrderDetail");
+        $dbProduct->name = "productNameEn";
+        $dbProduct->getWhere("id = $orderId AND productCode IN (" . implode(",", $modifiedProductIds) . ")");
+
+        $emailHandler = new EmailHandler($dbConnection);
+        $emailFile = "email/layout.php";
+        $title = "Modify Shipped Quantity in Order #" . $orderId;
+        $f3->set('domainUrl', getenv('DOMAIN_URL'));
+        $f3->set('title', $title);
+        $f3->set('emailType', 'modifiedOrderProducts');
+        $f3->set('products', $dbProduct);
+
+
+        $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
+        $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $entitySellerId);
+        $entityName = $arrEntityUserProfile[0]->entityName_en;
+        $f3->set('entityName', $entityName);
+
+        foreach ($arrEntityUserProfile as $entityUserProfile) {
+            $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
+        }
+
+        $htmlContent = View::instance()->render($emailFile);
+
+        $subject = $title;
+        if (getenv('ENV') != Constants::ENV_PROD) {
+            $subject .= " - (Test: " . getenv('ENV') . ")";
+
+            if (getenv('ENV') == Constants::ENV_LOC) {
+                $emailHandler->resetTos();
+                $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajjad intel");
+                $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+            }
+        }
+
+
+        $emailHandler->sendEmail(Constants::EMAIL_MODIFY_SHIPPED_QUANTITY, $subject, $htmlContent);
+        $emailHandler->resetTos();
+    }
+
     public static function customerSupportNotification($f3, $dbConnection, $supportLog)
     {
         $supportReason = new BaseModel($dbConnection, 'supportReason');
