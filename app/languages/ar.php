@@ -237,6 +237,17 @@ return array(
     
     'vResponse_imagesAdded' => 'تمت إضافة الصور بنجاح',
     
+    'vModule_dashboardBuyer_newProducts' => 'منتجات جديدة',
+    'vModule_dashboardBuyer_topSelling' => 'الأعلى مبيعا',
+
+    'vModal_enterMissingProduct' => 'Enter Missing Products Number',
+    'vModal_enterQuantity' => 'Enter Quantity',
+    'vModal_product' => 'Product',
+    'vModal_quantity' => 'Quantity',
+    'vModal_delete' => 'Delete',
+    'vModal_add' => 'Add',
+    'vModal_SaveChanges' => 'Save changes',
+  
     'vModule_homepageBuyer_newProducts' => 'منتجات جديدة',
     'vModule_homepageBuyer_topSelling' => 'الأعلى مبيعا',
     'vModule_homepageBuyer_pendingOrders' => 'الأوامر المعلقة',

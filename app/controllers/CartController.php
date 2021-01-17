@@ -748,8 +748,12 @@ class CartController extends Controller
                 $quantityFree = $cartDetail->quantityFree;
                 $unitPrice = $cartDetail->unitPrice;
                 $vat = $cartDetail->vat;
+                $totalQuantity = $quantity + $quantityFree;
+                $freeRatio = $quantityFree / ($quantity + $quantityFree);
 
-                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `note`, `quantityFree`, `unitPrice`, `tax`) VALUES ('" . $orderId . "', '" . $entityProductId . "', '" . $quantity . "', '" . $note . "', '" . $quantityFree . "', '" . $unitPrice . "', '" . $vat . "');";
+                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `quantityFree`, `freeRatio`, `requestedQuantity`, `shippedQuantity`, `note`, `unitPrice`, `tax`) VALUES "
+                    . "('" . $orderId . "', '" . $entityProductId . "', '" . $quantity . "', '" . $quantityFree . "', '" . $freeRatio . "', '" . $totalQuantity . "', '" . $totalQuantity . "', '" . $note . "', '" . $unitPrice . "', '" . $vat . "');";
+
                 array_push($commands, $query);
             }
 

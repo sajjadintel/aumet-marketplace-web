@@ -302,7 +302,7 @@
                                         <div data-repeater-item="" class="form-group row align-items-end">
                                             <!--                                            <input type="hidden" id="missingProductId" name="productId" class="form-control">-->
                                             <div class="col-md-4">
-                                                <label>Product:</label>
+                                                <label><?php echo $vModal_product ?>:</label>
                                                 <select
                                                     class="select2 form-control"
                                                     name="productId"
@@ -312,13 +312,13 @@
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
                                             <div class="col-md-4">
-                                                <label>Quantity:</label>
-                                                <input type="number" min="1" max="100000" id="missingProductQuantity" name="quantity" class="form-control missingProductQuantity" placeholder="Enter Missing Products Number">
+                                                <label><?php echo $vModal_quantity ?>:</label>
+                                                <input type="number" min="1" max="100000" id="missingProductQuantity" name="quantity" class="form-control missingProductQuantity" placeholder="<?php echo $vModal_enterMissingProduct ?>">
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
                                             <div class="col-md-2">
                                                 <a href="javascript:;" id="missingProductDelete" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger">
-                                                    <i class="la la-trash-o"></i>Delete</a>
+                                                    <i class="la la-trash-o"></i><?php echo $vModal_delete ?></a>
                                             </div>
                                         </div>
                                     </div>
@@ -326,7 +326,7 @@
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <a href="javascript:;" id="missingProductAdd" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
-                                            <i class="la la-plus"></i>Add</a>
+                                            <i class="la la-plus"></i><?php echo $vModal_add ?></a>
                                     </div>
                                 </div>
                             </div>
@@ -335,7 +335,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="modal-editQuantity-button">
-                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="missingProductModalAction">Save changes</button>
+                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="missingProductModalAction"><?php echo $vModal_SaveChanges ?></button>
                     </div>
                 </div>
             </form>
@@ -425,7 +425,100 @@
                 </div>
                 <div class="modal-footer">
                     <div class="modal-editQuantity-button">
-                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="editQuantityModalAction">Save changes</button>
+                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="editQuantityModalAction"><?php echo $vModal_SaveChanges ?></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modify Quantity Order Modal-->
+<div class="modal fade" id="modifyQuantityOrderModal" tabindex="-1" role="dialog" aria-labelledby="modifyQuantityOrderModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <form method="POST" action="" class="modalForm" id="modifyQuantityOrderModalForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modifyQuantityOrderModalTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" class="form-control" name="orderId" id="modifyQuantityOrderOrderId">
+                    <input type="hidden" name="fnCallback" class="modalValueCallback" id="editQuantityCallback" value="WebApp.reloadDatatable" />
+
+
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row form-group">
+                                    <div class="col-md-6 form-label" id="modifyQuantityOrderModalCustomerNameLabel"></div>
+                                    <div class="col-md-6 form-text" id="modifyQuantityOrderModalCustomerNameText"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row form-group">
+                                    <div class="col-md-6 form-label" id="modifyQuantityOrderModalStatusLabel"></div>
+                                    <div class="col-md-6 form-text" id="modifyQuantityOrderModalStatusText"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row form-group">
+                                    <div class="col-md-6 form-label" id="modifyQuantityOrderModalTotalLabel"></div>
+                                    <div class="col-md-6 form-text" id="modifyQuantityOrderModalTotalText"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row form-group">
+                                    <div class="col-md-6 form-label" id="modifyQuantityOrderModalDateLabel"></div>
+                                    <div class="col-md-6 form-text" id="modifyQuantityOrderModalDateText"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row form-group">
+                                    <div class="col-md-6 form-label" id="modifyQuantityOrderModalBranchLabel"></div>
+                                    <div class="col-md-6 form-text" id="modifyQuantityOrderModalBranchText"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row form-group">
+                                    <div class="col-md-6 form-label" id="modifyQuantityOrderModalAddressLabel"></div>
+                                    <div class="col-md-6 form-text" id="modifyQuantityOrderModalAddressText"></div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+
+                        </div>
+
+                        <div class="col-md-12 form-group">
+                            <div id="modifyQuantityOrderListRepeater">
+                                <div class="row">
+                                    <div data-repeater-list="modifyQuantityOrderRepeater" class="col-lg-12">
+                                        <div data-repeater-item="" class="form-group row align-items-end">
+                                            <input type="hidden" id="modifyQuantityOrderId" name="productCode" class="form-control">
+                                            <div class="col-md-4">
+                                                <label>product Name:</label>
+                                                <input type="text" id="modifyQuantityOrderProductName" name="productName" class="form-control" disabled>
+                                                <div class="d-md-none mb-2"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>Quantity:</label>
+                                                <input type="text" id="modifyQuantityOrderQuantity" name="shippedQuantity" class="form-control" placeholder="Enter Quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                                <div class="d-md-none mb-2"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="modal-editQuantity-button">
+                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="modifyQuantityOrderModalAction"><?php echo $vModal_SaveChanges ?></button>
                     </div>
                 </div>
             </form>

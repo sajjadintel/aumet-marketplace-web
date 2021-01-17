@@ -242,6 +242,19 @@ return array(
     
     'vResponse_imagesAdded' => 'Images added successfully',
     
+    'vModule_dashboardBuyer_newProducts' => 'New Products',
+    'vModule_dashboardBuyer_topSelling' => 'Top Selling',
+
+    'vModal_enterMissingProduct' => 'Enter Missing Products Number',
+    'vModal_enterQuantity' => 'Enter Quantity',
+    'vModal_product' => 'Product',
+    'vModal_quantity' => 'Quantity',
+    'vModal_delete' => 'Delete',
+    'vModal_add' => 'Add',
+    'vModal_SaveChanges' => 'Save changes',
+
+    'responseSuccess_modifyQuantity' => 'Quantity order changed successfully!',
+  
     'vModule_homepageBuyer_newProducts' => 'New Products',
     'vModule_homepageBuyer_topSelling' => 'Top Selling',
     'vModule_homepageBuyer_pendingOrders' => 'Pending Orders',
