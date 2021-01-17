@@ -42,19 +42,19 @@ var Cart = (function () {
 		_topbarItemText.html(_itemsCount);
 
 		// Update cart count
-		let cartCount = webResponse.data > 9 ? "9+" : webResponse.data;
-		if(webResponse.data !== 0) $("#cartCount").css("display", "flex");
-		else $("#cartCount").css("display", "none");
-		$("#cartCount").html(cartCount);
+		let cartCount = webResponse.data > 9 ? '9+' : webResponse.data;
+		if (webResponse.data !== 0) $('#cartCount').css('display', 'flex');
+		else $('#cartCount').css('display', 'none');
+		$('#cartCount').html(cartCount);
 	};
 
 	var _removeItemSuccessCallback = function (webResponse) {
 		// Update cart count
-		let cartCount = webResponse.data > 9 ? "9+" : webResponse.data;
-		if(webResponse.data !== 0) $("#cartCount").css("display", "flex");
-		else $("#cartCount").css("display", "none");
-		$("#cartCount").html(cartCount);
-		
+		let cartCount = webResponse.data > 9 ? '9+' : webResponse.data;
+		if (webResponse.data !== 0) $('#cartCount').css('display', 'flex');
+		else $('#cartCount').css('display', 'none');
+		$('#cartCount').html(cartCount);
+
 		WebApp.loadPage('/web/cart');
 	};
 
@@ -65,13 +65,13 @@ var Cart = (function () {
 			_topbarItemText.show();
 		}
 
-		if(quantityInputId != null && $(quantityInputId).val() < 1) return;
-		
+		if (quantityInputId != null && $(quantityInputId).val() < 1) return;
+
 		let body = {
 			entityId,
 			productId,
 			quantity: quantityInputId == null ? 1 : $(quantityInputId).val(),
-			quantityFree: quantityFreeInputId == null ? 0 : $(quantityFreeInputId).val()
+			quantityFree: quantityFreeInputId == null ? 0 : $(quantityFreeInputId).val(),
 		};
 		WebApp.post('/web/cart/add', body, _addItemSuccessCallback);
 	};
@@ -88,6 +88,11 @@ var Cart = (function () {
 		}
 	};
 
+	var _emptyCart = function () {
+		$('#cartCount').html(0);
+		$('#cartCount').css('display', 'none');
+	};
+
 	// Public Functions
 	return {
 		init: function () {
@@ -101,6 +106,9 @@ var Cart = (function () {
 		},
 		loadCartPage: function () {
 			_loadCartPage();
+		},
+		emptyCart: function () {
+			_emptyCart();
 		},
 	};
 })();

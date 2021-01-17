@@ -1,6 +1,7 @@
 <?php
 
-class NotificationHelper {
+class NotificationHelper
+{
 
     /**
      * Does something interesting
@@ -44,7 +45,6 @@ class NotificationHelper {
 
         $emailHandler->sendEmail(Constants::EMAIL_LOW_STOCK, $subject, $htmlContent);
         $emailHandler->resetTos();
-
     }
 
     /**
@@ -161,11 +161,14 @@ class NotificationHelper {
         $f3->set('phone', $supportLog->phone);
         $f3->set('reason', $supportReason->name_en);
 
-
-        $supportEmails = getenv('SUPPORT_EMAIL');
-        $supportEmails = explode($supportEmails, ',');
-        foreach ($supportEmails as $supportEmail) {
-            $emailHandler->appendToAddress($supportEmail, $supportEmail);
+        $emailList = explode(';', getenv('SUPPORT_EMAIL'));
+        for ($i = 0; $i < count($emailList); $i++) {
+            $currentEmail = explode(',', $emailList[$i]);
+            if (count($currentEmail) == 2) {
+                $emailHandler->appendToAddress($currentEmail[0], $currentEmail[1]);
+            } else {
+                $emailHandler->appendToAddress($currentEmail[0], $currentEmail[0]);
+            }
         }
 
         $htmlContent = View::instance()->render($emailFile);
@@ -223,5 +226,4 @@ class NotificationHelper {
         $emailHandler->sendEmail(Constants::EMAIL_CUSTOMER_SUPPORT_CONFIRMATION, $subject, $htmlContent);
         $emailHandler->resetTos();
     }
-
 }
