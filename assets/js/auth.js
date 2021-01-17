@@ -230,12 +230,12 @@ var WebAuth = (function () {
 					passwordConfirmation: {
 						validators: {
 							identical: {
-								compare: function() {
+								compare: function () {
 									return form.querySelector('[name="password"]').value;
 								},
-								message: 'Password confirmation doesn\'t'
-							}
-						}
+								message: "Password confirmation doesn't",
+							},
+						},
 					},
 				},
 				plugins: {
@@ -318,13 +318,13 @@ var WebAuth = (function () {
 			if (validator) {
 				validator.validate().then(function (status) {
 					if (status == 'Valid') {
-						if(wizard.getStep() == 1) {
+						if (wizard.getStep() == 1) {
 							let body = {
-								email: $("input[name=email]").val()
-							}
-							WebApp.post('/web/auth/signup/validate/email', body, function() {
+								email: $('input[name=email]').val(),
+							};
+							WebApp.post('/web/auth/signup/validate/email', body, function () {
 								wizard.goTo(wizard.getNewStep());
-							})
+							});
 						} else {
 							wizard.goTo(wizard.getNewStep());
 						}
@@ -375,7 +375,7 @@ var WebAuth = (function () {
 							},
 						}).then(function (result) {
 							if (result.value) {
-								_signUp()
+								_signUp();
 							} else if (result.dismiss === 'cancel') {
 								Swal.fire({
 									text: 'Your form has not been submitted!.',
@@ -406,27 +406,31 @@ var WebAuth = (function () {
 		});
 
 		// On country change event, fill city dropdown
-		$("select[name=country]").on("change", function() {
-			var countryId = $("select[name=country]").val();
-			if(countryId) {
-				WebApp.get("/web/auth/signup/cities/" + countryId, function(webResponse) {
-					$("select[name=city]").empty().append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
+		$('select[name=country]').on('change', function () {
+			var countryId = $('select[name=country]').val();
+			if (countryId) {
+				WebApp.get('/web/auth/signup/cities/' + countryId, function (webResponse) {
+					$('select[name=city]')
+						.empty()
+						.append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
 					var allCities = webResponse.data;
 					allCities.forEach((city) => {
-						$("select[name=city]").append(new Option(city.name, city.id));
+						$('select[name=city]').append(new Option(city.name, city.id));
 					});
-					$("select[name=city]").prop("disabled", false);
+					$('select[name=city]').prop('disabled', false);
 				});
 			} else {
-				$("select[name=city]").prop("disabled", true);
-				$("select[name=city]").empty().append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
+				$('select[name=city]').prop('disabled', true);
+				$('select[name=city]')
+					.empty()
+					.append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
 			}
-		})
+		});
 
 		// Fill default values from query params
-		var params = new URLSearchParams(window.location.search)
-		$("input[name=name]").val(params.get('name'));
-		$("input[name=email]").val(params.get('email'));
+		var params = new URLSearchParams(window.location.search);
+		$('input[name=name]').val(params.get('name'));
+		$('input[name=email]').val(params.get('email'));
 	};
 
 	var _setupFirebase = function () {
@@ -468,7 +472,10 @@ var WebAuth = (function () {
 										firebase.analytics().logEvent('auth_ok');
 										window.location.href = '/web';
 									} else {
-										if(webResponse.data) {
+										// REMOVE CURRENT USER SESSION
+										firebase.auth().signOut();
+
+										if (webResponse.data) {
 											var url = '/web/auth/signup';
 											url += '?name=' + webResponse.data.displayName;
 											url += '&email=' + webResponse.data.email;
@@ -488,6 +495,9 @@ var WebAuth = (function () {
 										}
 									}
 								} else {
+									// REMOVE CURRENT USER SESSION
+									firebase.auth().signOut();
+
 									Swal.fire({
 										text: webResponse.message,
 										icon: 'error',
@@ -502,6 +512,9 @@ var WebAuth = (function () {
 								}
 							})
 							.fail(function (jqXHR, textStatus, errorThrown) {
+								// REMOVE CURRENT USER SESSION
+								firebase.auth().signOut();
+
 								Swal.fire({
 									text: WebAppLocals.getMessage('error'),
 									icon: 'error',
@@ -516,6 +529,9 @@ var WebAuth = (function () {
 							});
 					})
 					.catch(function (error) {
+						// REMOVE CURRENT USER SESSION
+						firebase.auth().signOut();
+
 						Swal.fire({
 							text: error.message,
 							icon: 'error',
@@ -542,52 +558,55 @@ var WebAuth = (function () {
 		var id = '#kt_dropzone';
 
 		// Set the preview element template
-		var previewNode = $(id + " .dropzone-item");
-		previewNode.id = "";
+		var previewNode = $(id + ' .dropzone-item');
+		previewNode.id = '';
 		var previewTemplate = previewNode.parent('.dropzone-items').html();
 		previewNode.remove();
 
-		var myDropzone = new Dropzone(id, { // Make the whole body a dropzone
-			url: "/web/auth/signup/document/upload", // Set the url for your upload script location
-            acceptedFiles: ".pdf, .ppt, .xcl, .docx, .jpeg, .jpg, .png",
+		var myDropzone = new Dropzone(id, {
+			// Make the whole body a dropzone
+			url: '/web/auth/signup/document/upload', // Set the url for your upload script location
+			acceptedFiles: '.pdf, .ppt, .xcl, .docx, .jpeg, .jpg, .png',
 			maxFilesize: 10, // Max filesize in MB
 			maxFiles: 1,
 			previewTemplate: previewTemplate,
-			previewsContainer: id + " .dropzone-items", // Define the container to display the previews
-			clickable: id + " .dropzone-select" // Define the element that should be used as click trigger to select files.
+			previewsContainer: id + ' .dropzone-items', // Define the container to display the previews
+			clickable: id + ' .dropzone-select', // Define the element that should be used as click trigger to select files.
 		});
 
-		myDropzone.on("addedfile", function(file) {
+		myDropzone.on('addedfile', function (file) {
 			// Hookup the start button
-			$(document).find( id + ' .dropzone-item').css('display', '');
+			$(document)
+				.find(id + ' .dropzone-item')
+				.css('display', '');
 		});
 
 		// Update the total progress bar
-		myDropzone.on("totaluploadprogress", function(progress) {
-			$( id + " .progress-bar").css('width', progress + "%");
+		myDropzone.on('totaluploadprogress', function (progress) {
+			$(id + ' .progress-bar').css('width', progress + '%');
 		});
 
-		myDropzone.on("sending", function(file) {
+		myDropzone.on('sending', function (file) {
 			// Show the total progress bar when upload starts
-			$( id + " .progress-bar").css('opacity', "1");
+			$(id + ' .progress-bar').css('opacity', '1');
 		});
 
 		// Hide the total progress bar when nothing's uploading anymore
-		myDropzone.on("complete", function(progress) {
-			var thisProgressBar = id + " .dz-complete";
-			setTimeout(function(){
-				$( thisProgressBar + " .progress-bar, " + thisProgressBar + " .progress").css('opacity', '0');
-			}, 300)
+		myDropzone.on('complete', function (progress) {
+			var thisProgressBar = id + ' .dz-complete';
+			setTimeout(function () {
+				$(thisProgressBar + ' .progress-bar, ' + thisProgressBar + ' .progress').css('opacity', '0');
+			}, 300);
 		});
 
 		// Add file to the list if success
-		myDropzone.on("success", function(file, response) {
+		myDropzone.on('success', function (file, response) {
 			_pharmacyDocument = response;
 		});
 
 		// Remove file from the list
-		myDropzone.on("removedfile", function(file) {
-			if(file.status === "success") {
+		myDropzone.on('removedfile', function (file) {
+			if (file.status === 'success') {
 				_pharmacyDocument = null;
 			}
 		});
@@ -595,32 +614,32 @@ var WebAuth = (function () {
 
 	var _signUp = function () {
 		let body = {
-			pharmacyDocument: _pharmacyDocument 
+			pharmacyDocument: _pharmacyDocument,
 		};
 
 		let mapKeyElement = {
-			name: "input",
-			mobile: "input",
-			email: "input",
-			password: "input",
-			entityName: "input",
-			tradeLicenseNumber: "input",
-			country: "select",
-			city: "select",
-			address: "textarea",
+			name: 'input',
+			mobile: 'input',
+			email: 'input',
+			password: 'input',
+			entityName: 'input',
+			tradeLicenseNumber: 'input',
+			country: 'select',
+			city: 'select',
+			address: 'textarea',
 		};
-		
+
 		Object.keys(mapKeyElement).forEach((key) => {
-			body[key] = $("" + mapKeyElement[key] +  "[name=" + key + "]").val();
-		})
+			body[key] = $('' + mapKeyElement[key] + '[name=' + key + ']').val();
+		});
 
 		WebApp.post('/web/auth/signup', body, _signUpCallback);
-	}
+	};
 
-	var _signUpCallback = function(webResponse) {
+	var _signUpCallback = function (webResponse) {
 		KTUtil.scrollTop();
-		$("#signupContainer").remove();
-		$("#thankyouContainer").css("display", "block");
+		$('#signupContainer').remove();
+		$('#thankyouContainer').css('display', 'block');
 	};
 
 	// Public Functions
