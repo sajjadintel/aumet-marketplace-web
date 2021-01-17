@@ -237,6 +237,14 @@ function compress_htmlcode($codedata)
                             WebAppLocals.getMessage('orderStatusMove') +
                             WebAppLocals.getMessage('orderStatus_Completed') +
                             '</span></a>';
+                        var btnModifyQuantityOrder =
+                            '<a class="navi-link" href="javascript:;" onclick=\'ModifyQuantityOrderModals.openModal(' +
+                            row.id +
+                            ',4)\' \
+                                class="btn btn-sm btn-primary btn-hover-primary  mr-2" navi-link title="Order Complete">\
+                                <span class="navi-icon"><i class="la la-edit"></i></span><span class="navi-text"> &nbsp&nbsp' +
+                            WebAppLocals.getMessage('order_modifyQuantity') +
+                            '</span></a>';
                         var btnOrderOnHold =
                             '<a class="navi-link bg-danger-hover" href="javascript:;" onclick=\'WebAppModals.orderStatusModal(' +
                             row.id +
@@ -286,18 +294,21 @@ function compress_htmlcode($codedata)
                                 outActions += dropdownStart;
                                 outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
                                 outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
+                                outActions += dropdownItemStart + btnModifyQuantityOrder + dropdownItemEnd;
                                 outActions += dropdownEnd;
                                 break;
                             case 2:
                                 outActions += dropdownStart;
                                 outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
                                 outActions += dropdownItemStart + btnOrderCancel + dropdownItemEnd;
+                                outActions += dropdownItemStart + btnModifyQuantityOrder + dropdownItemEnd;
                                 outActions += dropdownEnd;
                                 break;
                             case 3:
                                 outActions += dropdownStart;
                                 outActions += dropdownItemStart + btnOrderComplete + dropdownItemEnd;
                                 outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
+                                outActions += dropdownItemStart + btnModifyQuantityOrder + dropdownItemEnd;
                                 outActions += dropdownEnd;
                                 break;
                             case 6:

@@ -1,6 +1,7 @@
 <?php
 
-class CartController extends Controller {
+class CartController extends Controller
+{
 
     function get()
     {
@@ -77,7 +78,7 @@ class CartController extends Controller {
 
                 $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
                 $total = $quantityFree + $newQuantity;
-                if($total > $maxOrder) {
+                if ($total > $maxOrder) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Not allowed (max: $maxOrder)";
@@ -88,6 +89,7 @@ class CartController extends Controller {
                 $dbCartDetail->quantityFree = $quantityFree;
 
                 $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
+                $dbCartDetail->vat = $dbEntityProduct->vat;
                 $dbCartDetail->save();
 
                 // Get cart count
@@ -214,6 +216,7 @@ class CartController extends Controller {
                 $dbCartDetail->quantity = $dbBonus->minOrder;
                 $dbCartDetail->quantityFree = $dbBonus->bonus;
                 $dbCartDetail->unitPrice = $dbEntityProduct->unitPrice;
+                $dbCartDetail->vat = $dbEntityProduct->vat;
 
                 $dbCartDetail->addReturnID();
 
@@ -736,11 +739,6 @@ class CartController extends Controller {
             $dbProduct = new BaseModel($this->db, "entityProductSell");
             $arrProduct = $dbProduct->findWhere("productId IN ($allProductId)");
 
-            $mapProductIdVat = [];
-            foreach ($arrProduct as $product) {
-                $mapProductIdVat[$product['id']] = $product['vat'];
-            }
-
             $commands = [];
             foreach ($arrCartDetail as $cartDetail) {
                 $orderId = $mapSellerIdOrderId[$cartDetail->entityId];
@@ -749,9 +747,13 @@ class CartController extends Controller {
                 $note = $cartDetail->note;
                 $quantityFree = $cartDetail->quantityFree;
                 $unitPrice = $cartDetail->unitPrice;
-                $tax = $mapProductIdVat[$entityProductId];
+                $vat = $cartDetail->vat;
+                $totalQuantity = $quantity + $quantityFree;
+                $freeRatio = $quantityFree / ($quantity + $quantityFree);
 
-                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `note`, `quantityFree`, `unitPrice`, `tax`) VALUES ('" . $orderId . "', '" . $entityProductId . "', '" . $quantity . "', '" . $note . "', '" . $quantityFree . "', '" . $unitPrice . "', '" . $tax . "');";
+                $query = "INSERT INTO orderDetail (`orderId`, `entityProductId`, `quantity`, `quantityFree`, `freeRatio`, `requestedQuantity`, `shippedQuantity`, `note`, `unitPrice`, `tax`) VALUES "
+                    . "('" . $orderId . "', '" . $entityProductId . "', '" . $quantity . "', '" . $quantityFree . "', '" . $freeRatio . "', '" . $totalQuantity . "', '" . $totalQuantity . "', '" . $note . "', '" . $unitPrice . "', '" . $vat . "');";
+
                 array_push($commands, $query);
             }
 
@@ -759,6 +761,7 @@ class CartController extends Controller {
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
             $dbCartDetail->erase("accountId=" . $this->objUser->accountId);
+            $this->objUser->cartCount = 0;
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
