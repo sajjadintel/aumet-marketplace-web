@@ -422,6 +422,11 @@ var WebAuth = (function () {
 				$("select[name=city]").empty().append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
 			}
 		})
+
+		// Fill default values from query params
+		var params = new URLSearchParams(window.location.search)
+		$("input[name=name]").val(params.get('name'));
+		$("input[name=email]").val(params.get('email'));
 	};
 
 	var _setupFirebase = function () {
@@ -463,17 +468,24 @@ var WebAuth = (function () {
 										firebase.analytics().logEvent('auth_ok');
 										window.location.href = '/web';
 									} else {
-										Swal.fire({
-											text: webResponse.message,
-											icon: 'error',
-											buttonsStyling: false,
-											confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
-											customClass: {
-												confirmButton: 'btn font-weight-bold btn-light-primary',
-											},
-										}).then(function () {
-											KTUtil.scrollTop();
-										});
+										if(webResponse.data) {
+											var url = '/web/auth/signup';
+											url += '?name=' + webResponse.data.displayName;
+											url += '&email=' + webResponse.data.email;
+											window.location.href = url;
+										} else {
+											Swal.fire({
+												text: webResponse.message,
+												icon: 'error',
+												buttonsStyling: false,
+												confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
+												customClass: {
+													confirmButton: 'btn font-weight-bold btn-light-primary',
+												},
+											}).then(function () {
+												KTUtil.scrollTop();
+											});
+										}
 									}
 								} else {
 									Swal.fire({
@@ -614,7 +626,9 @@ var WebAuth = (function () {
 	// Public Functions
 	return {
 		init: function () {
-			_setupFirebase();
+			if (window.location.href.indexOf('signin') > -1) {
+				_setupFirebase();
+			}
 
 			_handleFormForgot();
 			_handleFormSignup();

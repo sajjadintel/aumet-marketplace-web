@@ -31,7 +31,7 @@
 							<!--begin::Form Group-->
 							<div class="form-group">
 								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_name ?></label>
-								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="name" placeholder="<?php echo $vSignup_name ?>" value="<?php echo $name ?>" />
+								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="name" placeholder="<?php echo $vSignup_name ?>" value="" />
 							</div>
 							<!--end::Form Group-->
 							<!--begin::Form Group-->
@@ -43,7 +43,7 @@
 							<!--begin::Form Group-->
 							<div class="form-group">
 								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_email ?></label>
-								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="email" placeholder="<?php echo $vSignup_email ?>" value="<?php echo $email ?>" style="direction: ltr;" />
+								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="email" placeholder="<?php echo $vSignup_email ?>" value="" style="direction: ltr;" />
 							</div>
 							<!--end::Form Group-->
 							<!--begin::Form Group-->
