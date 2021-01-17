@@ -2,6 +2,13 @@
 
 class NotificationHelper {
 
+    /**
+     * Does something interesting
+     *
+     * @param \Base $f3 f3 instance
+     * @param BaseModel $dbConnection db connection instance
+     * @param int[] $lowStockProducts Array of product Ids
+     */
     public static function lowStockNotification($f3, $dbConnection, $lowStockProducts)
     {
         $dbProduct = new BaseModel($dbConnection, "vwEntityProductSell");
@@ -40,6 +47,13 @@ class NotificationHelper {
 
     }
 
+    /**
+     * Does something interesting
+     *
+     * @param \Base $f3 f3 instance
+     * @param BaseModel $dbConnection db connection instance
+     * @param int $orderId order id
+     */
     public static function orderMissingProductsNotification($f3, $dbConnection, $orderId)
     {
         $dbMissingProduct = new BaseModel($dbConnection, "vwOrderMissingProductDetail");
@@ -62,7 +76,7 @@ class NotificationHelper {
 
         $htmlContent = View::instance()->render($emailFile);
 
-        $subject = "Low Stock";
+        $subject = "Missing Products";
         if (getenv('ENV') != Constants::ENV_PROD) {
             $subject .= " - (Test: " . getenv('ENV') . ")";
 
