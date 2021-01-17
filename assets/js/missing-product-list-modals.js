@@ -27,7 +27,7 @@ var OrderMissingProductListModals = (function () {
         {
             targets: 3,
             title: WebAppLocals.getMessage('quantity'),
-            data: 'quantity',
+            data: 'missingQuantity',
         },
         {
             targets: 4,

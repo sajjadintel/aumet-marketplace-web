@@ -45,7 +45,7 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 30px;line-height: 39px;">Low Stock</h2>
+                            <h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 30px;line-height: 39px;"><?php echo $title ?></h2>
                         </div>
                         <!--[if mso]></td></tr></table><![endif]-->
                     </td>
@@ -82,6 +82,13 @@
                             </div>
                         </div>
                         <!--[if mso]></td>
+                        <td width="100" align="right" valign="top" style="padding: 0px 8px;"><![endif]-->
+                        <div class="o_col o_col-1" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
+                            <div class="o_px-xs o_sans o_text-xs o_right" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;text-align: right;padding-left: 8px;padding-right: 8px;">
+                                <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;">Average</p>
+                            </div>
+                        </div>
+                        <!--[if mso]></td>
                         <td width="100" align="center" valign="top" style="padding: 0px 8px;"><![endif]-->
                         <div class="o_col o_col-1" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
                             <div class="o_px-xs o_sans o_text-xs o_center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;text-align: center;padding-left: 8px;padding-right: 8px;">
@@ -89,13 +96,7 @@
                             </div>
                         </div>
                         <!--[if mso]></td>
-                        <td width="100" align="right" valign="top" style="padding: 0px 8px;"><![endif]-->
-                        <div class="o_col o_col-1" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
-                            <div class="o_px-xs o_sans o_text-xs o_right" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;text-align: right;padding-left: 8px;padding-right: 8px;">
-                                <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;">Average</p>
-                            </div>
-                        </div>
-                        <!--[if mso]></td></tr>
+                        </tr>
                         <tr>
                             <td colspan="3" style="padding: 0px 8px;"><![endif]-->
                         <div class="o_px-xs" style="padding-left: 8px;padding-right: 8px;">
@@ -154,19 +155,20 @@
                             <td width="100" align="right" valign="top" style="padding: 0px 8px;"><![endif]-->
                             <div class="o_col o_col-1 o_col-full" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
                                 <div class="o_hide-xs" style="font-size: 16px; line-height: 16px; height: 16px;">&nbsp;</div>
-                                <div class="o_px-xs o_sans o_text o_text-secondary o_center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;text-align: center;padding-left: 8px;padding-right: 8px;">
-                                    <p class="o_mb-xxs" style="margin-top: 0px;margin-bottom: 4px;"><span class="o_hide-lg" style="display: none;font-size: 0;max-height: 0;width: 0;line-height: 0;overflow: hidden;mso-hide: all;visibility: hidden;">Quantity:&nbsp; </span><?php echo $products->stock ?></p>
+                                <div class="o_px-xs o_sans o_text o_text-secondary o_right o_xs-center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;text-align: right;padding-left: 8px;padding-right: 8px;">
+                                    <p class="o_mb-xxs" style="margin-top: 0px;margin-bottom: 4px;"><span class="o_hide-lg" style="display: none;font-size: 0;max-height: 0;width: 0;line-height: 0;overflow: hidden;mso-hide: all;visibility: hidden;">Price:&nbsp; </span><?php echo $products->totalOrderCount == 0 ? 0 : $products->totalOrderQuantity / $products->totalOrderCount ?></p>
                                 </div>
                             </div>
                             <!--[if mso]></td>
                             <td width="100" align="right" valign="top" style="padding: 0px 8px;"><![endif]-->
                             <div class="o_col o_col-1 o_col-full" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
                                 <div class="o_hide-xs" style="font-size: 16px; line-height: 16px; height: 16px;">&nbsp;</div>
-                                <div class="o_px-xs o_sans o_text o_text-secondary o_right o_xs-center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;text-align: right;padding-left: 8px;padding-right: 8px;">
-                                    <p class="o_mb-xxs" style="margin-top: 0px;margin-bottom: 4px;"><span class="o_hide-lg" style="display: none;font-size: 0;max-height: 0;width: 0;line-height: 0;overflow: hidden;mso-hide: all;visibility: hidden;">Price:&nbsp; </span><?php echo $products->totalOrderCount == 0 ? 0 : $products->totalOrderQuantity / $products->totalOrderCount ?></p>
+                                <div class="o_px-xs o_sans o_text o_text-secondary o_center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;text-align: center;padding-left: 8px;padding-right: 8px;">
+                                    <p class="o_mb-xxs" style="margin-top: 0px;margin-bottom: 4px;"><span class="o_hide-lg" style="display: none;font-size: 0;max-height: 0;width: 0;line-height: 0;overflow: hidden;mso-hide: all;visibility: hidden;">Quantity:&nbsp; </span><?php echo $products->stock ?></p>
                                 </div>
                             </div>
-                            <!--[if mso]></td></tr>
+                            <!--[if mso]></td>
+                            </tr>
                             <tr>
                                 <td colspan="4" style="padding: 0px 8px;"><![endif]-->
                             <div class="o_px-xs" style="padding-left: 8px;padding-right: 8px;">
