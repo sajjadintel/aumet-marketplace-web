@@ -325,20 +325,18 @@ class AuthController extends Controller
             $dbUserAccount->statusId = Constants::ACCOUNT_STATUS_ACTIVE;
             $dbUserAccount->addReturnID();
 
-            // Send emails
+            // Send verification email
             $allValues = new stdClass();
             $allValues->name = $name;
             $allValues->mobile = $mobile;
             $allValues->email = $email;
-            $allValues->password = $password;
             $allValues->entityName = $entityName;
             $allValues->tradeLicenseNumber = $tradeLicenseNumber;
             $allValues->countryId = $countryId;
             $allValues->cityId = $cityId;
             $allValues->address = $address;
-            $allValues->pharmacyDocument = $pharmacyDocument;
-            $this->sendVerificationEmail($allValues, $dbUser->id, $dbEntity->id);
-            $this->sendApprovalEmail($allValues, $dbUser->id, $dbEntity->id);
+            $allValues->tradeLicenseUrl = $pharmacyDocument;
+            $this->sendVerificationEmail($allValues, $dbUser->id, $dbEntity->id, $dbEntityBranch->id);
             
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->message = $this->f3->get("vMessage_signupSuccessful");
@@ -346,7 +344,7 @@ class AuthController extends Controller
         }
     }
 
-    function sendVerificationEmail($allValues, $userId, $entityId)
+    function sendVerificationEmail($allValues, $userId, $entityId, $entityBranchId)
     {
         $emailHandler = new EmailHandler($this->db);
         $emailFile = "email/layout.php";
@@ -377,8 +375,12 @@ class AuthController extends Controller
 
         $this->f3->set('arrFields', $arrFields);
 
+        $this->f3->set('tradeLicenseUrl', $allValues->tradeLicenseUrl);
+
         $payload = [
-            'userId' => $userId
+            'userId' => $userId,
+            'entityId' => $entityId,
+            'entityBranchId' => $entityBranchId
         ];
         $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
         $token = $jwt->encode($payload);
@@ -400,7 +402,7 @@ class AuthController extends Controller
         $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_VERIFICATION, $subject, $htmlContent);
     }
 
-    function sendApprovalEmail($allValues, $userId, $entityId)
+    function sendApprovalEmail($allValues, $userId)
     {
         $emailHandler = new EmailHandler($this->db);
         $emailFile = "email/layout.php";
@@ -431,6 +433,8 @@ class AuthController extends Controller
 
         $this->f3->set('arrFields', $arrFields);
 
+        $this->f3->set('tradeLicenseUrl', $allValues->tradeLicenseUrl);
+
         $payload = [
             'userId' => $userId
         ];
@@ -441,7 +445,9 @@ class AuthController extends Controller
         $emailList = explode(';', getenv('ADMIN_SUPPORT_EMAIL'));
         for ($i = 0; $i < count($emailList); $i++) {
             $currentEmail = explode(',', $emailList[$i]);
-            $emailHandler->appendToAddress($currentEmail[0], $currentEmail[1]);
+            if(count($currentEmail) == 2) {
+                $emailHandler->appendToAddress($currentEmail[0], $currentEmail[1]);
+            }
         }
         $htmlContent = View::instance()->render($emailFile);
 
@@ -454,7 +460,6 @@ class AuthController extends Controller
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
             }
         }
-        
         $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_APPROVAL, $subject, $htmlContent);
     }
 
@@ -711,11 +716,22 @@ class AuthController extends Controller
         }
 
         $userId = $accessTokenPayload["userId"];
-
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getById($userId);
 
-        if($dbUser->dry() || $dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
+        $entityId = $accessTokenPayload["entityId"];
+        $dbEntity = new BaseModel($this->db, "entity");
+        $dbEntity->name = "name_en";
+        $dbEntity->getById($entityId);
+
+        $entityBranchId = $accessTokenPayload["entityBranchId"];
+        $dbEntityBranch = new BaseModel($this->db, "entityBranch");
+        $dbEntityBranch->address = "address_en";
+        $dbEntityBranch->getById($entityBranchId);
+
+
+        // if($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry() || $dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
+        if($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry()) {
             echo "Invalid";
         } else {
             $dbUser->statusId = Constants::USER_STATUS_PENDING_APPROVAL;
@@ -736,6 +752,20 @@ class AuthController extends Controller
             }
             
             $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_VERIFIED, $subject, $message);
+
+            // Send approval email
+            $allValues = new stdClass();
+            $allValues->name = $dbUser->fullname;
+            $allValues->mobile = $dbUser->mobile;
+            $allValues->email = $dbUser->email;
+            $allValues->entityName = $dbEntity->name;
+            $allValues->tradeLicenseNumber = $dbEntityBranch->tradeLicenseNumber;
+            $allValues->countryId = $dbEntity->countryId;
+            $allValues->cityId = $dbEntityBranch->cityId;
+            $allValues->address = $dbEntityBranch->address;
+            $allValues->tradeLicenseUrl = $dbEntityBranch->tradeLicenseUrl;
+            $this->sendApprovalEmail($allValues, $dbUser->id);
+
             echo $message;
         }
     }
@@ -761,11 +791,28 @@ class AuthController extends Controller
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getById($userId);
 
-        if($dbUser->dry()) {
+        if($dbUser->dry() || $dbUser->statusId != Constants::USER_STATUS_PENDING_APPROVAL) {
             echo "Invalid";
         } else {
             $dbUser->statusId = Constants::USER_STATUS_ACCOUNT_ACTIVE;
             $dbUser->update();
+
+            $emailHandler = new EmailHandler($this->db);
+            $message = "Your account has been approved. You can now login to our platform !";
+    
+            $emailHandler->appendToAddress($dbUser->email, $dbUser->fullname);
+            $subject = "Aumet - Pharmacy Account Approved";
+            if (getenv('ENV') != Constants::ENV_PROD) {
+                $subject .= " - (Test: " . getenv('ENV') . ")";
+
+                if (getenv('ENV') == Constants::ENV_LOC) {
+                    $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
+                    $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                }
+            }
+            
+            $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_APPROVED, $subject, $message);
+
             echo "Approved";
         }
     }

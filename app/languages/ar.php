@@ -88,7 +88,7 @@ return array(
     'vSignup_uploadDocument' => 'تحميل المستند',
     
     'vSignup_thankyouTitle' => 'شكرا على التسجيل!',
-    'vSignup_thankyouSubtitle' => 'لقد تلقينا طلبك ، يقوم فريقنا بالتحقق من التفاصيل الخاصة بك وسنعاود الاتصال بك خلال ٤٨ ساعة.',
+    'vSignup_thankyouSubtitle' => 'تم إرسال بريد إلكتروني إليك للتحقق من حسابك.',
     'vSignup_thankyouHome' => 'العودة إلى الصفحة الرئيسية',
 
     'vBack' => 'رجوع',

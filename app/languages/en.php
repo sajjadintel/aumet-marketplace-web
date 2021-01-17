@@ -91,7 +91,7 @@ return array(
     'vSignup_uploadDocument' => 'Upload Document',
     
     'vSignup_thankyouTitle' => 'Thanks for Registering!',
-    'vSignup_thankyouSubtitle' => 'We received your request, Our team is verifying your details and we will get back to you 48 hours.',
+    'vSignup_thankyouSubtitle' => 'An email has been sent to you to verify your account.',
     'vSignup_thankyouHome' => 'Go back to home',
 
     'vBack' => 'Go Back',
