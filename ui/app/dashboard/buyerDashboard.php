@@ -245,6 +245,7 @@
                 var outActions = '';
 
                 outActions += btnView;
+             /*
                 outActions += btnPrint;
 
                 switch (row.statusId) {
@@ -269,6 +270,7 @@
                     case 6:
                         outActions += btnOrderPaid;
                 }
+              */
 
                 return outActions;
             }

@@ -123,6 +123,10 @@ return array(
     'stockAvailability_notAvailable' => 'غير متوفر',
     'stockAvailability_availableSoon' => 'متوفر قريبا',
 
+    'vModule_productAdded' => 'Product is added successfully!', // TODO: add translation
+    'vModule_quantityEdited' => 'Product Quantity is edited successfully!', // TODO: add translation
+    'vModule_productEdited' => 'Product is edited successfully!',// TODO: add translation
+
     'vModule_order_title' => 'لائحة الطلبات',
     'vModule_order_header' => 'يمكنك عرض قائمة بأوامرك',
     'vModule_order_header_new' => 'يمكنك عرض طلباتك الجديدة',

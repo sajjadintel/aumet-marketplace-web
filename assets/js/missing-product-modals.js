@@ -2,6 +2,8 @@
 
 // Class Definition
 var WebMissingProductModals = (function () {
+    var repeater;
+    var products;
 
     var _orderMissingProductPharmacyModal = function (orderId) {
         WebApp.get('/web/distributor/order/' + orderId, _missingProductModalOpen);
@@ -53,20 +55,57 @@ var WebMissingProductModals = (function () {
 
         $('#missingProductOrderId').val(webResponse.data.order.id);
 
-        $repeater.setList([]);
+        repeater = $('#missingProductListRepeater').repeater({
+            isFirstItemUndeletable: true,
+            show: function () {
+                $(this).slideDown();
+                _validateInput(this);
+                _initSelect2(this);
+            },
+            hide: function (deleteElement) {
+                if (confirm( WebAppLocals.getMessage('missingProducts_deleteConfirmation'))) {
+                    $(this).slideUp(deleteElement);
+                }
+            },
+        });
 
-        $products = webResponse.data.orderDetail;
 
-        $products = $.map($products, function (obj) {
+        repeater.setList([]);
+
+        products = webResponse.data.orderDetail;
+
+        products = $.map(products, function (obj) {
             obj.text = obj.productNameEn;
             obj.id = obj.productCode;
             return obj;
         });
 
-
         $('#missingProductModal').appendTo('body').modal('show');
+
     };
 
+
+    var _initSelect2 = function initSelect2(input) {
+        $(input).find('.select2').select2({
+            placeholder: WebAppLocals.getMessage('missingProducts_filterByProduct'),
+            data: products,
+        });
+    }
+
+    var _validateInput = function validateInput(input) {
+        $(input).find('.missingProductQuantity').keydown(function () {
+            // Save old value.
+            if (!$(this).val() || (parseInt($(this).val()) <= $(this).attr('max') && parseInt($(this).val()) >= $(this).attr('min')))
+                $(this).data("old", $(this).val());
+        });
+        $(input).find('.missingProductQuantity').keyup(function () {
+            // Check correct, else revert back to old value.
+            if (!$(this).val() || (parseInt($(this).val()) <= $(this).attr('max') && parseInt($(this).val()) >= $(this).attr('min')))
+                ;
+            else
+                $(this).val($(this).data("old"));
+        });
+    }
 
     return {
         orderMissingProductPharmacyModal: function (orderId) {

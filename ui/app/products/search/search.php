@@ -254,7 +254,8 @@ function compress_htmlcode($codedata)
                 render: function (data, type, row, meta) {
                     let output = "";
                     if (row.bonusTypeId === 2 && row.bonuses != null) {
-                        let btnText = row.activeBonus ? row.activeBonus.minOrder + " / +" + row.activeBonus.bonus : "Select";
+                        /* let btnText = row.activeBonus ? row.activeBonus.minOrder + " / +" + row.activeBonus.bonus : "Select"; */
+                        let btnText = "Select";
                         let allBonuses = row.bonuses.filter((bonus) => !row.activeBonus || row.activeBonus.id !== bonus.id);
                         let btnShowBonuses =
                             '<a style="width: max-content;" href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.productId + ', ' + row.entityId + ', ' + JSON.stringify(allBonuses) + ')\'\
@@ -644,8 +645,8 @@ function compress_htmlcode($codedata)
             var initiate = function () {
                 var urlParams = new URLSearchParams(window.location.search);
                 var sortParam = urlParams.get('sort');
-        
-            
+
+
                 var allSortParams = [
                     "newest",
                     "top-selling"
@@ -677,11 +678,9 @@ function compress_htmlcode($codedata)
                 },
             };
         }();
+
+        $(document).ready(function() {
+            PageClass.init();
+        })
     </script>
 <?php ob_end_flush(); ?>
-<?php include_once 'add-bonus-modal.php'; ?>
-<script>
-    $(document).ready(function() {
-        PageClass.init();
-    })
-</script>
