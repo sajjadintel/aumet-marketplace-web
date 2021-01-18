@@ -47,7 +47,7 @@ class ProductsController extends Controller {
                 $found = true;
             }
 
-            if ($dbEntityProduct['statusId'] === 0 || (!$found && $this->objUser->menuId === 1)) {
+            if ($dbEntityProduct['statusId'] === 0 || (!$found && $this->objUser->menuId == Constants::MENU_DISTRIBUTOR)) {
                 $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
                 echo $this->webResponse->jsonResponse();
                 return;

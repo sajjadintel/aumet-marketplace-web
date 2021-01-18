@@ -1,5 +1,5 @@
 <div class="topbar">
-	<?php if($objUser->menuId !== 1): ?>
+	<?php if($objUser->menuId !== 1): ?>  <!--If::Check if not distributor-->
 	<!--begin::CartCheckout-->
 	<div class="topbar-item">
 		<div class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1" id="kt_quick_cart_toggle" onclick="window.location.href = '/web/cart/checkout'">
