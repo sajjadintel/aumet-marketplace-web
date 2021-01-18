@@ -158,18 +158,15 @@ class ProductsController extends Controller {
             $productId = $this->f3->get('PARAMS.productId');
 
             $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
-            //$dbProduct->getByField("productId", $productId);
-            //$this->f3->set("objProduct", $dbProduct);
             $arrProduct = $dbProduct->findWhere("productId = $productId");
 
+            $dbProductIngredient = new BaseModel($this->db, "vwProductIngredient");
+            $arrActiveIngredients = $dbProductIngredient->findWhere("productId = $productId");
+
             $data['product'] = $arrProduct[0];
+            $data['activeIngredients'] = $arrActiveIngredients;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
-
-            //$this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-            //$this->webResponse->title = $this->f3->get('vModule_feedback_title');
-            //$this->webResponse->data = View::instance()->render('app/products/distributor/modals/edit.php');
-            //echo $this->webResponse->jsonResponse();
         }
     }
 
@@ -320,16 +317,34 @@ class ProductsController extends Controller {
                 $this->webResponse->message = "No Product";
                 echo $this->webResponse->jsonResponse();
             } else {
-                $unitPrice = $this->f3->get('POST.unitPrice');
                 $scientificNameId = $this->f3->get('POST.scientificNameId');
                 $madeInCountryId = $this->f3->get('POST.madeInCountryId');
                 $name_en = $this->f3->get('POST.name_en');
                 $name_ar = $this->f3->get('POST.name_ar');
                 $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
+                $unitPrice = $this->f3->get('POST.unitPrice');
                 $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
+                $subtitle_ar = $this->f3->get('POST.subtitle_ar');
+                $subtitle_en = $this->f3->get('POST.subtitle_en');
+                $subtitle_fr = $this->f3->get('POST.subtitle_fr');
+                $description_ar = $this->f3->get('POST.description_ar');
+                $description_en = $this->f3->get('POST.description_en');
+                $description_fr = $this->f3->get('POST.description_fr');
+                $unitPrice = $this->f3->get('POST.unitPrice');
+                $manufacturerName = $this->f3->get('POST.manufacturerName');
+                $batchNumber = $this->f3->get('POST.batchNumber');
+                $itemCode = $this->f3->get('POST.itemCode');
+                $categoryId = $this->f3->get('POST.categoryId');
+                $subcategoryId = $this->f3->get('POST.subcategoryId');
+                $activeIngredientsId = $this->f3->get('POST.activeIngredientsId');
+                $expiryDate = $this->f3->get('POST.expiryDate');;
+                $strength = $this->f3->get('POST.strength');
 
-                if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$maximumOrderQuantity) {
+                if (!$scientificNameId || !$madeInCountryId || !$name_en
+                    || !$name_ar || !$name_fr || !$unitPrice || !$maximumOrderQuantity 
+                    || !$description_ar || !$description_en || !$description_fr 
+                    || !$categoryId || !$subcategoryId) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Some mandatory fields are missing";
@@ -337,7 +352,7 @@ class ProductsController extends Controller {
                     return;
                 }
 
-                if (!is_numeric($unitPrice) || $unitPrice <= 0) {
+                if (!is_numeric($unitPrice) || $unitPrice <= 0)  {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Unit Price must be a positive number";
@@ -345,14 +360,42 @@ class ProductsController extends Controller {
                     return;
                 }
 
+                $dbProduct->scientificNameId = $scientificNameId;
+                $dbProduct->madeInCountryId = $madeInCountryId;
                 $dbProduct->name_en = $name_en;
                 $dbProduct->name_fr = $name_fr;
                 $dbProduct->name_ar = $name_ar;
-                $dbProduct->scientificNameId = $scientificNameId;
-                $dbProduct->madeInCountryId = $madeInCountryId;
                 $dbProduct->image = $image;
+                $dbProduct->subtitle_ar = $subtitle_ar; 
+                $dbProduct->subtitle_en = $subtitle_en; 
+                $dbProduct->subtitle_fr = $subtitle_fr; 
+                $dbProduct->description_ar = $description_ar; 
+                $dbProduct->description_en = $description_en; 
+                $dbProduct->description_fr = $description_fr; 
+                $dbProduct->unitPrice = $unitPrice; 
+                $dbProduct->manufacturerName = $manufacturerName; 
+                $dbProduct->batchNumber = $batchNumber; 
+                $dbProduct->itemCode = $itemCode; 
+                $dbProduct->categoryId = $categoryId; 
+                $dbProduct->subcategoryId = $subcategoryId;  
+                $dbProduct->expiryDate = $expiryDate; 
+                $dbProduct->strength = $strength;
 
                 $dbProduct->update();
+
+                $dbProductIngredient = new BaseModel($this->db, "productIngredient");
+                $dbProductIngredient->getWhere("productId = $productId");
+                while (!$dbProductIngredient->dry()) {
+                    $dbProductIngredient->delete();
+                    $dbProductIngredient->next();
+                }
+
+                $arrIngredientId = explode(",", $activeIngredientsId);
+                foreach($arrIngredientId as $ingredientId) {
+                    $dbProductIngredient->productId = $productId; 
+                    $dbProductIngredient->ingredientId = $ingredientId;
+                    $dbProductIngredient->add();
+                }
 
                 $dbEntityProduct->unitPrice = $unitPrice;
                 $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
@@ -504,8 +547,27 @@ class ProductsController extends Controller {
             $unitPrice = $this->f3->get('POST.unitPrice');
             $stock = $this->f3->get('POST.stock');
             $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
+            $subtitle_ar = $this->f3->get('POST.subtitle_ar');
+            $subtitle_en = $this->f3->get('POST.subtitle_en');
+            $subtitle_fr = $this->f3->get('POST.subtitle_fr');
+            $description_ar = $this->f3->get('POST.description_ar');
+            $description_en = $this->f3->get('POST.description_en');
+            $description_fr = $this->f3->get('POST.description_fr');
+            $unitPrice = $this->f3->get('POST.unitPrice');
+            $manufacturerName = $this->f3->get('POST.manufacturerName');
+            $batchNumber = $this->f3->get('POST.batchNumber');
+            $itemCode = $this->f3->get('POST.itemCode');
+            $categoryId = $this->f3->get('POST.categoryId');
+            $subcategoryId = $this->f3->get('POST.subcategoryId');
+            $activeIngredientsId = $this->f3->get('POST.activeIngredientsId');
+            $expiryDate = $this->f3->get('POST.expiryDate');;
+            $strength = $this->f3->get('POST.strength');
 
-            if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$stock || !$maximumOrderQuantity) {
+            if (!$scientificNameId || !$madeInCountryId || !$name_en
+                || !$name_ar || !$name_fr || !$unitPrice
+                || !$stock || !$maximumOrderQuantity || !$description_ar
+                || !$description_en || !$description_fr || !$categoryId
+                || !$subcategoryId) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Some mandatory fields are missing";
@@ -537,8 +599,31 @@ class ProductsController extends Controller {
             $dbProduct->name_fr = $name_fr;
             $dbProduct->name_ar = $name_ar;
             $dbProduct->image = $image;
-
+            $dbProduct->subtitle_ar = $subtitle_ar; 
+            $dbProduct->subtitle_en = $subtitle_en; 
+            $dbProduct->subtitle_fr = $subtitle_fr; 
+            $dbProduct->description_ar = $description_ar; 
+            $dbProduct->description_en = $description_en; 
+            $dbProduct->description_fr = $description_fr; 
+            $dbProduct->unitPrice = $unitPrice; 
+            $dbProduct->manufacturerName = $manufacturerName; 
+            $dbProduct->batchNumber = $batchNumber; 
+            $dbProduct->itemCode = $itemCode; 
+            $dbProduct->categoryId = $categoryId; 
+            $dbProduct->subcategoryId = $subcategoryId;  
+            $dbProduct->expiryDate = $expiryDate; 
+            $dbProduct->strength = $strength;
+            
             $dbProduct->addReturnID();
+
+            $arrIngredientId = explode(",", $activeIngredientsId);
+            $dbProductIngredient = new BaseModel($this->db, "productIngredient");
+            foreach($arrIngredientId as $ingredientId) {
+                $dbProductIngredient->productId = $dbProduct->id; 
+                $dbProductIngredient->ingredientId = $ingredientId;
+                $dbProductIngredient->add();
+            }
+
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
             $entityId = $arrEntityId;
 

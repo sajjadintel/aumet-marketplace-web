@@ -469,6 +469,11 @@ var WebAppLocals = (function () {
 			en: 'City',
 			ar: 'مدينة',
 			fr: ''
+		},
+		subcategory: {
+			en: 'Subcategory',
+			ar: 'تصنيف فرعي',
+			fr: ''
 		}
 	};
 

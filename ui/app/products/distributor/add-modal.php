@@ -1,10 +1,15 @@
+<style>
+	textarea {
+		resize: none;
+	}
+</style>
 <!-- Modal-->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <form method="POST" action="/web/distributor/product/add" class="modalForm" id="addModalForm">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addModalTitle"></h5>
+                    <h5 class="modal-title" id="addModalTitle"><?php echo $vModule_product_add; ?></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i aria-hidden="true" class="ki ki-close"></i>
                     </button>
@@ -34,46 +39,108 @@
                             </div>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label for="addProductScientificName" class="form-control-label">Scientific Name</label>
+                            <label for="addProductScientificName" class="form-control-label"><?php echo $vModule_product_scientificName; ?></label>
                             <select class="select2 form-control" id="addProductScientificName" name="scientificNameId" data-select2-id="addProductScientificName" tabindex="-1" aria-hidden="true">
-                                <option selected disabled>Scientific Name</option>
+                                <option selected disabled><?php echo $vModule_product_scientificName; ?></option>
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label for="addProductCountry" class="form-control-label">Country</label>
+                            <label for="addProductCountry" class="form-control-label"><?php echo $vModule_product_madeIn; ?></label>
                             <select class="select2 form-control" id="addProductCountry" name="madeInCountryId" data-select2-id="addProductCountry" tabindex="-1" aria-hidden="true">
-                                <option selected disabled>Made In Country</option>
+                                <option selected disabled><?php echo $vModule_product_madeIn; ?></option>
                             </select>
                         </div>
-                        <div class="col-md-6 form-group">
-                            <label for="addProductNameAr" class="form-control-label">Product Name (Arabic)</label>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductNameAr" class="form-control-label"><?php echo $vModule_product_brandName; ?> AR</label>
                             <input type="text" class="form-control" name="name_ar" id="addProductNameAr">
                         </div>
-                        <div class="col-md-6 form-group">
-                            <label for="addProductNameEn" class="form-control-label">Product Name (English)</label>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductNameEn" class="form-control-label"><?php echo $vModule_product_brandName; ?> EN</label>
                             <input type="text" class="form-control" name="name_en" id="addProductNameEn">
                         </div>
-                        <div class="col-md-6 form-group">
-                            <label for="addProductNameFr" class="form-control-label">Product Name (French)</label>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductNameFr" class="form-control-label"><?php echo $vModule_product_brandName; ?> FR</label>
                             <input type="text" class="form-control" name="name_fr" id="addProductNameFr">
                         </div>
-                        <div class="col-md-6 form-group">
-                            <label for="addUnitPrice" class="form-control-label">Unit Price</label>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductSubtitleAr" class="form-control-label"><?php echo $vModule_product_subtitle; ?> AR</label>
+                            <input type="text" class="form-control" name="subtitle_ar" id="addProductSubtitleAr">
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductSubtitleEn" class="form-control-label"><?php echo $vModule_product_subtitle; ?> EN</label>
+                            <input type="text" class="form-control" name="subtitle_en" id="addProductSubtitleEn">
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductSubtitleFr" class="form-control-label"><?php echo $vModule_product_subtitle; ?> FR</label>
+                            <input type="text" class="form-control" name="subtitle_fr" id="addProductSubtitleFr">
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductDescriptionAr" class="form-control-label"><?php echo $vModule_product_description; ?> AR</label>    
+                            <textarea class="form-control" id="addProductDescriptionAr" name="description_ar" rows="4"></textarea>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductDescriptionEn" class="form-control-label"><?php echo $vModule_product_description; ?> EN</label>
+                            <textarea class="form-control" id="addProductDescriptionEn" name="description_en" rows="4"></textarea>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductDescriptionFr" class="form-control-label"><?php echo $vModule_product_description; ?> FR</label>
+                            <textarea class="form-control" id="addProductDescriptionFr" name="description_fr" rows="4"></textarea>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="addUnitPrice" class="form-control-label"><?php echo $vModule_product_unitPrice; ?></label>
                             <input type="number" class="form-control" name="unitPrice" id="addUnitPrice" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : 0;">
                         </div>
-                        <div class="col-md-6 form-group">
-                            <label for="addStock" class="form-control-label">Stock</label>
+                        <div class="col-md-4 form-group">
+                            <label for="addStock" class="form-control-label"><?php echo $vModule_product_availableQuantity; ?></label>
                             <input type="number" class="form-control" name="stock" id="addStock" min="0" step="1" onchange="this.value = this.value > 0? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                         </div>
-                        <div class="col-md-6 form-group">
-                            <label for="addMaximumOrderQuantity" class="form-control-label">Maximum Order Quantity</label>
+                        <div class="col-md-4 form-group">
+                            <label for="addMaximumOrderQuantity" class="form-control-label"><?php echo $vModule_product_maximumOrderQuantity; ?></label>
                             <input type="number" class="form-control" name="maximumOrderQuantity" id="addMaximumOrderQuantity" min="0" step="1" onchange="this.value = this.value > 0? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductManufacturerName" class="form-control-label"><?php echo $vModule_product_manufacturerName; ?></label>
+                            <input type="text" class="form-control" name="manufacturerName" id="addProductManufacturerName">
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductBatchNumber" class="form-control-label"><?php echo $vModule_product_batchNumber; ?></label>
+                            <input type="text" class="form-control" name="batchNumber" id="addProductBatchNumber">
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductItemCode" class="form-control-label"><?php echo $vModule_product_itemCode; ?></label>
+                            <input type="text" class="form-control" name="itemCode" id="addProductItemCode">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="addProductCategory" class="form-control-label"><?php echo $vModule_product_category; ?></label>
+                            <select class="select2 form-control" id="addProductCategory" name="categoryId" data-select2-id="addProductCategory" tabindex="-1" aria-hidden="true">
+                                <option selected disabled><?php echo $vModule_product_category; ?></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="addProductSubcategory" class="form-control-label"><?php echo $vModule_product_subcategory; ?></label>
+                            <select disabled class="select2 form-control" id="addProductSubcategory" name="subcategoryId" data-select2-id="addProductSubcategory" tabindex="-1" aria-hidden="true">
+                                <option selected disabled><?php echo $vModule_product_subcategory; ?></option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="addActiveIngredients" class="form-control-label"><?php echo $vModule_product_activeIngredients; ?></label>
+                            <select class="select2 form-control" id="addActiveIngredients" name="activeIngredients" data-select2-id="addActiveIngredients" tabindex="-1" aria-hidden="true" multiple>
+                            </select>
+                            <input type="hidden" name="activeIngredientsId" id="addActiveIngredientsVal"/>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductExpiryDate" class="form-control-label"><?php echo $vModule_product_expiryDate; ?></label>
+                            <input type="text" class="form-control" readonly name="expiryDate" id="addProductExpiryDate"/>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="addProductStrength" class="form-control-label"><?php echo $vModule_product_strength; ?></label>
+                            <input type="text" class="form-control" name="strength" id="addProductStrength">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <div class="modal-add-button">
-                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="addModalAction">Add Product</button>
+                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="addModalAction"><?php echo $vModule_product_add; ?></button>
                     </div>
                 </div>
             </form>

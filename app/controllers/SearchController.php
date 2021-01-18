@@ -187,6 +187,22 @@ class SearchController extends Controller {
         $this->handleGetListFilters("country", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
     }
 
+    function getProductCategoryList()
+    {
+        $this->handleGetListFilters("category", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
+    }
+
+    function getProductSubcategoryByCategoryList()
+    {
+        $categoryId = $this->f3->get("PARAMS.categoryId");
+        $this->handleGetListFilters("subcategory", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'categoryId = '.$categoryId);
+    }
+
+    function getProductIngredientList()
+    {
+        $this->handleGetListFilters("ingredient", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
+    }
+
     function getOrderBuyerList()
     {
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));

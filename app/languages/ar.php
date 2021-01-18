@@ -119,6 +119,23 @@ return array(
     'vModule_product_pricePerUnit' => 'Price Per Unit', // TODO: add translation
     'vModule_product_distributorName' => 'Distributor Name', // TODO: add translation
     'vModule_product_select' => 'Select', // TODO: add translation
+    'vModule_product_add' => 'أضف',
+    'vModule_product_edit' => 'تعديل',
+    'vModule_product_brandName' => 'اسم العلامة التجارية',
+    'vModule_product_subtitle' => 'العنوان الفرعي',
+    'vModule_product_description' => 'وصف',
+    'vModule_product_availableQuantity' => 'الكمية المتوفرة',
+    'vModule_product_maximumOrderQuantity' => 'كمية الطلب القصوى',
+    'vModule_product_manufacturerName' => 'اسم المصنع',
+    'vModule_product_batchNumber' => 'رقم الدفعة',
+    'vModule_product_itemCode' => 'رمز الصنف',
+    'vModule_product_category' => 'الفئة',
+    'vModule_product_subcategory' => 'تصنيف فرعي',
+    'vModule_product_expiryDate' => 'تاريخ الانتهاء',
+    'vModule_product_activeIngredients' => 'مكونات نشطة',
+    'vModule_product_strength' => 'قوة',
+
+
     'stockAvailability_available' => 'متوفر',
     'stockAvailability_notAvailable' => 'غير متوفر',
     'stockAvailability_availableSoon' => 'متوفر قريبا',

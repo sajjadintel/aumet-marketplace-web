@@ -37,6 +37,9 @@ $f3->route('GET /web/product/brandname/list', 'SearchController->getProductBrand
 $f3->route('GET /web/product/category/list', 'SearchController->getAllCategoryList');
 $f3->route('GET /web/product/scientificname/list', 'SearchController->getProductScientificNameList');
 $f3->route('GET /web/product/country/list', 'SearchController->getProductCountryList');
+$f3->route('GET /web/product/category/list', 'SearchController->getProductCategoryList');
+$f3->route('GET /web/product/subcategory/list/@categoryId', 'SearchController->getProductSubcategoryByCategoryList');
+$f3->route('GET /web/product/ingredient/list', 'SearchController->getProductIngredientList');
 $f3->route('GET /web/order/customer/list', 'SearchController->getOrderBuyerList');
 $f3->route('GET /web/order/Distributor/list', 'SearchController->getOrderSellerList');
 $f3->route('GET /web/order/Distributor/listAll', 'SearchController->getAllSellerList');

@@ -343,6 +343,145 @@ function compress_htmlcode($codedata)
                 }
             });
 
+            var _selectCategoryEdit = $('#editProductCategory').select2({
+                placeholder: "<?php echo $vModule_search_categoryPlaceholder ?>",
+
+                ajax: {
+                    url: '/web/product/category/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectCategoryAdd = $('#addProductCategory').select2({
+                placeholder: "<?php echo $vModule_search_categoryPlaceholder ?>",
+
+                ajax: {
+                    url: '/web/product/category/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectSubcategoryEdit = $('#editProductSubcategory').select2({
+                placeholder: "<?php echo $vModule_search_subcategoryPlaceholder ?>",
+
+                ajax: {
+                    url: function() {
+                        var _url = '/web/product/subcategory/list/';
+                        _url += $("#editProductCategory").val();
+                        return _url;
+                    },
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectSubcategoryAdd = $('#addProductSubcategory').select2({
+                placeholder: "<?php echo $vModule_search_subcategoryPlaceholder ?>",
+
+                ajax: {
+                    url: function() {
+                        var _url = '/web/product/subcategory/list/';
+                        _url += $("#addProductCategory").val();
+                        return _url;
+                    },
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectActiveIngredientsEdit = $('#editActiveIngredients').select2({
+                multiple: true,
+                placeholder: "<?php echo $vModule_search_subcategoryPlaceholder ?>",
+
+                ajax: {
+                    url: '/web/product/ingredient/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectActiveIngredientsAdd = $('#addActiveIngredients').select2({
+                multiple: true,
+                placeholder: "<?php echo $vModule_search_subcategoryPlaceholder ?>",
+
+                ajax: {
+                    url: '/web/product/ingredient/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var arrows;
+            if (KTUtil.isRTL()) {
+                arrows = {
+                    leftArrow: '<i class="la la-angle-right"></i>',
+                    rightArrow: '<i class="la la-angle-left"></i>'
+                }
+            } else {
+                arrows = {
+                    leftArrow: '<i class="la la-angle-left"></i>',
+                    rightArrow: '<i class="la la-angle-right"></i>'
+                }
+            }
+            
+            $('#addProductExpiryDate').datepicker({
+                rtl: KTUtil.isRTL(),
+                todayHighlight: true,
+                orientation: "top left",
+                templates: arrows
+            });
+
+            $('#editProductExpiryDate').datepicker({
+                rtl: KTUtil.isRTL(),
+                todayHighlight: true,
+                orientation: "top left",
+                templates: arrows
+            });
+
             $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
 
