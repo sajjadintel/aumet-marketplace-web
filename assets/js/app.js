@@ -14,6 +14,8 @@ var WebApp = (function () {
 
 	var _timeoutSession;
 
+	var _validator;
+
 	var _alertError = function (msg) {
 		Swal.fire({
 			html: msg,
@@ -305,14 +307,59 @@ var WebApp = (function () {
 				var form = $(this).parent().parent().parent();
 				var url = $(form).attr('action');
 				var data = $(form).serializeJSON();
-				console.log('JSON data from Modal:');
-				console.log(data);
 				var callback = null;
 				if ($(form).find('.modalValueCallback').val() != '') {
 					callback = eval($(form).find('.modalValueCallback').val());
 				}
-				_post(url, data, callback);
-				$(form).parent().parent().parent().modal('hide');
+
+				if($(this).attr("data-modalValidatorFields")) {
+					var fullForm = KTUtil.getById($(form).attr("id"));
+					var validatorFields = JSON.parse($(this).attr("data-modalValidatorFields"));
+
+					if(_validator) _validator.destroy();
+					_validator = FormValidation.formValidation(fullForm, {
+						fields: validatorFields,
+						plugins: {
+							trigger: new FormValidation.plugins.Trigger(),
+							// Bootstrap Framework Integration
+							bootstrap: new FormValidation.plugins.Bootstrap({
+								//eleInvalidClass: '',
+								eleValidClass: '',
+							}),
+						},
+					})
+					
+					$(".select2").each(function(index, element) {
+						var field = $(element).attr("name");
+						if(field in validatorFields) {
+							$(element).on('change.select2', function() {
+								_validator.revalidateField(field);
+							});
+						}
+					});
+
+					_validator.validate().then(function (status) {
+						if (status == 'Valid') {
+							_post(url, data, callback);
+							$(form).parent().parent().parent().modal('hide');
+						} else {
+							Swal.fire({
+								text: WebAppLocals.getMessage('validationError'),
+								icon: 'error',
+								buttonsStyling: false,
+								confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+								customClass: {
+									confirmButton: 'btn font-weight-bold btn-light',
+								},
+							}).then(function () {
+								KTUtil.scrollTop();
+							});
+						}
+					});
+				} else {
+					_post(url, data, callback);
+					$(form).parent().parent().parent().modal('hide');
+				}
 			});
 		});
 	};

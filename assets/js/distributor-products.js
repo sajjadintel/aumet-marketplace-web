@@ -4,19 +4,19 @@ var DistributorProductsDataTable = (function () {
 
     var repeater;
 
-    var mandatoryFieldIds = [
-        "ProductScientificName",
-        "ProductCountry",
-        "ProductNameAr",
-        "ProductNameEn",
-        "ProductNameFr",
-        "ProductDescriptionAr",
-        "ProductDescriptionEn",
-        "ProductDescriptionFr",
-        "UnitPrice",
-        "MaximumOrderQuantity",
-        "ProductCategory",
-        "ProductSubcategory"
+    var mandatoryFields = [
+        "scientificNameId",
+        "madeInCountryId",
+        "name_ar",
+        "name_en",
+        "name_fr",
+        "description_ar",
+        "description_en",
+        "description_fr",
+        "unitPrice",
+        "maximumOrderQuantity",
+        "categoryId",
+        "subcategoryId",
     ];
 
     var _productEditModal = function (productId) {
@@ -89,11 +89,9 @@ var DistributorProductsDataTable = (function () {
 
         _changeImageHolder(webResponse.data.product.image, "edit");
         $('#editProductImage').on("change", (ev) => _changeProductImage(ev, "edit"));
-
-        _addModalValidation('edit');
-        _checkModalForm('edit');
         
         $('#editModal').appendTo('body').modal('show');
+        _addModalValidation('edit');
     };
 
     var _productEditQuantityModalOpen = function (webResponse) {
@@ -186,12 +184,10 @@ var DistributorProductsDataTable = (function () {
         _changeImageHolder('', "add");
         $('#addProductImage').on("change", (ev) => _changeProductImage(ev, "add"));
 
-        _addModalValidation('add');
-        _checkModalForm('add');
-
         $('#addActiveIngredients').on("change", (ev) => _updateActiveIngredientsVal("add"));
 
         $('#addModal').appendTo('body').modal('show');
+        _addModalValidation('add');
     };
 
     var _productImageUpload = function (webResponse, mode) {
@@ -230,33 +226,27 @@ var DistributorProductsDataTable = (function () {
     }
 
     var _addModalValidation = function (mode) {
-        var _mandatoryFieldIds = [ ...mandatoryFieldIds ];
-        if(mode === "add") _mandatoryFieldIds.push("Stock");
+        var _mandatoryFields = [ ...mandatoryFields ];
+        if(mode === "add") _mandatoryFields.push("stock");
 
-        _mandatoryFieldIds.forEach((fieldId) => {
-            $("#" + mode + fieldId).on('change', (ev) => _checkModalForm(mode));
+        var validatorFields = {};
+        _mandatoryFields.forEach((field) => {
+            validatorFields[field] = {
+                validators: {
+                    notEmpty: {
+                        message: WebAppLocals.getMessage('required')
+                    }
+                }
+            }
         })
-    }
-
-    var _checkModalForm = function (mode) {
-        var _mandatoryFieldIds = [ ...mandatoryFieldIds ];
-        if(mode === "add") _mandatoryFieldIds.push("Stock");
-
-        let valid = _mandatoryFieldIds.every((fieldId) => {
-            var value = $("#" + mode + fieldId).val();
-            return value? true : false;
-        })
-
-        $('#' + mode + 'ModalAction').prop("disabled", !valid);
+        $("#" + mode + "ModalAction").attr("data-modalValidatorFields", JSON.stringify(validatorFields));
     }
 
     var _updateSubcategorySelect = function (mode) {
         var categoryId = $("#" + mode + "ProductCategory").val();
-        $("#" + mode + "ProductSubcategory")
-            .empty()
-            .append('<option selected disabled>' + WebAppLocals.getMessage('subcategory') + '</option>');
+        $("#" + mode + "ProductSubcategory").empty();
         $("#" + mode + "ProductSubcategory").select2({
-            placeholder: "<?php echo $vModule_search_subcategoryPlaceholder ?>",
+            placeholder: WebAppLocals.getMessage("subcategory"),
 
             ajax: {
                 url: function() {

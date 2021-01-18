@@ -41,13 +41,11 @@
                         <div class="col-md-6 form-group">
                             <label for="addProductScientificName" class="form-control-label"><?php echo $vModule_product_scientificName; ?></label>
                             <select class="select2 form-control" id="addProductScientificName" name="scientificNameId" data-select2-id="addProductScientificName" tabindex="-1" aria-hidden="true">
-                                <option selected disabled><?php echo $vModule_product_scientificName; ?></option>
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="addProductCountry" class="form-control-label"><?php echo $vModule_product_madeIn; ?></label>
                             <select class="select2 form-control" id="addProductCountry" name="madeInCountryId" data-select2-id="addProductCountry" tabindex="-1" aria-hidden="true">
-                                <option selected disabled><?php echo $vModule_product_madeIn; ?></option>
                             </select>
                         </div>
                         <div class="col-md-4 form-group">
@@ -87,7 +85,7 @@
                             <textarea class="form-control" id="addProductDescriptionFr" name="description_fr" rows="4"></textarea>
                         </div>
                         <div class="col-md-4 form-group">
-                            <label for="addUnitPrice" class="form-control-label"><?php echo $vModule_product_unitPrice; ?></label>
+                            <label for="addUnitPrice" class="form-control-label"><?php echo $vModule_product_unitPrice . " (" . $buyerCurrency . ")"; ?></label>
                             <input type="number" class="form-control" name="unitPrice" id="addUnitPrice" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : 0;">
                         </div>
                         <div class="col-md-4 form-group">
@@ -113,13 +111,11 @@
                         <div class="col-md-6 form-group">
                             <label for="addProductCategory" class="form-control-label"><?php echo $vModule_product_category; ?></label>
                             <select class="select2 form-control" id="addProductCategory" name="categoryId" data-select2-id="addProductCategory" tabindex="-1" aria-hidden="true">
-                                <option selected disabled><?php echo $vModule_product_category; ?></option>
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="addProductSubcategory" class="form-control-label"><?php echo $vModule_product_subcategory; ?></label>
                             <select disabled class="select2 form-control" id="addProductSubcategory" name="subcategoryId" data-select2-id="addProductSubcategory" tabindex="-1" aria-hidden="true">
-                                <option selected disabled><?php echo $vModule_product_subcategory; ?></option>
                             </select>
                         </div>
                         <div class="col-md-4 form-group">
