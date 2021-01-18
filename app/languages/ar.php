@@ -225,4 +225,6 @@ return array(
     'vModal_delete' => 'Delete',
     'vModal_add' => 'Add',
     'vModal_SaveChanges' => 'Save changes',
+    'vModalEditQuantity_nothingModified' => 'Nothing Modified!', // TODO: add translation
+
 );

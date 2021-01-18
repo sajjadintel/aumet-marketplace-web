@@ -102,14 +102,14 @@ class NotificationHelper {
      * @param \Base $f3 f3 instance
      * @param BaseModel $dbConnection db connection instance
      * @param int $orderId order id
-     * @param int[] $modifiedProductIds array of modified products
+     * @param int[] $modifiedOrderDetailIds array of modified order detail ids
      * @param int $entitySellerId entitySellerId
      */
-    public static function orderModifyShippedQuantityNotification($f3, $dbConnection, $orderId, $modifiedProductIds, $entitySellerId)
+    public static function orderModifyShippedQuantityNotification($f3, $dbConnection, $orderId, $modifiedOrderDetailIds, $entitySellerId)
     {
         $dbProduct = new BaseModel($dbConnection, "vwOrderDetail");
         $dbProduct->name = "productNameEn";
-        $dbProduct->getWhere("id = $orderId AND productCode IN (" . implode(",", $modifiedProductIds) . ")");
+        $dbProduct->getWhere("id = $orderId AND orderDetailId IN (" . implode(",", $modifiedOrderDetailIds) . ")");
 
         $emailHandler = new EmailHandler($dbConnection);
         $emailFile = "email/layout.php";

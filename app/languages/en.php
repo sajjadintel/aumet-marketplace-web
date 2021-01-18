@@ -239,4 +239,6 @@ return array(
     'vModal_SaveChanges' => 'Save changes',
 
     'responseSuccess_modifyQuantity' => 'Quantity order changed successfully!',
+    'vModalEditQuantity_nothingModified' => 'Nothing Modified!', // TODO: add translation
+
 );
