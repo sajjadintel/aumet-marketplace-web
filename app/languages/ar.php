@@ -15,6 +15,8 @@ return array(
     'vLogin_slogan' => 'أكبر سوق الكتروني للأدوية والمستلزمات الطبية',
 
     'vMessage_invalidLogin' => 'خطأ في اسم المستخدم أو كلمة مرور',
+    'vMessage_accountNotVerified' => 'لم يتم التحقق من الحساب بعد',
+    'vMessage_accountNotApproved' => 'سيتم الاتصال بك من قبل Aumet في غضون ٢٤ إلى ٤٨ ساعة لتفعيل حسابك',
     'vMessage_signupSuccessful' => 'تم التسجيل بنجاح. سيقوم أحد المسؤولين بمراجعة طلبك والرد عليك قريبًا!',
 
     'vLogin_helpAdv' => 'هل تواجه صعوبات في التسجيل؟',

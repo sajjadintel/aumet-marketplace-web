@@ -13,6 +13,8 @@ return array(
     'vLogin_slogan' => 'Connecting healthcare end users and distributors through the largest online healthcare B2B marketplace',
 
     'vMessage_invalidLogin' => 'Invalid Email or Password',
+    'vMessage_accountNotVerified' => 'Account not verified yet',
+    'vMessage_accountNotApproved' => 'You will be contacted by Aumet within 24 to 48 hours to activate your account',
     'vMessage_signupSuccessful' => 'Registration successfully submitted. An admin will review your request and get back to you soon !',
 
     'vLogin_helpAdv' => 'Facing issues in our Registration?',
