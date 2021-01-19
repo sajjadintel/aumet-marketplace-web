@@ -276,7 +276,7 @@ function compress_htmlcode($codedata)
             });
 
             var _selectScientificEdit = $('#editProductScientificName').select2({
-                placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+                placeholder: "<?php echo $vModule_product_scientificName ?>",
 
                 ajax: {
                     url: '/web/product/scientificname/list',
@@ -293,7 +293,7 @@ function compress_htmlcode($codedata)
             });
 
             var _selectScientificAdd = $('#addProductScientificName').select2({
-                placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+                placeholder: "<?php echo $vModule_product_scientificName ?>",
 
                 ajax: {
                     url: '/web/product/scientificname/list',
@@ -310,7 +310,7 @@ function compress_htmlcode($codedata)
             });
 
             var _selectCountryEdit = $('#editProductCountry').select2({
-                placeholder: "<?php echo $vModule_search_countryPlaceholder ?>",
+                placeholder: "<?php echo $vModule_product_madeIn ?>",
 
                 ajax: {
                     url: '/web/product/country/list',
@@ -327,7 +327,7 @@ function compress_htmlcode($codedata)
             });
 
             var _selectCountryAdd = $('#addProductCountry').select2({
-                placeholder: "<?php echo $vModule_search_countryPlaceholder ?>",
+                placeholder: "<?php echo $vModule_product_madeIn ?>",
 
                 ajax: {
                     url: '/web/product/country/list',
@@ -341,6 +341,145 @@ function compress_htmlcode($codedata)
                         }
                     }
                 }
+            });
+
+            var _selectCategoryEdit = $('#editProductCategory').select2({
+                placeholder: "<?php echo $vModule_product_category ?>",
+
+                ajax: {
+                    url: '/web/product/category/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectCategoryAdd = $('#addProductCategory').select2({
+                placeholder: "<?php echo $vModule_product_category ?>",
+
+                ajax: {
+                    url: '/web/product/category/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectSubcategoryEdit = $('#editProductSubcategory').select2({
+                placeholder: "<?php echo $vModule_product_subcategory ?>",
+
+                ajax: {
+                    url: function() {
+                        var _url = '/web/product/subcategory/list/';
+                        _url += $("#editProductCategory").val();
+                        return _url;
+                    },
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectSubcategoryAdd = $('#addProductSubcategory').select2({
+                placeholder: "<?php echo $vModule_product_subcategory ?>",
+
+                ajax: {
+                    url: function() {
+                        var _url = '/web/product/subcategory/list/';
+                        _url += $("#addProductCategory").val();
+                        return _url;
+                    },
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectActiveIngredientsEdit = $('#editActiveIngredients').select2({
+                multiple: true,
+                placeholder: "<?php echo $vModule_product_activeIngredients ?>",
+
+                ajax: {
+                    url: '/web/product/ingredient/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectActiveIngredientsAdd = $('#addActiveIngredients').select2({
+                multiple: true,
+                placeholder: "<?php echo $vModule_product_activeIngredients ?>",
+
+                ajax: {
+                    url: '/web/product/ingredient/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var arrows;
+            if (KTUtil.isRTL()) {
+                arrows = {
+                    leftArrow: '<i class="la la-angle-right"></i>',
+                    rightArrow: '<i class="la la-angle-left"></i>'
+                }
+            } else {
+                arrows = {
+                    leftArrow: '<i class="la la-angle-left"></i>',
+                    rightArrow: '<i class="la la-angle-right"></i>'
+                }
+            }
+            
+            $('#addProductExpiryDate').datepicker({
+                rtl: KTUtil.isRTL(),
+                todayHighlight: true,
+                orientation: "top left",
+                templates: arrows
+            });
+
+            $('#editProductExpiryDate').datepicker({
+                rtl: KTUtil.isRTL(),
+                todayHighlight: true,
+                orientation: "top left",
+                templates: arrows
             });
 
             $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
