@@ -123,6 +123,7 @@ return array(
     'vModule_productAdded' => 'Product is added successfully!',
     'vModule_quantityEdited' => 'Product Quantity is edited successfully!',
     'vModule_productEdited' => 'Product is edited successfully!',
+    'vModule_customerEdited' => 'Customer is edited successfully!',
 
     'vModule_order_title' => 'Order List',
     'vModule_order_header' => 'You can view your order list',
@@ -211,6 +212,9 @@ return array(
     'vModule_order_dateTo' => 'Get Orders Ending Date',
     'vModule_order_date' => 'Get Orders Date',
 
+    'vModule_customer_customerGroupTitle' => 'Customer Group',
+    'vModule_customer_customerGroup' => 'Customer Group',
+
     'vResponse_notFound' => '{0} not found',
     'vResponse_notUpdated' => '{0} could not be updated',
     'vResponse_notAdded' => '{0} could not be added',
@@ -229,6 +233,7 @@ return array(
     'vButton_bulk_add_image' => 'Bulk Add Images',
     'vButton_confirm' => 'Confirm',
     'vButton_view_all' => 'View All',
+    'vButton_save' => 'Save',
 
     'vModule_feedback_title' => 'Customer Orders Feedback',
     'vModule_feedback_header' => 'The below customer feedback is delivered to you privately and they are not publicly available for any user',

@@ -40,6 +40,7 @@ $f3->route('GET /web/product/country/list', 'SearchController->getProductCountry
 $f3->route('GET /web/order/customer/list', 'SearchController->getOrderBuyerList');
 $f3->route('GET /web/order/Distributor/list', 'SearchController->getOrderSellerList');
 $f3->route('GET /web/order/Distributor/listAll', 'SearchController->getAllSellerList');
+$f3->route('GET /web/customer/group/list/@entityId', 'SearchController->getCustomerGroupByEnitityList');
 
 $f3->route('GET /web/searchbar', 'SearchController->handleSearchBar');
 
@@ -120,7 +121,9 @@ $f3->route('POST /web/distributor/product/bonus/upload/process', 'ProductsContro
 
 $f3->route('GET /web/distributor/customer', 'EntityController->getEntityCustomers');
 $f3->route('GET /web/distributor/customer/@customerId', 'EntityController->getEntityCustomerDetails');
+$f3->route('GET /web/distributor/customer/relation/@entityBuyerId/@entitySellerId', 'EntityController->getEntityCustomerRelationDetails');
 $f3->route('POST /web/distributor/customer', 'EntityController->postEntityCustomers');
+$f3->route('POST /web/distributor/customer/edit/group', 'EntityController->postEntityCustomersEditGroup');
 
 $f3->route('GET /web/distributor/customer/feedback', 'CustomersController->getOrderCustomersFeedback');
 $f3->route('POST /web/distributor/customer/feedback', 'CustomersController->postOrderCustomersFeedback');

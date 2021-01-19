@@ -204,6 +204,12 @@ class SearchController extends Controller {
         $this->handleGetListFilters("entity", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'typeId=10');
     }
 
+    function getCustomerGroupByEnitityList()
+    {
+        $entityId = $this->f3->get("PARAMS.entityId");
+        $this->handleGetListFilters("customerGroup", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'entityId = '.$entityId);
+    }
+
     function getCategoryList()
     {
         if ($this->f3->ajax()) {

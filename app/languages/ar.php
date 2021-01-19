@@ -126,6 +126,7 @@ return array(
     'vModule_productAdded' => 'Product is added successfully!', // TODO: add translation
     'vModule_quantityEdited' => 'Product Quantity is edited successfully!', // TODO: add translation
     'vModule_productEdited' => 'Product is edited successfully!',// TODO: add translation
+    'vModule_customerEdited' => 'Customer is edited successfully!',// TODO: add translation
 
     'vModule_order_title' => 'لائحة الطلبات',
     'vModule_order_header' => 'يمكنك عرض قائمة بأوامرك',
@@ -206,6 +207,9 @@ return array(
     'vModule_order_dateFrom' => 'أدخل تاريخ بدء الطلبات',
     'vModule_order_dateTo' => 'أدخل تاريخ انتهاء الطلبات',
     'vModule_order_date' => 'أدخل تاريخ الطلبات',
+    
+    'vModule_customer_customerGroupTitle' => 'مجموعة العملاء',
+    'vModule_customer_customerGroup' => 'مجموعة العملاء',
 
     'vResponse_notFound' => '{0} غير موجود',
     'vResponse_notUpdated' => 'تعذر تحديث {0}',
@@ -226,6 +230,7 @@ return array(
     'vButton_bulk_add_image' => 'إضافة صور مجمعة',
     'vButton_confirm' => 'تأكيد',
     'vButton_view_all' => 'مشاهدة الكل',
+    'vButton_save' => 'حفظ',
     
     'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ', // TODO: add translation
     'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!', // TODO: add translation

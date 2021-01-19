@@ -473,7 +473,17 @@ var WebAppLocals = (function () {
 		city: {
 			en: 'City',
 			ar: 'مدينة',
-			fr: ''
+			fr: '',
+		},
+		customerGroup: {
+			en: 'Customer Group',
+			ar: 'مجموعة العملاء',
+			fr: '',
+		},
+		changeCustomerGroup: {
+			en: 'Change Customer Group',
+			ar: 'تغيير مجموعة العملاء',
+			fr: '',
 		}
 	};
 
