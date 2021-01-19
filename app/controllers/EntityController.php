@@ -161,7 +161,7 @@ class EntityController extends Controller
                     }
                 }
 
-                // $emailHandler->sendEmail(Constants::EMAIL_NEW_CUSTOMER_GROUP, $subject, $message);
+                $emailHandler->sendEmail(Constants::EMAIL_NEW_CUSTOMER_GROUP, $subject, $message);
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
                 $this->webResponse->title = "";
