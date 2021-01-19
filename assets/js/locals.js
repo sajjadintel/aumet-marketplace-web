@@ -494,6 +494,16 @@ var WebAppLocals = (function () {
 			en: 'Ok, got it!',
 			ar: 'حسنا، حصلت عليه!',
 			fr: ''
+		},
+		customerGroup: {
+			en: 'Customer Group',
+			ar: 'مجموعة العملاء',
+			fr: '',
+		},
+		changeCustomerGroup: {
+			en: 'Change Customer Group',
+			ar: 'تغيير مجموعة العملاء',
+			fr: '',
 		}
 	};
 
