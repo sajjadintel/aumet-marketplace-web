@@ -142,6 +142,24 @@ class ProductsController extends Controller {
 
             $dbScientificName = new BaseModel($this->db, "scientificName");
             $arrScientificName = $dbScientificName->findAll();
+
+            // Find buyer currency
+            $dbCurrencies = new BaseModel($this->db, "currency");
+            $allCurrencies = $dbCurrencies->all();
+
+            $mapCurrencyIdCurrency = [];
+            foreach ($allCurrencies as $currency) {
+                $mapCurrencyIdCurrency[$currency['id']] = $currency;
+            }
+            
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            
+            $dbEntities = new BaseModel($this->db, "entity");
+            $buyerEntity = $dbEntities->getWhere("id in ($arrEntityId)")[0];
+            
+            $buyerCurrency = $mapCurrencyIdCurrency[$buyerEntity['currencyId']];
+            $this->f3->set('buyerCurrency', $buyerCurrency['symbol']);
+
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_product_title');
             $this->webResponse->data = View::instance()->render('app/products/distributor/products.php');
@@ -158,18 +176,15 @@ class ProductsController extends Controller {
             $productId = $this->f3->get('PARAMS.productId');
 
             $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
-            //$dbProduct->getByField("productId", $productId);
-            //$this->f3->set("objProduct", $dbProduct);
             $arrProduct = $dbProduct->findWhere("productId = $productId");
 
+            $dbProductIngredient = new BaseModel($this->db, "vwProductIngredient");
+            $arrActiveIngredients = $dbProductIngredient->findWhere("productId = $productId");
+
             $data['product'] = $arrProduct[0];
+            $data['activeIngredients'] = $arrActiveIngredients;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
-
-            //$this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-            //$this->webResponse->title = $this->f3->get('vModule_feedback_title');
-            //$this->webResponse->data = View::instance()->render('app/products/distributor/modals/edit.php');
-            //echo $this->webResponse->jsonResponse();
         }
     }
 
@@ -320,16 +335,34 @@ class ProductsController extends Controller {
                 $this->webResponse->message = "No Product";
                 echo $this->webResponse->jsonResponse();
             } else {
-                $unitPrice = $this->f3->get('POST.unitPrice');
                 $scientificNameId = $this->f3->get('POST.scientificNameId');
                 $madeInCountryId = $this->f3->get('POST.madeInCountryId');
                 $name_en = $this->f3->get('POST.name_en');
                 $name_ar = $this->f3->get('POST.name_ar');
                 $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
+                $unitPrice = $this->f3->get('POST.unitPrice');
                 $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
+                $subtitle_ar = $this->f3->get('POST.subtitle_ar');
+                $subtitle_en = $this->f3->get('POST.subtitle_en');
+                $subtitle_fr = $this->f3->get('POST.subtitle_fr');
+                $description_ar = $this->f3->get('POST.description_ar');
+                $description_en = $this->f3->get('POST.description_en');
+                $description_fr = $this->f3->get('POST.description_fr');
+                $unitPrice = $this->f3->get('POST.unitPrice');
+                $manufacturerName = $this->f3->get('POST.manufacturerName');
+                $batchNumber = $this->f3->get('POST.batchNumber');
+                $itemCode = $this->f3->get('POST.itemCode');
+                $categoryId = $this->f3->get('POST.categoryId');
+                $subcategoryId = $this->f3->get('POST.subcategoryId');
+                $activeIngredientsId = $this->f3->get('POST.activeIngredientsId');
+                $expiryDate = $this->f3->get('POST.expiryDate');;
+                $strength = $this->f3->get('POST.strength');
 
-                if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$maximumOrderQuantity) {
+                if (!$scientificNameId || !$madeInCountryId || !$name_en
+                    || !$name_ar || !$name_fr || !$unitPrice || !$maximumOrderQuantity 
+                    || !$description_ar || !$description_en || !$description_fr 
+                    || !$categoryId || !$subcategoryId) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Some mandatory fields are missing";
@@ -337,7 +370,7 @@ class ProductsController extends Controller {
                     return;
                 }
 
-                if (!is_numeric($unitPrice) || $unitPrice <= 0) {
+                if (!is_numeric($unitPrice) || $unitPrice <= 0)  {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Unit Price must be a positive number";
@@ -345,14 +378,52 @@ class ProductsController extends Controller {
                     return;
                 }
 
+                $dbSubcategory = new BaseModel($this->db, "subcategory");
+                $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
+                if($dbSubcategory->dry()) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->title = "";
+                    $this->webResponse->message = "Category invalid";
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+
+                $dbProduct->scientificNameId = $scientificNameId;
+                $dbProduct->madeInCountryId = $madeInCountryId;
                 $dbProduct->name_en = $name_en;
                 $dbProduct->name_fr = $name_fr;
                 $dbProduct->name_ar = $name_ar;
-                $dbProduct->scientificNameId = $scientificNameId;
-                $dbProduct->madeInCountryId = $madeInCountryId;
                 $dbProduct->image = $image;
+                $dbProduct->subtitle_ar = $subtitle_ar; 
+                $dbProduct->subtitle_en = $subtitle_en; 
+                $dbProduct->subtitle_fr = $subtitle_fr; 
+                $dbProduct->description_ar = $description_ar; 
+                $dbProduct->description_en = $description_en; 
+                $dbProduct->description_fr = $description_fr; 
+                $dbProduct->unitPrice = $unitPrice; 
+                $dbProduct->manufacturerName = $manufacturerName; 
+                $dbProduct->batchNumber = $batchNumber; 
+                $dbProduct->itemCode = $itemCode; 
+                $dbProduct->categoryId = $categoryId; 
+                $dbProduct->subcategoryId = $subcategoryId;  
+                $dbProduct->expiryDate = $expiryDate; 
+                $dbProduct->strength = $strength;
 
                 $dbProduct->update();
+
+                $dbProductIngredient = new BaseModel($this->db, "productIngredient");
+                $dbProductIngredient->getWhere("productId = $productId");
+                while (!$dbProductIngredient->dry()) {
+                    $dbProductIngredient->delete();
+                    $dbProductIngredient->next();
+                }
+
+                $arrIngredientId = explode(",", $activeIngredientsId);
+                foreach($arrIngredientId as $ingredientId) {
+                    $dbProductIngredient->productId = $productId; 
+                    $dbProductIngredient->ingredientId = $ingredientId;
+                    $dbProductIngredient->add();
+                }
 
                 $dbEntityProduct->unitPrice = $unitPrice;
                 $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
@@ -501,11 +572,29 @@ class ProductsController extends Controller {
             $name_ar = $this->f3->get('POST.name_ar');
             $name_fr = $this->f3->get('POST.name_fr');
             $image = $this->f3->get('POST.image');
-            $unitPrice = $this->f3->get('POST.unitPrice');
             $stock = $this->f3->get('POST.stock');
             $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
+            $subtitle_ar = $this->f3->get('POST.subtitle_ar');
+            $subtitle_en = $this->f3->get('POST.subtitle_en');
+            $subtitle_fr = $this->f3->get('POST.subtitle_fr');
+            $description_ar = $this->f3->get('POST.description_ar');
+            $description_en = $this->f3->get('POST.description_en');
+            $description_fr = $this->f3->get('POST.description_fr');
+            $unitPrice = $this->f3->get('POST.unitPrice');
+            $manufacturerName = $this->f3->get('POST.manufacturerName');
+            $batchNumber = $this->f3->get('POST.batchNumber');
+            $itemCode = $this->f3->get('POST.itemCode');
+            $categoryId = $this->f3->get('POST.categoryId');
+            $subcategoryId = $this->f3->get('POST.subcategoryId');
+            $activeIngredientsId = $this->f3->get('POST.activeIngredientsId');
+            $expiryDate = $this->f3->get('POST.expiryDate');;
+            $strength = $this->f3->get('POST.strength');
 
-            if (!$scientificNameId || !$madeInCountryId || !$name_en || !$name_ar || !$name_fr || !$unitPrice || !$stock || !$maximumOrderQuantity) {
+            if (!$scientificNameId || !$madeInCountryId || !$name_en
+                || !$name_ar || !$name_fr || !$unitPrice
+                || !$stock || !$maximumOrderQuantity || !$description_ar
+                || !$description_en || !$description_fr || !$categoryId
+                || !$subcategoryId) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Some mandatory fields are missing";
@@ -529,6 +618,16 @@ class ProductsController extends Controller {
                 echo $this->webResponse->jsonResponse();
                 return;
             }
+            
+            $dbSubcategory = new BaseModel($this->db, "subcategory");
+            $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
+            if($dbSubcategory->dry()) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "Category invalid";
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
 
             $dbProduct = new BaseModel($this->db, "product");
             $dbProduct->scientificNameId = $scientificNameId;
@@ -537,8 +636,31 @@ class ProductsController extends Controller {
             $dbProduct->name_fr = $name_fr;
             $dbProduct->name_ar = $name_ar;
             $dbProduct->image = $image;
-
+            $dbProduct->subtitle_ar = $subtitle_ar; 
+            $dbProduct->subtitle_en = $subtitle_en; 
+            $dbProduct->subtitle_fr = $subtitle_fr; 
+            $dbProduct->description_ar = $description_ar; 
+            $dbProduct->description_en = $description_en; 
+            $dbProduct->description_fr = $description_fr; 
+            $dbProduct->unitPrice = $unitPrice; 
+            $dbProduct->manufacturerName = $manufacturerName; 
+            $dbProduct->batchNumber = $batchNumber; 
+            $dbProduct->itemCode = $itemCode; 
+            $dbProduct->categoryId = $categoryId; 
+            $dbProduct->subcategoryId = $subcategoryId;  
+            $dbProduct->expiryDate = $expiryDate; 
+            $dbProduct->strength = $strength;
+            
             $dbProduct->addReturnID();
+
+            $arrIngredientId = explode(",", $activeIngredientsId);
+            $dbProductIngredient = new BaseModel($this->db, "productIngredient");
+            foreach($arrIngredientId as $ingredientId) {
+                $dbProductIngredient->productId = $dbProduct->id; 
+                $dbProductIngredient->ingredientId = $ingredientId;
+                $dbProductIngredient->add();
+            }
+
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
             $entityId = $arrEntityId;
 
@@ -1454,6 +1576,15 @@ class ProductsController extends Controller {
             $arrCountry = [
                 ['Name', 'Value']
             ];
+            $arrCategory = [
+                ['Name', 'Value']
+            ];
+            $arrSubcategory = [
+                ['Name', 'Value']
+            ];
+            $arrIngredient = [
+                ['Name', 'Value']
+            ];
 
             $dbScientificName = new BaseModel($this->db, "scientificName");
             $allScientificName = $dbScientificName->findAll("name asc");
@@ -1474,15 +1605,48 @@ class ProductsController extends Controller {
                 $arrCountry[] = array($country['name'], $country['id']);
             }
 
+            $dbCategory = new BaseModel($this->db, "category");
+            $dbCategory->name = "name_" . $this->objUser->language;
+            $allCategory = $dbCategory->findAll("name asc");
+
+            $categoryNum = 2;
+            foreach ($allCategory as $category) {
+                $categoryNum++;
+                $arrCategory[] = array($category['name'], $category['id']);
+            }
+
+            $dbSubcategory = new BaseModel($this->db, "subcategory");
+            $dbSubcategory->name = "name_" . $this->objUser->language;
+            $allSubcategory = $dbSubcategory->findAll("name asc");
+
+            $subcategoryNum = 2;
+            foreach ($allSubcategory as $subcategory) {
+                $subcategoryNum++;
+                $arrSubcategory[] = array($subcategory['name'], $subcategory['id']);
+            }
+
+            $dbIngredient = new BaseModel($this->db, "ingredient");
+            $dbIngredient->name = "name_" . $this->objUser->language;
+            $allIngredient = $dbIngredient->findAll("name asc");
+
+            $ingredientNum = 2;
+            foreach ($allIngredient as $ingredient) {
+                $ingredientNum++;
+                $arrIngredient[] = array($ingredient['name'], $ingredient['id']);
+            }
+
             $sampleFilePath = 'app/files/samples/products-add-sample.xlsx';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
             $sheet = $spreadsheet->setActiveSheetIndex(2);
 
-            // Set scientific names and countries in excel
+            // Set dropdown variables in excel
             $sheet->fromArray($arrScientificName, NULL, 'A2', true);
             $sheet->fromArray($arrCountry, NULL, 'D2', true);
+            $sheet->fromArray($arrCategory, NULL, 'G2', true);
+            $sheet->fromArray($arrSubcategory, NULL, 'J2', true);
+            $sheet->fromArray($arrIngredient, NULL, 'M2', true);
 
             // Change active sheet to database input
             $sheet = $spreadsheet->setActiveSheetIndex(1);
@@ -1490,6 +1654,9 @@ class ProductsController extends Controller {
             // Set validation and formula
             Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
             Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
+            Excel::setCellFormulaVLookup($sheet, 'R3', 2505, "'User Input'!R", 'Variables!$G$3:$H$' . $categoryNum);
+            Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$J$3:$K$' . $subcategoryNum);
+            Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$M$3:$N$' . $ingredientNum);
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -1498,9 +1665,12 @@ class ProductsController extends Controller {
             // Change active sheet to user input
             $sheet = $spreadsheet->setActiveSheetIndex(0);
 
-            // Set data validation for scientific names and countries
+            // Set data validation for dropdowns
             Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
             Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
+            Excel::setDataValidation($sheet, 'R3', 'R2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $categoryNum);
+            Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $subcategoryNum);
+            Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$M$3:$M$' . $ingredientNum);
 
             // Create excel sheet
             $productsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsx";
@@ -1556,11 +1726,9 @@ class ProductsController extends Controller {
             $allScientificName = $dbScientificName->findAll("name asc");
 
             $allScientificId = [];
-            $mapScientificNameId = [];
             $mapScientificIdName = [];
             foreach ($allScientificName as $scientificName) {
                 array_push($allScientificId, $scientificName['id']);
-                $mapScientificNameId[$scientificName['name']] = $scientificName['id'];
                 $mapScientificIdName[$scientificName['id']] = $scientificName['name'];
             }
 
@@ -1570,23 +1738,71 @@ class ProductsController extends Controller {
             $allCountry = $dbCountry->findAll("name asc");
 
             $allCountryId = [];
-            $mapCountryNameId = [];
             $mapCountryIdName = [];
             foreach ($allCountry as $country) {
                 array_push($allCountryId, $country['id']);
-                $mapCountryNameId[$country['name']] = $country['id'];
                 $mapCountryIdName[$country['id']] = $country['name'];
+            }
+
+            // Get all categories
+            $dbCategory = new BaseModel($this->db, "category");
+            $dbCategory->name = "name_" . $this->objUser->language;
+            $allCategory = $dbCategory->findAll("name asc");
+
+            $allCategoryId = [];
+            $mapCategoryIdName = [];
+            foreach ($allCategory as $category) {
+                array_push($allCategoryId, $category['id']);
+                $mapCategoryIdName[$category['id']] = $category['name'];
+            }
+
+            // Get all subcategories
+            $dbSubcategory = new BaseModel($this->db, "subcategory");
+            $dbSubcategory->name = "name_" . $this->objUser->language;
+            $allSubcategory = $dbSubcategory->findAll("name asc");
+
+            $allSubcategoryId = [];
+            $mapSubcategoryIdName = [];
+            foreach ($allSubcategory as $subcategory) {
+                array_push($allSubcategoryId, $subcategory['id']);
+                $mapSubcategoryIdName[$subcategory['id']] = $subcategory['name'];
+            }
+
+            // Get all ingredients
+            $dbIngredient = new BaseModel($this->db, "ingredient");
+            $dbIngredient->name = "name_" . $this->objUser->language;
+            $allIngredient = $dbIngredient->findAll("name asc");
+
+            $allIngredientId = [];
+            $mapIngredientIdName = [];
+            foreach ($allIngredient as $ingredient) {
+                array_push($allIngredientId, $ingredient['id']);
+                $mapIngredientIdName[$ingredient['id']] = $ingredient['name'];
             }
 
             $fields = [
                 "A" => "scientificNameId",
                 "B" => "madeInCountryId",
-                "C" => "name_ar",
-                "D" => "name_en",
+                "C" => "name_en",
+                "D" => "name_ar",
                 "E" => "name_fr",
-                "F" => "unitPrice",
-                "G" => "stock",
-                "H" => "maximumOrderQuantity"
+                "F" => "subtitle_ar",
+                "G" => "subtitle_en",
+                "H" => "subtitle_fr",
+                "I" => "description_ar",
+                "J" => "description_en",
+                "K" => "description_fr",
+                "L" => "unitPrice",
+                "M" => "stock",
+                "N" => "maximumOrderQuantity",
+                "O" => "manufacturerName",
+                "P" => "batchNumber",
+                "Q" => "itemCode",
+                "R" => "categoryId",
+                "S" => "subcategoryId",
+                "T" => "activeIngredientsId",
+                "U" => "expiryDate",
+                "V" => "strength"
             ];
 
             $successProducts = [];
@@ -1669,25 +1885,103 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "F":
+                            $dbProduct->subtitle_ar = $cellValue;
+                            break;
+                        case "G":
+                            $dbProduct->subtitle_en = $cellValue;
+                            break;
+                        case "H":
+                            $dbProduct->subtitle_fr = $cellValue;
+                            break;
+                        case "I":
+                            if (!$cellValue) {
+                                array_push($errors, "Description AR required");
+                            } else {
+                                $dbProduct->description_ar = $cellValue;
+                            }
+                            break;
+                        case "J":
+                            if (!$cellValue) {
+                                array_push($errors, "Description EN required");
+                            } else {
+                                $dbProduct->description_en = $cellValue;
+                            }
+                            break;
+                        case "K":
+                            if (!$cellValue) {
+                                array_push($errors, "Description FR required");
+                            } else {
+                                $dbProduct->description_fr = $cellValue;
+                            }
+                            break;
+                        case "L":
                             if (!is_numeric($cellValue) || (float)$cellValue < 0) {
                                 array_push($errors, "Unit Price must be a positive number");
                             } else {
                                 $dbEntityProduct->unitPrice = round((float)$cellValue, 2);
                             }
                             break;
-                        case "G":
+                        case "M":
                             if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Available Quantity must be a positive whole number");
                             } else {
                                 $dbEntityProduct->stock = (int)$cellValue;
                             }
                             break;
-                        case "H":
+                        case "N":
                             if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Maximum Order Quantity must be a positive whole number");
                             } else {
                                 $dbEntityProduct->maximumOrderQuantity = (int)$cellValue;
                             }
+                            break;
+                        case "O":
+                            $dbProduct->manufacturerName = $cellValue;
+                            break;
+                        case "P":
+                            $dbProduct->batchNumber = $cellValue;
+                            break;
+                        case "Q":
+                            $dbProduct->itemCode = $cellValue;
+                            break;
+                        case "R":
+                            if (!in_array($cellValue, $allCategoryId)) {
+                                array_push($errors, "Category invalid");
+                            } else {
+                                $dbProduct->categoryId = $cellValue;
+                            }
+                            break;
+                        case "S":
+                            if (!in_array($cellValue, $allSubcategoryId)) {
+                                array_push($errors, "Subcategory invalid");
+                            } else {
+                                $dbSubcategory->getWhere("id = $cellValue AND categoryId = $dbProduct->categoryId");
+                                if($dbSubcategory->dry()) {
+                                    array_push($errors, "Subcategory invalid");
+                                } else {
+                                    $dbProduct->subcategoryId = $cellValue;
+                                }
+                            }
+                            break;
+                        case "T":
+                            if ($cellValue != "#N/A" && !in_array($cellValue, $allIngredientId)) {
+                                array_push($errors, "Ingredient invalid");
+                            } else {
+                                $activeIngredientsId = $cellValue;
+                            }
+                            break;
+                        case "U":
+                            if (!is_null($cellValue)) {
+                                if (!is_int($cellValue)) {
+                                    array_push($errors, "Expiry Date must fit a date format (mm/dd/yyyy)");
+                                } else {
+                                    $expiryDate = Excel::excelDateToRegularDate($cellValue, "m/d/Y");
+                                    $dbProduct->expiryDate = $expiryDate;
+                                }
+                            }
+                            break;
+                        case "V":
+                            $dbProduct->strength = $cellValue;
                             break;
                     }
                 }
@@ -1707,6 +2001,13 @@ class ProductsController extends Controller {
                     $dbEntityProduct->bonusTypeId = 1;
                     $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
                     $dbEntityProduct->add();
+
+                    if($activeIngredientsId) {
+                        $dbProductIngredient = new BaseModel($this->db, "productIngredient");
+                        $dbProductIngredient->productId = $dbProduct->id; 
+                        $dbProductIngredient->ingredientId = $activeIngredientsId;
+                        $dbProductIngredient->add();
+                    }
 
                     array_push($successProducts, $product);
                     $successRecords++;
@@ -1730,6 +2031,15 @@ class ProductsController extends Controller {
                 $arrCountry = [
                     ['Name', 'Value']
                 ];
+                $arrCategory = [
+                    ['Name', 'Value']
+                ];
+                $arrSubcategory = [
+                    ['Name', 'Value']
+                ];
+                $arrIngredient = [
+                    ['Name', 'Value']
+                ];
 
                 $scientificNum = 2;
                 foreach ($allScientificName as $scientificName) {
@@ -1743,15 +2053,36 @@ class ProductsController extends Controller {
                     $arrCountry[] = array($country['name'], $country['id']);
                 }
 
+                $categoryNum = 2;
+                foreach ($allCategory as $category) {
+                    $categoryNum++;
+                    $arrCategory[] = array($category['name'], $category['id']);
+                }
+
+                $subcategoryNum = 2;
+                foreach ($allSubcategory as $subcategory) {
+                    $subcategoryNum++;
+                    $arrSubcategory[] = array($subcategory['name'], $subcategory['id']);
+                }
+
+                $ingredientNum = 2;
+                foreach ($allIngredient as $ingredient) {
+                    $ingredientNum++;
+                    $arrIngredient[] = array($ingredient['name'], $ingredient['id']);
+                }
+
                 $sampleFilePath = 'app/files/samples/products-add-sample.xlsx';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
                 $sheet = $spreadsheet->setActiveSheetIndex(2);
 
-                // Set scientific names and countries in excel
+                // Set dropdown variables in excel
                 $sheet->fromArray($arrScientificName, NULL, 'A2', true);
                 $sheet->fromArray($arrCountry, NULL, 'D2', true);
+                $sheet->fromArray($arrCategory, NULL, 'G2', true);
+                $sheet->fromArray($arrSubcategory, NULL, 'J2', true);
+                $sheet->fromArray($arrIngredient, NULL, 'M2', true);
 
                 // Change active sheet to database input
                 $sheet = $spreadsheet->setActiveSheetIndex(1);
@@ -1759,6 +2090,9 @@ class ProductsController extends Controller {
                 // Set validation and formula
                 Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
                 Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
+                Excel::setCellFormulaVLookup($sheet, 'R3', 2505, "'User Input'!R", 'Variables!$G$3:$H$' . $categoryNum);
+                Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$J$3:$K$' . $subcategoryNum);
+                Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$M$3:$N$' . $ingredientNum);
 
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -1767,24 +2101,41 @@ class ProductsController extends Controller {
                 // Change active sheet to user input
                 $sheet = $spreadsheet->setActiveSheetIndex(0);
 
-                // Set data validation for scientific names and countries
+                // Set data validation for dropdowns
                 Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
                 Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
-
-                $sheet->setCellValue('I2', 'Error');
-                $sheet->getStyle('I2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
+                Excel::setDataValidation($sheet, 'R3', 'R2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $categoryNum);
+                Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $subcategoryNum);
+                Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$M$3:$M$' . $ingredientNum);
+                
+                $sheet->setCellValue('W2', 'Error');
+                $sheet->getStyle('W2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
 
                 // Add all products to multidimensional array
                 $multiProducts = [];
                 $fields = [
                     "scientificNameId",
                     "madeInCountryId",
-                    "name_ar",
                     "name_en",
+                    "name_ar",
                     "name_fr",
+                    "subtitle_ar",
+                    "subtitle_en",
+                    "subtitle_fr",
+                    "description_ar",
+                    "description_en",
+                    "description_fr",
                     "unitPrice",
                     "stock",
-                    "maximumOrderQuantity"
+                    "maximumOrderQuantity",
+                    "manufacturerName",
+                    "batchNumber",
+                    "itemCode",
+                    "categoryId",
+                    "subcategoryId",
+                    "activeIngredientsId",
+                    "expiryDate",
+                    "strength"
                 ];
                 $i = 3;
                 for ($i = 0; $i < count($failedProducts); $i++) {
@@ -1797,6 +2148,12 @@ class ProductsController extends Controller {
                             $cellValue = $mapScientificIdName[$product[$j]];
                         } else if ($field == "madeInCountryId") {
                             $cellValue = $mapCountryIdName[$product[$j]];
+                        } else if ($field == "categoryId") {
+                            $cellValue = $mapCategoryIdName[$product[$j]];
+                        } else if ($field == "subcategoryId") {
+                            $cellValue = $mapSubcategoryIdName[$product[$j]];
+                        } else if ($field == "activeIngredientsId") {
+                            $cellValue = $mapIngredientIdName[$product[$j]];
                         } else if ($product[$j] !== 0) {
                             $cellValue = $product[$j];
                         }

@@ -25,12 +25,33 @@ class EntityController extends Controller
             $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
             echo View::instance()->render('app/layout/layout.php');
         } else {
-            $id = $this->f3->get('PARAMS.id');
+            $customerId = $this->f3->get('PARAMS.customerId');
 
             $dbRelation = new BaseModel($this->db, "vwEntityRelation");
-            $arrRelation = $dbRelation->findWhere("id = '$id'");
+            $dbRelation->customerGroupName = "customerGroupName_" . $this->objUser->language;
+            $arrRelation = $dbRelation->findWhere("id = '$customerId'");
 
-            $data['relation'] = $arrRelation[0];
+            $data['customer'] = $arrRelation[0];
+
+            echo $this->webResponse->jsonResponseV2(1, "", "", $data);
+            return;
+        }
+    }
+
+    function getEntityCustomerRelationDetails()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $entityBuyerId = $this->f3->get('PARAMS.entityBuyerId');
+            $entitySellerId = $this->f3->get('PARAMS.entitySellerId');
+
+            $dbRelation = new BaseModel($this->db, "vwEntityRelation");
+            $dbRelation->customerGroupName = "customerGroupName_" . $this->objUser->language;
+            $arrRelation = $dbRelation->findWhere("entityBuyerId = $entityBuyerId AND entitySellerId = $entitySellerId");
+
+            $data['customer'] = $arrRelation[0];
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
             return;
@@ -49,8 +70,9 @@ class EntityController extends Controller
         $fullQuery = $query;
 
         $dbData = new BaseModel($this->db, "vwEntityRelation");
-        $dbData->buyerName = "buyerName_".$this->f3->get("LANGUAGE");
-        $dbData->sellerName = "sellerName_".$this->f3->get("LANGUAGE");
+        $dbData->buyerName = "buyerName_" . $this->objUser->language;
+        $dbData->sellerName = "sellerName_" . $this->objUser->language;
+        $dbData->customerGroupName = "customerGroupName_" . $this->objUser->language;
         $data = [];
 
         $totalRecords = $dbData->count($fullQuery);
@@ -83,6 +105,69 @@ class EntityController extends Controller
             $this->webResponse->title = $this->f3->get('vModule_users_title');
             $this->webResponse->data = View::instance()->render('app/users/list.php');
             echo $this->webResponse->jsonResponse();
+        }
+    }
+    
+    function postEntityCustomersEditGroup()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/customer");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $entityRelationId = $this->f3->get('POST.id');
+
+            $dbEntityRelation = new BaseModel($this->db, "entityRelation");
+            $dbEntityRelation->getWhere("id=$entityRelationId");
+
+            if ($dbEntityRelation->dry()) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "No Customer";
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $customerGroupId = $this->f3->get('POST.customerGroupId');
+
+                $dbCustomerGroup = new BaseModel($this->db, "customerGroup");
+                $dbCustomerGroup->getWhere("id = '$customerGroupId' AND entityId = $dbEntityRelation->entitySellerId");
+                if($dbCustomerGroup->dry()) {
+                    $dbCustomerGroup->entityId = $dbEntityRelation->entitySellerId;
+                    $dbCustomerGroup->name_en = $customerGroupId;
+                    $dbCustomerGroup->name_fr = $customerGroupId;
+                    $dbCustomerGroup->name_ar = $customerGroupId;
+                    $dbCustomerGroup->addReturnID();
+                }
+                $dbEntityRelation->customerGroupId = $dbCustomerGroup->id;
+                $dbEntityRelation->update();
+
+                $dbEntity = new BaseModel($this->db, "entity");
+                $dbEntity->getWhere("id = $dbEntityRelation->entitySellerId");
+
+                $emailHandler = new EmailHandler($this->db);
+                $message = "You now have access to special prices and bonuses with " . $dbEntity->name_en;
+                
+                $dbEntityUserProfile = new BaseModel($this->db, "vwEntityUserProfile");
+                $arrEntityUserProfile = $dbEntityUserProfile->findWhere("entityId = $dbEntityRelation->entityBuyerId");
+
+                foreach($arrEntityUserProfile as $userProfile) {
+                    $emailHandler->appendToAddress($userProfile['userEmail'], $userProfile['userFullName']);
+                }
+                $subject = "Aumet - New Bonuses";
+                if (getenv('ENV') != Constants::ENV_PROD) {
+                    $subject .= " - (Test: " . getenv('ENV') . ")";
+
+                    if (getenv('ENV') == Constants::ENV_LOC) {
+                        $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
+                        $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                    }
+                }
+
+                $emailHandler->sendEmail(Constants::EMAIL_NEW_CUSTOMER_GROUP, $subject, $message);
+
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
+                $this->webResponse->title = "";
+                $this->webResponse->message = $this->f3->get('vModule_customerEdited');
+                echo $this->webResponse->jsonResponse();
+            }
         }
     }
 }

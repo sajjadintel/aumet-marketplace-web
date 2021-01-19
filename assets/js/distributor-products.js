@@ -2,7 +2,22 @@
 // Class definition
 var DistributorProductsDataTable = (function () {
 
-    var repeater
+    var repeater;
+
+    var mandatoryFields = [
+        "scientificNameId",
+        "madeInCountryId",
+        "name_ar",
+        "name_en",
+        "name_fr",
+        "description_ar",
+        "description_en",
+        "description_fr",
+        "unitPrice",
+        "maximumOrderQuantity",
+        "categoryId",
+        "subcategoryId",
+    ];
 
     var _productEditModal = function (productId) {
         WebApp.get('/web/distributor/product/' + productId, _productEditModalOpen);
@@ -23,34 +38,60 @@ var DistributorProductsDataTable = (function () {
 
     var _productEditModalOpen = function (webResponse) {
         $('#editModalForm').attr('action', '/web/distributor/product/edit');
+
         $('#editProductId').val(webResponse.data.product.productId);
-
-        $('#editModalTitle').html(WebAppLocals.getMessage('edit'));
-        $("label[for='editProductScientificName']").text(WebAppLocals.getMessage('productScientificName'));
-        $("label[for='editProductCountry']").text(WebAppLocals.getMessage('madeInCountry'));
-        $("label[for='editProductNameAr']").text(WebAppLocals.getMessage('productName') + ' AR');
-        $("label[for='editProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
-        $("label[for='editProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
-        $("label[for='editUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
-        $("label[for='editMaximumOrderQuantity']").text(WebAppLocals.getMessage('maximumOrderQuantity'));
-
-        $('#editProductScientificName').append(new Option(webResponse.data.product.scientificName, webResponse.data.product.scientificNameId));
-        $('#editProductScientificName').val(webResponse.data.product.scientificNameId);
-        $('#editProductCountry').append(new Option(webResponse.data.product['madeInCountryName_' + docLang], webResponse.data.product.madeInCountryId));
-        $('#editProductCountry').val(webResponse.data.product.madeInCountryId);
         $('#editProductNameAr').val(webResponse.data.product.productName_ar);
         $('#editProductNameEn').val(webResponse.data.product.productName_en);
         $('#editProductNameFr').val(webResponse.data.product.productName_fr);
         $('#editUnitPrice').val(webResponse.data.product.unitPrice);
         $('#editMaximumOrderQuantity').val(webResponse.data.product.maximumOrderQuantity);
-        $('#editModalAction').html(WebAppLocals.getMessage('edit'));
-        $('#editModal').appendTo('body').modal('show');
+        $('#editProductSubtitleAr').val(webResponse.data.product.subtitle_ar);
+        $('#editProductSubtitleEn').val(webResponse.data.product.subtitle_en);
+        $('#editProductSubtitleFr').val(webResponse.data.product.subtitle_fr);
+        $('#editProductDescriptionAr').val(webResponse.data.product.description_ar);
+        $('#editProductDescriptionEn').val(webResponse.data.product.description_en);
+        $('#editProductDescriptionFr').val(webResponse.data.product.description_fr);
+        $('#editProductManufacturerName').val(webResponse.data.product.manufacturerName);
+        $('#editProductBatchNumber').val(webResponse.data.product.batchNumber);
+        $('#editProductItemCode').val(webResponse.data.product.itemCode);
+        $('#editProductExpiryDate').val(webResponse.data.product.productExpiryDate);
+        $('#editProductStrength').val(webResponse.data.product.strength);
+
+        $('#editProductScientificName').empty();
+        $('#editProductScientificName').append(new Option(webResponse.data.product.scientificName, webResponse.data.product.scientificNameId));
+        $('#editProductScientificName').val(webResponse.data.product.scientificNameId);
+        
+        $('#editProductCountry').empty();
+        $('#editProductCountry').append(new Option(webResponse.data.product['madeInCountryName_' + docLang], webResponse.data.product.madeInCountryId));
+        $('#editProductCountry').val(webResponse.data.product.madeInCountryId);
+
+        $('#editProductCategory').empty();
+        $('#editProductCategory').append(new Option(webResponse.data.product['productCategoryName_' + docLang], webResponse.data.product.productCategoryId));
+        $('#editProductCategory').val(webResponse.data.product.productCategoryId);
+        $('#editProductCategory').on("change", () => _updateSubcategorySelect("edit"));
+        
+        $('#editProductSubcategory').empty();
+        $('#editProductSubcategory').append(new Option(webResponse.data.product['productSubcategoryName_' + docLang], webResponse.data.product.productSubcategoryId));
+        $('#editProductSubcategory').val(webResponse.data.product.productSubcategoryId);
+        
+        var allActiveIngredients = webResponse.data.activeIngredients || [];
+        var allActiveIngredientsId = [];
+
+        $('#editActiveIngredients').empty();
+        allActiveIngredients.forEach((activeIngredient) => {
+            $('#editActiveIngredients').append(new Option(activeIngredient['ingredientName_' + docLang], activeIngredient.ingredientId));
+            allActiveIngredientsId.push(activeIngredient.ingredientId);
+        })
+        $('#editActiveIngredients').val(allActiveIngredientsId);
+        $('#editActiveIngredientsVal').val(allActiveIngredientsId);
+
+        $('#editActiveIngredients').on("change", (ev) => _updateActiveIngredientsVal("edit"));
 
         _changeImageHolder(webResponse.data.product.image, "edit");
         $('#editProductImage').on("change", (ev) => _changeProductImage(ev, "edit"));
-
+        
+        $('#editModal').appendTo('body').modal('show');
         _addModalValidation('edit');
-        _checkModalForm('edit');
     };
 
     var _productEditQuantityModalOpen = function (webResponse) {
@@ -137,25 +178,16 @@ var DistributorProductsDataTable = (function () {
 
     var _productAddModalOpen = function () {
         $('#addModalForm').attr('action', '/web/distributor/product/add');
-
-        $('#addModalTitle').html(WebAppLocals.getMessage('add'));
-        $("label[for='addProductScientificName']").text(WebAppLocals.getMessage('productScientificName'));
-        $("label[for='addProductCountry']").text(WebAppLocals.getMessage('madeInCountry'));
-        $("label[for='addProductNameAr']").text(WebAppLocals.getMessage('productName') + ' AR');
-        $("label[for='addProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
-        $("label[for='addProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
-        $("label[for='addUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
-        $("label[for='addStock']").text(WebAppLocals.getMessage('quantityAvailable'));
-        $("label[for='addMaximumOrderQuantity']").text(WebAppLocals.getMessage('maximumOrderQuantity'));
-
-        $('#addModalAction').html(WebAppLocals.getMessage('add'));
-        $('#addModal').appendTo('body').modal('show');
+        
+        $("#addProductCategory").on("change", () => _updateSubcategorySelect("add"));
 
         _changeImageHolder('', "add");
         $('#addProductImage').on("change", (ev) => _changeProductImage(ev, "add"));
 
+        $('#addActiveIngredients').on("change", (ev) => _updateActiveIngredientsVal("add"));
+
+        $('#addModal').appendTo('body').modal('show');
         _addModalValidation('add');
-        _checkModalForm('add');
     };
 
     var _productImageUpload = function (webResponse, mode) {
@@ -194,40 +226,52 @@ var DistributorProductsDataTable = (function () {
     }
 
     var _addModalValidation = function (mode) {
-        $('#' + mode + 'ProductScientificName').on('change', (ev) => _checkModalForm(mode));
-        $('#' + mode + 'ProductCountry').on('change', (ev) => _checkModalForm(mode));
-        $('#' + mode + 'ProductNameAr').on('change', (ev) => _checkModalForm(mode));
-        $('#' + mode + 'ProductNameEn').on('change', (ev) => _checkModalForm(mode));
-        $('#' + mode + 'ProductNameFr').on('change', (ev) => _checkModalForm(mode));
-        $('#' + mode + 'UnitPrice').on('change', (ev) => _checkModalForm(mode));
-        $('#' + mode + 'MaximumOrderQuantity').on('change', (ev) => _checkModalForm(mode));
+        var _mandatoryFields = [ ...mandatoryFields ];
+        if(mode === "add") _mandatoryFields.push("stock");
 
-        if (mode === "add") {
-            $('#' + mode + 'Stock').on('change', (ev) => _checkModalForm(mode));
-        }
+        var validatorFields = {};
+        _mandatoryFields.forEach((field) => {
+            validatorFields[field] = {
+                validators: {
+                    notEmpty: {
+                        message: WebAppLocals.getMessage('required')
+                    }
+                }
+            }
+        })
+        $("#" + mode + "ModalAction").attr("data-modalValidatorFields", JSON.stringify(validatorFields));
     }
 
-    var _checkModalForm = function (mode) {
-        let valid = true;
+    var _updateSubcategorySelect = function (mode) {
+        var categoryId = $("#" + mode + "ProductCategory").val();
+        $("#" + mode + "ProductSubcategory").empty();
+        $("#" + mode + "ProductSubcategory").select2({
+            placeholder: WebAppLocals.getMessage("subcategory"),
 
-        let scientificName = $('#' + mode + 'ProductScientificName').val();
-        let productCountry = $('#' + mode + 'ProductCountry').val();
-        let productNameAr = $('#' + mode + 'ProductNameAr').val();
-        let productNameEn = $('#' + mode + 'ProductNameEn').val();
-        let productNameFr = $('#' + mode + 'ProductNameFr').val();
-        let unitPrice = $('#' + mode + 'UnitPrice').val();
-        let maximumOrderQuantity = $('#' + mode + 'MaximumOrderQuantity').val();
+            ajax: {
+                url: function() {
+                    var _url = '/web/product/subcategory/list/';
+                    _url += $("#" + mode + "ProductCategory").val();
+                    return _url;
+                },
+                dataType: 'json',
+                processResults: function(response) {
+                    return {
+                        results: response.data.results,
+                        pagination: {
+                            more: response.data.pagination
+                        }
+                    }
+                }
+            },
+            
+            data: []
+        });
+        $("#" + mode + "ProductSubcategory").prop('disabled', categoryId? false : true);
+    }
 
-        if (!scientificName || !productCountry || !productNameAr || !productNameEn || !productNameFr || !unitPrice || !maximumOrderQuantity) {
-            valid = false;
-        }
-
-        if (valid && mode === "add") {
-            let stock = $('#' + mode + 'Stock').val();
-            if (!stock) valid = false;
-        }
-
-        $('#' + mode + 'ModalAction').prop("disabled", !valid);
+    var _updateActiveIngredientsVal = function (mode) {
+        $("#" + mode + "ActiveIngredientsVal").val($("#" + mode + "ActiveIngredients").val());
     }
 
     return {

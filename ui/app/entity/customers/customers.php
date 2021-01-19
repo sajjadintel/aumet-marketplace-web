@@ -35,7 +35,7 @@ function compress_htmlcode($codedata)
             var columnDefs = [
                 {
                     className: "export_datatable",
-                    targets: [0, 1, 2, 3, 4, 5, 6]
+                    targets: [0, 1, 2, 3, 4, 5, 6, 7, 8]
                 },
                 {
                     targets: 0,
@@ -49,6 +49,11 @@ function compress_htmlcode($codedata)
                 },
                 {
                     targets: 2,
+                    title: WebAppLocals.getMessage('customerGroup'),
+                    data: 'customerGroupName',
+                },
+                {
+                    targets: 3,
                     title: WebAppLocals.getMessage('orderCount'),
                     data: 'orderCount',
                     render: function (data, type, row, meta) {
@@ -59,7 +64,7 @@ function compress_htmlcode($codedata)
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     title: WebAppLocals.getMessage('orderTotal'),
                     data: 'orderTotal',
                     render: function (data, type, row, meta) {
@@ -70,7 +75,7 @@ function compress_htmlcode($codedata)
                     }
                 },
                 {
-                    targets: 4,
+                    targets: 5,
                     title: WebAppLocals.getMessage('orderTotalPaid'),
                     data: 'orderTotalPaid',
                     render: function (data, type, row, meta) {
@@ -81,7 +86,7 @@ function compress_htmlcode($codedata)
                     }
                 },
                 {
-                    targets: 5,
+                    targets: 6,
                     title: WebAppLocals.getMessage('orderTotalUnPaid'),
                     data: 'orderTotalUnPaid',
                     orderable: false,
@@ -94,7 +99,7 @@ function compress_htmlcode($codedata)
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 7,
                     title: WebAppLocals.getMessage('customerStatus'),
                     data: 'statusId',
                     render: function (data, type, row, meta) {
@@ -114,6 +119,20 @@ function compress_htmlcode($codedata)
                         output += '<div><span class="label label-lg font-weight-bold ' + status[row.statusId].class + ' label-inline">' + status[row.statusId].title + '</span></div>';
 
                         return output;
+                    },
+                },
+                {
+                    targets: 8,
+                    title: '',
+                    data: 'id',
+                    orderable: false,
+                    render: function (data, type, row, meta) {
+                        var output =
+                            '<a href="javascript:;" onclick=\'DistributorCustomersDataTable.customerEditGroupModal(false, ' + row.id + ')\'\
+                        class="btn btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="' + WebAppLocals.getMessage('customerGroup') + '">\
+                        <i class="nav-icon la la-ellipsis-h p-0 text-primary"></i></a>';
+
+                        return '<div style="display: flex;">' + output + '</div>';
                     },
                 }
             ];
@@ -138,3 +157,4 @@ function compress_htmlcode($codedata)
 
     </script>
 <?php ob_end_flush(); ?>
+<?php include_once 'edit-group-modal.php'; ?>
