@@ -1,7 +1,6 @@
 <?php
 
-class NotificationHelper
-{
+class NotificationHelper {
 
     /**
      * Does something interesting
@@ -204,11 +203,17 @@ class NotificationHelper
         $f3->set('reason', $supportReason->name_en);
 
 
-        $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
-        $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $supportLog->entityId);
-        foreach ($arrEntityUserProfile as $entityUserProfile) {
-            $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
+        // if not logged in
+        if (!$supportLog->entityId) {
+            $emailHandler->appendToAddress($supportLog->email, '');
+        } else {
+            $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
+            $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $supportLog->entityId);
+            foreach ($arrEntityUserProfile as $entityUserProfile) {
+                $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
+            }
         }
+
 
         $htmlContent = View::instance()->render($emailFile);
 
