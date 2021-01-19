@@ -142,8 +142,8 @@ class Excel {
     }
 
     // Convert excel date to regular date
-    public static function excelDateToRegularDate($excelDate) {
-        return date("Y-m-d", ($excelDate - 25569) * 86400);
+    public static function excelDateToRegularDate($excelDate, $format = "Y-m-d") {
+        return date($format, ($excelDate - 25569) * 86400);
     }
 }
 

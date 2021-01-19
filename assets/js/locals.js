@@ -474,6 +474,26 @@ var WebAppLocals = (function () {
 			en: 'City',
 			ar: 'مدينة',
 			fr: ''
+		},
+		subcategory: {
+			en: 'Subcategory',
+			ar: 'تصنيف فرعي',
+			fr: ''
+		},
+		required: {
+			en: 'Required',
+			ar: 'مطلوب',
+			fr: ''
+		},
+		validationError: {
+			en: 'Sorry, looks like there are some errors detected, please try again.',
+			ar: 'معذرة ، يبدو أنه تم اكتشاف بعض الأخطاء ، يرجى المحاولة مرة أخرى.',
+			fr: ''
+		},
+		validationErrorOk: {
+			en: 'Ok, got it!',
+			ar: 'حسنا، حصلت عليه!',
+			fr: ''
 		}
 	};
 
