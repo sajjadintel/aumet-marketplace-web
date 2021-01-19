@@ -50,8 +50,8 @@ class SearchController extends Controller {
 
         $queryDisplay = 'productName_' . $this->objUser->language;
 
-        $dbNames = new BaseModel($this->db, 'vwEntityProductSell');
-        $dbNames->getWhere($where, $queryDisplay, $pageSize, $page * $pageSize);
+        $dbNames = new BaseModel($this->db, 'vwEntityProductSellSummary');
+        $dbNames->load(array($where), array('order' => $queryDisplay, 'limit' => $pageSize, 'offset' => $page * $pageSize, 'group' => $queryDisplay));
         $resultsCount = 0;
         while (!$dbNames->dry()) {
             $resultsCount++;

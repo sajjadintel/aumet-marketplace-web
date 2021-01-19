@@ -52,6 +52,7 @@
     <!--end::Layout Themes-->
 
     <link href="/assets/css/auth.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/app.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
 
     <link rel="apple-touch-icon" sizes="57x57" href="/favicons/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/favicons/apple-icon-60x60.png">
@@ -156,7 +157,11 @@
 
     <!--end::Page Scripts-->
 
-    
+    <?php include getcwd() . '/ui/app/layout/supportPanel.php'; ?>
+    <div class="supportButton" data-toggle="modal" data-target="#support_modal">
+        <i class="la la-headset la-2x text-white"></i>
+    </div>
+
     <?php include_once "$vAuthFile.php" ?>
 </body>
 <!--end::Body-->

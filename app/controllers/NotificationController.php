@@ -2,17 +2,20 @@
 
 class NotificationController extends Controller {
 
+    function beforeroute()
+    {
+    }
+
     function support()
     {
         $supportReasonId = $this->f3->get("POST.supportReasonId");
         $email = $this->f3->get("POST.email");
         $phone = $this->f3->get("POST.phone");
 
-        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
 
         $supportLog = new BaseModel($this->db, "supportLog");
-        $supportLog->entityId = $arrEntityId[0];
-        $supportLog->userId = $this->f3->get('SESSION.userId');
+        $supportLog->entityId = $this->isAuth ? Helper::idListFromArray($this->f3->get('SESSION.arrEntities'))[0] : 0;
+        $supportLog->userId = $this->isAuth ? $this->f3->get('SESSION.userId') : 0;
         $supportLog->supportReasonId = $supportReasonId;
         $supportLog->email = $email;
         $supportLog->phone = $phone;

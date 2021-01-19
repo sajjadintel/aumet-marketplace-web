@@ -264,7 +264,7 @@ return array(
     'vModal_delete' => 'Delete',
     'vModal_add' => 'Add',
     'vModal_SaveChanges' => 'Save changes',
-  
+    'vModalEditQuantity_nothingModified' => 'Nothing Modified!', // TODO: add translation
     'vModule_homepageBuyer_newProducts' => 'منتجات جديدة',
     'vModule_homepageBuyer_topSelling' => 'الأعلى مبيعا',
     'vModule_homepageBuyer_pendingOrders' => 'الأوامر المعلقة',

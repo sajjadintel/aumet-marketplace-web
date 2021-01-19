@@ -269,7 +269,7 @@ return array(
     'vModal_SaveChanges' => 'Save changes',
 
     'responseSuccess_modifyQuantity' => 'Quantity order changed successfully!',
-  
+    'vModalEditQuantity_nothingModified' => 'Nothing Modified!', // TODO: add translation
     'vModule_homepageBuyer_newProducts' => 'New Products',
     'vModule_homepageBuyer_topSelling' => 'Top Selling',
     'vModule_homepageBuyer_pendingOrders' => 'Pending Orders',
