@@ -260,13 +260,6 @@ var WebAuth = (function () {
 							},
 						},
 					},
-					tradeLicenseNumber: {
-						validators: {
-							notEmpty: {
-								message: 'Trade License Number is required',
-							},
-						},
-					},
 					country: {
 						validators: {
 							notEmpty: {
