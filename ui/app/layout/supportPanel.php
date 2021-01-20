@@ -20,7 +20,7 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label class="support-modal-text"><?php echo $vSupport_email ?></label>
-                            <input name="email" type="email" value="<?php echo $isAuth ? $_SESSION['objUser']->email : '' ?>" class="form-control" placeholder="jogndoe@gmail.com" required <?php echo $isAuth ? 'disabled' : '' ?> />
+                            <input name="supportEmail" type="email" value="<?php echo $isAuth ? $_SESSION['objUser']->email : '' ?>" class="form-control" placeholder="jogndoe@gmail.com" required <?php echo $isAuth ? 'disabled' : '' ?> />
                         </div>
 
                         <div class="form-group">
