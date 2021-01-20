@@ -466,7 +466,7 @@ var PharmacyOrdersDataTable = (function () {
             },
             {
                 field: 'updatedAt',
-                title: WebAppLocals.getMessage('insertDate'),
+                title: WebAppLocals.getMessage('date'),
                 autoHide: false,
                 width: 120,
                 template: function (row) {

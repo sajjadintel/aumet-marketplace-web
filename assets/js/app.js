@@ -576,6 +576,13 @@ var WebApp = (function () {
 		return datatableVar;
 	};
 
+	var _destroyDatatable = function (vElementId) {
+		if ($.fn.DataTable.isDataTable(vElementId)) {
+			$(vElementId).DataTable().destroy();
+		}
+		$(vElementId).empty();
+	};
+
 	var _reloadDatatable = function (vType, vElementId) {
 		if ($.fn.DataTable.isDataTable('' + vElementId)) {
 			$('' + vElementId).ajax.reload();
@@ -701,6 +708,9 @@ var WebApp = (function () {
 		},
 		CreateDatatableLocal: function (vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions = null) {
 			_createDatatableLocal(vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions);
+		},
+		DestroyDatatable: function (vElementId) {
+			_destroyDatatable(vElementId);
 		},
 		ReloadDatatableLocal: function (vElementId) {
 			_reloadDatatable('local', vElementId);

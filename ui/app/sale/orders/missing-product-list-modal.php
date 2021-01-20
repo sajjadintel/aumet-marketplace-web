@@ -47,14 +47,19 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-12 form-group">
+                        <div>
+                            <input name="missingProductListLog" id="modalBootstrapMissingProductListLog" data-switch="true" type="checkbox" checked="checked" data-on-text="True" data-handle-width="150" data-off-text="False" data-on-color="primary" data-off-color="secondary" />
+                        </div>
+                    </div>
                     <div class="col-md-12">
                         <!--begin: Datatable-->
                         <table id="missingProductListModalDatatable" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
                         </table>
                         <!--end: Datatable-->
                     </div>
-
                 </div>
+
             </div>
         </div>
     </div>

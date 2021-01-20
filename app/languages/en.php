@@ -13,6 +13,8 @@ return array(
     'vLogin_slogan' => 'Connecting healthcare end users and distributors through the largest online healthcare B2B marketplace',
 
     'vMessage_invalidLogin' => 'Invalid Email or Password',
+    'vMessage_verifyAccount' => 'Check your inbox to verify your account, or contact us if you haven\'t received any emails',
+    'vMessage_waitForVerify' => 'You will be contacted shortly by our team to verify your account, kindly wait, or contact us if 48 hours have passed',
     'vMessage_signupSuccessful' => 'Registration successfully submitted. An admin will review your request and get back to you soon !',
 
     'vLogin_helpAdv' => 'Facing issues in our Registration?',
