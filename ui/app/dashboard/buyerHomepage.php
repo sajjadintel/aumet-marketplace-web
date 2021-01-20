@@ -130,7 +130,7 @@
                             <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_pendingOrders ?></span>
                         </div>
                         <div class="col-5" style="display: flex; justify-content: flex-end;">
-                            <a class="btn btn-hover-bg-primary btn-text-primary btn-hover-text-white font-weight-bold mr-2" onclick="WebApp.loadPage('/web/pharmacy/order/pending')">
+                            <a class="btn btn-hover-bg-primary btn-text-primary btn-hover-text-white font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/order/history')">
                                 <?php echo $vButton_view_all; ?>
                             </a>
                         </div>
