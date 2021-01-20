@@ -134,9 +134,11 @@ class AuthController extends Controller
                 $this->webResponse->data = $user;
             } else {
                 if($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
-                    echo $this->jsonResponse(false, null, $this->f3->get("vMessage_accountNotVerified"));
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get("vMessage_accountNotVerified");
                 } else if($dbUser->statusId == Constants::USER_STATUS_PENDING_APPROVAL) {
-                    echo $this->jsonResponse(false, null, $this->f3->get("vMessage_accountNotApproved"));
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get("vMessage_accountNotApproved");
                 } else if($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
                     if (is_null($dbUser->uid)) {
                         $dbUser->uid = $uid;
