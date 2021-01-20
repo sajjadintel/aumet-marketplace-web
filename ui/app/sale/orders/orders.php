@@ -283,6 +283,16 @@ function compress_htmlcode($codedata)
                             WebAppLocals.getMessage('orderMissingProduct') +
                             '</a>';
 
+                            
+                        console.log("row");
+                        console.log(row);
+                        var btnChangeCustomerGroup =
+                            '<a class="navi-link" href="javascript:;" onclick=\'DistributorCustomersDataTable.customerEditGroupModal(true, ' + row.entityBuyerId + ',' + row.entitySellerId + ')\' \
+                                class="btn btn-sm btn-primary btn-hover-primary  mr-2" navi-link title="Change Customer Group">\
+                                <span class="navi-icon"><i class="la la-group"></i></span><span class="navi-text"> &nbsp&nbsp' +
+                            WebAppLocals.getMessage('changeCustomerGroup') +
+                            '</span></a>';
+
 
                         var outActions = '';
 
@@ -290,27 +300,6 @@ function compress_htmlcode($codedata)
                         outActions += btnPrint;
 
                         switch (row.statusId) {
-                            case 1:
-                                outActions += dropdownStart;
-                                outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
-                                outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
-                                outActions += dropdownItemStart + btnModifyQuantityOrder + dropdownItemEnd;
-                                outActions += dropdownEnd;
-                                break;
-                            case 2:
-                                outActions += dropdownStart;
-                                outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
-                                outActions += dropdownItemStart + btnOrderCancel + dropdownItemEnd;
-                                outActions += dropdownItemStart + btnModifyQuantityOrder + dropdownItemEnd;
-                                outActions += dropdownEnd;
-                                break;
-                            case 3:
-                                outActions += dropdownStart;
-                                outActions += dropdownItemStart + btnOrderComplete + dropdownItemEnd;
-                                outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
-                                outActions += dropdownItemStart + btnModifyQuantityOrder + dropdownItemEnd;
-                                outActions += dropdownEnd;
-                                break;
                             case 6:
                                 outActions += btnOrderPaid;
                                 break;
@@ -318,6 +307,27 @@ function compress_htmlcode($codedata)
                                 outActions += missingProduct;
                                 break;
                         }
+
+                        outActions += dropdownStart;
+                        switch (row.statusId) {
+                            case 1:
+                                outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
+                                outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
+                                outActions += dropdownItemStart + btnModifyQuantityOrder + dropdownItemEnd;
+                                break;
+                            case 2:
+                                outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
+                                outActions += dropdownItemStart + btnOrderCancel + dropdownItemEnd;
+                                outActions += dropdownItemStart + btnModifyQuantityOrder + dropdownItemEnd;
+                                break;
+                            case 3:
+                                outActions += dropdownItemStart + btnOrderComplete + dropdownItemEnd;
+                                outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
+                                outActions += dropdownItemStart + btnModifyQuantityOrder + dropdownItemEnd;
+                                break;
+                        }
+                        outActions += dropdownItemStart + btnChangeCustomerGroup + dropdownItemEnd;
+                        outActions += dropdownEnd;
 
                         return outActions;
                     },
@@ -453,3 +463,4 @@ function compress_htmlcode($codedata)
         PageClass.init();
     </script>
 <?php ob_end_flush(); ?>
+<?php include_once 'ui/app/entity/customers/edit-group-modal.php'; ?>

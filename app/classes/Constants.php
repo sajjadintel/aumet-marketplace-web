@@ -36,6 +36,7 @@ class Constants
     const EMAIL_PHARMACY_ACCOUNT_VERIFIED = 'Pharmacy Account Verified';
     const EMAIL_PHARMACY_ACCOUNT_APPROVAL = 'Pharmacy Account Approval';
     const EMAIL_PHARMACY_ACCOUNT_APPROVED = 'Pharmacy Account Approved';
+    const EMAIL_NEW_CUSTOMER_GROUP = 'New Customer Group';
 
     ### Status Codes
     const STATUS_CODE_REDIRECT_TO_WEB = 0;

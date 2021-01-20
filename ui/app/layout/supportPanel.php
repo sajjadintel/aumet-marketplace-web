@@ -20,7 +20,7 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label class="support-modal-text"><?php echo $vSupport_email ?></label>
-                            <input name="email" type="email" class="form-control" placeholder="jogndoe@gmail.com" required />
+                            <input name="email" type="email" value="<?php echo $isAuth ? $_SESSION['objUser']->email : '' ?>" class="form-control" placeholder="jogndoe@gmail.com" required <?php echo $isAuth ? 'disabled' : '' ?> />
                         </div>
 
                         <div class="form-group">
@@ -28,13 +28,13 @@
                             <input name="phone" type="number" class="form-control" placeholder="eg 00977442424242" required />
                         </div>
 
-                        <div>
-                            <label class="checkbox checkbox-disabled">
-                                <input type="checkbox" disabled="disabled" checked="checked" name="typeId" required />
-                                <span class="support-modal-request-call-icon"></span>
-                                <?php echo $vSupport_request_call ?>
-                            </label>
-                        </div>
+<!--                        <div>-->
+<!--                            <label class="checkbox checkbox-disabled">-->
+<!--                                <input type="checkbox" disabled="disabled" checked="checked" name="typeId" required />-->
+<!--                                <span class="support-modal-request-call-icon"></span>-->
+<!--                                --><?php //echo $vSupport_request_call ?>
+<!--                            </label>-->
+<!--                        </div>-->
 
                         <div class="form-group support-modal-select">
                             <label class="col-form-label text-right support-modal-text"><?php echo $vSupport_title ?></label>
