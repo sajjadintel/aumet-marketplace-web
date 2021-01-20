@@ -313,7 +313,7 @@ var WebAuth = (function () {
 					if (status == 'Valid') {
 						if (wizard.getStep() == 1) {
 							let body = {
-								email: $('input[name=email]').val(),
+								email: $('#kt_login_signup_form input[name=email]').val(),
 							};
 							WebApp.post('/web/auth/signup/validate/email', body, function () {
 								wizard.goTo(wizard.getNewStep());
@@ -422,8 +422,9 @@ var WebAuth = (function () {
 
 		// Fill default values from query params
 		var params = new URLSearchParams(window.location.search);
-		$('input[name=name]').val(params.get('name'));
-		$('input[name=email]').val(params.get('email'));
+		$('#kt_login_signup_form input[name=name]').val(params.get('name'));
+		$('#kt_login_signup_form input[name=email]').val(params.get('email'));
+		$('#kt_login_signup_form input[name=uid]').val(params.get('uid'));
 	};
 
 	var _setupFirebase = function () {
@@ -472,6 +473,7 @@ var WebAuth = (function () {
 											var url = '/web/auth/signup';
 											url += '?name=' + webResponse.data.displayName;
 											url += '&email=' + webResponse.data.email;
+											url += '&uid=' + webResponse.data.uid;
 											window.location.href = url;
 										} else {
 											Swal.fire({
@@ -611,6 +613,7 @@ var WebAuth = (function () {
 		};
 
 		let mapKeyElement = {
+			uid: 'input',
 			name: 'input',
 			mobile: 'input',
 			email: 'input',
@@ -623,7 +626,7 @@ var WebAuth = (function () {
 		};
 
 		Object.keys(mapKeyElement).forEach((key) => {
-			body[key] = $('' + mapKeyElement[key] + '[name=' + key + ']').val();
+			body[key] = $('#kt_login_signup_form ' + mapKeyElement[key] + '[name=' + key + ']').val();
 		});
 
 		WebApp.post('/web/auth/signup', body, _signUpCallback);
