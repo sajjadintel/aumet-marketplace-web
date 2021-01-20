@@ -279,4 +279,13 @@ return array(
     'vModule_homepageBuyer_topSelling' => 'Top Selling',
     'vModule_homepageBuyer_pendingOrders' => 'Pending Orders',
     'vModule_homepageBuyer_topDistributors' => 'Top Distributors',
+
+    'vTitle_dashboard' => 'Dashboard',
+    'vTitle_homepage' => 'Homepage',
+    'vTitle_profile' => 'Profile',
+
+    'vModule_profile_myProfileTitle' => 'My Profile',
+    'vModule_profile_myProfileSubtitle' => 'This information will be displayed publicly on your profile',
+    'vModule_profile_accountSettingTitle' => 'Account Setting',
+    'vModule_profile_accountSettingSubtitle' => 'This information will be displayed publicly on your profile',
 );

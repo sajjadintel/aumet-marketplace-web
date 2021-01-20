@@ -313,7 +313,7 @@ var WebAuth = (function () {
 					if (status == 'Valid') {
 						if (wizard.getStep() == 1) {
 							let body = {
-								email: $('input[name=email]').val(),
+								email: $('#kt_login_signup_form input[name=email]').val(),
 							};
 							WebApp.post('/web/auth/signup/validate/email', body, function () {
 								wizard.goTo(wizard.getNewStep());
@@ -399,22 +399,22 @@ var WebAuth = (function () {
 		});
 
 		// On country change event, fill city dropdown
-		$('select[name=country]').on('change', function () {
-			var countryId = $('select[name=country]').val();
+		$('#kt_login_signup_form select[name=country]').on('change', function () {
+			var countryId = $('#kt_login_signup_form select[name=country]').val();
 			if (countryId) {
-				WebApp.get('/web/auth/signup/cities/' + countryId, function (webResponse) {
-					$('select[name=city]')
+				WebApp.get('/web/auth/city/list/' + countryId, function (webResponse) {
+					$('#kt_login_signup_form select[name=city]')
 						.empty()
 						.append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
 					var allCities = webResponse.data;
 					allCities.forEach((city) => {
-						$('select[name=city]').append(new Option(city.name, city.id));
+						$('#kt_login_signup_form select[name=city]').append(new Option(city.name, city.id));
 					});
-					$('select[name=city]').prop('disabled', false);
+					$('#kt_login_signup_form select[name=city]').prop('disabled', false);
 				});
 			} else {
-				$('select[name=city]').prop('disabled', true);
-				$('select[name=city]')
+				$('#kt_login_signup_form select[name=city]').prop('disabled', true);
+				$('#kt_login_signup_form select[name=city]')
 					.empty()
 					.append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
 			}
@@ -602,6 +602,12 @@ var WebAuth = (function () {
 			if (file.status === 'success') {
 				_pharmacyDocument = null;
 			}
+		});
+
+		// Overwrite previous file
+		myDropzone.on("maxfilesexceeded", function(file) {
+			myDropzone.removeAllFiles();
+			myDropzone.addFile(file);
 		});
 	};
 

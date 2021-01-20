@@ -678,7 +678,7 @@ class AuthController extends Controller
         }
     }
 
-    function getSignUpCitiesByCountry()
+    function getCityByCountryList()
     {
         $countryId = $this->f3->get("PARAMS.countryId");
 

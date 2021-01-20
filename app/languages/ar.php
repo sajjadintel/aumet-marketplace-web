@@ -274,4 +274,8 @@ return array(
     'vModule_homepageBuyer_topSelling' => 'الأعلى مبيعا',
     'vModule_homepageBuyer_pendingOrders' => 'الأوامر المعلقة',
     'vModule_homepageBuyer_topDistributors' => 'أفضل الموزعين',
+
+    'vTitle_dashboard' => 'لوحة القيادة',
+    'vTitle_homepage' => 'الصفحة الرئيسية',
+    'vTitle_profile' => 'الملف الشخصي',
 );

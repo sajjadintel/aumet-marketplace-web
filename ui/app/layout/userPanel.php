@@ -49,7 +49,7 @@
         <!--begin::Nav-->
         <div class="navi navi-spacer-x-0 p-0">
             <!--begin::Item-->
-            <a href="custom/apps/user/profile-1/personal-information.html" class="navi-item">
+            <a href="web/profile" class="navi-item">
                 <div class="navi-link">
                     <div class="symbol symbol-40 bg-light mr-3">
                         <div class="symbol-label">
@@ -68,19 +68,17 @@
                     </div>
                     <div class="navi-text">
                         <div class="font-weight-bold">My Profile</div>
-                        <div class="text-muted">Account settings and more
-                            <span class="label label-light-danger label-inline font-weight-bold">update</span></div>
+                        <div class="text-muted">Account settings and more</div>
                     </div>
                 </div>
             </a>
             <!--end:Item-->
             <!--begin::Item-->
-            <a href="custom/apps/user/profile-3.html" class="navi-item">
+            <!-- <a href="custom/apps/user/profile-3.html" class="navi-item">
                 <div class="navi-link">
                     <div class="symbol symbol-40 bg-light mr-3">
                         <div class="symbol-label">
                             <span class="svg-icon svg-icon-md svg-icon-warning">
-                                <!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Chart-bar1.svg-->
                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                         <rect x="0" y="0" width="24" height="24" />
@@ -90,7 +88,6 @@
                                         <rect fill="#000000" opacity="0.3" x="17" y="11" width="3" height="6" rx="1.5" />
                                     </g>
                                 </svg>
-                                <!--end::Svg Icon-->
                             </span>
                         </div>
                     </div>
@@ -99,7 +96,7 @@
                         <div class="text-muted">Inbox and tasks</div>
                     </div>
                 </div>
-            </a>
+            </a> -->
             <!--end:Item-->
         </div>
         <!--end::Nav-->

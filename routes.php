@@ -13,7 +13,7 @@ $f3->route('GET /web/auth/signup', 'AuthController->getSignUp');
 $f3->route('POST /web/auth/signup', 'AuthController->postSignUp');
 $f3->route('POST /web/auth/signup/validate/email', 'AuthController->postSignUpValidateEmail');
 $f3->route('POST /web/auth/signup/validate/email', 'AuthController->postSignUpValidateEmail');
-$f3->route('GET /web/auth/signup/cities/@countryId', 'AuthController->getSignUpCitiesByCountry');
+$f3->route('GET /web/auth/city/list/@countryId', 'AuthController->getCityByCountryList');
 $f3->route('POST /web/auth/signup/document/upload', 'AuthController->postSignUpDocumentUpload');
 $f3->route('GET /web/auth/forgot', 'AuthController->getForgottenPassword');
 $f3->route('GET /web/auth/verify/account/@token', 'AuthController->getVerifyAccount');
@@ -44,6 +44,7 @@ $f3->route('GET /web/order/customer/list', 'SearchController->getOrderBuyerList'
 $f3->route('GET /web/order/Distributor/list', 'SearchController->getOrderSellerList');
 $f3->route('GET /web/order/Distributor/listAll', 'SearchController->getAllSellerList');
 $f3->route('GET /web/customer/group/list/@entityId', 'SearchController->getCustomerGroupByEnitityList');
+$f3->route('GET /web/city/list/@countryId', 'SearchController->getCityByCountryList');
 
 $f3->route('GET /web/searchbar', 'SearchController->handleSearchBar');
 
@@ -161,3 +162,5 @@ $f3->route('POST /web/pharmacy/feedback', 'FeedbackController->postPharmacyFeedb
 
 $f3->route('POST /web/pharmacy/feedback/pending', 'FeedbackController->postPharmacyFeedbacksPending');
 $f3->route('POST /web/pharmacy/feedback/history', 'FeedbackController->postPharmacyFeedbacksHistory');
+
+$f3->route('GET /web/profile', 'ProfileController->getProfile');
