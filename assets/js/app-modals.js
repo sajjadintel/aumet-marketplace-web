@@ -80,7 +80,7 @@ var WebAppModals = (function () {
         },
         {
             targets: 2,
-            title: WebAppLocals.getMessage('insertDate'),
+            title: WebAppLocals.getMessage('date'),
             data: 'updatedAt',
             render: function (data, type, row, meta) {
                 var output = '';
@@ -159,8 +159,10 @@ var WebAppModals = (function () {
             .bootstrapSwitch()
             .on('switchChange.bootstrapSwitch', function (event, state) {
                 if (state) {
+                    WebApp.DestroyDatatable('#order_details_datatable');
                     WebApp.CreateDatatableLocal('Order Details', '#order_details_datatable', webResponse.data.orderDetail, columnDefsOrderDetails);
                 } else {
+                    WebApp.DestroyDatatable('#order_details_datatable');
                     WebApp.CreateDatatableLocal('Order Details', '#order_details_datatable', webResponse.data.orderLog, columnDefsOrderLogs);
                 }
             });
@@ -205,7 +207,7 @@ var OrderMissingProductListModals = (function () {
         {
             targets: 1,
             title: WebAppLocals.getMessage('productName'),
-            data: 'productNameEn',
+            data: 'productName',
         },
         {
             targets: 2,
@@ -242,6 +244,39 @@ var OrderMissingProductListModals = (function () {
             render: function (data, type, row, meta) {
                 var output = parseFloat(row.unitPrice) * parseFloat(row.quantity) * (1 + parseFloat(row.tax) / 100);
                 output = row.currency + ' <strong>' + Math.round((output + Number.EPSILON) * 100) / 100 + '</strong>';
+                return output;
+            },
+        },
+    ];
+
+    var columnDefsOrderLogs = [
+        {
+            className: 'export_datatable',
+            targets: '_all',
+        },
+        {
+            targets: 0,
+            title: WebAppLocals.getMessage('orderStatus'),
+            data: 'name_en',
+            render: function (data, type, row, meta) {
+                var output = row['name_' + docLang];
+                return output;
+            },
+        },
+        {
+            targets: 1,
+            title: WebAppLocals.getMessage('userSeller'),
+            data: 'fullname',
+        },
+        {
+            targets: 2,
+            title: WebAppLocals.getMessage('date'),
+            data: 'updatedAt',
+            render: function (data, type, row, meta) {
+                var output = '';
+                if (row.updatedAt) {
+                    output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.updatedAt).format('DD / MM / YYYY') + '</span>';
+                }
                 return output;
             },
         },
@@ -304,6 +339,21 @@ var OrderMissingProductListModals = (function () {
         $('#modalBootstrapOrderDetailLog').attr('data-on-text', WebAppLocals.getMessage('orderDetails'));
         $('#modalBootstrapOrderDetailLog').attr('data-off-text', WebAppLocals.getMessage('orderLogs'));
 
+
+        $('#modalBootstrapMissingProductListLog').attr('data-on-text', WebAppLocals.getMessage('orderMissingProduct'));
+        $('#modalBootstrapMissingProductListLog').attr('data-off-text', WebAppLocals.getMessage('orderLogs'));
+
+        $('#modalBootstrapMissingProductListLog')
+            .bootstrapSwitch()
+            .on('switchChange.bootstrapSwitch', function (event, state) {
+                if (state) {
+                    WebApp.DestroyDatatable('#missingProductListModalDatatable');
+                    WebApp.CreateDatatableLocal('Order Missing Products', '#missingProductListModalDatatable', webResponse.data.orderDetail, columnDefsOrderDetails);
+                } else {
+                    WebApp.DestroyDatatable('#missingProductListModalDatatable');
+                    WebApp.CreateDatatableLocal('Order Missing Products', '#missingProductListModalDatatable', webResponse.data.orderLog, columnDefsOrderLogs);
+                }
+            });
 
         WebApp.CreateDatatableLocal('Order Missing Products', '#missingProductListModalDatatable', webResponse.data.orderDetail, columnDefsOrderDetails);
 
@@ -443,6 +493,7 @@ var ModifyQuantityOrderModals = (function () {
     };
 
     var _openModalCallBack = function (webResponse) {
+        console.log(webResponse);
         var status = '';
         switch (webResponse.data.order.statusId) {
             case 1:
@@ -492,6 +543,8 @@ var ModifyQuantityOrderModals = (function () {
             isFirstItemUndeletable: true,
             show: function () {
                 $(this).slideDown();
+                _setValues(this);
+                _validateInput(this);
             },
             hide: function (deleteElement) {
                 if (confirm(WebAppLocals.getMessage('missingProducts_deleteConfirmation'))) {
@@ -508,6 +561,28 @@ var ModifyQuantityOrderModals = (function () {
         $('#modifyQuantityOrderModal').appendTo('body').modal('show');
     };
 
+
+    var _setValues = function setValues(input) {
+        var requestedQuantity = $(input).find('#modifyQuantityOrderRequestedQuantity').val();
+        $(input).find('#modifyQuantityOrderQuantity').attr('max', requestedQuantity);
+        $(input).find('#modifyQuantityOrderQuantity').attr('min', 0);
+        $(input).find('#modifyQuantityOrderQuantityTitle').text('Quantity (initially ' + requestedQuantity + '):');
+    }
+
+    var _validateInput = function validateInput(input) {
+        $(input).find('#modifyQuantityOrderQuantity').keydown(function () {
+            // Save old value.
+            if (!$(this).val() || (parseInt($(this).val()) <= $(this).attr('max') && parseInt($(this).val()) >= $(this).attr('min')))
+                $(this).data("old", $(this).val());
+        });
+        $(input).find('#modifyQuantityOrderQuantity').keyup(function () {
+            // Check correct, else revert back to old value.
+            if (!$(this).val() || (parseInt($(this).val()) <= $(this).attr('max') && parseInt($(this).val()) >= $(this).attr('min')))
+                ;
+            else
+                $(this).val($(this).data("old"));
+        });
+    }
 
     return {
         openModal: function (orderId) {

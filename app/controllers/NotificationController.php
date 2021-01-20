@@ -9,7 +9,7 @@ class NotificationController extends Controller {
     function support()
     {
         $supportReasonId = $this->f3->get("POST.supportReasonId");
-        $email = $this->f3->get("POST.email");
+        $email = $this->f3->get("POST.supportEmail");
         $phone = $this->f3->get("POST.phone");
 
 
