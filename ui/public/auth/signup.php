@@ -19,6 +19,7 @@
 				<div id="signupContainer" class="login-form login-form-signup">
 					<!--begin::Form-->
 					<form class="form" novalidate="novalidate" id="kt_login_signup_form">
+						<input type="hidden" name="uid"/>
 						<!--begin: Wizard Step 1-->
 						<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
 							<!--begin::Title-->

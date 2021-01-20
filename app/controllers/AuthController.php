@@ -134,14 +134,26 @@ class AuthController extends Controller
             $uid = $verifiedIdToken->getClaim('sub');
             $user = $auth->getUser($uid);
 
+            $validUser = false;
+
             $dbUser = new BaseModel($this->db, "user");
-            $dbUser->getWhere("(uid = '$uid' OR email = '$user->email')");
-          
+            $dbUser->getWhere("uid = '$uid'");
             if ($dbUser->dry()) {
-                $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
-                $this->webResponse->data = $user;
+                $dbUser->getWhere("email = '$user->email'");
+                if ($dbUser->dry()) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
+                    $this->webResponse->data = $user;
+                } else {
+                    $dbUser->uid = $uid;
+                    $dbUser->update();
+                    $validUser = true;
+                }
             } else {
+                $validUser = true;
+            }
+
+            if($validUser) {
                 if($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
                     echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
                     return;
@@ -149,10 +161,6 @@ class AuthController extends Controller
                     echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
                     return;
                 } else if($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
-                    if (is_null($dbUser->uid)) {
-                        $dbUser->uid = $uid;
-                        $dbUser->update();
-                    }
                     $this->configUser($dbUser);
                     $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
                 }
@@ -268,6 +276,7 @@ class AuthController extends Controller
 
     function postSignUp()
     {
+        $uid = $this->f3->get("POST.uid");
         $name = $this->f3->get("POST.name");
         $mobile = $this->f3->get("POST.mobile");
         $email = $this->f3->get("POST.email");
@@ -300,6 +309,7 @@ class AuthController extends Controller
             $currencyId = $currency['id'];
 
             // Add user
+            $dbUser->uid = $uid;
             $dbUser->email = $email;
             $dbUser->password = password_hash($password, PASSWORD_DEFAULT);
             $dbUser->statusId = Constants::USER_STATUS_WAITING_VERIFICATION;
