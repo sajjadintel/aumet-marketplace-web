@@ -505,10 +505,11 @@
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
                                             <div class="col-md-4">
-                                                <label>Quantity:</label>
+                                                <label id="modifyQuantityOrderQuantityTitle">Quantity:</label>
                                                 <input type="text" id="modifyQuantityOrderQuantity" name="shippedQuantity" class="form-control" placeholder="Enter Quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
+                                            <input type="hidden" id="modifyQuantityOrderRequestedQuantity" name="requestedQuantity">
                                         </div>
                                     </div>
                                 </div>
