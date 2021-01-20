@@ -384,7 +384,7 @@ class SearchController extends Controller {
             if($sortParam == "newest") {
                 $order = "insertDateTime DESC";
             } else if($sortParam == "top-selling") {
-                $order = "quantityOrdered DESC";
+                $order = "totalOrderQuantity DESC";
             }
         }
         
