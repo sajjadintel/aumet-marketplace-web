@@ -91,16 +91,29 @@ class AuthController extends Controller
 
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getByField("email", $email);
+        if ($dbUser->statusId == 1) {
+            echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
+            return;
+        } else if ($dbUser->statusId == 2) {
+            echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
+            return;
+        }
+
         if ($dbUser->dry()) {
             echo $this->jsonResponse(false, null, $this->f3->get("vMessage_invalidLogin"));
         } else {
             if (password_verify($password, $dbUser->password)) {
-
-                $this->configUser($dbUser);
-                $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
-                echo $this->webResponse->jsonResponse();
+                if($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
+                    echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
+                } else if($dbUser->statusId == Constants::USER_STATUS_PENDING_APPROVAL) {
+                    echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
+                } else if($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
+                    $this->configUser($dbUser);
+                    $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
+                    echo $this->webResponse->jsonResponse();
+                }
             } else {
-                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
                 $this->webResponse->data = $dbUser;
                 echo $this->webResponse->jsonResponse();
@@ -121,25 +134,42 @@ class AuthController extends Controller
             $uid = $verifiedIdToken->getClaim('sub');
             $user = $auth->getUser($uid);
 
+            $validUser = false;
+
             $dbUser = new BaseModel($this->db, "user");
-            $dbUser->getWhere("(uid = '$uid' OR email = '$user->email') AND statusId = 3");
+            $dbUser->getWhere("uid = '$uid'");
             if ($dbUser->dry()) {
-                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-                $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
-                $this->webResponse->data = $user;
-            } else {
-                if (is_null($dbUser->uid)) {
+                $dbUser->getWhere("email = '$user->email'");
+                if ($dbUser->dry()) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
+                    $this->webResponse->data = $user;
+                } else {
                     $dbUser->uid = $uid;
                     $dbUser->update();
+                    $validUser = true;
                 }
-                $this->configUser($dbUser);
-                $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
+            } else {
+                $validUser = true;
+            }
+
+            if($validUser) {
+                if($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
+                    echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
+                    return;
+                } else if($dbUser->statusId == Constants::USER_STATUS_PENDING_APPROVAL) {
+                    echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
+                    return;
+                } else if($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
+                    $this->configUser($dbUser);
+                    $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
+                }
             }
         } catch (\InvalidArgumentException $e) {
-            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $e->getMessage();
         } catch (InvalidToken $e) {
-            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $e->getMessage();
         }
 
@@ -246,6 +276,7 @@ class AuthController extends Controller
 
     function postSignUp()
     {
+        $uid = $this->f3->get("POST.uid");
         $name = $this->f3->get("POST.name");
         $mobile = $this->f3->get("POST.mobile");
         $email = $this->f3->get("POST.email");
@@ -278,6 +309,7 @@ class AuthController extends Controller
             $currencyId = $currency['id'];
 
             // Add user
+            $dbUser->uid = $uid;
             $dbUser->email = $email;
             $dbUser->password = password_hash($password, PASSWORD_DEFAULT);
             $dbUser->statusId = Constants::USER_STATUS_WAITING_VERIFICATION;

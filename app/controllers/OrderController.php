@@ -212,13 +212,17 @@ class OrderController extends Controller {
             $dbOrder = new BaseModel($this->db, "vwOrderEntityUser");
             $arrOrder = $dbOrder->findWhere("id = '$orderId'");
 
-            //            $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
             $dbOrderDetail = new BaseModel($this->db, "vwOrderMissingProductDetail");
+            $dbOrderDetail->productName = "productName" . ucfirst($this->objUser->language);
             $arrOrderDetail = $dbOrderDetail->findWhere("id = '$orderId'");
+
+            $dbOrderLog = new BaseModel($this->db, "vwOrderLog");
+            $arrOrderLog = $dbOrderLog->findWhere("orderId = '$orderId'");
 
 
             $data['order'] = $arrOrder[0];
             $data['orderDetail'] = $arrOrderDetail;
+            $data['orderLog'] = $arrOrderLog;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
             return;
