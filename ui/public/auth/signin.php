@@ -36,7 +36,7 @@
                         <!--begin::Form group-->
                         <div class="form-group">
                             <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vLogin_email ?></label>
-                            <input class="form-control h-auto py-7 px-6 rounded-lg border-0" type="text" name="email" />
+                            <input class="form-control h-auto py-7 px-6 rounded-lg border-0" type="email" name="email" required />
                         </div>
                         <!--end::Form group-->
                         <!--begin::Form group-->
@@ -45,12 +45,12 @@
                                 <label class="font-size-h6 font-weight-bolder text-dark pt-5"><?php echo $vLogin_password ?></label>
                                 <a href="/web/auth/forgot" class="text-success font-size-h6 font-weight-bolder pt-5"><?php echo $vLogin_forgotPassword ?></a>
                             </div>
-                            <input class="form-control h-auto py-7 px-6 rounded-lg border-0" type="password" name="password" />
+                            <input class="form-control h-auto py-7 px-6 rounded-lg border-0" type="password" name="password" required />
                         </div>
                         <!--end::Form group-->
                         <!--begin::Action-->
                         <div class="pb-lg-0 pb-5">
-                            <button type="button" id="kt_login_singin_form_submit_button" onclick="WebAuth.signIn()" class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3"><?php echo $vLogin_signin ?></button>
+                            <button type="submit" id="kt_login_singin_form_submit_button" class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3"><?php echo $vLogin_signin ?></button>
                             <button type="button" id="kt_login_singin_google_submit_button" onclick="WebAuth.googleSignIn()" class="btn btn-outline-primary font-weight-bolder px-8 py-4 my-3 mr-3 font-size-lg">
                                 <span class="svg-icon svg-icon-md">
 
@@ -61,22 +61,22 @@
                                         <path d="M10.1993 3.85336C12.1142 3.85336 13.406 4.66168 14.1425 5.33717L17.0207 2.59107C15.253 0.985496 12.9527 0 10.1993 0C6.2106 0 2.76588 2.23672 1.08887 5.49214L4.38626 7.99466C5.21352 5.59183 7.50242 3.85336 10.1993 3.85336Z" fill="#EB4335" />
                                     </svg>
                                 </span><?php echo $vLogin_signinWithGoogle ?></button>
-                            <button type="button" id="kt_login_singin_phone_submit_button" onclick="WebAuth.googleSignIn()" class="btn btn-outline-primary font-weight-bolder px-8 py-4 my-3 font-size-lg">
-                                <span class="svg-icon svg-icon-lg">
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                            <rect x="0" y="0" width="24" height="24" />
-                                            <path d="M12,22 C6.4771525,22 2,17.5228475 2,12 C2,6.4771525 6.4771525,2 12,2 C17.5228475,2 22,6.4771525 22,12 C22,17.5228475 17.5228475,22 12,22 Z M11.613922,13.2130341 C11.1688026,13.6581534 10.4887934,13.7685037 9.92575695,13.4869855 C9.36272054,13.2054673 8.68271128,13.3158176 8.23759191,13.760937 L6.72658218,15.2719467 C6.67169475,15.3268342 6.63034033,15.393747 6.60579393,15.4673862 C6.51847004,15.7293579 6.66005003,16.0125179 6.92202169,16.0998418 L8.27584113,16.5511149 C9.57592638,16.9844767 11.009274,16.6461092 11.9783003,15.6770829 L15.9775173,11.6778659 C16.867756,10.7876271 17.0884566,9.42760861 16.5254202,8.3015358 L15.8928491,7.03639343 C15.8688153,6.98832598 15.8371895,6.9444475 15.7991889,6.90644684 C15.6039267,6.71118469 15.2873442,6.71118469 15.0920821,6.90644684 L13.4995401,8.49898884 C13.0544207,8.94410821 12.9440704,9.62411747 13.2255886,10.1871539 C13.5071068,10.7501903 13.3967565,11.4301996 12.9516371,11.8753189 L11.613922,13.2130341 Z" fill="#000000" />
-                                        </g>
-                                    </svg>
-                                </span><?php echo $vLogin_signinWithPhone ?></button>
+                            <!--                            <button type="button" id="kt_login_singin_phone_submit_button" onclick="WebAuth.googleSignIn()" class="btn btn-outline-primary font-weight-bolder px-8 py-4 my-3 font-size-lg">-->
+                            <!--                                <span class="svg-icon svg-icon-lg">-->
+                            <!---->
+                            <!--                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">-->
+                            <!--                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">-->
+                            <!--                                            <rect x="0" y="0" width="24" height="24" />-->
+                            <!--                                            <path d="M12,22 C6.4771525,22 2,17.5228475 2,12 C2,6.4771525 6.4771525,2 12,2 C17.5228475,2 22,6.4771525 22,12 C22,17.5228475 17.5228475,22 12,22 Z M11.613922,13.2130341 C11.1688026,13.6581534 10.4887934,13.7685037 9.92575695,13.4869855 C9.36272054,13.2054673 8.68271128,13.3158176 8.23759191,13.760937 L6.72658218,15.2719467 C6.67169475,15.3268342 6.63034033,15.393747 6.60579393,15.4673862 C6.51847004,15.7293579 6.66005003,16.0125179 6.92202169,16.0998418 L8.27584113,16.5511149 C9.57592638,16.9844767 11.009274,16.6461092 11.9783003,15.6770829 L15.9775173,11.6778659 C16.867756,10.7876271 17.0884566,9.42760861 16.5254202,8.3015358 L15.8928491,7.03639343 C15.8688153,6.98832598 15.8371895,6.9444475 15.7991889,6.90644684 C15.6039267,6.71118469 15.2873442,6.71118469 15.0920821,6.90644684 L13.4995401,8.49898884 C13.0544207,8.94410821 12.9440704,9.62411747 13.2255886,10.1871539 C13.5071068,10.7501903 13.3967565,11.4301996 12.9516371,11.8753189 L11.613922,13.2130341 Z" fill="#000000" />-->
+                            <!--                                        </g>-->
+                            <!--                                    </svg>-->
+                            <!--                                </span>--><?php //echo $vLogin_signinWithPhone ?><!--</button>-->
                         </div>
                         <!--end::Action-->
                         <div class="text-right d-flex justify-content-end">
                             <div class="top-signin text-right d-flex justify-content-end pt-10 pb-lg-0 pb-10">
                                 <span class="font-weight-bold text-dark-75 font-size-h4"><?php echo $vLogin_helpAdv ?></span>
-                                <a href="javascript:;" class="font-weight-bold text-success font-size-h4 ml-2" id="kt_login_signup"><?php echo $vLogin_help ?></a>
+                                <a href="javascript:;" class="font-weight-bold text-success font-size-h4 ml-2" id="kt_login_signup" data-toggle="modal" data-target="#support_modal"><?php echo $vLogin_help ?></a>
                             </div>
                         </div>
 
@@ -129,3 +129,11 @@
     </div>
     <!--end::Login-->
 </div>
+<script>
+    jQuery(document).ready(function () {
+        $('#kt_login_singin_form').submit(function (e) {
+            e.preventDefault();
+            WebAuth.signIn()
+        });
+    });
+</script>

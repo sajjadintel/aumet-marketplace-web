@@ -91,14 +91,22 @@ class AuthController extends Controller
 
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getByField("email", $email);
+        if ($dbUser->statusId == 1) {
+            echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
+            return;
+        } else if ($dbUser->statusId == 2) {
+            echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
+            return;
+        }
+
         if ($dbUser->dry()) {
             echo $this->jsonResponse(false, null, $this->f3->get("vMessage_invalidLogin"));
         } else {
             if (password_verify($password, $dbUser->password)) {
                 if($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
-                    echo $this->jsonResponse(false, null, $this->f3->get("vMessage_accountNotVerified"));
+                    echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
                 } else if($dbUser->statusId == Constants::USER_STATUS_PENDING_APPROVAL) {
-                    echo $this->jsonResponse(false, null, $this->f3->get("vMessage_accountNotApproved"));
+                    echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
                 } else if($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
                     $this->configUser($dbUser);
                     $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
@@ -147,11 +155,11 @@ class AuthController extends Controller
 
             if($validUser) {
                 if($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
-                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                    $this->webResponse->message = $this->f3->get("vMessage_accountNotVerified");
+                    echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
+                    return;
                 } else if($dbUser->statusId == Constants::USER_STATUS_PENDING_APPROVAL) {
-                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                    $this->webResponse->message = $this->f3->get("vMessage_accountNotApproved");
+                    echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
+                    return;
                 } else if($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
                     $this->configUser($dbUser);
                     $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
