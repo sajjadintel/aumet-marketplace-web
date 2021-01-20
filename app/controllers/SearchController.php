@@ -50,8 +50,8 @@ class SearchController extends Controller {
 
         $queryDisplay = 'productName_' . $this->objUser->language;
 
-        $dbNames = new BaseModel($this->db, 'vwEntityProductSell');
-        $dbNames->getWhere($where, $queryDisplay, $pageSize, $page * $pageSize);
+        $dbNames = new BaseModel($this->db, 'vwEntityProductSellSummary');
+        $dbNames->load(array($where), array('order' => $queryDisplay, 'limit' => $pageSize, 'offset' => $page * $pageSize, 'group' => $queryDisplay));
         $resultsCount = 0;
         while (!$dbNames->dry()) {
             $resultsCount++;
@@ -187,6 +187,22 @@ class SearchController extends Controller {
         $this->handleGetListFilters("country", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
     }
 
+    function getProductCategoryList()
+    {
+        $this->handleGetListFilters("category", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
+    }
+
+    function getProductSubcategoryByCategoryList()
+    {
+        $categoryId = $this->f3->get("PARAMS.categoryId");
+        $this->handleGetListFilters("subcategory", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'categoryId = '.$categoryId);
+    }
+
+    function getProductIngredientList()
+    {
+        $this->handleGetListFilters("ingredient", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language);
+    }
+
     function getOrderBuyerList()
     {
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
@@ -202,6 +218,12 @@ class SearchController extends Controller {
     function getAllSellerList()
     {
         $this->handleGetListFilters("entity", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'typeId=10');
+    }
+
+    function getCustomerGroupByEnitityList()
+    {
+        $entityId = $this->f3->get("PARAMS.entityId");
+        $this->handleGetListFilters("customerGroup", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'entityId = '.$entityId);
     }
 
     function getCategoryList()
@@ -362,7 +384,7 @@ class SearchController extends Controller {
             if($sortParam == "newest") {
                 $order = "insertDateTime DESC";
             } else if($sortParam == "top-selling") {
-                $order = "quantityOrdered DESC";
+                $order = "totalOrderQuantity DESC";
             }
         }
         

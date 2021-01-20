@@ -1,7 +1,6 @@
 <?php
 
-class NotificationHelper
-{
+class NotificationHelper {
 
     /**
      * Does something interesting
@@ -102,14 +101,14 @@ class NotificationHelper
      * @param \Base $f3 f3 instance
      * @param BaseModel $dbConnection db connection instance
      * @param int $orderId order id
-     * @param int[] $modifiedProductIds array of modified products
+     * @param int[] $modifiedOrderDetailIds array of modified order detail ids
      * @param int $entitySellerId entitySellerId
      */
-    public static function orderModifyShippedQuantityNotification($f3, $dbConnection, $orderId, $modifiedProductIds, $entitySellerId)
+    public static function orderModifyShippedQuantityNotification($f3, $dbConnection, $orderId, $modifiedOrderDetailIds, $entitySellerId)
     {
         $dbProduct = new BaseModel($dbConnection, "vwOrderDetail");
         $dbProduct->name = "productNameEn";
-        $dbProduct->getWhere("id = $orderId AND productCode IN (" . implode(",", $modifiedProductIds) . ")");
+        $dbProduct->getWhere("id = $orderId AND orderDetailId IN (" . implode(",", $modifiedOrderDetailIds) . ")");
 
         $emailHandler = new EmailHandler($dbConnection);
         $emailFile = "email/layout.php";
@@ -204,11 +203,17 @@ class NotificationHelper
         $f3->set('reason', $supportReason->name_en);
 
 
-        $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
-        $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $supportLog->entityId);
-        foreach ($arrEntityUserProfile as $entityUserProfile) {
-            $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
+        // if not logged in
+        if (!$supportLog->entityId) {
+            $emailHandler->appendToAddress($supportLog->email, '');
+        } else {
+            $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
+            $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $supportLog->entityId);
+            foreach ($arrEntityUserProfile as $entityUserProfile) {
+                $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
+            }
         }
+
 
         $htmlContent = View::instance()->render($emailFile);
 

@@ -42,15 +42,18 @@ class Controller {
             // switch($this->objUser->)
 
             $this->f3->set('objUser', $this->objUser);
+            $this->f3->set('isAuth', true);
 
-            $supportReasons = new BaseModel($this->db, 'supportReason');
-            $supportReasons->name = "name_" . $this->objUser->language;
-            $supportReasons = $supportReasons->find();
-
-            $this->f3->set('supportReasons', $supportReasons);
         } else {
             $this->isAuth = false;
         }
+
+        $supportReasons = new BaseModel($this->db, 'supportReason');
+        $supportReasons->name = "name_" . ($this->objUser->language ?? 'en');
+        $where = $this->isAuth ? 'isAuth=1' : '';
+        $supportReasons = $supportReasons->find($where);
+
+        $this->f3->set('supportReasons', $supportReasons);
 
         LayoutRender::setMainMenu($this->f3, $this->db, $this->objUser->menuId);
     }

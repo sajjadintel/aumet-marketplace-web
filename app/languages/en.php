@@ -13,8 +13,8 @@ return array(
     'vLogin_slogan' => 'Connecting healthcare end users and distributors through the largest online healthcare B2B marketplace',
 
     'vMessage_invalidLogin' => 'Invalid Email or Password',
-    'vMessage_accountNotVerified' => 'Account not verified yet',
-    'vMessage_accountNotApproved' => 'You will be contacted by Aumet within 24 to 48 hours to activate your account',
+    'vMessage_verifyAccount' => 'Check your inbox to verify your account, or contact us if you haven\'t received any emails',
+    'vMessage_waitForVerify' => 'You will be contacted shortly by our team to verify your account, kindly wait, or contact us if 48 hours have passed',
     'vMessage_signupSuccessful' => 'Registration successfully submitted. An admin will review your request and get back to you soon !',
 
     'vLogin_helpAdv' => 'Facing issues in our Registration?',
@@ -125,6 +125,7 @@ return array(
     'vModule_productAdded' => 'Product is added successfully!',
     'vModule_quantityEdited' => 'Product Quantity is edited successfully!',
     'vModule_productEdited' => 'Product is edited successfully!',
+    'vModule_customerEdited' => 'Customer is edited successfully!',
 
     'vModule_order_title' => 'Order List',
     'vModule_order_header' => 'You can view your order list',
@@ -167,6 +168,21 @@ return array(
     'vModule_product_allOffers' => 'All offers for ',
     'vModule_product_addToCart' => 'Add to Cart',
     'vModule_product_pricePerUnit' => 'Price Per Unit',
+    'vModule_product_add' => 'Add',
+    'vModule_product_edit' => 'Edit',
+    'vModule_product_brandName' => 'Brand Name',
+    'vModule_product_subtitle' => 'Subtitle',
+    'vModule_product_description' => 'Description',
+    'vModule_product_availableQuantity' => 'Available Quantity',
+    'vModule_product_maximumOrderQuantity' => 'Maximum Order Quantity',
+    'vModule_product_manufacturerName' => 'Manufacturer Name',
+    'vModule_product_batchNumber' => 'Batch Number',
+    'vModule_product_itemCode' => 'Item Code',
+    'vModule_product_category' => 'Category',
+    'vModule_product_subcategory' => 'Subcategory',
+    'vModule_product_expiryDate' => 'Expiry Date',
+    'vModule_product_activeIngredients' => 'Active Ingredients',
+    'vModule_product_strength' => 'Strength',
 
     'vModule_product_stockStatus_NotAvailable' => 'Not Available',
     'vModule_product_stockStatus_ComingSoon' => 'Coming Soon',
@@ -213,6 +229,9 @@ return array(
     'vModule_order_dateTo' => 'Get Orders Ending Date',
     'vModule_order_date' => 'Get Orders Date',
 
+    'vModule_customer_customerGroupTitle' => 'Customer Group',
+    'vModule_customer_customerGroup' => 'Customer Group',
+
     'vResponse_notFound' => '{0} not found',
     'vResponse_notUpdated' => '{0} could not be updated',
     'vResponse_notAdded' => '{0} could not be added',
@@ -231,6 +250,7 @@ return array(
     'vButton_bulk_add_image' => 'Bulk Add Images',
     'vButton_confirm' => 'Confirm',
     'vButton_view_all' => 'View All',
+    'vButton_save' => 'Save',
 
     'vModule_feedback_title' => 'Customer Orders Feedback',
     'vModule_feedback_header' => 'The below customer feedback is delivered to you privately and they are not publicly available for any user',
@@ -256,7 +276,7 @@ return array(
     'vModal_SaveChanges' => 'Save changes',
 
     'responseSuccess_modifyQuantity' => 'Quantity order changed successfully!',
-  
+    'vModalEditQuantity_nothingModified' => 'Nothing Modified!', // TODO: add translation
     'vModule_homepageBuyer_newProducts' => 'New Products',
     'vModule_homepageBuyer_topSelling' => 'Top Selling',
     'vModule_homepageBuyer_pendingOrders' => 'Pending Orders',

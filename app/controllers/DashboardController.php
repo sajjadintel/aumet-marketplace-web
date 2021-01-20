@@ -87,7 +87,7 @@ class DashboardController extends Controller {
                 $this->f3->set('arrNewestProducts', $arrNewestProducts);
 
                 // Get top selling products
-                $arrTopSellingProductsDb = $dbProducts->findWhere("statusId = 1", "quantityOrdered DESC", 4, 0);
+                $arrTopSellingProductsDb = $dbProducts->findWhere("statusId = 1", "totalOrderQuantity DESC", 4, 0);
                 $arrTopSellingProducts = [];
                 foreach($arrTopSellingProductsDb as $productDb) {
                     $product = new stdClass();

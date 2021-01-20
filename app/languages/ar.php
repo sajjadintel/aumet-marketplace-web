@@ -18,6 +18,8 @@ return array(
     'vMessage_accountNotVerified' => 'لم يتم التحقق من الحساب بعد',
     'vMessage_accountNotApproved' => 'سيتم الاتصال بك من قبل Aumet في غضون ٢٤ إلى ٤٨ ساعة لتفعيل حسابك',
     'vMessage_signupSuccessful' => 'تم التسجيل بنجاح. سيقوم أحد المسؤولين بمراجعة طلبك والرد عليك قريبًا!',
+    'vMessage_verifyAccount' => 'Check your inbox to verify your account, or contact us if you haven\'t received any emails', // TODO: Translate
+    'vMessage_waitForVerify' => 'You will be contacted shortly by our team to verify your account, kindly wait, or contact us if 48 hours have passed', // TODO: Translate
 
     'vLogin_helpAdv' => 'هل تواجه صعوبات في التسجيل؟',
     'vLogin_help' => 'اطلب المساعدة',
@@ -121,6 +123,23 @@ return array(
     'vModule_product_pricePerUnit' => 'Price Per Unit', // TODO: add translation
     'vModule_product_distributorName' => 'Distributor Name', // TODO: add translation
     'vModule_product_select' => 'Select', // TODO: add translation
+    'vModule_product_add' => 'أضف',
+    'vModule_product_edit' => 'تعديل',
+    'vModule_product_brandName' => 'اسم العلامة التجارية',
+    'vModule_product_subtitle' => 'العنوان الفرعي',
+    'vModule_product_description' => 'وصف',
+    'vModule_product_availableQuantity' => 'الكمية المتوفرة',
+    'vModule_product_maximumOrderQuantity' => 'كمية الطلب القصوى',
+    'vModule_product_manufacturerName' => 'اسم المصنع',
+    'vModule_product_batchNumber' => 'رقم الدفعة',
+    'vModule_product_itemCode' => 'رمز الصنف',
+    'vModule_product_category' => 'الفئة',
+    'vModule_product_subcategory' => 'تصنيف فرعي',
+    'vModule_product_expiryDate' => 'تاريخ الانتهاء',
+    'vModule_product_activeIngredients' => 'مكونات نشطة',
+    'vModule_product_strength' => 'قوة',
+
+
     'stockAvailability_available' => 'متوفر',
     'stockAvailability_notAvailable' => 'غير متوفر',
     'stockAvailability_availableSoon' => 'متوفر قريبا',
@@ -128,6 +147,7 @@ return array(
     'vModule_productAdded' => 'Product is added successfully!', // TODO: add translation
     'vModule_quantityEdited' => 'Product Quantity is edited successfully!', // TODO: add translation
     'vModule_productEdited' => 'Product is edited successfully!',// TODO: add translation
+    'vModule_customerEdited' => 'Customer is edited successfully!',// TODO: add translation
 
     'vModule_order_title' => 'لائحة الطلبات',
     'vModule_order_header' => 'يمكنك عرض قائمة بأوامرك',
@@ -208,6 +228,9 @@ return array(
     'vModule_order_dateFrom' => 'أدخل تاريخ بدء الطلبات',
     'vModule_order_dateTo' => 'أدخل تاريخ انتهاء الطلبات',
     'vModule_order_date' => 'أدخل تاريخ الطلبات',
+    
+    'vModule_customer_customerGroupTitle' => 'مجموعة العملاء',
+    'vModule_customer_customerGroup' => 'مجموعة العملاء',
 
     'vResponse_notFound' => '{0} غير موجود',
     'vResponse_notUpdated' => 'تعذر تحديث {0}',
@@ -228,6 +251,7 @@ return array(
     'vButton_bulk_add_image' => 'إضافة صور مجمعة',
     'vButton_confirm' => 'تأكيد',
     'vButton_view_all' => 'مشاهدة الكل',
+    'vButton_save' => 'حفظ',
     
     'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ', // TODO: add translation
     'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!', // TODO: add translation
@@ -249,7 +273,7 @@ return array(
     'vModal_delete' => 'Delete',
     'vModal_add' => 'Add',
     'vModal_SaveChanges' => 'Save changes',
-  
+    'vModalEditQuantity_nothingModified' => 'Nothing Modified!', // TODO: add translation
     'vModule_homepageBuyer_newProducts' => 'منتجات جديدة',
     'vModule_homepageBuyer_topSelling' => 'الأعلى مبيعا',
     'vModule_homepageBuyer_pendingOrders' => 'الأوامر المعلقة',
