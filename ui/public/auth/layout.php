@@ -27,6 +27,7 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         firebase.analytics();
+        firebase.auth().signOut();
     </script>
     <meta charset="utf-8" />
     <title><?php echo $vTitle; ?></title>
