@@ -91,6 +91,14 @@ class AuthController extends Controller
 
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getByField("email", $email);
+        if ($dbUser->statusId == 1) {
+            echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
+            return;
+        } else if ($dbUser->statusId == 2) {
+            echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
+            return;
+        }
+
         if ($dbUser->dry()) {
             echo $this->jsonResponse(false, null, $this->f3->get("vMessage_invalidLogin"));
         } else {
@@ -122,7 +130,15 @@ class AuthController extends Controller
             $user = $auth->getUser($uid);
 
             $dbUser = new BaseModel($this->db, "user");
-            $dbUser->getWhere("(uid = '$uid' OR email = '$user->email') AND statusId = 3");
+            $dbUser->getWhere("(uid = '$uid' OR email = '$user->email')");
+            if ($dbUser->statusId == 1) {
+                echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
+                return;
+            } else if ($dbUser->statusId == 2) {
+                echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
+                return;
+            }
+
             if ($dbUser->dry()) {
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
