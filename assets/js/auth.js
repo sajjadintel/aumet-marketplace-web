@@ -233,7 +233,7 @@ var WebAuth = (function () {
 								compare: function () {
 									return form.querySelector('[name="password"]').value;
 								},
-								message: "Password confirmation doesn't",
+								message: "Password confirmation doesn't match",
 							},
 						},
 					},

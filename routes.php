@@ -164,3 +164,6 @@ $f3->route('POST /web/pharmacy/feedback/pending', 'FeedbackController->postPharm
 $f3->route('POST /web/pharmacy/feedback/history', 'FeedbackController->postPharmacyFeedbacksHistory');
 
 $f3->route('GET /web/profile', 'ProfileController->getProfile');
+$f3->route('POST /web/profile/document/upload', 'ProfileController->postProfileDocumentUpload');
+$f3->route('POST /web/profile/myProfile', 'ProfileController->postProfileMyProfile');
+$f3->route('POST /web/profile/accountSetting', 'ProfileController->postProfileAccountSetting');
