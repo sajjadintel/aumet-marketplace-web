@@ -311,4 +311,7 @@ return array(
     'vModule_profile_saveButton' => 'Save Changes',
     'vModule_profile_userNotFound' => 'User not found',
     'vModule_profile_wrongPassword' => 'Wrong Password',
+    'vModule_profile_distributorName' => 'Distributor Name',
+    'vModule_profile_distributorTradeLicenseDocument' => 'Distributor Trade License Document',
+    'vModule_profile_distributorMobile' => 'Distributor Number',
 );
