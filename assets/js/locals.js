@@ -485,6 +485,16 @@ var WebAppLocals = (function () {
 			ar: 'مطلوب',
 			fr: ''
 		},
+		invalid: {
+			en: 'Invalid',
+			ar: 'غير صالحة',
+			fr: ''
+		},
+		wrongPasswordConfirmation: {
+			en: 'Password Confirmation doesn\'t match',
+			ar: 'تأكيد كلمة المرور غير مطابق',
+			fr: ''
+		},
 		validationError: {
 			en: 'Sorry, looks like there are some errors detected, please try again.',
 			ar: 'معذرة ، يبدو أنه تم اكتشاف بعض الأخطاء ، يرجى المحاولة مرة أخرى.',

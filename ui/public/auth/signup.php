@@ -160,7 +160,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="mt-10">
+								<div class="mt-5">
 									<div class="font-size-h6 font-weight-bolder text-muted">Max file size is 10mb and </div>
 									<div class="font-size-h6 font-weight-bolder text-muted">File types allowed are .pdf, .ppt, .xcl, .docx, .jpeg, .jpg, .png </div>
 								</div>
