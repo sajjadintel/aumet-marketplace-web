@@ -115,7 +115,7 @@ function compress_htmlcode($codedata)
 
             var columnDefs = [{
                 className: "export_datatable",
-                targets: [1, 2, 3, 4, 9, 10, 11, 12, 13, 14]
+                targets: [1, 2, 3, 4, 9, 10, 11, 12, 13, 14, 15]
             },
                 {
                     targets: 0,
@@ -331,6 +331,15 @@ function compress_htmlcode($codedata)
                 },
                 {
                     targets: 12,
+                    title: WebAppLocals.getMessage('orderShippedQuantity'),
+                    data: 'shippedQuantity',
+                    visible: false,
+                    render: function (data, type, row, meta) {
+                        return row.shippedQuantity;
+                    },
+                },
+                {
+                    targets: 13,
                     title: WebAppLocals.getMessage('quantity'),
                     data: 'quantity',
                     visible: false,
@@ -339,7 +348,7 @@ function compress_htmlcode($codedata)
                     },
                 },
                 {
-                    targets: 13,
+                    targets: 14,
                     title: WebAppLocals.getMessage('tax'),
                     data: 'tax',
                     visible: false,
@@ -348,7 +357,7 @@ function compress_htmlcode($codedata)
                     },
                 },
                 {
-                    targets: 14,
+                    targets: 15,
                     title: WebAppLocals.getMessage('orderTotalWithVAT'),
                     data: 'quantity',
                     visible: false,
