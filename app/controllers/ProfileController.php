@@ -122,8 +122,6 @@ class ProfileController extends Controller {
     function postProfileAccountSetting()
     {
         $userId = $this->f3->get("POST.userId");
-        $email = $this->f3->get("POST.email");
-        $mobile = $this->f3->get("POST.mobile");
         $oldPassword = $this->f3->get("POST.oldPassword");
         $newPassword = $this->f3->get("POST.newPassword");
         
@@ -135,26 +133,19 @@ class ProfileController extends Controller {
             $this->webResponse->message = $this->f3->get("vModule_profile_userNotFound");
             echo $this->webResponse->jsonResponse();
         } else {
-            // Update user password if oldPassword provided
-            if($oldPassword) {
-                if(!password_verify($oldPassword, $dbUser->password)) {
-                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                    $this->webResponse->message = $this->f3->get("vModule_profile_wrongPassword");
-                    echo $this->webResponse->jsonResponse();
-                    return;
-                } else {
-                    $dbUser->password = password_hash($newPassword, PASSWORD_DEFAULT);
-                }
-            }
-                
-            // Update user
-            $dbUser->email = $email;
-            $dbUser->mobile = $mobile;
-            $dbUser->update();
+            // Check if oldPassword is correct
+            if(!password_verify($oldPassword, $dbUser->password)) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->message = $this->f3->get("vModule_profile_wrongPassword");
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $dbUser->password = password_hash($newPassword, PASSWORD_DEFAULT);
+                $dbUser->update();
 
-            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-            $this->webResponse->message = $this->f3->get("vModule_profile_accountSettingSaved");
-            echo $this->webResponse->jsonResponse();
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+                $this->webResponse->message = $this->f3->get("vModule_profile_accountSettingSaved");
+                echo $this->webResponse->jsonResponse();
+            }
         }
     }
 }

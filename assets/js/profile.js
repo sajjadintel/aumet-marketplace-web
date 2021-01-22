@@ -213,23 +213,6 @@ var Profile = (function () {
 		var accountSettingForm = KTUtil.getById('accountSettingForm');
 		_allValidators.accountSetting = FormValidation.formValidation(accountSettingForm, {
 			fields: {
-				email: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						},
-						emailAddress: {
-							message: WebAppLocals.getMessage('invalid'),
-						},
-					},
-				},
-				mobile: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
-				},
 				oldPassword: {
 					validators: {
 						notEmpty: {
@@ -261,29 +244,6 @@ var Profile = (function () {
 				bootstrap: new FormValidation.plugins.Bootstrap({
 					//eleInvalidClass: '',
 					eleValidClass: '',
-				}),
-				excluded: new FormValidation.plugins.Excluded({
-					excluded: function(field) {
-						var oldPasswordVal = accountSettingForm.querySelector("[name=oldPassword]").value;
-						var newPasswordVal = accountSettingForm.querySelector("[name=newPassword]").value;
-						var newPasswordConfirmationVal = accountSettingForm.querySelector("[name=newPasswordConfirmation]").value;
-						
-						var excluded;
-						switch(field) {
-							case 'oldPassword':
-								excluded = !newPasswordVal && !newPasswordConfirmationVal;
-								break;
-							case 'newPassword':
-								excluded = !oldPasswordVal && !newPasswordConfirmationVal;
-								break;
-							case 'newPasswordConfirmation':
-								excluded = !newPasswordVal;
-								break;
-							default:
-								excluded = false;
-						}
-						return excluded;
-					},
 				}),
 			},
 		});
@@ -380,8 +340,6 @@ var Profile = (function () {
 		
 				let mapKeyElement = {
 					userId: 'input',
-					email: 'input',
-					mobile: 'input',
 					oldPassword: 'input',
 					newPassword: 'input'
 				};
