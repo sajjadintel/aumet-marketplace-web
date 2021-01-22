@@ -29,9 +29,14 @@ class EntityController extends Controller
 
             $dbRelation = new BaseModel($this->db, "vwEntityRelation");
             $dbRelation->customerGroupName = "customerGroupName_" . $this->objUser->language;
-            $arrRelation = $dbRelation->findWhere("id = '$customerId'");
+            $relation = $dbRelation->findWhere("id = '$customerId'")[0];
 
-            $data['customer'] = $arrRelation[0];
+            $data['customer'] = $relation;
+            
+            $dbCustomerGroup = new BaseModel($this->db, "customerGroup");
+            $dbCustomerGroup->name = "name_" . $this->objUser->language;
+            $arrCustomerGroup = $dbCustomerGroup->findWhere("entityId=".$relation['entitySellerId']);
+            $data['arrCustomerGroup'] = $arrCustomerGroup;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
             return;
@@ -49,9 +54,14 @@ class EntityController extends Controller
 
             $dbRelation = new BaseModel($this->db, "vwEntityRelation");
             $dbRelation->customerGroupName = "customerGroupName_" . $this->objUser->language;
-            $arrRelation = $dbRelation->findWhere("entityBuyerId = $entityBuyerId AND entitySellerId = $entitySellerId");
+            $relation = $dbRelation->findWhere("entityBuyerId = $entityBuyerId AND entitySellerId = $entitySellerId")[0];
 
-            $data['customer'] = $arrRelation[0];
+            $data['customer'] = $relation;
+            
+            $dbCustomerGroup = new BaseModel($this->db, "customerGroup");
+            $dbCustomerGroup->name = "name_" . $this->objUser->language;
+            $arrCustomerGroup = $dbCustomerGroup->findWhere("entityId=".$relation['entitySellerId']);
+            $data['arrCustomerGroup'] = $arrCustomerGroup;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
             return;
