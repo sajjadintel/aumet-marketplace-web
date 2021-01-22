@@ -245,6 +245,11 @@ var WebAppLocals = (function () {
 			ar: 'مجموع',
 			fr: '',
 		},
+		orderShippedQuantity: {
+			en: 'Shipped Quantity',
+			ar: 'Shipped Quantity',
+			fr: '',
+		},
 		branch: {
 			en: 'Branch',
 			ar: 'فرع',
