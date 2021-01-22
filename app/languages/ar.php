@@ -308,4 +308,7 @@ return array(
     'vModule_profile_saveButton' => 'حفظ التغييرات',
     'vModule_profile_userNotFound' => 'المستخدم ليس موجود',
     'vModule_profile_wrongPassword' => 'كلمة مرور خاطئة',
+    'vModule_profile_distributorName' => 'اسم الموزع',
+    'vModule_profile_distributorTradeLicenseDocument' => 'وثيقة الرخصة التجارية للموزع',
+    'vModule_profile_distributorMobile' => 'رقم الموزع',
 );

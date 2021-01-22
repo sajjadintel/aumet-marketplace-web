@@ -36,6 +36,7 @@
             </div>
             <!--begin::Main-->
             <div class="col-9 px-10 py-5">
+                <input id="profileEntityType" type="hidden" name="entityType" value="distributor"/>
                 <div id="myProfileSection">
                     <div class="card-label font-weight-bolder font-size-h1"><?php echo $vModule_profile_myProfileTitle ?></div>
                     <div class="card-label font-size-h5 text-muted"><?php echo $vModule_profile_myProfileSubtitle ?></div>
@@ -44,7 +45,7 @@
                         <div class="row">
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
-                                <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_pharmacyName ?></label>
+                                <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_distributorName ?></label>
                                 <input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="entityName" value="<?php echo $user->entityName; ?>" />
                             </div>
                             <!--end::Form Group-->
@@ -88,7 +89,7 @@
                             <div class="col-6 form-group">
                                 <input type="hidden" name="entityBranchTradeLicenseUrl" value="<?php echo $user->entityBranchTradeLicenseUrl; ?>"/>
                                 <div>
-                                    <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_pharmacyTradeLicenseDocument; ?></label>
+                                    <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_distributorTradeLicenseDocument; ?></label>
                                 </div>
                                 
                                 <div class="dropzone dropzone-multi" id="kt_dropzone" style="background-color: unset;">
@@ -139,7 +140,7 @@
                         </div>
                         <!--begin::Save Button-->
                         <div>        
-                            <a class="btn btn-primary font-weight-bolder font-size-h5 pl-12 pr-12 py-4 my-3 mr-3" onclick="Profile.saveMyProfile();">
+                            <a class="btn btn-primary font-weight-bolder font-size-h5 pl-12 pr-12 py-4 my-3 mr-3" onclick="Profile.saveDistributorMyProfile();">
                                 <?php echo $vModule_profile_saveButton; ?>
                             </a>
                         </div>
@@ -160,7 +161,7 @@
                             <!--end::Form Group-->
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
-                                <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_pharmacyMobile ?></label>
+                                <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_distributorMobile ?></label>
                                 <input disabled type="tel" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="mobile" value="<?php echo $user->userMobile; ?>" />
                             </div>
                         </div>
@@ -196,7 +197,7 @@
                         </div>
                         <!--begin::Save Button-->
                         <div>        
-                            <a class="btn btn-primary font-weight-bolder font-size-h5 pl-12 pr-12 py-4 my-3 mr-3" onclick="Profile.saveAccountSetting();">
+                            <a class="btn btn-primary font-weight-bolder font-size-h5 pl-12 pr-12 py-4 my-3 mr-3" onclick="Profile.saveDistributorAccountSetting();">
                                 <?php echo $vModule_profile_saveButton; ?>
                             </a>
                         </div>

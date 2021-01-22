@@ -3,13 +3,151 @@
 // Class Definition
 var Profile = (function () {
 
-    var _pharmacyDocument;
+    var _entityDocument;
 	var _myDropZone;
 	var _allValidators = {};
-	var _allMenuNames = [
-		"myProfile",
-		"accountSetting"
-	];
+	var _mapEntityTypeMenus = {
+		pharmacy: [
+			"myProfile",
+			"accountSetting"
+		],
+		distributor: [
+			"myProfile",
+			"accountSetting"
+		]
+	};
+	var _mapEntityTypeMenuValidatorFields = {
+		pharmacy: {
+			myProfile: {
+				entityName: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				},
+				tradeLicenseNumber: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				},
+				country: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				},
+				city: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				},
+				address: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				}
+			},
+			accountSetting: {
+				oldPassword: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				},
+				newPassword: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				},
+				newPasswordConfirmation: {
+					validators: {
+						identical: {
+							compare: function () {
+								return accountSettingForm.querySelector("[name=newPassword]").value;
+							},
+							message: WebAppLocals.getMessage('wrongPasswordConfirmation')
+						}
+					},
+				}
+			}
+		},
+		distributor: {
+			myProfile: {
+				entityName: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				},
+				tradeLicenseNumber: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				},
+				country: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				},
+				city: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				},
+				address: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				}
+			},
+			accountSetting: {
+				oldPassword: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				},
+				newPassword: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						}
+					},
+				},
+				newPasswordConfirmation: {
+					validators: {
+						identical: {
+							compare: function () {
+								return accountSettingForm.querySelector("[name=newPassword]").value;
+							},
+							message: WebAppLocals.getMessage('wrongPasswordConfirmation')
+						}
+					},
+				}
+			}
+		}
+	};
 
     var _init = function () {
         if($('#myProfileForm select[name=country]').val()) {
@@ -98,7 +236,7 @@ var Profile = (function () {
 
 		// Add file to the list if success
 		_myDropZone.on('success', function (file, response) {
-			_pharmacyDocument = response;
+			_entityDocument = response;
 			
 			var dropzoneFilenameElement = $(file.previewTemplate).find("#dropzoneFilename");
 			$(dropzoneFilenameElement).attr("target", "_blank");
@@ -108,7 +246,7 @@ var Profile = (function () {
 		// Remove file from the list
 		_myDropZone.on('removedfile', function (file) {
 			if (file.status === 'success') {
-				_pharmacyDocument = null;
+				_entityDocument = null;
 			}
 		});
 
@@ -159,94 +297,24 @@ var Profile = (function () {
 	}
 
 	var _initializeValidators = function () {
-		// Initialize My Profile validator
-		var myProfileForm = KTUtil.getById('myProfileForm');
-		_allValidators.myProfile = FormValidation.formValidation(myProfileForm, {
-			fields: {
-				entityName: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
+		// Initialize validator on each menu
+		var entityType = $("#profileEntityType").val();
+		var _mapMenuValidatorFields = _mapEntityTypeMenuValidatorFields[entityType];
+		Object.keys(_mapMenuValidatorFields).forEach((menu) => {
+			var validatorFields = _mapMenuValidatorFields[menu];
+			var form = KTUtil.getById(menu + 'Form');
+			_allValidators[menu] = FormValidation.formValidation(form, {
+				fields: validatorFields,
+				plugins: {
+					trigger: new FormValidation.plugins.Trigger(),
+					// Bootstrap Framework Integration
+					bootstrap: new FormValidation.plugins.Bootstrap({
+						//eleInvalidClass: '',
+						eleValidClass: '',
+					}),
 				},
-				tradeLicenseNumber: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
-				},
-				country: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
-				},
-				city: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
-				},
-				address: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
-				}
-			},
-			plugins: {
-				trigger: new FormValidation.plugins.Trigger(),
-				// Bootstrap Framework Integration
-				bootstrap: new FormValidation.plugins.Bootstrap({
-					//eleInvalidClass: '',
-					eleValidClass: '',
-				}),
-			},
-		});
-
-		// Initialize Account Setting validator
-		var accountSettingForm = KTUtil.getById('accountSettingForm');
-		_allValidators.accountSetting = FormValidation.formValidation(accountSettingForm, {
-			fields: {
-				oldPassword: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
-				},
-				newPassword: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
-				},
-				newPasswordConfirmation: {
-					validators: {
-						identical: {
-							compare: function () {
-								return accountSettingForm.querySelector("[name=newPassword]").value;
-							},
-							message: WebAppLocals.getMessage('wrongPasswordConfirmation')
-						}
-					},
-				}
-			},
-			plugins: {
-				trigger: new FormValidation.plugins.Trigger(),
-				// Bootstrap Framework Integration
-				bootstrap: new FormValidation.plugins.Bootstrap({
-					//eleInvalidClass: '',
-					eleValidClass: '',
-				}),
-			},
-		});
+			});
+		})
 	}
 
 	var _initializePasswordFields = function () {
@@ -272,46 +340,32 @@ var Profile = (function () {
 		$("#accountSettingForm input[name=newPasswordConfirmation]").val('');
 	}
 
-	var _handleMenuChange = function (menuName) {
-		$('#' + menuName + 'Button').css({
+	var _handleMenuChange = function (menu) {
+		$('#' + menu + 'Button').css({
 			'background-color': '#E8F8F6',
 			'cursor': ''
 		});
-		$('#' + menuName + 'Section').show();
+		$('#' + menu + 'Section').show();
+		
+		var entityType = $("#profileEntityType").val();
+		var allMenus = _mapEntityTypeMenus[entityType];
 
-		_allMenuNames.forEach((otherMenuName) => {
-			if(otherMenuName !== menuName) {
-				$('#' + otherMenuName + 'Button').css({
+		allMenus.forEach((otherMenu) => {
+			if(otherMenu !== menu) {
+				$('#' + otherMenu + 'Button').css({
 					'background-color': '',
 					'cursor': 'pointer'
 				});
-				$('#' + otherMenuName + 'Section').hide();
+				$('#' + otherMenu + 'Section').hide();
 			}
 		})
 		KTUtil.scrollTop();
 	}
 
-	var _saveMyProfile = function () {
-		_allValidators.myProfile.validate().then(function (status) {
+	var _save = function (menu, saveFunction) {
+		_allValidators[menu].validate().then(function (status) {
 			if (status == 'Valid') {
-				let body = {
-					pharmacyDocument: _pharmacyDocument,
-				};
-		
-				let mapKeyElement = {
-					userId: 'input',
-					entityName: 'input',
-					tradeLicenseNumber: 'input',
-					country: 'select',
-					city: 'select',
-					address: 'textarea'
-				};
-		
-				Object.keys(mapKeyElement).forEach((key) => {
-					body[key] = $('#myProfileForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
-				});
-		
-				WebApp.post('/web/profile/myProfile', body, _saveMyProfileCallback);
+				saveFunction();
 			} else {
 				Swal.fire({
 					text: WebAppLocals.getMessage('validationError'),
@@ -328,43 +382,95 @@ var Profile = (function () {
 		})
 	};
 
-	var _saveMyProfileCallback = function (webResponse) {
+	var _savePharmacyMyProfile = function () {
+		let body = {
+			entityDocument: _entityDocument,
+		};
+
+		let mapKeyElement = {
+			userId: 'input',
+			entityName: 'input',
+			tradeLicenseNumber: 'input',
+			country: 'select',
+			city: 'select',
+			address: 'textarea'
+		};
+
+		Object.keys(mapKeyElement).forEach((key) => {
+			body[key] = $('#myProfileForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+		});
+
+		WebApp.post('/web/pharmacy/profile/myProfile', body, _savePharmacyMyProfileCallback);
+	};
+
+	var _savePharmacyMyProfileCallback = function (webResponse) {
 		KTUtil.scrollTop();
         WebApp.alertSuccess(webResponse.message);
 	};
 
-	var _saveAccountSetting = function () {
-		_allValidators.accountSetting.validate().then(function (status) {
-			if (status == 'Valid') {
-				let body = {};
-		
-				let mapKeyElement = {
-					userId: 'input',
-					oldPassword: 'input',
-					newPassword: 'input'
-				};
-		
-				Object.keys(mapKeyElement).forEach((key) => {
-					body[key] = $('#accountSettingForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
-				});
-				WebApp.post('/web/profile/accountSetting', body, _saveAccountSettingCallback);
-			} else {
-				Swal.fire({
-					text: WebAppLocals.getMessage('validationError'),
-					icon: 'error',
-					buttonsStyling: false,
-					confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
-					customClass: {
-						confirmButton: 'btn font-weight-bold btn-light',
-					},
-				}).then(function () {
-					KTUtil.scrollTop();
-				});
-			}
-		})
+	var _savePharmacyAccountSetting = function () {
+		let body = {};
+
+		let mapKeyElement = {
+			userId: 'input',
+			oldPassword: 'input',
+			newPassword: 'input'
+		};
+
+		Object.keys(mapKeyElement).forEach((key) => {
+			body[key] = $('#accountSettingForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+		});
+		WebApp.post('/web/pharmacy/profile/accountSetting', body, _savePharmacyAccountSettingCallback);
 	};
 
-	var _saveAccountSettingCallback = function (webResponse) {
+	var _savePharmacyAccountSettingCallback = function (webResponse) {
+		_resetPasswordFields();
+		KTUtil.scrollTop();
+        WebApp.alertSuccess(webResponse.message);
+	};
+
+	var _saveDistributorMyProfile = function () {
+		let body = {
+			entityDocument: _entityDocument,
+		};
+
+		let mapKeyElement = {
+			userId: 'input',
+			entityName: 'input',
+			tradeLicenseNumber: 'input',
+			country: 'select',
+			city: 'select',
+			address: 'textarea'
+		};
+
+		Object.keys(mapKeyElement).forEach((key) => {
+			body[key] = $('#myProfileForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+		});
+
+		WebApp.post('/web/distributor/profile/myProfile', body, _saveDistributorMyProfileCallback);
+	};
+
+	var _saveDistributorMyProfileCallback = function (webResponse) {
+		KTUtil.scrollTop();
+        WebApp.alertSuccess(webResponse.message);
+	};
+
+	var _saveDistributorAccountSetting = function () {
+		let body = {};
+
+		let mapKeyElement = {
+			userId: 'input',
+			oldPassword: 'input',
+			newPassword: 'input'
+		};
+
+		Object.keys(mapKeyElement).forEach((key) => {
+			body[key] = $('#accountSettingForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+		});
+		WebApp.post('/web/distributor/profile/accountSetting', body, _saveDistributorAccountSettingCallback);
+	};
+
+	var _saveDistributorAccountSettingCallback = function (webResponse) {
 		_resetPasswordFields();
 		KTUtil.scrollTop();
         WebApp.alertSuccess(webResponse.message);
@@ -378,11 +484,17 @@ var Profile = (function () {
 		handleMenuChange: function (menuName) {
 			_handleMenuChange(menuName);
 		},
-		saveMyProfile: function () {
-			_saveMyProfile();
+		savePharmacyMyProfile: function () {
+			_save('myProfile', _savePharmacyMyProfile);
 		},
-		saveAccountSetting: function () {
-			_saveAccountSetting();
-		}
+		savePharmacyAccountSetting: function () {
+			_save('accountSetting', _savePharmacyAccountSetting);
+		},
+		saveDistributorMyProfile: function () {
+			_save('myProfile', _saveDistributorMyProfile);
+		},
+		saveDistributorAccountSetting: function () {
+			_save('accountSetting', _saveDistributorAccountSetting);
+		},
 	};
 })();
