@@ -292,6 +292,9 @@ return array(
     'vModule_profile_accountSettingTitle' => 'إعدادات الحساب',
     'vModule_profile_accountSettingSubtitle' => 'سيتم عرض هذه المعلومات علنًا في ملفك الشخصي',
     'vModule_profile_accountSettingSaved' => 'تم حفظ إعداد الحساب بنجاح',
+    'vModule_profile_paymentSettingButton' => 'إعداد الدفع',
+    'vModule_profile_paymentSettingTitle' => 'إعداد الدفع',
+    'vModule_profile_paymentSettingSaved' => 'تم حفظ إعداد الدفع بنجاح',
     'vModule_profile_pharmacyName' => 'اسم الصيدلية',
     'vModule_profile_tradeLicenseNumber' => 'رقم الرخصة التجارية',
     'vModule_profile_country' => 'بلد',
@@ -311,4 +314,5 @@ return array(
     'vModule_profile_distributorName' => 'اسم الموزع',
     'vModule_profile_distributorTradeLicenseDocument' => 'وثيقة الرخصة التجارية للموزع',
     'vModule_profile_distributorMobile' => 'رقم الموزع',
+    'vModule_profile_paymentOptionTitle' => 'اختر خيار الدفع',
 );

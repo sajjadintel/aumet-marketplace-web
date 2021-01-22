@@ -23,6 +23,12 @@ class ProfileController extends Controller {
                 $dbCountry->name = "name_" . $this->objUser->language;
                 $arrCountry = $dbCountry->findAll();
                 $this->f3->set('arrCountry', $arrCountry);
+                
+                // Get all payment methods
+                $dbPaymentMethod = new BaseModel($this->db, "paymentMethod");
+                $dbPaymentMethod->name = "name_" . $this->objUser->language;
+                $arrPaymentMethod = $dbPaymentMethod->findAll();
+                $this->f3->set('arrPaymentMethod', $arrPaymentMethod);
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_profile');
@@ -257,6 +263,31 @@ class ProfileController extends Controller {
                 $this->webResponse->message = $this->f3->get("vModule_profile_accountSettingSaved");
                 echo $this->webResponse->jsonResponse();
             }
+        }
+    }
+
+    function postDistributorProfilePaymentSetting()
+    {
+        $userId = $this->f3->get("POST.userId");
+        $paymentMethodId = $this->f3->get("POST.paymentMethodId");
+        
+        // Check if user exists
+        $dbUser = new BaseModel($this->db, "vwEntityUserProfile");
+        $dbUser->getWhere("userId=$userId");
+        if ($dbUser->dry()) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = $this->f3->get("vModule_profile_userNotFound");
+            echo $this->webResponse->jsonResponse();
+        } else {
+            // Update entity
+            $dbEntity = new BaseModel($this->db, "entity");
+            $dbEntity->getByField("id", $dbUser->entityId);
+            $dbEntity->paymentMethodId = $paymentMethodId;
+            $dbEntity->update();
+
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            $this->webResponse->message = $this->f3->get("vModule_profile_paymentSettingSaved");
+            echo $this->webResponse->jsonResponse();
         }
     }
 }

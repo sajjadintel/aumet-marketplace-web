@@ -13,7 +13,8 @@ var Profile = (function () {
 		],
 		distributor: [
 			"myProfile",
-			"accountSetting"
+			"accountSetting",
+			"paymentSetting"
 		]
 	};
 	var _mapEntityTypeMenuValidatorFields = {
@@ -160,6 +161,7 @@ var Profile = (function () {
 
 		_initializeValidators();
 		_initializePasswordFields();
+		_initializePaymentMethodCheckboxes();
 
 		_handleMenuChange('myProfile');
     }
@@ -334,6 +336,19 @@ var Profile = (function () {
 		});
 	}
 
+	var _initializePaymentMethodCheckboxes = function () {
+		$("#paymentSettingForm input[name=paymentMethodCheckbox]").on('click', function() {
+			var currentCheckbox = $(this);
+			if(currentCheckbox.is(":checked")) {
+			  	var allCheckbox = $("#paymentSettingForm input[name=paymentMethodCheckbox]");
+				allCheckbox.prop("checked", false);
+				currentCheckbox.prop("checked", true);
+			} else {
+				currentCheckbox.prop("checked", false);
+			}
+		});
+	}
+
 	var _resetPasswordFields = function () {
 		$("#accountSettingForm input[name=oldPassword]").val('');
 		$("#accountSettingForm input[name=newPassword]").val('');
@@ -363,23 +378,28 @@ var Profile = (function () {
 	}
 
 	var _save = function (menu, saveFunction) {
-		_allValidators[menu].validate().then(function (status) {
-			if (status == 'Valid') {
-				saveFunction();
-			} else {
-				Swal.fire({
-					text: WebAppLocals.getMessage('validationError'),
-					icon: 'error',
-					buttonsStyling: false,
-					confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
-					customClass: {
-						confirmButton: 'btn font-weight-bold btn-light',
-					},
-				}).then(function () {
-					KTUtil.scrollTop();
-				});
-			}
-		})
+		var validator = _allValidators[menu];
+		if(validator) {
+			validator.validate().then(function (status) {
+				if (status == 'Valid') {
+					saveFunction();
+				} else {
+					Swal.fire({
+						text: WebAppLocals.getMessage('validationError'),
+						icon: 'error',
+						buttonsStyling: false,
+						confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+						customClass: {
+							confirmButton: 'btn font-weight-bold btn-light',
+						},
+					}).then(function () {
+						KTUtil.scrollTop();
+					});
+				}
+			})
+		} else {
+			saveFunction();
+		}
 	};
 
 	var _savePharmacyMyProfile = function () {
@@ -476,6 +496,34 @@ var Profile = (function () {
         WebApp.alertSuccess(webResponse.message);
 	};
 
+	var _saveDistributorPaymentSetting = function () {
+		var paymentMethodId = null;
+		$("#paymentSettingForm input[name=paymentMethodCheckbox]").each(function(index, element) {
+			if ($(element).is(":checked")) {
+				paymentMethodId = $(element).val();
+			}
+		});
+
+		let body = {
+			paymentMethodId
+		};
+
+		let mapKeyElement = {
+			userId: 'input',
+		};
+
+		Object.keys(mapKeyElement).forEach((key) => {
+			body[key] = $('#paymentSettingForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+		});
+		WebApp.post('/web/distributor/profile/paymentSetting', body, _saveDistributorPaymentSettingCallback);
+	};
+
+	var _saveDistributorPaymentSettingCallback = function (webResponse) {
+		_resetPasswordFields();
+		KTUtil.scrollTop();
+        WebApp.alertSuccess(webResponse.message);
+	};
+
 	// Public Functions
 	return {
         init: function () {
@@ -495,6 +543,9 @@ var Profile = (function () {
 		},
 		saveDistributorAccountSetting: function () {
 			_save('accountSetting', _saveDistributorAccountSetting);
+		},
+		saveDistributorPaymentSetting: function () {
+			_save('paymentSetting', _saveDistributorPaymentSetting);
 		},
 	};
 })();
