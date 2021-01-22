@@ -284,8 +284,6 @@ function compress_htmlcode($codedata)
                             '</a>';
 
                             
-                        console.log("row");
-                        console.log(row);
                         var btnChangeCustomerGroup =
                             '<a class="navi-link" href="javascript:;" onclick=\'DistributorCustomersDataTable.customerEditGroupModal(true, ' + row.entityBuyerId + ',' + row.entitySellerId + ')\' \
                                 class="btn btn-sm btn-primary btn-hover-primary  mr-2" navi-link title="Change Customer Group">\
@@ -361,6 +359,15 @@ function compress_htmlcode($codedata)
                 },
                 {
                     targets: 12,
+                    title: WebAppLocals.getMessage('orderShippedQuantity'),
+                    data: 'shippedQuantity',
+                    visible: false,
+                    render: function (data, type, row, meta) {
+                        return row.shippedQuantity;
+                    },
+                },
+                {
+                    targets: 13,
                     title: WebAppLocals.getMessage('quantity'),
                     data: 'quantity',
                     visible: false,
@@ -369,7 +376,7 @@ function compress_htmlcode($codedata)
                     },
                 },
                 {
-                    targets: 13,
+                    targets: 14,
                     title: WebAppLocals.getMessage('tax'),
                     data: 'tax',
                     visible: false,
@@ -378,7 +385,7 @@ function compress_htmlcode($codedata)
                     },
                 },
                 {
-                    targets: 14,
+                    targets: 15,
                     title: WebAppLocals.getMessage('orderTotalWithVAT'),
                     data: 'quantity',
                     visible: false,

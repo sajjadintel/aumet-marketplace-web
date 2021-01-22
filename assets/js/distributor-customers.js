@@ -31,24 +31,12 @@ var DistributorCustomersDataTable = (function () {
                     }
                 };
             },
-            ajax: {
-                url: function() {
-                    return '/web/customer/group/list/' + webResponse.data.customer.entitySellerId
-                },
-                dataType: 'json',
-                processResults: function(response) {
-                    return {
-                        results: response.data.results,
-                        pagination: {
-                            more: response.data.pagination
-                        }
-                    }
-                }
-            },
             allowClear: true
         });
+        webResponse.data.arrCustomerGroup.forEach((customerGroup) => {
+            $('#editGroupCustomerGroup').append(new Option(customerGroup.name, customerGroup.id)).trigger('change');
+        })
         if(webResponse.data.customer.customerGroupId) {
-            $('#editGroupCustomerGroup').append(new Option(webResponse.data.customer['customerGroupName_' + docLang], webResponse.data.customer.customerGroupId));
             $('#editGroupCustomerGroup').val(webResponse.data.customer.customerGroupId);
         }
 

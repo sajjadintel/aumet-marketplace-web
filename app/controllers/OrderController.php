@@ -304,6 +304,11 @@ class OrderController extends Controller {
             $dbOrderDetail->productName = "productName" . ucfirst($this->objUser->language);
             $arrOrderDetail = $dbOrderDetail->findWhere("id = '{$order['id']}'");
 
+            if(sizeof($arrOrderDetail)==0){
+                $order['isVisible'] = true;
+                $ordersWithOrderDetail[] = $order;
+                continue;
+            }
             for ($i = 0; $i < count($arrOrderDetail); $i++) {
                 $orderDetail = array_merge($order, $arrOrderDetail[$i]);
                 $orderDetail['isVisible'] = $i === 0;
@@ -400,6 +405,11 @@ class OrderController extends Controller {
             $dbOrderDetail->productName = "productName" . ucfirst($this->objUser->language);
             $arrOrderDetail = $dbOrderDetail->findWhere("id = '{$order['id']}'");
 
+            if(sizeof($arrOrderDetail)==0){
+                $order['isVisible'] = true;
+                $ordersWithOrderDetail[] = $order;
+                continue;
+            }
             for ($i = 0; $i < count($arrOrderDetail); $i++) {
                 $orderDetail = array_merge($order, $arrOrderDetail[$i]);
                 $orderDetail['isVisible'] = $i === 0;
@@ -506,6 +516,9 @@ class OrderController extends Controller {
         foreach ($editQuantityProducts as $editQuantityProduct) {
             $orderDetail = $this->getProductFromArrayById($editQuantityProduct['productCode'], $arrOrderDetail);
 
+            if ($orderDetail['shippedQuantity'] == $editQuantityProduct['shippedQuantity']) {
+                continue;
+            }
             // calculate order entity quantity free based on new quantity and free ratio
             $quantityFree = floor($editQuantityProduct['shippedQuantity'] * $orderDetail['freeRatio']);
             $quantity = $editQuantityProduct['shippedQuantity'] - $quantityFree;

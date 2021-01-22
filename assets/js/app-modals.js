@@ -26,11 +26,19 @@ var WebAppModals = (function () {
         },
         {
             targets: 3,
+            title: WebAppLocals.getMessage('orderShippedQuantity'),
+            data: 'shippedQuantity',
+            render: function (data, type, row, meta) {
+                return row.shippedQuantity;
+            },
+        },
+        {
+            targets: 4,
             title: WebAppLocals.getMessage('quantity'),
             data: 'quantity',
         },
         {
-            targets: 4,
+            targets: 5,
             title: WebAppLocals.getMessage('unitPrice'),
             data: 'unitPrice',
             render: function (data, type, row, meta) {
@@ -39,7 +47,7 @@ var WebAppModals = (function () {
             },
         },
         {
-            targets: 5,
+            targets: 6,
             title: WebAppLocals.getMessage('tax'),
             data: 'tax',
             render: function (data, type, row, meta) {
@@ -48,7 +56,7 @@ var WebAppModals = (function () {
             },
         },
         {
-            targets: 6,
+            targets: 7,
             title: WebAppLocals.getMessage('orderTotal'),
             data: 'unitPrice',
             render: function (data, type, row, meta) {
