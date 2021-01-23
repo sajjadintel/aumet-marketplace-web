@@ -37,7 +37,9 @@ var DistributorCustomersDataTable = (function () {
             $('#editGroupCustomerGroup').append(new Option(customerGroup.name, customerGroup.id)).trigger('change');
         })
         if(webResponse.data.customer.customerGroupId) {
-            $('#editGroupCustomerGroup').val(webResponse.data.customer.customerGroupId);
+            $('#editGroupCustomerGroup').val(webResponse.data.customer.customerGroupId).trigger('change');
+        } else {
+            $('#editGroupCustomerGroup').val('').trigger('change');
         }
 
 		$('#editGroupModal').appendTo('body').modal('show');

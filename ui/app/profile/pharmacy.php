@@ -58,25 +58,13 @@
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
                                 <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_country; ?></label>
-                                <select name="country" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6">
-                                    <option value=""><?php echo $vModule_profile_country; ?></option>
-                                    <?php foreach($arrCountry as $country) : ?>
-                                        <?php if($country['id'] == $user->entityCountryId) : ?>
-                                            <option value="<?php echo $country['id']; ?>" selected><?php echo $country['name']; ?></option>
-                                        <?php else: ?>
-                                            <option value="<?php echo $country['id']; ?>"><?php echo $country['name']; ?></option>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                </select>
+                                <input disabled type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="country" value="<?php echo $user->entityCountryName; ?>" />
                             </div>
                             <!--end::Form Group-->
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
                                 <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_city; ?></label>
-                                <select name="city" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6">
-                                    <option value=""><?php echo $vModule_profile_city; ?></option>
-                                    <option value="<?php echo $user->entityBranchCityId; ?>" selected><?php echo $user->entityBranchCityName; ?></option>
-                                </select>
+                                <input disabled type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="city" value="<?php echo $user->entityBranchCityName; ?>" />
                             </div>
                             <!--end::Form Group-->
                             <!--begin::Form Group-->
@@ -175,7 +163,7 @@
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
                                 <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_currentPassword ?></label>
-                                <input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="oldPassword" />
+                                <input type="password" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="oldPassword" />
                             </div>
                             <!--end::Form Group-->
                         </div>
@@ -183,7 +171,7 @@
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
                                 <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_newPassword ?></label>
-                                <input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="newPassword" />
+                                <input type="password" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="newPassword" />
                             </div>
                             <!--end::Form Group-->
                         </div>
@@ -191,7 +179,7 @@
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
                                 <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_confirmNewPassword ?></label>
-                                <input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="newPasswordConfirmation" />
+                                <input type="password" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="newPasswordConfirmation" />
                             </div>
                             <!--end::Form Group-->
                         </div>

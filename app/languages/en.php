@@ -246,6 +246,7 @@ return array(
 
     'vButton_update' => 'Update',
     'vButton_add' => 'Add',
+    'vButton_delete' => 'Delete',
     'vButton_bulk_add' => 'Bulk Add',
     'vButton_bulk_add_image' => 'Bulk Add Images',
     'vButton_confirm' => 'Confirm',
@@ -317,5 +318,10 @@ return array(
     'vModule_profile_distributorName' => 'Distributor Name',
     'vModule_profile_distributorTradeLicenseDocument' => 'Distributor Trade License Document',
     'vModule_profile_distributorMobile' => 'Distributor Number',
-    'vModule_profile_paymentOptionTitle' => 'Choose A Payment Option',
+    'vModule_profile_paymentOptionTitle' => 'CHOOSE YOUR PAYMENT OPTIONS',
+    'vModule_profile_minimumValueOrderTitle' => 'MINIMUM VALUE ORDER',
+    'vModule_profile_minimumValueOrder' => 'Minimum Value Order',
+    'vModule_profile_minimumValueOrderCityError' => 'Some cities are selected more than once',
+    'vModule_profile_paymentMethodRequired' => 'Payment method required',
+    'vModule_profile_missingFields' => 'Some mandatory fields are missing',
 );
