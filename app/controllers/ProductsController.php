@@ -16,7 +16,7 @@ class ProductsController extends Controller {
             if ($entityId == 0)
                 $query = "productId=$productId";
             else
-                $query = "entityId=$entityId and productId=$productId";
+                $query = "entityId=$entityId and id=$productId";
 
             $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
             $dbEntityProduct->productName = "productName_" . $this->objUser->language;
@@ -47,7 +47,7 @@ class ProductsController extends Controller {
                 $found = true;
             }
 
-            if (($this->objUser->menuId == Constants::MENU_PHARMACY && $dbEntityProduct['statusId'] === 0) || (!$found && $this->objUser->menuId == Constants::MENU_DISTRIBUTOR)) {
+            if ($dbEntityProduct['statusId'] === 0 || (!$found && $this->objUser->menuId == Constants::MENU_DISTRIBUTOR)) {
                 $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
                 echo $this->webResponse->jsonResponse();
                 return;
