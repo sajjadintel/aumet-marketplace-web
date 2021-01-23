@@ -557,7 +557,7 @@ class OrderController extends Controller {
         $dbRelation->updatedAt = date('Y-m-d H:i:s');
         $dbRelation->update();
 
-        NotificationHelper::orderModifyShippedQuantityNotification($this->f3, $this->db, $dbOrder->id, $modifiedOrderDetailIds, $dbOrder->entitySellerId);
+        NotificationHelper::orderModifyShippedQuantityNotification($this->f3, $this->db, $dbOrder->id, $modifiedOrderDetailIds, $dbOrder->entityBuyerId);
 
         echo $this->webResponse->jsonResponseV2(Constants::STATUS_SUCCESS_SHOW_DIALOG, "Success", $this->f3->get('responseSuccess_modifyQuantity'));
     }
@@ -649,7 +649,7 @@ class OrderController extends Controller {
 
             while (!$dbOrderItems->dry()) {
                 $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
-                $dbProductSummary->getWhere("id = $dbOrderItems->entityProductId");
+                $dbProductSummary->getWhere("id = $dbProduct->productId");
 
                 if ($dbProduct->dry() || $dbProduct->stockStatusId != 1 || $dbProduct->stock < $dbOrderItems->quantity) {
                     $productMsg = $dbProductSummary->name . " - requested " . $dbOrderItems->quantity . ", only " . $dbProduct->stock . " available";
