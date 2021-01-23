@@ -15,7 +15,7 @@
         <div class="row">
             <!--begin::Left Side-->
             <div class="col-3">
-                <div class="card card-custom card-body card-stretch gutter-b px-0 pt-0" style="height: 70%;">
+                <div class="card card-custom card-body card-stretch gutter-b px-0 pt-0" style="height: 550px;">
                     <div style="background-color: #D8D8D8; height: 120px;"></div>   
                     <div class="symbol symbol-150 mt-n30" style="display: flex; justify-content: center;">
                         <img src="/theme/assets/media/users/300_21.jpg" style="border: 4px solid #FFF;"/>

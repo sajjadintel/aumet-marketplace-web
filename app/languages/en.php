@@ -295,6 +295,9 @@ return array(
     'vModule_profile_accountSettingTitle' => 'Account Setting',
     'vModule_profile_accountSettingSubtitle' => 'This information will be displayed publicly on your profile',
     'vModule_profile_accountSettingSaved' => 'Account Setting saved successfully',
+    'vModule_profile_paymentSettingButton' => 'Payment Setting',
+    'vModule_profile_paymentSettingTitle' => 'Payment Setting',
+    'vModule_profile_paymentSettingSaved' => 'Payment Setting saved successfully',
     'vModule_profile_pharmacyName' => 'Pharmacy Name',
     'vModule_profile_tradeLicenseNumber' => 'Trade License Number',
     'vModule_profile_country' => 'Country',
@@ -314,4 +317,5 @@ return array(
     'vModule_profile_distributorName' => 'Distributor Name',
     'vModule_profile_distributorTradeLicenseDocument' => 'Distributor Trade License Document',
     'vModule_profile_distributorMobile' => 'Distributor Number',
+    'vModule_profile_paymentOptionTitle' => 'Choose A Payment Option',
 );

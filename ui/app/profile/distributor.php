@@ -15,7 +15,7 @@
         <div class="row">
             <!--begin::Left Side-->
             <div class="col-3">
-                <div class="card card-custom card-body card-stretch gutter-b px-0 pt-0" style="height: 70%;">
+                <div class="card card-custom card-body card-stretch gutter-b px-0 pt-0" style="height: 550px;">
                     <div style="background-color: #D8D8D8; height: 120px;"></div>   
                     <div class="symbol symbol-150 mt-n30" style="display: flex; justify-content: center;">
                         <img src="/theme/assets/media/users/300_21.jpg" style="border: 4px solid #FFF;"/>
@@ -31,6 +31,9 @@
                     </div>
                     <div id="accountSettingButton" class="py-3 pl-20" onclick="Profile.handleMenuChange('accountSetting')">
                         <h4><?php echo $vModule_profile_accountSettingButton; ?></h4>
+                    </div>
+                    <div id="paymentSettingButton" class="py-3 pl-20" onclick="Profile.handleMenuChange('paymentSetting')">
+                        <h4><?php echo $vModule_profile_paymentSettingButton; ?></h4>
                     </div>
                 </div>
             </div>
@@ -198,6 +201,38 @@
                         <!--begin::Save Button-->
                         <div>        
                             <a class="btn btn-primary font-weight-bolder font-size-h5 pl-12 pr-12 py-4 my-3 mr-3" onclick="Profile.saveDistributorAccountSetting();">
+                                <?php echo $vModule_profile_saveButton; ?>
+                            </a>
+                        </div>
+                        <!--end::Save Button-->
+                    </form>
+                </div>
+                <div id="paymentSettingSection" style="display: none;">
+                    <div class="card-label font-weight-bolder font-size-h1"><?php echo $vModule_profile_paymentSettingTitle ?></div>
+                    <form class="form pt-5" novalidate="novalidate" id="paymentSettingForm">
+                        <input type="hidden" name="userId" value="<?php echo $user->userId; ?>"/>
+                        <div class="row">
+                            <div class="col-12 form-group">
+                                <p class="card-label font-size-h4"><?php echo $vModule_profile_paymentOptionTitle ?></p>
+                                <div class="row checkbox-inline my-5" style="flex-wrap: unset;">
+                                    <?php foreach($arrPaymentMethod as $paymentMethod) : ?>
+                                        <label class="col-3 checkbox checkbox-outline checkbox-success">
+                                            <?php if($user->entityPaymentMethodId == $paymentMethod['id']): ?>
+                                                <input type="checkbox" name="paymentMethodCheckbox" value="<?php echo $paymentMethod['id']; ?>" checked/>
+                                            <?php else: ?>
+                                                <input type="checkbox" name="paymentMethodCheckbox" value="<?php echo $paymentMethod['id']; ?>"/>
+                                            <?php endif; ?>
+                                            <span></span>
+                                            <?php echo $paymentMethod['name']; ?>
+                                        </label>
+                                    <?php endforeach; ?>
+                                </div>
+                                <div style="border-bottom: 1px solid #333333;"></div>
+                            </div>
+                        </div>
+                        <!--begin::Save Button-->
+                        <div>        
+                            <a class="btn btn-primary font-weight-bolder font-size-h5 pl-12 pr-12 py-4 my-3 mr-3" onclick="Profile.saveDistributorPaymentSetting();">
                                 <?php echo $vModule_profile_saveButton; ?>
                             </a>
                         </div>

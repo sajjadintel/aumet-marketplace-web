@@ -169,3 +169,4 @@ $f3->route('POST /web/pharmacy/profile/myProfile', 'ProfileController->postPharm
 $f3->route('POST /web/pharmacy/profile/accountSetting', 'ProfileController->postPharmacyProfileAccountSetting');
 $f3->route('POST /web/distributor/profile/myProfile', 'ProfileController->postDistributorProfileMyProfile');
 $f3->route('POST /web/distributor/profile/accountSetting', 'ProfileController->postDistributorProfileAccountSetting');
+$f3->route('POST /web/distributor/profile/paymentSetting', 'ProfileController->postDistributorProfilePaymentSetting');
