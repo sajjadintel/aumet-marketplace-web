@@ -649,7 +649,7 @@ class OrderController extends Controller {
 
             while (!$dbOrderItems->dry()) {
                 $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
-                $dbProductSummary->getWhere("id = $dbOrderItems->entityProductId");
+                $dbProductSummary->getWhere("id = $dbProduct->productId");
 
                 if ($dbProduct->dry() || $dbProduct->stockStatusId != 1 || $dbProduct->stock < $dbOrderItems->quantity) {
                     $productMsg = $dbProductSummary->name . " - requested " . $dbOrderItems->quantity . ", only " . $dbProduct->stock . " available";
