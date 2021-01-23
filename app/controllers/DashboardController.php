@@ -8,7 +8,7 @@ class DashboardController extends Controller {
             $this->f3->set("pageURL", "/web");
             echo View::instance()->render('app/layout/layout.php');
         } else {
-            if ($this->objUser->menuId == 1) {
+            if ($this->objUser->menuId == Constants::MENU_DISTRIBUTOR) {
                 $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
                 $query = "entitySellerId IN ($arrEntityId)";
 
@@ -36,7 +36,7 @@ class DashboardController extends Controller {
                 $this->f3->set('dashboard_new_customerYesterday', is_null($dbDataNewCustomerYesterday['newCustomerCount']) ? 0 : $dbDataNewCustomerYesterday['newCustomerCount']);
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-                $this->webResponse->title = $this->f3->get('vTitle_dashboard');
+                $this->webResponse->title = $this->f3->get('vTitle_homepage');
                 $this->webResponse->data = View::instance()->render('app/dashboard/seller.php');
                 echo $this->webResponse->jsonResponse();
             } else {
@@ -165,7 +165,7 @@ class DashboardController extends Controller {
                 
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-                $this->webResponse->title = $this->f3->get('vTitle_dashboard');
+                $this->webResponse->title = $this->f3->get('vTitle_homepage');
                 $this->webResponse->data = View::instance()->render('app/dashboard/buyerHomepage.php');
                 echo $this->webResponse->jsonResponse();
             }

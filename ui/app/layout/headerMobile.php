@@ -5,10 +5,12 @@
     </a>
 
 
-    <div class="search-wrapper">
-        <i id="searchBarInputMobileIcon" class="fa fa-search  search-icon"></i>
-        <input class="form-control" id="searchBarInputMobile" type="text" name="searchBarInputMobile" autocomplete="off"/>
-    </div>
+    <?php if (Helper::isPharmacy($_SESSION['objUser']->roleId)) { ?>
+        <div class="search-wrapper">
+            <i id="searchBarInputMobileIcon" class="fa fa-search  search-icon"></i>
+            <input class="form-control" id="searchBarInputMobile" type="text" name="searchBarInputMobile" autocomplete="off" />
+        </div>
+    <?php } ?>
 
 
     <!--end::Logo-->

@@ -245,6 +245,11 @@ var WebAppLocals = (function () {
 			ar: 'مجموع',
 			fr: '',
 		},
+		orderShippedQuantity: {
+			en: 'Shipped Quantity',
+			ar: 'Shipped Quantity',
+			fr: '',
+		},
 		branch: {
 			en: 'Branch',
 			ar: 'فرع',
@@ -483,6 +488,16 @@ var WebAppLocals = (function () {
 		required: {
 			en: 'Required',
 			ar: 'مطلوب',
+			fr: ''
+		},
+		invalid: {
+			en: 'Invalid',
+			ar: 'غير صالحة',
+			fr: ''
+		},
+		wrongPasswordConfirmation: {
+			en: 'Password Confirmation doesn\'t match',
+			ar: 'تأكيد كلمة المرور غير مطابق',
 			fr: ''
 		},
 		validationError: {

@@ -233,10 +233,12 @@ function compress_htmlcode($codedata)
                         <!--end::Header Menu Wrapper-->
 
 
-                        <div class="search-wrapper search-wrapper-desktop">
-                            <i id="searchBarInputDesktopIcon" class="fa fa-search  search-icon"></i>
-                            <input class="form-control" id="searchBarInputDesktop" type="text" name="searchBarInputDesktop" autocomplete="off" />
-                        </div>
+                        <?php if (Helper::isPharmacy($_SESSION['objUser']->roleId)) { ?>
+                            <div class="search-wrapper search-wrapper-desktop">
+                                <i id="searchBarInputDesktopIcon" class="fa fa-search  search-icon"></i>
+                                <input class="form-control" id="searchBarInputDesktop" type="text" name="searchBarInputDesktop" autocomplete="off" />
+                            </div>
+                        <?php } ?>
 
                         <!--begin::Topbar-->
                         <?php include_once 'headerTopbar.php'; ?>
@@ -309,6 +311,7 @@ function compress_htmlcode($codedata)
     <script type="text/javascript" src="/assets/js/products-search.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/distributor-products.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/distributor-customers.js<?php echo $platformVersion ?>"></script>
+    <script type="text/javascript" src="/assets/js/profile.js<?php echo $platformVersion ?>"></script>
 
 
     <script type="text/javascript" src="/assets/js/treeview.js<?php echo $platformVersion ?>"></script>

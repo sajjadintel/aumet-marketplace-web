@@ -397,6 +397,13 @@ var PharmacyOrdersDataTable = (function () {
                 autoHide: false,
             },
             {
+                title: WebAppLocals.getMessage('orderShippedQuantity'),
+                data: 'shippedQuantity',
+                render: function (data, type, row, meta) {
+                    return row.shippedQuantity;
+                },
+            },
+            {
                 field: 'quantity',
                 title: WebAppLocals.getMessage('quantity'),
                 sortable: false,

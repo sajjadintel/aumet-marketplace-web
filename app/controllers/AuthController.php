@@ -309,7 +309,9 @@ class AuthController extends Controller
             $currencyId = $currency['id'];
 
             // Add user
-            $dbUser->uid = $uid;
+            if ($uid != NULL && trim($uid) != '') {
+                $dbUser->uid = $uid;
+            }
             $dbUser->email = $email;
             $dbUser->password = password_hash($password, PASSWORD_DEFAULT);
             $dbUser->statusId = Constants::USER_STATUS_WAITING_VERIFICATION;
@@ -710,7 +712,7 @@ class AuthController extends Controller
         }
     }
 
-    function getSignUpCitiesByCountry()
+    function getCityByCountryList()
     {
         $countryId = $this->f3->get("PARAMS.countryId");
 
