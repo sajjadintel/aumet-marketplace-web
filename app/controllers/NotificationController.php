@@ -17,7 +17,7 @@ class NotificationController extends Controller {
         $supportLog->entityId = $this->isAuth ? Helper::idListFromArray($this->f3->get('SESSION.arrEntities'))[0] : 0;
         $supportLog->userId = $this->isAuth ? $this->f3->get('SESSION.userId') : 0;
         $supportLog->supportReasonId = $supportReasonId;
-        $supportLog->email = $email;
+        $supportLog->email = $this->isAuth ? $this->f3->get('SESSION.objUser')->email : $email;
         $supportLog->phone = $phone;
         $supportLog->typeId = 1;
         $supportLog->add();
