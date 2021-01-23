@@ -99,12 +99,12 @@ class NotificationHelper {
      * Does something interesting
      *
      * @param \Base $f3 f3 instance
-     * @param BaseModel $dbConnection db connection instance
+     * @param \Db\SQL $dbConnection db connection instance
      * @param int $orderId order id
      * @param int[] $modifiedOrderDetailIds array of modified order detail ids
-     * @param int $entitySellerId entitySellerId
+     * @param int $entityBuyerId entitySellerId
      */
-    public static function orderModifyShippedQuantityNotification($f3, $dbConnection, $orderId, $modifiedOrderDetailIds, $entitySellerId)
+    public static function orderModifyShippedQuantityNotification($f3, $dbConnection, $orderId, $modifiedOrderDetailIds, $entityBuyerId)
     {
         $dbProduct = new BaseModel($dbConnection, "vwOrderDetail");
         $dbProduct->name = "productNameEn";
@@ -120,7 +120,7 @@ class NotificationHelper {
 
 
         $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
-        $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $entitySellerId);
+        $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $entityBuyerId);
         $entityName = $arrEntityUserProfile[0]->entityName_en;
         $f3->set('entityName', $entityName);
 
