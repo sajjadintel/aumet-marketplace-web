@@ -661,6 +661,12 @@ function compress_htmlcode($codedata)
             var distributorId = <?php echo isset($_GET['distributorId']) ? "'" . $_GET['distributorId'] . "'" : 'null';?>;
             var scientificNameId = <?php echo isset($_GET['scientificNameId']) ? "'" . $_GET['scientificNameId'] . "'" : 'null';?>;
 
+            var dbAdditionalOptions = {
+                datatableOptions: {
+                    buttons: [],
+                }
+            };
+
             function updateDatatable() {
                 if (query != null)
                     searchQuery.query = query;
@@ -668,7 +674,7 @@ function compress_htmlcode($codedata)
                     searchQuery.entityId.push(distributorId);
                 if (scientificNameId != null && !searchQuery.scientificNameId.includes(scientificNameId))
                     searchQuery.scientificNameId.push(scientificNameId);
-                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
+                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
 
             }
 
