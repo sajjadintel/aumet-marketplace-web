@@ -103,7 +103,7 @@ function compress_htmlcode($codedata)
 
             var columnDefs = [{
                 className: "export_datatable",
-                targets: [0, 1, 2, 3, 4]
+                targets: [0, 1, 2, 3, 4, 5]
             }, {
                 targets: 0,
                 title: WebAppLocals.getMessage('id'),
