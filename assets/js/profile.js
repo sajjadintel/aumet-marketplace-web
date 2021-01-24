@@ -27,27 +27,6 @@ var Profile = (function () {
 						}
 					},
 				},
-				tradeLicenseNumber: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
-				},
-				country: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
-				},
-				city: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
-				},
 				address: {
 					validators: {
 						notEmpty: {
@@ -92,27 +71,6 @@ var Profile = (function () {
 						}
 					},
 				},
-				tradeLicenseNumber: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
-				},
-				country: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
-				},
-				city: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
-					},
-				},
 				address: {
 					validators: {
 						notEmpty: {
@@ -151,42 +109,21 @@ var Profile = (function () {
 	};
 
     var _init = function () {
-        if($('#myProfileForm select[name=country]').val()) {
-            _handleCountrySelectChange(true);
-        }
-        $('#myProfileForm select[name=country]').on('change', () => _handleCountrySelectChange(false));
-		
-		var initialFile = $('#myProfileForm input[name=entityBranchTradeLicenseUrl]').val();
+        var initialFile = $('#myProfileForm input[name=entityBranchTradeLicenseUrl]').val();
 		_initializeDropzone(initialFile);
 
 		_initializeValidators();
 		_initializePasswordFields();
-		_initializePaymentMethodCheckboxes();
+		
+		var entityType = $("#profileEntityType").val();
+		if(entityType === "distributor") {
+			_initializePaymentMethodCheckboxes();
+
+			var countryId = $("#paymentSettingSection input[name=countryId]").val();
+			WebApp.get('/web/city/list/' + countryId, _initializeMinimumValueOrderSection);
+		}
 
 		_handleMenuChange('myProfile');
-    }
-
-    var _handleCountrySelectChange = function (initial) {
-        var countryId = $('#myProfileForm select[name=country]').val();
-        var cityId = $('#myProfileForm select[name=city]').val();
-        if (countryId) {
-            WebApp.get('/web/city/list/' + countryId, function (webResponse) {
-                $('#myProfileForm select[name=city]')
-                    .empty()
-                    .append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
-                var allCities = webResponse.data;
-                allCities.forEach((city) => {
-                    var selected = initial && city.id == cityId;
-                    $('#myProfileForm select[name=city]').append(new Option(city.name, city.id, false, selected));
-                });
-                $('#myProfileForm select[name=city]').prop('disabled', false);
-            });
-        } else {
-            $('#myProfileForm select[name=city]').prop('disabled', true);
-            $('#myProfileForm select[name=city]')
-                .empty()
-                .append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
-        }
     }
 
     var _initializeDropzone = function (initialFile) {
@@ -337,16 +274,102 @@ var Profile = (function () {
 	}
 
 	var _initializePaymentMethodCheckboxes = function () {
+		$("#paymentMethodContainer").after('<div id="paymentMethodErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('required') + '</div></div>');
 		$("#paymentSettingForm input[name=paymentMethodCheckbox]").on('click', function() {
-			var currentCheckbox = $(this);
-			if(currentCheckbox.is(":checked")) {
-			  	var allCheckbox = $("#paymentSettingForm input[name=paymentMethodCheckbox]");
-				allCheckbox.prop("checked", false);
-				currentCheckbox.prop("checked", true);
+			var isChecked = false;
+			$("#paymentSettingForm input[name=paymentMethodCheckbox]").each(function(index, element) {
+				if ($(element).is(":checked")) {
+					isChecked = true;
+				}
+			});
+
+			if(isChecked) {
+				$("#paymentMethodErrorLabel").hide();
 			} else {
-				currentCheckbox.prop("checked", false);
+				$("#paymentMethodErrorLabel").show();
 			}
 		});
+	}
+
+	var _initializeMinimumValueOrderSection = function (webResponse) {
+		var repeaterElementTemplate;
+		$("#minimumValueOrderList > div").each(function(index, element) {
+			repeaterElementTemplate = $(element).clone();
+		});
+
+		var allCity = webResponse.data;
+		$('#minimumValueOrderRepeater').repeater({
+            initEmpty: true,
+            show: function() {
+				_initializeRepeaterElements(allCity);
+                $(this).slideDown();
+            },
+            hide: function(deleteElement) {
+				$(this).slideUp(deleteElement);
+            }
+		});
+
+		var allRepeaterDataStr = $("#minimumValueOrderList").attr("data-repeaterdata") || "[]";
+		var allRepeaterData = JSON.parse(allRepeaterDataStr);
+		allRepeaterData.forEach((repeaterData) => {
+			var repeaterRow = $(repeaterElementTemplate).clone();
+			$(repeaterRow).find("#minimumValueOrderId").val(repeaterData.entityMinimumValueOrderId);
+			$(repeaterRow).find("#minimumValueOrder").val(repeaterData.minimumValueOrder);
+			$(repeaterRow).find("#minimumValueOrderCityId").attr("data-values", repeaterData.allCity);
+			$("#minimumValueOrderList").append(repeaterRow);
+		})
+
+		_initializeRepeaterElements(allCity);
+	}
+
+	var _initializeRepeaterElements = function (allCity) {
+		$('.minimumValueOrderInput').each(function(index, element) {
+			var minimumValueOrderErrorLabelCount = $(element).parent().find('#minimumValueOrderErrorLabel').length;
+			if(minimumValueOrderErrorLabelCount === 0) {
+				$(element).parent().append('<div id="minimumValueOrderErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('required') + '</div></div>');
+			}
+		})
+			
+		$('.minimumValueOrderInput').on('change', function() {
+			var value = $(this).val();
+			if(value) {
+				$(this).parent().find('#minimumValueOrderErrorLabel').hide();
+				$(this).removeClass("is-invalid");
+			} else {
+				$(this).parent().find('#minimumValueOrderErrorLabel').show();
+				$(this).addClass("is-invalid");
+			}
+		})
+
+		$('.selectpicker').each(function(index, element) {
+			var allValues = $(element).attr("data-values") || [];
+			if(element.options.length === 0) {
+				allCity.forEach((city) => {
+					var selected = allValues.includes(city.id);
+					$(element).append(new Option(city.name, city.id, false, selected));
+				})
+				$(element).selectpicker();
+			}
+
+			var cityErrorLabelCount = $(element).parent().parent().find('#cityErrorLabel').length;
+			if(cityErrorLabelCount === 0) {
+				$(element).parent().parent().append('<div id="cityErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('required') + '</div></div>');
+			}
+		})
+			
+		$('.selectpicker').on('change', function() {
+			var allValues = $(this).val();
+			if(allValues.length > 0) {
+				$(this).parent().parent().find('#cityErrorLabel').hide();
+				$(this).parent().removeClass("is-invalid");
+				$(this).parent().css('border', '');
+			} else {
+				$(this).parent().parent().find('#cityErrorLabel').show();
+				$(this).parent().addClass("is-invalid");
+				$(this).parent().css('border', '1px solid #F64E60');
+			}
+		})
+
 	}
 
 	var _resetPasswordFields = function () {
@@ -411,8 +434,6 @@ var Profile = (function () {
 			userId: 'input',
 			entityName: 'input',
 			tradeLicenseNumber: 'input',
-			country: 'select',
-			city: 'select',
 			address: 'textarea'
 		};
 
@@ -458,8 +479,6 @@ var Profile = (function () {
 			userId: 'input',
 			entityName: 'input',
 			tradeLicenseNumber: 'input',
-			country: 'select',
-			city: 'select',
 			address: 'textarea'
 		};
 
@@ -497,29 +516,100 @@ var Profile = (function () {
 	};
 
 	var _saveDistributorPaymentSetting = function () {
-		var paymentMethodId = null;
+		var valid = true;
+		var errorMessage = "";
+		
+		var allPaymentMethodId = [];
 		$("#paymentSettingForm input[name=paymentMethodCheckbox]").each(function(index, element) {
 			if ($(element).is(":checked")) {
-				paymentMethodId = $(element).val();
+				allPaymentMethodId.push($(element).val());
 			}
 		});
+		
+		if(allPaymentMethodId.length === 0) {
+			valid = false;
+		}
+			
+		$('.minimumValueOrderInput').each(function(index, element) {
+			var value = $(element).val();
+			if(value) {
+				$(element).parent().find('#minimumValueOrderErrorLabel').hide();
+				$(element).removeClass("is-invalid");
+			} else {
+				$(element).parent().find('#minimumValueOrderErrorLabel').show();
+				$(element).addClass("is-invalid");
+				valid = false;
+			}
+		})
 
-		let body = {
-			paymentMethodId
-		};
+		var allCityId = [];
+		$('.selectpicker').each(function(index, element) {
+			var allValues = $(this).val();
+			allCityId.push(...allValues);
+			if(allValues.length > 0) {
+				$(element).parent().parent().find('#cityErrorLabel').hide();
+				$(element).parent().removeClass("is-invalid");
+				$(element).parent().css('border', '');
+			} else {
+				$(element).parent().parent().find('#cityErrorLabel').show();
+				$(element).parent().addClass("is-invalid");
+				$(element).parent().css('border', '1px solid #F64E60');
+				valid = false;
+			}
+		})
 
-		let mapKeyElement = {
-			userId: 'input',
-		};
+		var allCityIdUnique = allCityId.length === new Set(allCityId).size;
+		if(valid && !allCityIdUnique) {
+			var allCityNameDuplicates = [];
+			var allCityIdDuplicates = allCityId.filter((city, index, arr) => arr.indexOf(city) !== index);
+			$($('.selectpicker')[0]).find("option").each(function(index, element) {
+				if(allCityIdDuplicates.includes(element.value)) {
+					allCityNameDuplicates.push(element.text);
+				}
+			});
+			
+			valid = false;
+			errorMessage = WebAppLocals.getMessage("minimumValueOrderCityError") + ": " + allCityNameDuplicates.join(", "); 
+		}
 
-		Object.keys(mapKeyElement).forEach((key) => {
-			body[key] = $('#paymentSettingForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
-		});
-		WebApp.post('/web/distributor/profile/paymentSetting', body, _saveDistributorPaymentSettingCallback);
+
+		if (valid) {
+			var userId = $('#paymentSettingForm input[name=userId]').val();
+
+			var allEntityMinimumValueOrder = [];
+			$("#minimumValueOrderList > div").each(function(index, element) {
+				var minimumValueOrder = $(element).find("#minimumValueOrder").val();
+				var minimumValueOrderCityId = $(element).find("#minimumValueOrderCityId").val();
+				allEntityMinimumValueOrder.push({
+					minimumValueOrder,
+					minimumValueOrderCityId
+				})
+			});
+			
+			let body = {
+				userId,
+				allPaymentMethodId,
+				allEntityMinimumValueOrder
+			};
+			console.log("body");
+			console.log(body);
+			WebApp.post('/web/distributor/profile/paymentSetting', body, _saveDistributorPaymentSettingCallback)
+		} else {
+			Swal.fire({
+				text: errorMessage || WebAppLocals.getMessage('validationError'),
+				icon: 'error',
+				buttonsStyling: false,
+				confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+				customClass: {
+					confirmButton: 'btn font-weight-bold btn-light',
+				},
+			}).then(function () {
+				KTUtil.scrollTop();
+			});
+		}
 	};
 
 	var _saveDistributorPaymentSettingCallback = function (webResponse) {
-		_resetPasswordFields();
 		KTUtil.scrollTop();
         WebApp.alertSuccess(webResponse.message);
 	};
@@ -545,7 +635,7 @@ var Profile = (function () {
 			_save('accountSetting', _saveDistributorAccountSetting);
 		},
 		saveDistributorPaymentSetting: function () {
-			_save('paymentSetting', _saveDistributorPaymentSetting);
+			_saveDistributorPaymentSetting();
 		},
 	};
 })();

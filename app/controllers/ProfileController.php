@@ -17,18 +17,63 @@ class ProfileController extends Controller {
                 $dbUser->entityBranchAddress = "entityBranchAddress_" . $this->objUser->language;
                 $user = $dbUser->getWhere("userId=".$this->objUser->id)[0];
                 $this->f3->set('user', $user);
-
-                // Get all countries
-                $dbCountry = new BaseModel($this->db, "country");
-                $dbCountry->name = "name_" . $this->objUser->language;
-                $arrCountry = $dbCountry->findAll();
-                $this->f3->set('arrCountry', $arrCountry);
                 
                 // Get all payment methods
                 $dbPaymentMethod = new BaseModel($this->db, "paymentMethod");
                 $dbPaymentMethod->name = "name_" . $this->objUser->language;
                 $arrPaymentMethod = $dbPaymentMethod->findAll();
                 $this->f3->set('arrPaymentMethod', $arrPaymentMethod);
+
+                $entityId = $dbUser->entityId;
+
+                // Get all entity payment methods
+                $dbEntityPaymentMethod = new BaseModel($this->db, "entityPaymentMethod");
+                $arrEntityPaymentMethod = $dbEntityPaymentMethod->getWhere("entityId = $entityId");
+                $arrEntityPaymentMethodId = [];
+                foreach($arrEntityPaymentMethod as $entityPaymentMethod) {
+                    array_push($arrEntityPaymentMethodId, $entityPaymentMethod['paymentMethodId']);
+                }
+                $this->f3->set('arrEntityPaymentMethodId', $arrEntityPaymentMethodId);
+
+                // Get all entity minimum value orders
+                $dbEntityMinimumValueOrder = new BaseModel($this->db, "entityMinimumValueOrder");
+                $arrEntityMinimumValueOrder = $dbEntityMinimumValueOrder->getWhere("entityId = $entityId");
+                $arrEntityMinimumValueOrderId = [];
+                foreach($arrEntityMinimumValueOrder as $entityMinimumValueOrder) {
+                    array_push($arrEntityMinimumValueOrderId, $entityMinimumValueOrder['id']);
+                }
+
+                // Group all minimum value orders' cities
+                $arrEntityMinimumValueOrderGrouped = [];
+                if(count($arrEntityMinimumValueOrderId) > 0) {
+                    $dbEntityMinimumValueOrderCity = new BaseModel($this->db, "entityMinimumValueOrderCity");
+                    $strEntityMinimumValueOrderId = implode(",", $arrEntityMinimumValueOrderId);
+                    $arrEntityMinimumValueOrderCity = $dbEntityMinimumValueOrderCity->getWhere("entityMinimumValueOrderId IN ($strEntityMinimumValueOrderId)");
+    
+                    $mapEntityMinimumValueOrderIdCityId = [];
+                    foreach($arrEntityMinimumValueOrderCity as $entityMinimumValueOrderCity) {
+                        $entityMinimumValueOrderId = $entityMinimumValueOrderCity['entityMinimumValueOrderId'];
+                        $cityId = $entityMinimumValueOrderCity['cityId'];
+                        if(array_key_exists($entityMinimumValueOrderId, $mapEntityMinimumValueOrderIdCityId)) {
+                            $allCityId = $mapEntityMinimumValueOrderIdCityId[$entityMinimumValueOrderId]; 
+                            array_push($allCityId, $cityId);
+                            $mapEntityMinimumValueOrderIdCityId[$entityMinimumValueOrderId] = $allCityId;
+                        } else {
+                            $mapEntityMinimumValueOrderIdCityId[$entityMinimumValueOrderId] = [$cityId];
+                        }
+                    }
+                    
+                    foreach($arrEntityMinimumValueOrder as $entityMinimumValueOrder) {
+                        $entityMinimumValueOrderId = $entityMinimumValueOrder['id'];
+                        
+                        $entityMinimumValueOrderGrouped = new stdClass();
+                        $entityMinimumValueOrderGrouped->entityMinimumValueOrderId = $entityMinimumValueOrderId;
+                        $entityMinimumValueOrderGrouped->minimumValueOrder = $entityMinimumValueOrder['minimumValueOrder'];
+                        $entityMinimumValueOrderGrouped->allCity = $mapEntityMinimumValueOrderIdCityId[$entityMinimumValueOrderId];
+                        array_push($arrEntityMinimumValueOrderGrouped, $entityMinimumValueOrderGrouped);
+                    }
+                }
+                $this->f3->set('arrEntityMinimumValueOrderGrouped', $arrEntityMinimumValueOrderGrouped);
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_profile');
@@ -43,12 +88,6 @@ class ProfileController extends Controller {
                 $dbUser->entityBranchAddress = "entityBranchAddress_" . $this->objUser->language;
                 $user = $dbUser->getWhere("userId=".$this->objUser->id)[0];
                 $this->f3->set('user', $user);
-
-                // Get all countries
-                $dbCountry = new BaseModel($this->db, "country");
-                $dbCountry->name = "name_" . $this->objUser->language;
-                $arrCountry = $dbCountry->findAll();
-                $this->f3->set('arrCountry', $arrCountry);
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_profile');
@@ -93,10 +132,15 @@ class ProfileController extends Controller {
         $userId = $this->f3->get("POST.userId");
         $entityName = $this->f3->get("POST.entityName");
         $tradeLicenseNumber = $this->f3->get("POST.tradeLicenseNumber");
-        $countryId = $this->f3->get("POST.country");
-        $cityId = $this->f3->get("POST.city");
         $address = $this->f3->get("POST.address");
         $entityDocument = $this->f3->get("POST.entityDocument");
+
+        if(!$entityName || !$address) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
+            echo $this->webResponse->jsonResponse();
+            return;
+        }
 
         // Check if user exists
         $dbUser = new BaseModel($this->db, "vwEntityUserProfile");
@@ -107,24 +151,12 @@ class ProfileController extends Controller {
             $this->webResponse->message = $this->f3->get("vModule_profile_userNotFound");
             echo $this->webResponse->jsonResponse();
         } else {
-            // Get currency symbol
-            $dbCountry = new BaseModel($this->db, "country");
-            $country = $dbCountry->getById($countryId)[0];
-            $currencySymbol = $country['currency'];
-
-            // Get currency id
-            $dbCurrency = new BaseModel($this->db, "currency");
-            $currency = $dbCurrency->getByField("symbol", $currencySymbol)[0];
-            $currencyId = $currency['id'];
-
             // Update entity
             $dbEntity = new BaseModel($this->db, "entity");
             $dbEntity->getByField("id", $dbUser->entityId);
             $dbEntity->name_ar = $entityName;
             $dbEntity->name_en = $entityName;
             $dbEntity->name_fr = $entityName;
-            $dbEntity->countryId = $countryId;
-            $dbEntity->currencyId = $currencyId;
             $dbEntity->update();
 
             // Update entity branch
@@ -133,7 +165,6 @@ class ProfileController extends Controller {
             $dbEntityBranch->name_ar = $entityName;
             $dbEntityBranch->name_en = $entityName;
             $dbEntityBranch->name_fr = $entityName;
-            $dbEntityBranch->cityId = $cityId;
             $dbEntityBranch->address_ar = $address;
             $dbEntityBranch->address_en = $address;
             $dbEntityBranch->address_fr = $address;
@@ -152,6 +183,13 @@ class ProfileController extends Controller {
         $userId = $this->f3->get("POST.userId");
         $oldPassword = $this->f3->get("POST.oldPassword");
         $newPassword = $this->f3->get("POST.newPassword");
+
+        if(!$oldPassword || !$newPassword) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
+            echo $this->webResponse->jsonResponse();
+            return;
+        }
         
         // Check if user exists
         $dbUser = new BaseModel($this->db, "user");
@@ -182,10 +220,15 @@ class ProfileController extends Controller {
         $userId = $this->f3->get("POST.userId");
         $entityName = $this->f3->get("POST.entityName");
         $tradeLicenseNumber = $this->f3->get("POST.tradeLicenseNumber");
-        $countryId = $this->f3->get("POST.country");
-        $cityId = $this->f3->get("POST.city");
         $address = $this->f3->get("POST.address");
         $entityDocument = $this->f3->get("POST.entityDocument");
+
+        if(!$entityName || !$address) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
+            echo $this->webResponse->jsonResponse();
+            return;
+        }
 
         // Check if user exists
         $dbUser = new BaseModel($this->db, "vwEntityUserProfile");
@@ -196,24 +239,12 @@ class ProfileController extends Controller {
             $this->webResponse->message = $this->f3->get("vModule_profile_userNotFound");
             echo $this->webResponse->jsonResponse();
         } else {
-            // Get currency symbol
-            $dbCountry = new BaseModel($this->db, "country");
-            $country = $dbCountry->getById($countryId)[0];
-            $currencySymbol = $country['currency'];
-
-            // Get currency id
-            $dbCurrency = new BaseModel($this->db, "currency");
-            $currency = $dbCurrency->getByField("symbol", $currencySymbol)[0];
-            $currencyId = $currency['id'];
-
             // Update entity
             $dbEntity = new BaseModel($this->db, "entity");
             $dbEntity->getByField("id", $dbUser->entityId);
             $dbEntity->name_ar = $entityName;
             $dbEntity->name_en = $entityName;
             $dbEntity->name_fr = $entityName;
-            $dbEntity->countryId = $countryId;
-            $dbEntity->currencyId = $currencyId;
             $dbEntity->update();
 
             // Update entity branch
@@ -222,7 +253,6 @@ class ProfileController extends Controller {
             $dbEntityBranch->name_ar = $entityName;
             $dbEntityBranch->name_en = $entityName;
             $dbEntityBranch->name_fr = $entityName;
-            $dbEntityBranch->cityId = $cityId;
             $dbEntityBranch->address_ar = $address;
             $dbEntityBranch->address_en = $address;
             $dbEntityBranch->address_fr = $address;
@@ -241,6 +271,13 @@ class ProfileController extends Controller {
         $userId = $this->f3->get("POST.userId");
         $oldPassword = $this->f3->get("POST.oldPassword");
         $newPassword = $this->f3->get("POST.newPassword");
+
+        if(!$oldPassword || !$newPassword) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
+            echo $this->webResponse->jsonResponse();
+            return;
+        }
         
         // Check if user exists
         $dbUser = new BaseModel($this->db, "user");
@@ -269,8 +306,37 @@ class ProfileController extends Controller {
     function postDistributorProfilePaymentSetting()
     {
         $userId = $this->f3->get("POST.userId");
-        $paymentMethodId = $this->f3->get("POST.paymentMethodId");
+        $allPaymentMethodId = $this->f3->get("POST.allPaymentMethodId");
+        $allEntityMinimumValueOrder = $this->f3->get("POST.allEntityMinimumValueOrder");
         
+        // Check if there is a payment method
+        if(!$allPaymentMethodId || count($allPaymentMethodId) == 0) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = $this->f3->get("vModule_profile_paymentMethodRequired");
+            echo $this->webResponse->jsonResponse();
+            return;
+        }
+        
+        if(!$allEntityMinimumValueOrder) {
+            $allEntityMinimumValueOrder = [];
+        }
+
+        // Check if a city is selected more than once
+        $allSelectedCityId = [];
+        foreach($allEntityMinimumValueOrder as $entityMinimumValueOrder) {
+            $allCityId = $entityMinimumValueOrder['minimumValueOrderCityId'];
+            foreach($allCityId as $cityId) {
+                if(in_array($cityId, $allSelectedCityId)) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get("vModule_profile_minimumValueOrderCityError");
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                } else {
+                    array_push($allSelectedCityId, $cityId);
+                }
+            }
+        }
+
         // Check if user exists
         $dbUser = new BaseModel($this->db, "vwEntityUserProfile");
         $dbUser->getWhere("userId=$userId");
@@ -279,11 +345,53 @@ class ProfileController extends Controller {
             $this->webResponse->message = $this->f3->get("vModule_profile_userNotFound");
             echo $this->webResponse->jsonResponse();
         } else {
-            // Update entity
-            $dbEntity = new BaseModel($this->db, "entity");
-            $dbEntity->getByField("id", $dbUser->entityId);
-            $dbEntity->paymentMethodId = $paymentMethodId;
-            $dbEntity->update();
+            $entityId = $dbUser->entityId;
+
+            // Update payment method
+            $dbEntityPaymentMethod = new BaseModel($this->db, "entityPaymentMethod");
+            $dbEntityPaymentMethod->getWhere("entityId = $entityId");
+            while (!$dbEntityPaymentMethod->dry()) {
+                $dbEntityPaymentMethod->delete();
+                $dbEntityPaymentMethod->next();
+            }
+            
+            foreach($allPaymentMethodId as $paymentMethodId) {
+                $dbEntityPaymentMethod->entityId = $entityId; 
+                $dbEntityPaymentMethod->paymentMethodId = $paymentMethodId;
+                $dbEntityPaymentMethod->add();
+            }
+
+            // Update minimum value order
+            $dbEntityMinimumValueOrder = new BaseModel($this->db, "entityMinimumValueOrder");
+            $dbEntityMinimumValueOrder->getWhere("entityId = $entityId");
+            $oldEntityMinimumValueOrderId = [];
+            while (!$dbEntityMinimumValueOrder->dry()) {
+                array_push($oldEntityMinimumValueOrderId, $dbEntityMinimumValueOrder['id']); 
+                $dbEntityMinimumValueOrder->delete();
+                $dbEntityMinimumValueOrder->next();
+            }
+
+            $dbEntityMinimumValueOrderCity = new BaseModel($this->db, "entityMinimumValueOrderCity");
+            if(count($oldEntityMinimumValueOrderId) > 0) {
+                $oldEntityMinimumValueOrderIdStr = implode(",", $oldEntityMinimumValueOrderId);
+                $dbEntityMinimumValueOrderCity->getWhere("entityMinimumValueOrderId IN ($oldEntityMinimumValueOrderIdStr)");
+                while (!$dbEntityMinimumValueOrderCity->dry()) {
+                    $dbEntityMinimumValueOrderCity->delete();
+                    $dbEntityMinimumValueOrderCity->next();
+                }
+            }
+            
+            foreach($allEntityMinimumValueOrder as $entityMinimumValueOrder) {
+                $dbEntityMinimumValueOrder->entityId = $entityId;
+                $dbEntityMinimumValueOrder->minimumValueOrder = $entityMinimumValueOrder['minimumValueOrder'];
+                $dbEntityMinimumValueOrder->addReturnID();
+                $allCityId = $entityMinimumValueOrder['minimumValueOrderCityId'];
+                foreach($allCityId as $cityId) {
+                    $dbEntityMinimumValueOrderCity->entityMinimumValueOrderId = $dbEntityMinimumValueOrder['id'];
+                    $dbEntityMinimumValueOrderCity->cityId = $cityId;
+                    $dbEntityMinimumValueOrderCity->add();
+                }
+            }
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->message = $this->f3->get("vModule_profile_paymentSettingSaved");

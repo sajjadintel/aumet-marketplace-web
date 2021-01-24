@@ -16,7 +16,7 @@ class ProductsController extends Controller {
             if ($entityId == 0)
                 $query = "productId=$productId";
             else
-                $query = "entityId=$entityId and productId=$productId";
+                $query = "entityId=$entityId and id=$productId";
 
             $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
             $dbEntityProduct->productName = "productName_" . $this->objUser->language;
@@ -151,12 +151,12 @@ class ProductsController extends Controller {
             foreach ($allCurrencies as $currency) {
                 $mapCurrencyIdCurrency[$currency['id']] = $currency;
             }
-            
+
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
-            
+
             $dbEntities = new BaseModel($this->db, "entity");
             $buyerEntity = $dbEntities->getWhere("id in ($arrEntityId)")[0];
-            
+
             $buyerCurrency = $mapCurrencyIdCurrency[$buyerEntity['currencyId']];
             $this->f3->set('buyerCurrency', $buyerCurrency['symbol']);
 
@@ -360,8 +360,8 @@ class ProductsController extends Controller {
                 $strength = $this->f3->get('POST.strength');
 
                 if (!$scientificNameId || !$madeInCountryId || !$name_en
-                    || !$name_ar || !$name_fr || !$unitPrice || !$maximumOrderQuantity 
-                    || !$description_ar || !$description_en || !$description_fr 
+                    || !$name_ar || !$name_fr || !$unitPrice || !$maximumOrderQuantity
+                    || !$description_ar || !$description_en || !$description_fr
                     || !$categoryId || !$subcategoryId) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
@@ -394,19 +394,19 @@ class ProductsController extends Controller {
                 $dbProduct->name_fr = $name_fr;
                 $dbProduct->name_ar = $name_ar;
                 $dbProduct->image = $image;
-                $dbProduct->subtitle_ar = $subtitle_ar; 
-                $dbProduct->subtitle_en = $subtitle_en; 
-                $dbProduct->subtitle_fr = $subtitle_fr; 
-                $dbProduct->description_ar = $description_ar; 
-                $dbProduct->description_en = $description_en; 
-                $dbProduct->description_fr = $description_fr; 
-                $dbProduct->unitPrice = $unitPrice; 
-                $dbProduct->manufacturerName = $manufacturerName; 
-                $dbProduct->batchNumber = $batchNumber; 
-                $dbProduct->itemCode = $itemCode; 
-                $dbProduct->categoryId = $categoryId; 
-                $dbProduct->subcategoryId = $subcategoryId;  
-                $dbProduct->expiryDate = $expiryDate; 
+                $dbProduct->subtitle_ar = $subtitle_ar;
+                $dbProduct->subtitle_en = $subtitle_en;
+                $dbProduct->subtitle_fr = $subtitle_fr;
+                $dbProduct->description_ar = $description_ar;
+                $dbProduct->description_en = $description_en;
+                $dbProduct->description_fr = $description_fr;
+                $dbProduct->unitPrice = $unitPrice;
+                $dbProduct->manufacturerName = $manufacturerName;
+                $dbProduct->batchNumber = $batchNumber;
+                $dbProduct->itemCode = $itemCode;
+                $dbProduct->categoryId = $categoryId;
+                $dbProduct->subcategoryId = $subcategoryId;
+                $dbProduct->expiryDate = $expiryDate;
                 $dbProduct->strength = $strength;
 
                 $dbProduct->update();
@@ -420,7 +420,7 @@ class ProductsController extends Controller {
 
                 $arrIngredientId = explode(",", $activeIngredientsId);
                 foreach($arrIngredientId as $ingredientId) {
-                    $dbProductIngredient->productId = $productId; 
+                    $dbProductIngredient->productId = $productId;
                     $dbProductIngredient->ingredientId = $ingredientId;
                     $dbProductIngredient->add();
                 }
@@ -568,27 +568,27 @@ class ProductsController extends Controller {
         } else {
             $scientificNameId = $this->f3->get('POST.scientificNameId');
             $madeInCountryId = $this->f3->get('POST.madeInCountryId');
-            $name_en = $this->f3->get('POST.name_en');
-            $name_ar = $this->f3->get('POST.name_ar');
-            $name_fr = $this->f3->get('POST.name_fr');
+            $name_en = $this->f3->clean($this->f3->get('POST.name_en'));
+            $name_ar = $this->f3->clean($this->f3->get('POST.name_ar'));
+            $name_fr = $this->f3->clean($this->f3->get('POST.name_fr'));
             $image = $this->f3->get('POST.image');
             $stock = $this->f3->get('POST.stock');
             $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
-            $subtitle_ar = $this->f3->get('POST.subtitle_ar');
-            $subtitle_en = $this->f3->get('POST.subtitle_en');
-            $subtitle_fr = $this->f3->get('POST.subtitle_fr');
-            $description_ar = $this->f3->get('POST.description_ar');
-            $description_en = $this->f3->get('POST.description_en');
-            $description_fr = $this->f3->get('POST.description_fr');
+            $subtitle_ar = $this->f3->clean($this->f3->get('POST.subtitle_ar'));
+            $subtitle_en = $this->f3->clean($this->f3->get('POST.subtitle_en'));
+            $subtitle_fr = $this->f3->clean($this->f3->get('POST.subtitle_fr'));
+            $description_ar = $this->f3->clean($this->f3->get('POST.description_ar'));
+            $description_en = $this->f3->clean($this->f3->get('POST.description_en'));
+            $description_fr = $this->f3->clean($this->f3->get('POST.description_fr'));
             $unitPrice = $this->f3->get('POST.unitPrice');
-            $manufacturerName = $this->f3->get('POST.manufacturerName');
-            $batchNumber = $this->f3->get('POST.batchNumber');
-            $itemCode = $this->f3->get('POST.itemCode');
+            $manufacturerName = $this->f3->clean($this->f3->get('POST.manufacturerName'));
+            $batchNumber = $this->f3->clean($this->f3->get('POST.batchNumber'));
+            $itemCode = $this->f3->clean($this->f3->get('POST.itemCode'));
             $categoryId = $this->f3->get('POST.categoryId');
             $subcategoryId = $this->f3->get('POST.subcategoryId');
             $activeIngredientsId = $this->f3->get('POST.activeIngredientsId');
             $expiryDate = $this->f3->get('POST.expiryDate');;
-            $strength = $this->f3->get('POST.strength');
+            $strength = $this->f3->clean($this->f3->get('POST.strength'));
 
             if (!$scientificNameId || !$madeInCountryId || !$name_en
                 || !$name_ar || !$name_fr || !$unitPrice
@@ -618,7 +618,7 @@ class ProductsController extends Controller {
                 echo $this->webResponse->jsonResponse();
                 return;
             }
-            
+
             $dbSubcategory = new BaseModel($this->db, "subcategory");
             $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
             if($dbSubcategory->dry()) {
@@ -636,27 +636,27 @@ class ProductsController extends Controller {
             $dbProduct->name_fr = $name_fr;
             $dbProduct->name_ar = $name_ar;
             $dbProduct->image = $image;
-            $dbProduct->subtitle_ar = $subtitle_ar; 
-            $dbProduct->subtitle_en = $subtitle_en; 
-            $dbProduct->subtitle_fr = $subtitle_fr; 
-            $dbProduct->description_ar = $description_ar; 
-            $dbProduct->description_en = $description_en; 
-            $dbProduct->description_fr = $description_fr; 
-            $dbProduct->unitPrice = $unitPrice; 
-            $dbProduct->manufacturerName = $manufacturerName; 
-            $dbProduct->batchNumber = $batchNumber; 
-            $dbProduct->itemCode = $itemCode; 
-            $dbProduct->categoryId = $categoryId; 
-            $dbProduct->subcategoryId = $subcategoryId;  
-            $dbProduct->expiryDate = $expiryDate; 
+            $dbProduct->subtitle_ar = $subtitle_ar;
+            $dbProduct->subtitle_en = $subtitle_en;
+            $dbProduct->subtitle_fr = $subtitle_fr;
+            $dbProduct->description_ar = $description_ar;
+            $dbProduct->description_en = $description_en;
+            $dbProduct->description_fr = $description_fr;
+            $dbProduct->unitPrice = $unitPrice;
+            $dbProduct->manufacturerName = $manufacturerName;
+            $dbProduct->batchNumber = $batchNumber;
+            $dbProduct->itemCode = $itemCode;
+            $dbProduct->categoryId = $categoryId;
+            $dbProduct->subcategoryId = $subcategoryId;
+            $dbProduct->expiryDate = $expiryDate;
             $dbProduct->strength = $strength;
-            
+
             $dbProduct->addReturnID();
 
             $arrIngredientId = explode(",", $activeIngredientsId);
             $dbProductIngredient = new BaseModel($this->db, "productIngredient");
             foreach($arrIngredientId as $ingredientId) {
-                $dbProductIngredient->productId = $dbProduct->id; 
+                $dbProductIngredient->productId = $dbProduct->id;
                 $dbProductIngredient->ingredientId = $ingredientId;
                 $dbProductIngredient->add();
             }
@@ -2004,7 +2004,7 @@ class ProductsController extends Controller {
 
                     if($activeIngredientsId) {
                         $dbProductIngredient = new BaseModel($this->db, "productIngredient");
-                        $dbProductIngredient->productId = $dbProduct->id; 
+                        $dbProductIngredient->productId = $dbProduct->id;
                         $dbProductIngredient->ingredientId = $activeIngredientsId;
                         $dbProductIngredient->add();
                     }
@@ -2107,7 +2107,7 @@ class ProductsController extends Controller {
                 Excel::setDataValidation($sheet, 'R3', 'R2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $categoryNum);
                 Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $subcategoryNum);
                 Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$M$3:$M$' . $ingredientNum);
-                
+
                 $sheet->setCellValue('W2', 'Error');
                 $sheet->getStyle('W2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
 
