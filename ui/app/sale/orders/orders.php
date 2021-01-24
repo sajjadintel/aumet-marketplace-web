@@ -345,7 +345,7 @@ function compress_htmlcode($codedata)
                     data: 'productName',
                     visible: false,
                     render: function (data, type, row, meta) {
-                        return row.productName;
+                        return WebApp.truncateText(row.productName, 100);
                     },
                 },
                 {

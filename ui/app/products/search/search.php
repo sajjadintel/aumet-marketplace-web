@@ -164,7 +164,7 @@ function compress_htmlcode($codedata)
                         '/product/' +
                         row.productId +
                         '\')"> ' +
-                        row['productName_' + docLang]
+                        WebApp.truncateText(row['productName_' + docLang], 100)
                         + '</span></div></div>';
                     return output;
                 },
