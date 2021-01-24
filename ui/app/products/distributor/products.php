@@ -106,7 +106,7 @@ function compress_htmlcode($codedata)
                 targets: [0, 1, 2, 3, 4]
             }, {
                 targets: 0,
-                title: WebAppLocals.getMessage('productName'),
+                title: WebAppLocals.getMessage('id'),
                 data: 'id',
                 visible: false,
                 render: function (data, type, row, meta) {
