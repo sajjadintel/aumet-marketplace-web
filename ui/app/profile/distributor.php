@@ -61,25 +61,13 @@
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
                                 <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_country; ?></label>
-                                <select name="country" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6">
-                                    <option value=""><?php echo $vModule_profile_country; ?></option>
-                                    <?php foreach($arrCountry as $country) : ?>
-                                        <?php if($country['id'] == $user->entityCountryId) : ?>
-                                            <option value="<?php echo $country['id']; ?>" selected><?php echo $country['name']; ?></option>
-                                        <?php else: ?>
-                                            <option value="<?php echo $country['id']; ?>"><?php echo $country['name']; ?></option>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                </select>
+                                <input disabled type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="country" value="<?php echo $user->entityCountryName; ?>" />
                             </div>
                             <!--end::Form Group-->
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
                                 <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_city; ?></label>
-                                <select name="city" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6">
-                                    <option value=""><?php echo $vModule_profile_city; ?></option>
-                                    <option value="<?php echo $user->entityBranchCityId; ?>" selected><?php echo $user->entityBranchCityName; ?></option>
-                                </select>
+                                <input disabled type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="city" value="<?php echo $user->entityBranchCityName; ?>" />
                             </div>
                             <!--end::Form Group-->
                             <!--begin::Form Group-->
@@ -178,7 +166,7 @@
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
                                 <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_currentPassword ?></label>
-                                <input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="oldPassword" />
+                                <input type="password" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="oldPassword" />
                             </div>
                             <!--end::Form Group-->
                         </div>
@@ -186,7 +174,7 @@
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
                                 <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_newPassword ?></label>
-                                <input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="newPassword" />
+                                <input type="password" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="newPassword" />
                             </div>
                             <!--end::Form Group-->
                         </div>
@@ -194,7 +182,7 @@
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
                                 <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_confirmNewPassword ?></label>
-                                <input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="newPasswordConfirmation" />
+                                <input type="password" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="newPasswordConfirmation" />
                             </div>
                             <!--end::Form Group-->
                         </div>
@@ -211,23 +199,55 @@
                     <div class="card-label font-weight-bolder font-size-h1"><?php echo $vModule_profile_paymentSettingTitle ?></div>
                     <form class="form pt-5" novalidate="novalidate" id="paymentSettingForm">
                         <input type="hidden" name="userId" value="<?php echo $user->userId; ?>"/>
+                        <input type="hidden" name="countryId" value="<?php echo $user->entityCountryId; ?>" />
                         <div class="row">
                             <div class="col-12 form-group">
                                 <p class="card-label font-size-h4"><?php echo $vModule_profile_paymentOptionTitle ?></p>
-                                <div class="row checkbox-inline my-5" style="flex-wrap: unset;">
+                                <div id="paymentMethodContainer" class="row checkbox-inline my-5" style="flex-wrap: unset;">
                                     <?php foreach($arrPaymentMethod as $paymentMethod) : ?>
-                                        <label class="col-3 checkbox checkbox-outline checkbox-success">
-                                            <?php if($user->entityPaymentMethodId == $paymentMethod['id']): ?>
+                                        <label class="col-3 checkbox checkbox-outline checkbox-dark">
+                                            <?php if(in_array($paymentMethod['id'], $arrEntityPaymentMethodId)): ?>
                                                 <input type="checkbox" name="paymentMethodCheckbox" value="<?php echo $paymentMethod['id']; ?>" checked/>
                                             <?php else: ?>
                                                 <input type="checkbox" name="paymentMethodCheckbox" value="<?php echo $paymentMethod['id']; ?>"/>
                                             <?php endif; ?>
-                                            <span></span>
+                                            <span style="background-color: white; border: unset;"></span>
                                             <?php echo $paymentMethod['name']; ?>
                                         </label>
                                     <?php endforeach; ?>
                                 </div>
                                 <div style="border-bottom: 1px solid #333333;"></div>
+                            </div>
+                        </div>
+                        <div class="py-5">
+                            <p class="card-label font-size-h4"><?php echo $vModule_profile_minimumValueOrderTitle ?></p>      
+                            <div id="minimumValueOrderRepeater">
+                                <div class="row">
+                                    <div id="minimumValueOrderList" data-repeater-list="minimumValueOrderList" data-repeaterdata='<?php echo json_encode($arrEntityMinimumValueOrderGrouped); ?>' class="col-lg-12">
+                                        <div data-repeater-item="" class="form-group row align-items-start">
+                                            <input type="hidden" id="minimumValueOrderId" name="id" class="form-control">
+                                            <div class="col-md-4">
+                                                <input type="number" id="minimumValueOrder" name="minimumValueOrder" class="form-control minimumValueOrderInput" placeholder="<?php echo $vModule_profile_minimumValueOrder ?>" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : 0;">
+                                                <div class="d-md-none mb-2"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <select id="minimumValueOrderCityId" name="city" class="form-control selectpicker" title="<?php echo $vModule_profile_city; ?>" data-live-search="true" multiple>
+                                                </select>
+                                                <div class="d-md-none mb-2"></div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <a href="javascript:;" id="minimumValueOrderDelete" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger">
+                                                    <i class="la la-trash-o"></i><?php echo $vButton_delete; ?></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <a href="javascript:;" id="minimumValueOrderDelete" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
+                                            <i class="la la-plus"></i><?php echo $vButton_add; ?></a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <!--begin::Save Button-->

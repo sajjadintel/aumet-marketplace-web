@@ -247,6 +247,7 @@ return array(
 
     'vButton_update' => 'تحديث',
     'vButton_add' => 'أضف',
+    'vButton_delete' => 'حذف',
     'vButton_bulk_add' => 'إضافة مجمعة',
     'vButton_bulk_add_image' => 'إضافة صور مجمعة',
     'vButton_confirm' => 'تأكيد',
@@ -314,5 +315,10 @@ return array(
     'vModule_profile_distributorName' => 'اسم الموزع',
     'vModule_profile_distributorTradeLicenseDocument' => 'وثيقة الرخصة التجارية للموزع',
     'vModule_profile_distributorMobile' => 'رقم الموزع',
-    'vModule_profile_paymentOptionTitle' => 'اختر خيار الدفع',
+    'vModule_profile_paymentOptionTitle' => 'اختر خيارات الدفع الخاصة بك',
+    'vModule_profile_minimumValueOrderTitle' => 'ترتيب الحد الأدنى للقيمة',
+    'vModule_profile_minimumValueOrder' => 'ترتيب الحد الأدنى للقيمة',
+    'vModule_profile_minimumValueOrderCityError' => 'تم اختيار بعض المدن أكثر من مرة',
+    'vModule_profile_paymentMethodRequired' => 'طريقة الدفع المطلوبة',
+    'vModule_profile_missingFields' => 'بعض الحقول الإلزامية مفقودة',
 );

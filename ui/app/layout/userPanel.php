@@ -12,15 +12,15 @@
     <div class="offcanvas-content pr-5 mr-n5">
         <!--begin::Header-->
         <div class="d-flex align-items-center mt-5">
-            <div class="symbol symbol-100 mr-5">
+            <div class="symbol symbol-100 mr-5" style="cursor: pointer;" onclick="window.location.href = '/web/profile';">
                 <div class="symbol-label" style="background-image:url('/theme/assets/media/users/300_21.jpg')"></div>
                 <i class="symbol-badge bg-success"></i>
             </div>
             <div class="d-flex flex-column">
-                <a href="javascript:;" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?php echo $objUser->fullname ?></a>
-                <div class="text-muted mt-1"><?php echo $objUser->roleName ?></div>
+                <a href="/web/profile" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?php echo $objUser->fullname ?></a>
+                <a href="/web/profile" class="text-muted mt-1 text-hover-primary"><?php echo $objUser->roleName ?></a>
                 <div class="navi mt-2">
-                    <a href="#" class="navi-item">
+                    <a href="/web/profile" class="navi-item">
                         <span class="navi-link p-0 pb-2">
                             <span class="navi-icon mr-1">
                                 <span class="svg-icon svg-icon-lg svg-icon-primary">

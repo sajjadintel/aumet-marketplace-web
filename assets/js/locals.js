@@ -519,6 +519,11 @@ var WebAppLocals = (function () {
 			en: 'Change Customer Group',
 			ar: 'تغيير مجموعة العملاء',
 			fr: '',
+		},
+		minimumValueOrderCityError: {
+			en: 'The following cities are selected more than once',
+			ar: 'تم تحديد المدن التالية أكثر من مرة',
+			fr: '',
 		}
 	};
 
