@@ -103,10 +103,10 @@ function compress_htmlcode($codedata)
 
             var columnDefs = [{
                 className: "export_datatable",
-                targets: [0, 1, 2, 3, 4]
+                targets: [0, 1, 2, 3, 4, 5]
             }, {
                 targets: 0,
-                title: WebAppLocals.getMessage('productName'),
+                title: WebAppLocals.getMessage('id'),
                 data: 'id',
                 visible: false,
                 render: function (data, type, row, meta) {
@@ -157,7 +157,7 @@ function compress_htmlcode($codedata)
                 data: 'stockUpdateDateTime',
                 render: function (data, type, row, meta) {
                     if (row.stockUpdateDateTime) {
-                        return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
+                        return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment.utc(row.stockUpdateDateTime).fromNow() + '</span>';
                     } else {
                         return '';
                     }

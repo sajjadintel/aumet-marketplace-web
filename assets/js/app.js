@@ -649,6 +649,10 @@ var WebApp = (function () {
 		dt.ajax.reload();
 	}
 
+	var _truncateText = function truncateText(str, n) {
+		return (str.length > n) ? str.substr(0, n - 1) + '&hellip;' : str;
+	}
+
 	// Public Functions
 	return {
 		init: function () {
@@ -720,6 +724,9 @@ var WebApp = (function () {
 		},
 		redirect: function (url) {
 			_redirect( url);
+		},
+		truncateText: function (text, n) {
+			return _truncateText(text, n);
 		},
 		reloadDatatable: function (webResponse) {
 			if ($('#popupModal').is(':visible')) {
