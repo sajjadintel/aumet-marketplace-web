@@ -1576,9 +1576,6 @@ class ProductsController extends Controller {
             $arrCountry = [
                 ['Name', 'Value']
             ];
-            $arrCategory = [
-                ['Name', 'Value']
-            ];
             $arrSubcategory = [
                 ['Name', 'Value']
             ];
@@ -1603,16 +1600,6 @@ class ProductsController extends Controller {
             foreach ($allCountry as $country) {
                 $countryNum++;
                 $arrCountry[] = array($country['name'], $country['id']);
-            }
-
-            $dbCategory = new BaseModel($this->db, "category");
-            $dbCategory->name = "name_" . $this->objUser->language;
-            $allCategory = $dbCategory->findAll("name asc");
-
-            $categoryNum = 2;
-            foreach ($allCategory as $category) {
-                $categoryNum++;
-                $arrCategory[] = array($category['name'], $category['id']);
             }
 
             $dbSubcategory = new BaseModel($this->db, "subcategory");
@@ -1644,9 +1631,8 @@ class ProductsController extends Controller {
             // Set dropdown variables in excel
             $sheet->fromArray($arrScientificName, NULL, 'A2', true);
             $sheet->fromArray($arrCountry, NULL, 'D2', true);
-            $sheet->fromArray($arrCategory, NULL, 'G2', true);
-            $sheet->fromArray($arrSubcategory, NULL, 'J2', true);
-            $sheet->fromArray($arrIngredient, NULL, 'M2', true);
+            $sheet->fromArray($arrSubcategory, NULL, 'G2', true);
+            $sheet->fromArray($arrIngredient, NULL, 'J2', true);
 
             // Change active sheet to database input
             $sheet = $spreadsheet->setActiveSheetIndex(1);
@@ -1654,9 +1640,8 @@ class ProductsController extends Controller {
             // Set validation and formula
             Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
             Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
-            Excel::setCellFormulaVLookup($sheet, 'R3', 2505, "'User Input'!R", 'Variables!$G$3:$H$' . $categoryNum);
-            Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$J$3:$K$' . $subcategoryNum);
-            Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$M$3:$N$' . $ingredientNum);
+            Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$G$3:$H$' . $subcategoryNum);
+            Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$J$3:$K$' . $ingredientNum);
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -1668,9 +1653,8 @@ class ProductsController extends Controller {
             // Set data validation for dropdowns
             Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
             Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
-            Excel::setDataValidation($sheet, 'R3', 'R2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $categoryNum);
-            Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $subcategoryNum);
-            Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$M$3:$M$' . $ingredientNum);
+            Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
+            Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
 
             // Create excel sheet
             $productsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsx";
@@ -1744,18 +1728,6 @@ class ProductsController extends Controller {
                 $mapCountryIdName[$country['id']] = $country['name'];
             }
 
-            // Get all categories
-            $dbCategory = new BaseModel($this->db, "category");
-            $dbCategory->name = "name_" . $this->objUser->language;
-            $allCategory = $dbCategory->findAll("name asc");
-
-            $allCategoryId = [];
-            $mapCategoryIdName = [];
-            foreach ($allCategory as $category) {
-                array_push($allCategoryId, $category['id']);
-                $mapCategoryIdName[$category['id']] = $category['name'];
-            }
-
             // Get all subcategories
             $dbSubcategory = new BaseModel($this->db, "subcategory");
             $dbSubcategory->name = "name_" . $this->objUser->language;
@@ -1763,8 +1735,10 @@ class ProductsController extends Controller {
 
             $allSubcategoryId = [];
             $mapSubcategoryIdName = [];
+            $mapSubcategoryIdCategoryId = [];
             foreach ($allSubcategory as $subcategory) {
                 array_push($allSubcategoryId, $subcategory['id']);
+                $mapSubcategoryIdCategoryId[$subcategory['id']] = $subcategory['categoryId'];
                 $mapSubcategoryIdName[$subcategory['id']] = $subcategory['name'];
             }
 
@@ -1793,12 +1767,12 @@ class ProductsController extends Controller {
                 "J" => "description_en",
                 "K" => "description_fr",
                 "L" => "unitPrice",
-                "M" => "stock",
-                "N" => "maximumOrderQuantity",
-                "O" => "manufacturerName",
-                "P" => "batchNumber",
-                "Q" => "itemCode",
-                "R" => "categoryId",
+                "M" => "vat",
+                "N" => "stock",
+                "O" => "maximumOrderQuantity",
+                "P" => "manufacturerName",
+                "Q" => "batchNumber",
+                "R" => "itemCode",
                 "S" => "subcategoryId",
                 "T" => "activeIngredientsId",
                 "U" => "expiryDate",
@@ -1830,6 +1804,7 @@ class ProductsController extends Controller {
 
                 $dbProduct = new BaseModel($this->db, "product");
                 $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
+                $dbProductIngredient = new BaseModel($this->db, "productIngredient");
 
                 $product = [];
 
@@ -1922,45 +1897,41 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "M":
+                            if (!is_numeric($cellValue) || (float)$cellValue < 0) {
+                                array_push($errors, "VAT must be a positive number");
+                            } else {
+                                $dbEntityProduct->vat = round((float)$cellValue, 2);
+                            }
+                            break;
+                        case "N":
                             if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Available Quantity must be a positive whole number");
                             } else {
                                 $dbEntityProduct->stock = (int)$cellValue;
                             }
                             break;
-                        case "N":
+                        case "O":
                             if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Maximum Order Quantity must be a positive whole number");
                             } else {
                                 $dbEntityProduct->maximumOrderQuantity = (int)$cellValue;
                             }
                             break;
-                        case "O":
+                        case "P":
                             $dbProduct->manufacturerName = $cellValue;
                             break;
-                        case "P":
+                        case "Q":
                             $dbProduct->batchNumber = $cellValue;
                             break;
-                        case "Q":
-                            $dbProduct->itemCode = $cellValue;
-                            break;
                         case "R":
-                            if (!in_array($cellValue, $allCategoryId)) {
-                                array_push($errors, "Category invalid");
-                            } else {
-                                $dbProduct->categoryId = $cellValue;
-                            }
+                            $dbProduct->itemCode = $cellValue;
                             break;
                         case "S":
                             if (!in_array($cellValue, $allSubcategoryId)) {
                                 array_push($errors, "Subcategory invalid");
                             } else {
-                                $dbSubcategory->getWhere("id = $cellValue AND categoryId = $dbProduct->categoryId");
-                                if($dbSubcategory->dry()) {
-                                    array_push($errors, "Subcategory invalid");
-                                } else {
-                                    $dbProduct->subcategoryId = $cellValue;
-                                }
+                                $dbProduct->subcategoryId = $cellValue;
+                                $dbProduct->categoryId = $mapSubcategoryIdCategoryId[$cellValue];
                             }
                             break;
                         case "T":
@@ -2003,7 +1974,6 @@ class ProductsController extends Controller {
                     $dbEntityProduct->add();
 
                     if($activeIngredientsId) {
-                        $dbProductIngredient = new BaseModel($this->db, "productIngredient");
                         $dbProductIngredient->productId = $dbProduct->id;
                         $dbProductIngredient->ingredientId = $activeIngredientsId;
                         $dbProductIngredient->add();
@@ -2031,9 +2001,6 @@ class ProductsController extends Controller {
                 $arrCountry = [
                     ['Name', 'Value']
                 ];
-                $arrCategory = [
-                    ['Name', 'Value']
-                ];
                 $arrSubcategory = [
                     ['Name', 'Value']
                 ];
@@ -2051,12 +2018,6 @@ class ProductsController extends Controller {
                 foreach ($allCountry as $country) {
                     $countryNum++;
                     $arrCountry[] = array($country['name'], $country['id']);
-                }
-
-                $categoryNum = 2;
-                foreach ($allCategory as $category) {
-                    $categoryNum++;
-                    $arrCategory[] = array($category['name'], $category['id']);
                 }
 
                 $subcategoryNum = 2;
@@ -2080,9 +2041,8 @@ class ProductsController extends Controller {
                 // Set dropdown variables in excel
                 $sheet->fromArray($arrScientificName, NULL, 'A2', true);
                 $sheet->fromArray($arrCountry, NULL, 'D2', true);
-                $sheet->fromArray($arrCategory, NULL, 'G2', true);
-                $sheet->fromArray($arrSubcategory, NULL, 'J2', true);
-                $sheet->fromArray($arrIngredient, NULL, 'M2', true);
+                $sheet->fromArray($arrSubcategory, NULL, 'G2', true);
+                $sheet->fromArray($arrIngredient, NULL, 'J2', true);
 
                 // Change active sheet to database input
                 $sheet = $spreadsheet->setActiveSheetIndex(1);
@@ -2090,9 +2050,8 @@ class ProductsController extends Controller {
                 // Set validation and formula
                 Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
                 Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
-                Excel::setCellFormulaVLookup($sheet, 'R3', 2505, "'User Input'!R", 'Variables!$G$3:$H$' . $categoryNum);
-                Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$J$3:$K$' . $subcategoryNum);
-                Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$M$3:$N$' . $ingredientNum);
+                Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$G$3:$H$' . $subcategoryNum);
+                Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$J$3:$K$' . $ingredientNum);
 
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -2104,9 +2063,8 @@ class ProductsController extends Controller {
                 // Set data validation for dropdowns
                 Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
                 Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
-                Excel::setDataValidation($sheet, 'R3', 'R2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $categoryNum);
-                Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $subcategoryNum);
-                Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$M$3:$M$' . $ingredientNum);
+                Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
+                Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
 
                 $sheet->setCellValue('W2', 'Error');
                 $sheet->getStyle('W2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
@@ -2126,12 +2084,12 @@ class ProductsController extends Controller {
                     "description_en",
                     "description_fr",
                     "unitPrice",
+                    "vat",
                     "stock",
                     "maximumOrderQuantity",
                     "manufacturerName",
                     "batchNumber",
                     "itemCode",
-                    "categoryId",
                     "subcategoryId",
                     "activeIngredientsId",
                     "expiryDate",
@@ -2148,8 +2106,6 @@ class ProductsController extends Controller {
                             $cellValue = $mapScientificIdName[$product[$j]];
                         } else if ($field == "madeInCountryId") {
                             $cellValue = $mapCountryIdName[$product[$j]];
-                        } else if ($field == "categoryId") {
-                            $cellValue = $mapCategoryIdName[$product[$j]];
                         } else if ($field == "subcategoryId") {
                             $cellValue = $mapSubcategoryIdName[$product[$j]];
                         } else if ($field == "activeIngredientsId") {
