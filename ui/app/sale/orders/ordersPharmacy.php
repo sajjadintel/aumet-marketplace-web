@@ -316,9 +316,7 @@ function compress_htmlcode($codedata)
                     title: WebAppLocals.getMessage('productName'),
                     data: 'productName',
                     visible: false,
-                    render: function (data, type, row, meta) {
-                        return WebApp.truncateText(row.productName, 100);
-                    },
+                    render: $.fn.dataTable.render.ellipsis( 100 )
                 },
                 {
                     targets: 11,

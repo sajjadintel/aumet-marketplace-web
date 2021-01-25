@@ -130,7 +130,9 @@ function compress_htmlcode($codedata)
                         row.entityId +
                         '/product/' +
                         row.productId +
-                        '\')"> ' +
+                        '\')" title="'+
+                        row['productName_' + docLang] +
+                        '"> ' +
                         WebApp.truncateText(row['productName_' + docLang], 100)
                         + '</span></div></div>';
                     return output;
