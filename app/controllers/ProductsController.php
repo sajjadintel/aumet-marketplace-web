@@ -1640,8 +1640,8 @@ class ProductsController extends Controller {
             // Set validation and formula
             Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
             Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
-            Excel::setCellFormulaVLookup($sheet, 'R3', 2505, "'User Input'!R", 'Variables!$G$3:$H$' . $subcategoryNum);
-            Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$J$3:$K$' . $ingredientNum);
+            Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$G$3:$H$' . $subcategoryNum);
+            Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$J$3:$K$' . $ingredientNum);
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -1653,8 +1653,8 @@ class ProductsController extends Controller {
             // Set data validation for dropdowns
             Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
             Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
-            Excel::setDataValidation($sheet, 'R3', 'R2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
-            Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
+            Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
+            Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
 
             // Create excel sheet
             $productsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsx";
@@ -1767,15 +1767,16 @@ class ProductsController extends Controller {
                 "J" => "description_en",
                 "K" => "description_fr",
                 "L" => "unitPrice",
-                "M" => "stock",
-                "N" => "maximumOrderQuantity",
-                "O" => "manufacturerName",
-                "P" => "batchNumber",
-                "Q" => "itemCode",
-                "R" => "subcategoryId",
-                "S" => "activeIngredientsId",
-                "T" => "expiryDate",
-                "U" => "strength"
+                "M" => "vat",
+                "N" => "stock",
+                "O" => "maximumOrderQuantity",
+                "P" => "manufacturerName",
+                "Q" => "batchNumber",
+                "R" => "itemCode",
+                "S" => "subcategoryId",
+                "T" => "activeIngredientsId",
+                "U" => "expiryDate",
+                "V" => "strength"
             ];
 
             $successProducts = [];
@@ -1896,29 +1897,36 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "M":
+                            if (!is_numeric($cellValue) || (float)$cellValue < 0) {
+                                array_push($errors, "VAT must be a positive number");
+                            } else {
+                                $dbEntityProduct->vat = round((float)$cellValue, 2);
+                            }
+                            break;
+                        case "N":
                             if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Available Quantity must be a positive whole number");
                             } else {
                                 $dbEntityProduct->stock = (int)$cellValue;
                             }
                             break;
-                        case "N":
+                        case "O":
                             if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
                                 array_push($errors, "Maximum Order Quantity must be a positive whole number");
                             } else {
                                 $dbEntityProduct->maximumOrderQuantity = (int)$cellValue;
                             }
                             break;
-                        case "O":
+                        case "P":
                             $dbProduct->manufacturerName = $cellValue;
                             break;
-                        case "P":
+                        case "Q":
                             $dbProduct->batchNumber = $cellValue;
                             break;
-                        case "Q":
+                        case "R":
                             $dbProduct->itemCode = $cellValue;
                             break;
-                        case "R":
+                        case "S":
                             if (!in_array($cellValue, $allSubcategoryId)) {
                                 array_push($errors, "Subcategory invalid");
                             } else {
@@ -1926,14 +1934,14 @@ class ProductsController extends Controller {
                                 $dbProduct->categoryId = $mapSubcategoryIdCategoryId[$cellValue];
                             }
                             break;
-                        case "S":
+                        case "T":
                             if ($cellValue != "#N/A" && !in_array($cellValue, $allIngredientId)) {
                                 array_push($errors, "Ingredient invalid");
                             } else {
                                 $activeIngredientsId = $cellValue;
                             }
                             break;
-                        case "T":
+                        case "U":
                             if (!is_null($cellValue)) {
                                 if (!is_int($cellValue)) {
                                     array_push($errors, "Expiry Date must fit a date format (mm/dd/yyyy)");
@@ -1943,7 +1951,7 @@ class ProductsController extends Controller {
                                 }
                             }
                             break;
-                        case "U":
+                        case "V":
                             $dbProduct->strength = $cellValue;
                             break;
                     }
@@ -2042,8 +2050,8 @@ class ProductsController extends Controller {
                 // Set validation and formula
                 Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
                 Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
-                Excel::setCellFormulaVLookup($sheet, 'R3', 2505, "'User Input'!R", 'Variables!$G$3:$H$' . $subcategoryNum);
-                Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$J$3:$K$' . $ingredientNum);
+                Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$G$3:$H$' . $subcategoryNum);
+                Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$J$3:$K$' . $ingredientNum);
 
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -2055,11 +2063,11 @@ class ProductsController extends Controller {
                 // Set data validation for dropdowns
                 Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
                 Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
-                Excel::setDataValidation($sheet, 'R3', 'R2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
-                Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
+                Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
+                Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
 
-                $sheet->setCellValue('V2', 'Error');
-                $sheet->getStyle('V2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
+                $sheet->setCellValue('W2', 'Error');
+                $sheet->getStyle('W2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
 
                 // Add all products to multidimensional array
                 $multiProducts = [];
@@ -2076,6 +2084,7 @@ class ProductsController extends Controller {
                     "description_en",
                     "description_fr",
                     "unitPrice",
+                    "vat",
                     "stock",
                     "maximumOrderQuantity",
                     "manufacturerName",
