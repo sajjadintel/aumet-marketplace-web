@@ -120,6 +120,11 @@ var WebAppLocals = (function () {
 			ar: 'طلب',
 			fr: '',
 		},
+		id: {
+			en: 'ID',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
 		orderId: {
 			en: 'Order ID',
 			ar: '', // TODO: add translation
@@ -473,32 +478,42 @@ var WebAppLocals = (function () {
 		maximumOrderQuantity: {
 			en: 'Maximum Order Quantity',
 			ar: 'كمية الطلب القصوى',
-			fr: ''
+			fr: '',
 		},
 		city: {
 			en: 'City',
 			ar: 'مدينة',
-			fr: ''
+			fr: '',
 		},
 		subcategory: {
 			en: 'Subcategory',
 			ar: 'تصنيف فرعي',
-			fr: ''
+			fr: '',
 		},
 		required: {
 			en: 'Required',
 			ar: 'مطلوب',
-			fr: ''
+			fr: '',
+		},
+		invalid: {
+			en: 'Invalid',
+			ar: 'غير صالحة',
+			fr: '',
+		},
+		wrongPasswordConfirmation: {
+			en: "Password Confirmation doesn't match",
+			ar: 'تأكيد كلمة المرور غير مطابق',
+			fr: '',
 		},
 		validationError: {
 			en: 'Sorry, looks like there are some errors detected, please try again.',
 			ar: 'معذرة ، يبدو أنه تم اكتشاف بعض الأخطاء ، يرجى المحاولة مرة أخرى.',
-			fr: ''
+			fr: '',
 		},
 		validationErrorOk: {
 			en: 'Ok, got it!',
 			ar: 'حسنا، حصلت عليه!',
-			fr: ''
+			fr: '',
 		},
 		customerGroup: {
 			en: 'Customer Group',
@@ -509,7 +524,12 @@ var WebAppLocals = (function () {
 			en: 'Change Customer Group',
 			ar: 'تغيير مجموعة العملاء',
 			fr: '',
-		}
+		},
+		minimumValueOrderCityError: {
+			en: 'The following cities are selected more than once',
+			ar: 'تم تحديد المدن التالية أكثر من مرة',
+			fr: '',
+		},
 	};
 
 	var _symbolsLocals = {

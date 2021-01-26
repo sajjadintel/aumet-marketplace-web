@@ -311,6 +311,7 @@ function compress_htmlcode($codedata)
     <script type="text/javascript" src="/assets/js/products-search.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/distributor-products.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/distributor-customers.js<?php echo $platformVersion ?>"></script>
+    <script type="text/javascript" src="/assets/js/profile.js<?php echo $platformVersion ?>"></script>
 
 
     <script type="text/javascript" src="/assets/js/treeview.js<?php echo $platformVersion ?>"></script>

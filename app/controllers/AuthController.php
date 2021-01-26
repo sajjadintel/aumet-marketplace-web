@@ -332,6 +332,13 @@ class AuthController extends Controller {
         $address = $this->f3->get("POST.address");
         $pharmacyDocument = $this->f3->get("POST.pharmacyDocument");
 
+        if(!$name || !$mobile || !$email || !$password || !$entityName || !$countryId || !$cityId || !$address) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = "Some mandatory fields are missing";
+            echo $this->webResponse->jsonResponse();
+            return;
+        }
+
         // Check if email is unique
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getByField("email", $email);
@@ -766,7 +773,7 @@ class AuthController extends Controller {
         }
     }
 
-    function getSignUpCitiesByCountry()
+    function getCityByCountryList()
     {
         $countryId = $this->f3->get("PARAMS.countryId");
 

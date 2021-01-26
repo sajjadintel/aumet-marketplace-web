@@ -481,4 +481,28 @@ class SearchController extends Controller {
 
         $this->jsonResponseAPI($response);
     }
+
+    function getCityByCountryList()
+    {
+        $countryId = $this->f3->get("PARAMS.countryId");
+
+        $dbCity = new BaseModel($this->db, "city");
+        $dbCity->name = "name".ucfirst($this->objUser->language);
+        $dbCity->getByField("countryId", $countryId);
+
+        $arrCities = [];
+        while (!$dbCity->dry()) {
+            $city = new stdClass();
+            $city->id = $dbCity["id"];
+            $city->name = $dbCity["name"];
+
+            array_push($arrCities, $city);
+
+            $dbCity->next();
+        }
+
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+        $this->webResponse->data = $arrCities;
+        echo $this->webResponse->jsonResponse();
+    }
 }
