@@ -46,6 +46,21 @@ return array(
     'vLogin_forgotPasswordDescription' => 'أدخل البريد الالكتروني لاستعادة كلمة المرور:',
     'vLogin_forgotPasswordSubmit' => 'ارسال الطلب',
 
+    'vLogin_repeatPassword' => 'Repeat Password', // TODO: add translation
+    'vForgot_emailSent' => 'Please check out your email and use reset password link.', // TODO: add translation
+    'vForgot_havingIssues' => 'Having issues?', // TODO: add translation
+    'vForgot_getHelp' => 'Get Help', // TODO: add translation
+    'vForgot_enterPassword' => 'Enter your email to reset your password', // TODO: add translation
+    'vForgot_enterPasswords' => 'Enter your password to reset your password', // TODO: add translation
+    'vForgot_submit' => 'Submit', // TODO: add translation
+    'vForgot_cancel' => 'Cancel', // TODO: add translation
+    'vForgot_resetPassword' => 'Reset Password', // TODO: add translation
+    'vMessage_generalError' => 'Something went wrong! Error: ', // TODO: add translation
+    'vMessage_passwordRulesError' => 'Passwords do not match!', // TODO: add translation
+    'vMessage_passwordNotStrong' => 'Password is not strong!', // TODO: add translation
+    'vForgot_passwordChanged' => 'Password Changed successfully!', // TODO: add translation
+    'vForgot_emailText' => 'You have recently requested on Aumet Marketplace to reset the password for your account. Click on the button below to reset it, or ignore the email if you didn\'t submit the request', // TODO: add translation
+
     'vResetPassword_title' => 'أدخل كلمة المرور الجديدة',
     'vResetPassword_password' => 'كلمة المرور الجديدة',
     'vResetPassword_passwordConfirm' => 'تأكيد كلمة المرور',
@@ -71,7 +86,7 @@ return array(
     'vSignup_wizardNext' => 'الخطوة التالية',
     'vSignup_wizardPrev' => 'الخطوة السابقة',
     'vSignup_wizardSubmit' => 'تقديم الطلب',
-    
+
     'vSignup_wizardPharmacyInfoTitle' => 'معلومات الصيدلة',
     'vSignup_wizardPharmacyInfoSubtitle' => 'املأ التفاصيل التالية',
 
@@ -90,7 +105,7 @@ return array(
     'vSignup_address' => 'عنوان',
     'vSignup_pharmacyDocument' => 'وثيقة الرخصة التجارية الصيدلانية',
     'vSignup_uploadDocument' => 'تحميل المستند',
-    
+
     'vSignup_thankyouTitle' => 'شكرا على التسجيل!',
     'vSignup_thankyouSubtitle' => 'تم إرسال بريد إلكتروني إليك للتحقق من حسابك.',
     'vSignup_thankyouHome' => 'العودة إلى الصفحة الرئيسية',
@@ -228,7 +243,7 @@ return array(
     'vModule_order_dateFrom' => 'أدخل تاريخ بدء الطلبات',
     'vModule_order_dateTo' => 'أدخل تاريخ انتهاء الطلبات',
     'vModule_order_date' => 'أدخل تاريخ الطلبات',
-    
+
     'vModule_customer_customerGroupTitle' => 'مجموعة العملاء',
     'vModule_customer_customerGroup' => 'مجموعة العملاء',
 
@@ -252,7 +267,7 @@ return array(
     'vButton_confirm' => 'تأكيد',
     'vButton_view_all' => 'مشاهدة الكل',
     'vButton_save' => 'حفظ',
-    
+
     'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ', // TODO: add translation
     'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!', // TODO: add translation
 
@@ -260,9 +275,9 @@ return array(
     'vModule_bulk_add_image_title' => 'إضافة صور مجمعة',
 
     'vModule_bulk_add_image_info' => 'للحصول على أفضل استخدام ، تأكد من أن اسم صورتك يبدأ بـ "productId-" لتحديد منتج تلقائيًا بعد التحميل.',
-    
+
     'vResponse_imagesAdded' => 'تمت إضافة الصور بنجاح',
-    
+
     'vModule_dashboardBuyer_newProducts' => 'منتجات جديدة',
     'vModule_dashboardBuyer_topSelling' => 'الأعلى مبيعا',
 

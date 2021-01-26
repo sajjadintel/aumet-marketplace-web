@@ -160,10 +160,17 @@ var WebAuth = (function () {
 				// Show loading state on button
 				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
 
-				// Simulate Ajax request
-				setTimeout(function () {
+				var url = KTUtil.attr(form, 'action');
+				var data = $(form).serializeJSON();
+
+				if (!form) {
+					console.log('No Form');
+					return;
+				}
+				WebApp.post(url, data, function (){
 					KTUtil.btnRelease(formSubmitButton);
-				}, 2000);
+				});
+
 			})
 			.on('core.form.invalid', function () {
 				Swal.fire({
@@ -176,6 +183,90 @@ var WebAuth = (function () {
 					},
 				}).then(function () {
 					KTUtil.scrollTop();
+				});
+			});
+	};
+
+
+	var _handleFormReset = function () {
+		// Base elements
+		var form = KTUtil.getById('kt_login_reset_form');
+		var formSubmitButton = KTUtil.getById('kt_login_reset_form_submit_button');
+
+		if (!form) {
+			return;
+		}
+
+		FormValidation.formValidation(form, {
+			fields: {
+				password: {
+					validators: {
+						notEmpty: {
+							message: 'Password is required',
+						},
+					},
+				},
+				passwordConfirmation: {
+					validators: {
+						identical: {
+							compare: function () {
+								return form.querySelector('[name="password"]').value;
+							},
+							message: "Password confirmation doesn't",
+						},
+					},
+				},
+			},
+			plugins: {
+				trigger: new FormValidation.plugins.Trigger(),
+				submitButton: new FormValidation.plugins.SubmitButton(),
+				//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
+				bootstrap: new FormValidation.plugins.Bootstrap({
+					//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
+					//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
+				}),
+			},
+		})
+			.on('core.form.valid', function () {
+				// Show loading state on button
+				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
+
+				var url = KTUtil.attr(form, 'action');
+				var data = $(form).serializeJSON();
+
+				if (!form) {
+					console.log('No Form');
+					return;
+				}
+				WebApp.post(url, data, function (){
+					KTUtil.btnRelease(formSubmitButton);
+					Swal.fire({
+						text: 'Password changed successfully!',
+						icon: 'success',
+						buttonsStyling: false,
+						confirmButtonText: 'Login!',
+						customClass: {
+							confirmButton: 'btn font-weight-bold btn-light-primary',
+						},
+					}).then(function () {
+                        window.location.href = '/web/auth/signin';
+						KTUtil.btnRelease(formSubmitButton);
+					});
+				});
+
+			})
+			.on('core.form.invalid', function () {
+				Swal.fire({
+					text: 'Sorry, looks like there are some errors detected, please try again.',
+					icon: 'error',
+					buttonsStyling: false,
+					confirmButtonText: 'Ok, got it!',
+					customClass: {
+						confirmButton: 'btn font-weight-bold btn-light-primary',
+					},
+				}).then(function () {
+					KTUtil.scrollTop();
+					KTUtil.btnRelease(formSubmitButton);
 				});
 			});
 	};
@@ -646,6 +737,7 @@ var WebAuth = (function () {
 			}
 
 			_handleFormForgot();
+			_handleFormReset();
 			_handleFormSignup();
 
 			_initializeDropzone();
