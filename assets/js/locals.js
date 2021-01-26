@@ -85,6 +85,11 @@ var WebAppLocals = (function () {
 			ar: 'الاسم التجاري',
 			fr: '',
 		},
+		id: {
+			en: 'ID',
+			ar: 'ID', // TODO: add translation
+			fr: '',
+		},
 		productCode: {
 			en: 'Product Code',
 			ar: 'رمز المنتج',
