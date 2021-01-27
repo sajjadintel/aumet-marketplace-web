@@ -349,7 +349,7 @@ class SearchController extends Controller {
         if (is_array($datatable->query)) {
             $productId = $datatable->query['productId'];
             if (isset($productId) && is_array($productId)) {
-                $query .= " AND productId in (" . implode(",", $productId) . ")";
+                $query .= " AND id in (" . implode(",", $productId) . ")";
             }
 
             $scientificNameId = $datatable->query['scientificNameId'];

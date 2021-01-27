@@ -136,10 +136,11 @@ class EntityController extends Controller
                 echo $this->webResponse->jsonResponse();
             } else {
                 $customerGroupId = $this->f3->get('POST.customerGroupId');
+                $this->checkLength($customerGroupId, 'customerGroupName', 150);
 
                 if($customerGroupId) {
                     $dbCustomerGroup = new BaseModel($this->db, "customerGroup");
-                    $dbCustomerGroup->getWhere("id = '$customerGroupId' AND entityId = $dbEntityRelation->entitySellerId");
+                    $dbCustomerGroup->getWhere(["id = ? AND entityId = ?", $customerGroupId, $dbEntityRelation->entitySellerId]);
                     if($dbCustomerGroup->dry()) {
                         $dbCustomerGroup->entityId = $dbEntityRelation->entitySellerId;
                         $dbCustomerGroup->name_en = $customerGroupId;
