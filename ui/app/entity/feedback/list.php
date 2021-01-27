@@ -52,19 +52,13 @@ function compress_htmlcode($codedata)
         }, {
             targets: 1,
             title: WebAppLocals.getMessage('entityBuyer'),
-            data: 'entitySeller',
-            render: function (data, type, row, meta) {
-                var output = row.entityName_en;
-                return output;
-            },
+            data: 'entityName_' + docLang,
+            render: $.fn.dataTable.render.ellipsis( 100 )
         }, {
             targets: 2,
             title: WebAppLocals.getMessage('userFullname'),
             data: 'userFullname',
-            render: function (data, type, row, meta) {
-                var output = row.userFullname;
-                return output;
-            },
+            render: $.fn.dataTable.render.ellipsis( 100 )
         }, {
             targets: 3,
             title: WebAppLocals.getMessage('insertDate'),
@@ -153,7 +147,9 @@ function compress_htmlcode($codedata)
             render: function (data, type, row, meta) {
                 var output = '';
                 if (row.insertDateTime) {
-                    output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + row.feedback + '</span>';
+                    output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr" title="'+
+                        row.feedback +
+                    '"> ' + +  WebApp.truncateText(row.feedback, 100) + '</span>';
                 }
                 return output
             }

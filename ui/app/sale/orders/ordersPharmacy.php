@@ -139,10 +139,7 @@ function compress_htmlcode($codedata)
                     targets: 2,
                     title: WebAppLocals.getMessage('entitySeller'),
                     data: 'entitySeller',
-                    render: function (data, type, row, meta) {
-                        var output = row.entitySeller;
-                        return output;
-                    },
+                    render: $.fn.dataTable.render.ellipsis( 100 )
                 },
                 {
                     targets: 3,

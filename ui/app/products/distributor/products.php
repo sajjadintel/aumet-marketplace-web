@@ -141,10 +141,7 @@ function compress_htmlcode($codedata)
                 targets: 2,
                 title: WebAppLocals.getMessage('productScientificName'),
                 data: 'scientificName',
-                render: function (data, type, row, meta) {
-                    var output = row.scientificName;
-                    return output
-                }
+                render: $.fn.dataTable.render.ellipsis( 100 )
             }, {
                 targets: 3,
                 title: WebAppLocals.getMessage('stockQuantity'),
