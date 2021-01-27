@@ -46,11 +46,13 @@ function compress_htmlcode($codedata)
                     targets: 1,
                     title: WebAppLocals.getMessage('entityBuyer'),
                     data: 'buyerName',
+                    render: $.fn.dataTable.render.ellipsis( 100 )
                 },
                 {
                     targets: 2,
                     title: WebAppLocals.getMessage('customerGroup'),
                     data: 'customerGroupName',
+                    render: $.fn.dataTable.render.ellipsis( 100 )
                 },
                 {
                     targets: 3,

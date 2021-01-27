@@ -159,10 +159,7 @@
             title: WebAppLocals.getMessage('entityBuyer'),
             data: 'entityBuyer',
             orderable: false,
-            render: function(data, type, row, meta) {
-                var output = row.entityBuyer;
-                return output;
-            },
+            render: $.fn.dataTable.render.ellipsis( 100 )
         }, {
             targets: 2,
             title: WebAppLocals.getMessage('date'),
@@ -318,8 +315,10 @@
                         row.entityId +
                         '/product/' +
                         row.productId +
-                        '\')"> ' +
-                        row['productName_' + docLang]
+                        '\')" title="'+
+                        row['productName_' + docLang] +
+                        '"> ' +
+                        WebApp.truncateText(row['productName_' + docLang], 100)
                         + '</span></div></div>';
                     return output;
                 }
@@ -333,6 +332,7 @@
                 title: WebAppLocals.getMessage('productScientificName'),
                 data: 'scientificName',
                 orderable: false,
+                render: $.fn.dataTable.render.ellipsis( 100 )
             }, {
                 targets: 3,
                 title: WebAppLocals.getMessage('expiryDate'),

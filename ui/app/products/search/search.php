@@ -177,11 +177,8 @@ function compress_htmlcode($codedata)
             }, {
                 targets: 2,
                 title: WebAppLocals.getMessage('sellingEntityName'),
-                data: 'entityName_en',
-                render: function (data, type, row, meta) {
-                    var output = row['entityName_' + docLang];
-                    return output;
-                },
+                data: 'entityName_' + docLang,
+                render: $.fn.dataTable.render.ellipsis( 100 )
             }, {
                 targets: 3,
                 title: WebAppLocals.getMessage('expiryDate'),
