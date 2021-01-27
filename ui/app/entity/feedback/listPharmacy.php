@@ -55,18 +55,12 @@ function compress_htmlcode($codedata)
               targets: 1,
               title: WebAppLocals.getMessage('entitySeller'),
               data: 'entitySeller',
-              render: function (data, type, row, meta) {
-                  var output = row.entitySeller;
-                  return output;
-              },
+              render: $.fn.dataTable.render.ellipsis( 100 )
           }, {
               targets: 2,
               title: WebAppLocals.getMessage('branchSeller'),
               data: 'branchSeller',
-              render: function (data, type, row, meta) {
-                  var output = row.branchSeller;
-                  return output;
-              },
+              render: $.fn.dataTable.render.ellipsis( 100 )
           }, {
               targets: 3,
               title: WebAppLocals.getMessage('insertDate'),

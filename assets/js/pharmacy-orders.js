@@ -404,18 +404,13 @@ var PharmacyOrdersDataTable = (function () {
                 },
             },
             {
-                field: 'quantity',
-                title: WebAppLocals.getMessage('quantity'),
+                targets: 13,
+                title: WebAppLocals.getMessage('orderOrderedQuantity'),
                 sortable: false,
                 autoHide: false,
                 width: 100,
-                // callback function support for column rendering
-                template: function (row) {
-                    var output = '';
-
-                    output = row.quantity;
-                    return output;
-                },
+                data: 'requestedQuantity',
+                visible: false,
             },
             {
                 field: 'unitPrice',
