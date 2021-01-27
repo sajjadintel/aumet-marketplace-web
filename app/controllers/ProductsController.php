@@ -16,7 +16,7 @@ class ProductsController extends Controller {
             if ($entityId == 0)
                 $query = "productId=$productId";
             else
-                $query = "entityId=$entityId and id=$productId";
+                $query = "entityId=$entityId and productId=$productId";
 
             $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
             $dbEntityProduct->productName = "productName_" . $this->objUser->language;
