@@ -124,6 +124,10 @@ class ProductsController extends Controller {
                 $this->f3->set('arrProductOtherOffers', $dbEntityProductOtherOffers);
             }
 
+            $dbProductSubimage = new BaseModel($this->db, "productSubimage");
+            $arrSubimage = $dbProductSubimage->getWhere("productId=".$dbEntityProduct->productId);
+            $this->f3->set('arrSubimage', $arrSubimage);
+
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vTitle_entityProductDetail');
             $this->webResponse->data = View::instance()->render('app/products/single/entityProduct.php');
@@ -174,16 +178,21 @@ class ProductsController extends Controller {
             $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
             echo View::instance()->render('app/layout/layout.php');
         } else {
-            $productId = $this->f3->get('PARAMS.productId');
+            $id = $this->f3->get('PARAMS.productId');
 
             $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
-            $arrProduct = $dbProduct->findWhere("id = $productId");
+            $product = $dbProduct->findWhere("id = $id")[0];
+            $productId = $product['productId'];
 
             $dbProductIngredient = new BaseModel($this->db, "vwProductIngredient");
             $arrActiveIngredients = $dbProductIngredient->findWhere("productId = $productId");
 
-            $data['product'] = $arrProduct[0];
+            $dbProductSubimage = new BaseModel($this->db, "productSubimage");
+            $arrSubimages = $dbProductSubimage->findWhere("productId = $productId");
+
+            $data['product'] = $product;
             $data['activeIngredients'] = $arrActiveIngredients;
+            $data['subimages'] = $arrSubimages;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
         }
@@ -368,6 +377,7 @@ class ProductsController extends Controller {
                 $name_ar = $this->f3->get('POST.name_ar');
                 $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
+                $subimages = $this->f3->get('POST.subimages');
                 $unitPrice = $this->f3->get('POST.unitPrice');
                 $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
                 $subtitle_ar = $this->f3->get('POST.subtitle_ar');
@@ -448,8 +458,24 @@ class ProductsController extends Controller {
                 if($activeIngredientsId) {
                     $arrIngredientId = explode(",", $activeIngredientsId);
                     foreach($arrIngredientId as $ingredientId) {
+                        $dbProductIngredient->productId = $dbProduct->id;
                         $dbProductIngredient->ingredientId = $ingredientId;
                         $dbProductIngredient->add();
+                    }
+                }
+
+                $dbProductSubimage = new BaseModel($this->db, "productSubimage");
+                $dbProductSubimage->getWhere("productId = $productId");
+                while (!$dbProductSubimage->dry()) {
+                    $dbProductSubimage->delete();
+                    $dbProductSubimage->next();
+                }
+
+                if($subimages && count($subimages) > 0) {
+                    foreach($subimages as $subimage) {
+                        $dbProductSubimage->productId = $dbProduct->id;
+                        $dbProductSubimage->subimage = $subimage;
+                        $dbProductSubimage->add();
                     }
                 }
 
@@ -600,6 +626,7 @@ class ProductsController extends Controller {
             $name_ar = $this->f3->clean($this->f3->get('POST.name_ar'));
             $name_fr = $this->f3->clean($this->f3->get('POST.name_fr'));
             $image = $this->f3->get('POST.image');
+            $subimages = $this->f3->get('POST.subimages');
             $stock = $this->f3->get('POST.stock');
             $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
             $subtitle_ar = $this->f3->clean($this->f3->get('POST.subtitle_ar'));
@@ -679,6 +706,15 @@ class ProductsController extends Controller {
                     $dbProductIngredient->productId = $dbProduct->id;
                     $dbProductIngredient->ingredientId = $ingredientId;
                     $dbProductIngredient->add();
+                }
+            }
+
+            if($subimages && count($subimages) > 0) {
+                $dbProductSubimage = new BaseModel($this->db, "productSubimage");
+                foreach($subimages as $subimage) {
+                    $dbProductSubimage->productId = $dbProduct->id;
+                    $dbProductSubimage->subimage = $subimage;
+                    $dbProductSubimage->add();
                 }
             }
 

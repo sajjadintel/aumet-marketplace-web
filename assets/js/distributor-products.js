@@ -21,7 +21,8 @@ var DistributorProductsDataTable = (function () {
     ];
     var mapUuidSubimage = {};
     var imageModal;
-    var validator;
+    var _validator;
+    var _validatorFields = {};
 
     var _productEditModal = function (productId) {
         WebApp.get('/web/distributor/product/' + productId, _productEditModalOpen);
@@ -94,6 +95,8 @@ var DistributorProductsDataTable = (function () {
 
         _changeImageHolder(webResponse.data.product.image, 'edit');
         $('#editProductImage').on('change', (ev) => _changeProductImage(ev, 'edit'));
+
+        _initializeSubimagesDropzone('edit', webResponse.data.subimages);
         
         $('#editModal').appendTo('body').modal('show');
         _addModalValidation('edit');
@@ -189,9 +192,9 @@ var DistributorProductsDataTable = (function () {
         _changeImageHolder('', 'add');
         $('#addProductImage').on('change', (ev) => _changeProductImage(ev, 'add'));
 
-        _initializeSubimagesDropzone('add');
-
         $('#addActiveIngredients').on('change', (ev) => _updateActiveIngredientsVal('add'));
+        
+        _initializeSubimagesDropzone('add');
 
         $('#addModal').appendTo('body').modal('show');
         _addModalValidation('add');
@@ -236,9 +239,9 @@ var DistributorProductsDataTable = (function () {
         var _mandatoryFields = [ ...mandatoryFields ];
         if(mode === "add") _mandatoryFields.push("stock");
 
-        var validatorFields = {};
+        _validatorFields = {};
         _mandatoryFields.forEach((field) => {
-            validatorFields[field] = {
+            _validatorFields[field] = {
                 validators: {
                     notEmpty: {
                         message: WebAppLocals.getMessage('required')
@@ -249,7 +252,7 @@ var DistributorProductsDataTable = (function () {
         
         var form = KTUtil.getById(mode + "ModalForm");
         _validator = FormValidation.formValidation(form, {
-            fields: validatorFields,
+            fields: _validatorFields,
             plugins: {
                 trigger: new FormValidation.plugins.Trigger(),
                 // Bootstrap Framework Integration
@@ -322,7 +325,7 @@ var DistributorProductsDataTable = (function () {
 		myDropZone.on('addedfile', function (file) {
 			// Hookup the start button
             $(document).find(id + ' .dropzone-item').css('display', 'block');
-            $("#maxFilesExceededLabel").hide();
+            $("#" + mode + "MaxFilesExceededLabel").hide();
         });
 
 		// Update the total progress bar
@@ -364,11 +367,12 @@ var DistributorProductsDataTable = (function () {
 
 		myDropZone.on('maxfilesexceeded', function (file) {
             myDropZone.removeFile(file);
-            $("#maxFilesExceededLabel").show();
+            $("#" + mode + "MaxFilesExceededLabel").show();
         });
 
 		if(initialSubimages.length > 0) {
-            initialSubimages.forEach((subimage) => {
+            initialSubimages.forEach((subimageObj) => {
+                var subimage = subimageObj.subimage;
                 var fileUrl = _getFullUrl(subimage);
                 var fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
                 var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
@@ -377,9 +381,12 @@ var DistributorProductsDataTable = (function () {
                     status: 'success',
                     accepted: true,
                     name: fileNameWithoutTimestamp,
-                    url: fileUrl
+                    url: fileUrl,
+                    upload: {
+                        uuid: Math.random().toString(36).substring(2, 8)
+                    }
                 };
-                
+
                 myDropZone.files.push(file);
                 myDropZone.emit('addedfile', file);
                 myDropZone.emit('complete', file);
@@ -396,6 +403,11 @@ var DistributorProductsDataTable = (function () {
             myDropZone.removeAllFiles();
             $('.wrap-modal-slider').removeClass('open');
             $('#' + mode + 'DropzoneItems').append(previewTemplate);
+            
+            if(_validator) {
+                _validator.destroy();
+                _validatorFields = {};
+            }
         })
     }
 
@@ -420,7 +432,9 @@ var DistributorProductsDataTable = (function () {
         $(".select2").each(function(index, element) {
             var field = $(element).attr("name");
             $(element).on('change.select2', function() {
-                _validator.revalidateField(field);
+                if(field in _validatorFields) {
+                    _validator.revalidateField(field);
+                }
             });
         });
 
@@ -461,8 +475,73 @@ var DistributorProductsDataTable = (function () {
                     body[key] = $('#addModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
                 });
 
+                $("#addModal").modal('hide');
                 WebApp.post('/web/distributor/product/add', body, DistributorProductsDataTable.reloadDatatable);
-                $(form).parent().parent().parent().modal('hide');
+            } else {
+                Swal.fire({
+                    text: WebAppLocals.getMessage('validationError'),
+                    icon: 'error',
+                    buttonsStyling: false,
+                    confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+                    customClass: {
+                        confirmButton: 'btn font-weight-bold btn-light',
+                    },
+                }).then(function () {
+                    KTUtil.scrollTop();
+                });
+            }
+        });
+    }
+
+    var _productEdit = function () {
+        $(".select2").each(function(index, element) {
+            var field = $(element).attr("name");
+            $(element).on('change.select2', function() {
+                if(field in _validatorFields) {
+                    _validator.revalidateField(field);
+                }
+            });
+        });
+
+        _validator.validate().then(function (status) {
+            if (status == 'Valid') {
+                let body = {
+                    subimages: Object.keys(mapUuidSubimage).map((key) => mapUuidSubimage[key]),
+                };
+
+                let mapKeyElement = {
+                    id: 'input',
+                    scientificNameId: 'select',
+                    madeInCountryId: 'select',
+                    name_en: 'input',
+                    name_ar: 'input',
+                    name_fr: 'input',
+                    image: 'input',
+                    maximumOrderQuantity: 'input',
+                    subtitle_ar: 'input',
+                    subtitle_en: 'input',
+                    subtitle_fr: 'input',
+                    description_ar: 'textarea',
+                    description_en: 'textarea',
+                    description_fr: 'textarea',
+                    unitPrice: 'input',
+                    vat: 'input',
+                    manufacturerName: 'input',
+                    batchNumber: 'input',
+                    itemCode: 'input',
+                    categoryId: 'select',
+                    subcategoryId: 'select',
+                    activeIngredientsId: 'input',
+                    expiryDate: 'input',
+                    strength: 'input',
+                };
+
+                Object.keys(mapKeyElement).forEach((key) => {
+                    body[key] = $('#editModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+                });
+
+                $("#editModal").modal('hide');
+                WebApp.post('/web/distributor/product/edit', body, DistributorProductsDataTable.reloadDatatable);
             } else {
                 Swal.fire({
                     text: WebAppLocals.getMessage('validationError'),

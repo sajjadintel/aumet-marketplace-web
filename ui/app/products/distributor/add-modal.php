@@ -12,10 +12,6 @@
     .wrap-modal-slider.open {
         opacity: 1;
     }
-
-    .slick-prev:before, .slick-next:before {
-        color: #13B9A9;
-    }
 </style>
 <!-- Modal-->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
@@ -69,7 +65,7 @@
                                             <!--end::Svg Icon-->
                                         </span><?php echo $vModule_product_uploadSubimages; ?>
                                     </a>
-                                    <span id="maxFilesExceededLabel" class="text-danger" style="display: none;"><?php echo $vModule_product_SubimagesExceeded; ?></span>
+                                    <span id="addMaxFilesExceededLabel" class="text-danger" style="display: none;"><?php echo $vModule_product_SubimagesExceeded; ?></span>
                                 </div>
                                 <div class="wrap-modal-slider">
                                     <div class="dropzone-items" id="addDropzoneItems" style="display: flex;">
@@ -192,7 +188,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="modal-add-button">
-                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="addModalAction"><?php echo $vModule_product_add; ?></button>
+                        <button type="button" class="btn btn-primary font-weight-bold" id="addModalAction" onclick="DistributorProductsDataTable.productAdd();"><?php echo $vModule_product_add; ?></button>
                     </div>
                 </div>
             </form>

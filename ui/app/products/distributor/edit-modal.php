@@ -2,6 +2,16 @@
 	textarea {
 		resize: none;
 	}
+
+    .wrap-modal-slider {
+        padding: 0 30px;
+        opacity: 0;
+        transition: all 0.3s;
+    }
+
+    .wrap-modal-slider.open {
+        opacity: 1;
+    }
 </style>
 <!-- Modal-->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">
@@ -18,7 +28,7 @@
                     <input type="hidden" class="form-control" name="id" id="editProductId">
                     <input type="hidden" name="fnCallback" class="modalValueCallback" id="editProductCallback" value="DistributorProductsDataTable.reloadDatatable" />
                     <div class="row">
-                        <div class="col-md-12 form-group">
+                        <div class="col-md-2 form-group">
                             <div class="image-input image-input-empty image-input-outline">
                                 <div class="image-input-wrapper" id="editProductImageHolder"></div>
                                 <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
@@ -36,6 +46,44 @@
                                       data-action="remove" data-toggle="tooltip" title="Remove avatar">
                                     <i class="ki ki-bold-close icon-xs text-muted"></i>
                                 </span>
+                            </div>
+                        </div>
+                        <div class="col-md-10 form-group">
+                            <div class="dropzone dropzone-multi" id="editProductSubimagesDropzone" style="background-color: unset;">
+                                <div class="dropzone-panel mb-lg-0 mb-2">
+                                    <a class="dropzone-select btn btn-light-primary font-weight-bolder font-size-h6 pl-6 pr-8 py-4 my-3 mr-3">
+                                        <span class="svg-icon menu-icon">
+                                            <!--begin::Svg Icon | path:assets/media/svg/icons/Files/Upload.svg-->
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                    <rect x="0" y="0" width="24" height="24"></rect>
+                                                    <path d="M2,13 C2,12.5 2.5,12 3,12 C3.5,12 4,12.5 4,13 C4,13.3333333 4,15 4,18 C4,19.1045695 4.8954305,20 6,20 L18,20 C19.1045695,20 20,19.1045695 20,18 L20,13 C20,12.4477153 20.4477153,12 21,12 C21.5522847,12 22,12.4477153 22,13 L22,18 C22,20.209139 20.209139,22 18,22 L6,22 C3.790861,22 2,20.209139 2,18 C2,15 2,13.3333333 2,13 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"></path>
+                                                    <rect fill="#000000" opacity="0.3" x="11" y="2" width="2" height="14" rx="1"></rect>
+                                                    <path d="M12.0362375,3.37797611 L7.70710678,7.70710678 C7.31658249,8.09763107 6.68341751,8.09763107 6.29289322,7.70710678 C5.90236893,7.31658249 5.90236893,6.68341751 6.29289322,6.29289322 L11.2928932,1.29289322 C11.6689749,0.916811528 12.2736364,0.900910387 12.6689647,1.25670585 L17.6689647,5.75670585 C18.0794748,6.12616487 18.1127532,6.75845471 17.7432941,7.16896473 C17.3738351,7.57947475 16.7415453,7.61275317 16.3310353,7.24329415 L12.0362375,3.37797611 Z" fill="#000000" fill-rule="nonzero"></path>
+                                                </g>
+                                            </svg>
+                                            <!--end::Svg Icon-->
+                                        </span><?php echo $vModule_product_uploadSubimages; ?>
+                                    </a>
+                                    <span id="editMaxFilesExceededLabel" class="text-danger" style="display: none;"><?php echo $vModule_product_SubimagesExceeded; ?></span>
+                                </div>
+                                <div class="wrap-modal-slider">
+                                    <div class="dropzone-items" id="editDropzoneItems" style="display: flex;">
+                                        <div class="col-md-2 image-input image-input-empty image-input-outline dropzone-item" style="display: none; background-color: unset;">
+                                            <div class="dropzone-error" data-dz-errormessage=""></div>
+                                            <div class="mb-2 image-input-wrapper" id="dropzoneImage" style="width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/theme/assets/media/users/blank.png'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%);">
+                                                <div class="px-2 dropzone-progress" style="width: 100%; position: relative; top: 50%;">
+                                                    <div class="progress">
+                                                        <div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress=""></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow dropzone-delete" data-dz-remove="" data-action="change" data-toggle="tooltip" title="" data-original-title="Change avatar" style="top: -3px; right: 0px; box-shadow: 0px 2px 4px 0px rgba(24, 28, 50, 0.3) !important;">
+                                                <i class="flaticon2-cross icon-sm text-muted"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6 form-group">
@@ -136,7 +184,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="modal-edit-button">
-                        <button type="button" class="btn btn-primary font-weight-bold modalAction" id="editModalAction"><?php echo $vModule_product_edit; ?></button>
+                        <button type="button" class="btn btn-primary font-weight-bold" id="editModalAction" onclick="DistributorProductsDataTable.productEdit();"><?php echo $vModule_product_edit; ?></button>
                     </div>
                 </div>
             </form>
