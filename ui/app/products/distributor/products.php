@@ -499,4 +499,5 @@ function compress_htmlcode($codedata)
     </script>
 <?php ob_end_flush(); ?>
 <?php include_once 'edit-modal.php';
-include_once 'add-modal.php'; ?>
+include_once 'add-modal.php'; 
+include_once 'image-modal.php'; ?>

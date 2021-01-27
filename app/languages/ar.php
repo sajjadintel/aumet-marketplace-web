@@ -138,6 +138,8 @@ return array(
     'vModule_product_expiryDate' => 'تاريخ الانتهاء',
     'vModule_product_activeIngredients' => 'مكونات نشطة',
     'vModule_product_strength' => 'قوة',
+    'vModule_product_uploadSubimages' => 'تحميل الصور الفرعية',
+    'vModule_product_SubimagesExceeded' => 'تم الوصول إلى حد الصور الفرعية',
 
 
     'stockAvailability_available' => 'متوفر',
@@ -182,6 +184,7 @@ return array(
     'vModule_product_stockStatusDate' => 'آخر تحديث',
     'vModule_product_scientificName' => 'الاسم العلمي',
     'vModule_product_unitPrice' => 'سعر المنتج',
+    'vModule_product_vat' => 'ضريبة القيمة المضافة',
     'vModule_product_related' => 'منتجات أخرى',
 
     'vModule_product_stockStatus_NotAvailable' => 'غير متوفر',
