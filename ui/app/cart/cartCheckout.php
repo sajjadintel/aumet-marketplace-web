@@ -77,7 +77,7 @@ function compress_htmlcode($codedata)
                                                 <div class="symbol-label" style="background-image: url('<?php echo $item->image ?>')"></div>
                                             </div>
                                             <div>
-                                                <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->productId ?>')" class="text-dark text-hover-primary"><?php echo $item->name ?></a>
+                                                <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->id ?>')" class="text-dark text-hover-primary"><?php echo $item->name ?></a>
                                                 <?php if($item->quantityFree > 0) : ?>
                                                     <p id="quantityFreeHolder-<?php echo $item->productId ?>" class="text-danger">Free <?php echo $item->name ?> x<span id="quantityFree-<?php echo $item->productId ?>"><?php echo $item->quantityFree ?></span></p>
                                                 <?php endif; ?>

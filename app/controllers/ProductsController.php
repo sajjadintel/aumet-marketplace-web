@@ -9,14 +9,14 @@ class ProductsController extends Controller {
             echo View::instance()->render('app/layout/layout.php');
         } else {
             $entityId = $this->f3->get('PARAMS.entityId');
-            $productId = $this->f3->get('PARAMS.productId');
+            $id = $this->f3->get('PARAMS.id');
 
             $roleId = $this->f3->get('SESSION.objUser')->roleId;
 
             if ($entityId == 0)
-                $query = "productId=$productId";
+                $query = "id=$id";
             else
-                $query = "entityId=$entityId and productId=$productId";
+                $query = "entityId=$entityId and id=$id";
 
             $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
             $dbEntityProduct->productName = "productName_" . $this->objUser->language;
