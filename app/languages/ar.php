@@ -321,4 +321,10 @@ return array(
     'vModule_profile_minimumValueOrderCityError' => 'تم اختيار بعض المدن أكثر من مرة',
     'vModule_profile_paymentMethodRequired' => 'طريقة الدفع المطلوبة',
     'vModule_profile_missingFields' => 'بعض الحقول الإلزامية مفقودة',
+
+    'error_filedTooLong' => ' field is too long! maximum length: ',
+    'field_entityName' => 'Entity Name',
+    'field_address' => 'Address',
+    'field_tradeLicenseNumber' => 'Trade license number',
+
 );

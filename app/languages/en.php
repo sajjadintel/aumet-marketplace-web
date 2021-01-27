@@ -324,4 +324,10 @@ return array(
     'vModule_profile_minimumValueOrderCityError' => 'Some cities are selected more than once',
     'vModule_profile_paymentMethodRequired' => 'Payment method required',
     'vModule_profile_missingFields' => 'Some mandatory fields are missing',
+
+    'error_filedTooLong' => ' field is too long! maximum length: ',
+    'field_entityName' => 'Entity Name',
+    'field_address' => 'Address',
+    'field_tradeLicenseNumber' => 'Trade license number',
+
 );
