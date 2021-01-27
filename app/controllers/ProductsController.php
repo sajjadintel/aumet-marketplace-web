@@ -9,7 +9,7 @@ class ProductsController extends Controller {
             echo View::instance()->render('app/layout/layout.php');
         } else {
             $entityId = $this->f3->get('PARAMS.entityId');
-            $id = $this->f3->get('PARAMS.id');
+            $id = $this->f3->get('PARAMS.productId');
 
             $roleId = $this->f3->get('SESSION.objUser')->roleId;
 
