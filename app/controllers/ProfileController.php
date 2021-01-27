@@ -17,7 +17,7 @@ class ProfileController extends Controller {
                 $dbUser->entityBranchAddress = "entityBranchAddress_" . $this->objUser->language;
                 $user = $dbUser->getWhere("userId=".$this->objUser->id)[0];
                 $this->f3->set('user', $user);
-                
+
                 // Get all payment methods
                 $dbPaymentMethod = new BaseModel($this->db, "paymentMethod");
                 $dbPaymentMethod->name = "name_" . $this->objUser->language;
@@ -49,23 +49,23 @@ class ProfileController extends Controller {
                     $dbEntityMinimumValueOrderCity = new BaseModel($this->db, "entityMinimumValueOrderCity");
                     $strEntityMinimumValueOrderId = implode(",", $arrEntityMinimumValueOrderId);
                     $arrEntityMinimumValueOrderCity = $dbEntityMinimumValueOrderCity->getWhere("entityMinimumValueOrderId IN ($strEntityMinimumValueOrderId)");
-    
+
                     $mapEntityMinimumValueOrderIdCityId = [];
                     foreach($arrEntityMinimumValueOrderCity as $entityMinimumValueOrderCity) {
                         $entityMinimumValueOrderId = $entityMinimumValueOrderCity['entityMinimumValueOrderId'];
                         $cityId = $entityMinimumValueOrderCity['cityId'];
                         if(array_key_exists($entityMinimumValueOrderId, $mapEntityMinimumValueOrderIdCityId)) {
-                            $allCityId = $mapEntityMinimumValueOrderIdCityId[$entityMinimumValueOrderId]; 
+                            $allCityId = $mapEntityMinimumValueOrderIdCityId[$entityMinimumValueOrderId];
                             array_push($allCityId, $cityId);
                             $mapEntityMinimumValueOrderIdCityId[$entityMinimumValueOrderId] = $allCityId;
                         } else {
                             $mapEntityMinimumValueOrderIdCityId[$entityMinimumValueOrderId] = [$cityId];
                         }
                     }
-                    
+
                     foreach($arrEntityMinimumValueOrder as $entityMinimumValueOrder) {
                         $entityMinimumValueOrderId = $entityMinimumValueOrder['id'];
-                        
+
                         $entityMinimumValueOrderGrouped = new stdClass();
                         $entityMinimumValueOrderGrouped->entityMinimumValueOrderId = $entityMinimumValueOrderId;
                         $entityMinimumValueOrderGrouped->minimumValueOrder = $entityMinimumValueOrder['minimumValueOrder'];
@@ -135,6 +135,10 @@ class ProfileController extends Controller {
         $address = $this->f3->get("POST.address");
         $entityDocument = $this->f3->get("POST.entityDocument");
 
+        $this->checkLength($entityName, 'entityName', 100);
+        $this->checkLength($address, 'address', 500);
+        $this->checkLength($tradeLicenseNumber, 'tradeLicenseNumber', 200);
+
         if(!$entityName || !$address) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
@@ -190,7 +194,7 @@ class ProfileController extends Controller {
             echo $this->webResponse->jsonResponse();
             return;
         }
-        
+
         // Check if user exists
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getWhere("id=$userId");
@@ -222,6 +226,10 @@ class ProfileController extends Controller {
         $tradeLicenseNumber = $this->f3->get("POST.tradeLicenseNumber");
         $address = $this->f3->get("POST.address");
         $entityDocument = $this->f3->get("POST.entityDocument");
+
+        $this->checkLength($entityName, 'entityName', 100);
+        $this->checkLength($address, 'address', 500);
+        $this->checkLength($tradeLicenseNumber, 'tradeLicenseNumber', 200);
 
         if(!$entityName || !$address) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -278,7 +286,7 @@ class ProfileController extends Controller {
             echo $this->webResponse->jsonResponse();
             return;
         }
-        
+
         // Check if user exists
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getWhere("id=$userId");
@@ -308,7 +316,7 @@ class ProfileController extends Controller {
         $userId = $this->f3->get("POST.userId");
         $allPaymentMethodId = $this->f3->get("POST.allPaymentMethodId");
         $allEntityMinimumValueOrder = $this->f3->get("POST.allEntityMinimumValueOrder");
-        
+
         // Check if there is a payment method
         if(!$allPaymentMethodId || count($allPaymentMethodId) == 0) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -316,7 +324,7 @@ class ProfileController extends Controller {
             echo $this->webResponse->jsonResponse();
             return;
         }
-        
+
         if(!$allEntityMinimumValueOrder) {
             $allEntityMinimumValueOrder = [];
         }
@@ -354,9 +362,9 @@ class ProfileController extends Controller {
                 $dbEntityPaymentMethod->delete();
                 $dbEntityPaymentMethod->next();
             }
-            
+
             foreach($allPaymentMethodId as $paymentMethodId) {
-                $dbEntityPaymentMethod->entityId = $entityId; 
+                $dbEntityPaymentMethod->entityId = $entityId;
                 $dbEntityPaymentMethod->paymentMethodId = $paymentMethodId;
                 $dbEntityPaymentMethod->add();
             }
@@ -366,7 +374,7 @@ class ProfileController extends Controller {
             $dbEntityMinimumValueOrder->getWhere("entityId = $entityId");
             $oldEntityMinimumValueOrderId = [];
             while (!$dbEntityMinimumValueOrder->dry()) {
-                array_push($oldEntityMinimumValueOrderId, $dbEntityMinimumValueOrder['id']); 
+                array_push($oldEntityMinimumValueOrderId, $dbEntityMinimumValueOrder['id']);
                 $dbEntityMinimumValueOrder->delete();
                 $dbEntityMinimumValueOrder->next();
             }
@@ -380,7 +388,7 @@ class ProfileController extends Controller {
                     $dbEntityMinimumValueOrderCity->next();
                 }
             }
-            
+
             foreach($allEntityMinimumValueOrder as $entityMinimumValueOrder) {
                 $dbEntityMinimumValueOrder->entityId = $entityId;
                 $dbEntityMinimumValueOrder->minimumValueOrder = $entityMinimumValueOrder['minimumValueOrder'];
