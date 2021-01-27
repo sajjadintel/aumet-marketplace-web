@@ -5,8 +5,7 @@ use Kreait\Firebase\Auth;
 use Firebase\Auth\Token\Exception\InvalidToken;
 use Ahc\Jwt\JWT;
 
-class AuthController extends Controller
-{
+class AuthController extends Controller {
     function beforeroute()
     {
     }
@@ -103,11 +102,11 @@ class AuthController extends Controller
             echo $this->jsonResponse(false, null, $this->f3->get("vMessage_invalidLogin"));
         } else {
             if (password_verify($password, $dbUser->password)) {
-                if($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
+                if ($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
                     echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
-                } else if($dbUser->statusId == Constants::USER_STATUS_PENDING_APPROVAL) {
+                } else if ($dbUser->statusId == Constants::USER_STATUS_PENDING_APPROVAL) {
                     echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
-                } else if($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
+                } else if ($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
                     $this->configUser($dbUser);
                     $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
                     echo $this->webResponse->jsonResponse();
@@ -153,14 +152,14 @@ class AuthController extends Controller
                 $validUser = true;
             }
 
-            if($validUser) {
-                if($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
+            if ($validUser) {
+                if ($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
                     echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
                     return;
-                } else if($dbUser->statusId == Constants::USER_STATUS_PENDING_APPROVAL) {
+                } else if ($dbUser->statusId == Constants::USER_STATUS_PENDING_APPROVAL) {
                     echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
                     return;
-                } else if($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
+                } else if ($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
                     $this->configUser($dbUser);
                     $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
                 }
@@ -266,6 +265,51 @@ class AuthController extends Controller
             $this->f3->set('vAuthFile', 'forgot');
             echo View::instance()->render('public/auth/layout.php');
         }
+    }
+
+    function postForgottenPassword()
+    {
+        $email = $this->f3->get("POST.email");
+
+        $dbUser = new BaseModel($this->db, "user");
+        $dbUser->getByField("email", $email);
+
+        if ($dbUser->dry()) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->title = "";
+            $this->webResponse->message = "Email doesn't exist!";
+            echo $this->webResponse->jsonResponse();
+            exit;
+        }
+        $userResetToken = new BaseModel($this->db, "userResetToken");
+        $userResetToken->getWhere('userId=' . $dbUser->id . " and userResetTokenStatusId=1");
+        if (!$userResetToken->dry()) {
+            $userResetToken->userResetTokenStatusId = 3;
+            $userResetToken->update();
+        }
+
+        $userResetToken = new BaseModel($this->db, "userResetToken");
+        $userResetToken->userId = $dbUser->id;
+        $userResetToken->userResetTokenStatusId = 1;
+        $userResetToken->token = Helper::generateRandomString(20);
+        $userResetToken->createdAt = date('Y-m-d H:i:s');
+        $userResetToken->updatedAt = date('Y-m-d H:i:s');
+        $userResetToken->addReturnID();
+
+
+        $payload = [
+            'id' => $userResetToken->id,
+            'userId' => $userResetToken->userId,
+            'token' => $userResetToken->token,
+        ];
+        $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 1), 10);
+        $token = $jwt->encode($payload);
+
+        NotificationHelper::resetPasswordNotification($this->f3, $this->db, $dbUser, $token);
+
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
+        $this->webResponse->message = $this->f3->get("vForgot_emailSent");
+        echo $this->webResponse->jsonResponse();
     }
 
     function clearUserSession()
@@ -574,95 +618,105 @@ class AuthController extends Controller
     {
         $token = $_GET['token'];
 
-        if (isset($token) && $token != null && $token != "") {
-            $token = urldecode($token);
-            $dbRequest = new BaseModel($this->db, "usersResetPasswordRequests");
-            $dbRequest->getByField("tokenSecure", $token);
-
-
-            if (!$dbRequest->dry()) {
-                if ($dbRequest->stateId == 1) {
-                    $this->f3->set('passwordToken', $token);
-
-                    echo View::instance()->render('resetPassword.php');
-                } else {
-                    $this->rerouteAuth();
-                }
-            } else {
-                $this->rerouteAuth();
-            }
-        } else {
+        if (!isset($token) || $token == null || $token == "") {
             $this->rerouteAuth();
         }
+        $token = urldecode($token);
+        try {
+            $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 1), 10);
+            $accessTokenPayload = $jwt->decode($token);
+        } catch (\Exception $e) {
+            $this->rerouteAuth();
+        }
+        if (!is_array($accessTokenPayload)) {
+            $this->rerouteAuth();
+        }
+
+        $dbRequest = new BaseModel($this->db, "userResetToken");
+        $dbRequest->getByField("id", $accessTokenPayload['id']);
+
+        if ($dbRequest->dry()) {
+            $this->rerouteAuth();
+        }
+
+        if ($dbRequest->userResetTokenStatusId != 1) {
+            $this->rerouteAuth();
+        }
+
+
+        $this->f3->set('token', $token);
+        $this->f3->set('vAuthFile', 'reset');
+        echo View::instance()->render('public/auth/layout.php');
     }
 
     function postResetPassword()
     {
         $token = $this->f3->get('POST.token');
         $password = $this->f3->get('POST.password');
-        $passwordConfirm = $this->f3->get('POST.passwordConfirm');
+        $passwordConfirm = $this->f3->get('POST.passwordConfirmation');
 
-        if (
-            isset($token) && $token != null && $token != "" &&
-            isset($password) && $password != null && $password != ""
-        ) {
-
-            $uppercase = preg_match('@[A-Z]@', $password);
-            $lowercase = preg_match('@[a-z]@', $password);
-            $number = preg_match('@[0-9]@', $password);
-            $specialChars = preg_match('@[^\w]@', $password);
-
-            if (!$uppercase || !$lowercase || !$number || !$specialChars || strlen($password) < 8 || $password !== $passwordConfirm) {
-                echo $this->jsonResponse(false, $this->f3->get('vMessage_passwordRulesError'));
-            } else {
-                $dbRequest = new BaseModel($this->db, "usersResetPasswordRequests");
-                $dbRequest->getByField("tokenSecure", $token);
-
-                if (!$dbRequest->dry()) {
-                    if ($dbRequest->stateId == 1) {
-
-                        $dbUser = new BaseModel($this->db, "users");
-                        $dbUser->getByField("resetPasswordRequestId", $dbRequest->id);
-
-                        if (!$dbUser->dry()) {
-                            if ($dbUser->stateId == 1 && $dbUser->id == $dbRequest->userId && $dbUser->isResetPassword == 1) {
-                                $dbUser->isResetPassword = 0;
-                                $dbUser->resetPasswordRequestId = 0;
-
-                                $dbUser->password = password_hash($password, PASSWORD_DEFAULT);
-
-                                $dbRequest->stateId = 2;
-                                $dbRequest->updateDateTime = date('Y-m-d H:i:s');
-
-                                if ($dbRequest->edit()) {
-                                    if ($dbUser->edit()) {
-                                        echo $this->jsonResponse(true, "");
-                                    } else {
-                                        $dbRequest->stateId = 1;
-                                        $dbRequest->edit();
-                                        echo $this->jsonResponse(false, $this->f3->get('vMessage_generalError'));
-                                    }
-                                } else {
-                                    echo $this->jsonResponse(false, $this->f3->get('vMessage_generalError'));
-                                }
-                            } else {
-                                echo $this->jsonResponse(false, $this->f3->get('vMessage_generalError'));
-                            }
-                        } else {
-                            $dbRequest->stateId = 3;
-                            $dbRequest->edit();
-                            echo $this->jsonResponse(false, $this->f3->get('vMessage_generalError'));
-                        }
-                    } else {
-                        echo $this->jsonResponse(false, $this->f3->get('vMessage_generalError'));
-                    }
-                } else {
-                    echo $this->jsonResponse(false, $this->f3->get('vMessage_generalError'));
-                }
-            }
-        } else {
-            echo $this->jsonResponse(false, $this->f3->get('vMessage_generalError'));
+        if (!isset($token) || $token == null || $token == "" || !isset($password) || $password == null || $password == "") {
+            echo $this->webResponse->jsonResponseV2(Constants::STATUS_ERROR, null, $this->f3->get('vMessage_generalError') . '1', null);
+            return;
         }
+
+        if ($password !== $passwordConfirm) {
+            echo $this->jsonResponse(false, null, $this->f3->get('vMessage_passwordRulesError'));
+            return;
+        }
+
+        if (strlen($password) < 6) {
+            echo $this->jsonResponse(false, null, $this->f3->get('vMessage_passwordNotStrong'));
+            return;
+        }
+
+        try {
+            $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 1), 10);
+            $accessTokenPayload = $jwt->decode($token);
+        } catch (\Exception $e) {
+            echo $this->webResponse->jsonResponseV2(Constants::STATUS_ERROR, null, $this->f3->get('vMessage_generalError') . '2', null);
+            return;
+        }
+        if (!is_array($accessTokenPayload)) {
+            echo $this->webResponse->jsonResponseV2(Constants::STATUS_ERROR, null, $this->f3->get('vMessage_generalError') . '3', null);
+            return;
+        }
+
+        $dbRequest = new BaseModel($this->db, "userResetToken");
+        $dbRequest->getByField("id", $accessTokenPayload['id']);
+
+        if ($dbRequest->dry()) {
+            echo $this->webResponse->jsonResponseV2(Constants::STATUS_ERROR, null, $this->f3->get('vMessage_generalError') . '4', null);
+            return;
+        }
+
+        if ($dbRequest->userResetTokenStatusId != 1) {
+            echo $this->webResponse->jsonResponseV2(Constants::STATUS_ERROR, null, $this->f3->get('vMessage_generalError') . '5', null);
+            return;
+        }
+
+
+        $dbUser = new BaseModel($this->db, "user");
+        $dbUser->getByField("id", $dbRequest->userId);
+
+        if ($dbUser->dry()) {
+            echo $this->webResponse->jsonResponseV2(Constants::STATUS_ERROR, null, $this->f3->get('vMessage_generalError') . '6', null);
+            return;
+        }
+
+        $dbUser->password = password_hash($password, PASSWORD_DEFAULT);
+        $dbRequest->updatedAt = date('Y-m-d H:i:s');
+
+        if (!$dbUser->edit()) {
+            $dbRequest->userResetTokenStatusId = 1;
+            $dbRequest->edit();
+            echo $this->webResponse->jsonResponseV2(Constants::STATUS_ERROR, null, $this->f3->get('vMessage_generalError') . '7', null);
+            return;
+        }
+
+        $dbRequest->userResetTokenStatusId = 3;
+        $dbRequest->edit();
+        echo $this->webResponse->jsonResponseV2(Constants::STATUS_SUCCESS, $this->f3->get('vForgot_passwordChanged'), $this->f3->get('vForgot_passwordChanged'), null);
     }
 
     function getEncryptedPassword()

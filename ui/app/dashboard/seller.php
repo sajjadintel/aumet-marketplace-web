@@ -385,7 +385,7 @@
                 render: function(data, type, row, meta) {
                     var output = '';
                     if (row.stockUpdateDateTime) {
-                        output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
+                        output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment.utc(row.stockUpdateDateTime).fromNow() + '</span>';
                     }
                     return output;
                 }

@@ -32,7 +32,7 @@ function compress_htmlcode($codedata)
                         <div class="row w-100 product-detail">
 
                             <div class="col-xxl-6 col-xl-6 col-lg-5 col-md-5 col-sm-12 col-xs-12 col-12">
-                                <img src="<?php echo $objEntityProduct->image ?>" alt="<?php echo $objEntityProduct->productName ?>">
+                                <img src="<?php echo $objEntityProduct->image ?>">
                             </div>
 
                             <div class="col-xxl-6 col-xl-6 col-lg-7 col-md-7 col-sm-12 col-xs-12 col-12">

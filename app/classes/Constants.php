@@ -27,6 +27,7 @@ class Constants
     ## Email Types
     const EMAIL_NEW_ORDER = 'New Order';
     const EMAIL_LOW_STOCK = 'Low Stock';
+    const EMAIL_RESET_PASSWORD = 'Reset Password';
     const EMAIL_MISSING_PRODUCTS = 'Missing Products';
     const EMAIL_MODIFY_SHIPPED_QUANTITY = 'Modify Shipped Quantity';
     const EMAIL_CUSTOMER_SUPPORT_REQUEST = 'Customer Support Request';

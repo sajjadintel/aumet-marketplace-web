@@ -134,7 +134,7 @@ var SearchDataTable = (function () {
 					autoHide: false,
 					template: function (row) {
 						if (row.stockUpdateDateTime) {
-							return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
+							return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment.utc(row.stockUpdateDateTime).fromNow() + '</span>';
 						} else {
 							return '';
 						}

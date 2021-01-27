@@ -38,10 +38,25 @@ return array(
     'vLogin_noAccountAdv' => "Don't you have an account yet?",
     'vLogin_email' => 'Work Email Address',
     'vLogin_password' => 'Password',
+    'vLogin_repeatPassword' => 'Repeat Password',
     'vLogin_rememberMe' => 'Remember Me',
     'vLogin_forgotPassword' => 'Forgotten Password ?',
     'vLogin_forgotPasswordDescription' => 'Enter your email to reset your password',
     'vLogin_forgotPasswordSubmit' => 'Submit',
+
+    'vForgot_emailSent' => 'Please check out your email and use reset password link.',
+    'vForgot_havingIssues' => 'Having issues?',
+    'vForgot_getHelp' => 'Get Help',
+    'vForgot_enterPassword' => 'Enter your email to reset your password',
+    'vForgot_enterPasswords' => 'Enter your password to reset your password',
+    'vForgot_submit' => 'Submit',
+    'vForgot_cancel' => 'Cancel',
+    'vForgot_resetPassword' => 'Reset Password',
+    'vMessage_generalError' => 'Something went wrong! Error: ',
+    'vMessage_passwordRulesError' => 'Passwords do not match!',
+    'vMessage_passwordNotStrong' => 'Password is not strong!',
+    'vForgot_passwordChanged' => 'Password Changed successfully!',
+    'vForgot_emailText' => 'You have recently requested on Aumet Marketplace to reset the password for your account. Click on the button below to reset it, or ignore the email if you didn\'t submit the request',
 
     'vSignup_password' => 'Password',
 
@@ -72,10 +87,10 @@ return array(
     'vSignup_wizardNext' => 'Next Step',
     'vSignup_wizardPrev' => 'Previous Step',
     'vSignup_wizardSubmit' => 'Submit Request',
-    
+
     'vSignup_wizardPharmacyInfoTitle' => 'Pharmacy Information',
     'vSignup_wizardPharmacyInfoSubtitle' => 'Fill the following details',
-    
+
     'vSignup_AlreadyHaveAccount' => 'Do you have an account?',
     'vSignup_firstName' => 'First Name',
     'vSignup_lastName' => 'Last Name',
@@ -91,7 +106,7 @@ return array(
     'vSignup_address' => 'Address',
     'vSignup_pharmacyDocument' => 'Pharmacy Trade License Document',
     'vSignup_uploadDocument' => 'Upload Document',
-    
+
     'vSignup_thankyouTitle' => 'Thanks for Registering!',
     'vSignup_thankyouSubtitle' => 'An email has been sent to you to verify your account.',
     'vSignup_thankyouHome' => 'Go back to home',
@@ -262,9 +277,9 @@ return array(
     'vModule_bulk_add_title' => 'Bulk Add',
     'vModule_bulk_add_image_title' => 'Bulk Add Images',
     'vModule_bulk_add_image_info' => 'For best use, make sure your image name starts with "productId-" to automatically select a product after the upload.',
-    
+
     'vResponse_imagesAdded' => 'Images added successfully',
-    
+
     'vModule_dashboardBuyer_newProducts' => 'New Products',
     'vModule_dashboardBuyer_topSelling' => 'Top Selling',
 

@@ -163,8 +163,10 @@ function compress_htmlcode($codedata)
                         row.entityId +
                         '/product/' +
                         row.productId +
-                        '\')"> ' +
-                        row['productName_' + docLang]
+                        '\')" title="'+
+                        row['productName_' + docLang] +
+                        '"> ' +
+                        WebApp.truncateText(row['productName_' + docLang], 100)
                         + '</span></div></div>';
                     return output;
                 },
@@ -233,7 +235,7 @@ function compress_htmlcode($codedata)
                 render: function (data, type, row, meta) {
                     var output = '';
                     if (row.stockUpdateDateTime) {
-                        output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
+                        output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment.utc(row.stockUpdateDateTime).fromNow() + '</span>';
                     }
 
                     return output;
@@ -661,6 +663,12 @@ function compress_htmlcode($codedata)
             var distributorId = <?php echo isset($_GET['distributorId']) ? "'" . $_GET['distributorId'] . "'" : 'null';?>;
             var scientificNameId = <?php echo isset($_GET['scientificNameId']) ? "'" . $_GET['scientificNameId'] . "'" : 'null';?>;
 
+            var dbAdditionalOptions = {
+                datatableOptions: {
+                    buttons: [],
+                }
+            };
+
             function updateDatatable() {
                 if (query != null)
                     searchQuery.query = query;
@@ -668,7 +676,7 @@ function compress_htmlcode($codedata)
                     searchQuery.entityId.push(distributorId);
                 if (scientificNameId != null && !searchQuery.scientificNameId.includes(scientificNameId))
                     searchQuery.scientificNameId.push(scientificNameId);
-                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery);
+                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
 
             }
 
