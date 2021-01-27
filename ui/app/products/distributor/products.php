@@ -120,7 +120,7 @@ function compress_htmlcode($codedata)
                     var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
-                        row.productId +
+                        row.id +
                         '\')"> ' +
                         '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
                         row.image +
@@ -129,7 +129,7 @@ function compress_htmlcode($codedata)
                     output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
-                        row.productId +
+                        row.id +
                         '\')" title="'+
                         row['productName_' + docLang] +
                         '"> ' +
@@ -178,7 +178,7 @@ function compress_htmlcode($codedata)
 
                     var btnEdit =
                         '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditModal(' +
-                        row.productId +
+                        row.id +
                         ')\' \
                     class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
                     <i class="nav-icon la la-edit p-0"></i> ' +
@@ -187,7 +187,7 @@ function compress_htmlcode($codedata)
 
                     var btnEditQuantity =
                         '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditQuantityModal(' +
-                        row.productId +
+                        row.id +
                         ')\' \
                     class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
                     <i class="nav-icon la la-box p-0"></i> ' +
