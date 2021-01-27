@@ -92,12 +92,15 @@ class BaseModel extends DB\SQL\Mapper
 
     public function getWhere($where, $order = "", $limit = 0, $offset = 0)
     {
+        if (!is_array($where)) {
+            $where = array($where);
+        }
         if ($order == "") {
-            $this->load(array($where));
+            $this->load($where);
         } else if ($limit == 0) {
-            $this->load(array($where), array('order' => $order, 'offset' => $offset));
+            $this->load($where, array('order' => $order, 'offset' => $offset));
         } else {
-            $this->load(array($where), array('order' => $order, 'limit' => $limit, 'offset' => $offset));
+            $this->load($where, array('order' => $order, 'limit' => $limit, 'offset' => $offset));
         }
         return $this->query;
     }
@@ -105,12 +108,15 @@ class BaseModel extends DB\SQL\Mapper
     public function findWhere($where, $order = "", $limit = 0, $offset = 0)
     {
         $result = null;
+        if (!is_array($where)) {
+            $where = array($where);
+        }
         if ($order == "") {
-            $result = $this->find(array($where));
+            $result = $this->find($where);
         } else if ($limit == 0) {
-            $result = $this->find(array($where), array('order' => $order, 'offset' => $offset));
+            $result = $this->find($where, array('order' => $order, 'offset' => $offset));
         } else {
-            $result = $this->find(array($where), array('order' => $order, 'limit' => $limit, 'offset' => $offset));
+            $result = $this->find($where, array('order' => $order, 'limit' => $limit, 'offset' => $offset));
         }
         $result = array_map(array($this, 'cast'), $result);
 

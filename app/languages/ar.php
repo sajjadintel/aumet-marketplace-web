@@ -339,6 +339,7 @@ return array(
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
     'field_entityName' => 'Entity Name',
+    'field_customerGroupName' => 'Customer group name',
     'field_address' => 'Address',
     'field_tradeLicenseNumber' => 'Trade license number',
 
