@@ -159,10 +159,7 @@
             title: WebAppLocals.getMessage('entityBuyer'),
             data: 'entityBuyer',
             orderable: false,
-            render: function(data, type, row, meta) {
-                var output = row.entityBuyer;
-                return output;
-            },
+            render: $.fn.dataTable.render.ellipsis( 100 )
         }, {
             targets: 2,
             title: WebAppLocals.getMessage('date'),
@@ -308,7 +305,7 @@
                     var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
-                        row.productId +
+                        row.id +
                         '\')"> ' +
                         '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
                         row.image +
@@ -317,9 +314,11 @@
                     output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
-                        row.productId +
-                        '\')"> ' +
-                        row['productName_' + docLang]
+                        row.id +
+                        '\')" title="'+
+                        row['productName_' + docLang] +
+                        '"> ' +
+                        WebApp.truncateText(row['productName_' + docLang], 100)
                         + '</span></div></div>';
                     return output;
                 }
@@ -333,6 +332,7 @@
                 title: WebAppLocals.getMessage('productScientificName'),
                 data: 'scientificName',
                 orderable: false,
+                render: $.fn.dataTable.render.ellipsis( 100 )
             }, {
                 targets: 3,
                 title: WebAppLocals.getMessage('expiryDate'),
@@ -385,7 +385,7 @@
                 render: function(data, type, row, meta) {
                     var output = '';
                     if (row.stockUpdateDateTime) {
-                        output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
+                        output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment.utc(row.stockUpdateDateTime).fromNow() + '</span>';
                     }
                     return output;
                 }

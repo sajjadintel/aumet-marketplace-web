@@ -32,7 +32,7 @@ function compress_htmlcode($codedata)
                         <div class="row w-100 product-detail">
 
                             <div class="col-xxl-6 col-xl-6 col-lg-5 col-md-5 col-sm-12 col-xs-12 col-12">
-                                <img src="<?php echo $objEntityProduct->image ?>" alt="<?php echo $objEntityProduct->productName ?>">
+                                <img src="<?php echo $objEntityProduct->image ?>">
                             </div>
 
                             <div class="col-xxl-6 col-xl-6 col-lg-7 col-md-7 col-sm-12 col-xs-12 col-12">
@@ -308,7 +308,7 @@ function compress_htmlcode($codedata)
                             let btnText = row.activeBonus ? row.activeBonus.minOrder + " / +" + row.activeBonus.bonus : "Select";
                             let allBonuses = row.bonuses.filter((bonus) => !row.activeBonus || row.activeBonus.id !== bonus.id);
                             let btnShowBonuses =
-                                '<a style="width: max-content;" href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.productId + ', ' + row.entityId + ', ' + JSON.stringify(allBonuses) + ')\'\
+                                '<a style="width: max-content;" href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.id + ', ' + row.entityId + ', ' + JSON.stringify(allBonuses) + ')\'\
                             class="btn btn-sm btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="View Bonuses">\
                             <span>' + btnText + '</span></a>';
                             output += btnShowBonuses;
@@ -358,7 +358,7 @@ function compress_htmlcode($codedata)
                     render: function (data, type, row, meta) {
 
                         var btnAddToCart =
-                            '<a style="display: flex;" href="javascript:;" ' + 'onclick="Cart.addItem(' + row.entityId + ',' + row.productId + ',\'#quantity-' + row.id + '\',\'#quantityFreeInput-' + row.id + '\'' + ')"' + ' class="btn btn-sm btn-default btn-text-primary btn-hover-primary  mr-2 mb-2" title="Add to cart">\
+                            '<a style="display: flex;" href="javascript:;" ' + 'onclick="Cart.addItem(' + row.entityId + ',' + row.id + ',\'#quantity-' + row.id + '\',\'#quantityFreeInput-' + row.id + '\'' + ')"' + ' class="btn btn-sm btn-default btn-text-primary btn-hover-primary  mr-2 mb-2" title="Add to cart">\
                             <span class="svg-icon svg-icon-md">\
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -371,7 +371,7 @@ function compress_htmlcode($codedata)
                             '<a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                             row.entityId +
                             '/product/' +
-                            row.productId +
+                            row.id +
                             '\')" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2 mb-2" title="View">\
                             <span class="svg-icon svg-icon-md">\
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\

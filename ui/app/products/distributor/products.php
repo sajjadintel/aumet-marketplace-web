@@ -120,7 +120,7 @@ function compress_htmlcode($codedata)
                     var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
-                        row.productId +
+                        row.id +
                         '\')"> ' +
                         '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
                         row.image +
@@ -129,9 +129,11 @@ function compress_htmlcode($codedata)
                     output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
-                        row.productId +
-                        '\')"> ' +
-                        row['productName_' + docLang]
+                        row.id +
+                        '\')" title="'+
+                        row['productName_' + docLang] +
+                        '"> ' +
+                        WebApp.truncateText(row['productName_' + docLang], 100)
                         + '</span></div></div>';
                     return output;
                 },
@@ -139,10 +141,7 @@ function compress_htmlcode($codedata)
                 targets: 2,
                 title: WebAppLocals.getMessage('productScientificName'),
                 data: 'scientificName',
-                render: function (data, type, row, meta) {
-                    var output = row.scientificName;
-                    return output
-                }
+                render: $.fn.dataTable.render.ellipsis( 100 )
             }, {
                 targets: 3,
                 title: WebAppLocals.getMessage('stockQuantity'),
@@ -157,7 +156,7 @@ function compress_htmlcode($codedata)
                 data: 'stockUpdateDateTime',
                 render: function (data, type, row, meta) {
                     if (row.stockUpdateDateTime) {
-                        return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
+                        return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment.utc(row.stockUpdateDateTime).fromNow() + '</span>';
                     } else {
                         return '';
                     }
@@ -179,7 +178,7 @@ function compress_htmlcode($codedata)
 
                     var btnEdit =
                         '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditModal(' +
-                        row.productId +
+                        row.id +
                         ')\' \
                     class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
                     <i class="nav-icon la la-edit p-0"></i> ' +
@@ -188,7 +187,7 @@ function compress_htmlcode($codedata)
 
                     var btnEditQuantity =
                         '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditQuantityModal(' +
-                        row.productId +
+                        row.id +
                         ')\' \
                     class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
                     <i class="nav-icon la la-box p-0"></i> ' +

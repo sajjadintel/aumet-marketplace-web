@@ -231,4 +231,44 @@ class NotificationHelper {
         $emailHandler->sendEmail(Constants::EMAIL_CUSTOMER_SUPPORT_CONFIRMATION, $subject, $htmlContent);
         $emailHandler->resetTos();
     }
+
+
+    /**
+     * Does something interesting
+     *
+     * @param \Base $f3 f3 instance
+     * @param BaseModel $dbConnection db connection instance
+     * @param \BaseModel $user user Model
+     * @param string $token reset password token
+     */
+    public static function resetPasswordNotification($f3, $dbConnection, $user, $token)
+    {
+        $emailHandler = new EmailHandler($dbConnection);
+        $emailFile = "email/layout.php";
+        $title = 'Reset Password';
+        $f3->set('domainUrl', getenv('DOMAIN_URL'));
+        $f3->set('title', $title);
+        $f3->set('emailType', 'resetPassword');
+        $f3->set('token', $token);
+
+
+        $emailHandler->appendToAddress($user->email, $user->fullname);
+
+        $htmlContent = View::instance()->render($emailFile);
+
+        $subject = $title;
+        if (getenv('ENV') != Constants::ENV_PROD) {
+            $subject .= " - (Test: " . getenv('ENV') . ")";
+
+            if (getenv('ENV') == Constants::ENV_LOC) {
+                $emailHandler->resetTos();
+                $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajjad intel");
+                $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+            }
+        }
+
+        $emailHandler->sendEmail(Constants::EMAIL_RESET_PASSWORD, $subject, $htmlContent);
+        $emailHandler->resetTos();
+    }
+
 }

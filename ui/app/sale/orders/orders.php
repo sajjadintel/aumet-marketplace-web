@@ -91,10 +91,7 @@ function compress_htmlcode($codedata)
                     targets: 2,
                     title: WebAppLocals.getMessage('entityBuyer'),
                     data: 'entityBuyer',
-                    render: function (data, type, row, meta) {
-                        var output = row.entityBuyer;
-                        return output;
-                    },
+                    render: $.fn.dataTable.render.ellipsis( 100 )
                 },
                 {
                     targets: 3,
@@ -344,9 +341,6 @@ function compress_htmlcode($codedata)
                     title: WebAppLocals.getMessage('productName'),
                     data: 'productName',
                     visible: false,
-                    render: function (data, type, row, meta) {
-                        return row.productName;
-                    },
                 },
                 {
                     targets: 11,
@@ -368,12 +362,9 @@ function compress_htmlcode($codedata)
                 },
                 {
                     targets: 13,
-                    title: WebAppLocals.getMessage('quantity'),
-                    data: 'quantity',
+                    title: WebAppLocals.getMessage('orderOrderedQuantity'),
+                    data: 'requestedQuantity',
                     visible: false,
-                    render: function (data, type, row, meta) {
-                        return row.quantity + row.quantityFree;
-                    },
                 },
                 {
                     targets: 14,

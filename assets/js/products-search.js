@@ -134,7 +134,7 @@ var SearchDataTable = (function () {
 					autoHide: false,
 					template: function (row) {
 						if (row.stockUpdateDateTime) {
-							return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
+							return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment.utc(row.stockUpdateDateTime).fromNow() + '</span>';
 						} else {
 							return '';
 						}
@@ -257,7 +257,7 @@ var SearchDataTable = (function () {
 							'<a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
 							row.entityId +
 							'/product/' +
-							row.productId +
+							row.id +
 							'\')" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2" title="View">\
                     <span class="svg-icon svg-icon-md">\
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
@@ -399,11 +399,11 @@ var SearchDataTable = (function () {
 			_init(objQuery);
 		},
 		onClickAddToCart: function (row) {
-			Cart.addItem(row.entityId, row.productId, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
+			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
 			WebApp.reloadDatatable();
 		},
 		onClickAddMoreToCart: function (row) {
-			Cart.addItem(row.entityId, row.productId, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
+			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
 			WebApp.reloadDatatable();
 		},
 		onBonusOptionCallback: function (row, bonusOption) {

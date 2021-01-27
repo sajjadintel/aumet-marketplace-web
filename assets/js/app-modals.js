@@ -33,9 +33,10 @@ var WebAppModals = (function () {
             },
         },
         {
-            targets: 4,
-            title: WebAppLocals.getMessage('quantity'),
-            data: 'quantity',
+            targets: 13,
+            title: WebAppLocals.getMessage('orderOrderedQuantity'),
+            data: 'requestedQuantity',
+            visible: false,
         },
         {
             targets: 5,
