@@ -260,6 +260,11 @@ var WebAppLocals = (function () {
 			ar: 'Shipped Quantity',
 			fr: '',
 		},
+		orderOrderedQuantity: {
+			en: 'Ordered Quantity',
+			ar: 'Ordered Quantity',
+			fr: '',
+		},
 		branch: {
 			en: 'Branch',
 			ar: 'فرع',

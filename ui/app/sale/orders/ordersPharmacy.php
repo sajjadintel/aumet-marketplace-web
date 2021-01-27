@@ -335,12 +335,9 @@ function compress_htmlcode($codedata)
                 },
                 {
                     targets: 13,
-                    title: WebAppLocals.getMessage('quantity'),
-                    data: 'quantity',
+                    title: WebAppLocals.getMessage('orderOrderedQuantity'),
+                    data: 'requestedQuantity',
                     visible: false,
-                    render: function (data, type, row, meta) {
-                        return row.quantity + row.quantityFree;
-                    },
                 },
                 {
                     targets: 14,
