@@ -5,8 +5,7 @@ use Kreait\Firebase\Auth;
 use Firebase\Auth\Token\Exception\InvalidToken;
 use Ahc\Jwt\JWT;
 
-class AuthController extends Controller
-{
+class AuthController extends Controller {
     function beforeroute()
     {
     }
@@ -103,11 +102,11 @@ class AuthController extends Controller
             echo $this->jsonResponse(false, null, $this->f3->get("vMessage_invalidLogin"));
         } else {
             if (password_verify($password, $dbUser->password)) {
-                if($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
+                if ($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
                     echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
-                } else if($dbUser->statusId == Constants::USER_STATUS_PENDING_APPROVAL) {
+                } else if ($dbUser->statusId == Constants::USER_STATUS_PENDING_APPROVAL) {
                     echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
-                } else if($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
+                } else if ($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
                     $this->configUser($dbUser);
                     $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
                     echo $this->webResponse->jsonResponse();
@@ -153,14 +152,14 @@ class AuthController extends Controller
                 $validUser = true;
             }
 
-            if($validUser) {
-                if($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
+            if ($validUser) {
+                if ($dbUser->statusId == Constants::USER_STATUS_WAITING_VERIFICATION) {
                     echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
                     return;
-                } else if($dbUser->statusId == Constants::USER_STATUS_PENDING_APPROVAL) {
+                } else if ($dbUser->statusId == Constants::USER_STATUS_PENDING_APPROVAL) {
                     echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
                     return;
-                } else if($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
+                } else if ($dbUser->statusId == Constants::USER_STATUS_ACCOUNT_ACTIVE) {
                     $this->configUser($dbUser);
                     $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
                 }
@@ -288,7 +287,7 @@ class AuthController extends Controller
         $address = $this->f3->get("POST.address");
         $pharmacyDocument = $this->f3->get("POST.pharmacyDocument");
 
-        if(!$name || !$mobile || !$email || !$password || !$entityName || !$countryId || !$cityId || !$address) {
+        if (!$name || !$mobile || !$email || !$password || !$entityName || !$countryId || !$cityId || !$address) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = "Some mandatory fields are missing";
             echo $this->webResponse->jsonResponse();
@@ -304,85 +303,111 @@ class AuthController extends Controller
             $this->webResponse->title = "";
             $this->webResponse->message = "Email address exists, Please signin instead";
             echo $this->webResponse->jsonResponse();
-        } else {
-            // Get currency symbol
-            $dbCountry = new BaseModel($this->db, "country");
-            $country = $dbCountry->getById($countryId)[0];
-            $currencySymbol = $country['currency'];
-
-            // Get currency id
-            $dbCurrency = new BaseModel($this->db, "currency");
-            $currency = $dbCurrency->getByField("symbol", $currencySymbol)[0];
-            $currencyId = $currency['id'];
-
-            // Add user
-            if ($uid != NULL && trim($uid) != '') {
-                $dbUser->uid = $uid;
-            }
-            $dbUser->email = $email;
-            $dbUser->password = password_hash($password, PASSWORD_DEFAULT);
-            $dbUser->statusId = Constants::USER_STATUS_WAITING_VERIFICATION;
-            $dbUser->fullname = $name;
-            $dbUser->mobile = $mobile;
-            $dbUser->roleId = Constants::USER_ROLE_PHARMACY_SYSTEM_ADMINISTRATOR;
-            $dbUser->language = "en";
-            $dbUser->addReturnID();
-
-            // Add entity
-            $dbEntity = new BaseModel($this->db, "entity");
-            $dbEntity->typeId = Constants::ENTITY_TYPE_PHARMACY;
-            $dbEntity->name_ar = $entityName;
-            $dbEntity->name_en = $entityName;
-            $dbEntity->name_fr = $entityName;
-            $dbEntity->countryId = $countryId;
-            $dbEntity->currencyId = $currencyId;
-            $dbEntity->addReturnID();
-
-            // Add entity branch
-            $dbEntityBranch = new BaseModel($this->db, "entityBranch");
-            $dbEntityBranch->entityId = $dbEntity->id;
-            $dbEntityBranch->name_ar = $entityName;
-            $dbEntityBranch->name_en = $entityName;
-            $dbEntityBranch->name_fr = $entityName;
-            $dbEntityBranch->cityId = $cityId;
-            $dbEntityBranch->address_ar = $address;
-            $dbEntityBranch->address_en = $address;
-            $dbEntityBranch->address_fr = $address;
-            $dbEntityBranch->tradeLicenseNumber = $tradeLicenseNumber;
-            $dbEntityBranch->tradeLicenseUrl = $pharmacyDocument;
-            $dbEntityBranch->addReturnID();
-
-            // Add account
-            $dbAccount = new BaseModel($this->db, "account");
-            $dbAccount->entityId = $dbEntity->id;
-            $dbAccount->number = 100;
-            $dbAccount->statusId = Constants::ACCOUNT_STATUS_ACTIVE;
-            $dbAccount->addReturnID();
-
-            // Add user account
-            $dbUserAccount = new BaseModel($this->db, "userAccount");
-            $dbUserAccount->userId = $dbUser->id;
-            $dbUserAccount->accountId = $dbAccount->id;
-            $dbUserAccount->statusId = Constants::ACCOUNT_STATUS_ACTIVE;
-            $dbUserAccount->addReturnID();
-
-            // Send verification email
-            $allValues = new stdClass();
-            $allValues->name = $name;
-            $allValues->mobile = $mobile;
-            $allValues->email = $email;
-            $allValues->entityName = $entityName;
-            $allValues->tradeLicenseNumber = $tradeLicenseNumber;
-            $allValues->countryId = $countryId;
-            $allValues->cityId = $cityId;
-            $allValues->address = $address;
-            $allValues->tradeLicenseUrl = $pharmacyDocument;
-            $this->sendVerificationEmail($allValues, $dbUser->id, $dbEntity->id, $dbEntityBranch->id);
-
-            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-            $this->webResponse->message = $this->f3->get("vMessage_signupSuccessful");
-            echo $this->webResponse->jsonResponse();
+            return;
         }
+
+        // Check if phone number is unique
+        $dbUser = new BaseModel($this->db, "user");
+        $dbUser->getByField("mobile", $mobile);
+
+        if (!$dbUser->dry()) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->title = "";
+            $this->webResponse->message = "Phone number exists!";
+            echo $this->webResponse->jsonResponse();
+            return;
+        }
+
+        // Check if trading license is unique
+        $dbEntityBranch = new BaseModel($this->db, "entityBranch");
+        $dbEntityBranch->getByField("tradeLicenseNumber", $tradeLicenseNumber);
+
+        if (!$dbEntityBranch->dry()) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->title = "";
+            $this->webResponse->message = "Trading license exists!";
+            echo $this->webResponse->jsonResponse();
+            return;
+        }
+
+        // Get currency symbol
+        $dbCountry = new BaseModel($this->db, "country");
+        $country = $dbCountry->getById($countryId)[0];
+        $currencySymbol = $country['currency'];
+
+        // Get currency id
+        $dbCurrency = new BaseModel($this->db, "currency");
+        $currency = $dbCurrency->getByField("symbol", $currencySymbol)[0];
+        $currencyId = $currency['id'];
+
+        // Add user
+        if ($uid != NULL && trim($uid) != '') {
+            $dbUser->uid = $uid;
+        }
+        $dbUser->email = $email;
+        $dbUser->password = password_hash($password, PASSWORD_DEFAULT);
+        $dbUser->statusId = Constants::USER_STATUS_WAITING_VERIFICATION;
+        $dbUser->fullname = $name;
+        $dbUser->mobile = $mobile;
+        $dbUser->roleId = Constants::USER_ROLE_PHARMACY_SYSTEM_ADMINISTRATOR;
+        $dbUser->language = "en";
+        $dbUser->addReturnID();
+
+        // Add entity
+        $dbEntity = new BaseModel($this->db, "entity");
+        $dbEntity->typeId = Constants::ENTITY_TYPE_PHARMACY;
+        $dbEntity->name_ar = $entityName;
+        $dbEntity->name_en = $entityName;
+        $dbEntity->name_fr = $entityName;
+        $dbEntity->countryId = $countryId;
+        $dbEntity->currencyId = $currencyId;
+        $dbEntity->addReturnID();
+
+        // Add entity branch
+        $dbEntityBranch = new BaseModel($this->db, "entityBranch");
+        $dbEntityBranch->entityId = $dbEntity->id;
+        $dbEntityBranch->name_ar = $entityName;
+        $dbEntityBranch->name_en = $entityName;
+        $dbEntityBranch->name_fr = $entityName;
+        $dbEntityBranch->cityId = $cityId;
+        $dbEntityBranch->address_ar = $address;
+        $dbEntityBranch->address_en = $address;
+        $dbEntityBranch->address_fr = $address;
+        $dbEntityBranch->tradeLicenseNumber = $tradeLicenseNumber;
+        $dbEntityBranch->tradeLicenseUrl = $pharmacyDocument;
+        $dbEntityBranch->addReturnID();
+
+        // Add account
+        $dbAccount = new BaseModel($this->db, "account");
+        $dbAccount->entityId = $dbEntity->id;
+        $dbAccount->number = 100;
+        $dbAccount->statusId = Constants::ACCOUNT_STATUS_ACTIVE;
+        $dbAccount->addReturnID();
+
+        // Add user account
+        $dbUserAccount = new BaseModel($this->db, "userAccount");
+        $dbUserAccount->userId = $dbUser->id;
+        $dbUserAccount->accountId = $dbAccount->id;
+        $dbUserAccount->statusId = Constants::ACCOUNT_STATUS_ACTIVE;
+        $dbUserAccount->addReturnID();
+
+        // Send verification email
+        $allValues = new stdClass();
+        $allValues->name = $name;
+        $allValues->mobile = $mobile;
+        $allValues->email = $email;
+        $allValues->entityName = $entityName;
+        $allValues->tradeLicenseNumber = $tradeLicenseNumber;
+        $allValues->countryId = $countryId;
+        $allValues->cityId = $cityId;
+        $allValues->address = $address;
+        $allValues->tradeLicenseUrl = $pharmacyDocument;
+        $this->sendVerificationEmail($allValues, $dbUser->id, $dbEntity->id, $dbEntityBranch->id);
+
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+        $this->webResponse->message = $this->f3->get("vMessage_signupSuccessful");
+        echo $this->webResponse->jsonResponse();
+
     }
 
     function sendVerificationEmail($allValues, $userId, $entityId, $entityBranchId)
