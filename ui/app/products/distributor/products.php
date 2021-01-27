@@ -130,8 +130,10 @@ function compress_htmlcode($codedata)
                         row.entityId +
                         '/product/' +
                         row.productId +
-                        '\')"> ' +
-                        row['productName_' + docLang]
+                        '\')" title="'+
+                        row['productName_' + docLang] +
+                        '"> ' +
+                        WebApp.truncateText(row['productName_' + docLang], 100)
                         + '</span></div></div>';
                     return output;
                 },
@@ -139,10 +141,7 @@ function compress_htmlcode($codedata)
                 targets: 2,
                 title: WebAppLocals.getMessage('productScientificName'),
                 data: 'scientificName',
-                render: function (data, type, row, meta) {
-                    var output = row.scientificName;
-                    return output
-                }
+                render: $.fn.dataTable.render.ellipsis( 100 )
             }, {
                 targets: 3,
                 title: WebAppLocals.getMessage('stockQuantity'),
@@ -157,7 +156,7 @@ function compress_htmlcode($codedata)
                 data: 'stockUpdateDateTime',
                 render: function (data, type, row, meta) {
                     if (row.stockUpdateDateTime) {
-                        return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
+                        return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment.utc(row.stockUpdateDateTime).fromNow() + '</span>';
                     } else {
                         return '';
                     }

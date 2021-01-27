@@ -85,6 +85,11 @@ var WebAppLocals = (function () {
 			ar: 'الاسم التجاري',
 			fr: '',
 		},
+		id: {
+			en: 'ID',
+			ar: 'ID', // TODO: add translation
+			fr: '',
+		},
 		productCode: {
 			en: 'Product Code',
 			ar: 'رمز المنتج',
@@ -253,6 +258,11 @@ var WebAppLocals = (function () {
 		orderShippedQuantity: {
 			en: 'Shipped Quantity',
 			ar: 'Shipped Quantity',
+			fr: '',
+		},
+		orderOrderedQuantity: {
+			en: 'Ordered Quantity',
+			ar: 'Ordered Quantity',
 			fr: '',
 		},
 		branch: {

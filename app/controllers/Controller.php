@@ -721,4 +721,15 @@ class Controller {
         $this->webResponse->data = $select2Result;
         echo $this->webResponse->jsonResponse();
     }
+
+    function checkLength($variable, $variableName, $length)
+    {
+        if (strlen($variable) > $length) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = $this->f3->get("field_" . $variableName) . $this->f3->get("error_filedTooLong") . $length;
+            echo $this->webResponse->jsonResponse();
+            exit;
+        }
+    }
+
 }
