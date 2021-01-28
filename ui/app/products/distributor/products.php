@@ -114,6 +114,7 @@ function compress_htmlcode($codedata)
                 },
             }, {
                 targets: 1,
+                width: "30%",
                 title: WebAppLocals.getMessage('productName'),
                 data: 'productName_en',
                 render: function (data, type, row, meta) {
@@ -133,7 +134,7 @@ function compress_htmlcode($codedata)
                         '\')" title="'+
                         row['productName_' + docLang] +
                         '"> ' +
-                        WebApp.truncateText(row['productName_' + docLang], 100)
+                        WebApp.truncateText(row['productName_' + docLang], 50)
                         + '</span></div></div>';
                     return output;
                 },
