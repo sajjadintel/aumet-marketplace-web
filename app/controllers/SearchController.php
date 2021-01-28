@@ -223,7 +223,7 @@ class SearchController extends Controller {
     function getRelationGroupByEnitityList()
     {
         $entityId = $this->f3->get("PARAMS.entityId");
-        $this->handleGetListFilters("relationGroup", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'entityId = '.$entityId);
+        $this->handleGetListFilters("entityRelationGroup", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'entityId = '.$entityId);
     }
 
     function getCategoryList()
