@@ -540,26 +540,21 @@ var WebAppLocals = (function () {
 			ar: 'تم تحديد المدن التالية أكثر من مرة',
 			fr: '',
 		},
-		pharmacyNameLengthError: {
-			en: 'Pharmacy Name should be between 4 and 100 characters',
-			ar: 'يجب أن يتراوح اسم الصيدلية بين ٤ و ١٠٠ حرف',
+		lengthError: {
+			en: 'Should be between',
+			ar: 'يجب أن يكون بين',
 			fr: '',
 		},
-		distributorNameLengthError: {
-			en: 'Distributor Name should be between 4 and 100 characters',
-			ar: 'يجب أن يتراوح اسم الموزع بين ٤ و ١٠٠ حرف',
+		and: {
+			en: 'and',
+			ar: 'و',
 			fr: '',
 		},
-		addressLengthError: {
-			en: 'Address should be between 4 and 500 characters',
-			ar: 'يجب أن يكون العنوان بين ٤ و ٥٠٠ حرف',
-			fr: '',
-		},
-		tradeLicenseNumberLengthError: {
-			en: 'Trade License Number should be between 4 and 200 characters',
-			ar: 'يجب أن يكون رقم الرخصة التجارية بين ٤ و ٢٠٠ حرف',
-			fr: '',
-		},
+		characters: {
+			en: 'characters',
+			ar: 'الأحرف',
+			fr: '',	
+		}
 	};
 
 	var _symbolsLocals = {

@@ -28,7 +28,7 @@ var Profile = (function () {
                         stringLength: {
 							min: 4,
                             max: 100,
-                            message: WebAppLocals.getMessage('pharmacyNameLengthError'),
+                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 100 " + WebAppLocals.getMessage('characters')
                         }
 					},
 				},
@@ -40,7 +40,7 @@ var Profile = (function () {
                         stringLength: {
 							min: 4,
                             max: 500,
-                            message: WebAppLocals.getMessage('addressLengthError'),
+                            message: WebAppLocals.getMessage('lengthError') + "4 " + WebAppLocals.getMessage('and') + " 500 " + WebAppLocals.getMessage('characters')
                         }
 					},
 				},
@@ -49,7 +49,7 @@ var Profile = (function () {
                         stringLength: {
 							min: 4,
                             max: 200,
-                            message: WebAppLocals.getMessage('tradeLicenseNumberLengthError'),
+                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 200 " + WebAppLocals.getMessage('characters')
                         }
 					},
 				}
@@ -91,7 +91,7 @@ var Profile = (function () {
                         stringLength: {
 							min: 4,
                             max: 100,
-                            message: WebAppLocals.getMessage('distributorNameLengthError'),
+                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 100 " + WebAppLocals.getMessage('characters')
                         }
 					},
 				},
@@ -103,7 +103,7 @@ var Profile = (function () {
                         stringLength: {
 							min: 4,
                             max: 500,
-                            message: WebAppLocals.getMessage('addressLengthError'),
+                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 500 " + WebAppLocals.getMessage('characters')
                         }
 					},
 				},
@@ -112,7 +112,7 @@ var Profile = (function () {
                         stringLength: {
 							min: 4,
                             max: 200,
-                            message: WebAppLocals.getMessage('tradeLicenseNumberLengthError'),
+                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 200 " + WebAppLocals.getMessage('characters')
                         }
 					},
 				}
