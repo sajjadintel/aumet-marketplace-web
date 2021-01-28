@@ -76,7 +76,7 @@ class AuthController extends Controller {
 
             $dbCountry = new BaseModel($this->db, "country");
             $dbCountry->name = "name_en";
-            $arrCountry = $dbCountry->findAll();
+            $arrCountry = $dbCountry->findAll("name_en ASC");
             $this->f3->set('arrCountry', $arrCountry);
 
             echo View::instance()->render('public/auth/layout.php');
@@ -805,7 +805,7 @@ class AuthController extends Controller {
 
         $dbCity = new BaseModel($this->db, "city");
         $dbCity->name = "nameEn";
-        $dbCity->getByField("countryId", $countryId);
+        $dbCity->getWhere("countryId=$countryId", "nameEn ASC");
 
         $arrCities = [];
         while (!$dbCity->dry()) {
