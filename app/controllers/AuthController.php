@@ -854,9 +854,9 @@ class AuthController extends Controller {
         $dbEntityBranch->getById($entityBranchId);
 
 
-        // if ($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry() || $dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
-        //     echo "Invalid";
-        // } else {
+        if ($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry() || $dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
+            echo "Invalid";
+        } else {
             $dbUser->statusId = Constants::USER_STATUS_PENDING_APPROVAL;
             $dbUser->update();
 
@@ -898,7 +898,7 @@ class AuthController extends Controller {
             $this->sendApprovalEmail($allValues, $dbUser->id);
 
             echo $message;
-        // }
+        }
     }
 
     function getApproveAccount()
