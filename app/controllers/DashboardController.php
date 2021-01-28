@@ -76,6 +76,8 @@ class DashboardController extends Controller {
                     $product = new stdClass();
                     $product->name = $productDb['name'];
                     $product->image = $productDb['image'];
+                    $product->id = $productDb['id'];
+                    $product->entityId = $productDb['entityId'];
 
                     $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];
                     $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];
@@ -93,6 +95,8 @@ class DashboardController extends Controller {
                     $product = new stdClass();
                     $product->name = $productDb['name'];
                     $product->image = $productDb['image'];
+                    $product->id = $productDb['id'];
+                    $product->entityId = $productDb['entityId'];
 
                     $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];
                     $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];
