@@ -39,10 +39,10 @@
             <div class="col-9">
                 <div class="card card-custom card-body card-stretch gutter-b">
                     <!--begin::Banner-->
-                    <?php if(count($arrBanners) > 0): ?>
+                    <?php if(count($arrBanner) > 0): ?>
                     <div class="mb-10">
                         <div class="autoplay" style="height: 280px;">
-                            <?php foreach($arrBanners as $banner) : ?>
+                            <?php foreach($arrBanner as $banner) : ?>
                                 <div style="background-image: url('<?php echo $banner->image; ?>'); height: 280px; background-size: 100% 100%;">
                                     <?php if ($objUser->language == "ar"): ?>
                                         <div style="height: 100%; display: flex; align-items: center; justify-content: flex-end;">
@@ -50,7 +50,7 @@
                                                 <h1 style="color: #FFF; font-size: 30px; font-weight: 700;"><?php echo $banner->title; ?></h1>
                                                 <h1 style="color: #FFF; font-size: 30px; font-weight: 700;"><?php echo $banner->subtitle; ?></h1>
                                                 <?php if(!is_null($banner->buttonText)) : ?>
-                                                    <button type="button" class="btn btn-primary btn-md mt-5" style="width: 140px; background-color: #1378BE; border-color: #1378BE;"  onclick="WebApp.loadSubPage('/web/entity/<?php echo $banner->entityId; ?>/product/<?php echo $banner->productId; ?>');"><?php echo $banner->buttonText; ?></button>
+                                                    <button type="button" class="btn btn-primary btn-md mt-5" style="width: 140px; background-color: #1378BE; border-color: #1378BE;"  onclick="WebApp.loadSubPage('/web/entity/<?php echo $banner->entityId; ?>/product/<?php echo $banner->entityProductSellId; ?>');"><?php echo $banner->buttonText; ?></button>
                                                 <?php endif; ?>
                                             </div>
                                         </div>
@@ -60,7 +60,7 @@
                                                 <h1 style="color: #FFF; font-size: 30px; font-weight: 700;"><?php echo $banner->title; ?></h1>
                                                 <h1 style="color: #FFF; font-size: 30px; font-weight: 700;"><?php echo $banner->subtitle; ?></h1>
                                                 <?php if(!is_null($banner->buttonText)) : ?>
-                                                    <button type="button" class="btn btn-primary btn-md mt-5" style="width: 140px; background-color: #1378BE; border-color: #1378BE;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $banner->entityId; ?>/product/<?php echo $banner->productId; ?>');"><?php echo $banner->buttonText; ?></button>
+                                                    <button type="button" class="btn btn-primary btn-md mt-5" style="width: 140px; background-color: #1378BE; border-color: #1378BE;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $banner->entityId; ?>/product/<?php echo $banner->entityProductSellId; ?>');"><?php echo $banner->buttonText; ?></button>
                                                 <?php endif; ?>
                                             </div>
                                         </div>
