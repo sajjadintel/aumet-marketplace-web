@@ -854,14 +854,22 @@ class AuthController extends Controller {
         $dbEntityBranch->getById($entityBranchId);
 
 
-        if ($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry() || $dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
-            echo "Invalid";
-        } else {
+        // if ($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry() || $dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
+        //     echo "Invalid";
+        // } else {
             $dbUser->statusId = Constants::USER_STATUS_PENDING_APPROVAL;
             $dbUser->update();
 
             $emailHandler = new EmailHandler($this->db);
+            $emailFile = "email/layout.php";
+            $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
+            $this->f3->set('title', 'Pharmacy Account Verified');
+            $this->f3->set('emailType', 'pharmacyAccountVerified');
+
             $message = "Your account has been authenticated. You will be contacted by Aumet within 24 to 48 hours to activate your account";
+            $this->f3->set('message', $message);
+
+            $htmlContent = View::instance()->render($emailFile);
 
             $emailHandler->appendToAddress($dbUser->email, $dbUser->fullname);
             $subject = "Aumet - Pharmacy Account Verified";
@@ -874,7 +882,7 @@ class AuthController extends Controller {
                 }
             }
 
-            $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_VERIFIED, $subject, $message);
+            $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_VERIFIED, $subject, $htmlContent);
 
             // Send approval email
             $allValues = new stdClass();
@@ -890,7 +898,7 @@ class AuthController extends Controller {
             $this->sendApprovalEmail($allValues, $dbUser->id);
 
             echo $message;
-        }
+        // }
     }
 
     function getApproveAccount()
@@ -921,7 +929,15 @@ class AuthController extends Controller {
             $dbUser->update();
 
             $emailHandler = new EmailHandler($this->db);
+            $emailFile = "email/layout.php";
+            $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
+            $this->f3->set('title', 'Pharmacy Account Approved');
+            $this->f3->set('emailType', 'pharmacyAccountApproved');
+            
             $message = "Your account has been approved. You can now login to our platform !";
+            $this->f3->set('message', $message);
+
+            $htmlContent = View::instance()->render($emailFile);
 
             $emailHandler->appendToAddress($dbUser->email, $dbUser->fullname);
             $subject = "Aumet - Pharmacy Account Approved";
@@ -934,7 +950,7 @@ class AuthController extends Controller {
                 }
             }
 
-            $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_APPROVED, $subject, $message);
+            $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_APPROVED, $subject, $htmlContent);
 
             echo "Approved";
         }
