@@ -346,7 +346,7 @@ class AuthController extends Controller {
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
-            $this->webResponse->message = "Email address exists, Please signin instead";
+            $this->webResponse->message = "Email Already Exists";
             echo $this->webResponse->jsonResponse();
             return;
         }
@@ -791,7 +791,7 @@ class AuthController extends Controller {
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
-            $this->webResponse->message = "Email address exists, Please signin instead";
+            $this->webResponse->message = "Email Already Exists";
             echo $this->webResponse->jsonResponse();
         } else {
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
