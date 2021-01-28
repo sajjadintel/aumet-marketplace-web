@@ -256,8 +256,6 @@ var DistributorProductsDataTable = (function () {
         if(mode === "add") _mandatoryFields.push("stock");
 
         var allFields = new Set([ ..._mandatoryFields, ...Object.keys(mapFieldStrRangeLength)]);
-        console.log("allFields");
-        console.log(allFields);
         _validatorFields = {};
         allFields.forEach((field) => {
             var fieldValidators = {};
