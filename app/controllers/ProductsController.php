@@ -389,6 +389,42 @@ class ProductsController extends Controller {
                     return;
                 }
 
+                $this->checkLength($name_en, 'nameEn', 200, 4);
+                $this->checkLength($name_ar, 'nameAr', 200, 4);
+                $this->checkLength($name_fr, 'nameFr', 200, 4);
+                $this->checkLength($description_ar, 'descriptionAr', 1000, 4);
+                $this->checkLength($description_en, 'descriptionEn', 1000, 4);
+                $this->checkLength($description_fr, 'descriptionFr', 1000, 4);
+                
+
+                if($subtitle_ar) {
+                    $this->checkLength($subtitle_ar, 'subtitleAr', 200, 4);
+                }
+
+                if($subtitle_en) {
+                    $this->checkLength($subtitle_en, 'subtitleEn', 200, 4);
+                }
+
+                if($subtitle_fr) {
+                    $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
+                }
+                
+                if($manufacturerName) {
+                    $this->checkLength($manufacturerName, 'manufacturerName', 200, 4);
+                }
+
+                if($batchNumber) {
+                    $this->checkLength($batchNumber, 'batchNumber', 200, 4);
+                }
+
+                if($itemCode) {
+                    $this->checkLength($itemCode, 'itemCode', 200, 4);
+                }
+
+                if($strength) {
+                    $this->checkLength($strength, 'strength', 200, 4);
+                }
+
                 $dbProduct->scientificNameId = $scientificNameId;
                 $dbProduct->madeInCountryId = $madeInCountryId;
                 $dbProduct->name_en = $name_en;
@@ -629,6 +665,43 @@ class ProductsController extends Controller {
                 echo $this->webResponse->jsonResponse();
                 return;
             }
+
+            $this->checkLength($name_en, 'nameEn', 200, 4);
+            $this->checkLength($name_ar, 'nameAr', 200, 4);
+            $this->checkLength($name_fr, 'nameFr', 200, 4);
+            $this->checkLength($description_ar, 'descriptionAr', 1000, 4);
+            $this->checkLength($description_en, 'descriptionEn', 1000, 4);
+            $this->checkLength($description_fr, 'descriptionFr', 1000, 4);
+            
+
+            if($subtitle_ar) {
+                $this->checkLength($subtitle_ar, 'subtitleAr', 200, 4);
+            }
+
+            if($subtitle_en) {
+                $this->checkLength($subtitle_en, 'subtitleEn', 200, 4);
+            }
+
+            if($subtitle_fr) {
+                $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
+            }
+            
+            if($manufacturerName) {
+                $this->checkLength($manufacturerName, 'manufacturerName', 200, 4);
+            }
+
+            if($batchNumber) {
+                $this->checkLength($batchNumber, 'batchNumber', 200, 4);
+            }
+
+            if($itemCode) {
+                $this->checkLength($itemCode, 'itemCode', 200, 4);
+            }
+
+            if($strength) {
+                $this->checkLength($strength, 'strength', 200, 4);
+            }
+
 
             $dbProduct = new BaseModel($this->db, "product");
             $dbProduct->scientificNameId = $scientificNameId;
@@ -1843,51 +1916,93 @@ class ProductsController extends Controller {
                             if (!$cellValue) {
                                 array_push($errors, "Brand Name AR required");
                             } else {
-                                $dbProduct->name_ar = $cellValue;
+                                if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
+                                    array_push($errors, "Brand Name AR should be between 4 and 200 characters");        
+                                } else {
+                                    $dbProduct->name_ar = $cellValue;
+                                }
                             }
                             break;
                         case "D":
                             if (!$cellValue) {
                                 array_push($errors, "Brand Name EN required");
                             } else {
-                                $dbProduct->name_en = $cellValue;
+                                if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
+                                    array_push($errors, "Brand Name EN should be between 4 and 200 characters");        
+                                } else {
+                                    $dbProduct->name_en = $cellValue;
+                                }
                             }
                             break;
                         case "E":
                             if (!$cellValue) {
                                 array_push($errors, "Brand Name FR required");
                             } else {
-                                $dbProduct->name_fr = $cellValue;
+                                if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
+                                    array_push($errors, "Brand Name FR should be between 4 and 200 characters");        
+                                } else {
+                                    $dbProduct->name_fr = $cellValue;
+                                }
                             }
                             break;
                         case "F":
-                            $dbProduct->subtitle_ar = $cellValue;
+                            if($cellValue) {
+                                if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
+                                    array_push($errors, "Subtitle AR should be between 4 and 200 characters");        
+                                } else {
+                                    $dbProduct->subtitle_ar = $cellValue;
+                                }
+                            }
                             break;
                         case "G":
-                            $dbProduct->subtitle_en = $cellValue;
+                            if($cellValue) {
+                                if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
+                                    array_push($errors, "Subtitle EN should be between 4 and 200 characters");        
+                                } else {
+                                    $dbProduct->subtitle_en = $cellValue;
+                                }
+                            }
                             break;
                         case "H":
-                            $dbProduct->subtitle_fr = $cellValue;
+                            if($cellValue) {
+                                if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
+                                    array_push($errors, "Subtitle FR should be between 4 and 200 characters");        
+                                } else {
+                                    $dbProduct->subtitle_fr = $cellValue;
+                                }
+                            }
                             break;
                         case "I":
                             if (!$cellValue) {
                                 array_push($errors, "Description AR required");
                             } else {
-                                $dbProduct->description_ar = $cellValue;
+                                if(strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
+                                    array_push($errors, "Description AR should be between 4 and 1000 characters");        
+                                } else {
+                                    $dbProduct->description_ar = $cellValue;
+                                }
                             }
                             break;
                         case "J":
                             if (!$cellValue) {
                                 array_push($errors, "Description EN required");
                             } else {
-                                $dbProduct->description_en = $cellValue;
+                                if(strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
+                                    array_push($errors, "Description EN should be between 4 and 1000 characters");        
+                                } else {
+                                    $dbProduct->description_en = $cellValue;
+                                }
                             }
                             break;
                         case "K":
                             if (!$cellValue) {
                                 array_push($errors, "Description FR required");
                             } else {
-                                $dbProduct->description_fr = $cellValue;
+                                if(strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
+                                    array_push($errors, "Description FR should be between 4 and 1000 characters");        
+                                } else {
+                                    $dbProduct->description_fr = $cellValue;
+                                }
                             }
                             break;
                         case "L":
@@ -1919,13 +2034,31 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "P":
-                            $dbProduct->manufacturerName = $cellValue;
+                            if($cellValue) {
+                                if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
+                                    array_push($errors, "Manufacturer Name should be between 4 and 200 characters");        
+                                } else {
+                                    $dbProduct->manufacturerName = $cellValue;
+                                }
+                            }
                             break;
                         case "Q":
-                            $dbProduct->batchNumber = $cellValue;
+                            if($cellValue) {
+                                if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
+                                    array_push($errors, "Batch Number should be between 4 and 200 characters");        
+                                } else {
+                                    $dbProduct->batchNumber = $cellValue;
+                                }
+                            }
                             break;
                         case "R":
-                            $dbProduct->itemCode = $cellValue;
+                            if($cellValue) {
+                                if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
+                                    array_push($errors, "Item Code should be between 4 and 200 characters");        
+                                } else {
+                                    $dbProduct->itemCode = $cellValue;
+                                }
+                            }
                             break;
                         case "S":
                             if (!in_array($cellValue, $allSubcategoryId)) {
@@ -1953,7 +2086,13 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "V":
-                            $dbProduct->strength = $cellValue;
+                            if($cellValue) {
+                                if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
+                                    array_push($errors, "Strength should be between 4 and 200 characters");        
+                                } else {
+                                    $dbProduct->strength = $cellValue;
+                                }
+                            }
                             break;
                     }
                 }

@@ -31,6 +31,7 @@ var DistributorCustomersDataTable = (function () {
                     }
                 };
             },
+            maximumInputLength: 150,
             allowClear: true
         });
         webResponse.data.arrRelationGroup.forEach((relationGroup) => {

@@ -24,14 +24,33 @@ var Profile = (function () {
 					validators: {
 						notEmpty: {
 							message: WebAppLocals.getMessage('required'),
-						}
+						},
+                        stringLength: {
+							min: 4,
+                            max: 100,
+                            message: WebAppLocals.getMessage('pharmacyNameLengthError'),
+                        }
 					},
 				},
 				address: {
 					validators: {
 						notEmpty: {
 							message: WebAppLocals.getMessage('required'),
-						}
+						},
+                        stringLength: {
+							min: 4,
+                            max: 500,
+                            message: WebAppLocals.getMessage('addressLengthError'),
+                        }
+					},
+				},
+				tradeLicenseNumber: {
+					validators: {
+                        stringLength: {
+							min: 4,
+                            max: 200,
+                            message: WebAppLocals.getMessage('tradeLicenseNumberLengthError'),
+                        }
 					},
 				}
 			},
@@ -68,14 +87,33 @@ var Profile = (function () {
 					validators: {
 						notEmpty: {
 							message: WebAppLocals.getMessage('required'),
-						}
+						},
+                        stringLength: {
+							min: 4,
+                            max: 100,
+                            message: WebAppLocals.getMessage('distributorNameLengthError'),
+                        }
 					},
 				},
 				address: {
 					validators: {
 						notEmpty: {
 							message: WebAppLocals.getMessage('required'),
-						}
+						},
+                        stringLength: {
+							min: 4,
+                            max: 500,
+                            message: WebAppLocals.getMessage('addressLengthError'),
+                        }
+					},
+				},
+				tradeLicenseNumber: {
+					validators: {
+                        stringLength: {
+							min: 4,
+                            max: 200,
+                            message: WebAppLocals.getMessage('tradeLicenseNumberLengthError'),
+                        }
 					},
 				}
 			},

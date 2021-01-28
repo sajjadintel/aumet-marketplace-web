@@ -338,9 +338,23 @@ return array(
     'vModule_profile_missingFields' => 'بعض الحقول الإلزامية مفقودة',
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
+    'error_filedTooShort' => ' field is too short! minimum length: ',
     'field_entityName' => 'Entity Name',
     'field_relationGroupName' => 'Customer group name',
     'field_address' => 'Address',
     'field_tradeLicenseNumber' => 'Trade license number',
+    'field_nameAr' => 'Name AR',
+    'field_nameEn' => 'Name EN',
+    'field_nameFr' => 'Name FR',
+    'field_descriptionAr' => 'Description AR',
+    'field_descriptionEn' => 'Description EN',
+    'field_descriptionFr' => 'Description FR',
+    'field_subtitleAr' => 'Subtitle AR',
+    'field_subtitleEn' => 'Subtitle EN',
+    'field_subtitleFr' => 'Subtitle FR',
+    'field_manufacturerName' => 'Manufacturer Name',
+    'field_batchNumber' => 'Batch Number',
+    'field_itemCode' => 'Item Code',
+    'field_strength' => 'Strength',
 
 );

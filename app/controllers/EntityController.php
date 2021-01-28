@@ -136,7 +136,7 @@ class EntityController extends Controller
                 echo $this->webResponse->jsonResponse();
             } else {
                 $relationGroupId = $this->f3->get('POST.relationGroupId');
-                $this->checkLength($relationGroupId, 'customerGroupName', 150);
+                $this->checkLength($relationGroupId, 'relationGroupName', 150);
 
                 if($relationGroupId) {
                     $dbEntityRelationGroup = new BaseModel($this->db, "entityRelationGroup");
