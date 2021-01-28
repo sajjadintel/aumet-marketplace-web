@@ -339,6 +339,7 @@ return array(
     'vModule_profile_minimumValueOrderCityError' => 'Some cities are selected more than once',
     'vModule_profile_paymentMethodRequired' => 'Payment method required',
     'vModule_profile_missingFields' => 'Some mandatory fields are missing',
+    'vModule_profile_mobile' => 'Phone Number',
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
     'field_entityName' => 'Entity name',
