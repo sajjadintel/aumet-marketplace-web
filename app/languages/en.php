@@ -177,6 +177,7 @@ return array(
     'vModule_product_stockStatusDate' => 'Stock Updated',
     'vModule_product_scientificName' => 'Scientific Name',
     'vModule_product_unitPrice' => 'Unit Price',
+    'vModule_product_vat' => 'VAT',
     'vModule_product_related' => 'Related Products',
     'vModule_product_other' => 'Other',
     'vModule_product_otherFromSameDistributor' => 'Other products from the same distributor',
@@ -198,6 +199,8 @@ return array(
     'vModule_product_expiryDate' => 'Expiry Date',
     'vModule_product_activeIngredients' => 'Active Ingredients',
     'vModule_product_strength' => 'Strength',
+    'vModule_product_uploadSubimages' => 'Upload Subimages',
+    'vModule_product_SubimagesExceeded' => 'Subimages limit reached',
 
     'vModule_product_stockStatus_NotAvailable' => 'Not Available',
     'vModule_product_stockStatus_ComingSoon' => 'Coming Soon',

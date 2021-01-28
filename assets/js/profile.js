@@ -204,7 +204,6 @@ var Profile = (function () {
 
 		// Hide the total progress bar when nothing's uploading anymore
 		_myDropZone.on('complete', function (file) {
-
 			var thisProgressBar = id + ' .dz-complete';
 			setTimeout(function () {
 				$(thisProgressBar + ' .progress-bar, ' + thisProgressBar + ' .progress').css('opacity', '0');
@@ -236,7 +235,7 @@ var Profile = (function () {
 		if(initialFile) {
 			var fileUrl = _getFullUrl(initialFile);
 			var fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
-			var fileExtension = fileName.substr(fileName.lastIndexOf('.') + 1);
+			var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
 			var fileNameWithoutTimestamp = fileName.substring(0, fileName.lastIndexOf('-')) + "." + fileExtension;
 			var file = {
 				status: 'success',
@@ -256,11 +255,8 @@ var Profile = (function () {
 	var _getFileSize = function (url) {
 		var fileSize = '';
 		var http = new XMLHttpRequest();
-		http.open('HEAD', url, false); // false = Synchronous
-
-		http.send(null); // it will stop here until this http request is complete
-
-		// when we are here, we already have a response, b/c we used Synchronous XHR
+		http.open('HEAD', url, false);
+		http.send(null);
 
 		if (http.status === 200) {
 			fileSize = http.getResponseHeader('content-length');
