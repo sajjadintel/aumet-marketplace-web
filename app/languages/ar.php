@@ -244,8 +244,8 @@ return array(
     'vModule_order_dateTo' => 'أدخل تاريخ انتهاء الطلبات',
     'vModule_order_date' => 'أدخل تاريخ الطلبات',
 
-    'vModule_customer_customerGroupTitle' => 'مجموعة العملاء',
-    'vModule_customer_customerGroup' => 'مجموعة العملاء',
+    'vModule_customer_relationGroupTitle' => 'مجموعة العملاء',
+    'vModule_customer_relationGroup' => 'مجموعة العملاء',
 
     'vResponse_notFound' => '{0} غير موجود',
     'vResponse_notUpdated' => 'تعذر تحديث {0}',
@@ -339,7 +339,7 @@ return array(
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
     'field_entityName' => 'Entity Name',
-    'field_customerGroupName' => 'Customer group name',
+    'field_relationGroupName' => 'Customer group name',
     'field_address' => 'Address',
     'field_tradeLicenseNumber' => 'Trade license number',
 

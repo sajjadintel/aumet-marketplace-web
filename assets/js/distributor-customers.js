@@ -17,9 +17,9 @@ var DistributorCustomersDataTable = (function () {
         $('#editModalForm').attr('action', '/web/distributor/customer/edit/group');
         $('#editGroupCustomerId').val(webResponse.data.customer.id);
         
-        $('#editGroupCustomerGroup').empty();
-        $('#editGroupCustomerGroup').select2({
-            placeholder: WebAppLocals.getMessage('customerGroup'),
+        $('#editGroupRelationGroup').empty();
+        $('#editGroupRelationGroup').select2({
+            placeholder: WebAppLocals.getMessage('relationGroup'),
             tags: true,
             createSearchChoice: function(term, data) {
                 if ($(data).filter(function() {
@@ -33,13 +33,13 @@ var DistributorCustomersDataTable = (function () {
             },
             allowClear: true
         });
-        webResponse.data.arrCustomerGroup.forEach((customerGroup) => {
-            $('#editGroupCustomerGroup').append(new Option(customerGroup.name, customerGroup.id)).trigger('change');
+        webResponse.data.arrRelationGroup.forEach((relationGroup) => {
+            $('#editGroupRelationGroup').append(new Option(relationGroup.name, relationGroup.id)).trigger('change');
         })
-        if(webResponse.data.customer.customerGroupId) {
-            $('#editGroupCustomerGroup').val(webResponse.data.customer.customerGroupId).trigger('change');
+        if(webResponse.data.customer.relationGroupId) {
+            $('#editGroupRelationGroup').val(webResponse.data.customer.relationGroupId).trigger('change');
         } else {
-            $('#editGroupCustomerGroup').val('').trigger('change');
+            $('#editGroupRelationGroup').val('').trigger('change');
         }
 
 		$('#editGroupModal').appendTo('body').modal('show');

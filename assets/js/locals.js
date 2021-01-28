@@ -525,12 +525,12 @@ var WebAppLocals = (function () {
 			ar: 'حسنا، حصلت عليه!',
 			fr: '',
 		},
-		customerGroup: {
+		relationGroup: {
 			en: 'Customer Group',
 			ar: 'مجموعة العملاء',
 			fr: '',
 		},
-		changeCustomerGroup: {
+		changeRelationGroup: {
 			en: 'Change Customer Group',
 			ar: 'تغيير مجموعة العملاء',
 			fr: '',

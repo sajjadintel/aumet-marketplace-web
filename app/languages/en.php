@@ -244,8 +244,8 @@ return array(
     'vModule_order_dateTo' => 'Get Orders Ending Date',
     'vModule_order_date' => 'Get Orders Date',
 
-    'vModule_customer_customerGroupTitle' => 'Customer Group',
-    'vModule_customer_customerGroup' => 'Customer Group',
+    'vModule_customer_relationGroupTitle' => 'Customer Group',
+    'vModule_customer_relationGroup' => 'Customer Group',
 
     'vResponse_notFound' => '{0} not found',
     'vResponse_notUpdated' => '{0} could not be updated',
@@ -342,7 +342,7 @@ return array(
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
     'field_entityName' => 'Entity name',
-    'field_customerGroupName' => 'Customer group name',
+    'field_relationGroupName' => 'Customer group name',
     'field_address' => 'Address',
     'field_tradeLicenseNumber' => 'Trade license number',
 

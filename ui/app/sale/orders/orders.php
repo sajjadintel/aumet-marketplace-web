@@ -281,11 +281,11 @@ function compress_htmlcode($codedata)
                             '</a>';
 
                             
-                        var btnChangeCustomerGroup =
+                        var btnChangeRelationGroup =
                             '<a class="navi-link" href="javascript:;" onclick=\'DistributorCustomersDataTable.customerEditGroupModal(true, ' + row.entityBuyerId + ',' + row.entitySellerId + ')\' \
                                 class="btn btn-sm btn-primary btn-hover-primary  mr-2" navi-link title="Change Customer Group">\
                                 <span class="navi-icon"><i class="la la-group"></i></span><span class="navi-text"> &nbsp&nbsp' +
-                            WebAppLocals.getMessage('changeCustomerGroup') +
+                            WebAppLocals.getMessage('changeRelationGroup') +
                             '</span></a>';
 
 
@@ -321,7 +321,7 @@ function compress_htmlcode($codedata)
                                 outActions += dropdownItemStart + btnModifyQuantityOrder + dropdownItemEnd;
                                 break;
                         }
-                        outActions += dropdownItemStart + btnChangeCustomerGroup + dropdownItemEnd;
+                        outActions += dropdownItemStart + btnChangeRelationGroup + dropdownItemEnd;
                         outActions += dropdownEnd;
 
                         return outActions;

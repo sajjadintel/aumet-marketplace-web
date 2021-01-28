@@ -220,10 +220,10 @@ class SearchController extends Controller {
         $this->handleGetListFilters("entity", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'typeId=10');
     }
 
-    function getCustomerGroupByEnitityList()
+    function getRelationGroupByEnitityList()
     {
         $entityId = $this->f3->get("PARAMS.entityId");
-        $this->handleGetListFilters("customerGroup", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'entityId = '.$entityId);
+        $this->handleGetListFilters("relationGroup", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'entityId = '.$entityId);
     }
 
     function getCategoryList()

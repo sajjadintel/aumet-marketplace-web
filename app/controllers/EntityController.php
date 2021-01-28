@@ -28,15 +28,15 @@ class EntityController extends Controller
             $customerId = $this->f3->get('PARAMS.customerId');
 
             $dbRelation = new BaseModel($this->db, "vwEntityRelation");
-            $dbRelation->customerGroupName = "customerGroupName_" . $this->objUser->language;
+            $dbRelation->relationGroupName = "relationGroupName_" . $this->objUser->language;
             $relation = $dbRelation->findWhere("id = '$customerId'")[0];
 
             $data['customer'] = $relation;
             
-            $dbCustomerGroup = new BaseModel($this->db, "customerGroup");
-            $dbCustomerGroup->name = "name_" . $this->objUser->language;
-            $arrCustomerGroup = $dbCustomerGroup->findWhere("entityId=".$relation['entitySellerId']);
-            $data['arrCustomerGroup'] = $arrCustomerGroup;
+            $dbEntityRelationGroup = new BaseModel($this->db, "entityRelationGroup");
+            $dbEntityRelationGroup->name = "name_" . $this->objUser->language;
+            $arrRelationGroup = $dbEntityRelationGroup->findWhere("entityId=".$relation['entitySellerId']);
+            $data['arrRelationGroup'] = $arrRelationGroup;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
             return;
@@ -53,15 +53,15 @@ class EntityController extends Controller
             $entitySellerId = $this->f3->get('PARAMS.entitySellerId');
 
             $dbRelation = new BaseModel($this->db, "vwEntityRelation");
-            $dbRelation->customerGroupName = "customerGroupName_" . $this->objUser->language;
+            $dbRelation->relationGroupName = "relationGroupName_" . $this->objUser->language;
             $relation = $dbRelation->findWhere("entityBuyerId = $entityBuyerId AND entitySellerId = $entitySellerId")[0];
 
             $data['customer'] = $relation;
             
-            $dbCustomerGroup = new BaseModel($this->db, "customerGroup");
-            $dbCustomerGroup->name = "name_" . $this->objUser->language;
-            $arrCustomerGroup = $dbCustomerGroup->findWhere("entityId=".$relation['entitySellerId']);
-            $data['arrCustomerGroup'] = $arrCustomerGroup;
+            $dbEntityRelationGroup = new BaseModel($this->db, "entityRelationGroup");
+            $dbEntityRelationGroup->name = "name_" . $this->objUser->language;
+            $arrRelationGroup = $dbEntityRelationGroup->findWhere("entityId=".$relation['entitySellerId']);
+            $data['arrRelationGroup'] = $arrRelationGroup;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
             return;
@@ -82,7 +82,7 @@ class EntityController extends Controller
         $dbData = new BaseModel($this->db, "vwEntityRelation");
         $dbData->buyerName = "buyerName_" . $this->objUser->language;
         $dbData->sellerName = "sellerName_" . $this->objUser->language;
-        $dbData->customerGroupName = "customerGroupName_" . $this->objUser->language;
+        $dbData->relationGroupName = "relationGroupName_" . $this->objUser->language;
         $data = [];
 
         $totalRecords = $dbData->count($fullQuery);
@@ -135,22 +135,22 @@ class EntityController extends Controller
                 $this->webResponse->message = "No Customer";
                 echo $this->webResponse->jsonResponse();
             } else {
-                $customerGroupId = $this->f3->get('POST.customerGroupId');
-                $this->checkLength($customerGroupId, 'customerGroupName', 150);
+                $relationGroupId = $this->f3->get('POST.relationGroupId');
+                $this->checkLength($relationGroupId, 'customerGroupName', 150);
 
-                if($customerGroupId) {
-                    $dbCustomerGroup = new BaseModel($this->db, "customerGroup");
-                    $dbCustomerGroup->getWhere(["id = ? AND entityId = ?", $customerGroupId, $dbEntityRelation->entitySellerId]);
-                    if($dbCustomerGroup->dry()) {
-                        $dbCustomerGroup->entityId = $dbEntityRelation->entitySellerId;
-                        $dbCustomerGroup->name_en = $customerGroupId;
-                        $dbCustomerGroup->name_fr = $customerGroupId;
-                        $dbCustomerGroup->name_ar = $customerGroupId;
-                        $dbCustomerGroup->addReturnID();
+                if($relationGroupId) {
+                    $dbEntityRelationGroup = new BaseModel($this->db, "entityRelationGroup");
+                    $dbEntityRelationGroup->getWhere(["id = ? AND entityId = ?", $relationGroupId, $dbEntityRelation->entitySellerId]);
+                    if($dbEntityRelationGroup->dry()) {
+                        $dbEntityRelationGroup->entityId = $dbEntityRelation->entitySellerId;
+                        $dbEntityRelationGroup->name_en = $relationGroupId;
+                        $dbEntityRelationGroup->name_fr = $relationGroupId;
+                        $dbEntityRelationGroup->name_ar = $relationGroupId;
+                        $dbEntityRelationGroup->addReturnID();
                     }
-                    $dbEntityRelation->customerGroupId = $dbCustomerGroup->id;
+                    $dbEntityRelation->relationGroupId = $dbEntityRelationGroup->id;
                 } else {
-                    $dbEntityRelation->customerGroupId = null;
+                    $dbEntityRelation->relationGroupId = null;
                 }
                 $dbEntityRelation->update();
 
