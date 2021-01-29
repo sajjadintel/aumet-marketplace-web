@@ -19,6 +19,24 @@ var DistributorProductsDataTable = (function () {
         "categoryId",
         "subcategoryId",
     ];
+  
+    // Structure: field: [minLength, maxLength] 
+    var mapFieldStrRangeLength = {
+        "name_en": [4, 200],
+        "name_ar": [4, 200],
+        "name_fr": [4, 200],
+        "description_ar": [4, 1000],
+        "description_en": [4, 1000],
+        "description_fr": [4, 1000],
+        "subtitle_ar": [4, 200],
+        "subtitle_en": [4, 200],
+        "subtitle_fr": [4, 200],
+        "manufacturerName": [4, 200],
+        "batchNumber": [4, 200],
+        "itemCode": [4, 200],
+        "strength": [4, 200],
+    };
+  
     var mapUuidSubimage = {};
     var imageModal;
     var _validator;
@@ -92,7 +110,7 @@ var DistributorProductsDataTable = (function () {
         $('#editActiveIngredientsVal').val(allActiveIngredientsId);
 
         $('#editActiveIngredients').on('change', (ev) => _updateActiveIngredientsVal('edit'));
-
+      
         _changeImageHolder(webResponse.data.product.image, 'edit');
         $('#editProductImage').on('change', (ev) => _changeProductImage(ev, 'edit'));
 
@@ -239,15 +257,43 @@ var DistributorProductsDataTable = (function () {
         var _mandatoryFields = [ ...mandatoryFields ];
         if(mode === "add") _mandatoryFields.push("stock");
 
+        var allFields = new Set([ ..._mandatoryFields, ...Object.keys(mapFieldStrRangeLength)]);
         _validatorFields = {};
-        _mandatoryFields.forEach((field) => {
-            _validatorFields[field] = {
-                validators: {
-                    notEmpty: {
-                        message: WebAppLocals.getMessage('required')
-                    }
+        allFields.forEach((field) => {
+            var fieldValidators = {};
+
+            if(_mandatoryFields.includes(field)) {
+                fieldValidators.notEmpty = {
+                    message: WebAppLocals.getMessage('required')
                 }
             }
+
+            if(field in mapFieldStrRangeLength) {
+                var strRangeLength = mapFieldStrRangeLength[field];
+                var message = WebAppLocals.getMessage('lengthError') + " " + strRangeLength[0] + " " + WebAppLocals.getMessage('and') + " " + strRangeLength[1] + " " + WebAppLocals.getMessage('characters');
+                fieldValidators.stringLength = {
+                    min: strRangeLength[0],
+                    max: strRangeLength[1],
+                    message: message,
+                }
+            }
+
+            _validatorFields[field] = {
+                validators: fieldValidators
+            }
+        })
+        
+        var form = KTUtil.getById(mode + "ModalForm");
+        _validator = FormValidation.formValidation(form, {
+            fields: _validatorFields,
+            plugins: {
+                trigger: new FormValidation.plugins.Trigger(),
+                // Bootstrap Framework Integration
+                bootstrap: new FormValidation.plugins.Bootstrap({
+                    //eleInvalidClass: '',
+                    eleValidClass: '',
+                }),
+            },
         })
         
         var form = KTUtil.getById(mode + "ModalForm");

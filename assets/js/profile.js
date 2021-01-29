@@ -24,14 +24,33 @@ var Profile = (function () {
 					validators: {
 						notEmpty: {
 							message: WebAppLocals.getMessage('required'),
-						}
+						},
+                        stringLength: {
+							min: 4,
+                            max: 100,
+                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 100 " + WebAppLocals.getMessage('characters')
+                        }
 					},
 				},
 				address: {
 					validators: {
 						notEmpty: {
 							message: WebAppLocals.getMessage('required'),
-						}
+						},
+                        stringLength: {
+							min: 4,
+                            max: 500,
+                            message: WebAppLocals.getMessage('lengthError') + "4 " + WebAppLocals.getMessage('and') + " 500 " + WebAppLocals.getMessage('characters')
+                        }
+					},
+				},
+				tradeLicenseNumber: {
+					validators: {
+                        stringLength: {
+							min: 4,
+                            max: 200,
+                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 200 " + WebAppLocals.getMessage('characters')
+                        }
 					},
 				}
 			},
@@ -68,14 +87,33 @@ var Profile = (function () {
 					validators: {
 						notEmpty: {
 							message: WebAppLocals.getMessage('required'),
-						}
+						},
+                        stringLength: {
+							min: 4,
+                            max: 100,
+                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 100 " + WebAppLocals.getMessage('characters')
+                        }
 					},
 				},
 				address: {
 					validators: {
 						notEmpty: {
 							message: WebAppLocals.getMessage('required'),
-						}
+						},
+                        stringLength: {
+							min: 4,
+                            max: 500,
+                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 500 " + WebAppLocals.getMessage('characters')
+                        }
+					},
+				},
+				tradeLicenseNumber: {
+					validators: {
+                        stringLength: {
+							min: 4,
+                            max: 200,
+                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 200 " + WebAppLocals.getMessage('characters')
+                        }
 					},
 				}
 			},
