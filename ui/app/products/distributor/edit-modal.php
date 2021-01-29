@@ -134,15 +134,15 @@
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="editUnitPrice" class="form-control-label"><?php echo $vModule_product_unitPrice . " (" . $buyerCurrency . ")"; ?></label>
-                            <input type="number" class="form-control" name="unitPrice" id="editUnitPrice" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : 0;">
+                            <input type="number" class="form-control" name="unitPrice" id="editUnitPrice" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : !this.value? this.value : 0;" onkeypress="return ![43, 45, 101].includes(event.charCode)" autocomplete="off">
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="editVat" class="form-control-label"><?php echo $vModule_product_vat; ?></label>
-                            <input type="number" class="form-control" name="vat" id="editVat" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : 0;">
+                            <input type="number" class="form-control" name="vat" id="editVat" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : !this.value? this.value : 0;" onkeypress="return ![43, 45, 101].includes(event.charCode)" autocomplete="off">
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="editMaximumOrderQuantity" class="form-control-label"><?php echo $vModule_product_maximumOrderQuantity; ?></label>
-                            <input type="number" class="form-control" name="maximumOrderQuantity" id="editMaximumOrderQuantity" min="0" step="1" onchange="this.value = this.value > 0? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                            <input type="number" class="form-control" name="maximumOrderQuantity" id="editMaximumOrderQuantity" min="0" step="1" onchange="this.value = this.value > 0? this.value : !this.value? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" autocomplete="off">
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="editProductManufacturerName" class="form-control-label"><?php echo $vModule_product_manufacturerName; ?></label>

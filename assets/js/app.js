@@ -329,12 +329,10 @@ var WebApp = (function () {
 						},
 					})
 					
-					$(".select2").each(function(index, element) {
-						var field = $(element).attr("name");
-						if(field in validatorFields) {
-							$(element).on('change.select2', function() {
-								_validator.revalidateField(field);
-							});
+					$(".select2").on("change", function(ev) {
+						var field = $(this).attr("name");
+						if(field in _validatorFields) {
+							_validator.revalidateField(field);
 						}
 					});
 

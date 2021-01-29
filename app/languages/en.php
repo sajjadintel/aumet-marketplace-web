@@ -201,6 +201,12 @@ return array(
     'vModule_product_strength' => 'Strength',
     'vModule_product_uploadSubimages' => 'Upload Subimages',
     'vModule_product_SubimagesExceeded' => 'Subimages limit reached',
+    'vModule_product_subcategoryInvalid' => 'Subcategory invalid',
+    'vModule_product_stockInvalid' => 'Available Quantity should be a positive whole number not null',
+    'vModule_product_maximumOrderQuantityInvalid' => 'Maximum Order Quantity should be a positive whole number not null',
+    'vModule_product_unitPriceInvalid' => 'Unit Price should be a positive number not null',
+    'vModule_product_vatInvalid' => 'VAT should be a positive number',
+    'vModule_product_missingFields' => 'Some mandatory fields are missing',
 
     'vModule_product_stockStatus_NotAvailable' => 'Not Available',
     'vModule_product_stockStatus_ComingSoon' => 'Coming Soon',
