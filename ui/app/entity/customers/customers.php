@@ -50,8 +50,8 @@ function compress_htmlcode($codedata)
                 },
                 {
                     targets: 2,
-                    title: WebAppLocals.getMessage('customerGroup'),
-                    data: 'customerGroupName',
+                    title: WebAppLocals.getMessage('relationGroup'),
+                    data: 'relationGroupName',
                     render: $.fn.dataTable.render.ellipsis( 100 )
                 },
                 {
@@ -131,7 +131,7 @@ function compress_htmlcode($codedata)
                     render: function (data, type, row, meta) {
                         var output =
                             '<a href="javascript:;" onclick=\'DistributorCustomersDataTable.customerEditGroupModal(false, ' + row.id + ')\'\
-                        class="btn btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="' + WebAppLocals.getMessage('customerGroup') + '">\
+                        class="btn btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="' + WebAppLocals.getMessage('relationGroup') + '">\
                         <i class="nav-icon la la-ellipsis-h p-0 text-primary"></i></a>';
 
                         return '<div style="display: flex;">' + output + '</div>';

@@ -46,7 +46,7 @@ $f3->route('GET /web/product/ingredient/list', 'SearchController->getProductIngr
 $f3->route('GET /web/order/customer/list', 'SearchController->getOrderBuyerList');
 $f3->route('GET /web/order/Distributor/list', 'SearchController->getOrderSellerList');
 $f3->route('GET /web/order/Distributor/listAll', 'SearchController->getAllSellerList');
-$f3->route('GET /web/customer/group/list/@entityId', 'SearchController->getCustomerGroupByEnitityList');
+$f3->route('GET /web/customer/group/list/@entityId', 'SearchController->getRelationGroupByEnitityList');
 $f3->route('GET /web/city/list/@countryId', 'SearchController->getCityByCountryList');
 
 $f3->route('GET /web/searchbar', 'SearchController->handleSearchBar');
