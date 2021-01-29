@@ -1834,10 +1834,8 @@ class ProductsController extends Controller {
     function postBulkAddUploadProcess()
     {
         ini_set('memory_limit', -1);
-        // ini_set('max_execution_time', 1000);
-        // ini_set('mysql.connect_timeout', 1000);
-        ini_set('max_execution_time', 30);
-        ini_set('mysql.connect_timeout', 30);
+        ini_set('max_execution_time', 1000);
+        ini_set('mysql.connect_timeout', 1000);
 
         $dbBulkAddUpload = new BaseModel($this->db, "bulkAddUpload");
 
