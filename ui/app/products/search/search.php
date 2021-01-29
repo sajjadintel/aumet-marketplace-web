@@ -143,9 +143,6 @@ function compress_htmlcode($codedata)
                 className: "export_datatable",
                 targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
             }, {
-                className: "none",
-                targets: [3, 5]
-            }, {
                 targets: 0,
                 title: WebAppLocals.getMessage('productName'),
                 data: 'productName_en',
@@ -181,19 +178,6 @@ function compress_htmlcode($codedata)
                 render: $.fn.dataTable.render.ellipsis( 100 )
             }, {
                 targets: 3,
-                title: WebAppLocals.getMessage('expiryDate'),
-                data: 'expiryDate',
-                orderable: false,
-                render: function (data, type, row, meta) {
-                    var output = '';
-                    if (row.expiryDate) {
-                        output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.expiryDate).format('DD / MM / YYYY') + '</span>';
-                    }
-
-                    return output;
-                },
-            }, {
-                targets: 4,
                 title: WebAppLocals.getMessage('stockAvailability'),
                 data: 'stockStatusId',
                 orderable: false,
@@ -225,20 +209,7 @@ function compress_htmlcode($codedata)
                     return output;
                 },
             }, {
-                targets: 5,
-                title: WebAppLocals.getMessage('stockUpdateDateTime'),
-                data: 'stockUpdateDateTime',
-                orderable: false,
-                render: function (data, type, row, meta) {
-                    var output = '';
-                    if (row.stockUpdateDateTime) {
-                        output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment.utc(row.stockUpdateDateTime).fromNow() + '</span>';
-                    }
-
-                    return output;
-                },
-            }, {
-                targets: 6,
+                targets: 4,
                 title: WebAppLocals.getMessage('unitPrice'),
                 data: 'unitPrice',
                 render: function (data, type, row, meta) {
@@ -247,7 +218,7 @@ function compress_htmlcode($codedata)
                     return '<div style="width: max-content;">' + output + '</div>';
                 },
             }, {
-                targets: 7,
+                targets: 5,
                 title: WebAppLocals.getMessage('bonus'),
                 data: 'activeBonus',
                 render: function (data, type, row, meta) {
@@ -266,7 +237,7 @@ function compress_htmlcode($codedata)
                     return output;
                 },
             }, {
-                targets: 8,
+                targets: 6,
                 title: WebAppLocals.getMessage('quantity'),
                 data: 'id',
                 orderable: false,
@@ -303,7 +274,7 @@ function compress_htmlcode($codedata)
                     return '<div style="display: flex;">' + output + '</div>';
                 },
             }, {
-                targets: 9,
+                targets: 7,
                 title: '',
                 data: 'id',
                 orderable: false,
