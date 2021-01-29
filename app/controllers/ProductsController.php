@@ -397,21 +397,35 @@ class ProductsController extends Controller {
                 $expiryDate = $this->f3->get('POST.expiryDate');;
                 $strength = $this->f3->get('POST.strength');
 
-                if (!$scientificNameId || !$madeInCountryId || !$name_en
-                    || !$name_ar || !$name_fr || !$unitPrice || !$vat || !$maximumOrderQuantity
-                    || !$description_ar || !$description_en || !$description_fr
-                    || !$categoryId || !$subcategoryId) {
+                if (strlen($scientificNameId) == 0 || strlen($madeInCountryId) == 0
+                    || strlen($name_en) == 0 || strlen($name_ar) == 0
+                    || strlen($name_fr) == 0 || strlen($unitPrice) == 0
+                    || strlen($vat) == 0 || strlen($maximumOrderQuantity) == 0
+                    || strlen($description_ar) == 0 || strlen($description_en) == 0
+                    || strlen($description_fr) == 0 || strlen($categoryId) == 0
+                    || strlen($subcategoryId) == 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                    $this->webResponse->title = "";
-                    $this->webResponse->message = "Some mandatory fields are missing";
+                    $this->webResponse->message = $this->f3->get('vModule_product_missingFields');
                     echo $this->webResponse->jsonResponse();
                     return;
                 }
 
-                if ((!is_numeric($unitPrice) || $unitPrice <= 0) || (!is_numeric($vat) || $vat <= 0)) {
+                if ((!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)
+                || (!is_numeric($unitPrice) || $unitPrice <= 0)
+                || (!is_numeric($vat) || $vat < 0)) {
+                    $arrError = [];
+                    if(!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0) {
+                        array_push($arrError, $this->f3->get('vModule_product_maximumOrderQuantityInvalid'));
+                    }
+                    if(!is_numeric($unitPrice) || $unitPrice <= 0) {
+                        array_push($arrError, $this->f3->get('vModule_product_unitPriceInvalid'));
+                    }
+                    if(!is_numeric($vat) || $vat < 0) {
+                        array_push($arrError, $this->f3->get('vModule_product_vatInvalid'));
+                    }
+
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                    $this->webResponse->title = "";
-                    $this->webResponse->message = "Some fields are invalid";
+                    $this->webResponse->message = implode("<br>", $arrError);
                     echo $this->webResponse->jsonResponse();
                     return;
                 }
@@ -420,8 +434,7 @@ class ProductsController extends Controller {
                 $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
                 if ($dbSubcategory->dry()) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                    $this->webResponse->title = "";
-                    $this->webResponse->message = "Category invalid";
+                    $this->webResponse->message = $this->f3->get('vModule_product_subcategoryInvalid');
                     echo $this->webResponse->jsonResponse();
                     return;
                 }
@@ -448,14 +461,6 @@ class ProductsController extends Controller {
                 
                 if($manufacturerName) {
                     $this->checkLength($manufacturerName, 'manufacturerName', 200, 4);
-                }
-
-                if($batchNumber) {
-                    $this->checkLength($batchNumber, 'batchNumber', 200, 4);
-                }
-
-                if($itemCode) {
-                    $this->checkLength($itemCode, 'itemCode', 200, 4);
                 }
 
                 if($strength) {
@@ -682,22 +687,39 @@ class ProductsController extends Controller {
             $expiryDate = $this->f3->get('POST.expiryDate');;
             $strength = $this->f3->clean($this->f3->get('POST.strength'));
 
-            if (!$scientificNameId || !$madeInCountryId || !$name_en
-                || !$name_ar || !$name_fr || !$unitPrice || !$vat
-                || !$stock || !$maximumOrderQuantity || !$description_ar
-                || !$description_en || !$description_fr || !$categoryId
-                || !$subcategoryId) {
+            if (strlen($scientificNameId) == 0 || strlen($madeInCountryId) == 0
+                || strlen($name_en) == 0 || strlen($name_ar) == 0
+                || strlen($name_fr) == 0 || strlen($unitPrice) == 0
+                || strlen($vat) == 0 || strlen($stock) == 0
+                || strlen($maximumOrderQuantity) == 0 || strlen($description_ar) == 0
+                || strlen($description_en) == 0 || strlen($description_fr) == 0
+                || strlen($categoryId) == 0 || strlen($subcategoryId) == 0) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                $this->webResponse->title = "";
-                $this->webResponse->message = "Some mandatory fields are missing";
+                $this->webResponse->message = $this->f3->get('vModule_product_missingFields');
                 echo $this->webResponse->jsonResponse();
                 return;
             }
 
-            if ((!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) || (!is_numeric($unitPrice) || $unitPrice <= 0) || (!is_numeric($vat) || $vat <= 0)) {
+            if ((!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0)
+            || (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)
+            || (!is_numeric($unitPrice) || $unitPrice <= 0)
+            || (!is_numeric($vat) || $vat < 0)) {
+                $arrError = [];
+                if(!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0) {
+                    array_push($arrError, $this->f3->get('vModule_product_stockInvalid'));
+                }
+                if(!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0) {
+                    array_push($arrError, $this->f3->get('vModule_product_maximumOrderQuantityInvalid'));
+                }
+                if(!is_numeric($unitPrice) || $unitPrice <= 0) {
+                    array_push($arrError, $this->f3->get('vModule_product_unitPriceInvalid'));
+                }
+                if(!is_numeric($vat) || $vat < 0) {
+                    array_push($arrError, $this->f3->get('vModule_product_vatInvalid'));
+                }
+
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                $this->webResponse->title = "";
-                $this->webResponse->message = "Some fields are invalid";
+                $this->webResponse->message = implode("<br>", $arrError);
                 echo $this->webResponse->jsonResponse();
                 return;
             }
@@ -706,8 +728,7 @@ class ProductsController extends Controller {
             $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
             if ($dbSubcategory->dry()) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                $this->webResponse->title = "";
-                $this->webResponse->message = "Category invalid";
+                $this->webResponse->message = $this->f3->get('vModule_product_subcategoryInvalid');
                 echo $this->webResponse->jsonResponse();
                 return;
             }
@@ -734,14 +755,6 @@ class ProductsController extends Controller {
             
             if($manufacturerName) {
                 $this->checkLength($manufacturerName, 'manufacturerName', 200, 4);
-            }
-
-            if($batchNumber) {
-                $this->checkLength($batchNumber, 'batchNumber', 200, 4);
-            }
-
-            if($itemCode) {
-                $this->checkLength($itemCode, 'itemCode', 200, 4);
             }
 
             if($strength) {
@@ -1820,8 +1833,11 @@ class ProductsController extends Controller {
 
     function postBulkAddUploadProcess()
     {
-        ini_set('max_execution_time', 1000);
-        ini_set('mysql.connect_timeout', 1000);
+        ini_set('memory_limit', -1);
+        // ini_set('max_execution_time', 1000);
+        // ini_set('mysql.connect_timeout', 1000);
+        ini_set('max_execution_time', 30);
+        ini_set('mysql.connect_timeout', 30);
 
         $dbBulkAddUpload = new BaseModel($this->db, "bulkAddUpload");
 
@@ -1970,7 +1986,7 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "C":
-                            if (!$cellValue) {
+                            if (strlen($cellValue) == 0) {
                                 array_push($errors, "Brand Name AR required");
                             } else {
                                 if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
@@ -1981,7 +1997,7 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "D":
-                            if (!$cellValue) {
+                            if (strlen($cellValue) == 0) {
                                 array_push($errors, "Brand Name EN required");
                             } else {
                                 if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
@@ -1992,7 +2008,7 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "E":
-                            if (!$cellValue) {
+                            if (strlen($cellValue) == 0) {
                                 array_push($errors, "Brand Name FR required");
                             } else {
                                 if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
@@ -2003,7 +2019,7 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "F":
-                            if($cellValue) {
+                            if (strlen($cellValue) != 0) {
                                 if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Subtitle AR should be between 4 and 200 characters");        
                                 } else {
@@ -2012,7 +2028,7 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "G":
-                            if($cellValue) {
+                            if (strlen($cellValue) != 0) {
                                 if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Subtitle EN should be between 4 and 200 characters");        
                                 } else {
@@ -2021,7 +2037,7 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "H":
-                            if($cellValue) {
+                            if (strlen($cellValue) != 0) {
                                 if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Subtitle FR should be between 4 and 200 characters");        
                                 } else {
@@ -2030,7 +2046,7 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "I":
-                            if (!$cellValue) {
+                            if (strlen($cellValue) == 0) {
                                 array_push($errors, "Description AR required");
                             } else {
                                 if(strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
@@ -2041,7 +2057,7 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "J":
-                            if (!$cellValue) {
+                            if (strlen($cellValue) == 0) {
                                 array_push($errors, "Description EN required");
                             } else {
                                 if(strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
@@ -2052,7 +2068,7 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "K":
-                            if (!$cellValue) {
+                            if (strlen($cellValue) == 0) {
                                 array_push($errors, "Description FR required");
                             } else {
                                 if(strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
@@ -2063,35 +2079,35 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "L":
-                            if (!is_numeric($cellValue) || (float)$cellValue < 0) {
-                                array_push($errors, "Unit Price must be a positive number");
+                            if (!is_numeric($cellValue) || (float) $cellValue <= 0) {
+                                array_push($errors, "Unit Price must be a positive number not null");
                             } else {
                                 $dbEntityProduct->unitPrice = round((float)$cellValue, 2);
                             }
                             break;
                         case "M":
-                            if (!is_numeric($cellValue) || (float)$cellValue < 0) {
+                            if (!is_numeric($cellValue) || (float) $cellValue < 0) {
                                 array_push($errors, "VAT must be a positive number");
                             } else {
-                                $dbEntityProduct->vat = round((float)$cellValue, 2);
+                                $dbEntityProduct->vat = round((float) $cellValue, 2);
                             }
                             break;
                         case "N":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
+                            if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
                                 array_push($errors, "Available Quantity must be a positive whole number");
                             } else {
-                                $dbEntityProduct->stock = (int)$cellValue;
+                                $dbEntityProduct->stock = (int) $cellValue;
                             }
                             break;
                         case "O":
-                            if (!filter_var($cellValue, FILTER_VALIDATE_INT) || (float)$cellValue < 0) {
+                            if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
                                 array_push($errors, "Maximum Order Quantity must be a positive whole number");
                             } else {
-                                $dbEntityProduct->maximumOrderQuantity = (int)$cellValue;
+                                $dbEntityProduct->maximumOrderQuantity = (int) $cellValue;
                             }
                             break;
                         case "P":
-                            if($cellValue) {
+                            if (strlen($cellValue) != 0) {
                                 if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Manufacturer Name should be between 4 and 200 characters");        
                                 } else {
@@ -2100,21 +2116,13 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "Q":
-                            if($cellValue) {
-                                if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
-                                    array_push($errors, "Batch Number should be between 4 and 200 characters");        
-                                } else {
-                                    $dbProduct->batchNumber = $cellValue;
-                                }
+                            if (strlen($cellValue) != 0) {
+                                $dbProduct->batchNumber = $cellValue;
                             }
                             break;
                         case "R":
-                            if($cellValue) {
-                                if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
-                                    array_push($errors, "Item Code should be between 4 and 200 characters");        
-                                } else {
-                                    $dbProduct->itemCode = $cellValue;
-                                }
+                            if (strlen($cellValue) != 0) {
+                                $dbProduct->itemCode = $cellValue;
                             }
                             break;
                         case "S":
@@ -2143,7 +2151,7 @@ class ProductsController extends Controller {
                             }
                             break;
                         case "V":
-                            if($cellValue) {
+                            if (strlen($cellValue) != 0) {
                                 if(strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Strength should be between 4 and 200 characters");        
                                 } else {

@@ -32,8 +32,6 @@ var DistributorProductsDataTable = (function () {
         "subtitle_en": [4, 200],
         "subtitle_fr": [4, 200],
         "manufacturerName": [4, 200],
-        "batchNumber": [4, 200],
-        "itemCode": [4, 200],
         "strength": [4, 200],
     };
   
@@ -60,6 +58,8 @@ var DistributorProductsDataTable = (function () {
     };
 
     var _productEditModalOpen = function (webResponse) {
+        if(_validator) _validator.destroy();
+        
         $('#editModalForm').attr('action', '/web/distributor/product/edit');
 
         $('#editProductId').val(webResponse.data.product.productId);
@@ -117,7 +117,6 @@ var DistributorProductsDataTable = (function () {
         _initializeSubimagesDropzone('edit', webResponse.data.subimages);
         
         $('#editModal').appendTo('body').modal('show');
-        _addModalValidation('edit');
     };
 
     var _productEditQuantityModalOpen = function (webResponse) {
@@ -203,8 +202,8 @@ var DistributorProductsDataTable = (function () {
     };
 
     var _productAddModalOpen = function () {
-
         _clearAddModal();
+        if(_validator) _validator.destroy();
 
         $('#addModalForm').attr('action', '/web/distributor/product/add');
         $('#addProductCategory').on('change', () => _updateSubcategorySelect('add'));
@@ -217,7 +216,6 @@ var DistributorProductsDataTable = (function () {
         _initializeSubimagesDropzone('add');
 
         $('#addModal').appendTo('body').modal('show');
-        _addModalValidation('add');
     };
 
     var _clearAddModal = function () {
@@ -235,6 +233,7 @@ var DistributorProductsDataTable = (function () {
         $('#addProductDescriptionEn').val('');
         $('#addProductDescriptionFr').val('');
         $('#addUnitPrice').val('');
+        $('#addVat').val('');
         $('#addStock').val('');
         $('#addMaximumOrderQuantity').val('');
         $('#addProductManufacturerName').val('');
@@ -246,7 +245,6 @@ var DistributorProductsDataTable = (function () {
         $('#addProductStrength').val('');
         $('#addProductSubcategory').val('').change();
         $('#addProductImageHolder').val('');
-        $('#addProductExpiryDate').val('');
         $('#editProductExpiryDate').val('');
     }
 
@@ -286,6 +284,8 @@ var DistributorProductsDataTable = (function () {
     }
 
     var _addModalValidation = function (mode) {
+        if(_validator) _validator.destroy();
+        
         var _mandatoryFields = [...mandatoryFields];
         if (mode === "add") _mandatoryFields.push("stock");
 
@@ -327,19 +327,13 @@ var DistributorProductsDataTable = (function () {
                 }),
             },
         })
-        
-        var form = KTUtil.getById(mode + "ModalForm");
-        _validator = FormValidation.formValidation(form, {
-            fields: _validatorFields,
-            plugins: {
-                trigger: new FormValidation.plugins.Trigger(),
-                // Bootstrap Framework Integration
-                bootstrap: new FormValidation.plugins.Bootstrap({
-                    //eleInvalidClass: '',
-                    eleValidClass: '',
-                }),
-            },
-        })
+
+        $(".select2").on("change", function(ev) {
+            var field = $(this).attr("name");
+            if(field in _validatorFields) {
+                _validator.revalidateField(field);
+            }
+        });
     }
 
     var _updateSubcategorySelect = function (mode) {
@@ -507,14 +501,7 @@ var DistributorProductsDataTable = (function () {
     }
 
     var _productAdd = function () {
-        $(".select2").each(function(index, element) {
-            var field = $(element).attr("name");
-            $(element).on('change.select2', function() {
-                if(field in _validatorFields) {
-                    _validator.revalidateField(field);
-                }
-            });
-        });
+        _addModalValidation("add");
 
         _validator.validate().then(function (status) {
             if (status == 'Valid') {
@@ -553,8 +540,7 @@ var DistributorProductsDataTable = (function () {
                     body[key] = $('#addModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
                 });
 
-                $("#addModal").modal('hide');
-                WebApp.post('/web/distributor/product/add', body, DistributorProductsDataTable.reloadDatatable);
+                WebApp.post('/web/distributor/product/add', body, _productAddSuccessCallback);
             } else {
                 Swal.fire({
                     text: WebAppLocals.getMessage('validationError'),
@@ -571,15 +557,13 @@ var DistributorProductsDataTable = (function () {
         });
     }
 
+    var _productAddSuccessCallback = function () {
+        $("#addModal").modal('hide');
+        DistributorProductsDataTable.reloadDatatable();
+    }
+
     var _productEdit = function () {
-        $(".select2").each(function(index, element) {
-            var field = $(element).attr("name");
-            $(element).on('change.select2', function() {
-                if(field in _validatorFields) {
-                    _validator.revalidateField(field);
-                }
-            });
-        });
+        _addModalValidation("edit");
 
         _validator.validate().then(function (status) {
             if (status == 'Valid') {
@@ -618,8 +602,7 @@ var DistributorProductsDataTable = (function () {
                     body[key] = $('#editModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
                 });
 
-                $("#editModal").modal('hide');
-                WebApp.post('/web/distributor/product/edit', body, DistributorProductsDataTable.reloadDatatable);
+                WebApp.post('/web/distributor/product/edit', body, _productEditSuccessCallback);
             } else {
                 Swal.fire({
                     text: WebAppLocals.getMessage('validationError'),
@@ -634,6 +617,11 @@ var DistributorProductsDataTable = (function () {
                 });
             }
         });
+    }
+
+    var _productEditSuccessCallback = function () {
+        $("#editModal").modal('hide');
+        DistributorProductsDataTable.reloadDatatable();
     }
 
     return {
