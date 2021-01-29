@@ -58,7 +58,10 @@ var DistributorProductsDataTable = (function () {
     };
 
     var _productEditModalOpen = function (webResponse) {
-        if(_validator) _validator.destroy();
+        if(_validator) {
+            _validator.resetForm();
+            _validator.destroy();
+        }
         
         $('#editModalForm').attr('action', '/web/distributor/product/edit');
 
@@ -203,7 +206,10 @@ var DistributorProductsDataTable = (function () {
 
     var _productAddModalOpen = function () {
         _clearAddModal();
-        if(_validator) _validator.destroy();
+        if(_validator) {
+            _validator.resetForm();
+            _validator.destroy();
+        }
 
         $('#addModalForm').attr('action', '/web/distributor/product/add');
         $('#addProductCategory').on('change', () => _updateSubcategorySelect('add'));
@@ -284,7 +290,10 @@ var DistributorProductsDataTable = (function () {
     }
 
     var _addModalValidation = function (mode) {
-        if(_validator) _validator.destroy();
+        if(_validator) {
+            _validator.resetForm();
+            _validator.destroy();
+        }
         
         var _mandatoryFields = [...mandatoryFields];
         if (mode === "add") _mandatoryFields.push("stock");
@@ -477,6 +486,7 @@ var DistributorProductsDataTable = (function () {
             $('#' + mode + 'DropzoneItems').append(previewTemplate);
             
             if(_validator) {
+                _validator.resetForm();
                 _validator.destroy();
                 _validatorFields = {};
             }
