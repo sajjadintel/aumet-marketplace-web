@@ -9,14 +9,14 @@ class ProductsController extends Controller {
             echo View::instance()->render('app/layout/layout.php');
         } else {
             $entityId = $this->f3->get('PARAMS.entityId');
-            $productId = $this->f3->get('PARAMS.productId');
+            $id = $this->f3->get('PARAMS.productId');
 
             $roleId = $this->f3->get('SESSION.objUser')->roleId;
 
             if ($entityId == 0)
-                $query = "productId=$productId";
+                $query = "id=$id";
             else
-                $query = "entityId=$entityId and productId=$productId";
+                $query = "entityId=$entityId and id=$id";
 
             $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
             $dbEntityProduct->productName = "productName_" . $this->objUser->language;
@@ -69,7 +69,7 @@ class ProductsController extends Controller {
             $dbEntityProductFromThisDistributor = new BaseModel($this->db, "vwEntityProductSell");
             $dbEntityProductFromThisDistributor->productName = "productName_" . $this->objUser->language;
             $dbEntityProductFromThisDistributor->entityName = "entityName_" . $this->objUser->language;
-            $dbEntityProductFromThisDistributor = $dbEntityProductFromThisDistributor->getWhere("stockStatusId=1 and entityId=$dbEntityProduct->entityId and id != $dbEntityProduct->id", 'id', 12);
+            $dbEntityProductFromThisDistributor = $dbEntityProductFromThisDistributor->getWhere(["stockStatusId= ? and entityId= ? and id != ?", 1, $dbEntityProduct->entityId, $dbEntityProduct->id], 'id', 12);
             $this->f3->set('arrProductFromThisDistributor', $dbEntityProductFromThisDistributor);
 
             if (Helper::isPharmacy($roleId)) {
@@ -77,10 +77,11 @@ class ProductsController extends Controller {
                 $dbEntityProductOtherOffers->productName = "productName_" . $this->objUser->language;
                 $dbEntityProductOtherOffers->entityName = "entityName_" . $this->objUser->language;
 
-                $where = "( TRIM(productName_ar) LIKE '" . trim($dbEntityProduct->productName_ar) . "'";
-                $where .= " OR TRIM(productName_en) LIKE '" . mb_strtolower(trim($dbEntityProduct->productName_en)) . "'";
-                $where .= " OR TRIM(productName_fr) LIKE '" . mb_strtolower(trim($dbEntityProduct->productName_fr)) . "' ) ";
-                $where .= " AND id != $dbEntityProduct->id";
+                $where = ["( TRIM(productName_ar) LIKE ? OR TRIM(productName_en) LIKE ? OR TRIM(productName_fr) LIKE ? AND id != ? )",
+                    trim($dbEntityProduct->productName_ar),
+                    mb_strtolower(trim($dbEntityProduct->productName_en)),
+                    mb_strtolower(trim($dbEntityProduct->productName_fr)),
+                    $dbEntityProduct->id];
 
                 $dbEntityProductOtherOffers = $dbEntityProductOtherOffers->findWhere($where);
 
@@ -176,7 +177,7 @@ class ProductsController extends Controller {
             $productId = $this->f3->get('PARAMS.productId');
 
             $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
-            $arrProduct = $dbProduct->findWhere("productId = $productId");
+            $arrProduct = $dbProduct->findWhere("id = $productId");
 
             $dbProductIngredient = new BaseModel($this->db, "vwProductIngredient");
             $arrActiveIngredients = $dbProductIngredient->findWhere("productId = $productId");
@@ -197,7 +198,7 @@ class ProductsController extends Controller {
             $productId = $this->f3->get('PARAMS.productId');
 
             $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
-            $arrProduct = $dbProduct->findWhere("productId = '$productId'");
+            $arrProduct = $dbProduct->findWhere("id = '$productId'");
 
             $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
             $dbBonus->bonusId = 'id';
@@ -223,7 +224,7 @@ class ProductsController extends Controller {
         if (is_array($datatable->query)) {
             $productId = $datatable->query['productId'];
             if (isset($productId) && is_array($productId)) {
-                $query .= " AND productId in (" . implode(",", $productId) . ")";
+                $query .= " AND id in (" . implode(",", $productId) . ")";
             }
 
             $scientificNameId = $datatable->query['scientificNameId'];
@@ -370,7 +371,7 @@ class ProductsController extends Controller {
                     return;
                 }
 
-                if (!is_numeric($unitPrice) || $unitPrice <= 0)  {
+                if (!is_numeric($unitPrice) || $unitPrice <= 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Unit Price must be a positive number";
@@ -380,7 +381,7 @@ class ProductsController extends Controller {
 
                 $dbSubcategory = new BaseModel($this->db, "subcategory");
                 $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
-                if($dbSubcategory->dry()) {
+                if ($dbSubcategory->dry()) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
                     $this->webResponse->message = "Category invalid";
@@ -419,7 +420,7 @@ class ProductsController extends Controller {
                 }
 
                 $arrIngredientId = explode(",", $activeIngredientsId);
-                foreach($arrIngredientId as $ingredientId) {
+                foreach ($arrIngredientId as $ingredientId) {
                     $dbProductIngredient->productId = $productId;
                     $dbProductIngredient->ingredientId = $ingredientId;
                     $dbProductIngredient->add();
@@ -621,7 +622,7 @@ class ProductsController extends Controller {
 
             $dbSubcategory = new BaseModel($this->db, "subcategory");
             $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
-            if($dbSubcategory->dry()) {
+            if ($dbSubcategory->dry()) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Category invalid";
@@ -655,7 +656,7 @@ class ProductsController extends Controller {
 
             $arrIngredientId = explode(",", $activeIngredientsId);
             $dbProductIngredient = new BaseModel($this->db, "productIngredient");
-            foreach($arrIngredientId as $ingredientId) {
+            foreach ($arrIngredientId as $ingredientId) {
                 $dbProductIngredient->productId = $dbProduct->id;
                 $dbProductIngredient->ingredientId = $ingredientId;
                 $dbProductIngredient->add();
@@ -1973,7 +1974,7 @@ class ProductsController extends Controller {
                     $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
                     $dbEntityProduct->add();
 
-                    if($activeIngredientsId) {
+                    if ($activeIngredientsId) {
                         $dbProductIngredient->productId = $dbProduct->id;
                         $dbProductIngredient->ingredientId = $activeIngredientsId;
                         $dbProductIngredient->add();

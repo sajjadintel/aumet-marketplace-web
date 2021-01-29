@@ -153,7 +153,7 @@ function compress_htmlcode($codedata)
                     var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
-                        row.productId +
+                        row.id +
                         '\')"> ' +
                         '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
                         row.image +
@@ -162,7 +162,7 @@ function compress_htmlcode($codedata)
                     output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
-                        row.productId +
+                        row.id +
                         '\')" title="'+
                         row['productName_' + docLang] +
                         '"> ' +
@@ -257,7 +257,7 @@ function compress_htmlcode($codedata)
                         let btnText = "Select";
                         let allBonuses = row.bonuses.filter((bonus) => !row.activeBonus || row.activeBonus.id !== bonus.id);
                         let btnShowBonuses =
-                            '<a style="width: max-content;" href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.productId + ', ' + row.entityId + ', ' + JSON.stringify(allBonuses) + ')\'\
+                            '<a style="width: max-content;" href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.id + ', ' + row.entityId + ', ' + JSON.stringify(allBonuses) + ')\'\
                         class="btn btn-sm btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="View Bonuses">\
                         <span>' + btnText + '</span></a>';
                         output += btnShowBonuses;
@@ -350,7 +350,7 @@ function compress_htmlcode($codedata)
                         '<a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
-                        row.productId +
+                        row.id +
                         '\')" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2 mb-2" title="View">\
                         <span class="svg-icon svg-icon-md">\
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
@@ -362,7 +362,7 @@ function compress_htmlcode($codedata)
                             </g></svg></span></a>';
 
                     var btnShowBonuses =
-                        '<a href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.productId + ')\'\
+                        '<a href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.id + ')\'\
                     class="btn btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="View">\
                     <span>Show Bonuses</span></a>';
 
