@@ -722,11 +722,18 @@ class Controller {
         echo $this->webResponse->jsonResponse();
     }
 
-    function checkLength($variable, $variableName, $length)
+    function checkLength($variable, $variableName, $maxLength, $minLength = 0)
     {
-        if (strlen($variable) > $length) {
+        if (strlen($variable) > $maxLength) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
-            $this->webResponse->message = $this->f3->get("field_" . $variableName) . $this->f3->get("error_filedTooLong") . $length;
+            $this->webResponse->message = $this->f3->get("field_" . $variableName) . $this->f3->get("error_filedTooLong") . $maxLength;
+            echo $this->webResponse->jsonResponse();
+            exit;
+        }
+        
+        if (strlen($variable) < $minLength) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = $this->f3->get("field_" . $variableName) . $this->f3->get("error_filedTooShort") . $minLength;
             echo $this->webResponse->jsonResponse();
             exit;
         }

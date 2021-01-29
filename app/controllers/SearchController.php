@@ -220,10 +220,10 @@ class SearchController extends Controller {
         $this->handleGetListFilters("entity", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'typeId=10');
     }
 
-    function getCustomerGroupByEnitityList()
+    function getRelationGroupByEnitityList()
     {
         $entityId = $this->f3->get("PARAMS.entityId");
-        $this->handleGetListFilters("customerGroup", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'entityId = '.$entityId);
+        $this->handleGetListFilters("entityRelationGroup", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'entityId = '.$entityId);
     }
 
     function getCategoryList()
@@ -488,7 +488,7 @@ class SearchController extends Controller {
 
         $dbCity = new BaseModel($this->db, "city");
         $dbCity->name = "name".ucfirst($this->objUser->language);
-        $dbCity->getByField("countryId", $countryId);
+        $dbCity->getWhere("countryId=$countryId", "name".ucfirst($this->objUser->language)." ASC");
 
         $arrCities = [];
         while (!$dbCity->dry()) {

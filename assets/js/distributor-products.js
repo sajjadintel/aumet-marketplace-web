@@ -14,10 +14,33 @@ var DistributorProductsDataTable = (function () {
         "description_en",
         "description_fr",
         "unitPrice",
+        "vat",
         "maximumOrderQuantity",
         "categoryId",
         "subcategoryId",
     ];
+  
+    // Structure: field: [minLength, maxLength] 
+    var mapFieldStrRangeLength = {
+        "name_en": [4, 200],
+        "name_ar": [4, 200],
+        "name_fr": [4, 200],
+        "description_ar": [4, 1000],
+        "description_en": [4, 1000],
+        "description_fr": [4, 1000],
+        "subtitle_ar": [4, 200],
+        "subtitle_en": [4, 200],
+        "subtitle_fr": [4, 200],
+        "manufacturerName": [4, 200],
+        "batchNumber": [4, 200],
+        "itemCode": [4, 200],
+        "strength": [4, 200],
+    };
+  
+    var mapUuidSubimage = {};
+    var imageModal;
+    var _validator;
+    var _validatorFields = {};
 
     var _productEditModal = function (productId) {
         WebApp.get('/web/distributor/product/' + productId, _productEditModalOpen);
@@ -44,6 +67,7 @@ var DistributorProductsDataTable = (function () {
         $('#editProductNameEn').val(webResponse.data.product.productName_en);
         $('#editProductNameFr').val(webResponse.data.product.productName_fr);
         $('#editUnitPrice').val(webResponse.data.product.unitPrice);
+        $('#editVat').val(webResponse.data.product.vat);
         $('#editMaximumOrderQuantity').val(webResponse.data.product.maximumOrderQuantity);
         $('#editProductSubtitleAr').val(webResponse.data.product.subtitle_ar);
         $('#editProductSubtitleEn').val(webResponse.data.product.subtitle_en);
@@ -60,7 +84,7 @@ var DistributorProductsDataTable = (function () {
         $('#editProductScientificName').empty();
         $('#editProductScientificName').append(new Option(webResponse.data.product.scientificName, webResponse.data.product.scientificNameId));
         $('#editProductScientificName').val(webResponse.data.product.scientificNameId);
-        
+
         $('#editProductCountry').empty();
         $('#editProductCountry').append(new Option(webResponse.data.product['madeInCountryName_' + docLang], webResponse.data.product.madeInCountryId));
         $('#editProductCountry').val(webResponse.data.product.madeInCountryId);
@@ -69,11 +93,11 @@ var DistributorProductsDataTable = (function () {
         $('#editProductCategory').append(new Option(webResponse.data.product['productCategoryName_' + docLang], webResponse.data.product.productCategoryId));
         $('#editProductCategory').val(webResponse.data.product.productCategoryId);
         $('#editProductCategory').on("change", () => _updateSubcategorySelect("edit"));
-        
+
         $('#editProductSubcategory').empty();
         $('#editProductSubcategory').append(new Option(webResponse.data.product['productSubcategoryName_' + docLang], webResponse.data.product.productSubcategoryId));
         $('#editProductSubcategory').val(webResponse.data.product.productSubcategoryId);
-        
+
         var allActiveIngredients = webResponse.data.activeIngredients || [];
         var allActiveIngredientsId = [];
 
@@ -85,10 +109,12 @@ var DistributorProductsDataTable = (function () {
         $('#editActiveIngredients').val(allActiveIngredientsId);
         $('#editActiveIngredientsVal').val(allActiveIngredientsId);
 
-        $('#editActiveIngredients').on("change", (ev) => _updateActiveIngredientsVal("edit"));
-
+        $('#editActiveIngredients').on('change', (ev) => _updateActiveIngredientsVal('edit'));
+      
         _changeImageHolder(webResponse.data.product.image, "edit");
         $('#editProductImage').on("change", (ev) => _changeProductImage(ev, "edit"));
+
+        _initializeSubimagesDropzone('edit', webResponse.data.subimages);
         
         $('#editModal').appendTo('body').modal('show');
         _addModalValidation('edit');
@@ -177,35 +203,69 @@ var DistributorProductsDataTable = (function () {
     };
 
     var _productAddModalOpen = function () {
+
+        _clearAddModal();
+
         $('#addModalForm').attr('action', '/web/distributor/product/add');
+        $('#addProductCategory').on('change', () => _updateSubcategorySelect('add'));
+
+        _changeImageHolder('', 'add');
+        $('#addProductImage').on('change', (ev) => _changeProductImage(ev, 'add'));
+
+        $('#addActiveIngredients').on('change', (ev) => _updateActiveIngredientsVal('add'));
         
-        $("#addProductCategory").on("change", () => _updateSubcategorySelect("add"));
-
-        _changeImageHolder('', "add");
-        $('#addProductImage').on("change", (ev) => _changeProductImage(ev, "add"));
-
-        $('#addActiveIngredients').on("change", (ev) => _updateActiveIngredientsVal("add"));
+        _initializeSubimagesDropzone('add');
 
         $('#addModal').appendTo('body').modal('show');
         _addModalValidation('add');
     };
+
+    var _clearAddModal = function () {
+        $('#addProductImage').val('');
+        $('#addProductImageInput').val('');
+        $('#addProductScientificName').val('').change();
+        $('#addProductCountry').val('').change();
+        $('#addProductNameAr').val('');
+        $('#addProductNameEn').val('');
+        $('#addProductNameFr').val('');
+        $('#addProductSubtitleAr').val('');
+        $('#addProductSubtitleEn').val('');
+        $('#addProductSubtitleFr').val('');
+        $('#addProductDescriptionAr').val('');
+        $('#addProductDescriptionEn').val('');
+        $('#addProductDescriptionFr').val('');
+        $('#addUnitPrice').val('');
+        $('#addStock').val('');
+        $('#addMaximumOrderQuantity').val('');
+        $('#addProductManufacturerName').val('');
+        $('#addProductBatchNumber').val('');
+        $('#addProductItemCode').val('');
+        $('#addProductCategory').val('').change();
+        $('#addActiveIngredients').val('').change();
+        $('#addProductExpiryDate').val('');
+        $('#addProductStrength').val('');
+        $('#addProductSubcategory').val('').change();
+        $('#addProductImageHolder').val('');
+        $('#addProductExpiryDate').val('');
+        $('#editProductExpiryDate').val('');
+    }
 
     var _productImageUpload = function (webResponse, mode) {
         _changeImageHolder(webResponse.data, mode);
     }
 
     var _changeImageHolder = function (image, mode) {
-        let backgroundImageVal = "/theme/assets/media/users/blank.png";
+        let backgroundImageVal = '/theme/assets/media/users/blank.png';
         if (image) {
             backgroundImageVal = image;
         }
-        $('#' + mode + 'ProductImageHolder').css("background-image", "url(" + backgroundImageVal + ")");
+        $('#' + mode + 'ProductImageHolder').css('background-image', 'url(' + backgroundImageVal + ')');
         $('#' + mode + 'ProductImageInput').val(image);
     }
 
     var _changeProductImage = function (ev, mode) {
         let file = ev.target.files[0];
-        let ext = file.type.split("/")[1];
+        let ext = file.type.split('/')[1];
 
         let imageName = new Date().getTime() + "." + ext;
         let image = new File([file], imageName, {type: file.type});
@@ -226,20 +286,60 @@ var DistributorProductsDataTable = (function () {
     }
 
     var _addModalValidation = function (mode) {
-        var _mandatoryFields = [ ...mandatoryFields ];
-        if(mode === "add") _mandatoryFields.push("stock");
+        var _mandatoryFields = [...mandatoryFields];
+        if (mode === "add") _mandatoryFields.push("stock");
 
-        var validatorFields = {};
-        _mandatoryFields.forEach((field) => {
-            validatorFields[field] = {
-                validators: {
-                    notEmpty: {
-                        message: WebAppLocals.getMessage('required')
-                    }
+        var allFields = new Set([ ..._mandatoryFields, ...Object.keys(mapFieldStrRangeLength)]);
+        _validatorFields = {};
+        allFields.forEach((field) => {
+            var fieldValidators = {};
+
+            if(_mandatoryFields.includes(field)) {
+                fieldValidators.notEmpty = {
+                    message: WebAppLocals.getMessage('required')
                 }
             }
+
+            if(field in mapFieldStrRangeLength) {
+                var strRangeLength = mapFieldStrRangeLength[field];
+                var message = WebAppLocals.getMessage('lengthError') + " " + strRangeLength[0] + " " + WebAppLocals.getMessage('and') + " " + strRangeLength[1] + " " + WebAppLocals.getMessage('characters');
+                fieldValidators.stringLength = {
+                    min: strRangeLength[0],
+                    max: strRangeLength[1],
+                    message: message,
+                }
+            }
+
+            _validatorFields[field] = {
+                validators: fieldValidators
+            }
         })
-        $("#" + mode + "ModalAction").attr("data-modalValidatorFields", JSON.stringify(validatorFields));
+        
+        var form = KTUtil.getById(mode + "ModalForm");
+        _validator = FormValidation.formValidation(form, {
+            fields: _validatorFields,
+            plugins: {
+                trigger: new FormValidation.plugins.Trigger(),
+                // Bootstrap Framework Integration
+                bootstrap: new FormValidation.plugins.Bootstrap({
+                    //eleInvalidClass: '',
+                    eleValidClass: '',
+                }),
+            },
+        })
+        
+        var form = KTUtil.getById(mode + "ModalForm");
+        _validator = FormValidation.formValidation(form, {
+            fields: _validatorFields,
+            plugins: {
+                trigger: new FormValidation.plugins.Trigger(),
+                // Bootstrap Framework Integration
+                bootstrap: new FormValidation.plugins.Bootstrap({
+                    //eleInvalidClass: '',
+                    eleValidClass: '',
+                }),
+            },
+        })
     }
 
     var _updateSubcategorySelect = function (mode) {
@@ -249,13 +349,13 @@ var DistributorProductsDataTable = (function () {
             placeholder: WebAppLocals.getMessage("subcategory"),
 
             ajax: {
-                url: function() {
+                url: function () {
                     var _url = '/web/product/subcategory/list/';
                     _url += $("#" + mode + "ProductCategory").val();
                     return _url;
                 },
                 dataType: 'json',
-                processResults: function(response) {
+                processResults: function (response) {
                     return {
                         results: response.data.results,
                         pagination: {
@@ -264,14 +364,276 @@ var DistributorProductsDataTable = (function () {
                     }
                 }
             },
-            
+
             data: []
         });
-        $("#" + mode + "ProductSubcategory").prop('disabled', categoryId? false : true);
+        $("#" + mode + "ProductSubcategory").prop('disabled', categoryId ? false : true);
     }
 
     var _updateActiveIngredientsVal = function (mode) {
         $("#" + mode + "ActiveIngredientsVal").val($("#" + mode + "ActiveIngredients").val());
+    }
+
+    var _initializeSubimagesDropzone = function (mode, initialSubimages = []) {
+        // Set the dropzone container id
+        var id = '#' + mode + 'ProductSubimagesDropzone';
+        
+        let dropzoneControl = $(id)[0].dropzone;
+        if (dropzoneControl) {
+            dropzoneControl.destroy();
+        }
+
+		// Set the preview element template
+		var previewNode = $(id + ' .dropzone-item');
+		previewNode.id = '';
+		var previewTemplate = previewNode.parent('.dropzone-items').html();
+		previewNode.remove();
+
+		var myDropZone = new Dropzone(id, {
+			// Make the whole body a dropzone
+			url: '/web/distributor/product/subimage', // Set the url for your upload script location
+			acceptedFiles: '.jpeg, .jpg, .png',
+			maxFilesize: 10, // Max filesize in MB
+			maxFiles: 6,
+			previewTemplate: previewTemplate,
+			previewsContainer: id + ' .dropzone-items', // Define the container to display the previews
+			clickable: id + ' .dropzone-select', // Define the element that should be used as click trigger to select files.
+		});
+
+		myDropZone.on('addedfile', function (file) {
+			// Hookup the start button
+            $(document).find(id + ' .dropzone-item').css('display', 'block');
+            $("#" + mode + "MaxFilesExceededLabel").hide();
+        });
+
+		// Update the total progress bar
+		myDropZone.on('totaluploadprogress', function (progress) {
+			$(id + ' .progress-bar').css('width', progress + '%');
+		});
+
+		myDropZone.on('sending', function (file) {
+			// Show the total progress bar when upload starts
+			$(id + ' .progress-bar').css('opacity', '1');
+		});
+
+		// Hide the total progress bar when nothing's uploading anymore
+		myDropZone.on('complete', function (file) {
+			var thisProgressBar = id + ' .dz-complete';
+			setTimeout(function () {
+                $(thisProgressBar + ' .progress-bar, ' + thisProgressBar + ' .progress').css('opacity', '0');
+			}, 300);
+		});;
+
+		// Add file to the list if success
+		myDropZone.on('success', function (file, response) {
+            var imageUrl = response;
+
+			mapUuidSubimage[file.upload.uuid] = imageUrl;
+            
+			var dropzoneFilenameElement = $(file.previewTemplate).find("#dropzoneImage");
+			$(dropzoneFilenameElement).css("background-image", 'url("/'+ imageUrl + '")');
+			$(dropzoneFilenameElement).css("cursor", "pointer");
+			$(dropzoneFilenameElement).click(function() {
+                _openImageModal(imageUrl);
+            });
+		});
+
+		// Remove file from the list
+		myDropZone.on('removedfile', function (file) {
+            delete mapUuidSubimage[file.upload.uuid];
+        });
+
+		myDropZone.on('maxfilesexceeded', function (file) {
+            myDropZone.removeFile(file);
+            $("#" + mode + "MaxFilesExceededLabel").show();
+        });
+
+		if(initialSubimages.length > 0) {
+            initialSubimages.forEach((subimageObj) => {
+                var subimage = subimageObj.subimage;
+                var fileUrl = _getFullUrl(subimage);
+                var fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+                var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                var fileNameWithoutTimestamp = fileName.substring(0, fileName.lastIndexOf('-')) + "." + fileExtension;
+                var file = {
+                    status: 'success',
+                    accepted: true,
+                    name: fileNameWithoutTimestamp,
+                    url: fileUrl,
+                    upload: {
+                        uuid: Math.random().toString(36).substring(2, 8)
+                    }
+                };
+
+                myDropZone.files.push(file);
+                myDropZone.emit('addedfile', file);
+                myDropZone.emit('complete', file);
+                myDropZone.emit('success', file, subimage);
+            });
+        }
+        
+
+        $('#' + mode + 'Modal').on('shown.bs.modal', function () {
+            $('.wrap-modal-slider').addClass('open');
+        })
+        
+        $('#' + mode + 'Modal').on('hidden.bs.modal', function () {
+            myDropZone.removeAllFiles();
+            $('.wrap-modal-slider').removeClass('open');
+            $('#' + mode + 'DropzoneItems').append(previewTemplate);
+            
+            if(_validator) {
+                _validator.destroy();
+                _validatorFields = {};
+            }
+        })
+    }
+
+	var _getFullUrl = function (filePath) {
+		return window.location.protocol + "//" + window.location.hostname + "/" + filePath;
+    }
+
+    var _openImageModal = function (imageUrl) {
+        $("#imageUrl").attr("src", '/'+ imageUrl);
+        imageModal = $("#imageModal").clone();
+        $(imageModal).appendTo('body').modal('show');
+        $(imageModal).show();
+    }
+    
+    var _closeImageModal = function () {
+        $("#imageUrl").attr("src", '/theme/assets/media/users/blank.png');
+        $(imageModal).remove();
+        $(".modal-backdrop.fade.show").slice(1).remove();
+    }
+
+    var _productAdd = function () {
+        $(".select2").each(function(index, element) {
+            var field = $(element).attr("name");
+            $(element).on('change.select2', function() {
+                if(field in _validatorFields) {
+                    _validator.revalidateField(field);
+                }
+            });
+        });
+
+        _validator.validate().then(function (status) {
+            if (status == 'Valid') {
+                let body = {
+                    subimages: Object.keys(mapUuidSubimage).map((key) => mapUuidSubimage[key]),
+                };
+
+                let mapKeyElement = {
+                    scientificNameId: 'select',
+                    madeInCountryId: 'select',
+                    name_en: 'input',
+                    name_ar: 'input',
+                    name_fr: 'input',
+                    image: 'input',
+                    stock: 'input',
+                    maximumOrderQuantity: 'input',
+                    subtitle_ar: 'input',
+                    subtitle_en: 'input',
+                    subtitle_fr: 'input',
+                    description_ar: 'textarea',
+                    description_en: 'textarea',
+                    description_fr: 'textarea',
+                    unitPrice: 'input',
+                    vat: 'input',
+                    manufacturerName: 'input',
+                    batchNumber: 'input',
+                    itemCode: 'input',
+                    categoryId: 'select',
+                    subcategoryId: 'select',
+                    activeIngredientsId: 'input',
+                    expiryDate: 'input',
+                    strength: 'input',
+                };
+
+                Object.keys(mapKeyElement).forEach((key) => {
+                    body[key] = $('#addModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+                });
+
+                $("#addModal").modal('hide');
+                WebApp.post('/web/distributor/product/add', body, DistributorProductsDataTable.reloadDatatable);
+            } else {
+                Swal.fire({
+                    text: WebAppLocals.getMessage('validationError'),
+                    icon: 'error',
+                    buttonsStyling: false,
+                    confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+                    customClass: {
+                        confirmButton: 'btn font-weight-bold btn-light',
+                    },
+                }).then(function () {
+                    KTUtil.scrollTop();
+                });
+            }
+        });
+    }
+
+    var _productEdit = function () {
+        $(".select2").each(function(index, element) {
+            var field = $(element).attr("name");
+            $(element).on('change.select2', function() {
+                if(field in _validatorFields) {
+                    _validator.revalidateField(field);
+                }
+            });
+        });
+
+        _validator.validate().then(function (status) {
+            if (status == 'Valid') {
+                let body = {
+                    subimages: Object.keys(mapUuidSubimage).map((key) => mapUuidSubimage[key]),
+                };
+
+                let mapKeyElement = {
+                    id: 'input',
+                    scientificNameId: 'select',
+                    madeInCountryId: 'select',
+                    name_en: 'input',
+                    name_ar: 'input',
+                    name_fr: 'input',
+                    image: 'input',
+                    maximumOrderQuantity: 'input',
+                    subtitle_ar: 'input',
+                    subtitle_en: 'input',
+                    subtitle_fr: 'input',
+                    description_ar: 'textarea',
+                    description_en: 'textarea',
+                    description_fr: 'textarea',
+                    unitPrice: 'input',
+                    vat: 'input',
+                    manufacturerName: 'input',
+                    batchNumber: 'input',
+                    itemCode: 'input',
+                    categoryId: 'select',
+                    subcategoryId: 'select',
+                    activeIngredientsId: 'input',
+                    expiryDate: 'input',
+                    strength: 'input',
+                };
+
+                Object.keys(mapKeyElement).forEach((key) => {
+                    body[key] = $('#editModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+                });
+
+                $("#editModal").modal('hide');
+                WebApp.post('/web/distributor/product/edit', body, DistributorProductsDataTable.reloadDatatable);
+            } else {
+                Swal.fire({
+                    text: WebAppLocals.getMessage('validationError'),
+                    icon: 'error',
+                    buttonsStyling: false,
+                    confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+                    customClass: {
+                        confirmButton: 'btn font-weight-bold btn-light',
+                    },
+                }).then(function () {
+                    KTUtil.scrollTop();
+                });
+            }
+        });
     }
 
     return {
@@ -285,8 +647,17 @@ var DistributorProductsDataTable = (function () {
         productEditModal: function (productId) {
             _productEditModal(productId);
         },
+        productEdit: function () {
+            _productEdit();
+        },
         productAddModal: function () {
             _productAddModal();
         },
+        productAdd: function () {
+            _productAdd();
+        },
+        closeImageModal: function() {
+            _closeImageModal();
+        }
     };
 })();

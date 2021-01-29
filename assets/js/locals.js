@@ -525,12 +525,12 @@ var WebAppLocals = (function () {
 			ar: 'حسنا، حصلت عليه!',
 			fr: '',
 		},
-		customerGroup: {
+		relationGroup: {
 			en: 'Customer Group',
 			ar: 'مجموعة العملاء',
 			fr: '',
 		},
-		changeCustomerGroup: {
+		changeRelationGroup: {
 			en: 'Change Customer Group',
 			ar: 'تغيير مجموعة العملاء',
 			fr: '',
@@ -540,6 +540,21 @@ var WebAppLocals = (function () {
 			ar: 'تم تحديد المدن التالية أكثر من مرة',
 			fr: '',
 		},
+		lengthError: {
+			en: 'Should be between',
+			ar: 'يجب أن يكون بين',
+			fr: '',
+		},
+		and: {
+			en: 'and',
+			ar: 'و',
+			fr: '',
+		},
+		characters: {
+			en: 'characters',
+			ar: 'الأحرف',
+			fr: '',	
+		}
 	};
 
 	var _symbolsLocals = {

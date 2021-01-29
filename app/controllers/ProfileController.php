@@ -135,9 +135,11 @@ class ProfileController extends Controller {
         $address = $this->f3->get("POST.address");
         $entityDocument = $this->f3->get("POST.entityDocument");
 
-        $this->checkLength($entityName, 'entityName', 100);
-        $this->checkLength($address, 'address', 500);
-        $this->checkLength($tradeLicenseNumber, 'tradeLicenseNumber', 200);
+        $this->checkLength($entityName, 'entityName', 100, 4);
+        $this->checkLength($address, 'address', 500, 4);
+        if($tradeLicenseNumber) {
+            $this->checkLength($tradeLicenseNumber, 'tradeLicenseNumber', 200, 4);
+        }
 
         if(!$entityName || !$address) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -227,9 +229,11 @@ class ProfileController extends Controller {
         $address = $this->f3->get("POST.address");
         $entityDocument = $this->f3->get("POST.entityDocument");
 
-        $this->checkLength($entityName, 'entityName', 100);
-        $this->checkLength($address, 'address', 500);
-        $this->checkLength($tradeLicenseNumber, 'tradeLicenseNumber', 200);
+        $this->checkLength($entityName, 'entityName', 100, 4);
+        $this->checkLength($address, 'address', 500, 4);
+        if($tradeLicenseNumber) {
+            $this->checkLength($tradeLicenseNumber, 'tradeLicenseNumber', 200, 4);
+        }
 
         if(!$entityName || !$address) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
