@@ -152,7 +152,7 @@
                             <!--end::Form Group-->
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
-                                <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_distributorMobile ?></label>
+                                <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_mobile ?></label>
                                 <input disabled type="tel" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="mobile" value="<?php echo $user->userMobile; ?>" />
                             </div>
                         </div>
