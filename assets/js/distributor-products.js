@@ -178,6 +178,22 @@ var DistributorProductsDataTable = (function () {
 
     var _productAddModalOpen = function () {
 
+        _clearAddModal();
+
+        $('#addModalForm').attr('action', '/web/distributor/product/add');
+
+        $("#addProductCategory").on("change", () => _updateSubcategorySelect("add"));
+
+        _changeImageHolder('', "add");
+        $('#addProductImage').on("change", (ev) => _changeProductImage(ev, "add"));
+
+        $('#addActiveIngredients').on("change", (ev) => _updateActiveIngredientsVal("add"));
+
+        $('#addModal').appendTo('body').modal('show');
+        _addModalValidation('add');
+    };
+
+    var _clearAddModal = function () {
         $('#addProductImage').val('');
         $('#addProductImageInput').val('');
         $('#addProductScientificName').val('').change();
@@ -205,20 +221,7 @@ var DistributorProductsDataTable = (function () {
         $('#addProductImageHolder').val('');
         $('#addProductExpiryDate').val('');
         $('#editProductExpiryDate').val('');
-
-
-        $('#addModalForm').attr('action', '/web/distributor/product/add');
-
-        $("#addProductCategory").on("change", () => _updateSubcategorySelect("add"));
-
-        _changeImageHolder('', "add");
-        $('#addProductImage').on("change", (ev) => _changeProductImage(ev, "add"));
-
-        $('#addActiveIngredients').on("change", (ev) => _updateActiveIngredientsVal("add"));
-
-        $('#addModal').appendTo('body').modal('show');
-        _addModalValidation('add');
-    };
+    }
 
     var _productImageUpload = function (webResponse, mode) {
         _changeImageHolder(webResponse.data, mode);
