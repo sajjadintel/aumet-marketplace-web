@@ -488,7 +488,7 @@ class SearchController extends Controller {
 
         $dbCity = new BaseModel($this->db, "city");
         $dbCity->name = "name".ucfirst($this->objUser->language);
-        $dbCity->getByField("countryId", $countryId);
+        $dbCity->getWhere("countryId=$countryId", "name".ucfirst($this->objUser->language)." ASC");
 
         $arrCities = [];
         while (!$dbCity->dry()) {
