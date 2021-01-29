@@ -19,6 +19,7 @@ var DistributorProductsDataTable = (function () {
         "categoryId",
         "subcategoryId",
     ];
+  
     // Structure: field: [minLength, maxLength] 
     var mapFieldStrRangeLength = {
         "name_en": [4, 200],
@@ -35,6 +36,7 @@ var DistributorProductsDataTable = (function () {
         "itemCode": [4, 200],
         "strength": [4, 200],
     };
+  
     var mapUuidSubimage = {};
     var imageModal;
     var _validator;
@@ -108,7 +110,7 @@ var DistributorProductsDataTable = (function () {
         $('#editActiveIngredientsVal').val(allActiveIngredientsId);
 
         $('#editActiveIngredients').on('change', (ev) => _updateActiveIngredientsVal('edit'));
-
+      
         _changeImageHolder(webResponse.data.product.image, 'edit');
         $('#editProductImage').on('change', (ev) => _changeProductImage(ev, 'edit'));
 
@@ -279,6 +281,19 @@ var DistributorProductsDataTable = (function () {
             _validatorFields[field] = {
                 validators: fieldValidators
             }
+        })
+        
+        var form = KTUtil.getById(mode + "ModalForm");
+        _validator = FormValidation.formValidation(form, {
+            fields: _validatorFields,
+            plugins: {
+                trigger: new FormValidation.plugins.Trigger(),
+                // Bootstrap Framework Integration
+                bootstrap: new FormValidation.plugins.Bootstrap({
+                    //eleInvalidClass: '',
+                    eleValidClass: '',
+                }),
+            },
         })
         
         var form = KTUtil.getById(mode + "ModalForm");

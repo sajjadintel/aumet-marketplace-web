@@ -158,7 +158,15 @@ class EntityController extends Controller
                 $dbEntity->getWhere("id = $dbEntityRelation->entitySellerId");
 
                 $emailHandler = new EmailHandler($this->db);
+                $emailFile = "email/layout.php";
+                $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
+                $this->f3->set('title', 'New Bonuses');
+                $this->f3->set('emailType', 'newBonuses');
+                
                 $message = "You now have access to special prices and bonuses with " . $dbEntity->name_en;
+                $this->f3->set('message', $message);
+    
+                $htmlContent = View::instance()->render($emailFile);
                 
                 $dbEntityUserProfile = new BaseModel($this->db, "vwEntityUserProfile");
                 $arrEntityUserProfile = $dbEntityUserProfile->findWhere("entityId = $dbEntityRelation->entityBuyerId");
@@ -176,7 +184,7 @@ class EntityController extends Controller
                     }
                 }
 
-                $emailHandler->sendEmail(Constants::EMAIL_NEW_CUSTOMER_GROUP, $subject, $message);
+                $emailHandler->sendEmail(Constants::EMAIL_NEW_CUSTOMER_GROUP, $subject, $htmlContent);
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
                 $this->webResponse->title = "";
