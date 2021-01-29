@@ -101,10 +101,16 @@ function compress_htmlcode($codedata)
             var elementId = "#datatable";
             var url = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 
-            var columnDefs = [{
-                className: "export_datatable",
-                targets: [0, 1, 2, 3, 4, 5]
-            }, {
+            var columnDefs = [
+                {
+                    className: "never",
+                    targets: [0]
+                },
+                {
+                    className: 'export_datatable',
+                    targets: '_all',
+                },
+                {
                 targets: 0,
                 title: WebAppLocals.getMessage('id'),
                 data: 'id',
