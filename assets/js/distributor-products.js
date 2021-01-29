@@ -60,7 +60,7 @@ var DistributorProductsDataTable = (function () {
         $('#editProductScientificName').empty();
         $('#editProductScientificName').append(new Option(webResponse.data.product.scientificName, webResponse.data.product.scientificNameId));
         $('#editProductScientificName').val(webResponse.data.product.scientificNameId);
-        
+
         $('#editProductCountry').empty();
         $('#editProductCountry').append(new Option(webResponse.data.product['madeInCountryName_' + docLang], webResponse.data.product.madeInCountryId));
         $('#editProductCountry').val(webResponse.data.product.madeInCountryId);
@@ -69,11 +69,11 @@ var DistributorProductsDataTable = (function () {
         $('#editProductCategory').append(new Option(webResponse.data.product['productCategoryName_' + docLang], webResponse.data.product.productCategoryId));
         $('#editProductCategory').val(webResponse.data.product.productCategoryId);
         $('#editProductCategory').on("change", () => _updateSubcategorySelect("edit"));
-        
+
         $('#editProductSubcategory').empty();
         $('#editProductSubcategory').append(new Option(webResponse.data.product['productSubcategoryName_' + docLang], webResponse.data.product.productSubcategoryId));
         $('#editProductSubcategory').val(webResponse.data.product.productSubcategoryId);
-        
+
         var allActiveIngredients = webResponse.data.activeIngredients || [];
         var allActiveIngredientsId = [];
 
@@ -89,7 +89,7 @@ var DistributorProductsDataTable = (function () {
 
         _changeImageHolder(webResponse.data.product.image, "edit");
         $('#editProductImage').on("change", (ev) => _changeProductImage(ev, "edit"));
-        
+
         $('#editModal').appendTo('body').modal('show');
         _addModalValidation('edit');
     };
@@ -177,8 +177,38 @@ var DistributorProductsDataTable = (function () {
     };
 
     var _productAddModalOpen = function () {
+
+        $('#addProductImage').val('');
+        $('#addProductImageInput').val('');
+        $('#addProductScientificName').val('').change();
+        $('#addProductCountry').val('').change();
+        $('#addProductNameAr').val('');
+        $('#addProductNameEn').val('');
+        $('#addProductNameFr').val('');
+        $('#addProductSubtitleAr').val('');
+        $('#addProductSubtitleEn').val('');
+        $('#addProductSubtitleFr').val('');
+        $('#addProductDescriptionAr').val('');
+        $('#addProductDescriptionEn').val('');
+        $('#addProductDescriptionFr').val('');
+        $('#addUnitPrice').val('');
+        $('#addStock').val('');
+        $('#addMaximumOrderQuantity').val('');
+        $('#addProductManufacturerName').val('');
+        $('#addProductBatchNumber').val('');
+        $('#addProductItemCode').val('');
+        $('#addProductCategory').val('').change();
+        $('#addActiveIngredients').val('').change();
+        $('#addProductExpiryDate').val('');
+        $('#addProductStrength').val('');
+        $('#addProductSubcategory').val('').change();
+        $('#addProductImageHolder').val('');
+        $('#addProductExpiryDate').val('');
+        $('#editProductExpiryDate').val('');
+
+
         $('#addModalForm').attr('action', '/web/distributor/product/add');
-        
+
         $("#addProductCategory").on("change", () => _updateSubcategorySelect("add"));
 
         _changeImageHolder('', "add");
@@ -226,8 +256,8 @@ var DistributorProductsDataTable = (function () {
     }
 
     var _addModalValidation = function (mode) {
-        var _mandatoryFields = [ ...mandatoryFields ];
-        if(mode === "add") _mandatoryFields.push("stock");
+        var _mandatoryFields = [...mandatoryFields];
+        if (mode === "add") _mandatoryFields.push("stock");
 
         var validatorFields = {};
         _mandatoryFields.forEach((field) => {
@@ -249,13 +279,13 @@ var DistributorProductsDataTable = (function () {
             placeholder: WebAppLocals.getMessage("subcategory"),
 
             ajax: {
-                url: function() {
+                url: function () {
                     var _url = '/web/product/subcategory/list/';
                     _url += $("#" + mode + "ProductCategory").val();
                     return _url;
                 },
                 dataType: 'json',
-                processResults: function(response) {
+                processResults: function (response) {
                     return {
                         results: response.data.results,
                         pagination: {
@@ -264,10 +294,10 @@ var DistributorProductsDataTable = (function () {
                     }
                 }
             },
-            
+
             data: []
         });
-        $("#" + mode + "ProductSubcategory").prop('disabled', categoryId? false : true);
+        $("#" + mode + "ProductSubcategory").prop('disabled', categoryId ? false : true);
     }
 
     var _updateActiveIngredientsVal = function (mode) {
