@@ -124,6 +124,10 @@ class ProductsController extends Controller {
                 $this->f3->set('arrProductOtherOffers', $dbEntityProductOtherOffers);
             }
 
+            $dbProductSubimage = new BaseModel($this->db, "productSubimage");
+            $arrSubimage = $dbProductSubimage->getWhere("productId=".$dbEntityProduct->productId);
+            $this->f3->set('arrSubimage', $arrSubimage);
+
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vTitle_entityProductDetail');
             $this->webResponse->data = View::instance()->render('app/products/single/entityProduct.php');
@@ -174,16 +178,21 @@ class ProductsController extends Controller {
             $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
             echo View::instance()->render('app/layout/layout.php');
         } else {
-            $productId = $this->f3->get('PARAMS.productId');
+            $id = $this->f3->get('PARAMS.productId');
 
             $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
-            $arrProduct = $dbProduct->findWhere("id = $productId");
+            $product = $dbProduct->findWhere("id = $id")[0];
+            $productId = $product['productId'];
 
             $dbProductIngredient = new BaseModel($this->db, "vwProductIngredient");
             $arrActiveIngredients = $dbProductIngredient->findWhere("productId = $productId");
 
-            $data['product'] = $arrProduct[0];
+            $dbProductSubimage = new BaseModel($this->db, "productSubimage");
+            $arrSubimages = $dbProductSubimage->findWhere("productId = $productId");
+
+            $data['product'] = $product;
             $data['activeIngredients'] = $arrActiveIngredients;
+            $data['subimages'] = $arrSubimages;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
         }
@@ -288,6 +297,32 @@ class ProductsController extends Controller {
         echo $this->webResponse->jsonResponse();
     }
 
+    function postProductSubimage()
+    {
+        $allValidExtensions = [
+            "jpeg",
+            "jpg",
+            "png",
+        ];
+        $success = false;
+
+        $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
+        $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
+
+        $newFileName = $fileName . "-" . time() . ".$ext";
+        $targetFile = "assets/img/products/" . $newFileName;
+
+        if (in_array($ext, $allValidExtensions)) {
+            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
+                $success = true;
+            }
+        }
+
+        if ($success) {
+            echo $targetFile;
+        }
+    }
+
     function postDistributorProductsBestSelling()
     {
         ## Read values from Datatables
@@ -342,6 +377,7 @@ class ProductsController extends Controller {
                 $name_ar = $this->f3->get('POST.name_ar');
                 $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
+                $subimages = $this->f3->get('POST.subimages');
                 $unitPrice = $this->f3->get('POST.unitPrice');
                 $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
                 $subtitle_ar = $this->f3->get('POST.subtitle_ar');
@@ -351,6 +387,7 @@ class ProductsController extends Controller {
                 $description_en = $this->f3->get('POST.description_en');
                 $description_fr = $this->f3->get('POST.description_fr');
                 $unitPrice = $this->f3->get('POST.unitPrice');
+                $vat = $this->f3->get('POST.vat');
                 $manufacturerName = $this->f3->get('POST.manufacturerName');
                 $batchNumber = $this->f3->get('POST.batchNumber');
                 $itemCode = $this->f3->get('POST.itemCode');
@@ -361,7 +398,7 @@ class ProductsController extends Controller {
                 $strength = $this->f3->get('POST.strength');
 
                 if (!$scientificNameId || !$madeInCountryId || !$name_en
-                    || !$name_ar || !$name_fr || !$unitPrice || !$maximumOrderQuantity
+                    || !$name_ar || !$name_fr || !$unitPrice || !$vat || !$maximumOrderQuantity
                     || !$description_ar || !$description_en || !$description_fr
                     || !$categoryId || !$subcategoryId) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -371,10 +408,10 @@ class ProductsController extends Controller {
                     return;
                 }
 
-                if (!is_numeric($unitPrice) || $unitPrice <= 0) {
+                if ((!is_numeric($unitPrice) || $unitPrice <= 0) || (!is_numeric($vat) || $vat <= 0)) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
-                    $this->webResponse->message = "Unit Price must be a positive number";
+                    $this->webResponse->message = "Some fields are invalid";
                     echo $this->webResponse->jsonResponse();
                     return;
                 }
@@ -401,7 +438,6 @@ class ProductsController extends Controller {
                 $dbProduct->description_ar = $description_ar;
                 $dbProduct->description_en = $description_en;
                 $dbProduct->description_fr = $description_fr;
-                $dbProduct->unitPrice = $unitPrice;
                 $dbProduct->manufacturerName = $manufacturerName;
                 $dbProduct->batchNumber = $batchNumber;
                 $dbProduct->itemCode = $itemCode;
@@ -419,11 +455,28 @@ class ProductsController extends Controller {
                     $dbProductIngredient->next();
                 }
 
-                $arrIngredientId = explode(",", $activeIngredientsId);
-                foreach ($arrIngredientId as $ingredientId) {
-                    $dbProductIngredient->productId = $productId;
-                    $dbProductIngredient->ingredientId = $ingredientId;
-                    $dbProductIngredient->add();
+                if($activeIngredientsId) {
+                    $arrIngredientId = explode(",", $activeIngredientsId);
+                    foreach($arrIngredientId as $ingredientId) {
+                        $dbProductIngredient->productId = $dbProduct->id;
+                        $dbProductIngredient->ingredientId = $ingredientId;
+                        $dbProductIngredient->add();
+                    }
+                }
+
+                $dbProductSubimage = new BaseModel($this->db, "productSubimage");
+                $dbProductSubimage->getWhere("productId = $productId");
+                while (!$dbProductSubimage->dry()) {
+                    $dbProductSubimage->delete();
+                    $dbProductSubimage->next();
+                }
+
+                if($subimages && count($subimages) > 0) {
+                    foreach($subimages as $subimage) {
+                        $dbProductSubimage->productId = $dbProduct->id;
+                        $dbProductSubimage->subimage = $subimage;
+                        $dbProductSubimage->add();
+                    }
                 }
 
                 $dbEntityProduct->unitPrice = $unitPrice;
@@ -573,6 +626,7 @@ class ProductsController extends Controller {
             $name_ar = $this->f3->clean($this->f3->get('POST.name_ar'));
             $name_fr = $this->f3->clean($this->f3->get('POST.name_fr'));
             $image = $this->f3->get('POST.image');
+            $subimages = $this->f3->get('POST.subimages');
             $stock = $this->f3->get('POST.stock');
             $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
             $subtitle_ar = $this->f3->clean($this->f3->get('POST.subtitle_ar'));
@@ -582,6 +636,7 @@ class ProductsController extends Controller {
             $description_en = $this->f3->clean($this->f3->get('POST.description_en'));
             $description_fr = $this->f3->clean($this->f3->get('POST.description_fr'));
             $unitPrice = $this->f3->get('POST.unitPrice');
+            $vat = $this->f3->get('POST.vat');
             $manufacturerName = $this->f3->clean($this->f3->get('POST.manufacturerName'));
             $batchNumber = $this->f3->clean($this->f3->get('POST.batchNumber'));
             $itemCode = $this->f3->clean($this->f3->get('POST.itemCode'));
@@ -592,7 +647,7 @@ class ProductsController extends Controller {
             $strength = $this->f3->clean($this->f3->get('POST.strength'));
 
             if (!$scientificNameId || !$madeInCountryId || !$name_en
-                || !$name_ar || !$name_fr || !$unitPrice
+                || !$name_ar || !$name_fr || !$unitPrice || !$vat
                 || !$stock || !$maximumOrderQuantity || !$description_ar
                 || !$description_en || !$description_fr || !$categoryId
                 || !$subcategoryId) {
@@ -603,19 +658,10 @@ class ProductsController extends Controller {
                 return;
             }
 
-            if ((!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) || (!is_numeric($unitPrice) || $unitPrice <= 0)) {
-                $message = "";
-                if ((!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) && (!is_numeric($unitPrice) || $unitPrice <= 0)) {
-                    $message = "Stock and Unit Price must be positive numbers";
-                } else if (!is_numeric($unitPrice) || $unitPrice <= 0) {
-                    $message = "Unit Price must be a positive number";
-                } else {
-                    $message = "Stock must be a positive number";
-                }
-
+            if ((!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0) || (!is_numeric($unitPrice) || $unitPrice <= 0) || (!is_numeric($vat) || $vat <= 0)) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
-                $this->webResponse->message = $message;
+                $this->webResponse->message = "Some fields are invalid";
                 echo $this->webResponse->jsonResponse();
                 return;
             }
@@ -643,7 +689,6 @@ class ProductsController extends Controller {
             $dbProduct->description_ar = $description_ar;
             $dbProduct->description_en = $description_en;
             $dbProduct->description_fr = $description_fr;
-            $dbProduct->unitPrice = $unitPrice;
             $dbProduct->manufacturerName = $manufacturerName;
             $dbProduct->batchNumber = $batchNumber;
             $dbProduct->itemCode = $itemCode;
@@ -654,12 +699,23 @@ class ProductsController extends Controller {
 
             $dbProduct->addReturnID();
 
-            $arrIngredientId = explode(",", $activeIngredientsId);
-            $dbProductIngredient = new BaseModel($this->db, "productIngredient");
-            foreach ($arrIngredientId as $ingredientId) {
-                $dbProductIngredient->productId = $dbProduct->id;
-                $dbProductIngredient->ingredientId = $ingredientId;
-                $dbProductIngredient->add();
+            if($activeIngredientsId) {
+                $arrIngredientId = explode(",", $activeIngredientsId);
+                $dbProductIngredient = new BaseModel($this->db, "productIngredient");
+                foreach($arrIngredientId as $ingredientId) {
+                    $dbProductIngredient->productId = $dbProduct->id;
+                    $dbProductIngredient->ingredientId = $ingredientId;
+                    $dbProductIngredient->add();
+                }
+            }
+
+            if($subimages && count($subimages) > 0) {
+                $dbProductSubimage = new BaseModel($this->db, "productSubimage");
+                foreach($subimages as $subimage) {
+                    $dbProductSubimage->productId = $dbProduct->id;
+                    $dbProductSubimage->subimage = $subimage;
+                    $dbProductSubimage->add();
+                }
             }
 
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
@@ -670,6 +726,7 @@ class ProductsController extends Controller {
             $dbEntityProduct->productId = $dbProduct->id;
             $dbEntityProduct->entityId = $entityId;
             $dbEntityProduct->unitPrice = $unitPrice;
+            $dbEntityProduct->vat = $vat;
             $dbEntityProduct->stock = $stock;
             $dbEntityProduct->statusId = 1;
             $dbEntityProduct->stockStatusId = 1;

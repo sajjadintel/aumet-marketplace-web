@@ -13,6 +13,11 @@ function compress_htmlcode($codedata)
 }
 
 ?>
+<style>
+    .slick-prev:before, .slick-next:before {
+        color: #13B9A9;
+    }
+</style>
     <!--begin::Container-->
     <div class="container">
         <div class="d-flex flex-row">
@@ -33,6 +38,18 @@ function compress_htmlcode($codedata)
 
                             <div class="col-xxl-6 col-xl-6 col-lg-5 col-md-5 col-sm-12 col-xs-12 col-12">
                                 <img src="<?php echo $objEntityProduct->image ?>">
+                                <?php if(count($arrSubimage) > 0) : ?>
+                                    <div class="p-5">
+                                        <div id="autoplayContainer" class="autoplay" style="height: 100px;">
+                                            <?php foreach ($arrSubimage as $subimageObj) : ?>
+                                                <div class="px-5 col-4 image-input image-input-empty image-input-outline" onclick="openImageModal('<?php echo $subimageObj->subimage; ?>');">
+                                                    <div class="image-input-wrapper" style="width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/<?php echo $subimageObj->subimage; ?>'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%); cursor: pointer;">
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                             </div>
 
                             <div class="col-xxl-6 col-xl-6 col-lg-7 col-md-7 col-sm-12 col-xs-12 col-12">
@@ -239,6 +256,15 @@ function compress_htmlcode($codedata)
             WebApp.loadPage('/web/product/search?scientificNameId=<?php echo $objEntityProduct->scientificNameId?>');
         }
 
+        function openImageModal(imageUrl) {
+            $("#imageUrl").attr("src", '/'+ imageUrl);
+            $("#imageModal").appendTo('body').modal('show');
+        }
+
+        function closeImageModal() {
+            $("#imageModal").modal('hide');
+        }
+
     </script>
     <script>
         var PageClass = function () {
@@ -431,3 +457,21 @@ function compress_htmlcode($codedata)
         PageClass.init();
     </script>
 <?php ob_end_flush(); ?>
+<?php include_once 'image-modal.php'; ?>
+<script>
+    $(document).ready(function() {
+        initAutoplay();
+    })
+
+    function initAutoplay() {
+        var slidesToShow = 3;
+        if($("#autoplayContainer").children().length > slidesToShow) {
+            $('.autoplay').slick({
+                arrows: true,
+                infinite: true,
+                slidesToShow: slidesToShow,
+                slidesToScroll: 1
+            });
+        }
+    }
+</script>
