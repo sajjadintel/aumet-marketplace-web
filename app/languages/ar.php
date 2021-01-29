@@ -153,6 +153,8 @@ return array(
     'vModule_product_expiryDate' => 'تاريخ الانتهاء',
     'vModule_product_activeIngredients' => 'مكونات نشطة',
     'vModule_product_strength' => 'قوة',
+    'vModule_product_uploadSubimages' => 'تحميل الصور الفرعية',
+    'vModule_product_SubimagesExceeded' => 'تم الوصول إلى حد الصور الفرعية',
 
 
     'stockAvailability_available' => 'متوفر',
@@ -197,6 +199,7 @@ return array(
     'vModule_product_stockStatusDate' => 'آخر تحديث',
     'vModule_product_scientificName' => 'الاسم العلمي',
     'vModule_product_unitPrice' => 'سعر المنتج',
+    'vModule_product_vat' => 'ضريبة القيمة المضافة',
     'vModule_product_related' => 'منتجات أخرى',
 
     'vModule_product_stockStatus_NotAvailable' => 'غير متوفر',
@@ -244,8 +247,8 @@ return array(
     'vModule_order_dateTo' => 'أدخل تاريخ انتهاء الطلبات',
     'vModule_order_date' => 'أدخل تاريخ الطلبات',
 
-    'vModule_customer_customerGroupTitle' => 'مجموعة العملاء',
-    'vModule_customer_customerGroup' => 'مجموعة العملاء',
+    'vModule_customer_relationGroupTitle' => 'مجموعة العملاء',
+    'vModule_customer_relationGroup' => 'مجموعة العملاء',
 
     'vResponse_notFound' => '{0} غير موجود',
     'vResponse_notUpdated' => 'تعذر تحديث {0}',
@@ -336,11 +339,26 @@ return array(
     'vModule_profile_minimumValueOrderCityError' => 'تم اختيار بعض المدن أكثر من مرة',
     'vModule_profile_paymentMethodRequired' => 'طريقة الدفع المطلوبة',
     'vModule_profile_missingFields' => 'بعض الحقول الإلزامية مفقودة',
+    'vModule_profile_mobile' => 'رقم الهاتف',
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
+    'error_filedTooShort' => ' field is too short! minimum length: ',
     'field_entityName' => 'Entity Name',
-    'field_customerGroupName' => 'Customer group name',
+    'field_relationGroupName' => 'Customer group name',
     'field_address' => 'Address',
     'field_tradeLicenseNumber' => 'Trade license number',
+    'field_nameAr' => 'Name AR',
+    'field_nameEn' => 'Name EN',
+    'field_nameFr' => 'Name FR',
+    'field_descriptionAr' => 'Description AR',
+    'field_descriptionEn' => 'Description EN',
+    'field_descriptionFr' => 'Description FR',
+    'field_subtitleAr' => 'Subtitle AR',
+    'field_subtitleEn' => 'Subtitle EN',
+    'field_subtitleFr' => 'Subtitle FR',
+    'field_manufacturerName' => 'Manufacturer Name',
+    'field_batchNumber' => 'Batch Number',
+    'field_itemCode' => 'Item Code',
+    'field_strength' => 'Strength',
 
 );

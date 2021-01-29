@@ -46,7 +46,7 @@ $f3->route('GET /web/product/ingredient/list', 'SearchController->getProductIngr
 $f3->route('GET /web/order/customer/list', 'SearchController->getOrderBuyerList');
 $f3->route('GET /web/order/Distributor/list', 'SearchController->getOrderSellerList');
 $f3->route('GET /web/order/Distributor/listAll', 'SearchController->getAllSellerList');
-$f3->route('GET /web/customer/group/list/@entityId', 'SearchController->getCustomerGroupByEnitityList');
+$f3->route('GET /web/customer/group/list/@entityId', 'SearchController->getRelationGroupByEnitityList');
 $f3->route('GET /web/city/list/@countryId', 'SearchController->getCityByCountryList');
 
 $f3->route('GET /web/searchbar', 'SearchController->handleSearchBar');
@@ -100,6 +100,7 @@ $f3->route('GET /web/distributor/product/list', 'ProductsController->getProductL
 $f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDistributorProduct');
 $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDistributorProduct');
 $f3->route('POST /web/distributor/product/image', 'ProductsController->postProductImage');
+$f3->route('POST /web/distributor/product/subimage', 'ProductsController->postProductSubimage');
 $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->postEditQuantityDistributorProduct');
 
 // Bulk add 
