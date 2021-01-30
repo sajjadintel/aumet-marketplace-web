@@ -349,6 +349,8 @@ return array(
     'vModule_profile_paymentMethodRequired' => 'Payment method required',
     'vModule_profile_missingFields' => 'Some mandatory fields are missing',
     'vModule_profile_mobile' => 'Phone Number',
+    'vModule_profile_missingDocumentApproval' => 'Document is required to submit profile modifications',
+    'vModule_profile_requestSent' => 'Your request to update information has been sent to Aumet team, and we will validate it and get back to you within 24 to 48 hours',
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
     'error_filedTooShort' => ' field is too short! minimum length: ',

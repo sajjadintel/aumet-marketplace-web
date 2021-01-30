@@ -150,7 +150,6 @@ var Profile = (function () {
         var initialFile = $('#myProfileForm input[name=entityBranchTradeLicenseUrl]').val();
 		_initializeDropzone(initialFile);
 
-		_initializeValidators();
 		_initializePasswordFields();
 		
 		var entityType = $("#profileEntityType").val();
@@ -429,6 +428,11 @@ var Profile = (function () {
 		var mapMenuValidatorFields = _mapEntityTypeMenuValidatorFields[entityType];
 		var validatorFields = mapMenuValidatorFields[menu];
 		if(validatorFields) {
+			if(_validator) {
+				_validator.resetForm();
+				_validator.destroy();
+			}
+
 			var form = KTUtil.getById(menu + 'Form');
 			_validator = FormValidation.formValidation(form, {
 				fields: validatorFields,
@@ -444,6 +448,7 @@ var Profile = (function () {
 
 			_validator.validate().then(function (status) {
 				if (status == 'Valid') {
+					_validator.resetForm();
 					_validator.destroy();
 					saveFunction();
 				} else {

@@ -345,6 +345,8 @@ return array(
     'vModule_product_unitPriceInvalid' => 'يجب أن يكون سعر الوحدة رقمًا موجبًا وليس فارغًا',
     'vModule_product_vatInvalid' => 'يجب أن تكون ضريبة القيمة المضافة رقمًا موجبًا',
     'vModule_product_missingFields' => 'بعض الحقول الإلزامية مفقودة',
+    'vModule_profile_missingDocumentApproval' => 'المستند مطلوب لتقديم تعديلات ملف التعريف',
+    'vModule_profile_requestSent' => 'تم إرسال طلبك لتحديث المعلومات إلى فريق Aumet ، وسنقوم بالتحقق من صحة ذلك والرد عليك في غضون ٢٤ إلى ٤٨ ساعة',
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
     'error_filedTooShort' => ' field is too short! minimum length: ',
