@@ -133,10 +133,10 @@ class SearchController extends Controller {
     function getProductBrandNameList()
     {
         if ($this->f3->ajax()) {
-            $where = "";
+            $where = "1=1";
             $term = $_GET['term'];
             if (isset($term) && $term != "" && $term != null) {
-                $where = "name_" . $this->objUser->language . " like '%$term%'";
+                $where .= " AND productName_" . $this->objUser->language . " like '%$term%'";
             }
             $page = $_GET['page'];
             if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
@@ -144,22 +144,30 @@ class SearchController extends Controller {
             } else {
                 $page = 0;
             }
-
             $pageSize = 10;
+
+            $roleId = $this->f3->get('SESSION.objUser')->roleId;
+            if (Helper::isDistributor($roleId)) {
+                $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+                $where .= " AND entityId IN ($arrEntityId)";
+            }
+
 
             $select2Result = new stdClass();
             $select2Result->results = [];
             $select2Result->pagination = false;
 
-            $dbProducts = new BaseModel($this->db, "product");
-            $dbProducts->name = "name_" . $this->objUser->language;
-            $dbProducts->getWhere($where, "name_en", $pageSize, $page * $pageSize);
+            $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
+            $dbProducts->productName = "productName_" . $this->objUser->language;
+
+            $dbProducts->getWhere($where, "productName_" . $this->objUser->language, $pageSize, $page * $pageSize);
+
             $resultsCount = 0;
             while (!$dbProducts->dry()) {
                 $resultsCount++;
                 $select2ResultItem = new stdClass();
                 $select2ResultItem->id = $dbProducts->id;
-                $select2ResultItem->text = $dbProducts->name;
+                $select2ResultItem->text = $dbProducts->productName;
                 $select2Result->results[] = $select2ResultItem;
                 $dbProducts->next();
             }

@@ -217,6 +217,7 @@ function compress_htmlcode($codedata)
 
             var dbAdditionalOptions = {
                 datatableOptions: {
+                    processing: false,
                     order: [
                         [0, 'desc']
                     ],
