@@ -206,7 +206,6 @@ function compress_htmlcode($codedata)
                 productId: [],
                 scientificNameId: [],
                 stockOption: 1,
-
             };
 
             var dbAdditionalOptions = {
@@ -235,12 +234,11 @@ function compress_htmlcode($codedata)
             });
             _selectBrand.on("select2:select", function(e) {
                 searchQuery.productId = $("#searchProductsBrandNameInput").val();
-                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery,dbAdditionalOptions);
-
+                updateDatatable();
             });
             _selectBrand.on("select2:unselect", function(e) {
                 searchQuery.productId = $("#searchProductsBrandNameInput").val();
-                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery,dbAdditionalOptions);
+                updateDatatable();
             });
 
 
@@ -262,16 +260,16 @@ function compress_htmlcode($codedata)
             });
             _selectScientific.on("select2:select", function(e) {
                 searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery,dbAdditionalOptions);
+                updateDatatable();
             });
             _selectScientific.on("select2:unselect", function(e) {
                 searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery,dbAdditionalOptions);
+                updateDatatable();
             });
 
             $('#searchStockStatus').bootstrapSwitch().on("switchChange.bootstrapSwitch", function(event, state) {
                 searchQuery.stockOption = state ? 1 : 0;
-                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery,dbAdditionalOptions);
+                updateDatatable();
             });
 
             var _selectScientificEdit = $('#editProductScientificName').select2({
@@ -485,8 +483,17 @@ function compress_htmlcode($codedata)
 
 
             var initiate = function () {
-                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery,dbAdditionalOptions);
+                updateDatatable();
             };
+
+            var scientificNameId = <?php echo isset($_GET['scientificNameId']) ? "'" . $_GET['scientificNameId'] . "'" : 'null';?>;
+
+            function updateDatatable() {
+                if (scientificNameId != null && !searchQuery.scientificNameId.includes(scientificNameId))
+                    searchQuery.scientificNameId.push(scientificNameId);
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
+            }
+
             return {
                 init: function () {
                     initiate();
