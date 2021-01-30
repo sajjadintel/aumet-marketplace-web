@@ -146,7 +146,7 @@ function compress_htmlcode($codedata)
             },
             {
                 className: 'export_datatable',
-                targets: '_all',
+                targets: [0, 1, 2, 3, 4, 5, 6, 7]
             },
             {
                 targets: 0,
