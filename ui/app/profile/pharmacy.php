@@ -124,11 +124,13 @@
                                                     <div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress=""></div>
                                                 </div>
                                             </div>
-                                            <div class="dropzone-toolbar">
-                                                <span class="dropzone-delete" data-dz-remove="">
-                                                    <i class="flaticon2-cross"></i>
-                                                </span>
-                                            </div>
+                                            <?php if ($user->entityBranchTradeLicenseUrl == null) { ?>
+                                                <div class="dropzone-toolbar">
+                                                    <span class="dropzone-delete" data-dz-remove="">
+                                                        <i class="flaticon2-cross"></i>
+                                                    </span>
+                                                </div>
+                                            <?php } ?>
                                         </div>
                                     </div>
                                 </div>
