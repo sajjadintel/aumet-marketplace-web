@@ -59,6 +59,17 @@ class Helper {
         return $randomString;
     }
 
+    public static function truncateText($text, $chars)
+    {
+        if (strlen($text) <= $chars) {
+            return $text;
+        }
+        $text = $text . " ";
+        $text = substr($text, 0, $chars);
+        $text = $text . "...";
+        return $text;
+    }
+
     public static function getCountryIso($name)
     {
         $countries = [

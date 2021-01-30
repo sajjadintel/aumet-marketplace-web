@@ -6,6 +6,17 @@
 	textarea {
 		resize: none;
 	}
+
+		.mfp-iframe-holder .mfp-content {
+			max-width: 100% !important;
+			height: 100%;
+		}
+
+		.mfp-iframe-holder {
+			padding-top: 40px !important;
+			padding-bottom: 10px !important;
+		}
+
 </style>
 <!--begin::Entry-->
 <div class="d-flex flex-column-fluid">
@@ -79,10 +90,11 @@
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
                                 <input type="hidden" name="entityBranchTradeLicenseUrl" value="<?php echo $user->entityBranchTradeLicenseUrl; ?>"/>
+                                <input type="hidden" name="entityBranchTradeLicenseUrlDecoded" value="<?php echo $entityBranchTradeLicenseUrlDecoded; ?>"/>
                                 <div>
                                     <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_distributorTradeLicenseDocument; ?></label>
                                 </div>
-                                
+
                                 <div class="dropzone dropzone-multi" id="kt_dropzone" style="background-color: unset;">
                                     <div class="dropzone-panel mb-lg-0 mb-2">
                                         <a class="dropzone-select btn btn-light-primary font-weight-bolder font-size-h6 pl-6 pr-8 py-4 my-3 mr-3">
@@ -97,7 +109,7 @@
                                                     </g>
                                                 </svg>
                                                 <!--end::Svg Icon-->
-                                            </span><?php echo $vModule_profile_uploadButton; ?>
+                                            </span><?php echo $user->entityBranchTradeLicenseUrl == null ? $vModule_profile_uploadButton : $vModule_profile_uploadReplaceButton; ?>
                                         </a>
                                     </div>
                                     <div class="dropzone-items">
@@ -106,6 +118,7 @@
                                                 <a class="dropzone-filename" id="dropzoneFilename">
                                                     <span data-dz-name="">some_image_file_name.jpg</span>
                                                     <strong>(<span data-dz-size="">340kb</span>)</strong>
+                                                    <img  id="dropzoneFilenameImage" src="" style="width:300px;height:200px; object-fit: cover;">
                                                 </a>
                                                 <div class="dropzone-error" data-dz-errormessage=""></div>
                                             </div>
@@ -114,11 +127,13 @@
                                                     <div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress=""></div>
                                                 </div>
                                             </div>
-                                            <div class="dropzone-toolbar">
-                                                <span class="dropzone-delete" data-dz-remove="">
-                                                    <i class="flaticon2-cross"></i>
-                                                </span>
-                                            </div>
+                                            <?php if ($user->entityBranchTradeLicenseUrl == null) { ?>
+                                                <div class="dropzone-toolbar">
+                                                    <span class="dropzone-delete" data-dz-remove="">
+                                                        <i class="flaticon2-cross"></i>
+                                                    </span>
+                                                </div>
+                                            <?php } ?>
                                         </div>
                                     </div>
                                 </div>
@@ -227,7 +242,7 @@
                                         <div data-repeater-item="" class="form-group row align-items-start">
                                             <input type="hidden" id="minimumValueOrderId" name="id" class="form-control">
                                             <div class="col-md-4">
-                                                <input type="number" id="minimumValueOrder" name="minimumValueOrder" class="form-control minimumValueOrderInput" placeholder="<?php echo $vModule_profile_minimumValueOrder ?>" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : 0;">
+                                                <input type="number" id="minimumValueOrder" name="minimumValueOrder" class="form-control minimumValueOrderInput" placeholder="<?php echo $vModule_profile_minimumValueOrder ?>" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : !this.value? this.value : 0;">
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
                                             <div class="col-md-4">

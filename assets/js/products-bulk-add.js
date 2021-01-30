@@ -12,50 +12,48 @@ var ProductsBulkAdd = function () {
             maxFiles: 1,
             maxFilesize: 100,
             addRemoveLinks: false,
-            acceptedFiles: ".xlsx,.xls,.csv",
+            acceptedFiles: ".xlsx",
             createImageThumbnails: false,
-            //previewTemplate: previewTemplate,
-            //previewsContainer: _id + " .dropzone-items",
-            //clickable: "#btnProductsBulkAdd",
             accept: function (file, done) {
-                if (file.name == "justinbieber.jpg") {
-                    done("Naha, you don't.");
-                } else {
-                    done();
-                }
+                done();
             },
             addedfile: function (file) {
                 $("#dropZoneProductsBulkAdd").fadeOut();
                 $("#dropZoneProductsBulkAddProgressContainer").fadeIn();
             },
-
-            sending: function (file) {
-
-            },
             totaluploadprogress: function (progress) {
                 $("#dropZoneProductsBulkAddProgress").html('Uploading: '+ progress + " %");
                 $("#dropZoneProductsBulkAddProgress").css('width', progress + "%");
-                if(progress == 100){
-                }
-
             },
-            complete: function (progress) {
-                $("#dropZoneProductsBulkAddProgress").html('Upload Completed Successfully');
-                WebApp.post('/web/distributor/product/bulk/add/upload/process', null, ProductsBulkAdd.processUpload)
+            success: function (file, response) {
+                $("#goBackContainer").show();
+                $("#dropZoneProductsBulkAddProgress").html(WebAppLocals.getMessage("uploadSuccess"));
+                WebApp.post('/web/distributor/product/bulk/add/upload/process', null, _uploadProcessSuccessCallback)
+            },
+            error: function (file, error) {
+                // Show error message
+                WebApp.alertError(WebAppLocals.getMessage("bulkAddUploadError"));
+                
+                // Change upload bar
+                $("#dropZoneProductsBulkAddProgress").removeClass('bg-primary');
+                $("#dropZoneProductsBulkAddProgress").addClass('bg-danger');
+                $("#dropZoneProductsBulkAddProgress").css('width', "100%");
+                $("#dropZoneProductsBulkAddProgress").html(WebAppLocals.getMessage("uploadError"));
+            
+                // Show go back button
+                $("#goBackContainer").show();
             }
         });
     }
 
-    var _processUpload = function(webReponse){
+    var _uploadProcessSuccessCallback = function(webReponse){
+        $('#productsBulkAddProcessResultContainer').addClass('mt-20')
         $('#productsBulkAddProcessResultContainer').html(webReponse.data);
     };
 
     return {
         init: function () {
             _init();
-        },
-        processUpload: function (webReponse) {
-            _processUpload(webReponse);
         }
     };
 }();

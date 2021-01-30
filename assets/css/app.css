@@ -514,3 +514,8 @@ input[type=number] {
 }
 
 /* product page */
+
+.never {
+	display: none;
+	visibility: hidden;
+}

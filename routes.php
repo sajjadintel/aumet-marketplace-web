@@ -18,8 +18,8 @@ $f3->route('GET /web/auth/forgot', 'AuthController->getForgottenPassword');
 $f3->route('POST /web/auth/forgot', 'AuthController->postForgottenPassword');
 $f3->route('GET /web/auth/reset', 'AuthController->getResetPassword');
 $f3->route('POST /web/auth/reset', 'AuthController->postResetPassword');
-$f3->route('GET /web/auth/verify/account/@token', 'AuthController->getVerifyAccount');
-$f3->route('GET /web/auth/approve/account/@token', 'AuthController->getApproveAccount');
+$f3->route('GET /web/auth/verify/account', 'AuthController->getVerifyAccount');
+$f3->route('GET /web/auth/approve/account', 'AuthController->getApproveAccount');
 
 $f3->route('GET /web/auth/signout', 'AuthController->getSignOut');
 
@@ -173,3 +173,5 @@ $f3->route('POST /web/pharmacy/profile/accountSetting', 'ProfileController->post
 $f3->route('POST /web/distributor/profile/myProfile', 'ProfileController->postDistributorProfileMyProfile');
 $f3->route('POST /web/distributor/profile/accountSetting', 'ProfileController->postDistributorProfileAccountSetting');
 $f3->route('POST /web/distributor/profile/paymentSetting', 'ProfileController->postDistributorProfilePaymentSetting');
+$f3->route('GET /web/pharmacy/profile/approve', 'ProfileController->getPharmacyProfileApprove');
+$f3->route('GET /web/distributor/profile/approve', 'ProfileController->getDistributorProfileApprove');
