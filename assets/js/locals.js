@@ -570,6 +570,11 @@ var WebAppLocals = (function () {
 			ar: 'التحميل فشل',
 			fr: ''
 		},
+		bulkAddUploadError: {
+			en: 'Error processing the file. Please ensure it’s format is .xsls and matches the structure of the sample file',
+			ar: 'Error processing the file. Please ensure it’s format is .xsls and matches the structure of the sample file', // TODO: translate
+			fr: ''
+		},
 	};
 
 	var _symbolsLocals = {

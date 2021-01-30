@@ -32,7 +32,7 @@ var ProductsBulkAdd = function () {
             },
             error: function (file, error) {
                 // Show error message
-                WebApp.alertError(WebAppLocals.getMessage("fileTypeError"));
+                WebApp.alertError(WebAppLocals.getMessage("bulkAddUploadError"));
                 
                 // Change upload bar
                 $("#dropZoneProductsBulkAddProgress").removeClass('bg-primary');
