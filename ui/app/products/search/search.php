@@ -139,11 +139,21 @@ function compress_htmlcode($codedata)
         var elementId = "#datatable";
         var url = '/web/product/search';
 
-        var columnDefs = [{
-            className: "export_datatable",
-            targets: [0, 1, 2, 3, 4, 5, 6, 7]
-        }, {
-            targets: 0,
+        var columnDefs = [
+            {
+                className: "never",
+                targets: [0]
+            },
+            {
+                className: 'export_datatable',
+                targets: '_all',
+            },
+            {
+                targets: 0,
+                title: 'id',
+                data: 'id'
+            },{
+            targets: 1,
             title: WebAppLocals.getMessage('productName'),
             data: 'productName_en',
             render: function(data, type, row, meta) {
@@ -168,16 +178,16 @@ function compress_htmlcode($codedata)
                 return output;
             },
         }, {
-            targets: 1,
+            targets: 2,
             title: WebAppLocals.getMessage('productScientificName'),
             data: 'scientificName'
         }, {
-            targets: 2,
+            targets: 3,
             title: WebAppLocals.getMessage('sellingEntityName'),
             data: 'entityName_' + docLang,
             render: $.fn.dataTable.render.ellipsis(100)
         }, {
-            targets: 3,
+            targets: 4,
             title: WebAppLocals.getMessage('stockAvailability'),
             data: 'stockStatusId',
             orderable: false,
@@ -209,7 +219,7 @@ function compress_htmlcode($codedata)
                 return output;
             },
         }, {
-            targets: 4,
+            targets: 5,
             title: WebAppLocals.getMessage('unitPrice'),
             data: 'unitPrice',
             render: function(data, type, row, meta) {
@@ -218,7 +228,7 @@ function compress_htmlcode($codedata)
                 return '<div style="width: max-content;">' + output + '</div>';
             },
         }, {
-            targets: 5,
+            targets: 6,
             title: WebAppLocals.getMessage('bonus'),
             data: 'activeBonus',
             render: function(data, type, row, meta) {
@@ -237,7 +247,7 @@ function compress_htmlcode($codedata)
                 return output;
             },
         }, {
-            targets: 6,
+            targets: 7,
             title: WebAppLocals.getMessage('quantity'),
             data: 'id',
             orderable: false,
@@ -274,7 +284,7 @@ function compress_htmlcode($codedata)
                 return '<div style="display: flex;">' + output + '</div>';
             },
         }, {
-            targets: 7,
+            targets: 8,
             title: '',
             data: 'id',
             orderable: false,
@@ -642,6 +652,7 @@ function compress_htmlcode($codedata)
         var scientificNameId = <?php echo isset($_GET['scientificNameId']) ? "'" . $_GET['scientificNameId'] . "'" : 'null'; ?>;
 
         var dbAdditionalOptions = {
+            processing: false,
             datatableOptions: {
                 buttons: [],
             }
