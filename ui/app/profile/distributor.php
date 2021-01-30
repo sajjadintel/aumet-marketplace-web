@@ -227,7 +227,7 @@
                                         <div data-repeater-item="" class="form-group row align-items-start">
                                             <input type="hidden" id="minimumValueOrderId" name="id" class="form-control">
                                             <div class="col-md-4">
-                                                <input type="number" id="minimumValueOrder" name="minimumValueOrder" class="form-control minimumValueOrderInput" placeholder="<?php echo $vModule_profile_minimumValueOrder ?>" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : 0;">
+                                                <input type="number" id="minimumValueOrder" name="minimumValueOrder" class="form-control minimumValueOrderInput" placeholder="<?php echo $vModule_profile_minimumValueOrder ?>" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : !this.value? this.value : 0;">
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
                                             <div class="col-md-4">
