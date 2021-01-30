@@ -244,10 +244,20 @@ class ProfileController extends Controller {
         $userId = $this->f3->get("POST.userId");
         $oldPassword = $this->f3->get("POST.oldPassword");
         $newPassword = $this->f3->get("POST.newPassword");
+        $newPasswordConfirmation = $this->f3->get("POST.newPasswordConfirmation");
 
-        if(!$oldPassword || !$newPassword) {
+        if(strlen($oldPassword) == 0
+        || strlen($newPassword) == 0
+        || strlen($newPasswordConfirmation) == 0) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
+            echo $this->webResponse->jsonResponse();
+            return;
+        }
+
+        if($newPassword != $newPasswordConfirmation) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = $this->f3->get("vModule_profile_wrongPasswordConfirmation");
             echo $this->webResponse->jsonResponse();
             return;
         }
@@ -266,6 +276,13 @@ class ProfileController extends Controller {
                 $this->webResponse->message = $this->f3->get("vModule_profile_wrongPassword");
                 echo $this->webResponse->jsonResponse();
             } else {
+                if(password_verify($newPassword, $dbUser->password)) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get("vModule_profile_samePassword");
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+
                 $dbUser->password = password_hash($newPassword, PASSWORD_DEFAULT);
                 $dbUser->update();
 
@@ -391,10 +408,20 @@ class ProfileController extends Controller {
         $userId = $this->f3->get("POST.userId");
         $oldPassword = $this->f3->get("POST.oldPassword");
         $newPassword = $this->f3->get("POST.newPassword");
+        $newPasswordConfirmation = $this->f3->get("POST.newPasswordConfirmation");
 
-        if(!$oldPassword || !$newPassword) {
+        if(strlen($oldPassword) == 0
+        || strlen($newPassword) == 0
+        || strlen($newPasswordConfirmation) == 0) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
+            echo $this->webResponse->jsonResponse();
+            return;
+        }
+
+        if($newPassword != $newPasswordConfirmation) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = $this->f3->get("vModule_profile_wrongPasswordConfirmation");
             echo $this->webResponse->jsonResponse();
             return;
         }
@@ -413,6 +440,13 @@ class ProfileController extends Controller {
                 $this->webResponse->message = $this->f3->get("vModule_profile_wrongPassword");
                 echo $this->webResponse->jsonResponse();
             } else {
+                if(password_verify($newPassword, $dbUser->password)) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get("vModule_profile_samePassword");
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+
                 $dbUser->password = password_hash($newPassword, PASSWORD_DEFAULT);
                 $dbUser->update();
 
