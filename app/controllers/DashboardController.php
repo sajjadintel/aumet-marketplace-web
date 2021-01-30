@@ -57,13 +57,13 @@ class DashboardController extends Controller {
                 $buyerCurrency = $mapCurrencyIdCurrency[$buyerEntity['currencyId']];
 
                 // Get related banners
-                $dbBanners = new BaseModel($this->db, "entityDashboardBanner");
-                $dbBanners->image = $this->objUser->language == "ar"? "imageRtl" : "imageLtr";
-                $dbBanners->title = "title" . ucfirst($this->objUser->language);
-                $dbBanners->subtitle = "subtitle" . ucfirst($this->objUser->language);
-                $dbBanners->buttonText = "buttonText" . ucfirst($this->objUser->language);
-                $arrBanners = $dbBanners->getWhere("countryId = $buyerEntity->countryId", "id DESC", 5, 0);
-                $this->f3->set('arrBanners', $arrBanners);
+                $dbBanner = new BaseModel($this->db, "vwEntityDashboardBanner");
+                $dbBanner->image = $this->objUser->language == "ar"? "imageRtl" : "imageLtr";
+                $dbBanner->title = "title" . ucfirst($this->objUser->language);
+                $dbBanner->subtitle = "subtitle" . ucfirst($this->objUser->language);
+                $dbBanner->buttonText = "buttonText" . ucfirst($this->objUser->language);
+                $arrBanner = $dbBanner->getWhere("countryId = $buyerEntity->countryId", "id DESC", 5, 0);
+                $this->f3->set('arrBanner', $arrBanner);
                 
 
                 $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
@@ -76,6 +76,8 @@ class DashboardController extends Controller {
                     $product = new stdClass();
                     $product->name = $productDb['name'];
                     $product->image = $productDb['image'];
+                    $product->id = $productDb['id'];
+                    $product->entityId = $productDb['entityId'];
 
                     $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];
                     $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];
@@ -93,6 +95,8 @@ class DashboardController extends Controller {
                     $product = new stdClass();
                     $product->name = $productDb['name'];
                     $product->image = $productDb['image'];
+                    $product->id = $productDb['id'];
+                    $product->entityId = $productDb['entityId'];
 
                     $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];
                     $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];

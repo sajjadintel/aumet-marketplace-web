@@ -3,9 +3,20 @@
 		background-color: #FFF !important; 
 	}
 
-	textarea {
-		resize: none;
-	}
+		textarea {
+			resize: none;
+		}
+
+		.mfp-iframe-holder .mfp-content {
+			max-width: 100% !important;
+			height: 100%;
+		}
+
+		.mfp-iframe-holder {
+			padding-top: 40px !important;
+			padding-bottom: 10px !important;
+		}
+
 </style>
 <!--begin::Entry-->
 <div class="d-flex flex-column-fluid">
@@ -76,6 +87,7 @@
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
                                 <input type="hidden" name="entityBranchTradeLicenseUrl" value="<?php echo $user->entityBranchTradeLicenseUrl; ?>"/>
+                                <input type="hidden" name="entityBranchTradeLicenseUrlDecoded" value="<?php echo $entityBranchTradeLicenseUrlDecoded; ?>"/>
                                 <div>
                                     <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_pharmacyTradeLicenseDocument; ?></label>
                                 </div>
@@ -94,7 +106,7 @@
                                                     </g>
                                                 </svg>
                                                 <!--end::Svg Icon-->
-                                            </span><?php echo $vModule_profile_uploadButton; ?>
+                                            </span><?php echo $user->entityBranchTradeLicenseUrl == null ? $vModule_profile_uploadButton : $vModule_profile_uploadReplaceButton; ?>
                                         </a>
                                     </div>
                                     <div class="dropzone-items">
@@ -103,6 +115,7 @@
                                                 <a class="dropzone-filename" id="dropzoneFilename">
                                                     <span data-dz-name="">some_image_file_name.jpg</span>
                                                     <strong>(<span data-dz-size="">340kb</span>)</strong>
+                                                    <img  id="dropzoneFilenameImage" src="" style="width:300px;height:200px; object-fit: cover;">
                                                 </a>
                                                 <div class="dropzone-error" data-dz-errormessage=""></div>
                                             </div>
@@ -111,11 +124,13 @@
                                                     <div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress=""></div>
                                                 </div>
                                             </div>
-                                            <div class="dropzone-toolbar">
-                                                <span class="dropzone-delete" data-dz-remove="">
-                                                    <i class="flaticon2-cross"></i>
-                                                </span>
-                                            </div>
+                                            <?php if ($user->entityBranchTradeLicenseUrl == null) { ?>
+                                                <div class="dropzone-toolbar">
+                                                    <span class="dropzone-delete" data-dz-remove="">
+                                                        <i class="flaticon2-cross"></i>
+                                                    </span>
+                                                </div>
+                                            <?php } ?>
                                         </div>
                                     </div>
                                 </div>
@@ -149,7 +164,7 @@
                             <!--end::Form Group-->
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
-                                <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_pharmacyMobile ?></label>
+                                <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_mobile ?></label>
                                 <input disabled type="tel" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="mobile" value="<?php echo $user->userMobile; ?>" />
                             </div>
                         </div>

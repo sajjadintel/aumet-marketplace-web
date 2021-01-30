@@ -37,8 +37,7 @@
 											</tr>
 										</tbody>
 									</table>
-									<h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 30px;line-height: 39px;">Approve Pharmacy Account</h2>
-									<p style="margin-top: 0px;margin-bottom: 0px;">Check down below all the information submitted before approving this account</p>
+									<h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 30px;line-height: 39px;">Pharmacy Account Approved</h2>
 								</div>
 								<!--[if mso]></td></tr></table><![endif]-->
 							</td>
@@ -76,69 +75,14 @@
 				<!--[if mso]><table width="800" cellspacing="0" cellpadding="0" border="0" role="presentation"><tbody><tr><td><![endif]-->
 				<table class="o_block-lg" width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation" style="max-width: 800px;margin: 0 auto;">
 					<tbody>
-						<?php foreach ($arrFields as $field => $value) : ?>
-							<tr>
-								<td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ffffff;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">
-									<p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong><?php echo $field; ?></strong></p>
-									<table role="presentation" cellspacing="0" cellpadding="0" border="0">
-										<tbody>
-											<tr>
-												<td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">
-													<p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">
-														<strong><?php echo $value; ?></strong>
-													</p>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</td>
-							</tr>
-						<?php endforeach; ?>
-						<?php if ($tradeLicenseUrl) : ?>
-							<tr>
-								<td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ffffff;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">
-									<p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>Trade License Document</strong></p>
-									<table role="presentation" cellspacing="0" cellpadding="0" border="0">
-										<tbody>
-											<tr>
-												<td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">
-													<p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">
-														<a href="<?php echo $domainUrl . $tradeLicenseUrl; ?>" target="_blank">Download file</strong>
-													</p>
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</td>
-							</tr>
-						<?php endif; ?>
-					</tbody>
-				</table>
-				<!--[if mso]></td></tr></table><![endif]-->
-			</td>
-		</tr>
-	</tbody>
-</table>
-<!-- button-primary -->
-<table width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation">
-	<tbody>
-		<tr>
-			<td class="o_bg-light o_px-xs" align="center" style="background-color: #dbe5ea;padding-left: 8px;padding-right: 8px;">
-				<!--[if mso]><table width="800" cellspacing="0" cellpadding="0" border="0" role="presentation"><tbody><tr><td><![endif]-->
-				<table class="o_block-lg" width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation" style="max-width: 800px;margin: 0 auto;">
-					<tbody>
 						<tr>
-							<td class="o_bg-white o_px-md o_py-xs" align="center" style="background-color: #ffffff;padding-left: 24px;padding-right: 24px;padding-top: 8px;padding-bottom: 8px;">
-								<table align="center" cellspacing="0" cellpadding="0" border="0" role="presentation">
-									<tbody>
-										<tr>
-											<td width="300" class="o_btn o_bg-primary o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #126de5;border-radius: 4px;">
-												<a class="o_text-white" href="<?php echo $domainUrl . "web/auth/approve/account?token=$token"; ?>" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">Approve Account</a>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</td>
+							<td class="o_bg-white o_px-md o_py" align="center" style="background-color: #ffffff;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">
+								<!--[if mso]><table width="584" cellspacing="0" cellpadding="0" border="0" role="presentation"><tbody><tr><td align="center"><![endif]-->
+								<div class="o_col-6s o_sans o_text o_text-secondary o_center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;max-width: 584px;color: #424651;text-align: center;">
+								  <p style="margin-top: 0px;margin-bottom: 0px;"><?php echo $message; ?></p>
+								</div>
+								<!--[if mso]></td></tr></table><![endif]-->
+						    </td>
 						</tr>
 					</tbody>
 				</table>

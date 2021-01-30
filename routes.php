@@ -19,8 +19,8 @@ $f3->route('GET /web/auth/forgot', 'AuthController->getForgottenPassword');
 $f3->route('POST /web/auth/forgot', 'AuthController->postForgottenPassword');
 $f3->route('GET /web/auth/reset', 'AuthController->getResetPassword');
 $f3->route('POST /web/auth/reset', 'AuthController->postResetPassword');
-$f3->route('GET /web/auth/verify/account/@token', 'AuthController->getVerifyAccount');
-$f3->route('GET /web/auth/approve/account/@token', 'AuthController->getApproveAccount');
+$f3->route('GET /web/auth/verify/account', 'AuthController->getVerifyAccount');
+$f3->route('GET /web/auth/approve/account', 'AuthController->getApproveAccount');
 
 $f3->route('GET /web/auth/signout', 'AuthController->getSignOut');
 
@@ -46,7 +46,7 @@ $f3->route('GET /web/product/ingredient/list', 'SearchController->getProductIngr
 $f3->route('GET /web/order/customer/list', 'SearchController->getOrderBuyerList');
 $f3->route('GET /web/order/Distributor/list', 'SearchController->getOrderSellerList');
 $f3->route('GET /web/order/Distributor/listAll', 'SearchController->getAllSellerList');
-$f3->route('GET /web/customer/group/list/@entityId', 'SearchController->getCustomerGroupByEnitityList');
+$f3->route('GET /web/customer/group/list/@entityId', 'SearchController->getRelationGroupByEnitityList');
 $f3->route('GET /web/city/list/@countryId', 'SearchController->getCityByCountryList');
 
 $f3->route('GET /web/searchbar', 'SearchController->handleSearchBar');
@@ -100,6 +100,7 @@ $f3->route('GET /web/distributor/product/list', 'ProductsController->getProductL
 $f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDistributorProduct');
 $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDistributorProduct');
 $f3->route('POST /web/distributor/product/image', 'ProductsController->postProductImage');
+$f3->route('POST /web/distributor/product/subimage', 'ProductsController->postProductSubimage');
 $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->postEditQuantityDistributorProduct');
 
 // Bulk add 
@@ -173,3 +174,5 @@ $f3->route('POST /web/pharmacy/profile/accountSetting', 'ProfileController->post
 $f3->route('POST /web/distributor/profile/myProfile', 'ProfileController->postDistributorProfileMyProfile');
 $f3->route('POST /web/distributor/profile/accountSetting', 'ProfileController->postDistributorProfileAccountSetting');
 $f3->route('POST /web/distributor/profile/paymentSetting', 'ProfileController->postDistributorProfilePaymentSetting');
+$f3->route('GET /web/pharmacy/profile/approve', 'ProfileController->getPharmacyProfileApprove');
+$f3->route('GET /web/distributor/profile/approve', 'ProfileController->getDistributorProfileApprove');

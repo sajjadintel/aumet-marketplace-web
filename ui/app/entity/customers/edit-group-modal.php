@@ -4,7 +4,7 @@
         <div class="modal-content">
             <form method="POST" action="/web/distributor/customer/edit/group" class="modalForm" id="editGroupModalForm">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editGroupModalTitle"><?php echo $vModule_customer_customerGroupTitle; ?></h5>
+                    <h5 class="modal-title" id="editGroupModalTitle"><?php echo $vModule_customer_relationGroupTitle; ?></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i aria-hidden="true" class="ki ki-close"></i>
                     </button>
@@ -14,8 +14,8 @@
                     <input type="hidden" name="fnCallback" class="modalValueCallback" id="editGroupCallback" value="DistributorCustomersDataTable.reloadDatatable" />
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <label for="editGroupCustomerGroup" class="form-control-label"><?php echo $vModule_customer_customerGroup; ?></label>
-                            <select class="select2 form-control" id="editGroupCustomerGroup" name="customerGroupId" data-select2-id="editGroupCustomerGroup" tabindex="-1" aria-hidden="true">
+                            <label for="editGroupRelationGroup" class="form-control-label"><?php echo $vModule_customer_relationGroup; ?></label>
+                            <select class="select2 form-control" id="editGroupRelationGroup" name="relationGroupId" data-select2-id="editGroupRelationGroup" tabindex="-1" aria-hidden="true">
                             </select>
                         </div>
                     </div>

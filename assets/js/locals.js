@@ -525,12 +525,12 @@ var WebAppLocals = (function () {
 			ar: 'حسنا، حصلت عليه!',
 			fr: '',
 		},
-		customerGroup: {
+		relationGroup: {
 			en: 'Customer Group',
 			ar: 'مجموعة العملاء',
 			fr: '',
 		},
-		changeCustomerGroup: {
+		changeRelationGroup: {
 			en: 'Change Customer Group',
 			ar: 'تغيير مجموعة العملاء',
 			fr: '',
@@ -539,6 +539,41 @@ var WebAppLocals = (function () {
 			en: 'The following cities are selected more than once',
 			ar: 'تم تحديد المدن التالية أكثر من مرة',
 			fr: '',
+		},
+		lengthError: {
+			en: 'Should be between',
+			ar: 'يجب أن يكون بين',
+			fr: '',
+		},
+		and: {
+			en: 'and',
+			ar: 'و',
+			fr: '',
+		},
+		characters: {
+			en: 'characters',
+			ar: 'الأحرف',
+			fr: '',	
+		},
+		fileTypeError: {
+			en: 'You can\'t upload files of this type',
+			ar: 'لا يمكنك تحميل ملفات من هذا النوع',
+			fr: ''
+		},
+		uploadSuccess: {
+			en: 'Upload Completed Successfully',
+			ar: 'اكتمل التحميل بنجاح',
+			fr: ''
+		},
+		uploadError: {
+			en: 'Upload failed',
+			ar: 'التحميل فشل',
+			fr: ''
+		},
+		bulkAddUploadError: {
+			en: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file',
+			ar: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file', // TODO: translate
+			fr: ''
 		},
 	};
 

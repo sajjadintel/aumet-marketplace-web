@@ -76,7 +76,7 @@ class AuthController extends Controller {
 
             $dbCountry = new BaseModel($this->db, "country");
             $dbCountry->name = "name_en";
-            $arrCountry = $dbCountry->findAll();
+            $arrCountry = $dbCountry->findAll("name_en ASC");
             $this->f3->set('arrCountry', $arrCountry);
 
             echo View::instance()->render('public/auth/layout.php');
@@ -346,7 +346,7 @@ class AuthController extends Controller {
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
-            $this->webResponse->message = "Email address exists, Please signin instead";
+            $this->webResponse->message = "Email Already Exists";
             echo $this->webResponse->jsonResponse();
             return;
         }
@@ -555,6 +555,10 @@ class AuthController extends Controller {
 
         $emailList = explode(';', getenv('ADMIN_SUPPORT_EMAIL'));
         for ($i = 0; $i < count($emailList); $i++) {
+        	if(!$emailList[$i]) {
+				continue;
+            }
+            
             $currentEmail = explode(',', $emailList[$i]);
             if (count($currentEmail) == 2) {
                 $emailHandler->appendToAddress($currentEmail[0], $currentEmail[1]);
@@ -766,7 +770,7 @@ class AuthController extends Controller {
         $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
 
-        $newFileName = $fileName . "-" . time() . ".$ext";
+        $newFileName = urlencode($fileName . "-" . time() . ".$ext");
         $targetFile = "files/uploads/documents/" . $newFileName;
 
         if (in_array($ext, $allValidExtensions)) {
@@ -791,7 +795,7 @@ class AuthController extends Controller {
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
-            $this->webResponse->message = "Email address exists, Please signin instead";
+            $this->webResponse->message = "Email Already Exists";
             echo $this->webResponse->jsonResponse();
         } else {
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
@@ -805,7 +809,7 @@ class AuthController extends Controller {
 
         $dbCity = new BaseModel($this->db, "city");
         $dbCity->name = "nameEn";
-        $dbCity->getByField("countryId", $countryId);
+        $dbCity->getWhere("countryId=$countryId", "nameEn ASC");
 
         $arrCities = [];
         while (!$dbCity->dry()) {
@@ -825,18 +829,20 @@ class AuthController extends Controller {
 
     function getVerifyAccount()
     {
-        $token = $this->f3->get("PARAMS.token");
+        $token = $_GET['token'];
 
+        if (!isset($token) || $token == null || $token == "") {
+            $this->rerouteAuth();
+        }
+        $token = urldecode($token);
         try {
             $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
             $accessTokenPayload = $jwt->decode($token);
         } catch (\Exception $e) {
-            echo "Invalid";
-            return;
+            $this->rerouteAuth();
         }
         if (!is_array($accessTokenPayload)) {
-            echo "Invalid";
-            return;
+            $this->rerouteAuth();
         }
 
         $userId = $accessTokenPayload["userId"];
@@ -854,14 +860,24 @@ class AuthController extends Controller {
         $dbEntityBranch->getById($entityBranchId);
 
 
-        if ($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry() || $dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
+        if ($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry()) {
             echo "Invalid";
+        } else if ($dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
+            echo "Already Verified";
         } else {
             $dbUser->statusId = Constants::USER_STATUS_PENDING_APPROVAL;
             $dbUser->update();
 
             $emailHandler = new EmailHandler($this->db);
+            $emailFile = "email/layout.php";
+            $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
+            $this->f3->set('title', 'Pharmacy Account Verified');
+            $this->f3->set('emailType', 'pharmacyAccountVerified');
+
             $message = "Your account has been authenticated. You will be contacted by Aumet within 24 to 48 hours to activate your account";
+            $this->f3->set('message', $message);
+
+            $htmlContent = View::instance()->render($emailFile);
 
             $emailHandler->appendToAddress($dbUser->email, $dbUser->fullname);
             $subject = "Aumet - Pharmacy Account Verified";
@@ -874,7 +890,7 @@ class AuthController extends Controller {
                 }
             }
 
-            $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_VERIFIED, $subject, $message);
+            $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_VERIFIED, $subject, $htmlContent);
 
             // Send approval email
             $allValues = new stdClass();
@@ -895,18 +911,20 @@ class AuthController extends Controller {
 
     function getApproveAccount()
     {
-        $token = $this->f3->get("PARAMS.token");
+        $token = $_GET['token'];
 
+        if (!isset($token) || $token == null || $token == "") {
+            $this->rerouteAuth();
+        }
+        $token = urldecode($token);
         try {
             $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
             $accessTokenPayload = $jwt->decode($token);
         } catch (\Exception $e) {
-            echo "Invalid";
-            return;
+            $this->rerouteAuth();
         }
         if (!is_array($accessTokenPayload)) {
-            echo "Invalid";
-            return;
+            $this->rerouteAuth();
         }
 
         $userId = $accessTokenPayload["userId"];
@@ -914,14 +932,24 @@ class AuthController extends Controller {
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getById($userId);
 
-        if ($dbUser->dry() || $dbUser->statusId != Constants::USER_STATUS_PENDING_APPROVAL) {
+        if ($dbUser->dry()) {
             echo "Invalid";
+        } else if($dbUser->statusId != Constants::USER_STATUS_PENDING_APPROVAL) {
+            echo "Already Approved";
         } else {
             $dbUser->statusId = Constants::USER_STATUS_ACCOUNT_ACTIVE;
             $dbUser->update();
 
             $emailHandler = new EmailHandler($this->db);
+            $emailFile = "email/layout.php";
+            $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
+            $this->f3->set('title', 'Pharmacy Account Approved');
+            $this->f3->set('emailType', 'pharmacyAccountApproved');
+            
             $message = "Your account has been approved. You can now login to our platform !";
+            $this->f3->set('message', $message);
+
+            $htmlContent = View::instance()->render($emailFile);
 
             $emailHandler->appendToAddress($dbUser->email, $dbUser->fullname);
             $subject = "Aumet - Pharmacy Account Approved";
@@ -934,7 +962,7 @@ class AuthController extends Controller {
                 }
             }
 
-            $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_APPROVED, $subject, $message);
+            $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_APPROVED, $subject, $htmlContent);
 
             echo "Approved";
         }
