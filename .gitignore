@@ -4,6 +4,7 @@ files/
 vendor/
 ./files/
 .idea/
+assets/img/products/
 
 # Temp and environment variables
 .DS_Store

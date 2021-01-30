@@ -11,8 +11,7 @@ $f3->route('POST /web/auth/signin', 'AuthController->postSignIn');
 
 $f3->route('GET /web/auth/signup', 'AuthController->getSignUp');
 $f3->route('POST /web/auth/signup', 'AuthController->postSignUp');
-$f3->route('POST /web/auth/signup/validate/email', 'AuthController->postSignUpValidateEmail');
-$f3->route('POST /web/auth/signup/validate/email', 'AuthController->postSignUpValidateEmail');
+$f3->route('POST /web/auth/signup/validate/step1', 'AuthController->postSignUpValidateStep1');
 $f3->route('GET /web/auth/city/list/@countryId', 'AuthController->getCityByCountryList');
 $f3->route('POST /web/auth/signup/document/upload', 'AuthController->postSignUpDocumentUpload');
 $f3->route('GET /web/auth/forgot', 'AuthController->getForgottenPassword');

@@ -5,7 +5,8 @@ use Kreait\Firebase\Auth;
 use Firebase\Auth\Token\Exception\InvalidToken;
 use Ahc\Jwt\JWT;
 
-class AuthController extends Controller {
+class AuthController extends Controller
+{
     function beforeroute()
     {
     }
@@ -332,7 +333,7 @@ class AuthController extends Controller {
         $address = $this->f3->get("POST.address");
         $pharmacyDocument = $this->f3->get("POST.pharmacyDocument");
 
-        if (!$name || !$mobile || !$email || !$password || !$entityName || !$countryId || !$cityId || !$address) {
+        if (!$name || !ltrim($mobile, "+") || !$email || !$password || !$entityName || !$countryId || !$cityId || !$address) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = "Some mandatory fields are missing";
             echo $this->webResponse->jsonResponse();
@@ -365,14 +366,16 @@ class AuthController extends Controller {
 
         // Check if trading license is unique
         $dbEntityBranch = new BaseModel($this->db, "entityBranch");
-        $dbEntityBranch->getByField("tradeLicenseNumber", $tradeLicenseNumber);
+        if ($tradeLicenseNumber != '') {
+            $dbEntityBranch->getByField("tradeLicenseNumber", $tradeLicenseNumber);
 
-        if (!$dbEntityBranch->dry()) {
-            $this->webResponse->errorCode = Constants::STATUS_ERROR;
-            $this->webResponse->title = "";
-            $this->webResponse->message = "Trading license exists!";
-            echo $this->webResponse->jsonResponse();
-            return;
+            if (!$dbEntityBranch->dry()) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "Trading license exists!";
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
         }
 
         // Get currency symbol
@@ -452,7 +455,6 @@ class AuthController extends Controller {
         $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         $this->webResponse->message = $this->f3->get("vMessage_signupSuccessful");
         echo $this->webResponse->jsonResponse();
-
     }
 
     function sendVerificationEmail($allValues, $userId, $entityId, $entityBranchId)
@@ -780,9 +782,10 @@ class AuthController extends Controller {
         }
     }
 
-    function postSignUpValidateEmail()
+    function postSignUpValidateStep1()
     {
         $email = $this->f3->get("POST.email");
+        $mobile = $this->f3->get("POST.mobile");
 
         // Check if email is unique
         $dbUser = new BaseModel($this->db, "user");
@@ -791,12 +794,23 @@ class AuthController extends Controller {
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
-            $this->webResponse->message = "Email Already Exists";
+            $this->webResponse->message = "Email already exists.";
             echo $this->webResponse->jsonResponse();
-        } else {
-            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-            echo $this->webResponse->jsonResponse();
+            return;
         }
+
+        $dbUser->getByField("mobile", $mobile);
+
+        if (!$dbUser->dry()) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->title = "";
+            $this->webResponse->message = "Mobile already exists.";
+            echo $this->webResponse->jsonResponse();
+            return;
+        }
+
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+        echo $this->webResponse->jsonResponse();
     }
 
     function getCityByCountryList()
@@ -933,7 +947,7 @@ class AuthController extends Controller {
             $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
             $this->f3->set('title', 'Pharmacy Account Approved');
             $this->f3->set('emailType', 'pharmacyAccountApproved');
-            
+
             $message = "Your account has been approved. You can now login to our platform !";
             $this->f3->set('message', $message);
 

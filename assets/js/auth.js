@@ -167,10 +167,9 @@ var WebAuth = (function () {
 					console.log('No Form');
 					return;
 				}
-				WebApp.post(url, data, function (){
+				WebApp.post(url, data, function () {
 					KTUtil.btnRelease(formSubmitButton);
 				});
-
 			})
 			.on('core.form.invalid', function () {
 				Swal.fire({
@@ -186,7 +185,6 @@ var WebAuth = (function () {
 				});
 			});
 	};
-
 
 	var _handleFormReset = function () {
 		// Base elements
@@ -238,7 +236,7 @@ var WebAuth = (function () {
 					console.log('No Form');
 					return;
 				}
-				WebApp.post(url, data, function (){
+				WebApp.post(url, data, function () {
 					KTUtil.btnRelease(formSubmitButton);
 					Swal.fire({
 						text: 'Password changed successfully!',
@@ -249,11 +247,10 @@ var WebAuth = (function () {
 							confirmButton: 'btn font-weight-bold btn-light-primary',
 						},
 					}).then(function () {
-                        window.location.href = '/web/auth/signin';
+						window.location.href = '/web/auth/signin';
 						KTUtil.btnRelease(formSubmitButton);
 					});
 				});
-
 			})
 			.on('core.form.invalid', function () {
 				Swal.fire({
@@ -405,8 +402,9 @@ var WebAuth = (function () {
 						if (wizard.getStep() == 1) {
 							let body = {
 								email: $('#kt_login_signup_form input[name=email]').val(),
+								mobile: $('#kt_login_signup_form input[name=mobile]').val(),
 							};
-							WebApp.post('/web/auth/signup/validate/email', body, function () {
+							WebApp.post('/web/auth/signup/validate/step1', body, function () {
 								wizard.goTo(wizard.getNewStep());
 							});
 						} else {
@@ -698,7 +696,7 @@ var WebAuth = (function () {
 		});
 
 		// Overwrite previous file
-		myDropzone.on("maxfilesexceeded", function(file) {
+		myDropzone.on('maxfilesexceeded', function (file) {
 			myDropzone.removeAllFiles();
 			myDropzone.addFile(file);
 		});

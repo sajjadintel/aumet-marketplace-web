@@ -1,6 +1,6 @@
 <style>
 	.dropzone-item {
-		background-color: #FFF !important; 
+		background-color: #FFF !important;
 	}
 
 	textarea {
@@ -10,7 +10,7 @@
 <div class="d-flex flex-column flex-root">
 	<!--begin::Login-->
 	<div class="login login-3 wizard d-flex flex-column flex-lg-row flex-column-fluid wizard" id="kt_login">
-		
+
 		<!--begin::Content-->
 		<div class="login-content flex-column-fluid d-flex flex-column p-10">
 			<!--begin::Wrapper-->
@@ -19,14 +19,15 @@
 				<div id="signupContainer" class="login-form login-form-signup">
 					<!--begin::Form-->
 					<form class="form" novalidate="novalidate" id="kt_login_signup_form">
-						<input type="hidden" name="uid"/>
+						<input type="hidden" name="uid" />
 						<!--begin: Wizard Step 1-->
 						<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
 							<!--begin::Title-->
 							<div class="pb-10 pb-lg-15">
 								<h3 class="font-weight-bolder text-dark display5"><?php echo $vLogin_signupPharmacy ?></h3>
 								<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_AlreadyHaveAccount ?>
-									<a href="/web/auth/signin" class="text-primary font-weight-bolder"><?php echo $vLogin_signin ?></a></div>
+									<a href="/web/auth/signin" class="text-primary font-weight-bolder"><?php echo $vLogin_signin ?></a>
+								</div>
 							</div>
 							<!--begin::Title-->
 							<!--begin::Form Group-->
@@ -38,7 +39,7 @@
 							<!--begin::Form Group-->
 							<div class="form-group">
 								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_mobile ?></label>
-								<input type="tel" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="mobile" placeholder="<?php echo $vSignup_mobile ?>" value="+" style="direction: ltr;" />
+								<input type="tel" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="mobile" placeholder="<?php echo $vSignup_mobile ?>" value="" style="direction: ltr;" />
 							</div>
 							<!--end::Form Group-->
 							<!--begin::Form Group-->
@@ -89,7 +90,7 @@
 										<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_country; ?></label>
 										<select name="country" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6">
 											<option value=""><?php echo $vSignup_country; ?></option>
-											<?php foreach($arrCountry as $country) : ?>
+											<?php foreach ($arrCountry as $country) : ?>
 												<option value="<?php echo $country['id']; ?>"><?php echo $country['name']; ?></option>
 											<?php endforeach; ?>
 										</select>
@@ -119,7 +120,7 @@
 								<div>
 									<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_pharmacyDocument; ?></label>
 								</div>
-								
+
 								<div class="dropzone dropzone-multi" id="kt_dropzone" style="background-color: unset;">
 									<div class="dropzone-panel mb-lg-0 mb-2">
 										<a class="dropzone-select btn btn-light-primary font-weight-bolder font-size-h6 pl-6 pr-8 py-4 my-3 mr-3">
@@ -143,7 +144,7 @@
 												<div class="dropzone-filename">
 													<span data-dz-name="">some_image_file_name.jpg</span>
 													<strong>(
-													<span data-dz-size="">340kb</span>)</strong>
+														<span data-dz-size="">340kb</span>)</strong>
 												</div>
 												<div class="dropzone-error" data-dz-errormessage=""></div>
 											</div>
