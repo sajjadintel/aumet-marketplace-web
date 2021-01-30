@@ -101,10 +101,16 @@ function compress_htmlcode($codedata)
             var elementId = "#datatable";
             var url = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 
-            var columnDefs = [{
-                className: "export_datatable",
-                targets: [0, 1, 2, 3, 4, 5]
-            }, {
+            var columnDefs = [
+                {
+                    className: "never",
+                    targets: [0]
+                },
+                {
+                    className: 'export_datatable',
+                    targets: '_all',
+                },
+                {
                 targets: 0,
                 title: WebAppLocals.getMessage('id'),
                 data: 'id',
@@ -114,6 +120,7 @@ function compress_htmlcode($codedata)
                 },
             }, {
                 targets: 1,
+                width: "30%",
                 title: WebAppLocals.getMessage('productName'),
                 data: 'productName_en',
                 render: function (data, type, row, meta) {
@@ -133,7 +140,7 @@ function compress_htmlcode($codedata)
                         '\')" title="'+
                         row['productName_' + docLang] +
                         '"> ' +
-                        WebApp.truncateText(row['productName_' + docLang], 100)
+                        WebApp.truncateText(row['productName_' + docLang], 50)
                         + '</span></div></div>';
                     return output;
                 },

@@ -330,7 +330,9 @@ return array(
     'vModule_profile_confirmNewPassword' => 'تأكيد كلمة المرور الجديدة',
     'vModule_profile_saveButton' => 'حفظ التغييرات',
     'vModule_profile_userNotFound' => 'المستخدم ليس موجود',
-    'vModule_profile_wrongPassword' => 'كلمة مرور خاطئة',
+    'vModule_profile_wrongPassword' => 'كلمة سر قديمة ليست صحيحة',
+    'vModule_profile_wrongPasswordConfirmation' => 'كلمة المرور الجديدة لا تتطابق مع تأكيد كلمة المرور الجديدة',
+    'vModule_profile_samePassword' => 'كلمة المرور القديمة وكلمة المرور الجديدة هي نفسها',
     'vModule_profile_distributorName' => 'اسم الموزع',
     'vModule_profile_distributorTradeLicenseDocument' => 'وثيقة الرخصة التجارية للموزع',
     'vModule_profile_distributorMobile' => 'رقم الموزع',
@@ -339,8 +341,15 @@ return array(
     'vModule_profile_minimumValueOrder' => 'ترتيب الحد الأدنى للقيمة',
     'vModule_profile_minimumValueOrderCityError' => 'تم اختيار بعض المدن أكثر من مرة',
     'vModule_profile_paymentMethodRequired' => 'طريقة الدفع المطلوبة',
-    'vModule_profile_missingFields' => 'بعض الحقول الإلزامية مفقودة',
     'vModule_profile_mobile' => 'رقم الهاتف',
+    'vModule_product_subcategoryInvalid' => 'الفئة الفرعية غير صالحة',
+    'vModule_product_stockInvalid' => 'يجب أن تكون الكمية المتاحة عددًا صحيحًا موجبًا وليس فارغًا',
+    'vModule_product_maximumOrderQuantityInvalid' => 'يجب أن يكون الحد الأقصى لكمية الطلب عددًا صحيحًا موجبًا وليس فارغًا',
+    'vModule_product_unitPriceInvalid' => 'يجب أن يكون سعر الوحدة رقمًا موجبًا وليس فارغًا',
+    'vModule_product_vatInvalid' => 'يجب أن تكون ضريبة القيمة المضافة رقمًا موجبًا',
+    'vModule_product_missingFields' => 'بعض الحقول الإلزامية مفقودة',
+    'vModule_profile_missingDocumentApproval' => 'المستند مطلوب لتقديم تعديلات ملف التعريف',
+    'vModule_profile_requestSent' => 'تم إرسال طلبك لتحديث المعلومات إلى فريق Aumet ، وسنقوم بالتحقق من صحة ذلك والرد عليك في غضون ٢٤ إلى ٤٨ ساعة',
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
     'error_filedTooShort' => ' field is too short! minimum length: ',
@@ -361,5 +370,4 @@ return array(
     'field_batchNumber' => 'Batch Number',
     'field_itemCode' => 'Item Code',
     'field_strength' => 'Strength',
-
 );

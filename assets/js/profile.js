@@ -5,7 +5,7 @@ var Profile = (function () {
 
     var _entityDocument;
 	var _myDropZone;
-	var _allValidators = {};
+	var _validator;
 	var _mapEntityTypeMenus = {
 		pharmacy: [
 			"myProfile",
@@ -150,7 +150,6 @@ var Profile = (function () {
         var initialFile = $('#myProfileForm input[name=entityBranchTradeLicenseUrl]').val();
 		_initializeDropzone(initialFile);
 
-		_initializeValidators();
 		_initializePasswordFields();
 
 		var entityType = $("#profileEntityType").val();
@@ -334,18 +333,24 @@ var Profile = (function () {
 
 	var _initializePasswordFields = function () {
 		$("#accountSettingForm input[name=oldPassword]").on("change", function() {
-			_allValidators.accountSetting.revalidateField('newPassword');
-			_allValidators.accountSetting.revalidateField('newPasswordConfirmation');
+			if(_validator) {
+				_validator.revalidateField('newPassword');
+				_validator.revalidateField('newPasswordConfirmation');
+			}
 		});
 
 		$("#accountSettingForm input[name=newPassword]").on("change", function() {
-			_allValidators.accountSetting.revalidateField('oldPassword');
-			_allValidators.accountSetting.revalidateField('newPasswordConfirmation');
+			if(_validator) {
+				_validator.revalidateField('oldPassword');
+				_validator.revalidateField('newPasswordConfirmation');
+			}
 		});
 
 		$("#accountSettingForm input[name=newPasswordConfirmation]").on("change", function() {
-			_allValidators.accountSetting.revalidateField('oldPassword');
-			_allValidators.accountSetting.revalidateField('newPassword');
+			if(_validator) {
+				_validator.revalidateField('oldPassword');
+				_validator.revalidateField('newPassword');
+			}
 		});
 	}
 
@@ -455,6 +460,11 @@ var Profile = (function () {
 	}
 
 	var _handleMenuChange = function (menu) {
+		if(_validator) {
+			_validator.resetForm();
+			_validator.destroy();
+		}
+
 		$('#' + menu + 'Button').css({
 			'background-color': '#E8F8F6',
 			'cursor': ''
@@ -477,10 +487,32 @@ var Profile = (function () {
 	}
 
 	var _save = function (menu, saveFunction) {
-		var validator = _allValidators[menu];
-		if(validator) {
-			validator.validate().then(function (status) {
+		var entityType = $("#profileEntityType").val();
+		var mapMenuValidatorFields = _mapEntityTypeMenuValidatorFields[entityType];
+		var validatorFields = mapMenuValidatorFields[menu];
+		if(validatorFields) {
+			if(_validator) {
+				_validator.resetForm();
+				_validator.destroy();
+			}
+
+			var form = KTUtil.getById(menu + 'Form');
+			_validator = FormValidation.formValidation(form, {
+				fields: validatorFields,
+				plugins: {
+					trigger: new FormValidation.plugins.Trigger(),
+					// Bootstrap Framework Integration
+					bootstrap: new FormValidation.plugins.Bootstrap({
+						//eleInvalidClass: '',
+						eleValidClass: '',
+					}),
+				},
+			});
+
+			_validator.validate().then(function (status) {
 				if (status == 'Valid') {
+					_validator.resetForm();
+					_validator.destroy();
 					saveFunction();
 				} else {
 					Swal.fire({
@@ -531,7 +563,8 @@ var Profile = (function () {
 		let mapKeyElement = {
 			userId: 'input',
 			oldPassword: 'input',
-			newPassword: 'input'
+			newPassword: 'input',
+			newPasswordConfirmation: 'input'
 		};
 
 		Object.keys(mapKeyElement).forEach((key) => {
@@ -576,7 +609,8 @@ var Profile = (function () {
 		let mapKeyElement = {
 			userId: 'input',
 			oldPassword: 'input',
-			newPassword: 'input'
+			newPassword: 'input',
+			newPasswordConfirmation: 'input'
 		};
 
 		Object.keys(mapKeyElement).forEach((key) => {
@@ -667,8 +701,6 @@ var Profile = (function () {
 				allPaymentMethodId,
 				allEntityMinimumValueOrder
 			};
-			console.log("body");
-			console.log(body);
 			WebApp.post('/web/distributor/profile/paymentSetting', body, _saveDistributorPaymentSettingCallback)
 		} else {
 			Swal.fire({
