@@ -500,7 +500,8 @@ var Profile = (function () {
 		let mapKeyElement = {
 			userId: 'input',
 			oldPassword: 'input',
-			newPassword: 'input'
+			newPassword: 'input',
+			newPasswordConfirmation: 'input'
 		};
 
 		Object.keys(mapKeyElement).forEach((key) => {
@@ -545,7 +546,8 @@ var Profile = (function () {
 		let mapKeyElement = {
 			userId: 'input',
 			oldPassword: 'input',
-			newPassword: 'input'
+			newPassword: 'input',
+			newPasswordConfirmation: 'input'
 		};
 
 		Object.keys(mapKeyElement).forEach((key) => {
