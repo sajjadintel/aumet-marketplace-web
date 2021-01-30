@@ -38,6 +38,8 @@ class Constants
     const EMAIL_PHARMACY_ACCOUNT_APPROVAL = 'Pharmacy Account Approval';
     const EMAIL_PHARMACY_ACCOUNT_APPROVED = 'Pharmacy Account Approved';
     const EMAIL_NEW_CUSTOMER_GROUP = 'New Customer Group';
+    const EMAIL_CHANGE_PROFILE_APPROVAL = 'Change Profile Approval';
+    const EMAIL_CHANGE_PROFILE_APPROVED = 'Change Profile Approved';
 
     ### Status Codes
     const STATUS_CODE_REDIRECT_TO_WEB = 0;

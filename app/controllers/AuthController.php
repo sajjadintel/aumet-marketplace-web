@@ -555,6 +555,10 @@ class AuthController extends Controller {
 
         $emailList = explode(';', getenv('ADMIN_SUPPORT_EMAIL'));
         for ($i = 0; $i < count($emailList); $i++) {
+        	if(!$emailList[$i]) {
+				continue;
+            }
+            
             $currentEmail = explode(',', $emailList[$i]);
             if (count($currentEmail) == 2) {
                 $emailHandler->appendToAddress($currentEmail[0], $currentEmail[1]);
@@ -825,18 +829,20 @@ class AuthController extends Controller {
 
     function getVerifyAccount()
     {
-        $token = $this->f3->get("PARAMS.token");
+        $token = $_GET['token'];
 
+        if (!isset($token) || $token == null || $token == "") {
+            $this->rerouteAuth();
+        }
+        $token = urldecode($token);
         try {
             $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
             $accessTokenPayload = $jwt->decode($token);
         } catch (\Exception $e) {
-            echo "Invalid";
-            return;
+            $this->rerouteAuth();
         }
         if (!is_array($accessTokenPayload)) {
-            echo "Invalid";
-            return;
+            $this->rerouteAuth();
         }
 
         $userId = $accessTokenPayload["userId"];
@@ -854,8 +860,10 @@ class AuthController extends Controller {
         $dbEntityBranch->getById($entityBranchId);
 
 
-        if ($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry() || $dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
+        if ($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry()) {
             echo "Invalid";
+        } else if ($dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
+            echo "Already Verified";
         } else {
             $dbUser->statusId = Constants::USER_STATUS_PENDING_APPROVAL;
             $dbUser->update();
@@ -903,18 +911,20 @@ class AuthController extends Controller {
 
     function getApproveAccount()
     {
-        $token = $this->f3->get("PARAMS.token");
+        $token = $_GET['token'];
 
+        if (!isset($token) || $token == null || $token == "") {
+            $this->rerouteAuth();
+        }
+        $token = urldecode($token);
         try {
             $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
             $accessTokenPayload = $jwt->decode($token);
         } catch (\Exception $e) {
-            echo "Invalid";
-            return;
+            $this->rerouteAuth();
         }
         if (!is_array($accessTokenPayload)) {
-            echo "Invalid";
-            return;
+            $this->rerouteAuth();
         }
 
         $userId = $accessTokenPayload["userId"];
@@ -922,8 +932,10 @@ class AuthController extends Controller {
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getById($userId);
 
-        if ($dbUser->dry() || $dbUser->statusId != Constants::USER_STATUS_PENDING_APPROVAL) {
+        if ($dbUser->dry()) {
             echo "Invalid";
+        } else if($dbUser->statusId != Constants::USER_STATUS_PENDING_APPROVAL) {
+            echo "Already Approved";
         } else {
             $dbUser->statusId = Constants::USER_STATUS_ACCOUNT_ACTIVE;
             $dbUser->update();
