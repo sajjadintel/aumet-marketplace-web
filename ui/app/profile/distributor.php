@@ -79,6 +79,7 @@
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
                                 <input type="hidden" name="entityBranchTradeLicenseUrl" value="<?php echo $user->entityBranchTradeLicenseUrl; ?>"/>
+                                <input type="hidden" name="entityBranchTradeLicenseUrlDecoded" value="<?php echo $entityBranchTradeLicenseUrlDecoded; ?>"/>
                                 <div>
                                     <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_distributorTradeLicenseDocument; ?></label>
                                 </div>

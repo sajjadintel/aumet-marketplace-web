@@ -147,8 +147,7 @@ var Profile = (function () {
 	};
 
     var _init = function () {
-        var initialFile = $('#myProfileForm input[name=entityBranchTradeLicenseUrl]').val();
-		_initializeDropzone(initialFile);
+		_initializeDropzone();
 
 		_initializePasswordFields();
 		
@@ -163,7 +162,7 @@ var Profile = (function () {
 		_handleMenuChange('myProfile');
     }
 
-    var _initializeDropzone = function (initialFile) {
+    var _initializeDropzone = function () {
 		// Set the dropzone container id
 		var id = '#kt_dropzone';
 
@@ -231,11 +230,15 @@ var Profile = (function () {
 			_myDropZone.addFile(file);
 		});
 
+        var initialFile = $('#myProfileForm input[name=entityBranchTradeLicenseUrl]').val();
 		if(initialFile) {
-			var fileUrl = _getFullUrl(initialFile);
-			var fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+			var initialFileDecoded = $('#myProfileForm input[name=entityBranchTradeLicenseUrlDecoded]').val();
+			var fileName = initialFileDecoded.substring(initialFileDecoded.lastIndexOf('/') + 1);
 			var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
 			var fileNameWithoutTimestamp = fileName.substring(0, fileName.lastIndexOf('-')) + "." + fileExtension;
+			
+			var fileUrl = _getFullUrl(initialFile);
+			
 			var file = {
 				status: 'success',
 				accepted: true,
