@@ -13,15 +13,15 @@ function compress_htmlcode($codedata)
 }
 
 ?>
-    <!--begin::Container-->
-    <div class="container-fluid">
-        <div class="d-flex align-items-stretch text-center flex-column">
-            <h2 class="text-primary font-weight-bolder mt-10 mb-15 font-size-h4"><?php echo $vModule_search_header ?></h2>
-            <form class="d-flex position-relative w-100 m-auto">
+<!--begin::Container-->
+<div class="container-fluid">
+    <div class="d-flex align-items-stretch text-center flex-column">
+        <h2 class="text-primary font-weight-bolder mt-10 mb-15 font-size-h4"><?php echo $vModule_search_header ?></h2>
+        <form class="d-flex position-relative w-100 m-auto">
 
-                <div class="d-flex flex-column-fluid">
-                    <div class="input-group input-group-lg mr-5">
-                        <div class="input-group-prepend pt-3 pl-1 pr-1">
+            <div class="d-flex flex-column-fluid">
+                <div class="input-group input-group-lg mr-5">
+                    <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -31,16 +31,16 @@ function compress_htmlcode($codedata)
                                 </g>
                             </svg>
                         </span>
-                        </div>
-                        <select class="select2 form-control" id="searchProductsBrandNameInput" multiple="" name="brandName" data-select2-id="searchProductsBrandNameInput" tabindex="-1" aria-hidden="true">
-
-                        </select>
                     </div>
-                </div>
+                    <select class="select2 form-control" id="searchProductsBrandNameInput" multiple="" name="brandName" data-select2-id="searchProductsBrandNameInput" tabindex="-1" aria-hidden="true">
 
-                <div class="d-flex flex-column-fluid">
-                    <div class="input-group input-group-lg mr-5">
-                        <div class="input-group-prepend pt-3 pl-1 pr-1">
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column-fluid">
+                <div class="input-group input-group-lg mr-5">
+                    <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -51,38 +51,38 @@ function compress_htmlcode($codedata)
                                 </g>
                             </svg>
                         </span>
-                        </div>
-                        <select class="select2 form-control" id="searchProductsScieceNameInput" multiple="" name="scientificName" data-select2-id="searchProductsScieceNameInput" tabindex="-1" aria-hidden="true">
+                    </div>
+                    <select class="select2 form-control" id="searchProductsScieceNameInput" multiple="" name="scientificName" data-select2-id="searchProductsScieceNameInput" tabindex="-1" aria-hidden="true">
 
+                    </select>
+                </div>
+            </div>
+
+            <?php
+            $roleId = $_SESSION['objUser']->roleId;
+            if (!Helper::isDistributor($roleId)) { ?>
+                <div class="d-flex flex-column-fluid">
+                    <div class="input-group input-group-lg mr-5">
+                        <div class="input-group-prepend pt-3 pl-1 pr-1">
+                            <span class="svg-icon svg-icon-xl">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <rect x="0" y="0" width="24" height="24" />
+                                        <path d="M20.4061385,6.73606154 C20.7672665,6.89656288 21,7.25468437 21,7.64987309 L21,16.4115967 C21,16.7747638 20.8031081,17.1093844 20.4856429,17.2857539 L12.4856429,21.7301984 C12.1836204,21.8979887 11.8163796,21.8979887 11.5143571,21.7301984 L3.51435707,17.2857539 C3.19689188,17.1093844 3,16.7747638 3,16.4115967 L3,7.64987309 C3,7.25468437 3.23273352,6.89656288 3.59386153,6.73606154 L11.5938615,3.18050598 C11.8524269,3.06558805 12.1475731,3.06558805 12.4061385,3.18050598 L20.4061385,6.73606154 Z" fill="#000000" opacity="0.3" />
+                                        <polygon fill="#000000" points="14.9671522 4.22441676 7.5999999 8.31727912 7.5999999 12.9056825 9.5999999 13.9056825 9.5999999 9.49408582 17.25507 5.24126912" />
+                                    </g>
+                                </svg>
+                            </span>
+                        </div>
+                        <select class="select2 form-control" id="searchProductsDistributorNameInput" multiple="" name="distributorName" data-select2-id="searchProductsDistributorNameInput" tabindex="-1" aria-hidden="true">
                         </select>
                     </div>
                 </div>
+            <?php } ?>
 
-                <?php
-                $roleId = $_SESSION['objUser']->roleId;
-                if (!Helper::isDistributor($roleId)) { ?>
-                    <div class="d-flex flex-column-fluid">
-                        <div class="input-group input-group-lg mr-5">
-                            <div class="input-group-prepend pt-3 pl-1 pr-1">
-                        <span class="svg-icon svg-icon-xl">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <rect x="0" y="0" width="24" height="24" />
-                                    <path d="M20.4061385,6.73606154 C20.7672665,6.89656288 21,7.25468437 21,7.64987309 L21,16.4115967 C21,16.7747638 20.8031081,17.1093844 20.4856429,17.2857539 L12.4856429,21.7301984 C12.1836204,21.8979887 11.8163796,21.8979887 11.5143571,21.7301984 L3.51435707,17.2857539 C3.19689188,17.1093844 3,16.7747638 3,16.4115967 L3,7.64987309 C3,7.25468437 3.23273352,6.89656288 3.59386153,6.73606154 L11.5938615,3.18050598 C11.8524269,3.06558805 12.1475731,3.06558805 12.4061385,3.18050598 L20.4061385,6.73606154 Z" fill="#000000" opacity="0.3" />
-                                    <polygon fill="#000000" points="14.9671522 4.22441676 7.5999999 8.31727912 7.5999999 12.9056825 9.5999999 13.9056825 9.5999999 9.49408582 17.25507 5.24126912" />
-                                </g>
-                            </svg>
-                        </span>
-                            </div>
-                            <select class="select2 form-control" id="searchProductsDistributorNameInput" multiple="" name="distributorName" data-select2-id="searchProductsDistributorNameInput" tabindex="-1" aria-hidden="true">
-                            </select>
-                        </div>
-                    </div>
-                <?php } ?>
-
-                <div class="d-flex flex-column-fluid">
-                    <div class="input-group input-group-lg">
-                        <div class="input-group-prepend ">
+            <div class="d-flex flex-column-fluid">
+                <div class="input-group input-group-lg">
+                    <div class="input-group-prepend ">
                         <span class="input-group-text border-0 py-1 px-3">
                             <span class="svg-icon svg-icon-xl">
 
@@ -96,14 +96,14 @@ function compress_htmlcode($codedata)
 
                             </span>
                         </span>
-                        </div>
-                        <input id="searchStockStatus" data-switch="true" type="checkbox" checked="checked" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="50" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
                     </div>
+                    <input id="searchStockStatus" data-switch="true" type="checkbox" checked="checked" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="50" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
                 </div>
+            </div>
 
-                <div class="d-flex flex-column-fluid">
-                    <div class="input-group input-group-lg mr-5">
-                        <div class="input-group-prepend pt-3 pl-1 pr-1">
+            <div class="d-flex flex-column-fluid">
+                <div class="input-group input-group-lg mr-5">
+                    <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -113,177 +113,177 @@ function compress_htmlcode($codedata)
                                 </g>
                             </svg>
                         </span>
-                        </div>
-                        <select class="select2 form-control" id="searchProductsCategoryInput" multiple="" name="category" data-select2-id="searchProductsCategoryInput" tabindex="-1" aria-hidden="true">
-                        </select>
                     </div>
+                    <select class="select2 form-control" id="searchProductsCategoryInput" multiple="" name="category" data-select2-id="searchProductsCategoryInput" tabindex="-1" aria-hidden="true">
+                    </select>
                 </div>
-
-
-            </form>
-            <a href="#" class="btn btn-text-danger btn-hover-text-primary font-weight-bold w-100 mt-5 m-auto"><?php echo $vModule_search_unavailableHeader ?></a>
-        </div>
-
-        <div class="card card-custom gutter-b mt-20">
-            <div class="card-body">
-                <!--begin: Datatable-->
-                <table id="datatable" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
-                </table>
-                <!--end: Datatable-->
             </div>
+
+
+        </form>
+        <!--a href="#" class="btn btn-text-danger btn-hover-text-primary font-weight-bold w-100 mt-5 m-auto"><?php echo $vModule_search_unavailableHeader ?></a-->
+    </div>
+
+    <div class="card card-custom gutter-b mt-20">
+        <div class="card-body">
+            <!--begin: Datatable-->
+            <table id="datatable" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
+            </table>
+            <!--end: Datatable-->
         </div>
     </div>
-    <!--end::Container-->
-    <script>
-        var PageClass = function () {
-            var elementId = "#datatable";
-            var url = '/web/product/search';
+</div>
+<!--end::Container-->
+<script>
+    var PageClass = function() {
+        var elementId = "#datatable";
+        var url = '/web/product/search';
 
-            var columnDefs = [{
-                className: "export_datatable",
-                targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-            }, {
-                targets: 0,
-                title: WebAppLocals.getMessage('productName'),
-                data: 'productName_en',
-                render: function (data, type, row, meta) {
-                    var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
-                        row.entityId +
-                        '/product/' +
-                        row.id +
-                        '\')"> ' +
-                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
-                        row.image +
-                        '\')" ></div></div>'
-                        + '</a></div>';
-                    output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
-                        row.entityId +
-                        '/product/' +
-                        row.id +
-                        '\')" title="'+
-                        row['productName_' + docLang] +
-                        '"> ' +
-                        WebApp.truncateText(row['productName_' + docLang], 100)
-                        + '</span></div></div>';
-                    return output;
-                },
-            }, {
-                targets: 1,
-                title: WebAppLocals.getMessage('productScientificName'),
-                data: 'scientificName'
-            }, {
-                targets: 2,
-                title: WebAppLocals.getMessage('sellingEntityName'),
-                data: 'entityName_' + docLang,
-                render: $.fn.dataTable.render.ellipsis( 100 )
-            }, {
-                targets: 3,
-                title: WebAppLocals.getMessage('stockAvailability'),
-                data: 'stockStatusId',
-                orderable: false,
-                render: function (data, type, row, meta) {
-                    var status = {
-                        1: {
-                            title: WebAppLocals.getMessage('stockAvailability_available'),
-                            class: ' label-primary',
-                        },
-                        2: {
-                            title: WebAppLocals.getMessage('stockAvailability_notAvailable'),
-                            class: ' label-danger',
-                        },
-                        3: {
-                            title: WebAppLocals.getMessage('stockAvailability_availableSoon'),
-                            class: ' label-warning',
-                        },
-                    };
+        var columnDefs = [{
+            className: "export_datatable",
+            targets: [0, 1, 2, 3, 4, 5, 6, 7]
+        }, {
+            targets: 0,
+            title: WebAppLocals.getMessage('productName'),
+            data: 'productName_en',
+            render: function(data, type, row, meta) {
+                var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                    row.entityId +
+                    '/product/' +
+                    row.id +
+                    '\')"> ' +
+                    '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
+                    row.image +
+                    '\')" ></div></div>' +
+                    '</a></div>';
+                output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                    row.entityId +
+                    '/product/' +
+                    row.id +
+                    '\')" title="' +
+                    row['productName_' + docLang] +
+                    '"> ' +
+                    WebApp.truncateText(row['productName_' + docLang], 100) +
+                    '</span></div></div>';
+                return output;
+            },
+        }, {
+            targets: 1,
+            title: WebAppLocals.getMessage('productScientificName'),
+            data: 'scientificName'
+        }, {
+            targets: 2,
+            title: WebAppLocals.getMessage('sellingEntityName'),
+            data: 'entityName_' + docLang,
+            render: $.fn.dataTable.render.ellipsis(100)
+        }, {
+            targets: 3,
+            title: WebAppLocals.getMessage('stockAvailability'),
+            data: 'stockStatusId',
+            orderable: false,
+            render: function(data, type, row, meta) {
+                var status = {
+                    1: {
+                        title: WebAppLocals.getMessage('stockAvailability_available'),
+                        class: ' label-primary',
+                    },
+                    2: {
+                        title: WebAppLocals.getMessage('stockAvailability_notAvailable'),
+                        class: ' label-danger',
+                    },
+                    3: {
+                        title: WebAppLocals.getMessage('stockAvailability_availableSoon'),
+                        class: ' label-warning',
+                    },
+                };
 
-                    var output = '';
+                var output = '';
 
-                    output +=
-                        '<div><span class="label label-lg font-weight-bold ' +
-                        status[row.stockStatusId].class +
-                        ' label-inline">' +
-                        status[row.stockStatusId].title +
-                        '</span></div>';
+                output +=
+                    '<div><span class="label label-lg font-weight-bold ' +
+                    status[row.stockStatusId].class +
+                    ' label-inline">' +
+                    status[row.stockStatusId].title +
+                    '</span></div>';
 
-                    return output;
-                },
-            }, {
-                targets: 4,
-                title: WebAppLocals.getMessage('unitPrice'),
-                data: 'unitPrice',
-                render: function (data, type, row, meta) {
-                    var output = row.unitPrice + ' ' + row.currency;
+                return output;
+            },
+        }, {
+            targets: 4,
+            title: WebAppLocals.getMessage('unitPrice'),
+            data: 'unitPrice',
+            render: function(data, type, row, meta) {
+                var output = row.unitPrice + ' ' + row.currency;
 
-                    return '<div style="width: max-content;">' + output + '</div>';
-                },
-            }, {
-                targets: 5,
-                title: WebAppLocals.getMessage('bonus'),
-                data: 'activeBonus',
-                render: function (data, type, row, meta) {
-                    let output = "";
-                    if (row.bonusTypeId === 2 && row.bonuses != null) {
-                        /* let btnText = row.activeBonus ? row.activeBonus.minOrder + " / +" + row.activeBonus.bonus : "Select"; */
-                        let btnText = "Select";
-                        let allBonuses = row.bonuses.filter((bonus) => !row.activeBonus || row.activeBonus.id !== bonus.id);
-                        let btnShowBonuses =
-                            '<a style="width: max-content;" href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.id + ', ' + row.entityId + ', ' + JSON.stringify(allBonuses) + ')\'\
+                return '<div style="width: max-content;">' + output + '</div>';
+            },
+        }, {
+            targets: 5,
+            title: WebAppLocals.getMessage('bonus'),
+            data: 'activeBonus',
+            render: function(data, type, row, meta) {
+                let output = "";
+                if (row.bonusTypeId === 2 && row.bonuses != null) {
+                    /* let btnText = row.activeBonus ? row.activeBonus.minOrder + " / +" + row.activeBonus.bonus : "Select"; */
+                    let btnText = "Select";
+                    let allBonuses = row.bonuses.filter((bonus) => !row.activeBonus || row.activeBonus.id !== bonus.id);
+                    let btnShowBonuses =
+                        '<a style="width: max-content;" href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.id + ', ' + row.entityId + ', ' + JSON.stringify(allBonuses) + ')\'\
                         class="btn btn-sm btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="View Bonuses">\
                         <span>' + btnText + '</span></a>';
-                        output += btnShowBonuses;
-                    }
+                    output += btnShowBonuses;
+                }
 
-                    return output;
-                },
-            }, {
-                targets: 6,
-                title: WebAppLocals.getMessage('quantity'),
-                data: 'id',
-                orderable: false,
-                render: function (data, type, row, meta) {
-                    var vQuantity = '';
-                    var output = '';
-                    var rowQuantity = 1;
-                    if (row.quantity) {
-                        rowQuantity = row.quantity
-                    }
+                return output;
+            },
+        }, {
+            targets: 6,
+            title: WebAppLocals.getMessage('quantity'),
+            data: 'id',
+            orderable: false,
+            render: function(data, type, row, meta) {
+                var vQuantity = '';
+                var output = '';
+                var rowQuantity = 1;
+                if (row.quantity) {
+                    rowQuantity = row.quantity
+                }
 
-                    if (row.stockStatusId == 1) {
-                        let vQuantity =
-                            '<input id="quantity-' +
-                            row.id +
-                            '" type="number" min="0" style="width: 70px; direction: ltr" value="' +
-                            rowQuantity +
-                            '" onkeypress="return event.charCode >= 48 && event.charCode <= 57"' +
-                            '" oninput=\'SearchDataTable.changeProductQuantityCallback(' +
-                            JSON.stringify(row) +
-                            " )' >";
-                        output += vQuantity;
-
-                        let vQuantityFree =
-                            '<input class="quantityFreeInput" id="quantityFreeInput-' +
-                            row.id +
-                            '" required style="display: none;">\
-                            <span id="quantityFreeHolder-' +
-                            row.id +
-                            '" class="quantityFreeHolder label label-lg font-weight-bold label-primary label-inline" style="margin-left: 5px;"></span>';
-                        output += vQuantityFree;
-                    }
-
-                    return '<div style="display: flex;">' + output + '</div>';
-                },
-            }, {
-                targets: 7,
-                title: '',
-                data: 'id',
-                orderable: false,
-                render: function (data, type, row, meta) {
-
-                    var btnAddMoreToCart =
-                        '<a style="display: flex;" href="javascript:;" onclick=\'SearchDataTable.onClickAddMoreToCart(' +
+                if (row.stockStatusId == 1) {
+                    let vQuantity =
+                        '<input id="quantity-' +
+                        row.id +
+                        '" type="number" min="0" style="width: 70px; direction: ltr" value="' +
+                        rowQuantity +
+                        '" onkeypress="return event.charCode >= 48 && event.charCode <= 57"' +
+                        '" oninput=\'SearchDataTable.changeProductQuantityCallback(' +
                         JSON.stringify(row) +
-                        ' )\' class="btn btn-sm btn-primary btn-text-primary btn-hover-primary  mr-2 mb-2" title="Add to cart">\
+                        " )' >";
+                    output += vQuantity;
+
+                    let vQuantityFree =
+                        '<input class="quantityFreeInput" id="quantityFreeInput-' +
+                        row.id +
+                        '" required style="display: none;">\
+                            <span id="quantityFreeHolder-' +
+                        row.id +
+                        '" class="quantityFreeHolder label label-lg font-weight-bold label-primary label-inline" style="margin-left: 5px;"></span>';
+                    output += vQuantityFree;
+                }
+
+                return '<div style="display: flex;">' + output + '</div>';
+            },
+        }, {
+            targets: 7,
+            title: '',
+            data: 'id',
+            orderable: false,
+            render: function(data, type, row, meta) {
+
+                var btnAddMoreToCart =
+                    '<a style="display: flex;" href="javascript:;" onclick=\'SearchDataTable.onClickAddMoreToCart(' +
+                    JSON.stringify(row) +
+                    ' )\' class="btn btn-sm btn-primary btn-text-primary btn-hover-primary  mr-2 mb-2" title="Add to cart">\
                         <span class="svg-icon svg-icon-md">\
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -292,13 +292,13 @@ function compress_htmlcode($codedata)
                             <path d="M6.5,21 C5.67157288,21 5,20.3284271 5,19.5 C5,18.6715729 5.67157288,18 6.5,18 C7.32842712,18 8,18.6715729 8,19.5 C8,20.3284271 7.32842712,21 6.5,21 Z M15.5,21 C14.6715729,21 14,20.3284271 14,19.5 C14,18.6715729 14.6715729,18 15.5,18 C16.3284271,18 17,18.6715729 17,19.5 C17,20.3284271 16.3284271,21 15.5,21 Z" fill="#000000"/>\
                         </g></svg></span>\
                         <span class="label label-danger ml-2">' +
-                        row.cart +
-                        '</span></a>';
+                    row.cart +
+                    '</span></a>';
 
-                    var btnAddToCart =
-                        '<a style="display: flex;" href="javascript:;" onclick=\'SearchDataTable.onClickAddToCart(' +
-                        JSON.stringify(row) +
-                        ' )\' class="btn btn-sm btn-default btn-text-primary btn-hover-primary  mr-2 mb-2" title="Add to cart">\
+                var btnAddToCart =
+                    '<a style="display: flex;" href="javascript:;" onclick=\'SearchDataTable.onClickAddToCart(' +
+                    JSON.stringify(row) +
+                    ' )\' class="btn btn-sm btn-default btn-text-primary btn-hover-primary  mr-2 mb-2" title="Add to cart">\
                         <span class="svg-icon svg-icon-md">\
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -307,8 +307,8 @@ function compress_htmlcode($codedata)
                             <path d="M6.5,21 C5.67157288,21 5,20.3284271 5,19.5 C5,18.6715729 5.67157288,18 6.5,18 C7.32842712,18 8,18.6715729 8,19.5 C8,20.3284271 7.32842712,21 6.5,21 Z M15.5,21 C14.6715729,21 14,20.3284271 14,19.5 C14,18.6715729 14.6715729,18 15.5,18 C16.3284271,18 17,18.6715729 17,19.5 C17,20.3284271 16.3284271,21 15.5,21 Z" fill="#000000"/>\
                         </g></svg></span></a>';
 
-                    var btnNotifyMe =
-                        '<a href="javascript:;" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2 mb-2" title="Add to cart">\
+                var btnNotifyMe =
+                    '<a href="javascript:;" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2 mb-2" title="Add to cart">\
                         <span class="svg-icon svg-icon-md">\
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -317,12 +317,12 @@ function compress_htmlcode($codedata)
                             <circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5"/>\
                             </g></svg></span></a>';
 
-                    var btnViewProduct =
-                        '<a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
-                        row.entityId +
-                        '/product/' +
-                        row.id +
-                        '\')" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2 mb-2" title="View">\
+                var btnViewProduct =
+                    '<a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                    row.entityId +
+                    '/product/' +
+                    row.id +
+                    '\')" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2 mb-2" title="View">\
                         <span class="svg-icon svg-icon-md">\
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -332,275 +332,285 @@ function compress_htmlcode($codedata)
                             <path d="M10.5,10.5 L10.5,9.5 C10.5,9.22385763 10.7238576,9 11,9 C11.2761424,9 11.5,9.22385763 11.5,9.5 L11.5,10.5 L12.5,10.5 C12.7761424,10.5 13,10.7238576 13,11 C13,11.2761424 12.7761424,11.5 12.5,11.5 L11.5,11.5 L11.5,12.5 C11.5,12.7761424 11.2761424,13 11,13 C10.7238576,13 10.5,12.7761424 10.5,12.5 L10.5,11.5 L9.5,11.5 C9.22385763,11.5 9,11.2761424 9,11 C9,10.7238576 9.22385763,10.5 9.5,10.5 L10.5,10.5 Z" fill="#000000" opacity="0.3"/>\
                             </g></svg></span></a>';
 
-                    var btnShowBonuses =
-                        '<a href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.id + ')\'\
+                var btnShowBonuses =
+                    '<a href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.id + ')\'\
                     class="btn btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="View">\
                     <span>Show Bonuses</span></a>';
 
-                    var outActions = '';
+                var outActions = '';
 
-                    switch (row.stockStatusId) {
-                        case 1:
-                            outActions += btnViewProduct;
-                            if (row.cart > 0) {
-                                outActions += btnAddMoreToCart;
-                            } else {
-                                outActions += btnAddToCart;
-                            }
-                            SearchDataTable.changeProductQuantityCallback(row);
-                            break;
-                        case 2:
-                            outActions += btnViewProduct;
-                            outActions += btnNotifyMe;
-                            break;
-                        case 3:
-                            outActions += btnViewProduct;
-                            outActions += btnNotifyMe;
-                            break;
+                switch (row.stockStatusId) {
+                    case 1:
+                        outActions += btnViewProduct;
+                        if (row.cart > 0) {
+                            outActions += btnAddMoreToCart;
+                        } else {
+                            outActions += btnAddToCart;
+                        }
+                        SearchDataTable.changeProductQuantityCallback(row);
+                        break;
+                    case 2:
+                        outActions += btnViewProduct;
+                        outActions += btnNotifyMe;
+                        break;
+                    case 3:
+                        outActions += btnViewProduct;
+                        outActions += btnNotifyMe;
+                        break;
+                }
+
+                return '<div style="display: flex;">' + outActions + '</div>';
+            },
+        }];
+
+        var searchQuery = {
+            productId: [],
+            scientificNameId: [],
+            entityId: [],
+            stockOption: 1,
+            categoryId: null,
+            query: null,
+        };
+
+        var _selectBrand = $('#searchProductsBrandNameInput').select2({
+            placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
+            tags: true,
+            ajax: {
+                url: '/web/product/brandname/list',
+                dataType: 'json',
+                processResults: function(response) {
+                    return {
+                        results: response.data.results,
+                        pagination: {
+                            more: response.data.pagination
+                        }
                     }
+                }
+            }
+        });
 
-                    return '<div style="display: flex;">' + outActions + '</div>';
+        _selectBrand.on("select2:select", function(e) {
+            searchQuery.productId = $("#searchProductsBrandNameInput").val();
+            updateDatatable();
+        });
+
+        _selectBrand.on("select2:unselect", function(e) {
+            searchQuery.productId = $("#searchProductsBrandNameInput").val();
+            updateDatatable();
+        });
+
+
+        function formatResult(node) {
+            var $result = $('<span style="padding-left:' + (20 * (node.level - 1)) + 'px;">' + node.text + '</span>');
+            return $result;
+        }
+
+        var lastParent = 0;
+        var categories = [];
+
+        var _category = $('#searchProductsCategoryInput').select2({
+            placeholder: "<?php echo $vModule_search_categoryplaceholder ?>",
+            tags: true,
+            templateResult: formatResult,
+            ajax: {
+                url: '/web/product/category/list',
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    var query = {
+                        term: params.term,
+                        page: params.page || 1
+                    };
+                    if (query.page == 1) {
+                        lastParent = 0;
+                    }
+                    return query;
                 },
-            }];
+                processResults: function(response) {
+                    var data = convertDataFormat(response.data.results);
+                    if (lastParent == 0)
+                        categories = data;
+                    else
+                        categories.push(...data);
 
-            var searchQuery = {
-                productId: [],
-                scientificNameId: [],
-                entityId: [],
-                stockOption: 1,
-                categoryId: null,
-                query: null,
-            };
-
-            var _selectBrand = $('#searchProductsBrandNameInput').select2({
-                placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
-                tags: true,
-                ajax: {
-                    url: '/web/product/brandname/list',
-                    dataType: 'json',
-                    processResults: function (response) {
-                        return {
-                            results: response.data.results,
-                            pagination: {
-                                more: response.data.pagination
-                            }
+                    return {
+                        results: data,
+                        pagination: {
+                            more: response.data.pagination
                         }
                     }
-                }
-            });
-
-            _selectBrand.on("select2:select", function (e) {
-                searchQuery.productId = $("#searchProductsBrandNameInput").val();
-                updateDatatable();
-            });
-
-            _selectBrand.on("select2:unselect", function (e) {
-                searchQuery.productId = $("#searchProductsBrandNameInput").val();
-                updateDatatable();
-            });
-
-
-            function formatResult(node) {
-                var $result = $('<span style="padding-left:' + (20 * (node.level - 1)) + 'px;">' + node.text + '</span>');
-                return $result;
+                },
             }
+        });
 
-            var lastParent = 0;
-            var categories = [];
 
-            var _category = $('#searchProductsCategoryInput').select2({
-                placeholder: "<?php echo $vModule_search_categoryplaceholder ?>",
-                tags: true,
-                templateResult: formatResult,
-                ajax: {
-                    url: '/web/product/category/list',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        var query = {
-                            term: params.term,
-                            page: params.page || 1
-                        };
-                        if (query.page == 1) {
-                            lastParent = 0;
-                        }
-                        return query;
-                    },
-                    processResults: function (response) {
-                        var data = convertDataFormat(response.data.results);
-                        if (lastParent == 0)
-                            categories = data;
-                        else
-                            categories.push(...data);
+        /* Convert categories format:
+         * 1- Change sub category name to: "parent - sub"
+         * 2- Add parent category above sub categories  */
+        function convertDataFormat(data) {
+            var output = [];
+            for (var i = 0; i < data.length; i++) {
+                var element = data[i];
 
-                        return {
-                            results: data,
-                            pagination: {
-                                more: response.data.pagination
-                            }
-                        }
-                    },
+                if (lastParent != element.parent_id) {
+                    lastParent = element.parent_id;
+                    output.push({
+                        id: element.parent_id,
+                        text: element.parent_name,
+                        level: 1,
+                        parent_id: 0
+                    });
                 }
-            });
-
-
-            /* Convert categories format:
-            * 1- Change sub category name to: "parent - sub"
-            * 2- Add parent category above sub categories  */
-            function convertDataFormat(data) {
-                var output = [];
-                for (var i = 0; i < data.length; i++) {
-                    var element = data[i];
-
-                    if (lastParent != element.parent_id) {
-                        lastParent = element.parent_id;
-                        output.push({id: element.parent_id, text: element.parent_name, level: 1, parent_id: 0});
-                    }
-                    output.push({id: element.id, text: element.parent_name + " - " + element.name, level: 2, parent_id: element.parent_id});
-                }
-                return output;
+                output.push({
+                    id: element.id,
+                    text: element.parent_name + " - " + element.name,
+                    level: 2,
+                    parent_id: element.parent_id
+                });
             }
+            return output;
+        }
 
-            /* remove sub categories if parent is selected */
-            function filterSubCategories(selectedIds) {
-                var filteredCategories = [];
-                /* convert category ids to objects to have all data of category */
-                var selectedItems = convertCategoryIdsToObjects(selectedIds);
+        /* remove sub categories if parent is selected */
+        function filterSubCategories(selectedIds) {
+            var filteredCategories = [];
+            /* convert category ids to objects to have all data of category */
+            var selectedItems = convertCategoryIdsToObjects(selectedIds);
 
-                /* only select parent categories and sub categories that theirs parent is not selected */
-                for (var i = 0; i < selectedItems.length; i++) {
-                    if (isSubCategory(selectedItems[i]) || isParentSubCategoryExists(selectedItems[i], selectedItems)) {
-                        filteredCategories.push(selectedItems[i]);
-                    }
+            /* only select parent categories and sub categories that theirs parent is not selected */
+            for (var i = 0; i < selectedItems.length; i++) {
+                if (isSubCategory(selectedItems[i]) || isParentSubCategoryExists(selectedItems[i], selectedItems)) {
+                    filteredCategories.push(selectedItems[i]);
                 }
-                /* convert category objets to ids to be the select2 format */
-                return convertCategoryObjectsToIds(filteredCategories);
             }
+            /* convert category objets to ids to be the select2 format */
+            return convertCategoryObjectsToIds(filteredCategories);
+        }
 
-            /* get category object corresponding to id given */
-            function getCategoryById(id) {
+        /* get category object corresponding to id given */
+        function getCategoryById(id) {
+            for (var i = 0; i < categories.length; i++) {
+                if (categories[i].id == id) {
+                    return categories[i];
+                }
+            }
+        }
+
+        function convertCategoryIdsToObjects(ids) {
+            var objects = [];
+            for (var i = 0; i < ids.length; i++) {
+                objects.push(getCategoryById(ids[i]))
+            }
+            return objects;
+        }
+
+        function convertCategoryObjectsToIds(categories) {
+            var ids = [];
+            for (var i = 0; i < categories.length; i++) {
+                ids.push(categories[i].id);
+            }
+            return ids;
+        }
+
+        function getCategoryParentIds(selectedItems) {
+            var parentIds = [];
+            for (var i = 0; i < selectedItems.length; i++) {
+                if (selectedItems[i].parent_id == 0) {
+                    parentIds.push(selectedItems[i]);
+                }
+            }
+            return parentIds;
+        }
+
+
+        function isParentSubCategoryExists(category, categories) {
+            if (category.parent_id == 0) {
                 for (var i = 0; i < categories.length; i++) {
-                    if (categories[i].id == id) {
-                        return categories[i];
+                    if (categories[i].parent_id == category.id) {
+                        return false;
                     }
                 }
             }
+            return true;
+        }
 
-            function convertCategoryIdsToObjects(ids) {
-                var objects = [];
-                for (var i = 0; i < ids.length; i++) {
-                    objects.push(getCategoryById(ids[i]))
-                }
-                return objects;
-            }
-
-            function convertCategoryObjectsToIds(categories) {
-                var ids = [];
-                for (var i = 0; i < categories.length; i++) {
-                    ids.push(categories[i].id);
-                }
-                return ids;
-            }
-
-            function getCategoryParentIds(selectedItems) {
-                var parentIds = [];
-                for (var i = 0; i < selectedItems.length; i++) {
-                    if (selectedItems[i].parent_id == 0) {
-                        parentIds.push(selectedItems[i]);
-                    }
-                }
-                return parentIds;
-            }
+        function isSubCategory(category) {
+            return category.parent_id != 0
+        }
 
 
-            function isParentSubCategoryExists(category, categories) {
-                if (category.parent_id == 0) {
-                    for (var i = 0; i < categories.length; i++) {
-                        if (categories[i].parent_id == category.id) {
-                            return false;
+        _category.on("select2:select", function(e) {
+            var filteredData = filterSubCategories(_category.val());
+            _category.val(filteredData).trigger('change');
+
+            searchQuery.categoryId = $("#searchProductsCategoryInput").val();
+            updateDatatable();
+        });
+
+        _category.on("select2:unselect", function(e) {
+            searchQuery.categoryId = $("#searchProductsCategoryInput").val();
+            updateDatatable();
+        });
+
+
+        var _selectScientific = $('#searchProductsScieceNameInput').select2({
+            placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+            tags: true,
+            ajax: {
+                url: '/web/product/scientificname/list',
+                dataType: 'json',
+                processResults: function(response) {
+                    return {
+                        results: response.data.results,
+                        pagination: {
+                            more: response.data.pagination
                         }
                     }
                 }
-                return true;
             }
+        });
 
-            function isSubCategory(category) {
-                return category.parent_id != 0
-            }
+        _selectScientific.on("select2:select", function(e) {
+            searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
+            updateDatatable();
+        });
 
+        _selectScientific.on("select2:unselect", function(e) {
+            searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
+            updateDatatable();
+        });
 
-            _category.on("select2:select", function (e) {
-                var filteredData = filterSubCategories(_category.val());
-                _category.val(filteredData).trigger('change');
-
-                searchQuery.categoryId = $("#searchProductsCategoryInput").val();
-                updateDatatable();
-            });
-
-            _category.on("select2:unselect", function (e) {
-                searchQuery.categoryId = $("#searchProductsCategoryInput").val();
-                updateDatatable();
-            });
-
-
-            var _selectScientific = $('#searchProductsScieceNameInput').select2({
-                placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
-                tags: true,
-                ajax: {
-                    url: '/web/product/scientificname/list',
-                    dataType: 'json',
-                    processResults: function (response) {
-                        return {
-                            results: response.data.results,
-                            pagination: {
-                                more: response.data.pagination
-                            }
+        var _selectDistributor = $('#searchProductsDistributorNameInput').select2({
+            placeholder: "<?php echo $vModule_search_distributorNamePlaceholder ?>",
+            tags: true,
+            ajax: {
+                url: '/web/order/Distributor/listAll',
+                dataType: 'json',
+                processResults: function(response) {
+                    return {
+                        results: response.data.results,
+                        pagination: {
+                            more: response.data.pagination
                         }
                     }
                 }
-            });
+            }
+        });
 
-            _selectScientific.on("select2:select", function (e) {
-                searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-                updateDatatable();
-            });
+        _selectDistributor.on("select2:select", function(e) {
+            searchQuery.entityId = $("#searchProductsDistributorNameInput").val();
+            updateDatatable();
+        });
 
-            _selectScientific.on("select2:unselect", function (e) {
-                searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-                updateDatatable();
-            });
+        _selectDistributor.on("select2:unselect", function(e) {
+            searchQuery.entityId = $("#searchProductsDistributorNameInput").val();
+            updateDatatable();
+        });
 
-            var _selectDistributor = $('#searchProductsDistributorNameInput').select2({
-                placeholder: "<?php echo $vModule_search_distributorNamePlaceholder ?>",
-                tags: true,
-                ajax: {
-                    url: '/web/order/Distributor/listAll',
-                    dataType: 'json',
-                    processResults: function (response) {
-                        return {
-                            results: response.data.results,
-                            pagination: {
-                                more: response.data.pagination
-                            }
-                        }
-                    }
-                }
-            });
-
-            _selectDistributor.on("select2:select", function (e) {
-                searchQuery.entityId = $("#searchProductsDistributorNameInput").val();
-                updateDatatable();
-            });
-
-            _selectDistributor.on("select2:unselect", function (e) {
-                searchQuery.entityId = $("#searchProductsDistributorNameInput").val();
-                updateDatatable();
-            });
-
-            $('#searchStockStatus').bootstrapSwitch().on("switchChange.bootstrapSwitch", function (event, state) {
-                searchQuery.stockOption = state ? 1 : 0;
-                updateDatatable();
-                <?php /*
+        $('#searchStockStatus').bootstrapSwitch().on("switchChange.bootstrapSwitch", function(event, state) {
+            searchQuery.stockOption = state ? 1 : 0;
+            updateDatatable();
+            <?php /*
             if (state) {
                 SearchDataTable.hideColumn('stockStatusId');
             } else {
@@ -608,55 +618,55 @@ function compress_htmlcode($codedata)
             }
             */ ?>
 
-            });
+        });
 
-            $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
+        $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
-            var initiate = function () {
-                var urlParams = new URLSearchParams(window.location.search);
-                var sortParam = urlParams.get('sort');
+        var initiate = function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var sortParam = urlParams.get('sort');
 
 
-                var allSortParams = [
-                    "newest",
-                    "top-selling"
-                ];
-                if(allSortParams.includes(sortParam)) {
-                    url += "/" + sortParam;
-                }
-                updateDatatable();
-            };
-
-            var query = <?php echo isset($_GET['query']) ? "'" . $_GET['query'] . "'" : 'null';?>;
-            var distributorId = <?php echo isset($_GET['distributorId']) ? "'" . $_GET['distributorId'] . "'" : 'null';?>;
-            var scientificNameId = <?php echo isset($_GET['scientificNameId']) ? "'" . $_GET['scientificNameId'] . "'" : 'null';?>;
-
-            var dbAdditionalOptions = {
-                datatableOptions: {
-                    buttons: [],
-                }
-            };
-
-            function updateDatatable() {
-                if (query != null)
-                    searchQuery.query = query;
-                if (distributorId != null && !searchQuery.entityId.includes(distributorId))
-                    searchQuery.entityId.push(distributorId);
-                if (scientificNameId != null && !searchQuery.scientificNameId.includes(scientificNameId))
-                    searchQuery.scientificNameId.push(scientificNameId);
-                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
-
+            var allSortParams = [
+                "newest",
+                "top-selling"
+            ];
+            if (allSortParams.includes(sortParam)) {
+                url += "/" + sortParam;
             }
+            updateDatatable();
+        };
 
-            return {
-                init: function () {
-                    initiate();
-                },
-            };
-        }();
+        var query = <?php echo isset($_GET['query']) ? "'" . $_GET['query'] . "'" : 'null'; ?>;
+        var distributorId = <?php echo isset($_GET['distributorId']) ? "'" . $_GET['distributorId'] . "'" : 'null'; ?>;
+        var scientificNameId = <?php echo isset($_GET['scientificNameId']) ? "'" . $_GET['scientificNameId'] . "'" : 'null'; ?>;
 
-        $(document).ready(function() {
-            PageClass.init();
-        })
-    </script>
+        var dbAdditionalOptions = {
+            datatableOptions: {
+                buttons: [],
+            }
+        };
+
+        function updateDatatable() {
+            if (query != null)
+                searchQuery.query = query;
+            if (distributorId != null && !searchQuery.entityId.includes(distributorId))
+                searchQuery.entityId.push(distributorId);
+            if (scientificNameId != null && !searchQuery.scientificNameId.includes(scientificNameId))
+                searchQuery.scientificNameId.push(scientificNameId);
+            WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
+
+        }
+
+        return {
+            init: function() {
+                initiate();
+            },
+        };
+    }();
+
+    $(document).ready(function() {
+        PageClass.init();
+    })
+</script>
 <?php ob_end_flush(); ?>
