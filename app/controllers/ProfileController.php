@@ -19,6 +19,7 @@ class ProfileController extends Controller {
                 $dbUser->entityBranchAddress = "entityBranchAddress_" . $this->objUser->language;
                 $user = $dbUser->getWhere("userId=".$this->objUser->id)[0];
                 $this->f3->set('user', $user);
+                $this->f3->set('entityBranchTradeLicenseUrlDecoded', urldecode($user->entityBranchTradeLicenseUrl));
 
                 // Get all payment methods
                 $dbPaymentMethod = new BaseModel($this->db, "paymentMethod");
@@ -90,6 +91,7 @@ class ProfileController extends Controller {
                 $dbUser->entityBranchAddress = "entityBranchAddress_" . $this->objUser->language;
                 $user = $dbUser->getWhere("userId=".$this->objUser->id)[0];
                 $this->f3->set('user', $user);
+                $this->f3->set('entityBranchTradeLicenseUrlDecoded', urldecode($user->entityBranchTradeLicenseUrl));
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_profile');
@@ -115,7 +117,7 @@ class ProfileController extends Controller {
         $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
 
-        $newFileName = $fileName . "-" . time() . ".$ext";
+        $newFileName = urlencode($fileName . "-" . time() . ".$ext");
         $targetFile = "files/uploads/documents/" . $newFileName;
 
         if (in_array($ext, $allValidExtensions)) {
