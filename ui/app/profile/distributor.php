@@ -6,6 +6,17 @@
 	textarea {
 		resize: none;
 	}
+
+		.mfp-iframe-holder .mfp-content {
+			max-width: 100% !important;
+			height: 100%;
+		}
+
+		.mfp-iframe-holder {
+			padding-top: 40px !important;
+			padding-bottom: 10px !important;
+		}
+
 </style>
 <!--begin::Entry-->
 <div class="d-flex flex-column-fluid">
@@ -83,7 +94,7 @@
                                 <div>
                                     <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_distributorTradeLicenseDocument; ?></label>
                                 </div>
-                                
+
                                 <div class="dropzone dropzone-multi" id="kt_dropzone" style="background-color: unset;">
                                     <div class="dropzone-panel mb-lg-0 mb-2">
                                         <a class="dropzone-select btn btn-light-primary font-weight-bolder font-size-h6 pl-6 pr-8 py-4 my-3 mr-3">
@@ -98,7 +109,7 @@
                                                     </g>
                                                 </svg>
                                                 <!--end::Svg Icon-->
-                                            </span><?php echo $vModule_profile_uploadButton; ?>
+                                            </span><?php echo $user->entityBranchTradeLicenseUrl == null ? $vModule_profile_uploadButton : $vModule_profile_uploadReplaceButton; ?>
                                         </a>
                                     </div>
                                     <div class="dropzone-items">
@@ -107,6 +118,7 @@
                                                 <a class="dropzone-filename" id="dropzoneFilename">
                                                     <span data-dz-name="">some_image_file_name.jpg</span>
                                                     <strong>(<span data-dz-size="">340kb</span>)</strong>
+                                                    <img  id="dropzoneFilenameImage" src="" style="width:300px;height:200px; object-fit: cover;">
                                                 </a>
                                                 <div class="dropzone-error" data-dz-errormessage=""></div>
                                             </div>
