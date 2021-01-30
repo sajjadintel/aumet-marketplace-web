@@ -183,7 +183,7 @@ function compress_htmlcode($codedata)
                                             </div>
 
                                             <div class="product-item-content">
-                                                <span class="title"><?php echo $objItem->productName ?></span>
+                                                <span class="title"><?php echo Helper::truncateText($objItem->productName, 45) ?></span>
                                                 <span class="price"><?php echo $objItem->unitPrice . ' ' . $objEntityProduct->currency ?></span>
                                             </div>
 
@@ -223,7 +223,7 @@ function compress_htmlcode($codedata)
                                             </div>
 
                                             <div class="product-item-content">
-                                                <span class="title"><?php echo $objItem->productName ?></span>
+                                                <span class="title"><?php echo Helper::truncateText($objItem->productName, 45) ?></span>
                                                 <span class="price"><?php echo $objItem->unitPrice . ' ' . $objEntityProduct->currency ?></span>
                                             </div>
 
@@ -249,11 +249,19 @@ function compress_htmlcode($codedata)
         }
 
         function viewAllSameDistributor() {
+            <?php if (Helper::isPharmacy($_SESSION['objUser']->roleId)) { ?>
             WebApp.loadPage('/web/product/search?distributorId=<?php echo $objEntityProduct->entityId ?>');
+            <?php }else {?>
+            WebApp.loadPage('/web/distributor/product');
+            <?php }?>
         }
 
         function viewAllSameScientificName() {
+            <?php if (Helper::isPharmacy($_SESSION['objUser']->roleId)) { ?>
             WebApp.loadPage('/web/product/search?scientificNameId=<?php echo $objEntityProduct->scientificNameId?>');
+            <?php }else {?>
+            WebApp.loadPage('/web/distributor/product?scientificNameId=<?php echo $objEntityProduct->scientificNameId?>');
+            <?php }?>
         }
 
         function openImageModal(imageUrl) {
