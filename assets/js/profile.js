@@ -152,7 +152,7 @@ var Profile = (function () {
 
 		_initializeValidators();
 		_initializePasswordFields();
-		
+
 		var entityType = $("#profileEntityType").val();
 		if(entityType === "distributor") {
 			_initializePaymentMethodCheckboxes();
@@ -213,10 +213,32 @@ var Profile = (function () {
 		// Add file to the list if success
 		_myDropZone.on('success', function (file, response) {
 			_entityDocument = response;
-			
+
 			var dropzoneFilenameElement = $(file.previewTemplate).find("#dropzoneFilename");
 			$(dropzoneFilenameElement).attr("target", "_blank");
 			$(dropzoneFilenameElement).attr("href", _getFullUrl(response));
+			var dropzoneFilenameImage = $(file.previewTemplate).find("#dropzoneFilenameImage");
+			if (_isImageFile(response)) {
+				$(dropzoneFilenameImage).attr("src", _getFullUrl(response));
+				$('.dropzone-filename').magnificPopup({
+					type: 'image'
+				});
+			} else if (_isPdfFile(response)) {
+				var link = _getFullUrl(response) + "#toolbar=0&navpanes=0";
+				console.log('is pdf', link);
+				$(dropzoneFilenameImage).attr("src", link);
+				$('.dropzone-filename').magnificPopup({
+					items: [
+						{
+							src: link,
+							type: 'iframe'
+						},
+					],
+				});
+				$(dropzoneFilenameImage).hide();
+			} else {
+				$(dropzoneFilenameImage).hide();
+			}
 		});
 
 		// Remove file from the list
@@ -244,7 +266,7 @@ var Profile = (function () {
 				size: _getFileSize(fileUrl),
 				url: fileUrl
 			};
-			
+
 			_myDropZone.files.push(file);
 			_myDropZone.emit('addedfile', file);
 			_myDropZone.emit('complete', file);
@@ -267,6 +289,26 @@ var Profile = (function () {
 
 	var _getFullUrl = function (filePath) {
 		return window.location.protocol + "//" + window.location.hostname + "/" + filePath;
+	}
+
+	var _isImageFile = function (filePath) {
+		var ext = filePath.split('.').pop();
+		ext = ext.toLowerCase();
+		console.log(ext);
+		if (ext == 'png' || ext == 'jpg' || ext == 'jpeg') {
+			return true;
+		}
+		return false;
+	}
+
+	var _isPdfFile = function (filePath) {
+		var ext = filePath.split('.').pop();
+		ext = ext.toLowerCase();
+		console.log(ext);
+		if (ext == 'pdf') {
+			return true;
+		}
+		return false;
 	}
 
 	var _initializeValidators = function () {
@@ -363,7 +405,7 @@ var Profile = (function () {
 				$(element).parent().append('<div id="minimumValueOrderErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('required') + '</div></div>');
 			}
 		})
-			
+
 		$('.minimumValueOrderInput').on('change', function() {
 			var value = $(this).val();
 			if(value) {
@@ -390,7 +432,7 @@ var Profile = (function () {
 				$(element).parent().parent().append('<div id="cityErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('required') + '</div></div>');
 			}
 		})
-			
+
 		$('.selectpicker').on('change', function() {
 			var allValues = $(this).val();
 			if(allValues.length > 0) {
@@ -418,7 +460,7 @@ var Profile = (function () {
 			'cursor': ''
 		});
 		$('#' + menu + 'Section').show();
-		
+
 		var entityType = $("#profileEntityType").val();
 		var allMenus = _mapEntityTypeMenus[entityType];
 
@@ -552,18 +594,18 @@ var Profile = (function () {
 	var _saveDistributorPaymentSetting = function () {
 		var valid = true;
 		var errorMessage = "";
-		
+
 		var allPaymentMethodId = [];
 		$("#paymentSettingForm input[name=paymentMethodCheckbox]").each(function(index, element) {
 			if ($(element).is(":checked")) {
 				allPaymentMethodId.push($(element).val());
 			}
 		});
-		
+
 		if(allPaymentMethodId.length === 0) {
 			valid = false;
 		}
-			
+
 		$('.minimumValueOrderInput').each(function(index, element) {
 			var value = $(element).val();
 			if(value) {
@@ -601,9 +643,9 @@ var Profile = (function () {
 					allCityNameDuplicates.push(element.text);
 				}
 			});
-			
+
 			valid = false;
-			errorMessage = WebAppLocals.getMessage("minimumValueOrderCityError") + ": " + allCityNameDuplicates.join(", "); 
+			errorMessage = WebAppLocals.getMessage("minimumValueOrderCityError") + ": " + allCityNameDuplicates.join(", ");
 		}
 
 
@@ -619,7 +661,7 @@ var Profile = (function () {
 					minimumValueOrderCityId
 				})
 			});
-			
+
 			let body = {
 				userId,
 				allPaymentMethodId,

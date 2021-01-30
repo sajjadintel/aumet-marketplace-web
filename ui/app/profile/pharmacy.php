@@ -3,9 +3,20 @@
 		background-color: #FFF !important; 
 	}
 
-	textarea {
-		resize: none;
-	}
+		textarea {
+			resize: none;
+		}
+
+		.mfp-iframe-holder .mfp-content {
+			max-width: 100% !important;
+			height: 100%;
+		}
+
+		.mfp-iframe-holder {
+			padding-top: 40px !important;
+			padding-bottom: 10px !important;
+		}
+
 </style>
 <!--begin::Entry-->
 <div class="d-flex flex-column-fluid">
@@ -94,7 +105,7 @@
                                                     </g>
                                                 </svg>
                                                 <!--end::Svg Icon-->
-                                            </span><?php echo $vModule_profile_uploadButton; ?>
+                                            </span><?php echo $user->entityBranchTradeLicenseUrl == null ? $vModule_profile_uploadButton : $vModule_profile_uploadReplaceButton; ?>
                                         </a>
                                     </div>
                                     <div class="dropzone-items">
@@ -103,6 +114,7 @@
                                                 <a class="dropzone-filename" id="dropzoneFilename">
                                                     <span data-dz-name="">some_image_file_name.jpg</span>
                                                     <strong>(<span data-dz-size="">340kb</span>)</strong>
+                                                    <img  id="dropzoneFilenameImage" src="" style="width:300px;height:200px; object-fit: cover;">
                                                 </a>
                                                 <div class="dropzone-error" data-dz-errormessage=""></div>
                                             </div>
