@@ -5,7 +5,7 @@ var Profile = (function () {
 
     var _entityDocument;
 	var _myDropZone;
-	var _allValidators = {};
+	var _validator;
 	var _mapEntityTypeMenus = {
 		pharmacy: [
 			"myProfile",
@@ -147,12 +147,10 @@ var Profile = (function () {
 	};
 
     var _init = function () {
-        var initialFile = $('#myProfileForm input[name=entityBranchTradeLicenseUrl]').val();
-		_initializeDropzone(initialFile);
+		_initializeDropzone();
 
-		_initializeValidators();
 		_initializePasswordFields();
-		
+
 		var entityType = $("#profileEntityType").val();
 		if(entityType === "distributor") {
 			_initializePaymentMethodCheckboxes();
@@ -164,7 +162,7 @@ var Profile = (function () {
 		_handleMenuChange('myProfile');
     }
 
-    var _initializeDropzone = function (initialFile) {
+    var _initializeDropzone = function () {
 		// Set the dropzone container id
 		var id = '#kt_dropzone';
 
@@ -213,10 +211,32 @@ var Profile = (function () {
 		// Add file to the list if success
 		_myDropZone.on('success', function (file, response) {
 			_entityDocument = response;
-			
+
 			var dropzoneFilenameElement = $(file.previewTemplate).find("#dropzoneFilename");
 			$(dropzoneFilenameElement).attr("target", "_blank");
 			$(dropzoneFilenameElement).attr("href", _getFullUrl(response));
+			var dropzoneFilenameImage = $(file.previewTemplate).find("#dropzoneFilenameImage");
+			if (_isImageFile(response)) {
+				$(dropzoneFilenameImage).attr("src", _getFullUrl(response));
+				$('.dropzone-filename').magnificPopup({
+					type: 'image'
+				});
+			} else if (_isPdfFile(response)) {
+				var link = _getFullUrl(response) + "#toolbar=0&navpanes=0";
+				console.log('is pdf', link);
+				$(dropzoneFilenameImage).attr("src", link);
+				$('.dropzone-filename').magnificPopup({
+					items: [
+						{
+							src: link,
+							type: 'iframe'
+						},
+					],
+				});
+				$(dropzoneFilenameImage).hide();
+			} else {
+				$(dropzoneFilenameImage).hide();
+			}
 		});
 
 		// Remove file from the list
@@ -232,11 +252,15 @@ var Profile = (function () {
 			_myDropZone.addFile(file);
 		});
 
+        var initialFile = $('#myProfileForm input[name=entityBranchTradeLicenseUrl]').val();
 		if(initialFile) {
-			var fileUrl = _getFullUrl(initialFile);
-			var fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+			var initialFileDecoded = $('#myProfileForm input[name=entityBranchTradeLicenseUrlDecoded]').val();
+			var fileName = initialFileDecoded.substring(initialFileDecoded.lastIndexOf('/') + 1);
 			var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
 			var fileNameWithoutTimestamp = fileName.substring(0, fileName.lastIndexOf('-')) + "." + fileExtension;
+			
+			var fileUrl = _getFullUrl(initialFile);
+			
 			var file = {
 				status: 'success',
 				accepted: true,
@@ -244,7 +268,7 @@ var Profile = (function () {
 				size: _getFileSize(fileUrl),
 				url: fileUrl
 			};
-			
+
 			_myDropZone.files.push(file);
 			_myDropZone.emit('addedfile', file);
 			_myDropZone.emit('complete', file);
@@ -267,6 +291,26 @@ var Profile = (function () {
 
 	var _getFullUrl = function (filePath) {
 		return window.location.protocol + "//" + window.location.hostname + "/" + filePath;
+	}
+
+	var _isImageFile = function (filePath) {
+		var ext = filePath.split('.').pop();
+		ext = ext.toLowerCase();
+		console.log(ext);
+		if (ext == 'png' || ext == 'jpg' || ext == 'jpeg') {
+			return true;
+		}
+		return false;
+	}
+
+	var _isPdfFile = function (filePath) {
+		var ext = filePath.split('.').pop();
+		ext = ext.toLowerCase();
+		console.log(ext);
+		if (ext == 'pdf') {
+			return true;
+		}
+		return false;
 	}
 
 	var _initializeValidators = function () {
@@ -292,18 +336,24 @@ var Profile = (function () {
 
 	var _initializePasswordFields = function () {
 		$("#accountSettingForm input[name=oldPassword]").on("change", function() {
-			_allValidators.accountSetting.revalidateField('newPassword');
-			_allValidators.accountSetting.revalidateField('newPasswordConfirmation');
+			if(_validator) {
+				_validator.revalidateField('newPassword');
+				_validator.revalidateField('newPasswordConfirmation');
+			}
 		});
 
 		$("#accountSettingForm input[name=newPassword]").on("change", function() {
-			_allValidators.accountSetting.revalidateField('oldPassword');
-			_allValidators.accountSetting.revalidateField('newPasswordConfirmation');
+			if(_validator) {
+				_validator.revalidateField('oldPassword');
+				_validator.revalidateField('newPasswordConfirmation');
+			}
 		});
 
 		$("#accountSettingForm input[name=newPasswordConfirmation]").on("change", function() {
-			_allValidators.accountSetting.revalidateField('oldPassword');
-			_allValidators.accountSetting.revalidateField('newPassword');
+			if(_validator) {
+				_validator.revalidateField('oldPassword');
+				_validator.revalidateField('newPassword');
+			}
 		});
 	}
 
@@ -363,7 +413,7 @@ var Profile = (function () {
 				$(element).parent().append('<div id="minimumValueOrderErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('required') + '</div></div>');
 			}
 		})
-			
+
 		$('.minimumValueOrderInput').on('change', function() {
 			var value = $(this).val();
 			if(value) {
@@ -390,7 +440,7 @@ var Profile = (function () {
 				$(element).parent().parent().append('<div id="cityErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('required') + '</div></div>');
 			}
 		})
-			
+
 		$('.selectpicker').on('change', function() {
 			var allValues = $(this).val();
 			if(allValues.length > 0) {
@@ -413,12 +463,17 @@ var Profile = (function () {
 	}
 
 	var _handleMenuChange = function (menu) {
+		if(_validator) {
+			_validator.resetForm();
+			_validator.destroy();
+		}
+
 		$('#' + menu + 'Button').css({
 			'background-color': '#E8F8F6',
 			'cursor': ''
 		});
 		$('#' + menu + 'Section').show();
-		
+
 		var entityType = $("#profileEntityType").val();
 		var allMenus = _mapEntityTypeMenus[entityType];
 
@@ -435,10 +490,32 @@ var Profile = (function () {
 	}
 
 	var _save = function (menu, saveFunction) {
-		var validator = _allValidators[menu];
-		if(validator) {
-			validator.validate().then(function (status) {
+		var entityType = $("#profileEntityType").val();
+		var mapMenuValidatorFields = _mapEntityTypeMenuValidatorFields[entityType];
+		var validatorFields = mapMenuValidatorFields[menu];
+		if(validatorFields) {
+			if(_validator) {
+				_validator.resetForm();
+				_validator.destroy();
+			}
+
+			var form = KTUtil.getById(menu + 'Form');
+			_validator = FormValidation.formValidation(form, {
+				fields: validatorFields,
+				plugins: {
+					trigger: new FormValidation.plugins.Trigger(),
+					// Bootstrap Framework Integration
+					bootstrap: new FormValidation.plugins.Bootstrap({
+						//eleInvalidClass: '',
+						eleValidClass: '',
+					}),
+				},
+			});
+
+			_validator.validate().then(function (status) {
 				if (status == 'Valid') {
+					_validator.resetForm();
+					_validator.destroy();
 					saveFunction();
 				} else {
 					Swal.fire({
@@ -489,7 +566,8 @@ var Profile = (function () {
 		let mapKeyElement = {
 			userId: 'input',
 			oldPassword: 'input',
-			newPassword: 'input'
+			newPassword: 'input',
+			newPasswordConfirmation: 'input'
 		};
 
 		Object.keys(mapKeyElement).forEach((key) => {
@@ -534,7 +612,8 @@ var Profile = (function () {
 		let mapKeyElement = {
 			userId: 'input',
 			oldPassword: 'input',
-			newPassword: 'input'
+			newPassword: 'input',
+			newPasswordConfirmation: 'input'
 		};
 
 		Object.keys(mapKeyElement).forEach((key) => {
@@ -552,18 +631,18 @@ var Profile = (function () {
 	var _saveDistributorPaymentSetting = function () {
 		var valid = true;
 		var errorMessage = "";
-		
+
 		var allPaymentMethodId = [];
 		$("#paymentSettingForm input[name=paymentMethodCheckbox]").each(function(index, element) {
 			if ($(element).is(":checked")) {
 				allPaymentMethodId.push($(element).val());
 			}
 		});
-		
+
 		if(allPaymentMethodId.length === 0) {
 			valid = false;
 		}
-			
+
 		$('.minimumValueOrderInput').each(function(index, element) {
 			var value = $(element).val();
 			if(value) {
@@ -601,9 +680,9 @@ var Profile = (function () {
 					allCityNameDuplicates.push(element.text);
 				}
 			});
-			
+
 			valid = false;
-			errorMessage = WebAppLocals.getMessage("minimumValueOrderCityError") + ": " + allCityNameDuplicates.join(", "); 
+			errorMessage = WebAppLocals.getMessage("minimumValueOrderCityError") + ": " + allCityNameDuplicates.join(", ");
 		}
 
 
@@ -619,14 +698,12 @@ var Profile = (function () {
 					minimumValueOrderCityId
 				})
 			});
-			
+
 			let body = {
 				userId,
 				allPaymentMethodId,
 				allEntityMinimumValueOrder
 			};
-			console.log("body");
-			console.log(body);
 			WebApp.post('/web/distributor/profile/paymentSetting', body, _saveDistributorPaymentSettingCallback)
 		} else {
 			Swal.fire({

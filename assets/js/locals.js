@@ -554,7 +554,27 @@ var WebAppLocals = (function () {
 			en: 'characters',
 			ar: 'الأحرف',
 			fr: '',	
-		}
+		},
+		fileTypeError: {
+			en: 'You can\'t upload files of this type',
+			ar: 'لا يمكنك تحميل ملفات من هذا النوع',
+			fr: ''
+		},
+		uploadSuccess: {
+			en: 'Upload Completed Successfully',
+			ar: 'اكتمل التحميل بنجاح',
+			fr: ''
+		},
+		uploadError: {
+			en: 'Upload failed',
+			ar: 'التحميل فشل',
+			fr: ''
+		},
+		bulkAddUploadError: {
+			en: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file',
+			ar: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file', // TODO: translate
+			fr: ''
+		},
 	};
 
 	var _symbolsLocals = {
