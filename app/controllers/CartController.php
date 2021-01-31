@@ -40,7 +40,7 @@ class CartController extends Controller
             }
 
             $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
-            $dbEntityProduct->getWhere("entityId=$entityId and productId=$productId");
+            $dbEntityProduct->getWhere("entityId=$entityId and id=$productId");
 
             if ($dbEntityProduct->dry()) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -190,7 +190,7 @@ class CartController extends Controller
             $bonusId = $this->f3->get('POST.bonusId');
 
             $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
-            $dbEntityProduct->getWhere("entityId=$entityId and productId=$productId");
+            $dbEntityProduct->getWhere("entityId=$entityId and id=$productId");
 
             if ($dbEntityProduct->dry()) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -382,7 +382,7 @@ class CartController extends Controller
             $dbCartDetail->quantityFree = $quantityFree;
 
             $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
-            $dbEntityProduct->getWhere("productId=$productId");
+            $dbEntityProduct->getWhere("id=$productId");
 
             $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
             $total = $quantityFree + $quantity;
@@ -433,7 +433,7 @@ class CartController extends Controller
             $note = $this->f3->get('POST.note');
 
             $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
-            $dbEntityProduct->getWhere("entityId=$sellerId and productId=$productId");
+            $dbEntityProduct->getWhere("entityId=$sellerId and id=$productId");
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
             $dbCartDetail->getById($cartDetailId);
@@ -737,7 +737,7 @@ class CartController extends Controller
             $allProductId = implode(",", $allProductId);
 
             $dbProduct = new BaseModel($this->db, "entityProductSell");
-            $arrProduct = $dbProduct->findWhere("productId IN ($allProductId)");
+            $arrProduct = $dbProduct->findWhere("id IN ($allProductId)");
 
             $commands = [];
             foreach ($arrCartDetail as $cartDetail) {
