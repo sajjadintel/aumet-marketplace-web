@@ -384,7 +384,6 @@ function compress_htmlcode($codedata)
 
         var _selectBrand = $('#searchProductsBrandNameInput').select2({
             placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
-            tags: true,
             ajax: {
                 url: '/web/product/brandname/list',
                 dataType: 'json',
@@ -420,7 +419,6 @@ function compress_htmlcode($codedata)
 
         var _category = $('#searchProductsCategoryInput').select2({
             placeholder: "<?php echo $vModule_search_categoryplaceholder ?>",
-            tags: true,
             templateResult: formatResult,
             ajax: {
                 url: '/web/product/category/list',
@@ -565,7 +563,6 @@ function compress_htmlcode($codedata)
 
         var _selectScientific = $('#searchProductsScieceNameInput').select2({
             placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
-            tags: true,
             ajax: {
                 url: '/web/product/scientificname/list',
                 dataType: 'json',
@@ -592,7 +589,6 @@ function compress_htmlcode($codedata)
 
         var _selectDistributor = $('#searchProductsDistributorNameInput').select2({
             placeholder: "<?php echo $vModule_search_distributorNamePlaceholder ?>",
-            tags: true,
             ajax: {
                 url: '/web/order/Distributor/listAll',
                 dataType: 'json',
