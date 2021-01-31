@@ -11,13 +11,13 @@
                         <a href="/web/distributor/order/new" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Orders</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
-                                <?php if ($dashboard_order > $dashboard_orderYesterday) {
+                                <?php /* if ($dashboard_order > $dashboard_orderYesterday) {
                                     echo '<i class="la la-rocket la-lg text-white"></i> ';
                                 } elseif ($dashboard_order < $dashboard_orderYesterday) {
                                     echo '<i class="la la-arrow-down la-lg text-white"></i> ';
                                 } else {
                                     echo '<i class="la la-equals la-lg text-white"></i> ';
-                                }
+                                } */
                                 echo $dashboard_order; ?>
                             </span>
                         </div>
@@ -32,13 +32,13 @@
                         <a href="web/distributor/order/new" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Invoices</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
-                                <?php if ($dashboard_invoice > $dashboard_invoiceYesterday) {
+                                <?php /* if ($dashboard_invoice > $dashboard_invoiceYesterday) {
                                     echo '<i class="la la-rocket la-lg text-white"></i> ';
                                 } elseif ($dashboard_invoice < $dashboard_invoiceYesterday) {
                                     echo '<i class="la la-arrow-down la-lg text-white"></i> ';
                                 } else {
                                     echo '<i class="la la-equals la-lg text-white"></i> ';
-                                }
+                                } */
                                 echo $dashboard_invoice; ?>
                             </span>
                         </div>
@@ -90,7 +90,7 @@
             targets: 1,
             title: WebAppLocals.getMessage('entitySeller'),
             data: 'entitySeller',
-            render: $.fn.dataTable.render.ellipsis( 100 )
+            render: $.fn.dataTable.render.ellipsis(100)
         }, {
             targets: 2,
             title: WebAppLocals.getMessage('insertDate'),
@@ -110,7 +110,7 @@
                 var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
                 return output;
             },
-        },{
+        }, {
             targets: 4,
             title: WebAppLocals.getMessage('orderStatus'),
             data: 'status',
@@ -242,32 +242,32 @@
                 var outActions = '';
 
                 outActions += btnView;
-             /*
-                outActions += btnPrint;
+                /*
+                   outActions += btnPrint;
 
-                switch (row.statusId) {
-                    case 1:
-                        outActions += dropdownStart;
-                        outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
-                        outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
-                        outActions += dropdownEnd;
-                        break;
-                    case 2:
-                        outActions += dropdownStart;
-                        outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
-                        outActions += dropdownItemStart + btnOrderCancel + dropdownItemEnd;
-                        outActions += dropdownEnd;
-                        break;
-                    case 3:
-                        outActions += dropdownStart;
-                        outActions += dropdownItemStart + btnOrderComplete + dropdownItemEnd;
-                        outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
-                        outActions += dropdownEnd;
-                        break;
-                    case 6:
-                        outActions += btnOrderPaid;
-                }
-              */
+                   switch (row.statusId) {
+                       case 1:
+                           outActions += dropdownStart;
+                           outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
+                           outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
+                           outActions += dropdownEnd;
+                           break;
+                       case 2:
+                           outActions += dropdownStart;
+                           outActions += dropdownItemStart + btnOrderProcess + dropdownItemEnd;
+                           outActions += dropdownItemStart + btnOrderCancel + dropdownItemEnd;
+                           outActions += dropdownEnd;
+                           break;
+                       case 3:
+                           outActions += dropdownStart;
+                           outActions += dropdownItemStart + btnOrderComplete + dropdownItemEnd;
+                           outActions += dropdownItemStart + btnOrderOnHold + dropdownItemEnd;
+                           outActions += dropdownEnd;
+                           break;
+                       case 6:
+                           outActions += btnOrderPaid;
+                   }
+                 */
 
                 return outActions;
             }
@@ -278,7 +278,7 @@
                 order: [
                     [0, 'desc']
                 ],
-                rowCallback: function (row, data, index) {
+                rowCallback: function(row, data, index) {
                     if (!data['isVisible']) {
                         $(row).hide();
                     }
