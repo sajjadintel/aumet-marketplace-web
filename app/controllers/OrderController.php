@@ -357,7 +357,7 @@ class OrderController extends Controller {
         $query = "entityBuyerId IN ($arrEntityId)";
         switch ($status) {
             case 'recent':
-                $query .= " AND statusId IN (2)";
+                $query .= " AND statusId IN (1,2,3)";
                 break;
             case 'unpaid':
                 $query .= " AND statusId IN (4,6,8) ";
