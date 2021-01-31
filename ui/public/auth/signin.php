@@ -30,7 +30,8 @@
                         <div class="pb-5 pb-lg-15">
                             <h3 class="font-weight-bolder text-primary font-size-h1 font-size-h1-lg"><?php echo $vLogin_signin ?></h3>
                             <div class="text-dark-75 font-weight-bold font-size-h4 mt-5"><?php echo $vLogin_noAccountAdv ?>
-                                <a href="/web/auth/signup" class="text-success font-weight-bolder"><?php echo $vLogin_signupAdv ?></a></div>
+                                <a href="/web/auth/signup" class="text-success font-weight-bolder"><?php echo $vLogin_signupAdv ?></a>
+                            </div>
                         </div>
                         <!--begin::Title-->
                         <!--begin::Form group-->
@@ -70,7 +71,9 @@
                             <!--                                            <path d="M12,22 C6.4771525,22 2,17.5228475 2,12 C2,6.4771525 6.4771525,2 12,2 C17.5228475,2 22,6.4771525 22,12 C22,17.5228475 17.5228475,22 12,22 Z M11.613922,13.2130341 C11.1688026,13.6581534 10.4887934,13.7685037 9.92575695,13.4869855 C9.36272054,13.2054673 8.68271128,13.3158176 8.23759191,13.760937 L6.72658218,15.2719467 C6.67169475,15.3268342 6.63034033,15.393747 6.60579393,15.4673862 C6.51847004,15.7293579 6.66005003,16.0125179 6.92202169,16.0998418 L8.27584113,16.5511149 C9.57592638,16.9844767 11.009274,16.6461092 11.9783003,15.6770829 L15.9775173,11.6778659 C16.867756,10.7876271 17.0884566,9.42760861 16.5254202,8.3015358 L15.8928491,7.03639343 C15.8688153,6.98832598 15.8371895,6.9444475 15.7991889,6.90644684 C15.6039267,6.71118469 15.2873442,6.71118469 15.0920821,6.90644684 L13.4995401,8.49898884 C13.0544207,8.94410821 12.9440704,9.62411747 13.2255886,10.1871539 C13.5071068,10.7501903 13.3967565,11.4301996 12.9516371,11.8753189 L11.613922,13.2130341 Z" fill="#000000" />-->
                             <!--                                        </g>-->
                             <!--                                    </svg>-->
-                            <!--                                </span>--><?php //echo $vLogin_signinWithPhone ?><!--</button>-->
+                            <!--                                </span>--><?php //echo $vLogin_signinWithPhone 
+                                                                            ?>
+                            <!--</button>-->
                         </div>
                         <!--end::Action-->
                         <div class="text-right d-flex justify-content-end">
@@ -87,11 +90,11 @@
 
                         </div>
 
-                        <div class="text-left d-flex justify-content-start pt-5 ">
-                            <h4 class="text-left text-dark mr-2" style="margin-bottom: 0; margin-top: 0.25rem;">A product of </h4>
+                        <a href="/" class="text-left justify-content-start pt-5 ">
                             <img src="/assets/img/aumet-logo.svg" class="max-h-25px max-w-150px mr-1" />
-                            <i class="icon-md text-dark la la-copyright"></i>
-                        </div>
+
+                            <h4 class="text-left font-size-h4 text-dark pl-10 pr-10 pt-5" style="margin-bottom: 0; margin-top: 0.25rem;">Copyright 2021 Aumet, Inc. All Rights Reserved.</h4>
+                        </a>
                     </form>
                     <!--end::Form-->
                 </div>
@@ -130,8 +133,8 @@
     <!--end::Login-->
 </div>
 <script>
-    jQuery(document).ready(function () {
-        $('#kt_login_singin_form').submit(function (e) {
+    jQuery(document).ready(function() {
+        $('#kt_login_singin_form').submit(function(e) {
             e.preventDefault();
             WebAuth.signIn()
         });
