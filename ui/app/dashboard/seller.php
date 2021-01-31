@@ -11,13 +11,13 @@
                         <a href="/web/distributor/order/pending" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Orders</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
-                                <?php if ($dashboard_order > $dashboard_orderYesterday) {
+                                <?php /* if ($dashboard_order > $dashboard_orderYesterday) {
                                     echo '<i class="la la-rocket la-lg text-white"></i> ';
                                 } elseif ($dashboard_order < $dashboard_orderYesterday) {
                                     echo '<i class="la la-arrow-down la-lg text-white"></i> ';
                                 } else {
                                     echo '<i class="la la-equals la-lg text-white"></i> ';
-                                }
+                                } */
                                 echo $dashboard_order; ?>
                             </span>
                         </div>
@@ -32,13 +32,13 @@
                         <a href="web/distributor/order/pending" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Revenue</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
-                                <?php if ($dashboard_revenue > $dashboard_revenueYesterday) {
+                                <?php /* if ($dashboard_revenue > $dashboard_revenueYesterday) {
                                     echo '<i class="la la-rocket la-lg text-white"></i> ';
                                 } elseif ($dashboard_revenue < $dashboard_revenueYesterday) {
                                     echo '<i class="la la-arrow-down la-lg text-white"></i> ';
                                 } else {
                                     echo '<i class="la la-equals la-lg text-white"></i> ';
-                                }
+                                } */
                                 echo 'AED ' . $dashboard_revenue; ?>
                             </span>
                         </div>
@@ -52,13 +52,13 @@
                         <a href="web/distributor/customer" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Customers</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
-                                <?php if ($dashboard_customer > $dashboard_customerYesterday) {
+                                <?php /* if ($dashboard_customer > $dashboard_customerYesterday) {
                                     echo '<i class="la la-rocket la-lg text-white"></i> ';
                                 } elseif ($dashboard_customer < $dashboard_customerYesterday) {
                                     echo '<i class="la la-arrow-down la-lg text-white"></i> ';
                                 } else {
                                     echo '<i class="la la-equals la-lg text-white"></i> ';
-                                }
+                                } */
                                 echo $dashboard_customer; ?>
                             </span>
                         </div>
@@ -72,13 +72,13 @@
                         <a href="web/distributor/customer" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">New Customers</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
-                                <?php if ($dashboard_new_customer > $dashboard_new_customerYesterday) {
+                                <?php /* if ($dashboard_new_customer > $dashboard_new_customerYesterday) {
                                     echo '<i class="la la-rocket la-lg text-white"></i> ';
                                 } elseif ($dashboard_new_customer < $dashboard_new_customerYesterday) {
                                     echo '<i class="la la-arrow-down la-lg text-white"></i> ';
                                 } else {
                                     echo '<i class="la la-equals la-lg text-white"></i> ';
-                                }
+                                } */
                                 echo $dashboard_new_customer; ?>
                             </span>
                         </div>
@@ -132,6 +132,7 @@
         #order_datatable_wrapper td {
             font-size: 11px;
         }
+
         #products_datatable_wrapper td {
             font-size: 11px;
         }
@@ -151,7 +152,7 @@
             data: 'id',
             orderable: false,
             render: function(data, type, row, meta) {
-                var output = '#' + row.id ;
+                var output = '#' + row.id;
                 return output;
             }
         }, {
@@ -159,7 +160,7 @@
             title: WebAppLocals.getMessage('entityBuyer'),
             data: 'entityBuyer',
             orderable: false,
-            render: $.fn.dataTable.render.ellipsis( 100 )
+            render: $.fn.dataTable.render.ellipsis(100)
         }, {
             targets: 2,
             title: WebAppLocals.getMessage('date'),
@@ -309,17 +310,17 @@
                         '\')"> ' +
                         '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
                         row.image +
-                        '\')" ></div></div>'
-                        + '</a></div>';
+                        '\')" ></div></div>' +
+                        '</a></div>';
                     output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
                         row.id +
-                        '\')" title="'+
+                        '\')" title="' +
                         row['productName_' + docLang] +
                         '"> ' +
-                        WebApp.truncateText(row['productName_' + docLang], 100)
-                        + '</span></div></div>';
+                        WebApp.truncateText(row['productName_' + docLang], 100) +
+                        '</span></div></div>';
                     return output;
                 }
             }, {
@@ -332,7 +333,7 @@
                 title: WebAppLocals.getMessage('productScientificName'),
                 data: 'scientificName',
                 orderable: false,
-                render: $.fn.dataTable.render.ellipsis( 100 )
+                render: $.fn.dataTable.render.ellipsis(100)
             }, {
                 targets: 3,
                 title: WebAppLocals.getMessage('expiryDate'),
@@ -410,7 +411,7 @@
                 order: [
                     [0, 'desc']
                 ],
-                rowCallback: function (row, data, index) {
+                rowCallback: function(row, data, index) {
                     if (!data['isVisible']) {
                         $(row).hide();
                     }
