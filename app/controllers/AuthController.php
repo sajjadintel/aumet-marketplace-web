@@ -73,6 +73,9 @@ class AuthController extends Controller
         if ($this->isAuth) {
             $this->f3->reroute('/web');
         } else {
+
+            $this->f3->set('companyType',($this->f3->get('SESSION.companyType')));
+
             $this->f3->set('vAuthFile', 'signup');
 
             $dbCountry = new BaseModel($this->db, "country");
@@ -326,12 +329,13 @@ class AuthController extends Controller
         $mobile = $this->f3->get("POST.mobile");
         $email = $this->f3->get("POST.email");
         $password = $this->f3->get("POST.password");
-        $entityName = $this->f3->get("POST.entityName");
+        $entityName = !empty($this->f3->get("POST.pharmacyName")) ? $this->f3->get("POST.pharmacyName") :  $this->f3->get("POST.distributorName");
         $tradeLicenseNumber = $this->f3->get("POST.tradeLicenseNumber");
         $countryId = $this->f3->get("POST.country");
         $cityId = $this->f3->get("POST.city");
         $address = $this->f3->get("POST.address");
         $pharmacyDocument = $this->f3->get("POST.pharmacyDocument");
+        $companyType = $this->f3->get("POST.companyType");
 
         if (!$name || !ltrim($mobile, "+") || !$email || !$password || !$entityName || !$countryId || !$cityId || !$address) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -397,13 +401,13 @@ class AuthController extends Controller
         $dbUser->statusId = Constants::USER_STATUS_WAITING_VERIFICATION;
         $dbUser->fullname = $name;
         $dbUser->mobile = $mobile;
-        $dbUser->roleId = Constants::USER_ROLE_PHARMACY_SYSTEM_ADMINISTRATOR;
+        $dbUser->roleId = ($companyType == 'distributor') ? Constants::USER_ROLE_DISTRIBUTOR_SYSTEM_ADMINISTRATOR : Constants::USER_ROLE_PHARMACY_SYSTEM_ADMINISTRATOR;
         $dbUser->language = "en";
         $dbUser->addReturnID();
 
         // Add entity
         $dbEntity = new BaseModel($this->db, "entity");
-        $dbEntity->typeId = Constants::ENTITY_TYPE_PHARMACY;
+        $dbEntity->typeId = ($companyType == 'distributor') ? Constants::ENTITY_TYPE_DISTRIBUTOR : Constants::ENTITY_TYPE_PHARMACY;
         $dbEntity->name_ar = $entityName;
         $dbEntity->name_en = $entityName;
         $dbEntity->name_fr = $entityName;
@@ -509,6 +513,7 @@ class AuthController extends Controller
             if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                $emailHandler->appendToAddress("n.javaid@aumet.com", "Naveed Javaid");
             }
         }
 
@@ -560,7 +565,7 @@ class AuthController extends Controller
         	if(!$emailList[$i]) {
 				continue;
             }
-            
+
             $currentEmail = explode(',', $emailList[$i]);
             if (count($currentEmail) == 2) {
                 $emailHandler->appendToAddress($currentEmail[0], $currentEmail[1]);
@@ -578,6 +583,7 @@ class AuthController extends Controller
             if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                $emailHandler->appendToAddress("n.javaid@aumet.com", "Naveed Javaid");
             }
         }
         $emailHandler->sendEmail(Constants::EMAIL_PHARMACY_ACCOUNT_APPROVAL, $subject, $htmlContent);
@@ -788,6 +794,7 @@ class AuthController extends Controller
 
     function postSignUpValidateStep1()
     {
+        $this->f3->set('SESSION.companyType',$this->f3->get("POST.companyType"));
         $email = $this->f3->get("POST.email");
         $mobile = $this->f3->get("POST.mobile");
 
@@ -901,6 +908,7 @@ class AuthController extends Controller
                 if (getenv('ENV') == Constants::ENV_LOC) {
                     $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                     $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                    $emailHandler->appendToAddress("n.javaid@aumet.com", "Naveed Javaid");
                 }
             }
 
@@ -973,6 +981,7 @@ class AuthController extends Controller
                 if (getenv('ENV') == Constants::ENV_LOC) {
                     $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                     $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                    $emailHandler->appendToAddress("n.javaid@aumet.com", "Naveed Javaid");
                 }
             }
 
