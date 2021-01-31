@@ -341,13 +341,20 @@ var WebAuth = (function () {
 		validations.push(
 			FormValidation.formValidation(form, {
 				fields: {
-					entityName: {
+					/*pharmacyName: {
 						validators: {
 							notEmpty: {
 								message: 'Pharmacy Name is required',
 							},
 						},
 					},
+					distributorName: {
+						validators: {
+							notEmpty: {
+								message: 'Distributor Name is required',
+							},
+						},
+					},*/
 					country: {
 						validators: {
 							notEmpty: {
@@ -403,9 +410,21 @@ var WebAuth = (function () {
 							let body = {
 								email: $('#kt_login_signup_form input[name=email]').val(),
 								mobile: $('#kt_login_signup_form input[name=mobile]').val(),
+								companyType: $('#kt_login_signup_form input[name=companyType]:checked').val(),
 							};
 							WebApp.post('/web/auth/signup/validate/step1', body, function () {
 								wizard.goTo(wizard.getNewStep());
+
+								let companyType = $('#kt_login_signup_form input[name=companyType]:checked').val();
+								if(companyType == 'pharmacy'){
+									$('.distributor').hide();
+									$('.pharmacy').show();
+
+								}else if(companyType == 'distributor'){
+
+									$('.pharmacy').hide();
+									$('.distributor').show();
+								}
 							});
 						} else {
 							wizard.goTo(wizard.getNewStep());
@@ -713,7 +732,8 @@ var WebAuth = (function () {
 			mobile: 'input',
 			email: 'input',
 			password: 'input',
-			entityName: 'input',
+			pharmacyName: 'input',
+			distributorName: 'input',
 			tradeLicenseNumber: 'input',
 			country: 'select',
 			city: 'select',

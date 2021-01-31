@@ -29,6 +29,20 @@
 									<a href="/web/auth/signin" class="text-primary font-weight-bolder"><?php echo $vLogin_signin ?></a>
 								</div>
 							</div>
+
+                            <div class="form-group">
+                                <label class="font-size-h2 font-weight-bolder text-dark">I'm a</label>
+                                <div class="radio-inline">
+                                    <label class="radio radio-square radio-lg font-size-h4 font-weight-bolder text-dark mr-5">
+                                        <input type="radio" checked name="companyType" value="pharmacy">
+                                        <span class=""></span>Pharmacy</label>
+                                    <label class="radio radio-square radio-lg font-size-h4 font-weight-bolder text-dark mr-5">
+                                        <input type="radio" name="companyType" value="distributor">
+                                        <span></span>Distributor</label>
+
+                                </div>
+                            </div>
+
 							<!--begin::Title-->
 							<!--begin::Form Group-->
 							<div class="form-group">
@@ -65,16 +79,27 @@
 						<!--begin: Wizard Step 2-->
 						<div class="pb-5" data-wizard-type="step-content">
 							<!--begin::Title-->
-							<div class="pt-lg-0 pt-5 pb-15">
+							<div class="pt-lg-0 pt-5 pb-15 pharmacy">
 								<h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg"><?php echo $vSignup_wizardPharmacyInfoTitle; ?></h3>
 								<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_wizardPharmacyInfoSubtitle; ?></div>
 							</div>
+
+                            <div class="pt-lg-0 pt-5 pb-15 distributor">
+                                <h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg"><?php echo $vSignup_wizardDistributorInfoTitle; ?></h3>
+                                <div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_wizardDistributorInfoSubtitle; ?></div>
+                            </div>
+
 							<!--end::Title-->
 							<!--begin::Form Group-->
-							<div class="form-group">
+							<div class="form-group pharmacy">
 								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_pharmacyName; ?></label>
-								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="entityName" placeholder="<?php echo $vSignup_pharmacyName; ?>" value="" style="direction: ltr;" />
+								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="pharmacyName" placeholder="<?php echo $vSignup_pharmacyName; ?>" value="" style="direction: ltr;" />
 							</div>
+
+                            <div class="form-group distributor">
+                                <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_distributorName; ?></label>
+                                <input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="distributorName" placeholder="<?php echo $vSignup_distributorName; ?>" value="" style="direction: ltr;" />
+                            </div>
 							<!--end::Form Group-->
 							<!--begin::Form Group-->
 							<div class="form-group">
@@ -118,7 +143,8 @@
 							<!--begin::Form Group-->
 							<div class="form-group">
 								<div>
-									<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_pharmacyDocument; ?></label>
+									<label class="font-size-h6 font-weight-bolder text-dark pharmacy"><?php echo $vSignup_pharmacyDocument; ?></label>
+									<label class="font-size-h6 font-weight-bolder text-dark distributor"><?php echo $vSignup_distributorDocument; ?></label>
 								</div>
 
 								<div class="dropzone dropzone-multi" id="kt_dropzone" style="background-color: unset;">
