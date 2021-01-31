@@ -34,9 +34,13 @@ class Constants
     const EMAIL_CUSTOMER_SUPPORT_CONFIRMATION = 'Customer Support Confirmation';
     const EMAIL_ORDER_STATUS_UPDATE = 'Order Status Update';
     const EMAIL_PHARMACY_ACCOUNT_VERIFICATION = 'Pharmacy Account Verification';
+    const EMAIL_DISTRIBUTOR_ACCOUNT_VERIFICATION = 'Distributor Account Verification';
     const EMAIL_PHARMACY_ACCOUNT_VERIFIED = 'Pharmacy Account Verified';
+    const EMAIL_DISTRIBUTOR_ACCOUNT_VERIFIED = 'Distributor Account Verified';
     const EMAIL_PHARMACY_ACCOUNT_APPROVAL = 'Pharmacy Account Approval';
+    const EMAIL_DISTRIBUTOR_ACCOUNT_APPROVAL = 'Distributor Account Approval';
     const EMAIL_PHARMACY_ACCOUNT_APPROVED = 'Pharmacy Account Approved';
+    const EMAIL_DISTRIBUTOR_ACCOUNT_APPROVED = 'Distributor Account Approved';
     const EMAIL_NEW_CUSTOMER_GROUP = 'New Customer Group';
     const EMAIL_CHANGE_PROFILE_APPROVAL = 'Change Profile Approval';
     const EMAIL_CHANGE_PROFILE_APPROVED = 'Change Profile Approved';
