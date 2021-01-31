@@ -250,6 +250,11 @@ var WebAppLocals = (function () {
 			ar: 'معلق',
 			fr: '',
 		},
+		orderSubtotal: {
+			en: 'Subtotal',
+			ar: 'Subtotal',
+			fr: '',
+		},
 		orderTotal: {
 			en: 'Total',
 			ar: 'مجموع',
