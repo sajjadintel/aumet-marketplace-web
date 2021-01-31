@@ -423,7 +423,7 @@ function compress_htmlcode($codedata)
             tags: true,
             templateResult: formatResult,
             ajax: {
-                url: '/web/product/category/list',
+                url: '/web/product/category',
                 dataType: 'json',
                 delay: 250,
                 data: function(params) {

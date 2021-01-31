@@ -36,7 +36,7 @@ $f3->route('POST /web/product/search/@sort', 'SearchController->postSearchProduc
 $f3->route('GET /web/entity/@entityId/product/@productId', 'ProductsController->getEntityProduct');
 
 $f3->route('GET /web/product/brandname/list', 'SearchController->getProductBrandNameList');
-$f3->route('GET /web/product/category/list', 'SearchController->getAllCategoryList');
+$f3->route('GET /web/product/category', 'SearchController->getAllCategoryList');
 $f3->route('GET /web/product/scientificname/list', 'SearchController->getProductScientificNameList');
 $f3->route('GET /web/product/country/list', 'SearchController->getProductCountryList');
 $f3->route('GET /web/product/category/list', 'SearchController->getProductCategoryList');
