@@ -158,6 +158,9 @@ var DistributorProductsDataTable = (function () {
         $("label[for='editQuantityBonusDelete']").text(WebAppLocals.getMessage('delete'));
         $("label[for='editQuantityBonusAdd']").text(WebAppLocals.getMessage('add'));
 
+        // Hide Bonus section
+        $('#editQuantityBonusType').parent().parent().parent().hide();
+        $('#editQuantityBonusListRepeater').parent().parent().hide();
 
         $("label[for='editQuantityBonusType']").text(WebAppLocals.getMessage('bonus'));
 
