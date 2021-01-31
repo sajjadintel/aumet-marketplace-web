@@ -67,7 +67,7 @@ function compress_htmlcode($codedata)
 
             var columnDefs = [{
                 className: "export_datatable",
-                targets: [1, 2, 3, 4, 9, 10, 11, 12, 13, 14]
+                targets: [1, 2, 3, 4, 8, 9, 10, 11, 12, 13]
             },
                 {
                     targets: 0,
@@ -155,6 +155,15 @@ function compress_htmlcode($codedata)
                 },
                 {
                     targets: 5,
+                    title: WebAppLocals.getMessage('orderSubtotal'),
+                    data: 'total',
+                    render: function (data, type, row, meta) {
+                        var output = row.currency + ' <strong>' + Math.round((parseFloat(row.subtotal) + Number.EPSILON) * 100) / 100 + ' </strong>';
+                        return output;
+                    },
+                },
+                {
+                    targets: 6,
                     title: WebAppLocals.getMessage('orderTotal'),
                     data: 'total',
                     render: function (data, type, row, meta) {
@@ -163,25 +172,7 @@ function compress_htmlcode($codedata)
                     },
                 },
                 {
-                    targets: 6,
-                    title: WebAppLocals.getMessage('tax'),
-                    data: 'tax',
-                    render: function (data, type, row, meta) {
-                        var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
-                        return output;
-                    },
-                },
-                {
                     targets: 7,
-                    title: WebAppLocals.getMessage('orderTotalWithVAT'),
-                    data: 'total',
-                    render: function (data, type, row, meta) {
-                        var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
-                        return output;
-                    },
-                },
-                {
-                    targets: 8,
                     title: '',
                     data: 'id',
                     orderable: false,
@@ -328,7 +319,7 @@ function compress_htmlcode($codedata)
                     },
                 },
                 {
-                    targets: 9,
+                    targets: 8,
                     title: WebAppLocals.getMessage('productId'),
                     data: 'productCode',
                     visible: false,
@@ -337,13 +328,13 @@ function compress_htmlcode($codedata)
                     },
                 },
                 {
-                    targets: 10,
+                    targets: 9,
                     title: WebAppLocals.getMessage('productName'),
                     data: 'productName',
                     visible: false,
                 },
                 {
-                    targets: 11,
+                    targets: 10,
                     title: WebAppLocals.getMessage('unitPrice'),
                     data: 'unitPrice',
                     visible: false,
@@ -352,7 +343,7 @@ function compress_htmlcode($codedata)
                     },
                 },
                 {
-                    targets: 12,
+                    targets: 11,
                     title: WebAppLocals.getMessage('orderShippedQuantity'),
                     data: 'shippedQuantity',
                     visible: false,
@@ -361,13 +352,13 @@ function compress_htmlcode($codedata)
                     },
                 },
                 {
-                    targets: 13,
+                    targets: 12,
                     title: WebAppLocals.getMessage('orderOrderedQuantity'),
                     data: 'requestedQuantity',
                     visible: false,
                 },
                 {
-                    targets: 14,
+                    targets: 13,
                     title: WebAppLocals.getMessage('tax'),
                     data: 'tax',
                     visible: false,
@@ -376,7 +367,7 @@ function compress_htmlcode($codedata)
                     },
                 },
                 {
-                    targets: 15,
+                    targets: 14,
                     title: WebAppLocals.getMessage('orderTotalWithVAT'),
                     data: 'quantity',
                     visible: false,

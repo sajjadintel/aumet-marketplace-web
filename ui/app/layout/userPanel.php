@@ -13,12 +13,16 @@
         <!--begin::Header-->
         <div class="d-flex align-items-center mt-5">
             <div class="symbol symbol-100 mr-5" style="cursor: pointer;" onclick="window.location.href = '/web/profile';">
-                <div class="symbol-label" style="background-image:url('/theme/assets/media/users/300_21.jpg')"></div>
+                <div class="symbol-label" style="background-image:url('/assets/img/profile.png')"></div>
                 <i class="symbol-badge bg-success"></i>
             </div>
             <div class="d-flex flex-column">
                 <a href="/web/profile" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?php echo $objUser->fullname ?></a>
+                <?php if (getenv('ENV') == Constants::ENV_LOC) { ?>
                 <a href="/web/profile" class="text-muted mt-1 text-hover-primary"><?php echo $objUser->roleName ?></a>
+                <?php } else{ ?>
+                    <a href="/web/profile" class="text-muted mt-1 text-hover-primary"><?php echo explode('-',$objUser->roleName)[0] ?></a>
+                <?php } ?>
                 <div class="navi mt-2">
                     <a href="/web/profile" class="navi-item">
                         <span class="navi-link p-0 pb-2">

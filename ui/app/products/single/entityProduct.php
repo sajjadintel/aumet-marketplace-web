@@ -331,7 +331,7 @@ function compress_htmlcode($codedata)
                         return '<div style="width: max-content;">' + output + '</div>';
                     },
                 },
-                {
+              /*  {
                     targets: 3,
                     title: WebAppLocals.getMessage('bonus'),
                     data: 'bonusTypeId',
@@ -350,9 +350,9 @@ function compress_htmlcode($codedata)
 
                         return output;
                     },
-                },
+                },*/
                 {
-                    targets: 4,
+                    targets: 3,
                     title: WebAppLocals.getMessage('quantity'),
                     data: 'id',
                     orderable: false,
@@ -385,7 +385,7 @@ function compress_htmlcode($codedata)
                     },
                 },
                 {
-                    targets: 5,
+                    targets: 4,
                     title: '',
                     data: 'id',
                     orderable: false,

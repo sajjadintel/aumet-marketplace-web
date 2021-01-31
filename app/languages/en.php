@@ -1,6 +1,6 @@
 <?php
 return array(
-    'vTitle' => 'Aumet Medical Marketplace',
+    'vTitle' => 'Aumet Marketplace',
     'masterContentDir' => 'ltr',
     'langActiveFlag' => '260-united-kingdom.svg',
     'vFooterText' => 'Aumet Inc | {Y} © All Rights Reserved',

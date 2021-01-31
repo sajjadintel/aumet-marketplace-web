@@ -146,7 +146,7 @@ function compress_htmlcode($codedata)
             },
             {
                 className: 'export_datatable',
-                targets: [0, 1, 2, 3, 4, 5, 6, 7]
+                targets: [0, 1, 2, 3, 4, 5, 6]
             },
             {
                 targets: 0,
@@ -227,14 +227,15 @@ function compress_htmlcode($codedata)
 
                 return '<div style="width: max-content;">' + output + '</div>';
             },
-        }, {
+        },
+        /*{
             targets: 6,
             title: WebAppLocals.getMessage('bonus'),
             data: 'activeBonus',
             render: function(data, type, row, meta) {
                 let output = "";
                 if (row.bonusTypeId === 2 && row.bonuses != null) {
-                    /* let btnText = row.activeBonus ? row.activeBonus.minOrder + " / +" + row.activeBonus.bonus : "Select"; */
+                    /* let btnText = row.activeBonus ? row.activeBonus.minOrder + " / +" + row.activeBonus.bonus : "Select";
                     let btnText = "Select";
                     let allBonuses = row.bonuses.filter((bonus) => !row.activeBonus || row.activeBonus.id !== bonus.id);
                     let btnShowBonuses =
@@ -246,8 +247,9 @@ function compress_htmlcode($codedata)
 
                 return output;
             },
-        }, {
-            targets: 7,
+        }, */
+        {
+            targets: 6,
             title: WebAppLocals.getMessage('quantity'),
             data: 'id',
             orderable: false,
@@ -284,7 +286,7 @@ function compress_htmlcode($codedata)
                 return '<div style="display: flex;">' + output + '</div>';
             },
         }, {
-            targets: 8,
+            targets: 7,
             title: '',
             data: 'id',
             orderable: false,
@@ -351,7 +353,7 @@ function compress_htmlcode($codedata)
 
                 switch (row.stockStatusId) {
                     case 1:
-                        outActions += btnViewProduct;
+                        /*outActions += btnViewProduct;*/
                         if (row.cart > 0) {
                             outActions += btnAddMoreToCart;
                         } else {
@@ -360,11 +362,11 @@ function compress_htmlcode($codedata)
                         SearchDataTable.changeProductQuantityCallback(row);
                         break;
                     case 2:
-                        outActions += btnViewProduct;
+                        /*outActions += btnViewProduct;*/
                         outActions += btnNotifyMe;
                         break;
                     case 3:
-                        outActions += btnViewProduct;
+                        /*outActions += btnViewProduct;*/
                         outActions += btnNotifyMe;
                         break;
                 }

@@ -96,7 +96,7 @@
                                         <span class="kt-chat__datetime">30 Seconds</span>
                                         <a href="#" class="kt-chat__username">You</span></a>
                                         <span class="kt-media kt-media--circle kt-media--sm">
-                                            <img src="/theme/assets/media/users/300_21.jpg" alt="image">
+                                            <img src="/assets/img/profile.png" alt="image">
                                         </span>
                                     </div>
                                     <div class="kt-chat__text">
@@ -120,7 +120,7 @@
                                         <span class="kt-chat__datetime">Just Now</span>
                                         <a href="#" class="kt-chat__username">You</span></a>
                                         <span class="kt-media kt-media--circle kt-media--sm">
-                                            <img src="/theme/assets/media/users/300_21.jpg" alt="image">
+                                            <img src="/assets/img/profile.png" alt="image">
                                         </span>
                                     </div>
                                     <div class="kt-chat__text">
@@ -144,7 +144,7 @@
                                         <span class="kt-chat__datetime">30 Seconds</span>
                                         <a href="#" class="kt-chat__username">You</span></a>
                                         <span class="kt-media kt-media--circle kt-media--sm">
-                                            <img src="/theme/assets/media/users/300_21.jpg" alt="image">
+                                            <img src="/assets/img/profile.png" alt="image">
                                         </span>
                                     </div>
                                     <div class="kt-chat__text">
@@ -168,7 +168,7 @@
                                         <span class="kt-chat__datetime">Just Now</span>
                                         <a href="#" class="kt-chat__username">You</span></a>
                                         <span class="kt-media kt-media--circle kt-media--sm">
-                                            <img src="/theme/assets/media/users/300_21.jpg" alt="image">
+                                            <img src="/assets/img/profile.png" alt="image">
                                         </span>
                                     </div>
                                     <div class="kt-chat__text">
