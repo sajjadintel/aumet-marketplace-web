@@ -27,9 +27,10 @@
 	</div>
 	<!--end::CartCheckout-->
 	<?php endif; ?>
-	<!--begin::Chat-->
-	<div class="topbar-item">
-		<div class="btn btn-icon btn-clean btn-lg mr-1" data-toggle="modal" data-target="#kt_chat_modal">
+    <!--begin::Chat-->
+    <?php if (getenv('ENV') == Constants::ENV_LOC) { ?>
+        <div class="topbar-item">
+            <div class="btn btn-icon btn-clean btn-lg mr-1" data-toggle="modal" data-target="#kt_chat_modal">
 			<span class="svg-icon svg-icon-xl svg-icon-primary">
 				<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Group-chat.svg-->
 				<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -39,49 +40,52 @@
 						<path d="M1.98505595,18 L1.98505595,13 C1.98505595,11.8954305 2.88048645,11 3.98505595,11 L11.9850559,11 C13.0896254,11 13.9850559,11.8954305 13.9850559,13 L13.9850559,18 C13.9850559,19.1045695 13.0896254,20 11.9850559,20 L4.10078614,20 L2.85693427,21.1905292 C2.65744295,21.3814685 2.34093638,21.3745358 2.14999706,21.1750444 C2.06092565,21.0819836 2.01120804,20.958136 2.01120804,20.8293182 L2.01120804,18.32426 C1.99400175,18.2187196 1.98505595,18.1104045 1.98505595,18 Z M6.5,14 C6.22385763,14 6,14.2238576 6,14.5 C6,14.7761424 6.22385763,15 6.5,15 L11.5,15 C11.7761424,15 12,14.7761424 12,14.5 C12,14.2238576 11.7761424,14 11.5,14 L6.5,14 Z M9.5,16 C9.22385763,16 9,16.2238576 9,16.5 C9,16.7761424 9.22385763,17 9.5,17 L11.5,17 C11.7761424,17 12,16.7761424 12,16.5 C12,16.2238576 11.7761424,16 11.5,16 L9.5,16 Z" fill="#000000" opacity="0.3" />
 					</g>
 				</svg>
-				<!--end::Svg Icon-->
+                <!--end::Svg Icon-->
 			</span>
-		</div>
-	</div>
+            </div>
+        </div>
+    <?php } ?>
 	<!--end::Chat-->
-	<!--begin::Languages-->
-	<div class="dropdown">
-		<!--begin::Toggle-->
-		<div class="topbar-item" data-toggle="dropdown" data-offset="10px,0px">
-			<div class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1">
-				<img class="h-20px w-20px rounded-sm" src="/theme/assets/media/svg/flags/<?php echo $langActiveFlag ?>" alt="" />
-			</div>
-		</div>
-		<!--end::Toggle-->
-		<!--begin::Dropdown-->
-		<div class="dropdown-menu p-0 m-0 dropdown-menu-anim-up dropdown-menu-sm dropdown-menu-right">
-			<!--begin::Nav-->
-			<ul class="navi navi-hover py-4">
-                <!--begin::Item-->
-                <li class="navi-item">
-                    <a href="/web/me/switchLanguage/ar" class="navi-link">
+    <!--begin::Languages-->
+    <?php if (getenv('ENV') == Constants::ENV_LOC) { ?>
+        <div class="dropdown">
+            <!--begin::Toggle-->
+            <div class="topbar-item" data-toggle="dropdown" data-offset="10px,0px">
+                <div class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1">
+                    <img class="h-20px w-20px rounded-sm" src="/theme/assets/media/svg/flags/<?php echo $langActiveFlag ?>" alt="" />
+                </div>
+            </div>
+            <!--end::Toggle-->
+            <!--begin::Dropdown-->
+            <div class="dropdown-menu p-0 m-0 dropdown-menu-anim-up dropdown-menu-sm dropdown-menu-right">
+                <!--begin::Nav-->
+                <ul class="navi navi-hover py-4">
+                    <!--begin::Item-->
+                    <li class="navi-item">
+                        <a href="/web/me/switchLanguage/ar" class="navi-link">
 						<span class="symbol symbol-20 mr-3">
-							<img src="/theme/assets/media/svg/flags/008-saudi-arabia.svg" alt=""/>
+							<img src="/theme/assets/media/svg/flags/008-saudi-arabia.svg" alt="" />
 						</span>
-                        <span class="navi-text">العربية</span>
-                    </a>
-                </li>
-                <!--end::Item-->
-                <!--begin::Item-->
-                <li class="navi-item">
-                    <a href="/web/me/switchLanguage/en" class="navi-link">
+                            <span class="navi-text">العربية</span>
+                        </a>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="navi-item">
+                        <a href="/web/me/switchLanguage/en" class="navi-link">
 						<span class="symbol symbol-20 mr-3">
-							<img src="/theme/assets/media/svg/flags/260-united-kingdom.svg" alt=""/>
+							<img src="/theme/assets/media/svg/flags/260-united-kingdom.svg" alt="" />
 						</span>
-                        <span class="navi-text">English</span>
-                    </a>
-                </li>
-			</ul>
-			<!--end::Nav-->
-		</div>
-		<!--end::Dropdown-->
-	</div>
-	<!--end::Languages-->
+                            <span class="navi-text">English</span>
+                        </a>
+                    </li>
+                </ul>
+                <!--end::Nav-->
+            </div>
+            <!--end::Dropdown-->
+        </div>
+    <?php } ?>
+    <!--end::Languages-->
 	<!--begin::User-->
 	<div class="topbar-item">
 		<div class="btn btn-icon btn-icon-mobile w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle" onclick="$('#kt_chat_modal').modal('hide');">
