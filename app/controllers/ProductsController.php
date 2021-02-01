@@ -135,6 +135,25 @@ class ProductsController extends Controller {
         }
     }
 
+    function getDistributorCanAddProduct() {
+        if (!$this->f3->ajax()) {
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $entityId = array_keys($this->f3->get('SESSION.arrEntities'))[0];
+            $results = $this->db->exec("CALL spCanAddProduct($entityId)");
+
+            if (count($results) > 0) {
+                $this->webResponse->title = 'Can\'t add product, please complete your profile first!';
+                $this->webResponse->data = $results;
+            } else {
+                $this->webResponse->title = 'Can add product';
+                $this->webResponse->data = [];
+            }
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
     function getDistributorProducts()
     {
         if (!$this->f3->ajax()) {

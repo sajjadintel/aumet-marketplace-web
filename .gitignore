@@ -8,7 +8,7 @@ assets/img/products/
 
 # Temp and environment variables
 .DS_Store
-composer.pharsendgrid.env
-"sendgrid.env" 
+composer.phar
 composer.lock
 .env
+sendgrid.env
