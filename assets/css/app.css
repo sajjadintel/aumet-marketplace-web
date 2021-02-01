@@ -491,6 +491,7 @@ input[type=number] {
 	font-size: 17px !important;
 	font-weight: bold !important;
 }
+
 .other-offers td {
 	color: #4a4a4a !important;
 	font-size: 16px !important;
@@ -518,4 +519,68 @@ input[type=number] {
 .never {
 	display: none;
 	visibility: hidden;
+}
+
+.cartRightWrapper {
+	padding: 0 2rem 0 2rem;
+}
+
+.cartRightWrapper .item {
+	color: #a9abaf;
+	text-transform: uppercase;
+}
+
+.cartRightWrapper .total {
+	color: #9fa2a6 !important;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.cartRightWrapper .price {
+	color: #9fa2a6;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.cartRightWrapper .title {
+	color: #9fa2a6;
+	font-weight: bold;
+	text-transform: uppercase;
+	font-size: 20px;
+	margin-bottom: 30px;
+}
+
+.cartRightWrapper hr {
+	background-color: #c2c2c2;
+	height: 1px;
+	border: 0;
+}
+
+.cartRightWrapper .itemWrapper {
+	display: flex;
+	justify-content: space-between;
+}
+
+.cartRightWrapper .btn-success {
+	background: #00b09f;
+	font-size: 18px;
+	width: 100%;
+}
+
+.cart-table-header {
+	color: #b9b9b9 !important;
+	font-weight: bold !important;
+	font-size: 15px !important;
+	text-transform: uppercase;
+}
+
+.cart-table-header-body {
+	font-weight: bold !important;
+	font-size: 15px !important;
+	text-transform: uppercase;
+	height: 0px !important;
+}
+
+fieldset {
+	border: 1px solid #000;
 }
