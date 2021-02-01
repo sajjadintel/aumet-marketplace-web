@@ -248,10 +248,29 @@
 					<div class="pb-10 pb-lg-15">
 						<h3 class="font-weight-bolder text-dark display5"><?php echo $vSignup_thankyouTitle ?></h3>
 						<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_thankyouSubtitle ?></div>
-						<a href="/web/auth/signin" class="text-primary font-weight-bolder">
-							<?php echo $vSignup_thankyouHome ?> >
+
+                        <a href="/web/auth/signin">
+                            <button class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3"><?php echo $vSignup_thankyouHome ?></button>
 						</a>
 					</div>
+                    <div>
+
+                        <table width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation">
+                            <tbody>
+                            <tr>
+                                <td class="o_bg-light o_px-xs" align="center" style="padding-left: 8px;padding-right: 8px;">
+                                    <!--[if mso]><table width="800" cellspacing="0" cellpadding="0" border="0" role="presentation"><tbody><tr><td><![endif]-->
+                                    <table class="o_block-lg" width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation" style="max-width: 800px;margin: 0 auto;">
+                                        <tbody id="signupDetailData">
+                                        </tbody>
+                                    </table>
+                                    <!--[if mso]></td></tr></table><![endif]-->
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
 				</div>
 				<!--end::Thankyou-->
 			</div>
