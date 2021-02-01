@@ -62,7 +62,7 @@ var WebAppModals = (function () {
             data: 'unitPrice',
             render: function (data, type, row, meta) {
                 var output = parseFloat(row.unitPrice) * parseFloat(row.quantity) * (1 + parseFloat(row.tax) / 100);
-                output = row.currency + ' <strong>' + WebApp.formatMoney(output + Number.EPSILON) + '</strong>';
+                output = row.currency + ' <strong>' + WebApp.formatMoney(output) + '</strong>';
                 return output;
             },
         },
