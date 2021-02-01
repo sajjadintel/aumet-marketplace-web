@@ -158,7 +158,7 @@ function compress_htmlcode($codedata)
                     title: WebAppLocals.getMessage('orderSubtotal'),
                     data: 'total',
                     render: function (data, type, row, meta) {
-                        var output = row.currency + ' <strong>' + Math.round((parseFloat(row.subtotal) + Number.EPSILON) * 100) / 100 + ' </strong>';
+                        var output = row.currency + ' <strong>' + WebApp.formatMoney(row.subtotal) + ' </strong>';
                         return output;
                     },
                 },
@@ -167,7 +167,7 @@ function compress_htmlcode($codedata)
                     title: WebAppLocals.getMessage('orderTotal'),
                     data: 'total',
                     render: function (data, type, row, meta) {
-                        var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
+                        var output = row.currency + ' <strong>' + WebApp.formatMoney(row.total) + ' </strong>';
                         return output;
                     },
                 },
@@ -373,7 +373,7 @@ function compress_htmlcode($codedata)
                     visible: false,
                     render: function (data, type, row, meta) {
                         var total = row.quantity * row.unitPrice;
-                        total = Math.round((parseFloat(total) + Number.EPSILON) * 100) / 100;
+                        total = WebApp.formatMoney(total);
                         return total + ' ' + row.currency;
                     },
                 },

@@ -78,7 +78,7 @@ function compress_htmlcode($codedata)
               title: WebAppLocals.getMessage('orderTotal'),
               data: 'total',
               render: function (data, type, row, meta) {
-                  var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
+                  var output = row.currency + ' <strong>' + WebApp.formatMoney(row.total) + ' </strong>';
                   return output;
               },
           }, {
@@ -86,7 +86,7 @@ function compress_htmlcode($codedata)
               title: WebAppLocals.getMessage('tax'),
               data: 'tax',
               render: function (data, type, row, meta) {
-                  var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
+                  var output = WebApp.formatMoney(row.tax) + '%';
                   return output;
               },
           }, {
@@ -94,7 +94,7 @@ function compress_htmlcode($codedata)
               title: WebAppLocals.getMessage('orderTotalWithVAT'),
               data: 'total',
               render: function (data, type, row, meta) {
-                  var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
+                  var output = row.currency + ' <strong>' + WebApp.formatMoney(row.total) + ' </strong>';
                   return output;
               },
           }, {

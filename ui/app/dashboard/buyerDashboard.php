@@ -107,7 +107,7 @@
             title: WebAppLocals.getMessage('orderTotalWithVAT'),
             data: 'total',
             render: function(data, type, row, meta) {
-                var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
+                var output = row.currency + ' <strong>' + WebApp.formatMoney(row.total) + ' </strong>';
                 return output;
             },
         }, {
