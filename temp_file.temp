@@ -1,0 +1,43 @@
+// var searchQuery = {
+// entityBuyerId: [],
+// startDate: null,
+// endDate: null
+// };
+
+// var _selectBuyer = $('#searchOrdersBuyerInput').select2({
+// placeholder: "<?php echo $vModule_search_buyerNamePlaceholder ?>",
+
+// ajax: {
+// url: '/web/order/customer/list',
+// dataType: 'json',
+// processResults: function(response) {
+// return {
+// results: response.data.results,
+// pagination: {
+// more: response.data.pagination
+// }
+// }
+// }
+// }
+// });
+// _selectBuyer.on("select2:select", function(e) {
+// searchQuery.entityBuyerId = $("#searchOrdersBuyerInput").val();
+// DistributorOrdersDataTable.setReadParams(searchQuery);
+
+// });
+// _selectBuyer.on("select2:unselect", function(e) {
+// searchQuery.entityBuyerId = $("#searchOrdersBuyerInput").val();
+// DistributorOrdersDataTable.setReadParams(searchQuery);
+// });
+
+// $('#searchOrdersDateInput').daterangepicker({
+// opens: 'left',
+// startDate: moment('2020-01-01'),
+// endDate: moment(),
+// }, function(start, end, label) {
+// searchQuery.startDate = start.format('YYYY-MM-DD');
+// searchQuery.endDate = end.format('YYYY-MM-DD');
+// DistributorOrdersDataTable.setReadParams(searchQuery);
+// });
+
+// $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");

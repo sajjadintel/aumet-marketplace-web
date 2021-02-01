@@ -1,126 +1,48 @@
+<style>
+	.dropzone-item {
+		background-color: #FFF !important;
+	}
+
+	textarea {
+		resize: none;
+	}
+</style>
 <div class="d-flex flex-column flex-root">
 	<!--begin::Login-->
 	<div class="login login-3 wizard d-flex flex-column flex-lg-row flex-column-fluid wizard" id="kt_login">
-		<!--begin::Aside-->
-		<div class="login-aside d-flex flex-column flex-row-auto">
-			<!--begin::Aside Top-->
-			<div class="d-flex flex-column-auto flex-column pt-15 px-30">
 
-				<!--begin::Aside Top-->
-				<!--begin::Aside header-->
-				<a href="/" class="login-logo text-center pt-lg-25 pb-10">
-					<img src="/assets/img/aumet-logo.svg" class="max-h-70px" alt="" />
-				</a>
-				<!--end::Aside header-->
-				<!--begin::Aside Title-->
-				<h3 class="font-weight-bolder text-center font-size-h4 text-dark-50 line-height-xl">
-					<?php echo $vLogin_slogan ?></h3>
-				<!--end::Aside Title-->
-				<!--end::Aside Top-->
-				<!--end::Aside header-->
-				<!--begin: Wizard Nav-->
-				<div class="wizard-nav pt-5 pt-lg-15">
-					<!--begin::Wizard Steps-->
-					<div class="wizard-steps">
-						<!--begin::Wizard Step 1 Nav-->
-						<div class="wizard-step" data-wizard-type="step" data-wizard-state="current">
-							<div class="wizard-wrapper">
-								<div class="wizard-icon">
-									<i class="wizard-check flaticon2-user-outline-symbol text-primary"></i>
-									<span class="wizard-number">
-										<i class="flaticon2-user-outline-symbol text-dark"></i>
-									</span>
-								</div>
-								<div class="wizard-label">
-									<h3 class="wizard-title"><?php echo $vSignup_wizardUserInfo ?></h3>
-									<div class="wizard-desc"><?php echo $vSignup_wizardUserInfoDesc ?></div>
-								</div>
-							</div>
-						</div>
-						<!--end::Wizard Step 1 Nav-->
-						<!--begin::Wizard Step 2 Nav-->
-						<div class="wizard-step" data-wizard-type="step">
-							<div class="wizard-wrapper">
-								<div class="wizard-icon">
-									<i class="wizard-check flaticon2-architecture-and-city text-primary"></i>
-									<span class="wizard-number">
-										<i class="flaticon2-architecture-and-city text-dark"></i>
-									</span>
-								</div>
-								<div class="wizard-label">
-									<h3 class="wizard-title"><?php echo $vSignup_wizardEntityInfo ?></h3>
-									<div class="wizard-desc"><?php echo $vSignup_wizardEntityInfoDesc ?></div>
-								</div>
-							</div>
-						</div>
-						<!--end::Wizard Step 2 Nav-->
-						<!--begin::Wizard Step 3 Nav-->
-						<div class="wizard-step" data-wizard-type="step">
-							<div class="wizard-wrapper">
-								<div class="wizard-icon">
-									<i class="wizard-check flaticon2-cube text-primary"></i>
-									<span class="wizard-number">
-										<i class="flaticon2-cube text-dark"></i>
-									</span>
-								</div>
-								<div class="wizard-label">
-									<h3 class="wizard-title"><?php echo $vSignup_wizardSubscrptionInfo ?></h3>
-									<div class="wizard-desc"><?php echo $vSignup_wizardSubscrptionInfoDesc ?></div>
-								</div>
-							</div>
-						</div>
-						<!--end::Wizard Step 3 Nav-->
-						<!--begin::Wizard Step 4 Nav-->
-						<div class="wizard-step" data-wizard-type="step">
-							<div class="wizard-wrapper">
-								<div class="wizard-icon">
-									<i class="wizard-check flaticon2-telegram-logo text-primary"></i>
-									<span class="wizard-number">
-										<i class="flaticon2-telegram-logo text-dark"></i>
-									</span>
-								</div>
-								<div class="wizard-label">
-									<h3 class="wizard-title"><?php echo $vSignup_wizardReviewSubmit ?></h3>
-									<div class="wizard-desc"><?php echo $vSignup_wizardReviewSubmitDesc ?></div>
-								</div>
-							</div>
-						</div>
-						<!--end::Wizard Step 4 Nav-->
-					</div>
-					<!--end::Wizard Steps-->
-				</div>
-				<!--end: Wizard Nav-->
-			</div>
-			<!--end::Aside Top-->
-			<!--begin::Aside Bottom-->
-			<div class="aside-img-wizard d-flex flex-row-fluid bgi-no-repeat pt-2 pt-lg-5" style="background-position: center; background-size: 70%; background-image: url(/assets/img/undraw_steps_ngvm.svg)"></div>
-			<!--end::Aside Bottom-->
-		</div>
-		<!--begin::Aside-->
 		<!--begin::Content-->
 		<div class="login-content flex-column-fluid d-flex flex-column p-10">
-			<!--begin::Top-->
-			<div class="text-right d-flex justify-content-center">
-				<div class="top-signup text-right d-flex justify-content-end pt-5 pb-lg-0 pb-10">
-					<span class="font-weight-bold text-dark-50 font-size-h4"><?php echo $vLogin_helpAdv ?></span>
-					<a href="javascript:;" class="font-weight-bolder text-primary font-size-h4 ml-2" id="kt_login_signup"><?php echo $vLogin_help ?></a>
-				</div>
-			</div>
-			<!--end::Top-->
 			<!--begin::Wrapper-->
 			<div class="d-flex flex-row-fluid flex-center">
 				<!--begin::Signin-->
-				<div class="login-form login-form-signup">
+				<div id="signupContainer" class="login-form login-form-signup">
 					<!--begin::Form-->
 					<form class="form" novalidate="novalidate" id="kt_login_signup_form">
+						<input type="hidden" name="uid" />
 						<!--begin: Wizard Step 1-->
 						<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
 							<!--begin::Title-->
 							<div class="pb-10 pb-lg-15">
-								<h3 class="font-weight-bolder text-dark display5"><?php echo $vLogin_signup ?></h3>
+								<h3 class="font-weight-bolder text-dark display5"><?php echo $vLogin_signupPharmacy ?></h3>
 								<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_AlreadyHaveAccount ?>
-									<a href="/web/auth/signin" class="text-primary font-weight-bolder"><?php echo $vLogin_signin ?></a></div>
+									<a href="/web/auth/signin" class="text-primary font-weight-bolder"><?php echo $vLogin_signin ?></a>
+								</div>
 							</div>
+
+                            <div class="form-group">
+                                <label class="font-size-h2 font-weight-bolder text-dark">I'm a</label>
+                                <div class="radio-inline">
+                                    <label class="radio radio-square radio-lg font-size-h4 font-weight-bolder text-dark mr-5">
+                                        <input type="radio" checked name="companyType" value="pharmacy">
+                                        <span class=""></span>Pharmacy</label>
+                                    <label class="radio radio-square radio-lg font-size-h4 font-weight-bolder text-dark mr-5">
+                                        <input type="radio" name="companyType" value="distributor">
+                                        <span></span>Distributor</label>
+
+                                </div>
+                            </div>
+
 							<!--begin::Title-->
 							<!--begin::Form Group-->
 							<div class="form-group">
@@ -130,14 +52,26 @@
 							<!--end::Form Group-->
 							<!--begin::Form Group-->
 							<div class="form-group">
-								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_email ?></label>
-								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="email" placeholder="" value="" style="direction: ltr;" />
+								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_mobile ?></label>
+								<input type="tel" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="mobile" placeholder="<?php echo $vSignup_mobile ?>" value="" style="direction: ltr;" />
 							</div>
 							<!--end::Form Group-->
 							<!--begin::Form Group-->
 							<div class="form-group">
-								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_mobile ?></label>
-								<input type="tel" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="mobile" placeholder="<?php echo $vSignup_mobile ?>" value="+" style="direction: ltr;" />
+								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_email ?></label>
+								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="email" placeholder="<?php echo $vSignup_email ?>" value="" style="direction: ltr;" />
+							</div>
+							<!--end::Form Group-->
+							<!--begin::Form Group-->
+							<div class="form-group">
+								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_password ?></label>
+								<input type="password" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="password" placeholder="<?php echo $vSignup_password ?>" value="" style="direction: ltr;" />
+							</div>
+							<!--end::Form Group-->
+							<!--begin::Form Group-->
+							<div class="form-group">
+								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_passwordConfirmation ?></label>
+								<input type="password" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="passwordConfirmation" placeholder="<?php echo $vSignup_passwordConfirmation ?>" value="" style="direction: ltr;" />
 							</div>
 							<!--end::Form Group-->
 						</div>
@@ -145,403 +79,122 @@
 						<!--begin: Wizard Step 2-->
 						<div class="pb-5" data-wizard-type="step-content">
 							<!--begin::Title-->
-							<div class="pt-lg-0 pt-5 pb-15">
-								<h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg">Address Details</h3>
-								<div class="text-dark-50 font-weight-bold font-size-h4">Have a Different Address ?
-									<a href="#" class="text-primary font-weight-bolder">Add Address</a></div>
+							<div class="pt-lg-0 pt-5 pb-15 pharmacy">
+								<h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg"><?php echo $vSignup_wizardPharmacyInfoTitle; ?></h3>
+								<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_wizardPharmacyInfoSubtitle; ?></div>
 							</div>
-							<!--begin::Title-->
+
+                            <div class="pt-lg-0 pt-5 pb-15 distributor">
+                                <h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg"><?php echo $vSignup_wizardDistributorInfoTitle; ?></h3>
+                                <div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_wizardDistributorInfoSubtitle; ?></div>
+                            </div>
+
+							<!--end::Title-->
+							<!--begin::Form Group-->
+							<div class="form-group pharmacy">
+								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_pharmacyName; ?></label>
+								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="pharmacyName" placeholder="<?php echo $vSignup_pharmacyName; ?>" value="" style="direction: ltr;" />
+							</div>
+
+                            <div class="form-group distributor">
+                                <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_distributorName; ?></label>
+                                <input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="distributorName" placeholder="<?php echo $vSignup_distributorName; ?>" value="" style="direction: ltr;" />
+                            </div>
+							<!--end::Form Group-->
+							<!--begin::Form Group-->
+							<div class="form-group">
+								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_tradeLicenseNumber ?></label>
+								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="tradeLicenseNumber" placeholder="<?php echo $vSignup_tradeLicenseNumber; ?>" value="" style="direction: ltr;" />
+							</div>
+							<!--end::Form Group-->
 							<!--begin::Row-->
 							<div class="row">
-								<div class="col-xl-6">
-									<!--begin::Input-->
-									<div class="form-group">
-										<label class="font-size-h6 font-weight-bolder text-dark">Address Line 1</label>
-										<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="address1" placeholder="Address Line 1" value="Address Line 1" />
-									</div>
-									<!--end::Input-->
-								</div>
-								<div class="col-xl-6">
-									<!--begin::Input-->
-									<div class="form-group">
-										<label class="font-size-h6 font-weight-bolder text-dark">Address Line 2</label>
-										<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="address2" placeholder="Address Line 2" value="Address Line 2" />
-									</div>
-									<!--end::Input-->
-								</div>
-							</div>
-							<!--end::Row-->
-							<!--begin::Row-->
-							<div class="row">
-								<div class="col-xl-6">
-									<!--begin::Input-->
-									<div class="form-group">
-										<label class="font-size-h6 font-weight-bolder text-dark">Postcode</label>
-										<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="postcode" placeholder="Postcode" value="3000" />
-									</div>
-									<!--end::Input-->
-								</div>
-								<div class="col-xl-6">
-									<!--begin::Input-->
-									<div class="form-group">
-										<label class="font-size-h6 font-weight-bolder text-dark">City</label>
-										<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="city" placeholder="City" value="Melbourne" />
-									</div>
-									<!--end::Input-->
-								</div>
-							</div>
-							<!--end::Row-->
-							<!--begin::Row-->
-							<div class="row">
-								<div class="col-xl-6">
-									<!--begin::Input-->
-									<div class="form-group">
-										<label class="font-size-h6 font-weight-bolder text-dark">State</label>
-										<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="state" placeholder="State" value="VIC" />
-										<span class="form-text text-dark-50">Please enter your State.</span>
-									</div>
-									<!--end::Input-->
-								</div>
 								<div class="col-xl-6">
 									<!--begin::Select-->
 									<div class="form-group">
-										<label class="font-size-h6 font-weight-bolder text-dark">Country</label>
+										<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_country; ?></label>
 										<select name="country" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6">
-											<option value="">Select</option>
-											<option value="AF">Afghanistan</option>
-											<option value="AX">Åland Islands</option>
-											<option value="AL">Albania</option>
-											<option value="DZ">Algeria</option>
-											<option value="AS">American Samoa</option>
-											<option value="AD">Andorra</option>
-											<option value="AO">Angola</option>
-											<option value="AI">Anguilla</option>
-											<option value="AQ">Antarctica</option>
-											<option value="AG">Antigua and Barbuda</option>
-											<option value="AR">Argentina</option>
-											<option value="AM">Armenia</option>
-											<option value="AW">Aruba</option>
-											<option value="AU" selected="selected">Australia</option>
-											<option value="AT">Austria</option>
-											<option value="AZ">Azerbaijan</option>
-											<option value="BS">Bahamas</option>
-											<option value="BH">Bahrain</option>
-											<option value="BD">Bangladesh</option>
-											<option value="BB">Barbados</option>
-											<option value="BY">Belarus</option>
-											<option value="BE">Belgium</option>
-											<option value="BZ">Belize</option>
-											<option value="BJ">Benin</option>
-											<option value="BM">Bermuda</option>
-											<option value="BT">Bhutan</option>
-											<option value="BO">Bolivia, Plurinational State of</option>
-											<option value="BQ">Bonaire, Sint Eustatius and Saba</option>
-											<option value="BA">Bosnia and Herzegovina</option>
-											<option value="BW">Botswana</option>
-											<option value="BV">Bouvet Island</option>
-											<option value="BR">Brazil</option>
-											<option value="IO">British Indian Ocean Territory</option>
-											<option value="BN">Brunei Darussalam</option>
-											<option value="BG">Bulgaria</option>
-											<option value="BF">Burkina Faso</option>
-											<option value="BI">Burundi</option>
-											<option value="KH">Cambodia</option>
-											<option value="CM">Cameroon</option>
-											<option value="CA">Canada</option>
-											<option value="CV">Cape Verde</option>
-											<option value="KY">Cayman Islands</option>
-											<option value="CF">Central African Republic</option>
-											<option value="TD">Chad</option>
-											<option value="CL">Chile</option>
-											<option value="CN">China</option>
-											<option value="CX">Christmas Island</option>
-											<option value="CC">Cocos (Keeling) Islands</option>
-											<option value="CO">Colombia</option>
-											<option value="KM">Comoros</option>
-											<option value="CG">Congo</option>
-											<option value="CD">Congo, the Democratic Republic of the</option>
-											<option value="CK">Cook Islands</option>
-											<option value="CR">Costa Rica</option>
-											<option value="CI">Côte d'Ivoire</option>
-											<option value="HR">Croatia</option>
-											<option value="CU">Cuba</option>
-											<option value="CW">Curaçao</option>
-											<option value="CY">Cyprus</option>
-											<option value="CZ">Czech Republic</option>
-											<option value="DK">Denmark</option>
-											<option value="DJ">Djibouti</option>
-											<option value="DM">Dominica</option>
-											<option value="DO">Dominican Republic</option>
-											<option value="EC">Ecuador</option>
-											<option value="EG">Egypt</option>
-											<option value="SV">El Salvador</option>
-											<option value="GQ">Equatorial Guinea</option>
-											<option value="ER">Eritrea</option>
-											<option value="EE">Estonia</option>
-											<option value="ET">Ethiopia</option>
-											<option value="FK">Falkland Islands (Malvinas)</option>
-											<option value="FO">Faroe Islands</option>
-											<option value="FJ">Fiji</option>
-											<option value="FI">Finland</option>
-											<option value="FR">France</option>
-											<option value="GF">French Guiana</option>
-											<option value="PF">French Polynesia</option>
-											<option value="TF">French Southern Territories</option>
-											<option value="GA">Gabon</option>
-											<option value="GM">Gambia</option>
-											<option value="GE">Georgia</option>
-											<option value="DE">Germany</option>
-											<option value="GH">Ghana</option>
-											<option value="GI">Gibraltar</option>
-											<option value="GR">Greece</option>
-											<option value="GL">Greenland</option>
-											<option value="GD">Grenada</option>
-											<option value="GP">Guadeloupe</option>
-											<option value="GU">Guam</option>
-											<option value="GT">Guatemala</option>
-											<option value="GG">Guernsey</option>
-											<option value="GN">Guinea</option>
-											<option value="GW">Guinea-Bissau</option>
-											<option value="GY">Guyana</option>
-											<option value="HT">Haiti</option>
-											<option value="HM">Heard Island and McDonald Islands</option>
-											<option value="VA">Holy See (Vatican City State)</option>
-											<option value="HN">Honduras</option>
-											<option value="HK">Hong Kong</option>
-											<option value="HU">Hungary</option>
-											<option value="IS">Iceland</option>
-											<option value="IN">India</option>
-											<option value="ID">Indonesia</option>
-											<option value="IR">Iran, Islamic Republic of</option>
-											<option value="IQ">Iraq</option>
-											<option value="IE">Ireland</option>
-											<option value="IM">Isle of Man</option>
-											<option value="IL">Israel</option>
-											<option value="IT">Italy</option>
-											<option value="JM">Jamaica</option>
-											<option value="JP">Japan</option>
-											<option value="JE">Jersey</option>
-											<option value="JO">Jordan</option>
-											<option value="KZ">Kazakhstan</option>
-											<option value="KE">Kenya</option>
-											<option value="KI">Kiribati</option>
-											<option value="KP">Korea, Democratic People's Republic of</option>
-											<option value="KR">Korea, Republic of</option>
-											<option value="KW">Kuwait</option>
-											<option value="KG">Kyrgyzstan</option>
-											<option value="LA">Lao People's Democratic Republic</option>
-											<option value="LV">Latvia</option>
-											<option value="LB">Lebanon</option>
-											<option value="LS">Lesotho</option>
-											<option value="LR">Liberia</option>
-											<option value="LY">Libya</option>
-											<option value="LI">Liechtenstein</option>
-											<option value="LT">Lithuania</option>
-											<option value="LU">Luxembourg</option>
-											<option value="MO">Macao</option>
-											<option value="MK">Macedonia, the former Yugoslav Republic of</option>
-											<option value="MG">Madagascar</option>
-											<option value="MW">Malawi</option>
-											<option value="MY">Malaysia</option>
-											<option value="MV">Maldives</option>
-											<option value="ML">Mali</option>
-											<option value="MT">Malta</option>
-											<option value="MH">Marshall Islands</option>
-											<option value="MQ">Martinique</option>
-											<option value="MR">Mauritania</option>
-											<option value="MU">Mauritius</option>
-											<option value="YT">Mayotte</option>
-											<option value="MX">Mexico</option>
-											<option value="FM">Micronesia, Federated States of</option>
-											<option value="MD">Moldova, Republic of</option>
-											<option value="MC">Monaco</option>
-											<option value="MN">Mongolia</option>
-											<option value="ME">Montenegro</option>
-											<option value="MS">Montserrat</option>
-											<option value="MA">Morocco</option>
-											<option value="MZ">Mozambique</option>
-											<option value="MM">Myanmar</option>
-											<option value="NA">Namibia</option>
-											<option value="NR">Nauru</option>
-											<option value="NP">Nepal</option>
-											<option value="NL">Netherlands</option>
-											<option value="NC">New Caledonia</option>
-											<option value="NZ">New Zealand</option>
-											<option value="NI">Nicaragua</option>
-											<option value="NE">Niger</option>
-											<option value="NG">Nigeria</option>
-											<option value="NU">Niue</option>
-											<option value="NF">Norfolk Island</option>
-											<option value="MP">Northern Mariana Islands</option>
-											<option value="NO">Norway</option>
-											<option value="OM">Oman</option>
-											<option value="PK">Pakistan</option>
-											<option value="PW">Palau</option>
-											<option value="PS">Palestinian Territory, Occupied</option>
-											<option value="PA">Panama</option>
-											<option value="PG">Papua New Guinea</option>
-											<option value="PY">Paraguay</option>
-											<option value="PE">Peru</option>
-											<option value="PH">Philippines</option>
-											<option value="PN">Pitcairn</option>
-											<option value="PL">Poland</option>
-											<option value="PT">Portugal</option>
-											<option value="PR">Puerto Rico</option>
-											<option value="QA">Qatar</option>
-											<option value="RE">Réunion</option>
-											<option value="RO">Romania</option>
-											<option value="RU">Russian Federation</option>
-											<option value="RW">Rwanda</option>
-											<option value="BL">Saint Barthélemy</option>
-											<option value="SH">Saint Helena, Ascension and Tristan da Cunha</option>
-											<option value="KN">Saint Kitts and Nevis</option>
-											<option value="LC">Saint Lucia</option>
-											<option value="MF">Saint Martin (French part)</option>
-											<option value="PM">Saint Pierre and Miquelon</option>
-											<option value="VC">Saint Vincent and the Grenadines</option>
-											<option value="WS">Samoa</option>
-											<option value="SM">San Marino</option>
-											<option value="ST">Sao Tome and Principe</option>
-											<option value="SA">Saudi Arabia</option>
-											<option value="SN">Senegal</option>
-											<option value="RS">Serbia</option>
-											<option value="SC">Seychelles</option>
-											<option value="SL">Sierra Leone</option>
-											<option value="SG">Singapore</option>
-											<option value="SX">Sint Maarten (Dutch part)</option>
-											<option value="SK">Slovakia</option>
-											<option value="SI">Slovenia</option>
-											<option value="SB">Solomon Islands</option>
-											<option value="SO">Somalia</option>
-											<option value="ZA">South Africa</option>
-											<option value="GS">South Georgia and the South Sandwich Islands</option>
-											<option value="SS">South Sudan</option>
-											<option value="ES">Spain</option>
-											<option value="LK">Sri Lanka</option>
-											<option value="SD">Sudan</option>
-											<option value="SR">Suriname</option>
-											<option value="SJ">Svalbard and Jan Mayen</option>
-											<option value="SZ">Swaziland</option>
-											<option value="SE">Sweden</option>
-											<option value="CH">Switzerland</option>
-											<option value="SY">Syrian Arab Republic</option>
-											<option value="TW">Taiwan, Province of China</option>
-											<option value="TJ">Tajikistan</option>
-											<option value="TZ">Tanzania, United Republic of</option>
-											<option value="TH">Thailand</option>
-											<option value="TL">Timor-Leste</option>
-											<option value="TG">Togo</option>
-											<option value="TK">Tokelau</option>
-											<option value="TO">Tonga</option>
-											<option value="TT">Trinidad and Tobago</option>
-											<option value="TN">Tunisia</option>
-											<option value="TR">Turkey</option>
-											<option value="TM">Turkmenistan</option>
-											<option value="TC">Turks and Caicos Islands</option>
-											<option value="TV">Tuvalu</option>
-											<option value="UG">Uganda</option>
-											<option value="UA">Ukraine</option>
-											<option value="AE">United Arab Emirates</option>
-											<option value="GB">United Kingdom</option>
-											<option value="US">United States</option>
-											<option value="UM">United States Minor Outlying Islands</option>
-											<option value="UY">Uruguay</option>
-											<option value="UZ">Uzbekistan</option>
-											<option value="VU">Vanuatu</option>
-											<option value="VE">Venezuela, Bolivarian Republic of</option>
-											<option value="VN">Viet Nam</option>
-											<option value="VG">Virgin Islands, British</option>
-											<option value="VI">Virgin Islands, U.S.</option>
-											<option value="WF">Wallis and Futuna</option>
-											<option value="EH">Western Sahara</option>
-											<option value="YE">Yemen</option>
-											<option value="ZM">Zambia</option>
-											<option value="ZW">Zimbabwe</option>
+											<option value=""><?php echo $vSignup_country; ?></option>
+											<?php foreach ($arrCountry as $country) : ?>
+												<option value="<?php echo $country['id']; ?>"><?php echo $country['name']; ?></option>
+											<?php endforeach; ?>
 										</select>
 									</div>
-									<!--end::Input-->
+									<!--end::Select-->
+								</div>
+								<div class="col-xl-6">
+									<!--begin::Form Group-->
+									<div class="form-group">
+										<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_city; ?></label>
+										<select name="city" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" disabled>
+											<option value=""><?php echo $vSignup_city; ?></option>
+										</select>
+									</div>
+									<!--end::Form Group-->
 								</div>
 							</div>
 							<!--end::Row-->
+							<!--begin::Form Group-->
+							<div class="form-group">
+								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_address; ?></label>
+								<textarea class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="address" placeholder="<?php echo $vSignup_address; ?>" value="" style="direction: ltr;" rows="4"></textarea>
+							</div>
+							<!--end::Form Group-->
+							<!--begin::Form Group-->
+							<div class="form-group">
+								<div>
+									<label class="font-size-h6 font-weight-bolder text-dark pharmacy"><?php echo $vSignup_pharmacyDocument; ?></label>
+									<label class="font-size-h6 font-weight-bolder text-dark distributor"><?php echo $vSignup_distributorDocument; ?></label>
+								</div>
+
+								<div class="dropzone dropzone-multi" id="kt_dropzone" style="background-color: unset;">
+									<div class="dropzone-panel mb-lg-0 mb-2">
+										<a class="dropzone-select btn btn-light-primary font-weight-bolder font-size-h6 pl-6 pr-8 py-4 my-3 mr-3">
+											<span class="svg-icon menu-icon">
+												<!--begin::Svg Icon | path:assets/media/svg/icons/Files/Upload.svg-->
+												<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+														<rect x="0" y="0" width="24" height="24"></rect>
+														<path d="M2,13 C2,12.5 2.5,12 3,12 C3.5,12 4,12.5 4,13 C4,13.3333333 4,15 4,18 C4,19.1045695 4.8954305,20 6,20 L18,20 C19.1045695,20 20,19.1045695 20,18 L20,13 C20,12.4477153 20.4477153,12 21,12 C21.5522847,12 22,12.4477153 22,13 L22,18 C22,20.209139 20.209139,22 18,22 L6,22 C3.790861,22 2,20.209139 2,18 C2,15 2,13.3333333 2,13 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"></path>
+														<rect fill="#000000" opacity="0.3" x="11" y="2" width="2" height="14" rx="1"></rect>
+														<path d="M12.0362375,3.37797611 L7.70710678,7.70710678 C7.31658249,8.09763107 6.68341751,8.09763107 6.29289322,7.70710678 C5.90236893,7.31658249 5.90236893,6.68341751 6.29289322,6.29289322 L11.2928932,1.29289322 C11.6689749,0.916811528 12.2736364,0.900910387 12.6689647,1.25670585 L17.6689647,5.75670585 C18.0794748,6.12616487 18.1127532,6.75845471 17.7432941,7.16896473 C17.3738351,7.57947475 16.7415453,7.61275317 16.3310353,7.24329415 L12.0362375,3.37797611 Z" fill="#000000" fill-rule="nonzero"></path>
+													</g>
+												</svg>
+												<!--end::Svg Icon-->
+											</span><?php echo $vSignup_uploadDocument; ?>
+										</a>
+									</div>
+									<div class="dropzone-items">
+										<div class="dropzone-item" style="display:none">
+											<div class="dropzone-file">
+												<div class="dropzone-filename">
+													<span data-dz-name="">some_image_file_name.jpg</span>
+													<strong>(
+														<span data-dz-size="">340kb</span>)</strong>
+												</div>
+												<div class="dropzone-error" data-dz-errormessage=""></div>
+											</div>
+											<div class="dropzone-progress">
+												<div class="progress">
+													<div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress=""></div>
+												</div>
+											</div>
+											<div class="dropzone-toolbar">
+												<span class="dropzone-delete" data-dz-remove="">
+													<i class="flaticon2-cross"></i>
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="mt-5">
+									<div class="font-size-h6 font-weight-bolder text-muted">Max file size is 10mb and </div>
+									<div class="font-size-h6 font-weight-bolder text-muted">File types allowed are .pdf, .ppt, .xcl, .docx, .jpeg, .jpg, .png </div>
+								</div>
+							</div>
+							<!--end::Form Group-->
 						</div>
 						<!--end: Wizard Step 2-->
-						<!--begin: Wizard Step 3-->
-						<div class="pb-5" data-wizard-type="step-content">
-							<!--begin::Title-->
-							<div class="pt-lg-0 pt-5 pb-15">
-								<h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg">Support Channels</h3>
-								<div class="text-dark-50 font-weight-bold font-size-h4">Specify Your Support Channels</div>
-							</div>
-							<!--end::Title-->
-							<!--begin::Form Group-->
-							<div class="form-group">
-								<label class="font-size-h6 font-weight-bolder text-dark">Delivery Type:</label>
-								<select name="delivery" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6">
-									<option value="">Select a Service Type Option</option>
-									<option value="overnight" selected="selected">Overnight Delivery (within 48 hours)</option>
-									<option value="express">Express Delivery (within 5 working days)</option>
-									<option value="basic">Basic Delivery (within 5 - 10 working days)</option>
-								</select>
-							</div>
-							<!--end::Form Group-->
-							<!--begin::Form Group-->
-							<div class="form-group">
-								<label class="font-size-h6 font-weight-bolder text-dark">Packaging Type:</label>
-								<select name="packaging" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6">
-									<option value="">Select a Packaging Type Option</option>
-									<option value="regular" selected="selected">Regular Packaging</option>
-									<option value="oversized">Oversized Packaging</option>
-									<option value="fragile">Fragile Packaging</option>
-									<option value="frozen">Frozen Packaging</option>
-								</select>
-							</div>
-							<!--end::Form Group-->
-							<!--begin::Form Group-->
-							<div class="form-group">
-								<label class="font-size-h6 font-weight-bolder text-dark">Preferred Delivery Window:</label>
-								<select name="preferreddelivery" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6">
-									<option value="">Select a Preferred Delivery Option</option>
-									<option value="morning" selected="selected">Morning Delivery (8:00AM - 11:00AM)</option>
-									<option value="afternoon">Afternoon Delivery (11:00AM - 3:00PM)</option>
-									<option value="evening">Evening Delivery (3:00PM - 7:00PM)</option>
-								</select>
-							</div>
-							<!--end::Form Group-->
-						</div>
-						<!--end: Wizard Step 3-->
-						<!--begin: Wizard Step 4-->
-						<div class="pb-5" data-wizard-type="step-content">
-							<!--begin::Title-->
-							<div class="pt-lg-0 pt-5 pb-15">
-								<h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg">Complete</h3>
-								<div class="text-dark-50 font-weight-bold font-size-h4">Complete Your Signup And Become A Member!</div>
-							</div>
-							<!--end::Title-->
-							<!--begin::Section-->
-							<h4 class="font-weight-bolder mb-3">Accoun Settings:</h4>
-							<div class="text-dark-50 font-weight-bold line-height-lg mb-8">
-								<div>Nick Stone</div>
-								<div>+12233434-34</div>
-								<div>nick.stone@gmail.com</div>
-							</div>
-							<!--end::Section-->
-							<!--begin::Section-->
-							<h4 class="font-weight-bolder mb-3">Address Details:</h4>
-							<div class="text-dark-50 font-weight-bold line-height-lg mb-8">
-								<div>Address Line 1</div>
-								<div>Address Line 2</div>
-								<div>Melbourne 3000, VIC, Australia</div>
-							</div>
-							<!--end::Section-->
-							<!--begin::Section-->
-							<h4 class="font-weight-bolder mb-3">Support Channels:</h4>
-							<div class="text-dark-50 font-weight-bold line-height-lg mb-8">
-								<div>Overnight Delivery with Regular Packaging</div>
-								<div>Preferred Morning (8:00AM - 11:00AM) Delivery</div>
-							</div>
-							<!--end::Section-->
-						</div>
-						<!--end: Wizard Step 4-->
 						<!--begin: Wizard Actions-->
 						<div class="d-flex justify-content-between pt-3">
 							<div class="mr-2">
@@ -590,10 +243,104 @@
 					<!--end::Form-->
 				</div>
 				<!--end::Signin-->
+				<!--begin::Thankyou-->
+				<div id="thankyouContainer" class="login-form login-form-signup pb-5" style="display: none;">
+					<div class="pb-10 pb-lg-15">
+						<h3 class="font-weight-bolder text-dark display5"><?php echo $vSignup_thankyouTitle ?></h3>
+						<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_thankyouSubtitle ?></div>
+
+                        <a href="/web/auth/signin">
+                            <button class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3"><?php echo $vSignup_thankyouHome ?></button>
+						</a>
+					</div>
+                    <div>
+
+                        <table width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation">
+                            <tbody>
+                            <tr>
+                                <td class="o_bg-light o_px-xs" align="center" style="padding-left: 8px;padding-right: 8px;">
+                                    <!--[if mso]><table width="800" cellspacing="0" cellpadding="0" border="0" role="presentation"><tbody><tr><td><![endif]-->
+                                    <table class="o_block-lg" width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation" style="max-width: 800px;margin: 0 auto;">
+                                        <tbody id="signupDetailData">
+                                        </tbody>
+                                    </table>
+                                    <!--[if mso]></td></tr></table><![endif]-->
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+				</div>
+				<!--end::Thankyou-->
 			</div>
 			<!--end::Wrapper-->
 		</div>
 		<!--end::Content-->
+		<!--begin::Aside-->
+		<div class="login-aside d-flex flex-column flex-row-auto">
+			<!--begin::Aside Top-->
+			<div class="d-flex flex-column-auto flex-column pt-15 px-30">
+
+				<!--begin::Aside Top-->
+				<!--begin::Aside header-->
+				<a href="/" class="login-logo text-center pt-lg-25 pb-10">
+					<img src="/assets/img/aumet-logo.svg" class="max-h-70px" alt="" />
+				</a>
+				<!--end::Aside header-->
+				<!--begin::Aside Title-->
+				<h3 class="font-weight-bolder text-center font-size-h4 text-dark-50 line-height-xl">
+					<?php echo $vLogin_slogan ?></h3>
+				<!--end::Aside Title-->
+				<!--end::Aside Top-->
+				<!--end::Aside header-->
+				<!--begin: Wizard Nav-->
+				<div class="wizard-nav pt-5 pt-lg-15">
+					<!--begin::Wizard Steps-->
+					<div class="wizard-steps">
+						<!--begin::Wizard Step 1 Nav-->
+						<div class="wizard-step" data-wizard-type="step" data-wizard-state="current">
+							<div class="wizard-wrapper">
+								<div class="wizard-icon">
+									<i class="wizard-check flaticon2-user-outline-symbol text-primary"></i>
+									<span class="wizard-number">
+										<i class="flaticon2-user-outline-symbol text-dark"></i>
+									</span>
+								</div>
+								<div class="wizard-label">
+									<h3 class="wizard-title"><?php echo $vSignup_wizardPersonalInfo ?></h3>
+									<div class="wizard-desc"><?php echo $vSignup_wizardPersonalInfoDesc ?></div>
+								</div>
+							</div>
+						</div>
+						<!--end::Wizard Step 1 Nav-->
+						<!--begin::Wizard Step 2 Nav-->
+						<div class="wizard-step" data-wizard-type="step">
+							<div class="wizard-wrapper">
+								<div class="wizard-icon">
+									<i class="wizard-check flaticon2-medical-records-1 text-primary"></i>
+									<span class="wizard-number">
+										<i class="flaticon2-medical-records-1 text-dark"></i>
+									</span>
+								</div>
+								<div class="wizard-label">
+									<h3 class="wizard-title"><?php echo $vSignup_wizardPharmacyInfo ?></h3>
+									<div class="wizard-desc"><?php echo $vSignup_wizardPharmacyInfoDesc ?></div>
+								</div>
+							</div>
+						</div>
+						<!--end::Wizard Step 2 Nav-->
+					</div>
+					<!--end::Wizard Steps-->
+				</div>
+				<!--end: Wizard Nav-->
+			</div>
+			<!--end::Aside Top-->
+			<!--begin::Aside Bottom-->
+			<div class="aside-img-wizard d-flex flex-row-fluid bgi-no-repeat pt-2 pt-lg-5" style="background-position: center; background-size: 70%; background-image: url(/assets/img/undraw_steps_ngvm.svg)"></div>
+			<!--end::Aside Bottom-->
+		</div>
+		<!--begin::Aside-->
 	</div>
 	<!--end::Login-->
 </div>

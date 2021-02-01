@@ -40,19 +40,40 @@ var Cart = (function () {
 	var _addItemSuccessCallback = function (webResponse) {
 		_itemsCount++;
 		_topbarItemText.html(_itemsCount);
+
+		// Update cart count
+		let cartCount = webResponse.data > 9 ? '9+' : webResponse.data;
+		if (webResponse.data !== 0) $('#cartCount').css('display', 'flex');
+		else $('#cartCount').css('display', 'none');
+		$('#cartCount').html(cartCount);
 	};
 
 	var _removeItemSuccessCallback = function (webResponse) {
+		// Update cart count
+		let cartCount = webResponse.data > 9 ? '9+' : webResponse.data;
+		if (webResponse.data !== 0) $('#cartCount').css('display', 'flex');
+		else $('#cartCount').css('display', 'none');
+		$('#cartCount').html(cartCount);
+
 		WebApp.loadPage('/web/cart');
 	};
 
-	var _addItem = function (entityId, productId, quantityInputId = null) {
+	var _addItem = function (entityId, productId, quantityInputId = null, quantityFreeInputId = null) {
 		if (_itemsCount <= 0) {
 			_topBarItemSvgIcon.removeClass(_svgIconNoColor_NoItems).addClass(_svgIconNoColor_Items);
 			_topbarItemTextContainer.addClass(_addPulse).addClass(_addPulseColor);
 			_topbarItemText.show();
 		}
-		WebApp.post('/web/cart/add', { entityId: entityId, productId: productId, quantity: quantityInputId == null ? 1 : $(quantityInputId).val() }, _addItemSuccessCallback);
+
+		if (quantityInputId != null && $(quantityInputId).val() < 1) return;
+
+		let body = {
+			entityId,
+			productId,
+			quantity: quantityInputId == null ? 1 : $(quantityInputId).val(),
+			quantityFree: quantityFreeInputId == null ? 0 : $(quantityFreeInputId).val(),
+		};
+		WebApp.post('/web/cart/add', body, _addItemSuccessCallback);
 	};
 
 	var _removeItem = function (id) {
@@ -67,19 +88,27 @@ var Cart = (function () {
 		}
 	};
 
+	var _emptyCart = function () {
+		$('#cartCount').html(0);
+		$('#cartCount').css('display', 'none');
+	};
+
 	// Public Functions
 	return {
 		init: function () {
 			_int();
 		},
-		addItem: function (entityId, productId, quantityInputId = null) {
-			_addItem(entityId, productId, quantityInputId);
+		addItem: function (entityId, productId, quantityInputId = null, quantityFreeInputId = null) {
+			_addItem(entityId, productId, quantityInputId, quantityFreeInputId);
 		},
 		removeItem: function (id) {
 			_removeItem(id);
 		},
 		loadCartPage: function () {
 			_loadCartPage();
+		},
+		emptyCart: function () {
+			_emptyCart();
 		},
 	};
 })();

@@ -13,7 +13,9 @@
 		"vlucas/phpdotenv": "^4.1",
         "setasign/fpdf": "^1.8",
         "tecnickcom/tcpdf": "^6.3.5",
-		"kreait/firebase-php": "^5.8"
+		"kreait/firebase-php": "^5.8",
+		"lcobucci/jwt": "3.4.1",
+		"kenwheeler/slick": "1.6.*"
 	},
 	"license": "Aumet Inc All Rights Reserved",
 	"authors": [
@@ -21,5 +23,8 @@
 			"name": "Alaa Al Atrash",
 			"email": "a.atrash@aumet.me"
 		}
-	]
+	],
+	"require-dev": {
+		"spatie/ray": "^1.16"
+	}
 }

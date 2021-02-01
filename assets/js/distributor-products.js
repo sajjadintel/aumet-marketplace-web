@@ -1,394 +1,664 @@
 'use strict';
 // Class definition
 var DistributorProductsDataTable = (function () {
-	// Private functions
 
-	var datatable;
-	var _readParams;
+    var repeater;
 
-	var _init = function (objQuery) {
-		_readParams = objQuery;
-		datatable = $('#kt_datatable').KTDatatable({
-			// datasource definition
+    var mandatoryFields = [
+        "scientificNameId",
+        "madeInCountryId",
+        "name_ar",
+        "name_en",
+        "name_fr",
+        "description_ar",
+        "description_en",
+        "description_fr",
+        "unitPrice",
+        "vat",
+        "maximumOrderQuantity",
+        "categoryId",
+        "subcategoryId",
+    ];
+  
+    // Structure: field: [minLength, maxLength] 
+    var mapFieldStrRangeLength = {
+        "name_en": [4, 200],
+        "name_ar": [4, 200],
+        "name_fr": [4, 200],
+        "description_ar": [4, 1000],
+        "description_en": [4, 1000],
+        "description_fr": [4, 1000],
+        "subtitle_ar": [4, 200],
+        "subtitle_en": [4, 200],
+        "subtitle_fr": [4, 200],
+        "manufacturerName": [4, 200],
+        "strength": [4, 200],
+    };
+  
+    var mapUuidSubimage = {};
+    var imageModal;
+    var _validator;
+    var _validatorFields = {};
 
-			data: {
-				type: 'remote',
-				source: {
-					read: {
-						url: '/web/distributor/product',
-						params: _readParams,
-					},
-				},
-				serverPaging: true,
-				serverFiltering: true,
-				serverSorting: true,
-			},
+    var _productEditModal = function (productId) {
+        WebApp.get('/web/distributor/product/' + productId, _productEditModalOpen);
+    };
 
-			// layout definition
-			layout: {
-				scroll: false, // enable/disable datatable scroll both horizontal and vertical when needed.
-				footer: false, // display/hide footer
-			},
+    var _productEditQuantityModal = function (productId) {
+        WebApp.get('/web/distributor/product/quantity/' + productId, _productEditQuantityModalOpen);
+    };
 
-			// column sorting
-			sortable: true,
+    var _productAddModal = function () {
+        _productAddModalOpen();
+    };
 
-			pagination: true,
+    var _productEditModalOpenNew = function (webResponse) {
+        $('#genericModalContent').html(webResponse.data);
+        $('#genericModal').modal('show');
+    };
 
-			// Order settings
-			order: [[2, 'asc']],
+    var _productEditModalOpen = function (webResponse) {
+        if(_validator) {
+            _validator.resetForm();
+            _validator.destroy();
+        }
+        
+        $('#editModalForm').attr('action', '/web/distributor/product/edit');
 
-			// columns definition
-			columns: [
-				{
-					field: 'id',
-					title: '#',
-					sortable: 'asc',
-					width: 40,
-					type: 'number',
-					selector: false,
-					textAlign: 'left',
-					autoHide: false,
-				},
-				{
-					field: 'productName_en', // + docLang,
-					title: WebAppLocals.getMessage('productName'),
-					autoHide: false,
-				},
-				{
-					field: 'image',
-					title: '',
-					autoHide: true,
-					sortable: false,
-					template: function (row) {
-						return (
-							'<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
-							row.image +
-							'\')" ></div></div>'
-						);
-					},
-				},
-				{
-					field: 'scientificName',
-					title: WebAppLocals.getMessage('productScintificName'),
-					autoHide: true,
-				},
-				{
-					field: 'expiryDate',
-					title: WebAppLocals.getMessage('expiryDate'),
-					autoHide: true,
-					template: function (row) {
-						if (row.expiryDate) {
-							return (
-								'<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.expiryDate).format('DD / MM / YYYY') + '</span>'
-							);
-						} else {
-							return '';
-						}
-					},
-				},
-				{
-					field: 'stockStatusId',
-					sortable: false,
-					title: WebAppLocals.getMessage('stockAvailability'),
-					autoHide: false,
-					// callback function support for column rendering
-					template: function (row) {
-						var status = {
-							1: {
-								title: WebAppLocals.getMessage('stockAvailability_available'),
-								class: ' label-primary',
-							},
-							2: {
-								title: WebAppLocals.getMessage('stockAvailability_notAvailable'),
-								class: ' label-danger',
-							},
-							3: {
-								title: WebAppLocals.getMessage('stockAvailability_availableSoon'),
-								class: ' label-warning',
-							},
-						};
+        $('#editProductId').val(webResponse.data.product.productId);
+        $('#editProductNameAr').val(webResponse.data.product.productName_ar);
+        $('#editProductNameEn').val(webResponse.data.product.productName_en);
+        $('#editProductNameFr').val(webResponse.data.product.productName_fr);
+        $('#editUnitPrice').val(webResponse.data.product.unitPrice);
+        $('#editVat').val(webResponse.data.product.vat);
+        $('#editMaximumOrderQuantity').val(webResponse.data.product.maximumOrderQuantity);
+        $('#editProductSubtitleAr').val(webResponse.data.product.subtitle_ar);
+        $('#editProductSubtitleEn').val(webResponse.data.product.subtitle_en);
+        $('#editProductSubtitleFr').val(webResponse.data.product.subtitle_fr);
+        $('#editProductDescriptionAr').val(webResponse.data.product.description_ar);
+        $('#editProductDescriptionEn').val(webResponse.data.product.description_en);
+        $('#editProductDescriptionFr').val(webResponse.data.product.description_fr);
+        $('#editProductManufacturerName').val(webResponse.data.product.manufacturerName);
+        $('#editProductBatchNumber').val(webResponse.data.product.batchNumber);
+        $('#editProductItemCode').val(webResponse.data.product.itemCode);
+        $('#editProductExpiryDate').val(webResponse.data.product.productExpiryDate);
+        $('#editProductStrength').val(webResponse.data.product.strength);
 
-						var output = '';
+        $('#editProductScientificName').empty();
+        $('#editProductScientificName').append(new Option(webResponse.data.product.scientificName, webResponse.data.product.scientificNameId));
+        $('#editProductScientificName').val(webResponse.data.product.scientificNameId);
 
-						output +=
-							'<div><span class="label label-lg font-weight-bold ' +
-							status[row.stockStatusId].class +
-							' label-inline">' +
-							status[row.stockStatusId].title +
-							'</span></div>';
-						// output += '<div class="text-muted">' + (row.stockUpdateDateTime != null ? jQuery.timeago(row.stockUpdateDateTime) : 'NA') + '</div>';
+        $('#editProductCountry').empty();
+        $('#editProductCountry').append(new Option(webResponse.data.product['madeInCountryName_' + docLang], webResponse.data.product.madeInCountryId));
+        $('#editProductCountry').val(webResponse.data.product.madeInCountryId);
 
-						return output;
-					},
-				},
-				{
-					field: 'stockUpdateDateTime',
-					title: WebAppLocals.getMessage('stockUpdateDateTime'),
-					autoHide: false,
-					template: function (row) {
-						if (row.stockUpdateDateTime) {
-							return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
-						} else {
-							return '';
-						}
-					},
-				},
-				{
-					field: 'unitPrice', // + docLang,
-					title: WebAppLocals.getMessage('unitPrice'),
-					autoHide: false,
-					template: function (row) {
-						return '<span class="font-size-sm">'+row.currency+'</span>' + ' <b class="font-size-h4">' + row.unitPrice  + '</b>';
-					},
-				},
-				// {
-				// 	field: 'bonusOptions', // + docLang,
-				// 	title: WebAppLocals.getMessage('bonus'),
-				// 	autoHide: false,
-				// 	sortable: false,
-				// 	template: function (row) {
-				// 		if (row.stockStatusId == 1) {
-				// 			var tdText = '';
-				// 			row.bonusOptions.sort((a, b) => parseInt(a.minOrder) - parseInt(b.minOrder));
-				// 			row.bonusOptions.forEach((element) => {
-				// 				tdText +=
-				// 					'<a href="javascript:;" onclick=\'SearchDataTable.onBonusOptionCallback(' +
-				// 					JSON.stringify(row) +
-				// 					', ' +
-				// 					JSON.stringify(element) +
-				// 					' )\'><span id="bonusOption-' +
-				// 					row.id +
-				// 					'-' +
-				// 					element.id +
-				// 					'" class="label label-xl label-light label-square label-inline mr-2 bonus-option-label-' +
-				// 					row.id +
-				// 					'">' +
-				// 					element.name +
-				// 					' </span></a>';
-				// 			});
-				// 			//var bonus = math.evaluate('floor(quantity / 6) * 2', row);
-				// 			//return '<span id="bonus-' + row.id + '" class="label label-xl label-rounded label-primary" style="width: 50px">' + bonus + ' </span>';
-				// 			return tdText;
-				// 		} else {
-				// 			return '';
-				// 		}
-				// 	},
-				// },
-				{
-					field: 'Actions',
-					title: '',
-					sortable: false,
+        $('#editProductCategory').empty();
+        $('#editProductCategory').append(new Option(webResponse.data.product['productCategoryName_' + docLang], webResponse.data.product.productCategoryId));
+        $('#editProductCategory').val(webResponse.data.product.productCategoryId);
+        $('#editProductCategory').on("change", () => _updateSubcategorySelect("edit"));
 
-					overflow: 'visible',
-					autoHide: false,
-					template: function (row) {
-						var outActions = '';
+        $('#editProductSubcategory').empty();
+        $('#editProductSubcategory').append(new Option(webResponse.data.product['productSubcategoryName_' + docLang], webResponse.data.product.productSubcategoryId));
+        $('#editProductSubcategory').val(webResponse.data.product.productSubcategoryId);
 
-						var btnEdit =
-							'<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditModal(' +
-							row.id +
-							')\' \
-						class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
-						<i class="nav-icon la la-edit p-0"></i> ' +
-							WebAppLocals.getMessage('edit') +
-							'</a>';
+        var allActiveIngredients = webResponse.data.activeIngredients || [];
+        var allActiveIngredientsId = [];
 
-						var btnEditQuantity =
-							'<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditQuantityModal(' +
-							row.id +
-							')\' \
-						class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
-						<i class="nav-icon la la-box p-0"></i> ' +
-							WebAppLocals.getMessage('editQuantity') +
-							'</a>';
+        $('#editActiveIngredients').empty();
+        allActiveIngredients.forEach((activeIngredient) => {
+            $('#editActiveIngredients').append(new Option(activeIngredient['ingredientName_' + docLang], activeIngredient.ingredientId));
+            allActiveIngredientsId.push(activeIngredient.ingredientId);
+        })
+        $('#editActiveIngredients').val(allActiveIngredientsId);
+        $('#editActiveIngredientsVal').val(allActiveIngredientsId);
 
-						// switch (row.stockStatusId) {
-						// 	case 1:
-						// 		outActions += btnViewProduct;
-						// 		if (row.cart > 0) {
-						// 			outActions += btnAddMoreToCart;
-						// 		} else {
-						// 			outActions += btnAddToCart;
-						// 		}
-						// 		SearchDataTable.changeProductQuantityCallback(row);
-						// 		break;
-						// 	case 2:
-						// 		outActions += btnViewProduct;
-						// 		outActions += btnNotifyMe;
-						// 		break;
-						// 	case 3:
-						// 		outActions += btnViewProduct;
-						// 		outActions += btnNotifyMe;
-						// 		break;
-						// }
+        $('#editActiveIngredients').on('change', (ev) => _updateActiveIngredientsVal('edit'));
+      
+        _changeImageHolder(webResponse.data.product.image, "edit");
+        $('#editProductImage').on("change", (ev) => _changeProductImage(ev, "edit"));
 
-						outActions += btnEdit;
-						outActions += btnEditQuantity;
+        _initializeSubimagesDropzone('edit', webResponse.data.subimages);
+        
+        $('#editModal').appendTo('body').modal('show');
+    };
 
-						return outActions;
-					},
-				},
-			],
+    var _productEditQuantityModalOpen = function (webResponse) {
+        $('#editQuantityModalForm').attr('action', '/web/distributor/product/editQuantity');
+        $('#editQuantityProductId').val(webResponse.data.product.productId);
+
+        $('#editQuantityModalTitle').html(WebAppLocals.getMessage('editQuantity'));
+
+        $("label[for='editQuantityStock']").text(WebAppLocals.getMessage('quantityAvailable'));
+        $('#editQuantityStock').val(webResponse.data.product.stock);
+
+        switch (webResponse.data.product.stockStatusId) {
+            case 1:
+                $('#editQuantityStockAvailability').bootstrapSwitch('state', true);
+                $('#editQuantityStockAvailability').bootstrapSwitch('disabled', true);
+                break;
+            case 2:
+                $('#editQuantityStockAvailability').bootstrapSwitch('state', false);
+                break;
+            case 3:
+                $('#editQuantityStockAvailability').bootstrapSwitch('state', true);
+                break;
+            default:
+                break;
+        }
+        $('#editQuantityStock').on('change paste keyup', function () {
+            if ($(this).val() > 0) {
+                $('#editQuantityStockAvailability').bootstrapSwitch('disabled', true);
+            } else {
+                $('#editQuantityStockAvailability').bootstrapSwitch('disabled', false);
+            }
+        });
+
+        $("label[for='editQuantityBonusMinOrder']").text(WebAppLocals.getMessage('minOrder'));
+        $("label[for='editQuantityBonusQuantity']").text(WebAppLocals.getMessage('bonus'));
+        $("label[for='editQuantityBonusDelete']").text(WebAppLocals.getMessage('delete'));
+        $("label[for='editQuantityBonusAdd']").text(WebAppLocals.getMessage('add'));
+
+        // Hide Bonus section
+        $('#editQuantityBonusType').parent().parent().parent().hide();
+        $('#editQuantityBonusListRepeater').parent().parent().hide();
+
+        $("label[for='editQuantityBonusType']").text(WebAppLocals.getMessage('bonus'));
+
+        switch (webResponse.data.product.bonusTypeId) {
+            case 1:
+                $('#editQuantityBonusListRepeater').hide();
+                $('#editQuantityBonusType').bootstrapSwitch('state', false);
+                break;
+            case 2:
+                $('#editQuantityBonusListRepeater').show();
+                $('#editQuantityBonusType').bootstrapSwitch('state', true);
+                break;
+            default:
+                break;
+        }
+
+        $('#editQuantityBonusType')
+            .bootstrapSwitch()
+            .on('switchChange.bootstrapSwitch', function (event, state) {
+                if (state) {
+                    $('#editQuantityBonusListRepeater').show();
+                } else {
+                    $('#editQuantityBonusListRepeater').hide();
+                }
+            });
+
+        $('#editQuantityModalAction').html(WebAppLocals.getMessage('editQuantity'));
+
+        repeater = $('#editQuantityBonusListRepeater').repeater({
+            isFirstItemUndeletable: true,
+            show: function () {
+                $(this).slideDown();
+            },
+            hide: function (deleteElement) {
+                if (confirm('Are you sure you want to delete this element?')) {
+                    $(this).slideUp(deleteElement);
+                }
+            },
+        });
+
+        repeater.setList(webResponse.data.bonus);
+
+
+        $('#editQuantityModal').appendTo('body').modal('show');
+    };
+
+    var _productAddModalOpen = function () {
+        _clearAddModal();
+        if(_validator) {
+            _validator.resetForm();
+            _validator.destroy();
+        }
+
+        $('#addModalForm').attr('action', '/web/distributor/product/add');
+        $('#addProductCategory').on('change', () => _updateSubcategorySelect('add'));
+
+        _changeImageHolder('', 'add');
+        $('#addProductImage').on('change', (ev) => _changeProductImage(ev, 'add'));
+
+        $('#addActiveIngredients').on('change', (ev) => _updateActiveIngredientsVal('add'));
+        
+        _initializeSubimagesDropzone('add');
+
+        $('#addModal').appendTo('body').modal('show');
+    };
+
+    var _clearAddModal = function () {
+        $('#addProductImage').val('');
+        $('#addProductImageInput').val('');
+        $('#addProductScientificName').val('').change();
+        $('#addProductCountry').val('').change();
+        $('#addProductNameAr').val('');
+        $('#addProductNameEn').val('');
+        $('#addProductNameFr').val('');
+        $('#addProductSubtitleAr').val('');
+        $('#addProductSubtitleEn').val('');
+        $('#addProductSubtitleFr').val('');
+        $('#addProductDescriptionAr').val('');
+        $('#addProductDescriptionEn').val('');
+        $('#addProductDescriptionFr').val('');
+        $('#addUnitPrice').val('');
+        $('#addVat').val('');
+        $('#addStock').val('');
+        $('#addMaximumOrderQuantity').val('');
+        $('#addProductManufacturerName').val('');
+        $('#addProductBatchNumber').val('');
+        $('#addProductItemCode').val('');
+        $('#addProductCategory').val('').change();
+        $('#addActiveIngredients').val('').change();
+        $('#addProductExpiryDate').val('');
+        $('#addProductStrength').val('');
+        $('#addProductSubcategory').val('').change();
+        $('#addProductImageHolder').val('');
+        $('#editProductExpiryDate').val('');
+    }
+
+    var _productImageUpload = function (webResponse, mode) {
+        _changeImageHolder(webResponse.data, mode);
+    }
+
+    var _changeImageHolder = function (image, mode) {
+        let backgroundImageVal = '/theme/assets/media/users/blank.png';
+        if (image) {
+            backgroundImageVal = image;
+        }
+        $('#' + mode + 'ProductImageHolder').css('background-image', 'url(' + backgroundImageVal + ')');
+        $('#' + mode + 'ProductImageInput').val(image);
+    }
+
+    var _changeProductImage = function (ev, mode) {
+        let file = ev.target.files[0];
+        let ext = file.type.split('/')[1];
+
+        let imageName = new Date().getTime() + "." + ext;
+        let image = new File([file], imageName, {type: file.type});
+
+        let formData = new FormData();
+        formData.append('image', image);
+        formData.append('imageName', imageName);
+
+        $.ajax({
+            url: '/web/distributor/product/image',
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+        }).done(function (webResponse) {
+            _productImageUpload(webResponse, mode);
+        });
+    }
+
+    var _addModalValidation = function (mode) {
+        if(_validator) {
+            _validator.resetForm();
+            _validator.destroy();
+        }
+        
+        var _mandatoryFields = [...mandatoryFields];
+        if (mode === "add") _mandatoryFields.push("stock");
+
+        var allFields = new Set([ ..._mandatoryFields, ...Object.keys(mapFieldStrRangeLength)]);
+        _validatorFields = {};
+        allFields.forEach((field) => {
+            var fieldValidators = {};
+
+            if(_mandatoryFields.includes(field)) {
+                fieldValidators.notEmpty = {
+                    message: WebAppLocals.getMessage('required')
+                }
+            }
+
+            if(field in mapFieldStrRangeLength) {
+                var strRangeLength = mapFieldStrRangeLength[field];
+                var message = WebAppLocals.getMessage('lengthError') + " " + strRangeLength[0] + " " + WebAppLocals.getMessage('and') + " " + strRangeLength[1] + " " + WebAppLocals.getMessage('characters');
+                fieldValidators.stringLength = {
+                    min: strRangeLength[0],
+                    max: strRangeLength[1],
+                    message: message,
+                }
+            }
+
+            _validatorFields[field] = {
+                validators: fieldValidators
+            }
+        })
+        
+        var form = KTUtil.getById(mode + "ModalForm");
+        _validator = FormValidation.formValidation(form, {
+            fields: _validatorFields,
+            plugins: {
+                trigger: new FormValidation.plugins.Trigger(),
+                // Bootstrap Framework Integration
+                bootstrap: new FormValidation.plugins.Bootstrap({
+                    //eleInvalidClass: '',
+                    eleValidClass: '',
+                }),
+            },
+        })
+
+        $(".select2").on("change", function(ev) {
+            var field = $(this).attr("name");
+            if(field in _validatorFields) {
+                _validator.revalidateField(field);
+            }
+        });
+    }
+
+    var _updateSubcategorySelect = function (mode) {
+        var categoryId = $("#" + mode + "ProductCategory").val();
+        $("#" + mode + "ProductSubcategory").empty();
+        $("#" + mode + "ProductSubcategory").select2({
+            placeholder: WebAppLocals.getMessage("subcategory"),
+
+            ajax: {
+                url: function () {
+                    var _url = '/web/product/subcategory/list/';
+                    _url += $("#" + mode + "ProductCategory").val();
+                    return _url;
+                },
+                dataType: 'json',
+                processResults: function (response) {
+                    return {
+                        results: response.data.results,
+                        pagination: {
+                            more: response.data.pagination
+                        }
+                    }
+                }
+            },
+
+            data: []
+        });
+        $("#" + mode + "ProductSubcategory").prop('disabled', categoryId ? false : true);
+    }
+
+    var _updateActiveIngredientsVal = function (mode) {
+        $("#" + mode + "ActiveIngredientsVal").val($("#" + mode + "ActiveIngredients").val());
+    }
+
+    var _initializeSubimagesDropzone = function (mode, initialSubimages = []) {
+        // Set the dropzone container id
+        var id = '#' + mode + 'ProductSubimagesDropzone';
+        
+        let dropzoneControl = $(id)[0].dropzone;
+        if (dropzoneControl) {
+            dropzoneControl.destroy();
+        }
+
+		// Set the preview element template
+		var previewNode = $(id + ' .dropzone-item');
+		previewNode.id = '';
+		var previewTemplate = previewNode.parent('.dropzone-items').html();
+		previewNode.remove();
+
+		var myDropZone = new Dropzone(id, {
+			// Make the whole body a dropzone
+			url: '/web/distributor/product/subimage', // Set the url for your upload script location
+			acceptedFiles: '.jpeg, .jpg, .png',
+			maxFilesize: 10, // Max filesize in MB
+			maxFiles: 6,
+			previewTemplate: previewTemplate,
+			previewsContainer: id + ' .dropzone-items', // Define the container to display the previews
+			clickable: id + ' .dropzone-select', // Define the element that should be used as click trigger to select files.
 		});
-	};
 
-	var _productEditModal = function (productId) {
-		WebApp.get('/web/distributor/product/' + productId, _productEditModalOpen);
-	};
+		myDropZone.on('addedfile', function (file) {
+			// Hookup the start button
+            $(document).find(id + ' .dropzone-item').css('display', 'block');
+            $("#" + mode + "MaxFilesExceededLabel").hide();
+        });
 
-	var _productEditQuantityModal = function (productId) {
-		WebApp.get('/web/distributor/product/quantity/' + productId, _productEditQuantityModalOpen);
-	};
-
-	var _productAddModal = function () {
-		_productAddModalOpen();
-	};
-
-
-	var _productEditModalOpenNew = function (webResponse) {
-		$('#genericModalContent').html(webResponse.data)
-		$('#genericModal').modal('show');
-	};
-
-
-	var _productEditModalOpen = function (webResponse) {
-
-
-
-		$('#editModalForm').attr('action', '/web/distributor/product/edit');
-		$('#editProductId').val(webResponse.data.product.id);
-
-		$('#editModalTitle').html(WebAppLocals.getMessage('edit'));
-		$("label[for='editProductScientificName']").text(WebAppLocals.getMessage('productScintificName'));
-		$("label[for='editProductCountry']").text(WebAppLocals.getMessage('madeInCountry'));
-		$("label[for='editProductNameAr']").text(WebAppLocals.getMessage('productName') + ' AR');
-		$("label[for='editProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
-		$("label[for='editProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
-		$("label[for='editUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
-
-		$('#editProductScientificName').append(new Option(webResponse.data.product.scientificName, webResponse.data.product.scientificNameId));
-		$('#editProductScientificName').val(webResponse.data.product.scientificNameId);
-		$('#editProductCountry').append(new Option(webResponse.data.product['madeInCountryName_' + docLang], webResponse.data.product.madeInCountryId));
-		$('#editProductCountry').val(webResponse.data.product.madeInCountryId);
-		$('#editProductNameAr').val(webResponse.data.product.productName_ar);
-		$('#editProductNameEn').val(webResponse.data.product.productName_en);
-		$('#editProductNameFr').val(webResponse.data.product.productName_fr);
-		$('#editUnitPrice').val(webResponse.data.product.unitPrice);
-		$('#editModalAction').html(WebAppLocals.getMessage('edit'));
-		$('#editModal').appendTo('body').modal('show');
-	};
-
-	var _productEditQuantityModalOpen = function (webResponse) {
-		$('#editQuantityModalForm').attr('action', '/web/distributor/product/editQuantity');
-		$('#editQuantityProductId').val(webResponse.data.product.id);
-
-		$('#editQuantityModalTitle').html(WebAppLocals.getMessage('editQuantity'));
-
-		$("label[for='editQuantityStock']").text(WebAppLocals.getMessage('quantityAvailable'));
-		$('#editQuantityStock').val(webResponse.data.product.stock);
-
-		switch (webResponse.data.product.stockStatusId) {
-			case 1:
-				$('#editQuantityStockAvailability').bootstrapSwitch('state', true);
-				$('#editQuantityStockAvailability').bootstrapSwitch('disabled', true);
-				break;
-			case 2:
-				$('#editQuantityStockAvailability').bootstrapSwitch('state', false);
-				break;
-			case 3:
-				$('#editQuantityStockAvailability').bootstrapSwitch('state', true);
-				break;
-			default:
-				break;
-		}
-		$('#editQuantityStock').on('change paste keyup', function () {
-			if ($(this).val() > 0) {
-				$('#editQuantityStockAvailability').bootstrapSwitch('disabled', true);
-			} else {
-				$('#editQuantityStockAvailability').bootstrapSwitch('disabled', false);
-			}
+		// Update the total progress bar
+		myDropZone.on('totaluploadprogress', function (progress) {
+			$(id + ' .progress-bar').css('width', progress + '%');
 		});
 
-		$("label[for='editQuantityBonusMinOrder']").text(WebAppLocals.getMessage('minOrder'));
-		$("label[for='editQuantityBonusQuantity']").text(WebAppLocals.getMessage('bonus'));
-		$("label[for='editQuantityBonusDelete']").text(WebAppLocals.getMessage('delete'));
-		$("label[for='editQuantityBonusAdd']").text(WebAppLocals.getMessage('add'));
+		myDropZone.on('sending', function (file) {
+			// Show the total progress bar when upload starts
+			$(id + ' .progress-bar').css('opacity', '1');
+		});
 
-		$repeater.setList(webResponse.data.bonus);
+		// Hide the total progress bar when nothing's uploading anymore
+		myDropZone.on('complete', function (file) {
+			var thisProgressBar = id + ' .dz-complete';
+			setTimeout(function () {
+                $(thisProgressBar + ' .progress-bar, ' + thisProgressBar + ' .progress').css('opacity', '0');
+			}, 300);
+		});;
 
-		$("label[for='editQuantityBonusType']").text(WebAppLocals.getMessage('bonus'));
+		// Add file to the list if success
+		myDropZone.on('success', function (file, response) {
+            var imageUrl = response;
 
-		switch (webResponse.data.product.bonusTypeId) {
-			case 1:
-				$('#editQuantityBonusListRepeater').hide();
-				$('#editQuantityBonusType').bootstrapSwitch('state', false);
-				break;
-			case 2:
-				$('#editQuantityBonusListRepeater').show();
-				$('#editQuantityBonusType').bootstrapSwitch('state', true);
-				break;
-			default:
-				break;
-		}
+			mapUuidSubimage[file.upload.uuid] = imageUrl;
+            
+			var dropzoneFilenameElement = $(file.previewTemplate).find("#dropzoneImage");
+			$(dropzoneFilenameElement).css("background-image", 'url("/'+ imageUrl + '")');
+			$(dropzoneFilenameElement).css("cursor", "pointer");
+			$(dropzoneFilenameElement).click(function() {
+                _openImageModal(imageUrl);
+            });
+		});
 
-		$('#editQuantityBonusType')
-			.bootstrapSwitch()
-			.on('switchChange.bootstrapSwitch', function (event, state) {
-				if (state) {
-					$('#editQuantityBonusListRepeater').show();
-				} else {
-					$('#editQuantityBonusListRepeater').hide();
-				}
-			});
+		// Remove file from the list
+		myDropZone.on('removedfile', function (file) {
+            delete mapUuidSubimage[file.upload.uuid];
+        });
 
-		$('#editQuantityModalAction').html(WebAppLocals.getMessage('editQuantity'));
-		$('#editQuantityModal').appendTo('body').modal('show');
-	};
+		myDropZone.on('maxfilesexceeded', function (file) {
+            myDropZone.removeFile(file);
+            $("#" + mode + "MaxFilesExceededLabel").show();
+        });
 
-	var _productAddModalOpen = function () {
-		$('#addModalForm').attr('action', '/web/distributor/product/add');
+		if(initialSubimages.length > 0) {
+            initialSubimages.forEach((subimageObj) => {
+                var subimage = subimageObj.subimage;
+                var fileUrl = _getFullUrl(subimage);
+                var fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+                var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+                var fileNameWithoutTimestamp = fileName.substring(0, fileName.lastIndexOf('-')) + "." + fileExtension;
+                var file = {
+                    status: 'success',
+                    accepted: true,
+                    name: fileNameWithoutTimestamp,
+                    url: fileUrl,
+                    upload: {
+                        uuid: Math.random().toString(36).substring(2, 8)
+                    }
+                };
 
-		$('#addModalTitle').html(WebAppLocals.getMessage('add'));
-		$("label[for='addProductScientificName']").text(WebAppLocals.getMessage('productScintificName'));
-		$("label[for='addProductCountry']").text(WebAppLocals.getMessage('madeInCountry'));
-		$("label[for='addProductNameAr']").text(WebAppLocals.getMessage('productName') + ' AR');
-		$("label[for='addProductNameEn']").text(WebAppLocals.getMessage('productName') + ' EN');
-		$("label[for='addProductNameFr']").text(WebAppLocals.getMessage('productName') + ' FR');
-		$("label[for='addUnitPrice']").text(WebAppLocals.getMessage('unitPrice'));
-		$("label[for='addStock']").text(WebAppLocals.getMessage('quantityAvailable'));
+                myDropZone.files.push(file);
+                myDropZone.emit('addedfile', file);
+                myDropZone.emit('complete', file);
+                myDropZone.emit('success', file, subimage);
+            });
+        }
+        
 
-		$('#addModalAction').html(WebAppLocals.getMessage('add'));
-		$('#addModal').appendTo('body').modal('show');
-	};
+        $('#' + mode + 'Modal').on('shown.bs.modal', function () {
+            $('.wrap-modal-slider').addClass('open');
+        })
+        
+        $('#' + mode + 'Modal').on('hidden.bs.modal', function () {
+            myDropZone.removeAllFiles();
+            $('.wrap-modal-slider').removeClass('open');
+            $('#' + mode + 'DropzoneItems').append(previewTemplate);
+            
+            if(_validator) {
+                _validator.resetForm();
+                _validator.destroy();
+                _validatorFields = {};
+            }
+        })
+    }
 
-	return {
-		// public functions
-		init: function (objQuery) {
-			_init(objQuery);
-		},
-		setReadParams: function (objQuery) {
-			_readParams = objQuery;
-			datatable.setDataSourceParam('query', _readParams);
-			datatable.reload();
-		},
-		reloadDatatable: function () {
-			datatable.reload();
-		},
-		productEditQuantityModal: function (productId) {
-			_productEditQuantityModal(productId);
-		},
-		productEditModal: function (productId) {
-			_productEditModal(productId);
-		},
-		productAddModal: function () {
-			_productAddModal();
-		},
-		showColumn: function (columnName) {
-			datatable.showColumn(columnName);
-		},
-		hideColumn: function (columnName) {
-			datatable.hideColumn(columnName);
-		},
-	};
+	var _getFullUrl = function (filePath) {
+		return window.location.protocol + "//" + window.location.hostname + "/" + filePath;
+    }
+
+    var _openImageModal = function (imageUrl) {
+        $("#imageUrl").attr("src", '/'+ imageUrl);
+        imageModal = $("#imageModal").clone();
+        $(imageModal).appendTo('body').modal('show');
+        $(imageModal).show();
+    }
+    
+    var _closeImageModal = function () {
+        $("#imageUrl").attr("src", '/theme/assets/media/users/blank.png');
+        $(imageModal).remove();
+        $(".modal-backdrop.fade.show").slice(1).remove();
+    }
+
+    var _productAdd = function () {
+        _addModalValidation("add");
+
+        _validator.validate().then(function (status) {
+            if (status == 'Valid') {
+                let body = {
+                    subimages: Object.keys(mapUuidSubimage).map((key) => mapUuidSubimage[key]),
+                };
+
+                let mapKeyElement = {
+                    scientificNameId: 'select',
+                    madeInCountryId: 'select',
+                    name_en: 'input',
+                    name_ar: 'input',
+                    name_fr: 'input',
+                    image: 'input',
+                    stock: 'input',
+                    maximumOrderQuantity: 'input',
+                    subtitle_ar: 'input',
+                    subtitle_en: 'input',
+                    subtitle_fr: 'input',
+                    description_ar: 'textarea',
+                    description_en: 'textarea',
+                    description_fr: 'textarea',
+                    unitPrice: 'input',
+                    vat: 'input',
+                    manufacturerName: 'input',
+                    batchNumber: 'input',
+                    itemCode: 'input',
+                    categoryId: 'select',
+                    subcategoryId: 'select',
+                    activeIngredientsId: 'input',
+                    expiryDate: 'input',
+                    strength: 'input',
+                };
+
+                Object.keys(mapKeyElement).forEach((key) => {
+                    body[key] = $('#addModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+                });
+
+                WebApp.post('/web/distributor/product/add', body, _productAddSuccessCallback);
+            } else {
+                Swal.fire({
+                    text: WebAppLocals.getMessage('validationError'),
+                    icon: 'error',
+                    buttonsStyling: false,
+                    confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+                    customClass: {
+                        confirmButton: 'btn font-weight-bold btn-light',
+                    },
+                }).then(function () {
+                    KTUtil.scrollTop();
+                });
+            }
+        });
+    }
+
+    var _productAddSuccessCallback = function () {
+        $("#addModal").modal('hide');
+        DistributorProductsDataTable.reloadDatatable();
+    }
+
+    var _productEdit = function () {
+        _addModalValidation("edit");
+
+        _validator.validate().then(function (status) {
+            if (status == 'Valid') {
+                let body = {
+                    subimages: Object.keys(mapUuidSubimage).map((key) => mapUuidSubimage[key]),
+                };
+
+                let mapKeyElement = {
+                    id: 'input',
+                    scientificNameId: 'select',
+                    madeInCountryId: 'select',
+                    name_en: 'input',
+                    name_ar: 'input',
+                    name_fr: 'input',
+                    image: 'input',
+                    maximumOrderQuantity: 'input',
+                    subtitle_ar: 'input',
+                    subtitle_en: 'input',
+                    subtitle_fr: 'input',
+                    description_ar: 'textarea',
+                    description_en: 'textarea',
+                    description_fr: 'textarea',
+                    unitPrice: 'input',
+                    vat: 'input',
+                    manufacturerName: 'input',
+                    batchNumber: 'input',
+                    itemCode: 'input',
+                    categoryId: 'select',
+                    subcategoryId: 'select',
+                    activeIngredientsId: 'input',
+                    expiryDate: 'input',
+                    strength: 'input',
+                };
+
+                Object.keys(mapKeyElement).forEach((key) => {
+                    body[key] = $('#editModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+                });
+
+                WebApp.post('/web/distributor/product/edit', body, _productEditSuccessCallback);
+            } else {
+                Swal.fire({
+                    text: WebAppLocals.getMessage('validationError'),
+                    icon: 'error',
+                    buttonsStyling: false,
+                    confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+                    customClass: {
+                        confirmButton: 'btn font-weight-bold btn-light',
+                    },
+                }).then(function () {
+                    KTUtil.scrollTop();
+                });
+            }
+        });
+    }
+
+    var _productEditSuccessCallback = function () {
+        $("#editModal").modal('hide');
+        DistributorProductsDataTable.reloadDatatable();
+    }
+
+    return {
+        // public functions
+        reloadDatatable: function () {
+            WebApp.reloadDatatable();
+        },
+        productEditQuantityModal: function (productId) {
+            _productEditQuantityModal(productId);
+        },
+        productEditModal: function (productId) {
+            _productEditModal(productId);
+        },
+        productEdit: function () {
+            _productEdit();
+        },
+        productAddModal: function () {
+            _productAddModal();
+        },
+        productAdd: function () {
+            _productAdd();
+        },
+        closeImageModal: function() {
+            _closeImageModal();
+        }
+    };
 })();

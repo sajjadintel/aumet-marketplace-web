@@ -3,6 +3,16 @@
     <a href="index.html">
         <img alt="Logo" src="/theme/assets/media/logos/logo-light.png" />
     </a>
+
+
+    <?php if (Helper::isPharmacy($_SESSION['objUser']->roleId)) { ?>
+        <div class="search-wrapper">
+            <i id="searchBarInputMobileIcon" class="fa fa-search  search-icon"></i>
+            <input class="form-control" id="searchBarInputMobile" type="text" name="searchBarInputMobile" autocomplete="off" />
+        </div>
+    <?php } ?>
+
+
     <!--end::Logo-->
     <!--begin::Toolbar-->
     <div class="d-flex align-items-center">

@@ -25,6 +25,11 @@ var WebAppLocals = (function () {
 			ar: 'شاهد',
 			fr: '',
 		},
+		feedback: {
+			en: 'Feedback',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
 		edit: {
 			en: 'Edit',
 			ar: 'تعديل',
@@ -65,9 +70,24 @@ var WebAppLocals = (function () {
 			ar: 'خيارات',
 			fr: '',
 		},
+		name: {
+			en: 'Name',
+			ar: 'الاسم',
+			fr: '',
+		},
+		product: {
+			en: 'Product',
+			ar: 'المنتج',
+			fr: '',
+		},
 		productName: {
 			en: 'Brand Name',
 			ar: 'الاسم التجاري',
+			fr: '',
+		},
+		id: {
+			en: 'ID',
+			ar: 'ID', // TODO: add translation
 			fr: '',
 		},
 		productCode: {
@@ -85,6 +105,11 @@ var WebAppLocals = (function () {
 			ar: 'الموزع',
 			fr: '',
 		},
+		branchSeller: {
+			en: 'Branch',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
 		userBuyer: {
 			en: 'Reference',
 			ar: 'المرجع',
@@ -100,6 +125,21 @@ var WebAppLocals = (function () {
 			ar: 'طلب',
 			fr: '',
 		},
+		id: {
+			en: 'ID',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
+		orderId: {
+			en: 'Order ID',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
+		productId: {
+			en: 'Product ID',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
 		orderCount: {
 			en: 'Order Count',
 			ar: 'عدد الطلبات',
@@ -108,6 +148,36 @@ var WebAppLocals = (function () {
 		orderDetails: {
 			en: 'Order Details',
 			ar: 'تفاصيل الطلب',
+			fr: '',
+		},
+		orderMissingProduct: {
+			en: 'Missing Product',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
+		orderReportMissing: {
+			en: 'Report Missing',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
+		orderFeedback: {
+			en: 'Order Feedback',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
+		missingProducts_deleteConfirmation: {
+			en: 'Are you sure you want to delete this element?',
+			ar: 'Are you sure you want to delete this element?', // TODO: add translation
+			fr: '',
+		},
+		missingProducts_filterByProduct: {
+			en: 'Filter by Product',
+			ar: 'Filter by Product', // TODO: add translation
+			fr: '',
+		},
+		orderLogs: {
+			en: 'Order Logs',
+			ar: 'سجلات الطلبات',
 			fr: '',
 		},
 		orderStatus: {
@@ -140,9 +210,19 @@ var WebAppLocals = (function () {
 			ar: 'منجز',
 			fr: '',
 		},
+		order_modifyQuantity: {
+			en: 'Modify Quantity',
+			ar: 'Modify Quantity', // TODO: Translate
+			fr: '',
+		},
 		orderStatus_Canceled: {
 			en: 'Canceled',
 			ar: 'ألغيت',
+			fr: '',
+		},
+		orderStatus_Canceled_Pharmacy: {
+			en: 'Canceled Pharmacy',
+			ar: '', // TODO: Translate
 			fr: '',
 		},
 		orderStatus_Received: {
@@ -155,14 +235,54 @@ var WebAppLocals = (function () {
 			ar: 'مدفوع',
 			fr: '',
 		},
+		orderStatus_MissingProducts: {
+			en: 'Missing Products',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
+		orderStatus_PayOrder: {
+			en: 'Pay Order',
+			ar: '',
+			fr: '',
+		},
 		orderStatus_Pending: {
 			en: 'Pending',
 			ar: 'معلق',
 			fr: '',
 		},
+		orderSubtotal: {
+			en: 'Subtotal',
+			ar: 'Subtotal',
+			fr: '',
+		},
 		orderTotal: {
 			en: 'Total',
 			ar: 'مجموع',
+			fr: '',
+		},
+		orderShippedQuantity: {
+			en: 'Shipped Quantity',
+			ar: 'Shipped Quantity',
+			fr: '',
+		},
+		orderOrderedQuantity: {
+			en: 'Ordered Quantity',
+			ar: 'Ordered Quantity',
+			fr: '',
+		},
+		branch: {
+			en: 'Branch',
+			ar: 'فرع',
+			fr: '',
+		},
+		address: {
+			en: 'Address',
+			ar: 'عنوان',
+			fr: '',
+		},
+		price: {
+			en: 'Price',
+			ar: 'السعر',
 			fr: '',
 		},
 		unitPrice: {
@@ -185,9 +305,24 @@ var WebAppLocals = (function () {
 			ar: 'الكمية المطلوبة',
 			fr: '',
 		},
+		quantityFree: {
+			en: 'Quantity Free',
+			ar: 'Quantity Free', // TODO: Add translation
+			fr: '',
+		},
+		note: {
+			en: 'Note',
+			ar: 'Note', // TODO: Add translation
+			fr: '',
+		},
 		minOrder: {
 			en: 'Minimum Order',
 			ar: 'أقل كمية',
+			fr: '',
+		},
+		date: {
+			en: 'Date',
+			ar: 'تاريخ',
 			fr: '',
 		},
 		expiryDate: {
@@ -210,7 +345,12 @@ var WebAppLocals = (function () {
 			ar: 'صنع في',
 			fr: '',
 		},
-		productScintificName: {
+		quantityOrdered: {
+			en: 'Quantity Ordered',
+			ar: 'الكمية المطلوبة',
+			fr: '',
+		},
+		productScientificName: {
 			en: 'Scientific Name',
 			ar: 'الاسم العلمي',
 			fr: '',
@@ -223,6 +363,16 @@ var WebAppLocals = (function () {
 		quantityAvailable: {
 			en: 'Available Quality',
 			ar: 'الكمية المتوفرة',
+			fr: '',
+		},
+		availability: {
+			en: 'Availability',
+			ar: 'التوفر',
+			fr: '',
+		},
+		stockQuantity: {
+			en: 'Stock Quantity',
+			ar: 'كمية المخزون',
 			fr: '',
 		},
 		stockAvailability: {
@@ -275,6 +425,16 @@ var WebAppLocals = (function () {
 			ar: 'التصنيف',
 			fr: '',
 		},
+		missingProduct: {
+			en: 'Missing Product',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
+		orderComment: {
+			en: 'Feedback',
+			ar: '', // TODO: add translation
+			fr: '',
+		},
 		stockUpdateProcessing: {
 			en: 'Stock file under processing, Please wait...',
 			ar: 'جاري العمل على تحديث ملف الأصناف, الرجاء الانتظار',
@@ -314,6 +474,111 @@ var WebAppLocals = (function () {
 			en: 'Please enter your password',
 			ar: 'يجب ادخال كلمة السر',
 			fr: '',
+		},
+		addBonusTitle: {
+			en: 'Add Bonus',
+			ar: 'إضافة مكافأة',
+			fr: '',
+		},
+		done: {
+			en: 'Done',
+			ar: 'منجز',
+			fr: '',
+		},
+		addImageTitle: {
+			en: 'Add Images',
+			ar: 'إضافة الصور',
+			fr: '',
+		},
+		maximumOrderQuantity: {
+			en: 'Maximum Order Quantity',
+			ar: 'كمية الطلب القصوى',
+			fr: '',
+		},
+		city: {
+			en: 'City',
+			ar: 'مدينة',
+			fr: '',
+		},
+		subcategory: {
+			en: 'Subcategory',
+			ar: 'تصنيف فرعي',
+			fr: '',
+		},
+		required: {
+			en: 'Required',
+			ar: 'مطلوب',
+			fr: '',
+		},
+		invalid: {
+			en: 'Invalid',
+			ar: 'غير صالحة',
+			fr: '',
+		},
+		wrongPasswordConfirmation: {
+			en: "Password Confirmation doesn't match",
+			ar: 'تأكيد كلمة المرور غير مطابق',
+			fr: '',
+		},
+		validationError: {
+			en: 'Sorry, looks like there are some errors detected, please try again.',
+			ar: 'معذرة ، يبدو أنه تم اكتشاف بعض الأخطاء ، يرجى المحاولة مرة أخرى.',
+			fr: '',
+		},
+		validationErrorOk: {
+			en: 'Ok, got it!',
+			ar: 'حسنا، حصلت عليه!',
+			fr: '',
+		},
+		relationGroup: {
+			en: 'Customer Group',
+			ar: 'مجموعة العملاء',
+			fr: '',
+		},
+		changeRelationGroup: {
+			en: 'Change Customer Group',
+			ar: 'تغيير مجموعة العملاء',
+			fr: '',
+		},
+		minimumValueOrderCityError: {
+			en: 'The following cities are selected more than once',
+			ar: 'تم تحديد المدن التالية أكثر من مرة',
+			fr: '',
+		},
+		lengthError: {
+			en: 'Should be between',
+			ar: 'يجب أن يكون بين',
+			fr: '',
+		},
+		and: {
+			en: 'and',
+			ar: 'و',
+			fr: '',
+		},
+		characters: {
+			en: 'characters',
+			ar: 'الأحرف',
+			fr: '',	
+		},
+		fileTypeError: {
+			en: 'You can\'t upload files of this type',
+			ar: 'لا يمكنك تحميل ملفات من هذا النوع',
+			fr: ''
+		},
+		uploadSuccess: {
+			en: 'Upload Completed Successfully',
+			ar: 'اكتمل التحميل بنجاح',
+			fr: ''
+		},
+		uploadError: {
+			en: 'Upload failed',
+			ar: 'التحميل فشل',
+			fr: ''
+		},
+		bulkAddUploadError: {
+			en: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file',
+			ar: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file', // TODO: translate
+			fr: ''
 		},
 	};
 

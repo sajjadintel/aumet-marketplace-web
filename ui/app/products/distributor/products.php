@@ -12,15 +12,15 @@ function compress_htmlcode($codedata)
     return $codedata;
 }
 ?>
-<!--begin::Container-->
-<div class="container-fluid">
-    <div class="d-flex align-items-stretch text-center flex-column">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <div class="d-flex align-items-stretch flex-column">
 
-        <form class="d-flex position-relative w-100 m-auto">
+            <form class="d-flex position-relative w-100 m-auto">
 
-            <div class="d-flex flex-column-fluid">
-                <div class="input-group input-group-lg mr-5">
-                    <div class="input-group-prepend pt-3 pl-1 pr-1">
+                <div class="d-flex flex-column-fluid">
+                    <div class="input-group input-group-lg mr-5">
+                        <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -30,15 +30,15 @@ function compress_htmlcode($codedata)
                                 </g>
                             </svg>
                         </span>
+                        </div>
+                        <select class="select2 form-control" id="searchProductsBrandNameInput" multiple="" name="brandName" data-select2-id="searchProductsBrandNameInput" tabindex="-1" aria-hidden="true">
+                        </select>
                     </div>
-                    <select class="select2 form-control" id="searchProductsBrandNameInput" multiple="" name="brandName" data-select2-id="searchProductsBrandNameInput" tabindex="-1" aria-hidden="true">
-                    </select>
                 </div>
-            </div>
 
-            <div class="d-flex flex-column-fluid">
-                <div class="input-group input-group-lg mr-5">
-                    <div class="input-group-prepend pt-3 pl-1 pr-1">
+                <div class="d-flex flex-column-fluid">
+                    <div class="input-group input-group-lg mr-5">
+                        <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -49,215 +49,469 @@ function compress_htmlcode($codedata)
                                 </g>
                             </svg>
                         </span>
+                        </div>
+                        <select class="select2 form-control" id="searchProductsScieceNameInput" multiple="" name="scientificName" data-select2-id="searchProductsScieceNameInput" tabindex="-1" aria-hidden="true">
+
+                        </select>
                     </div>
-                    <select class="select2 form-control" id="searchProductsScieceNameInput" multiple="" name="scientificName" data-select2-id="searchProductsScieceNameInput" tabindex="-1" aria-hidden="true">
-
-                    </select>
                 </div>
-            </div>
 
-            <div class="d-flex flex-column-fluid">
-                <div class="input-group input-group-lg">
-                    <div class="input-group-prepend ">
-                        <span class="input-group-text border-0 py-1 px-3">
-                            <span class="svg-icon svg-icon-xl">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                        <rect x="0" y="0" width="24" height="24" />
-                                        <rect fill="#000000" opacity="0.3" x="4" y="4" width="8" height="16" />
-                                        <path d="M6,18 L9,18 C9.66666667,18.1143819 10,18.4477153 10,19 C10,19.5522847 9.66666667,19.8856181 9,20 L4,20 L4,15 C4,14.3333333 4.33333333,14 5,14 C5.66666667,14 6,14.3333333 6,15 L6,18 Z M18,18 L18,15 C18.1143819,14.3333333 18.4477153,14 19,14 C19.5522847,14 19.8856181,14.3333333 20,15 L20,20 L15,20 C14.3333333,20 14,19.6666667 14,19 C14,18.3333333 14.3333333,18 15,18 L18,18 Z M18,6 L15,6 C14.3333333,5.88561808 14,5.55228475 14,5 C14,4.44771525 14.3333333,4.11438192 15,4 L20,4 L20,9 C20,9.66666667 19.6666667,10 19,10 C18.3333333,10 18,9.66666667 18,9 L18,6 Z M6,6 L6,9 C5.88561808,9.66666667 5.55228475,10 5,10 C4.44771525,10 4.11438192,9.66666667 4,9 L4,4 L9,4 C9.66666667,4 10,4.33333333 10,5 C10,5.66666667 9.66666667,6 9,6 L6,6 Z" fill="#000000" fill-rule="nonzero" />
-                                    </g>
-                                </svg>
-
-                            </span>
-                        </span>
-                    </div>
-                    <input id="searchStockStatus" data-switch="true" type="checkbox" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="70" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
-                </div>
-            </div>
-
-            <div class="d-flex flex-column-fluid">
-                <div class="input-group input-group-lg">
-                    <div class="input-group-prepend ">
+                <div class="d-flex flex-column-fluid">
+                    <div class="input-group input-group-lg">
+                        <div class="input-group-prepend ">
 
                         <label class="myLabel">
                             <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="DistributorProductsDataTable.productAddModal()">
                                 <i class="nav-icon la la-plus p-0"></i> <?php echo $vButton_add; ?>
                             </a>
                         </label>
+                        
+                        <label class="myLabel">
+                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Bulk Add Products" onclick="WebApp.loadPage('/web/distributor/product/bulk/add/upload')">
+                                <i class="nav-icon la la-boxes p-0"></i> <?php echo $vButton_bulk_add; ?>
+                            </a>
+                        </label>
+                        
+                        <!-- <label class="myLabel">
+                            <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Bulk Add Images for Products" onclick="WebApp.loadPage('/web/distributor/product/bulk/add/image/upload')">
+                                <i class="nav-icon la la-images p-0"></i> <?php echo $vButton_bulk_add_image; ?>
+                            </a>
+                        </label> -->
                     </div>
                 </div>
+
+
+            </form>
+        </div>
+
+        <div class="card card-custom gutter-b mt-10">
+            <div class="card-body">
+                <!--begin: Datatable-->
+                <table
+                    id="datatable"
+                    class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
+                </table>
+                <!--end: Datatable-->
             </div>
-
-
-        </form>
-    </div>
-
-    <div class="card card-custom gutter-b mt-10">
-        <div class="card-body">
-            <!--begin: Datatable-->
-            <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable"></div>
-            <!--end: Datatable-->
         </div>
     </div>
-</div>
-<!--end::Container-->
-<script>
-    var searchQuery = {
-        productId: [],
-        scientificNameId: [],
-        stockOption: 1
-    };
-    var $repeater;
+    <!--end::Container-->
+    <script>
+        var PageClass = function () {
+            var elementId = "#datatable";
+            var url = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 
-    var _selectBrand = $('#searchProductsBrandNameInput').select2({
-        placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
-
-        ajax: {
-            url: '/web/product/brandname/list',
-            dataType: 'json',
-            processResults: function(response) {
-                return {
-                    results: response.data.results,
-                    pagination: {
-                        more: response.data.pagination
+            var columnDefs = [
+                {
+                    className: "never",
+                    targets: [0]
+                },
+                {
+                    className: 'export_datatable',
+                    targets: [0, 1, 2, 3, 4, 5]
+                },
+                {
+                targets: 0,
+                title: WebAppLocals.getMessage('id'),
+                data: 'id',
+                visible: false,
+                render: function (data, type, row, meta) {
+                    return row.id;
+                },
+            }, {
+                targets: 1,
+                width: "30%",
+                title: WebAppLocals.getMessage('productName'),
+                data: 'productName_en',
+                render: function (data, type, row, meta) {
+                    var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        row.entityId +
+                        '/product/' +
+                        row.id +
+                        '\')"> ' +
+                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
+                        row.image +
+                        '\')" ></div></div>'
+                        + '</a></div>';
+                    output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        row.entityId +
+                        '/product/' +
+                        row.id +
+                        '\')" title="'+
+                        row['productName_' + docLang] +
+                        '"> ' +
+                        WebApp.truncateText(row['productName_' + docLang], 50)
+                        + '</span></div></div>';
+                    return output;
+                },
+            }, {
+                targets: 2,
+                title: WebAppLocals.getMessage('productScientificName'),
+                data: 'scientificName',
+                render: $.fn.dataTable.render.ellipsis( 100 )
+            }, {
+                targets: 3,
+                title: WebAppLocals.getMessage('stockQuantity'),
+                data: 'stock',
+                render: function (data, type, row, meta) {
+                    var output = row.stock;
+                    return output;
+                }
+            }, {
+                targets: 4,
+                title: WebAppLocals.getMessage('stockUpdateDateTime'),
+                data: 'stockUpdateDateTime',
+                render: function (data, type, row, meta) {
+                    if (row.stockUpdateDateTime) {
+                        return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment.utc(row.stockUpdateDateTime).fromNow() + '</span>';
+                    } else {
+                        return '';
                     }
                 }
-            }
-        }
-    });
-    _selectBrand.on("select2:select", function(e) {
-        searchQuery.productId = $("#searchProductsBrandNameInput").val();
-        DistributorProductsDataTable.setReadParams(searchQuery);
+            }, {
+                targets: 5,
+                title: WebAppLocals.getMessage('unitPrice'),
+                data: 'unitPrice',
+                render: function (data, type, row, meta) {
+                    return '<span class="font-size-sm">' + row.currency + '</span>' + ' <b class="font-size-h4">' + row.unitPrice + '</b>';
+                }
+            }, {
+                targets: 6,
+                title: '',
+                data: 'id',
+                orderable: false,
+                render: function (data, type, row, meta) {
+                    var outActions = '';
 
-    });
-    _selectBrand.on("select2:unselect", function(e) {
-        searchQuery.productId = $("#searchProductsBrandNameInput").val();
-        DistributorProductsDataTable.setReadParams(searchQuery);
-    });
+                    var btnEdit =
+                        '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditModal(' +
+                        row.id +
+                        ')\' \
+                    class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
+                    <i class="nav-icon la la-edit p-0"></i> ' +
+                        WebAppLocals.getMessage('edit') +
+                        '</a>';
+
+                    var btnEditQuantity =
+                        '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditQuantityModal(' +
+                        row.id +
+                        ')\' \
+                    class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
+                    <i class="nav-icon la la-box p-0"></i> ' +
+                        WebAppLocals.getMessage('editQuantity') +
+                        '</a>';
+
+                    outActions += btnEdit;
+                    outActions += btnEditQuantity;
+
+                    return outActions;
+                },
+            }];
 
 
-    var _selectScientific = $('#searchProductsScieceNameInput').select2({
-        placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+            var searchQuery = {
+                productId: [],
+                scientificNameId: [],
+                stockOption: 1,
+            };
 
-        ajax: {
-            url: '/web/product/scientificname/list',
-            dataType: 'json',
-            processResults: function(response) {
-                return {
-                    results: response.data.results,
-                    pagination: {
-                        more: response.data.pagination
+            var dbAdditionalOptions = {
+                datatableOptions: {
+                    processing: false,
+                    order: [
+                        [0, 'desc']
+                    ],
+                }
+            };
+
+            var _selectBrand = $('#searchProductsBrandNameInput').select2({
+                placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
+
+                ajax: {
+                    url: '/web/product/brandname/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
                     }
                 }
-            }
-        }
-    });
-    _selectScientific.on("select2:select", function(e) {
-        searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-        DistributorProductsDataTable.setReadParams(searchQuery);
-    });
-    _selectScientific.on("select2:unselect", function(e) {
-        searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
-        DistributorProductsDataTable.setReadParams(searchQuery);
-    });
+            });
+            _selectBrand.on("select2:select", function(e) {
+                searchQuery.productId = $("#searchProductsBrandNameInput").val();
+                updateDatatable();
+            });
+            _selectBrand.on("select2:unselect", function(e) {
+                searchQuery.productId = $("#searchProductsBrandNameInput").val();
+                updateDatatable();
+            });
 
-    $('#searchStockStatus').bootstrapSwitch().on("switchChange.bootstrapSwitch", function(event, state) {
-        searchQuery.stockOption = state ? 1 : 0;
-        DistributorProductsDataTable.setReadParams(searchQuery);
-        if (state) {
-            DistributorProductsDataTable.hideColumn('stockStatusId');
-        } else {
-            DistributorProductsDataTable.showColumn('stockStatusId');
-        }
-    });
 
-    var _selectScientificEdit = $('#editProductScientificName').select2({
-        placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+            var _selectScientific = $('#searchProductsScieceNameInput').select2({
+                placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
 
-        ajax: {
-            url: '/web/product/scientificname/list',
-            dataType: 'json',
-            processResults: function(response) {
-                return {
-                    results: response.data.results,
-                    pagination: {
-                        more: response.data.pagination
+                ajax: {
+                    url: '/web/product/scientificname/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
                     }
                 }
-            }
-        }
-    });
+            });
+            _selectScientific.on("select2:select", function(e) {
+                searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
+                updateDatatable();
+            });
+            _selectScientific.on("select2:unselect", function(e) {
+                searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
+                updateDatatable();
+            });
 
-    var _selectScientificAdd = $('#addProductScientificName').select2({
-        placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
+            $('#searchStockStatus').bootstrapSwitch().on("switchChange.bootstrapSwitch", function(event, state) {
+                searchQuery.stockOption = state ? 1 : 0;
+                updateDatatable();
+            });
 
-        ajax: {
-            url: '/web/product/scientificname/list',
-            dataType: 'json',
-            processResults: function(response) {
-                return {
-                    results: response.data.results,
-                    pagination: {
-                        more: response.data.pagination
+            var _selectScientificEdit = $('#editProductScientificName').select2({
+                placeholder: "<?php echo $vModule_product_scientificName ?>",
+
+                ajax: {
+                    url: '/web/product/scientificname/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
                     }
                 }
-            }
-        }
-    });
+            });
 
-    var _selectCountryEdit = $('#editProductCountry').select2({
-        placeholder: "<?php echo $vModule_search_countryPlaceholder ?>",
+            var _selectScientificAdd = $('#addProductScientificName').select2({
+                placeholder: "<?php echo $vModule_product_scientificName ?>",
 
-        ajax: {
-            url: '/web/product/country/list',
-            dataType: 'json',
-            processResults: function(response) {
-                return {
-                    results: response.data.results,
-                    pagination: {
-                        more: response.data.pagination
+                ajax: {
+                    url: '/web/product/scientificname/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
                     }
                 }
-            }
-        }
-    });
+            });
 
-    var _selectCountryAdd = $('#addProductCountry').select2({
-        placeholder: "<?php echo $vModule_search_countryPlaceholder ?>",
+            var _selectCountryEdit = $('#editProductCountry').select2({
+                placeholder: "<?php echo $vModule_product_madeIn ?>",
 
-        ajax: {
-            url: '/web/product/country/list',
-            dataType: 'json',
-            processResults: function(response) {
-                return {
-                    results: response.data.results,
-                    pagination: {
-                        more: response.data.pagination
+                ajax: {
+                    url: '/web/product/country/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
                     }
                 }
+            });
+
+            var _selectCountryAdd = $('#addProductCountry').select2({
+                placeholder: "<?php echo $vModule_product_madeIn ?>",
+
+                ajax: {
+                    url: '/web/product/country/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectCategoryEdit = $('#editProductCategory').select2({
+                placeholder: "<?php echo $vModule_product_category ?>",
+
+                ajax: {
+                    url: '/web/product/category/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectCategoryAdd = $('#addProductCategory').select2({
+                placeholder: "<?php echo $vModule_product_category ?>",
+
+                ajax: {
+                    url: '/web/product/category/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectSubcategoryEdit = $('#editProductSubcategory').select2({
+                placeholder: "<?php echo $vModule_product_subcategory ?>",
+
+                ajax: {
+                    url: function() {
+                        var _url = '/web/product/subcategory/list/';
+                        _url += $("#editProductCategory").val();
+                        return _url;
+                    },
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectSubcategoryAdd = $('#addProductSubcategory').select2({
+                placeholder: "<?php echo $vModule_product_subcategory ?>",
+
+                ajax: {
+                    url: function() {
+                        var _url = '/web/product/subcategory/list/';
+                        _url += $("#addProductCategory").val();
+                        return _url;
+                    },
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectActiveIngredientsEdit = $('#editActiveIngredients').select2({
+                multiple: true,
+                placeholder: "<?php echo $vModule_product_activeIngredients ?>",
+
+                ajax: {
+                    url: '/web/product/ingredient/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var _selectActiveIngredientsAdd = $('#addActiveIngredients').select2({
+                multiple: true,
+                placeholder: "<?php echo $vModule_product_activeIngredients ?>",
+
+                ajax: {
+                    url: '/web/product/ingredient/list',
+                    dataType: 'json',
+                    processResults: function(response) {
+                        return {
+                            results: response.data.results,
+                            pagination: {
+                                more: response.data.pagination
+                            }
+                        }
+                    }
+                }
+            });
+
+            var arrows;
+            if (KTUtil.isRTL()) {
+                arrows = {
+                    leftArrow: '<i class="la la-angle-right"></i>',
+                    rightArrow: '<i class="la la-angle-left"></i>'
+                }
+            } else {
+                arrows = {
+                    leftArrow: '<i class="la la-angle-left"></i>',
+                    rightArrow: '<i class="la la-angle-right"></i>'
+                }
             }
-        }
-    });
+            
+            $('#addProductExpiryDate').datepicker({
+                rtl: KTUtil.isRTL(),
+                todayHighlight: true,
+                orientation: "top left",
+                templates: arrows
+            });
+
+            $('#editProductExpiryDate').datepicker({
+                rtl: KTUtil.isRTL(),
+                todayHighlight: true,
+                orientation: "top left",
+                templates: arrows
+            });
+
+            $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
 
-    $repeater = $('#editQuantityBonusListRepeater').repeater({
-        isFirstItemUndeletable: true,
-        show: function() {
-            $(this).slideDown();
-        },
-        hide: function(deleteElement) {
-            if (confirm('Are you sure you want to delete this element?')) {
-                $(this).slideUp(deleteElement);
+            var initiate = function () {
+                updateDatatable();
+            };
+
+            var scientificNameId = <?php echo isset($_GET['scientificNameId']) ? "'" . $_GET['scientificNameId'] . "'" : 'null';?>;
+
+            function updateDatatable() {
+                if (scientificNameId != null && !searchQuery.scientificNameId.includes(scientificNameId))
+                    searchQuery.scientificNameId.push(scientificNameId);
+                WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
             }
-        },
-    });
 
-    $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
-    DistributorProductsDataTable.init(searchQuery);
-</script>
+            return {
+                init: function () {
+                    initiate();
+                },
+            };
+        }();
+
+        PageClass.init();
+    </script>
 <?php ob_end_flush(); ?>
 <?php include_once 'edit-modal.php';
-include_once 'edit-quantity-modal.php';
-include_once 'add-modal.php'; ?>
+include_once 'add-modal.php'; 
+include_once 'image-modal.php'; ?>

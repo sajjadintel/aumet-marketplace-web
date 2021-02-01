@@ -1,7 +1,6 @@
 <?php
 
-class Controller
-{
+class Controller {
 
     protected $f3;
     protected $db;
@@ -40,21 +39,30 @@ class Controller
 
             $this->isAuth = true;
 
-           // switch($this->objUser->)
+            // switch($this->objUser->)
 
             $this->f3->set('objUser', $this->objUser);
+            $this->f3->set('isAuth', true);
+
         } else {
             $this->isAuth = false;
         }
 
+        $supportReasons = new BaseModel($this->db, 'supportReason');
+        $supportReasons->name = "name_" . ($this->objUser->language ?? 'en');
+        $where = $this->isAuth ? 'isAuth=1' : '';
+        $supportReasons = $supportReasons->find($where);
+
+        $this->f3->set('supportReasons', $supportReasons);
+
         LayoutRender::setMainMenu($this->f3, $this->db, $this->objUser->menuId);
     }
 
-    function setLanguage($language = false){
-        if(!$language) {
+    function setLanguage($language = false)
+    {
+        if (!$language) {
             $this->language = $this->f3->get("PARAMS.language");
-        }
-        else {
+        } else {
             $this->language = $language;
         }
 
@@ -267,6 +275,18 @@ class Controller
         ));
     }
 
+    function jsonResponseAPI($dataArray)
+    {
+        header_remove();
+        http_response_code(200);
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Content-Range, Content-Disposition, Content-Description');
+        header('Status: 200 OK');
+        echo json_encode($dataArray);
+    }
+
     function jsonResponseDebug($statusCode = false, $data = null, $debugData = null)
     {
 
@@ -400,8 +420,6 @@ class Controller
                 header("Content-Disposition: attachment; filename=\"$saveFileName\"");
 
 
-
-
                 // set appropriate headers for attachment or streamed file
                 if ($is_attachment) {
                     header("Content-Disposition: attachment; filename=\"$saveFileName\"");
@@ -412,7 +430,6 @@ class Controller
 
 
                 header("Content-Type: application/pdf");
-
 
 
                 //check if http_range is sent by browser (or download manager)
@@ -549,7 +566,6 @@ class Controller
     {
 
 
-
         $email = new \SendGrid\Mail\Mail();
 
         $email->setFrom($fromEmail, $fromName);
@@ -580,7 +596,6 @@ class Controller
 
     function sendEmailFrom($fromEmail, $fromName, $subject, $html, $arrTo, $arrCC = null, $arrBCC = null)
     {
-
 
 
         $email = new \SendGrid\Mail\Mail();
@@ -644,4 +659,84 @@ class Controller
             $string = array_slice($string, 0, 1);
         return $string ? implode(', ', $string) . ' ago' : 'just now';
     }
+
+    function handleGetListFilters($table, $queryTerms, $queryDisplay, $queryId = 'id', $additionalQuery = null)
+    {
+        $where = "";
+        if ($additionalQuery != null) {
+            $where = $additionalQuery;
+        }
+        $term = $_GET['term'];
+        if (isset($term) && $term != "" && $term != null) {
+            if ($additionalQuery != null) {
+                $where .= " AND (";
+            }
+            if (is_array($queryTerms)) {
+                $i = 0;
+                foreach ($queryTerms as $queryTerm) {
+                    if ($i != 0) {
+                        $where .= ' OR ';
+                    }
+                    $where .= "$queryTerm LIKE '%$term%'";
+                    $i++;
+                }
+            } else {
+                $where .= "$queryTerms LIKE '%$term%'";
+            }
+            if ($additionalQuery != null) {
+                $where .= ")";
+            }
+        }
+        $page = $_GET['page'];
+        if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
+            $page = $page - 1;
+        } else {
+            $page = 0;
+        }
+
+        $pageSize = 10;
+
+        $select2Result = new stdClass();
+        $select2Result->results = [];
+        $select2Result->pagination = false;
+
+        $dbNames = new BaseModel($this->db, $table);
+        $dbNames->getWhere($where, $queryDisplay, $pageSize, $page * $pageSize);
+        $resultsCount = 0;
+        while (!$dbNames->dry()) {
+            $resultsCount++;
+            $select2ResultItem = new stdClass();
+            $select2ResultItem->id = $dbNames[$queryId];
+            $select2ResultItem->text = $dbNames[$queryDisplay];
+            $select2Result->results[] = $select2ResultItem;
+            $dbNames->next();
+        }
+
+        if ($resultsCount >= $pageSize) {
+            $select2Result->pagination = true;
+        }
+
+        $this->webResponse->errorCode = 1;
+        $this->webResponse->title = "";
+        $this->webResponse->data = $select2Result;
+        echo $this->webResponse->jsonResponse();
+    }
+
+    function checkLength($variable, $variableName, $maxLength, $minLength = 0)
+    {
+        if (strlen($variable) > $maxLength) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = $this->f3->get("field_" . $variableName) . $this->f3->get("error_filedTooLong") . $maxLength;
+            echo $this->webResponse->jsonResponse();
+            exit;
+        }
+        
+        if (strlen($variable) < $minLength) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = $this->f3->get("field_" . $variableName) . $this->f3->get("error_filedTooShort") . $minLength;
+            echo $this->webResponse->jsonResponse();
+            exit;
+        }
+    }
+
 }

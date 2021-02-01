@@ -1,0 +1,12 @@
+## Backup Relations from Orders
+
+INSERT INTO marketplace.entityRelation
+(`entityBuyerId`, `entitySellerId`, `currencyId`, `orderCount`, `orderCountPaid`, `orderTotal`, `orderTotalPaid`)
+SELECT 
+	order.entityBuyerId, order.entitySellerId, order.currencyId, count(order.id) AS count, count(paidOrder.id) AS paidCount, sum(order.total) as total, IFNULL(sum(paidOrder.total),0) as paidTotal
+FROM
+	marketplace.order
+LEFT JOIN
+	marketplace.order paidOrder ON paidOrder.id = order.id AND paidOrder.statusId = 7
+GROUP BY 
+	order.entitySellerId, order.entityBuyerId, order.currencyId;

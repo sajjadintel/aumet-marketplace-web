@@ -71,7 +71,7 @@ var SearchDataTable = (function () {
 				},
 				{
 					field: 'scientificName',
-					title: WebAppLocals.getMessage('productScintificName'),
+					title: WebAppLocals.getMessage('productScientificName'),
 					autoHide: true,
 				},
 				{
@@ -134,7 +134,7 @@ var SearchDataTable = (function () {
 					autoHide: false,
 					template: function (row) {
 						if (row.stockUpdateDateTime) {
-							return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.stockUpdateDateTime).fromNow() + '</span>';
+							return '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment.utc(row.stockUpdateDateTime).fromNow() + '</span>';
 						} else {
 							return '';
 						}
@@ -257,7 +257,7 @@ var SearchDataTable = (function () {
 							'<a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
 							row.entityId +
 							'/product/' +
-							row.productId +
+							row.id +
 							'\')" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2" title="View">\
                     <span class="svg-icon svg-icon-md">\
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
@@ -296,6 +296,50 @@ var SearchDataTable = (function () {
 			],
 		});
 	};
+
+	var _productAddBonusModal = function (productId, entityId, bonuses) {
+		$('#addBonusProductId').val(productId);
+		$('#addBonusEntityId').val(entityId);
+
+		$('#addBonusModalTitle').html(WebAppLocals.getMessage('addBonusTitle'));
+
+		$("label[for='addBonusMinOrder']").text(WebAppLocals.getMessage('minOrder'));
+		$("label[for='addBonusQuantity']").text(WebAppLocals.getMessage('bonus'));
+		$("label[for='addBonusAdd']").text(WebAppLocals.getMessage('add'));
+
+		var repeater = $('#addBonusListRepeater').repeater({
+			show: function() {
+				$(this).slideDown();
+			},
+		});
+		repeater.setList(bonuses);
+
+		$('#addBonusDone').html(WebAppLocals.getMessage('done'));
+		$('#addBonusModal').appendTo('body').modal('show');
+	};
+
+	var _productAddBonus = function(addButtonName) {
+		let bonusRepeaterIndex = addButtonName.charAt(14);
+		
+		let bonusMinOrderName = "bonusRepeater[" + bonusRepeaterIndex + "][minOrder]";
+		let bonusMinOrder = $($('[name ="' + bonusMinOrderName + '"]')[0]).val();
+		
+		let bonusBonusName = "bonusRepeater[" + bonusRepeaterIndex + "][bonus]";
+		let bonusBonus = $($('[name ="' + bonusBonusName + '"]')[0]).val();
+
+		let productId = $('#addBonusProductId').val();
+
+		let quantityId = "#quantity-" + productId;
+		$(quantityId).val(bonusMinOrder);
+		
+		let quantityFreeInputId = "#quantityFreeInput-" + productId;
+		$(quantityFreeInputId).val(bonusBonus);
+		
+		let quantityFreeHolderId = "#quantityFreeHolder-" + productId;
+		$(quantityFreeHolderId).html(bonusBonus);
+
+		$('#addBonusModal').appendTo('body').modal('hide');
+	}
 
 	var _initSearchFilter = function () {
 		/*
@@ -348,19 +392,19 @@ var SearchDataTable = (function () {
 
 		});*/
 	};
-
+	
 	return {
 		// public functions
 		init: function (objQuery) {
 			_init(objQuery);
 		},
 		onClickAddToCart: function (row) {
-			Cart.addItem(row.entityId, row.productId, '#quantity-' + row.id);
-			datatable.reload();
+			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
+			WebApp.reloadDatatable();
 		},
 		onClickAddMoreToCart: function (row) {
-			Cart.addItem(row.entityId, row.productId, '#quantity-' + row.id);
-			datatable.reload();
+			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
+			WebApp.reloadDatatable();
 		},
 		onBonusOptionCallback: function (row, bonusOption) {
 			$('#quantity-' + row.id).val(bonusOption.minOrder);
@@ -396,6 +440,24 @@ var SearchDataTable = (function () {
 					$(bonusOptionLabelId).removeClass('label-light').addClass('label-primary');
 				}
 				$('#bonus-' + row.id).html(bonus);
+
+
+				let bonusVal = '';
+				let bestBonus = 0;
+				row.bonuses && row.bonuses.forEach((bonusOption) => {
+					if (newQuantity >= bonusOption.minOrder && bonusOption.minOrder > bestBonus) {
+						bonusVal = Math.floor(newQuantity / bonusOption.minOrder) * bonusOption.bonus;
+						bestBonus = bonusOption.minOrder;
+					}
+				});
+				let activeBonus = row.activeBonus?.minOrder || 0;
+				if(activeBonus >= bestBonus) {
+					bonusVal = '';
+					bestBonus = 0;
+				}
+
+				$("#quantityFreeHolder-" + row.id).html(bonusVal);
+				$('#quantityFreeInput-' + row.id).val(bonusVal);
 			}
 		},
 		setReadParams: function (objQuery) {
@@ -409,5 +471,11 @@ var SearchDataTable = (function () {
 		hideColumn: function (columnName) {
 			datatable.hideColumn(columnName);
 		},
+		productAddBonusModal: function(productId, entityId, bonuses) {
+			_productAddBonusModal(productId, entityId, bonuses)
+		},
+		productAddBonus: function(addButtonName) {
+			_productAddBonus(addButtonName)
+		}
 	};
 })();

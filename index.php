@@ -10,7 +10,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
 
-date_default_timezone_set("Asia/Dubai");
+date_default_timezone_set("UTC");
 
 require_once("vendor/autoload.php");
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -31,30 +31,26 @@ $f3->set('ENCODING', 'UTF-8');
 
 $f3->set('rootDIR', dirname(__FILE__));
 
-$f3->set('tempDIR', dirname(__FILE__).'/tmp/');
+$f3->set('tempDIR', dirname(__FILE__) . '/tmp/');
 
-$tempDIR = dirname(__FILE__).'/files/tmp/';
-if(is_dir($tempDIR)) {
+$tempDIR = dirname(__FILE__) . '/files/tmp/';
+if (is_dir($tempDIR)) {
     $f3->set('tempDIR', $tempDIR);
-}
-else {
+} else {
     if (!mkdir($tempDIR, 0777, true)) {
         die('Failed to create folders...');
-    }
-    else{
+    } else {
         $f3->set('tempDIR', $tempDIR);
     }
 }
 
-$uploadsDir = dirname(__FILE__).'/files/uploads/';
-if(is_dir($uploadsDir)) {
+$uploadsDir = dirname(__FILE__) . '/files/uploads/';
+if (is_dir($uploadsDir)) {
     $f3->set('uploadDIR', $uploadsDir);
-}
-else {
+} else {
     if (!mkdir($uploadsDir, 0777, true)) {
         die('Failed to create folders...');
-    }
-    else{
+    } else {
         $f3->set('uploadDIR', $uploadsDir);
     }
 }
@@ -69,6 +65,16 @@ $f3->set('authServerKey', '-SC4,=$?.3:&KRR]:DCQx{~wY!)`+--CkhE`2ur<VCZ(Tk8Pt2YXv
 $dbPort = getenv('DB_PORT');
 
 if (getenv('ENV') == Constants::ENV_LOC) {
+
+    // Temp variables for localhost
+    ini_set('mysql.connect_timeout', 90);
+    ini_set('mysql.allow_persistent', 1);
+    ini_set('max_execution_time', 90);
+    ini_set('max_input_time', 90);
+    ini_set('max_allowed_packet', '512M');
+    ini_set('default_socket_timeout', 90);
+    // END temp variables
+
     $dbHost = getenv('DB_HOST_LOC');
     $dbUsername = getenv('DB_USER_LOC');
     $dbPassword = getenv('DB_PASS_LOC');
@@ -106,7 +112,7 @@ $dbConnection = new DB\SQL(
 
 if (getenv('ENV') == 'loc') {
     ini_set('mysql.connect_timeout', 300);
-    ini_set('default_socket_timeout', 300);     
+    ini_set('default_socket_timeout', 300);
 } else {
     // session_save_path("/tmp");
 }
@@ -128,9 +134,9 @@ switch ($_SESSION['userLang']) {
 */
 
 $lang = $f3->get("PARAMS.lang");
-if ($lang != "en" && $lang != "ar" && $lang != "fr" ) {
+if ($lang != "en" && $lang != "ar" && $lang != "fr") {
     $lang = $f3->get('SESSION.userLang');
-    if ($lang != "en" && $lang != "ar" && $lang != "fr" ) {
+    if ($lang != "en" && $lang != "ar" && $lang != "fr") {
         $lang = 'en';
     }
 }

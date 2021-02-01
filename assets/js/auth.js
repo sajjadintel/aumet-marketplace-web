@@ -1,106 +1,104 @@
-"use strict";
+'use strict';
 
 // Class Definition
-var WebAuth = function () {
+var WebAuth = (function () {
 	var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
+	var _pharmacyDocument;
 
 	var _handleFormSignin = function () {
-
-		console.log("Signin");
+		console.log('Signin');
 
 		var form = KTUtil.getById('kt_login_singin_form');
-		var formSubmitUrl = KTUtil.attr(form, 'action');
-		var formSubmitButton = KTUtil.getById('kt_login_singin_form_submit_button');
+		var url = KTUtil.attr(form, 'action');
+		var data = $(form).serializeJSON();
 
 		if (!form) {
-			console.log("No Form");
+			console.log('No Form');
 			return;
 		}
+		WebApp.post(url, data);
 
-		firebase.auth().signInWithEmailAndPassword(
-			form.querySelector('[name="email"]').value,
-			form.querySelector('[name="password"]').value).catch(function (error) {
-				// Handle Errors here.
-				KTUtil.btnRelease(formSubmitButton);
-				Swal.fire({
-					text: error.message,
-					icon: "error",
-					buttonsStyling: false,
-					confirmButtonText: WebAppLocals.getMessage("error_confirmButtonText"),
-					customClass: {
-						confirmButton: "btn font-weight-bold btn-light-primary"
-					}
-				}).then(function () {
-					KTUtil.scrollTop();
-				});
-			});
+		// firebase
+		// 	.auth()
+		// 	.signInWithEmailAndPassword(form.querySelector('[name="email"]').value, form.querySelector('[name="password"]').value)
+		// 	.catch(function (error) {
+		// 		// Handle Errors here.
+		// 		KTUtil.btnRelease(formSubmitButton);
+		// 		Swal.fire({
+		// 			text: error.message,
+		// 			icon: 'error',
+		// 			buttonsStyling: false,
+		// 			confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
+		// 			customClass: {
+		// 				confirmButton: 'btn font-weight-bold btn-light-primary',
+		// 			},
+		// 		}).then(function () {
+		// 			KTUtil.scrollTop();
+		// 		});
+		// 	});
 
-		return;
+		// return;
 
-		FormValidation
-			.formValidation(
-				form,
-				{
-					fields: {
-						email: {
-							validators: {
-								notEmpty: {
-									message: WebAppLocals.getMessage("error_emailNotEmpty")
-								},
-								emailAddress: {
-									message: WebAppLocals.getMessage("error_emailFormat")
-								}
-							}
-						},
-						password: {
-							validators: {
-								notEmpty: {
-									message: WebAppLocals.getMessage("error_passwordNotEmpty")
-								},
-								/*regexp: {
-									regexp: /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/,
-									message: 'Ensure string has two uppercase letters.<br/>Ensure string has one special case letter.<br/>Ensure string has two digits.<br/>Ensure string has three lowercase letters.<br/>Ensure string is of length 8.'
-								}*/
-							}
-						}
-					},
-					plugins: {
-						trigger: new FormValidation.plugins.Trigger(),
-						submitButton: new FormValidation.plugins.SubmitButton(),
-						//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
-						bootstrap: new FormValidation.plugins.Bootstrap({
-							//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
-							//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
-						})
-					}
-				}
-			)
-			.on('core.form.valid', function () {
-				console.log("valid");
-				// Show loading state on button
-				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, "Please wait");
+		// FormValidation.formValidation(form, {
+		// 	fields: {
+		// 		email: {
+		// 			validators: {
+		// 				notEmpty: {
+		// 					message: WebAppLocals.getMessage('error_emailNotEmpty'),
+		// 				},
+		// 				emailAddress: {
+		// 					message: WebAppLocals.getMessage('error_emailFormat'),
+		// 				},
+		// 			},
+		// 		},
+		// 		password: {
+		// 			validators: {
+		// 				notEmpty: {
+		// 					message: WebAppLocals.getMessage('error_passwordNotEmpty'),
+		// 				},
+		// 				/*regexp: {
+		// 							regexp: /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/,
+		// 							message: 'Ensure string has two uppercase letters.<br/>Ensure string has one special case letter.<br/>Ensure string has two digits.<br/>Ensure string has three lowercase letters.<br/>Ensure string is of length 8.'
+		// 						}*/
+		// 			},
+		// 		},
+		// 	},
+		// 	plugins: {
+		// 		trigger: new FormValidation.plugins.Trigger(),
+		// 		submitButton: new FormValidation.plugins.SubmitButton(),
+		// 		//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
+		// 		bootstrap: new FormValidation.plugins.Bootstrap({
+		// 			//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
+		// 			//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
+		// 		}),
+		// 	},
+		// })
+		// 	.on('core.form.valid', function () {
+		// 		console.log('valid');
+		// 		// Show loading state on button
+		// 		KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
 
-				// Form Validation & Ajax Submission: https://formvalidation.io/guide/examples/using-ajax-to-submit-the-form
+		// 		// Form Validation & Ajax Submission: https://formvalidation.io/guide/examples/using-ajax-to-submit-the-form
+		// 	})
+		// 	.on('core.form.invalid', function () {
+		// 		console.log('invalid');
+		// 		KTUtil.scrollTop();
+		// 	});
 
-
-			})
-			.on('core.form.invalid', function () {
-				console.log("invalid");
-				KTUtil.scrollTop();
-			});
-
-		console.log("done");
-	}
+		// console.log('done');
+	};
 
 	var _handleGoogleSignin = function () {
 		var formSubmitButton = KTUtil.getById('kt_login_singin_google_submit_button');
 
 		// Show loading state on button
-		KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, "Please wait");
+		KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
 
 		var provider = new firebase.auth.GoogleAuthProvider();
-		firebase.auth().signInWithPopup(provider).
-			catch(function (error) {
+		firebase
+			.auth()
+			.signInWithPopup(provider)
+			.catch(function (error) {
 				// Handle Errors here.
 				var errorCode = error.code;
 				var errorMessage = error.message;
@@ -114,17 +112,17 @@ var WebAuth = function () {
 				KTUtil.btnRelease(formSubmitButton);
 				Swal.fire({
 					text: error.message,
-					icon: "error",
+					icon: 'error',
 					buttonsStyling: false,
-					confirmButtonText: WebAppLocals.getMessage("error_confirmButtonText"),
+					confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
 					customClass: {
-						confirmButton: "btn font-weight-bold btn-light-primary"
-					}
+						confirmButton: 'btn font-weight-bold btn-light-primary',
+					},
 				}).then(function () {
 					KTUtil.scrollTop();
 				});
 			});
-	}
+	};
 
 	var _handleFormForgot = function () {
 		var form = KTUtil.getById('kt_login_forgot_form');
@@ -135,56 +133,140 @@ var WebAuth = function () {
 			return;
 		}
 
-		FormValidation
-			.formValidation(
-				form,
-				{
-					fields: {
-						email: {
-							validators: {
-								notEmpty: {
-									message: 'Email is required'
-								},
-								emailAddress: {
-									message: 'The value is not a valid email address'
-								}
-							}
-						}
+		FormValidation.formValidation(form, {
+			fields: {
+				email: {
+					validators: {
+						notEmpty: {
+							message: 'Email is required',
+						},
+						emailAddress: {
+							message: 'The value is not a valid email address',
+						},
 					},
-					plugins: {
-						trigger: new FormValidation.plugins.Trigger(),
-						submitButton: new FormValidation.plugins.SubmitButton(),
-						//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
-						bootstrap: new FormValidation.plugins.Bootstrap({
-							//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
-							//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
-						})
-					}
-				}
-			)
+				},
+			},
+			plugins: {
+				trigger: new FormValidation.plugins.Trigger(),
+				submitButton: new FormValidation.plugins.SubmitButton(),
+				//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
+				bootstrap: new FormValidation.plugins.Bootstrap({
+					//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
+					//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
+				}),
+			},
+		})
 			.on('core.form.valid', function () {
 				// Show loading state on button
-				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, "Please wait");
+				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
 
-				// Simulate Ajax request
-				setTimeout(function () {
+				var url = KTUtil.attr(form, 'action');
+				var data = $(form).serializeJSON();
+
+				if (!form) {
+					console.log('No Form');
+					return;
+				}
+				WebApp.post(url, data, function () {
 					KTUtil.btnRelease(formSubmitButton);
-				}, 2000);
+				});
 			})
 			.on('core.form.invalid', function () {
 				Swal.fire({
-					text: "Sorry, looks like there are some errors detected, please try again.",
-					icon: "error",
+					text: 'Sorry, looks like there are some errors detected, please try again.',
+					icon: 'error',
 					buttonsStyling: false,
-					confirmButtonText: "Ok, got it!",
+					confirmButtonText: 'Ok, got it!',
 					customClass: {
-						confirmButton: "btn font-weight-bold btn-light-primary"
-					}
+						confirmButton: 'btn font-weight-bold btn-light-primary',
+					},
 				}).then(function () {
 					KTUtil.scrollTop();
 				});
 			});
-	}
+	};
+
+	var _handleFormReset = function () {
+		// Base elements
+		var form = KTUtil.getById('kt_login_reset_form');
+		var formSubmitButton = KTUtil.getById('kt_login_reset_form_submit_button');
+
+		if (!form) {
+			return;
+		}
+
+		FormValidation.formValidation(form, {
+			fields: {
+				password: {
+					validators: {
+						notEmpty: {
+							message: 'Password is required',
+						},
+					},
+				},
+				passwordConfirmation: {
+					validators: {
+						identical: {
+							compare: function () {
+								return form.querySelector('[name="password"]').value;
+							},
+							message: "Password confirmation doesn't",
+						},
+					},
+				},
+			},
+			plugins: {
+				trigger: new FormValidation.plugins.Trigger(),
+				submitButton: new FormValidation.plugins.SubmitButton(),
+				//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
+				bootstrap: new FormValidation.plugins.Bootstrap({
+					//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
+					//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
+				}),
+			},
+		})
+			.on('core.form.valid', function () {
+				// Show loading state on button
+				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
+
+				var url = KTUtil.attr(form, 'action');
+				var data = $(form).serializeJSON();
+
+				if (!form) {
+					console.log('No Form');
+					return;
+				}
+				WebApp.post(url, data, function () {
+					KTUtil.btnRelease(formSubmitButton);
+					Swal.fire({
+						text: 'Password changed successfully!',
+						icon: 'success',
+						buttonsStyling: false,
+						confirmButtonText: 'Login!',
+						customClass: {
+							confirmButton: 'btn font-weight-bold btn-light-primary',
+						},
+					}).then(function () {
+						window.location.href = '/web/auth/signin';
+						KTUtil.btnRelease(formSubmitButton);
+					});
+				});
+			})
+			.on('core.form.invalid', function () {
+				Swal.fire({
+					text: 'Sorry, looks like there are some errors detected, please try again.',
+					icon: 'error',
+					buttonsStyling: false,
+					confirmButtonText: 'Ok, got it!',
+					customClass: {
+						confirmButton: 'btn font-weight-bold btn-light-primary',
+					},
+				}).then(function () {
+					KTUtil.scrollTop();
+					KTUtil.btnRelease(formSubmitButton);
+				});
+			});
+	};
 
 	var _handleFormSignup = function () {
 		// Base elements
@@ -199,41 +281,50 @@ var WebAuth = function () {
 
 		// Init form validation rules. For more info check the FormValidation plugin's official documentation:https://formvalidation.io/
 		// Step 1
-		validations.push(FormValidation.formValidation(
-			form,
-			{
+		validations.push(
+			FormValidation.formValidation(form, {
 				fields: {
-					fname: {
+					name: {
 						validators: {
 							notEmpty: {
-								message: 'First name is required'
-							}
-						}
+								message: 'Name is required',
+							},
+						},
 					},
-					lname: {
+					mobile: {
 						validators: {
 							notEmpty: {
-								message: 'Last Name is required'
-							}
-						}
-					},
-					phone: {
-						validators: {
-							notEmpty: {
-								message: 'Phone is required'
-							}
-						}
+								message: 'Phone Number is required',
+							},
+						},
 					},
 					email: {
 						validators: {
 							notEmpty: {
-								message: 'Email is required'
+								message: 'Email is required',
 							},
 							emailAddress: {
-								message: 'The value is not a valid email address'
-							}
-						}
-					}
+								message: 'Invalid email address',
+							},
+						},
+					},
+					password: {
+						validators: {
+							notEmpty: {
+								message: 'Password is required',
+							},
+						},
+					},
+					passwordConfirmation: {
+						validators: {
+							identical: {
+								compare: function () {
+									return form.querySelector('[name="password"]').value;
+								},
+								message: "Password confirmation doesn't match",
+							},
+						},
+					},
 				},
 				plugins: {
 					trigger: new FormValidation.plugins.Trigger(),
@@ -241,147 +332,50 @@ var WebAuth = function () {
 					bootstrap: new FormValidation.plugins.Bootstrap({
 						//eleInvalidClass: '',
 						eleValidClass: '',
-					})
-				}
-			}
-		));
+					}),
+				},
+			})
+		);
 
 		// Step 2
-		validations.push(FormValidation.formValidation(
-			form,
-			{
+		validations.push(
+			FormValidation.formValidation(form, {
 				fields: {
-					address1: {
+					/*pharmacyName: {
 						validators: {
 							notEmpty: {
-								message: 'Address is required'
-							}
-						}
+								message: 'Pharmacy Name is required',
+							},
+						},
 					},
-					postcode: {
+					distributorName: {
 						validators: {
 							notEmpty: {
-								message: 'Postcode is required'
-							}
-						}
+								message: 'Distributor Name is required',
+							},
+						},
+					},*/
+					country: {
+						validators: {
+							notEmpty: {
+								message: 'Country is required',
+							},
+						},
 					},
 					city: {
 						validators: {
 							notEmpty: {
-								message: 'City is required'
-							}
-						}
-					},
-					state: {
-						validators: {
-							notEmpty: {
-								message: 'State is required'
-							}
-						}
-					},
-					country: {
-						validators: {
-							notEmpty: {
-								message: 'Country is required'
-							}
-						}
-					}
-				},
-				plugins: {
-					trigger: new FormValidation.plugins.Trigger(),
-					// Bootstrap Framework Integration
-					bootstrap: new FormValidation.plugins.Bootstrap({
-						//eleInvalidClass: '',
-						eleValidClass: '',
-					})
-				}
-			}
-		));
-
-		// Step 3
-		validations.push(FormValidation.formValidation(
-			form,
-			{
-				fields: {
-					delivery: {
-						validators: {
-							notEmpty: {
-								message: 'Delivery type is required'
-							}
-						}
-					},
-					packaging: {
-						validators: {
-							notEmpty: {
-								message: 'Packaging type is required'
-							}
-						}
-					},
-					preferreddelivery: {
-						validators: {
-							notEmpty: {
-								message: 'Preferred delivery window is required'
-							}
-						}
-					}
-				},
-				plugins: {
-					trigger: new FormValidation.plugins.Trigger(),
-					// Bootstrap Framework Integration
-					bootstrap: new FormValidation.plugins.Bootstrap({
-						//eleInvalidClass: '',
-						eleValidClass: '',
-					})
-				}
-			}
-		));
-
-		// Step 4
-		validations.push(FormValidation.formValidation(
-			form,
-			{
-				fields: {
-					ccname: {
-						validators: {
-							notEmpty: {
-								message: 'Credit card name is required'
-							}
-						}
-					},
-					ccnumber: {
-						validators: {
-							notEmpty: {
-								message: 'Credit card number is required'
+								message: 'City is required',
 							},
-							creditCard: {
-								message: 'The credit card number is not valid'
-							}
-						}
+						},
 					},
-					ccmonth: {
+					address: {
 						validators: {
 							notEmpty: {
-								message: 'Credit card month is required'
-							}
-						}
-					},
-					ccyear: {
-						validators: {
-							notEmpty: {
-								message: 'Credit card year is required'
-							}
-						}
-					},
-					cccvv: {
-						validators: {
-							notEmpty: {
-								message: 'Credit card CVV is required'
+								message: 'Address is required',
 							},
-							digits: {
-								message: 'The CVV value is not valid. Only numbers is allowed'
-							}
-						}
-					}
+						},
+					},
 				},
 				plugins: {
 					trigger: new FormValidation.plugins.Trigger(),
@@ -389,15 +383,15 @@ var WebAuth = function () {
 					bootstrap: new FormValidation.plugins.Bootstrap({
 						//eleInvalidClass: '',
 						eleValidClass: '',
-					})
-				}
-			}
-		));
+					}),
+				},
+			})
+		);
 
 		// Initialize form wizard
 		wizardObj = new KTWizard(wizardEl, {
 			startStep: 1, // initial active step number
-			clickableSteps: false  // allow step clicking
+			clickableSteps: false, // allow step clicking
 		});
 
 		// Validation before going to next page
@@ -412,18 +406,40 @@ var WebAuth = function () {
 			if (validator) {
 				validator.validate().then(function (status) {
 					if (status == 'Valid') {
-						wizard.goTo(wizard.getNewStep());
+						if (wizard.getStep() == 1) {
+							let body = {
+								email: $('#kt_login_signup_form input[name=email]').val(),
+								mobile: $('#kt_login_signup_form input[name=mobile]').val(),
+								companyType: $('#kt_login_signup_form input[name=companyType]:checked').val(),
+							};
+							WebApp.post('/web/auth/signup/validate/step1', body, function () {
+								wizard.goTo(wizard.getNewStep());
+
+								let companyType = $('#kt_login_signup_form input[name=companyType]:checked').val();
+								if(companyType == 'pharmacy'){
+									$('.distributor').hide();
+									$('.pharmacy').show();
+
+								}else if(companyType == 'distributor'){
+
+									$('.pharmacy').hide();
+									$('.distributor').show();
+								}
+							});
+						} else {
+							wizard.goTo(wizard.getNewStep());
+						}
 
 						KTUtil.scrollTop();
 					} else {
 						Swal.fire({
-							text: "Sorry, looks like there are some errors detected, please try again.",
-							icon: "error",
+							text: 'Sorry, looks like there are some errors detected, please try again.',
+							icon: 'error',
 							buttonsStyling: false,
-							confirmButtonText: "Ok, got it!",
+							confirmButtonText: 'Ok, got it!',
 							customClass: {
-								confirmButton: "btn font-weight-bold btn-light"
-							}
+								confirmButton: 'btn font-weight-bold btn-light',
+							},
 						}).then(function () {
 							KTUtil.scrollTop();
 						});
@@ -431,7 +447,7 @@ var WebAuth = function () {
 				});
 			}
 
-			return false;  // Do not change wizard step, further action will be handled by he validator
+			return false; // Do not change wizard step, further action will be handled by he validator
 		});
 
 		// Change event
@@ -441,44 +457,90 @@ var WebAuth = function () {
 
 		// Submit event
 		wizardObj.on('submit', function (wizard) {
-			Swal.fire({
-				text: "All is good! Please confirm the form submission.",
-				icon: "success",
-				showCancelButton: true,
-				buttonsStyling: false,
-				confirmButtonText: "Yes, submit!",
-				cancelButtonText: "No, cancel",
-				customClass: {
-					confirmButton: "btn font-weight-bold btn-primary",
-					cancelButton: "btn font-weight-bold btn-default"
-				}
-			}).then(function (result) {
-				if (result.value) {
-					form.submit(); // Submit form
-				} else if (result.dismiss === 'cancel') {
-					Swal.fire({
-						text: "Your form has not been submitted!.",
-						icon: "error",
-						buttonsStyling: false,
-						confirmButtonText: "Ok, got it!",
-						customClass: {
-							confirmButton: "btn font-weight-bold btn-primary",
-						}
-					});
-				}
-			});
+			// Validate form before change wizard step
+			var validator = validations[validations.length - 1]; // get validator for currnt step
+
+			if (validator) {
+				validator.validate().then(function (status) {
+					if (status == 'Valid') {
+						Swal.fire({
+							text: 'All is good! Please confirm the form submission.',
+							icon: 'success',
+							showCancelButton: true,
+							buttonsStyling: false,
+							confirmButtonText: 'Yes, submit!',
+							cancelButtonText: 'No, cancel',
+							customClass: {
+								confirmButton: 'btn font-weight-bold btn-primary',
+								cancelButton: 'btn font-weight-bold btn-default',
+							},
+						}).then(function (result) {
+							if (result.value) {
+								_signUp();
+							} else if (result.dismiss === 'cancel') {
+								Swal.fire({
+									text: 'Your form has not been submitted!.',
+									icon: 'error',
+									buttonsStyling: false,
+									confirmButtonText: 'Ok, got it!',
+									customClass: {
+										confirmButton: 'btn font-weight-bold btn-primary',
+									},
+								});
+							}
+						});
+					} else {
+						Swal.fire({
+							text: 'Sorry, looks like there are some errors detected, please try again.',
+							icon: 'error',
+							buttonsStyling: false,
+							confirmButtonText: 'Ok, got it!',
+							customClass: {
+								confirmButton: 'btn font-weight-bold btn-light',
+							},
+						}).then(function () {
+							KTUtil.scrollTop();
+						});
+					}
+				});
+			}
 		});
-	}
+
+		// On country change event, fill city dropdown
+		$('#kt_login_signup_form select[name=country]').on('change', function () {
+			var countryId = $('#kt_login_signup_form select[name=country]').val();
+			if (countryId) {
+				WebApp.get('/web/auth/city/list/' + countryId, function (webResponse) {
+					$('#kt_login_signup_form select[name=city]')
+						.empty()
+						.append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
+					var allCities = webResponse.data;
+					allCities.forEach((city) => {
+						$('#kt_login_signup_form select[name=city]').append(new Option(city.name, city.id));
+					});
+					$('#kt_login_signup_form select[name=city]').prop('disabled', false);
+				});
+			} else {
+				$('#kt_login_signup_form select[name=city]').prop('disabled', true);
+				$('#kt_login_signup_form select[name=city]')
+					.empty()
+					.append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
+			}
+		});
+
+		// Fill default values from query params
+		var params = new URLSearchParams(window.location.search);
+		$('#kt_login_signup_form input[name=name]').val(params.get('name'));
+		$('#kt_login_signup_form input[name=email]').val(params.get('email'));
+		$('#kt_login_signup_form input[name=uid]').val(params.get('uid'));
+	};
 
 	var _setupFirebase = function () {
-
-
 		firebase.auth().languageCode = docLang;
 
 		firebase.auth().onAuthStateChanged(function (user) {
 			if (user) {
-
-				console.log("FB SignIn: ", user);
+				console.log('FB SignIn: ', user);
 
 				let userInfo = {
 					displayName: user.displayName,
@@ -487,83 +549,104 @@ var WebAuth = function () {
 					photoURL: user.photoURL,
 					isAnonymous: user.isAnonymous,
 					uid: user.uid,
-					providerData: user.providerData
-				}
+					providerData: user.providerData,
+				};
 
-				firebase.auth().currentUser.getIdToken(true).then(function (idToken) {
+				firebase
+					.auth()
+					.currentUser.getIdToken(true)
+					.then(function (idToken) {
+						userInfo.idToken = idToken;
 
-					userInfo.idToken = idToken;
+						$.ajax({
+							url: '/web/auth/signin?_t=' + Date.now(),
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								token: idToken,
+								userInfo: userInfo,
+							},
+							async: true,
+						})
+							.done(function (webResponse) {
+								if (webResponse && typeof webResponse === 'object') {
+									if (webResponse.errorCode == 0) {
+										firebase.analytics().logEvent('auth_ok');
+										window.location.href = '/web';
+									} else {
+										// REMOVE CURRENT USER SESSION
+										firebase.auth().signOut();
 
-					$.ajax({
-						url: "/web/auth/signin?_t=" + Date.now(),
-						type: "POST",
-						dataType: "json",
-						data: {
-							token: idToken,
-							userInfo: userInfo
-						},
-						async: true
-					}).done(function (webResponse) {
-						if (webResponse && typeof webResponse === 'object') {
-							if (webResponse.errorCode == 0) {
-								firebase.analytics().logEvent('auth_ok');
-								window.location.href = "/web";
-							} else {
-								Swal.fire({
-									text: webResponse.message,
-									icon: "error",
-									buttonsStyling: false,
-									confirmButtonText: WebAppLocals.getMessage("error_confirmButtonText"),
-									customClass: {
-										confirmButton: "btn font-weight-bold btn-light-primary"
+										if (webResponse.data) {
+											var url = '/web/auth/signup';
+											url += '?name=' + webResponse.data.displayName;
+											url += '&email=' + webResponse.data.email;
+											url += '&uid=' + webResponse.data.uid;
+											window.location.href = url;
+										} else {
+											Swal.fire({
+												text: webResponse.message,
+												icon: 'error',
+												buttonsStyling: false,
+												confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
+												customClass: {
+													confirmButton: 'btn font-weight-bold btn-light-primary',
+												},
+											}).then(function () {
+												KTUtil.scrollTop();
+											});
+										}
 									}
+								} else {
+									// REMOVE CURRENT USER SESSION
+									firebase.auth().signOut();
+
+									Swal.fire({
+										text: webResponse.message,
+										icon: 'error',
+										buttonsStyling: false,
+										confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
+										customClass: {
+											confirmButton: 'btn font-weight-bold btn-light-primary',
+										},
+									}).then(function () {
+										KTUtil.scrollTop();
+									});
+								}
+							})
+							.fail(function (jqXHR, textStatus, errorThrown) {
+								// REMOVE CURRENT USER SESSION
+								firebase.auth().signOut();
+
+								Swal.fire({
+									text: WebAppLocals.getMessage('error'),
+									icon: 'error',
+									buttonsStyling: false,
+									confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
+									customClass: {
+										confirmButton: 'btn font-weight-bold btn-light-primary',
+									},
 								}).then(function () {
 									KTUtil.scrollTop();
 								});
-
-							}
-						}
-						else {
-							Swal.fire({
-								text: webResponse.message,
-								icon: "error",
-								buttonsStyling: false,
-								confirmButtonText: WebAppLocals.getMessage("error_confirmButtonText"),
-								customClass: {
-									confirmButton: "btn font-weight-bold btn-light-primary"
-								}
-							}).then(function () {
-								KTUtil.scrollTop();
 							});
-						}
-					}).fail(function (jqXHR, textStatus, errorThrown) {
+					})
+					.catch(function (error) {
+						// REMOVE CURRENT USER SESSION
+						firebase.auth().signOut();
+
 						Swal.fire({
-							text: WebAppLocals.getMessage("error"),
-							icon: "error",
+							text: error.message,
+							icon: 'error',
 							buttonsStyling: false,
-							confirmButtonText: WebAppLocals.getMessage("error_confirmButtonText"),
+							confirmButtonText: WebAppLocals.getMessage('error_confirmButtonText'),
 							customClass: {
-								confirmButton: "btn font-weight-bold btn-light-primary"
-							}
+								confirmButton: 'btn font-weight-bold btn-light-primary',
+							},
 						}).then(function () {
 							KTUtil.scrollTop();
 						});
 					});
-
-				}).catch(function (error) {
-					Swal.fire({
-						text: error.message,
-						icon: "error",
-						buttonsStyling: false,
-						confirmButtonText: WebAppLocals.getMessage("error_confirmButtonText"),
-						customClass: {
-							confirmButton: "btn font-weight-bold btn-light-primary"
-						}
-					}).then(function () {
-						KTUtil.scrollTop();
-					});
-				});
-
 
 				// ...
 			} else {
@@ -571,26 +654,187 @@ var WebAuth = function () {
 				// ...
 			}
 		});
+	};
 
-	}
+	var _initializeDropzone = function () {
+		// Set the dropzone container id
+		var id = '#kt_dropzone';
+
+		// Set the preview element template
+		var previewNode = $(id + ' .dropzone-item');
+		previewNode.id = '';
+		var previewTemplate = previewNode.parent('.dropzone-items').html();
+		previewNode.remove();
+
+		var myDropzone = new Dropzone(id, {
+			// Make the whole body a dropzone
+			url: '/web/auth/signup/document/upload', // Set the url for your upload script location
+			acceptedFiles: '.pdf, .ppt, .xcl, .docx, .jpeg, .jpg, .png',
+			maxFilesize: 10, // Max filesize in MB
+			maxFiles: 1,
+			previewTemplate: previewTemplate,
+			previewsContainer: id + ' .dropzone-items', // Define the container to display the previews
+			clickable: id + ' .dropzone-select', // Define the element that should be used as click trigger to select files.
+		});
+
+		myDropzone.on('addedfile', function (file) {
+			// Hookup the start button
+			$(document)
+				.find(id + ' .dropzone-item')
+				.css('display', '');
+		});
+
+		// Update the total progress bar
+		myDropzone.on('totaluploadprogress', function (progress) {
+			$(id + ' .progress-bar').css('width', progress + '%');
+		});
+
+		myDropzone.on('sending', function (file) {
+			// Show the total progress bar when upload starts
+			$(id + ' .progress-bar').css('opacity', '1');
+		});
+
+		// Hide the total progress bar when nothing's uploading anymore
+		myDropzone.on('complete', function (progress) {
+			var thisProgressBar = id + ' .dz-complete';
+			setTimeout(function () {
+				$(thisProgressBar + ' .progress-bar, ' + thisProgressBar + ' .progress').css('opacity', '0');
+			}, 300);
+		});
+
+		// Add file to the list if success
+		myDropzone.on('success', function (file, response) {
+			_pharmacyDocument = response;
+		});
+
+		// Remove file from the list
+		myDropzone.on('removedfile', function (file) {
+			if (file.status === 'success') {
+				_pharmacyDocument = null;
+			}
+		});
+
+		// Overwrite previous file
+		myDropzone.on('maxfilesexceeded', function (file) {
+			myDropzone.removeAllFiles();
+			myDropzone.addFile(file);
+		});
+	};
+
+	var _signUp = function () {
+		let body = {
+			pharmacyDocument: _pharmacyDocument,
+		};
+
+		let mapKeyElement = {
+			uid: 'input',
+			name: 'input',
+			mobile: 'input',
+			email: 'input',
+			password: 'input',
+			pharmacyName: 'input',
+			distributorName: 'input',
+			tradeLicenseNumber: 'input',
+			country: 'select',
+			city: 'select',
+			address: 'textarea',
+		};
+
+		Object.keys(mapKeyElement).forEach((key) => {
+			body[key] = $('#kt_login_signup_form ' + mapKeyElement[key] + '[name=' + key + ']').val();
+		});
+
+		WebApp.post('/web/auth/signup', body, _signUpCallback);
+	};
+
+	var _signUpCallback = function (webResponse) {
+		KTUtil.scrollTop();
+		$('#signupContainer').remove();
+
+		var allValues = webResponse.data;
+		console.log(allValues);
+
+		var unitName = allValues.roleId == 40 ? "Pharmacy Name" : "Distributor Name";
+		var arrFields = {
+			"Name": allValues.name,
+			"Mobile": allValues.mobile,
+			"Email": allValues.email,
+			[unitName]: allValues.entityName,
+			"Trade License Number": allValues.tradeLicenseNumber,
+			"Country": allValues.countryName,
+			"City": allValues.cityName,
+			"Address": allValues.address,
+		};
+
+		var output = '';
+		for (var key in arrFields) {
+			if (arrFields.hasOwnProperty(key)) {
+				console.log(key + " -> " + arrFields[key]);
+				output += '<tr>' +
+					'    <td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">' +
+					'        <p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>' + key + '</strong></p>' +
+					'        <table role="presentation" cellspacing="0" cellpadding="0" border="0">' +
+					'            <tbody>' +
+					'            <tr>' +
+					'                <td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">' +
+					'                    <p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">' +
+					'                        <strong>' + arrFields[key] + '</strong>' +
+					'                    </p>' +
+					'                </td>' +
+					'            </tr>' +
+					'            </tbody>' +
+					'        </table>' +
+					'    </td>' +
+					'</tr>';
+			}
+		}
+		
+		if (allValues.tradeLicenseUrl) {
+			output += '<tr>' +
+			'    <td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">' +
+			'        <p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>Trade License Document</strong></p>' +
+			'        <table role="presentation" cellspacing="0" cellpadding="0" border="0">' +
+			'            <tbody>' +
+			'            <tr>' +
+			'                <td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">' +
+			'                    <p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">' +
+			'                        <a href="'+allValues.tradeLicenseUrl+'" target="_blank">Download file</strong>' +
+			'                    </p>' +
+			'                </td>' +
+			'            </tr>' +
+			'            </tbody>' +
+			'        </table>' +
+			'    </td>' +
+			'</tr>'
+		}
+
+		$('#signupDetailData').html(output);
+
+
+		$('#thankyouContainer').css('display', 'block');
+	};
 
 	// Public Functions
 	return {
 		init: function () {
-			_setupFirebase();
+			if (window.location.href.indexOf('signin') > -1) {
+				_setupFirebase();
+			}
 
 			_handleFormForgot();
+			_handleFormReset();
 			_handleFormSignup();
+
+			_initializeDropzone();
 		},
 		signIn: function () {
-
 			_handleFormSignin();
 		},
 		googleSignIn: function () {
 			_handleGoogleSignin();
-		}
+		},
 	};
-}();
+})();
 
 // Class Initialization
 jQuery(document).ready(function () {
