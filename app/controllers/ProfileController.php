@@ -566,7 +566,7 @@ class ProfileController extends Controller {
         $this->f3->set('mapDisplayNameOldNewValue', $mapDisplayNameOldNewValue);
         $this->f3->set('tradeLicenseUrl', $tradeLicenseUrl);
         $this->f3->set('approvalUrl', $approvalUrl);
-        $this->f3->set('userEmail', $dbUser->email);
+        $this->f3->set('userEmail', $dbUser->userEmail);
 
         $payload = [
             'entityChangeApprovalId' => $entityChangeApprovalId
@@ -590,6 +590,8 @@ class ProfileController extends Controller {
         }
 
         $htmlContent = View::instance()->render($emailFile);
+        echo $htmlContent;
+        exit;
 
         $subject = "Aumet - Change Profile Approval";
         if (getenv('ENV') != Constants::ENV_PROD) {
