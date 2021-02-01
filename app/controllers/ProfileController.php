@@ -228,7 +228,7 @@ class ProfileController extends Controller {
                 $message = $this->f3->get("vModule_profile_requestSent");
 
                 $approvalUrl = "web/pharmacy/profile/approve";
-                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl);
+                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl, $dbUser);
             } else {
                 $message = $this->f3->get("vModule_profile_myProfileSaved");
             }
@@ -392,7 +392,7 @@ class ProfileController extends Controller {
                 $message = $this->f3->get("vModule_profile_requestSent");
 
                 $approvalUrl = "web/distributor/profile/approve";
-                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl);
+                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl, $dbUser);
             } else {
                 $message = $this->f3->get("vModule_profile_myProfileSaved");
             }
@@ -555,7 +555,7 @@ class ProfileController extends Controller {
         }
     }
 
-    function sendChangeApprovalEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $tradeLicenseUrl, $approvalUrl)
+    function sendChangeApprovalEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $tradeLicenseUrl, $approvalUrl, $dbUser)
     {
         $emailHandler = new EmailHandler($this->db);
         $emailFile = "email/layout.php";
@@ -566,6 +566,7 @@ class ProfileController extends Controller {
         $this->f3->set('mapDisplayNameOldNewValue', $mapDisplayNameOldNewValue);
         $this->f3->set('tradeLicenseUrl', $tradeLicenseUrl);
         $this->f3->set('approvalUrl', $approvalUrl);
+        $this->f3->set('userEmail', $dbUser->userEmail);
 
         $payload = [
             'entityChangeApprovalId' => $entityChangeApprovalId
@@ -597,6 +598,7 @@ class ProfileController extends Controller {
             if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad");
             }
         }
         $emailHandler->sendEmail(Constants::EMAIL_CHANGE_PROFILE_APPROVAL, $subject, $htmlContent);
@@ -786,6 +788,7 @@ class ProfileController extends Controller {
             if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad");
             }
         }
         $emailHandler->sendEmail(Constants::EMAIL_CHANGE_PROFILE_APPROVED, $subject, $htmlContent);
