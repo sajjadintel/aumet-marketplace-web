@@ -151,7 +151,7 @@ function compress_htmlcode($codedata)
 
                         <div class="card-body">
 
-                            <table id="datatable" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom text-left">
+                            <table id="datatableLocal" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom text-left">
                             </table>
 
                         </div>
@@ -276,15 +276,15 @@ function compress_htmlcode($codedata)
     </script>
     <script>
         var PageClass = function () {
-            var elementId = "#datatable";
+            var elementId = "#datatableLocal";
 
             var columnDefs = [
                 {
                     targets: 0,
                     title: WebAppLocals.getMessage('sellingEntityName'),
-                    data: 'entityName_en',
+                    data: 'productName',
                     render: function (data, type, row, meta) {
-                        var output = row['entityName_' + docLang];
+                        var output = row['productName'];
                         return output;
                     },
                 },

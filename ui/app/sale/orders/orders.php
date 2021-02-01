@@ -426,7 +426,7 @@ function compress_htmlcode($codedata)
 
             $('#searchOrdersDateInput').daterangepicker({
                 opens: 'left',
-                startDate: moment('2020-01-01'),
+                startDate: moment().subtract(29, 'days'),
                 endDate: moment(),
                 locale: {
                     format: 'DD/MM/YYYY',

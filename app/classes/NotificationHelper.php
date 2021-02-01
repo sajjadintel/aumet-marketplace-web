@@ -596,15 +596,7 @@ class NotificationHelper {
         $f3->set('title', 'Pharmacy Account Verification');
         $f3->set('emailType', 'pharmacyAccountVerification');
 
-        $dbCountry = new BaseModel($dbConnection, "country");
-        $dbCountry->name = "name_en";
-        $country = $dbCountry->getById($allValues->countryId)[0];
-        $countryName = $country['name'];
 
-        $dbCity = new BaseModel($dbConnection, "city");
-        $dbCity->name = "nameEn";
-        $city = $dbCity->getById($allValues->cityId)[0];
-        $cityName = $city['name'];
 
         $arrFields = [
             "Name" => $allValues->name,
@@ -612,8 +604,8 @@ class NotificationHelper {
             "Email" => $allValues->email,
             "Pharmacy Name" => $allValues->entityName,
             "Trade License Number" => $allValues->tradeLicenseNumber,
-            "Country" => $countryName,
-            "City" => $cityName,
+            "Country" => $allValues->countryName,
+            "City" => $allValues->cityName,
             "Address" => $allValues->address,
         ];
 
@@ -666,10 +658,6 @@ class NotificationHelper {
         $f3->set('title', 'Distributor Account Verification');
         $f3->set('emailType', 'distributorAccountVerification');
 
-        $dbCountry = new BaseModel($dbConnection, "country");
-        $dbCountry->name = "name_en";
-        $country = $dbCountry->getById($allValues->countryId)[0];
-        $countryName = $country['name'];
 
         $dbCity = new BaseModel($dbConnection, "city");
         $dbCity->name = "nameEn";
@@ -682,8 +670,8 @@ class NotificationHelper {
             "Email" => $allValues->email,
             "Distributor Name" => $allValues->entityName,
             "Trade License Number" => $allValues->tradeLicenseNumber,
-            "Country" => $countryName,
-            "City" => $cityName,
+            "Country" => $allValues->countryName,
+            "City" => $allValues->cityName,
             "Address" => $allValues->address,
         ];
 
