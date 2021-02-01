@@ -228,7 +228,7 @@ class ProfileController extends Controller {
                 $message = $this->f3->get("vModule_profile_requestSent");
 
                 $approvalUrl = "web/pharmacy/profile/approve";
-                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl);
+                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl, $dbUser);
             } else {
                 $message = $this->f3->get("vModule_profile_myProfileSaved");
             }
@@ -392,7 +392,7 @@ class ProfileController extends Controller {
                 $message = $this->f3->get("vModule_profile_requestSent");
 
                 $approvalUrl = "web/distributor/profile/approve";
-                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl);
+                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl, $dbUser);
             } else {
                 $message = $this->f3->get("vModule_profile_myProfileSaved");
             }
@@ -555,7 +555,7 @@ class ProfileController extends Controller {
         }
     }
 
-    function sendChangeApprovalEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $tradeLicenseUrl, $approvalUrl)
+    function sendChangeApprovalEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $tradeLicenseUrl, $approvalUrl, $dbUser)
     {
         $emailHandler = new EmailHandler($this->db);
         $emailFile = "email/layout.php";
@@ -566,6 +566,7 @@ class ProfileController extends Controller {
         $this->f3->set('mapDisplayNameOldNewValue', $mapDisplayNameOldNewValue);
         $this->f3->set('tradeLicenseUrl', $tradeLicenseUrl);
         $this->f3->set('approvalUrl', $approvalUrl);
+        $this->f3->set('userEmail', $dbUser->email);
 
         $payload = [
             'entityChangeApprovalId' => $entityChangeApprovalId

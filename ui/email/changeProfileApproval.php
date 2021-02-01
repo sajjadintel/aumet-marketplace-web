@@ -38,7 +38,8 @@
 										</tbody>
 									</table>
 									<h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 30px;line-height: 39px;">Approve Profile Changes</h2>
-									<p style="margin-top: 0px;margin-bottom: 0px;">Check down below all the new information before approving these changes</p>
+									<p style="margin-top: 0px;margin-bottom: 0px;">Dear Aumet Admin, kindly note that the user (<?php echo $userEmail; ?>) has requested to update information on their profile
+                                        Check down below all the new information before approving these changes</p>
 								</div>
 								<!--[if mso]></td></tr></table><![endif]-->
 							</td>
