@@ -651,6 +651,11 @@ var WebApp = (function () {
 		return (str.length > n) ? str.substr(0, n - 1) + '&hellip;' : str;
 	}
 
+	var _formatMoney = function formatMoney(number, n=2, x) {
+		var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+		return parseFloat(number).toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+	}
+
 	// Public Functions
 	return {
 		init: function () {
@@ -725,6 +730,9 @@ var WebApp = (function () {
 		},
 		truncateText: function (text, n) {
 			return _truncateText(text, n);
+		},
+		formatMoney: function (number, n, x) {
+			return _formatMoney(number, n, x);
 		},
 		reloadDatatable: function (webResponse) {
 			if ($('#popupModal').is(':visible')) {
