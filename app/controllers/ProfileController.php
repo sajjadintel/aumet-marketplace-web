@@ -117,8 +117,7 @@ class ProfileController extends Controller {
         $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
 
-        $newFileName = urlencode($fileName . "-" . time() . ".$ext");
-        $targetFile = "files/uploads/documents/" . $newFileName;
+        $targetFile = Helper::createUploadedFileName($fileName,$ext,"files/uploads/documents/");
 
         if (in_array($ext, $allValidExtensions)) {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
@@ -597,6 +596,7 @@ class ProfileController extends Controller {
 
             if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
+                $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad Abbasi");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
                 $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad");
             }

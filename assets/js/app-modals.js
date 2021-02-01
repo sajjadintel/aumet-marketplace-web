@@ -43,7 +43,7 @@ var WebAppModals = (function () {
             title: WebAppLocals.getMessage('unitPrice'),
             data: 'unitPrice',
             render: function (data, type, row, meta) {
-                var output = row.currency + ' <strong>' + Math.round((parseFloat(row.unitPrice) + Number.EPSILON) * 100) / 100 + '</strong>';
+                var output = row.currency + ' <strong>' + WebApp.formatMoney(row.unitPrice) + '</strong>';
                 return output;
             },
         },
@@ -52,7 +52,7 @@ var WebAppModals = (function () {
             title: WebAppLocals.getMessage('tax'),
             data: 'tax',
             render: function (data, type, row, meta) {
-                var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
+                var output = WebApp.formatMoney(row.tax) + '%';
                 return output;
             },
         },
@@ -62,7 +62,7 @@ var WebAppModals = (function () {
             data: 'unitPrice',
             render: function (data, type, row, meta) {
                 var output = parseFloat(row.unitPrice) * parseFloat(row.quantity) * (1 + parseFloat(row.tax) / 100);
-                output = row.currency + ' <strong>' + Math.round((output + Number.EPSILON) * 100) / 100 + '</strong>';
+                output = row.currency + ' <strong>' + WebApp.formatMoney(output) + '</strong>';
                 return output;
             },
         },
@@ -155,7 +155,7 @@ var WebAppModals = (function () {
         $('#modalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
         $('#modalStatusText').html(status);
         $('#modalTotalLabel').html(WebAppLocals.getMessage('orderTotal'));
-        $('#modalTotalText').html(webResponse.data.order.currency + Math.round((parseFloat(webResponse.data.order.total) + Number.EPSILON) * 100) / 100);
+        $('#modalTotalText').html(webResponse.data.order.currency + WebApp.formatMoney(webResponse.data.order.total));
         $('#modalDateLabel').html(WebAppLocals.getMessage('insertDate'));
         $('#modalDateText').html(webResponse.data.order.insertDateTime);
         $('#modalAddressLabel').html(WebAppLocals.getMessage('address'));
@@ -233,7 +233,7 @@ var OrderMissingProductListModals = (function () {
             title: WebAppLocals.getMessage('unitPrice'),
             data: 'unitPrice',
             render: function (data, type, row, meta) {
-                var output = row.currency + ' <strong>' + Math.round((parseFloat(row.unitPrice) + Number.EPSILON) * 100) / 100 + '</strong>';
+                var output = row.currency + ' <strong>' + WebApp.formatMoney((row.unitPrice) + '</strong>';
                 return output;
             },
         },
@@ -242,7 +242,7 @@ var OrderMissingProductListModals = (function () {
             title: WebAppLocals.getMessage('tax'),
             data: 'tax',
             render: function (data, type, row, meta) {
-                var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
+                var output = WebApp.formatMoney((row.tax) + '%';
                 return output;
             },
         },
@@ -252,7 +252,7 @@ var OrderMissingProductListModals = (function () {
             data: 'unitPrice',
             render: function (data, type, row, meta) {
                 var output = parseFloat(row.unitPrice) * parseFloat(row.quantity) * (1 + parseFloat(row.tax) / 100);
-                output = row.currency + ' <strong>' + Math.round((output + Number.EPSILON) * 100) / 100 + '</strong>';
+                output = row.currency + ' <strong>' + WebApp.formatMoney(output) + '</strong>';
                 return output;
             },
         },
@@ -339,7 +339,7 @@ var OrderMissingProductListModals = (function () {
         $('#missingProductListModalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
         $('#missingProductListModalStatusText').html(status);
         $('#missingProductListModalTotalLabel').html(WebAppLocals.getMessage('orderTotal'));
-        $('#missingProductListModalTotalText').html(webResponse.data.order.currency + Math.round((parseFloat(webResponse.data.order.total) + Number.EPSILON) * 100) / 100);
+        $('#missingProductListModalTotalText').html(webResponse.data.order.currency + WebApp.formatMoney(webResponse.data.order.total));
         $('#missingProductListModalDateLabel').html(WebAppLocals.getMessage('insertDate'));
         $('#missingProductListModalDateText').html(webResponse.data.order.insertDateTime);
         $('#missingProductListModalAddressLabel').html(WebAppLocals.getMessage('address'));
@@ -422,7 +422,7 @@ var WebMissingProductModals = (function () {
         $('#missingProductModalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
         $('#missingProductModalStatusText').html(status);
         $('#missingProductModalTotalLabel').html(WebAppLocals.getMessage('orderTotal'));
-        $('#missingProductModalTotalText').html(webResponse.data.order.currency + ' ' + Math.round((parseFloat(webResponse.data.order.total) + Number.EPSILON) * 100) / 100);
+        $('#missingProductModalTotalText').html(webResponse.data.order.currency + ' ' + WebApp.formatMoney(webResponse.data.order.total));
         $('#missingProductModalDateLabel').html(WebAppLocals.getMessage('insertDate'));
         $('#missingProductModalDateText').html(webResponse.data.order.insertDateTime);
         $('#missingProductModalBranchLabel').html(WebAppLocals.getMessage('branch'));
@@ -536,7 +536,7 @@ var ModifyQuantityOrderModals = (function () {
         $('#modifyQuantityOrderModalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
         $('#modifyQuantityOrderModalStatusText').html(status);
         $('#modifyQuantityOrderModalTotalLabel').html(WebAppLocals.getMessage('orderTotal'));
-        $('#modifyQuantityOrderModalTotalText').html(webResponse.data.order.currency + Math.round((parseFloat(webResponse.data.order.total) + Number.EPSILON) * 100) / 100);
+        $('#modifyQuantityOrderModalTotalText').html(webResponse.data.order.currency + WebApp.formatMoney(webResponse.data.order.total));
         $('#modifyQuantityOrderModalDateLabel').html(WebAppLocals.getMessage('insertDate'));
         $('#modifyQuantityOrderModalDateText').html(webResponse.data.order.insertDateTime);
         $('#modifyQuantityOrderModalBranchLabel').html(WebAppLocals.getMessage('branch'));

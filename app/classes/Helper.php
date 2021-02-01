@@ -59,6 +59,12 @@ class Helper {
         return $randomString;
     }
 
+    public static function createUploadedFileName($fileName, $ext, $path)
+    {
+        $fileName = str_replace(' ', '+', $fileName);
+        return $path . $fileName . "-" . time() . ".$ext";
+    }
+
     public static function truncateText($text, $chars)
     {
         if (strlen($text) <= $chars) {
