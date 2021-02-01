@@ -45,9 +45,10 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 30px;line-height: 39px;"><?php echo $title ?></h2>
-                            <h3 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 20px;line-height: 29px;">Order From: <?php echo $entityName ?></h3>
-
+                            <p style="margin-top: 0px;margin-bottom: 0px;text-align: left;">Dear Customer,
+                                Please note your supplier (<?php echo $entityName ?>) was not able to fulfil the quantity you ordered (Order #<?php echo $orderId ?>).
+                                Please see below the shipped quantity. If there are any issues with your order, please reach out directly to the supplier through Aumet.
+                            </p>
                         </div>
                         <!--[if mso]></td></tr></table><![endif]-->
                     </td>
