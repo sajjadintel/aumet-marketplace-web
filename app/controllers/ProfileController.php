@@ -590,8 +590,6 @@ class ProfileController extends Controller {
         }
 
         $htmlContent = View::instance()->render($emailFile);
-        echo $htmlContent;
-        exit;
 
         $subject = "Aumet - Change Profile Approval";
         if (getenv('ENV') != Constants::ENV_PROD) {
@@ -600,6 +598,7 @@ class ProfileController extends Controller {
             if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad");
             }
         }
         $emailHandler->sendEmail(Constants::EMAIL_CHANGE_PROFILE_APPROVAL, $subject, $htmlContent);
@@ -789,6 +788,7 @@ class ProfileController extends Controller {
             if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad");
             }
         }
         $emailHandler->sendEmail(Constants::EMAIL_CHANGE_PROFILE_APPROVED, $subject, $htmlContent);
