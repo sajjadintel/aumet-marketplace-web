@@ -6,7 +6,7 @@ var WebAppLocals = (function () {
 
 	var _arrLocals = {
 		success: {
-			en: 'Your request was executed successfuly',
+			en: 'Your request was executed successfully',
 			ar: 'لقد تم تنفيذ طلبك بنجاح',
 			fr: '',
 		},
@@ -123,11 +123,6 @@ var WebAppLocals = (function () {
 		order: {
 			en: 'Order',
 			ar: 'طلب',
-			fr: '',
-		},
-		id: {
-			en: 'ID',
-			ar: '', // TODO: add translation
 			fr: '',
 		},
 		orderId: {
@@ -578,6 +573,11 @@ var WebAppLocals = (function () {
 		bulkAddUploadError: {
 			en: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file',
 			ar: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file', // TODO: translate
+			fr: ''
+		},
+		goToProfile: {
+			en: 'Go to Profile',
+			ar: 'Go to Profile', // TODO: translate
 			fr: ''
 		},
 	};

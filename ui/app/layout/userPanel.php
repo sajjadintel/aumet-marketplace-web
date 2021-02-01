@@ -2,7 +2,10 @@
     <!--begin::Header-->
     <div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
         <h3 class="font-weight-bold m-0">User Profile
-            <small class="text-muted font-size-sm ml-2">12 messages</small></h3>
+            <?php if (getenv('ENV') == Constants::ENV_LOC) { ?>
+                <small class="text-muted font-size-sm ml-2">12 messages</small>
+            <?php } ?>
+        </h3>
         <a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
             <i class="ki ki-close icon-xs text-muted"></i>
         </a>
@@ -19,9 +22,9 @@
             <div class="d-flex flex-column">
                 <a href="/web/profile" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?php echo $objUser->fullname ?></a>
                 <?php if (getenv('ENV') == Constants::ENV_LOC) { ?>
-                <a href="/web/profile" class="text-muted mt-1 text-hover-primary"><?php echo $objUser->roleName ?></a>
-                <?php } else{ ?>
-                    <a href="/web/profile" class="text-muted mt-1 text-hover-primary"><?php echo explode('-',$objUser->roleName)[0] ?></a>
+                    <a href="/web/profile" class="text-muted mt-1 text-hover-primary"><?php echo $objUser->roleName ?></a>
+                <?php } else { ?>
+                    <a href="/web/profile" class="text-muted mt-1 text-hover-primary"><?php echo explode('-', $objUser->roleName)[0] ?></a>
                 <?php } ?>
                 <div class="navi mt-2">
                     <a href="/web/profile" class="navi-item">

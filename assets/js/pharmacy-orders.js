@@ -150,7 +150,7 @@ var PharmacyOrdersDataTable = (function () {
                     width: 120,
                     autoHide: false,
                     template: function (row) {
-                        var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
+                        var output = row.currency + ' <strong>' + WebApp.formatMoney(row.total) + ' </strong>';
                         return output;
                     },
                 },
@@ -161,7 +161,7 @@ var PharmacyOrdersDataTable = (function () {
                     width: 50,
                     // callback function support for column rendering
                     template: function (row) {
-                        var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
+                        var output = WebApp.formatMoney(row.tax) + '%';
                         return output;
                     },
                 },
@@ -171,7 +171,7 @@ var PharmacyOrdersDataTable = (function () {
                     width: 120,
                     autoHide: false,
                     template: function (row) {
-                        var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
+                        var output = row.currency + ' <strong>' + WebApp.formatMoney(row.total) + ' </strong>';
                         return output;
                     },
                 },
@@ -363,7 +363,7 @@ var PharmacyOrdersDataTable = (function () {
         $('#modalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
         $('#modalStatusText').html(status);
         $('#modalTotalLabel').html(WebAppLocals.getMessage('orderTotal'));
-        $('#modalTotalText').html(webResponse.data.order.currency + Math.round((parseFloat(webResponse.data.order.total) + Number.EPSILON) * 100) / 100);
+        $('#modalTotalText').html(webResponse.data.order.currency + WebApp.formatMoney(webResponse.data.order.total));
         $('#modalDateLabel').html(WebAppLocals.getMessage('insertDate'));
         $('#modalDateText').html(webResponse.data.order.insertDateTime);
         $('#modalBranchLabel').html(WebAppLocals.getMessage('branch'));
@@ -420,7 +420,7 @@ var PharmacyOrdersDataTable = (function () {
                 width: 80,
                 // callback function support for column rendering
                 template: function (row) {
-                    var output = row.currency + ' <strong>' + Math.round((parseFloat(row.unitPrice) + Number.EPSILON) * 100) / 100 + '</strong>';
+                    var output = row.currency + ' <strong>' + WebApp.formatMoney(row.unitPrice) + '</strong>';
                     return output;
                 },
             },
@@ -433,7 +433,7 @@ var PharmacyOrdersDataTable = (function () {
                 template: function (row) {
                     var output = '';
 
-                    var output = Math.round((parseFloat(row.tax) + Number.EPSILON) * 100) / 100 + '%';
+                    var output = WebApp.formatMoney((row.tax) + '%';
                     return output;
                 },
             },
@@ -444,7 +444,7 @@ var PharmacyOrdersDataTable = (function () {
                 width: 80,
                 template: function (row) {
                     var output = parseFloat(row.unitPrice) * parseFloat(row.quantity) * (1 + parseFloat(row.tax) / 100);
-                    output = row.currency + ' <strong>' + Math.round((output + Number.EPSILON) * 100) / 100 + '</strong>';
+                    output = row.currency + ' <strong>' + WebApp.formatMoney(output) + '</strong>';
                     return output;
                 },
             },
