@@ -48,8 +48,43 @@ var DistributorProductsDataTable = (function () {
         WebApp.get('/web/distributor/product/quantity/' + productId, _productEditQuantityModalOpen);
     };
 
+    var _errorDistributorMissingAccountSetting = function (webResponse) {
+        Swal.fire({
+            icon: 'error',
+            title: webResponse.title,
+            html: '<ul><li>' + webResponse.data.map(function (result) {
+                return result.remarks;
+            }).join('</li><li>') + '</li></ul>',
+            buttonsStyling: false,
+            confirmButtonText: WebAppLocals.getMessage('goToProfile'),
+            customClass: {
+                confirmButton: 'btn font-weight-bold btn-light-primary',
+            }
+        }).then(function () {
+            WebApp.loadPage('/web/profile');
+        });
+    };
+
+    // open add product modal, if distributor profile is not missing (payment, min order value and profile logo)
     var _productAddModal = function () {
-        _productAddModalOpen();
+        WebApp.get('/web/distributor/product/canAdd', function (webResponse) {
+            if (webResponse.data.length > 0) {
+                _errorDistributorMissingAccountSetting(webResponse);
+            } else {
+                _productAddModalOpen();
+            }
+        });
+    };
+
+    // redirect to bulk add product, if distributor profile is not missing (payment, min order value and profile logo)
+    var _productBulkAdd = function () {
+        WebApp.get('/web/distributor/product/canAdd', function (webResponse) {
+            if (webResponse.data.length > 0) {
+                _errorDistributorMissingAccountSetting(webResponse);
+            } else {
+                WebApp.loadPage('/web/distributor/product/bulk/add/upload');
+            }
+        });
     };
 
     var _productEditModalOpenNew = function (webResponse) {
@@ -656,6 +691,9 @@ var DistributorProductsDataTable = (function () {
         },
         productAdd: function () {
             _productAdd();
+        },
+        productBulkAdd: function () {
+            _productBulkAdd();
         },
         closeImageModal: function() {
             _closeImageModal();
