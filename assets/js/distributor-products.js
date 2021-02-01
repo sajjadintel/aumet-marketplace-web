@@ -44,17 +44,32 @@ var DistributorProductsDataTable = (function () {
         WebApp.get('/web/distributor/product/' + productId, _productEditModalOpen);
     };
 
-    var _productEditQuantityModal = function (productId) {
-        WebApp.get('/web/distributor/product/quantity/' + productId, _productEditQuantityModalOpen);
+    var _productEditStockModal = function (productId) {
+        WebApp.get('/web/distributor/product/stock/' + productId, _productEditStockModalOpen);
     };
 
     var _productAddModal = function () {
         _productAddModalOpen();
     };
 
-    var _productEditModalOpenNew = function (webResponse) {
-        $('#genericModalContent').html(webResponse.data);
-        $('#genericModal').modal('show');
+    var _productAddModalOpen = function () {
+        _clearAddModal();
+        if(_validator) {
+            _validator.resetForm();
+            _validator.destroy();
+        }
+
+        $('#addModalForm').attr('action', '/web/distributor/product/add');
+        $('#addProductCategory').on('change', () => _updateSubcategorySelect('add'));
+
+        _changeImageHolder('', 'add');
+        $('#addProductImage').on('change', (ev) => _changeProductImage(ev, 'add'));
+
+        $('#addActiveIngredients').on('change', (ev) => _updateActiveIngredientsVal('add'));
+        
+        _initializeSubimagesDropzone('add');
+
+        $('#addModal').appendTo('body').modal('show');
     };
 
     var _productEditModalOpen = function (webResponse) {
@@ -122,110 +137,161 @@ var DistributorProductsDataTable = (function () {
         $('#editModal').appendTo('body').modal('show');
     };
 
-    var _productEditQuantityModalOpen = function (webResponse) {
-        $('#editQuantityModalForm').attr('action', '/web/distributor/product/editQuantity');
-        $('#editQuantityProductId').val(webResponse.data.product.productId);
-
-        $('#editQuantityModalTitle').html(WebAppLocals.getMessage('editQuantity'));
-
-        $("label[for='editQuantityStock']").text(WebAppLocals.getMessage('quantityAvailable'));
-        $('#editQuantityStock').val(webResponse.data.product.stock);
-
-        switch (webResponse.data.product.stockStatusId) {
-            case 1:
-                $('#editQuantityStockAvailability').bootstrapSwitch('state', true);
-                $('#editQuantityStockAvailability').bootstrapSwitch('disabled', true);
-                break;
-            case 2:
-                $('#editQuantityStockAvailability').bootstrapSwitch('state', false);
-                break;
-            case 3:
-                $('#editQuantityStockAvailability').bootstrapSwitch('state', true);
-                break;
-            default:
-                break;
-        }
-        $('#editQuantityStock').on('change paste keyup', function () {
-            if ($(this).val() > 0) {
-                $('#editQuantityStockAvailability').bootstrapSwitch('disabled', true);
-            } else {
-                $('#editQuantityStockAvailability').bootstrapSwitch('disabled', false);
-            }
-        });
-
-        $("label[for='editQuantityBonusMinOrder']").text(WebAppLocals.getMessage('minOrder'));
-        $("label[for='editQuantityBonusQuantity']").text(WebAppLocals.getMessage('bonus'));
-        $("label[for='editQuantityBonusDelete']").text(WebAppLocals.getMessage('delete'));
-        $("label[for='editQuantityBonusAdd']").text(WebAppLocals.getMessage('add'));
-
-        // Hide Bonus section
-        $('#editQuantityBonusType').parent().parent().parent().hide();
-        $('#editQuantityBonusListRepeater').parent().parent().hide();
-
-        $("label[for='editQuantityBonusType']").text(WebAppLocals.getMessage('bonus'));
-
-        switch (webResponse.data.product.bonusTypeId) {
-            case 1:
-                $('#editQuantityBonusListRepeater').hide();
-                $('#editQuantityBonusType').bootstrapSwitch('state', false);
-                break;
-            case 2:
-                $('#editQuantityBonusListRepeater').show();
-                $('#editQuantityBonusType').bootstrapSwitch('state', true);
-                break;
-            default:
-                break;
-        }
-
-        $('#editQuantityBonusType')
-            .bootstrapSwitch()
-            .on('switchChange.bootstrapSwitch', function (event, state) {
-                if (state) {
-                    $('#editQuantityBonusListRepeater').show();
-                } else {
-                    $('#editQuantityBonusListRepeater').hide();
-                }
-            });
-
-        $('#editQuantityModalAction').html(WebAppLocals.getMessage('editQuantity'));
-
-        repeater = $('#editQuantityBonusListRepeater').repeater({
-            isFirstItemUndeletable: true,
-            show: function () {
-                $(this).slideDown();
-            },
-            hide: function (deleteElement) {
-                if (confirm('Are you sure you want to delete this element?')) {
-                    $(this).slideUp(deleteElement);
-                }
-            },
-        });
-
-        repeater.setList(webResponse.data.bonus);
-
-
-        $('#editQuantityModal').appendTo('body').modal('show');
-    };
-
-    var _productAddModalOpen = function () {
-        _clearAddModal();
+    var _productEditStockModalOpen = function (webResponse) {
         if(_validator) {
             _validator.resetForm();
             _validator.destroy();
         }
 
-        $('#addModalForm').attr('action', '/web/distributor/product/add');
-        $('#addProductCategory').on('change', () => _updateSubcategorySelect('add'));
+        $('#editStockModalForm').attr('action', '/web/distributor/product/editStock');
+        $('#editStockProductId').val(webResponse.data.product.productId);
 
-        _changeImageHolder('', 'add');
-        $('#addProductImage').on('change', (ev) => _changeProductImage(ev, 'add'));
-
-        $('#addActiveIngredients').on('change', (ev) => _updateActiveIngredientsVal('add'));
+        var arrBonus = [];
+        var arrSpecialBonus = [];
+        webResponse.data.arrBonus.forEach((bonus) => {
+            if(bonus.arrRelationGroup && bonus.arrRelationGroup.length > 0) arrSpecialBonus.push(bonus);
+            else arrBonus.push(bonus);
+        });
         
-        _initializeSubimagesDropzone('add');
+        $('#editStockBonusCheckbox').change(function () {
+            if($('#editStockBonusCheckbox').is(":checked")) {
+                $("#editStockBonusRepeater").show();
+            } else {
+                $("#editStockBonusRepeater").hide();
+            }
+        });
+        
+        $('#editStockSpecialBonusCheckbox').change(function () {
+            if($('#editStockSpecialBonusCheckbox').is(":checked")) {
+                $("#editStockSpecialBonusRepeater").show();
+            } else {
+                $("#editStockSpecialBonusRepeater").hide();
+            }
+        });
+        
+        _initializeBonusSection(arrBonus, webResponse.data.arrBonusType);
+        _initializeSpecialBonusSection(arrSpecialBonus, webResponse.data.arrBonusType, webResponse.data.arrRelationGroup);
 
-        $('#addModal').appendTo('body').modal('show');
+        $('#editStockStock').val(webResponse.data.product.stock);
+        $('#editStockModal').appendTo('body').modal('show');
     };
+
+    var _initializeBonusSection = function (arrBonus, arrBonusType) {
+		var repeaterElementTemplate;
+		$("#editStockBonusList > div").each(function(index, element) {
+			repeaterElementTemplate = $(element).clone();
+		});
+
+		$('#editStockBonusRepeater').repeater({
+            initEmpty: true,
+            show: function() {
+				_initializeBonusRepeaterElements(arrBonusType);
+                $(this).slideDown();
+            },
+            hide: function(deleteElement) {
+				$(this).slideUp(deleteElement);
+            }
+        });
+
+        if(arrBonus.length > 0) {
+            $("#editStockBonusCheckbox").prop('checked', true);
+            arrBonus.forEach((repeaterData) => {
+                var repeaterRow = $(repeaterElementTemplate).clone();
+                $(repeaterRow).find("#editStockBonusId").val(repeaterData.bonusId);
+                $(repeaterRow).find("#editStockBonusTypeId").attr("data-value", repeaterData.bonusTypeId);
+                $(repeaterRow).find("#editStockBonusQuantity").val(repeaterData.minOrder);
+                $(repeaterRow).find("#editStockBonus").val(repeaterData.bonus);
+                $("#editStockBonusList").append(repeaterRow);
+            })
+        } else {
+            $("#editStockBonusCheckbox").prop('checked', false);
+            $("#editStockBonusRepeater").hide();
+        }
+
+        _initializeBonusRepeaterElements(arrBonusType);
+	}
+
+	var _initializeBonusRepeaterElements = function (arrBonusType) {
+		$('.selectpicker.bonusTypeSelect').each(function(index, element) {
+            var value = $(element).attr("data-value");
+			if(element.options.length === 0) {
+				arrBonusType.forEach((bonusType) => {
+                    var selected = bonusType.id == value; 
+					$(element).append(new Option(bonusType.name, bonusType.id, false, selected));
+				})
+				$(element).selectpicker();
+				$(element).selectpicker('val', value);
+				$(element).selectpicker('refresh');
+			}
+		})
+	}
+
+    var _initializeSpecialBonusSection = function (arrSpecialBonus, arrBonusType, arrRelationGroup) {
+		var repeaterElementTemplate;
+		$("#editStockSpecialBonusList > div").each(function(index, element) {
+			repeaterElementTemplate = $(element).clone();
+		});
+
+		$('#editStockSpecialBonusRepeater').repeater({
+            initEmpty: true,
+            show: function() {
+				_initializeSpecialBonusRepeaterElements(arrBonusType, arrRelationGroup);
+                $(this).slideDown();
+            },
+            hide: function(deleteElement) {
+				$(this).slideUp(deleteElement);
+            }
+        });
+        
+        if(arrSpecialBonus.length > 0) {
+            $("#editStockSpecialBonusCheckbox").prop('checked', true);
+            arrSpecialBonus.forEach((repeaterData) => {
+                var repeaterRow = $(repeaterElementTemplate).clone();
+                $(repeaterRow).find("#editStockSpecialBonusId").val(repeaterData.bonusId);
+                $(repeaterRow).find("#editStockSpecialBonusTypeId").attr("data-value", repeaterData.bonusTypeId);
+                $(repeaterRow).find("#editStockSpecialBonusQuantity").val(repeaterData.minOrder);
+                $(repeaterRow).find("#editStockSpecialBonus").val(repeaterData.bonus);
+                $(repeaterRow).find("#editStockSpecialRelationGroupId").attr("data-values", repeaterData.arrRelationGroup);
+                $("#editStockSpecialBonusList").append(repeaterRow);
+            })
+        } else {
+            $("#editStockSpecialBonusCheckbox").prop('checked', false);
+            $("#editStockSpecialBonusRepeater").hide();
+        }
+
+        _initializeSpecialBonusRepeaterElements(arrBonusType, arrRelationGroup);
+	}
+
+	var _initializeSpecialBonusRepeaterElements = function (arrBonusType, arrRelationGroup) {
+		$('.selectpicker.specialBonusTypeSelect').each(function(index, element) {
+            var value = $(element).attr("data-value");
+			if(element.options.length === 0) {
+				arrBonusType.forEach((bonusType) => {
+                    var selected = bonusType.id == value;
+					$(element).append(new Option(bonusType.name, bonusType.id, false, selected));
+				})
+				$(element).selectpicker();
+				$(element).selectpicker('val', value);
+				$(element).selectpicker('refresh');
+			}
+		})
+
+		$('.selectpicker.specialRelationGroupSelect').each(function(index, element) {
+            var allValues = $(element).attr("data-values");
+            if(!allValues) allValues = [];
+            else allValues = allValues.split(",");
+
+			if(element.options.length === 0) {
+				arrRelationGroup.forEach((relationGroup) => {
+					var selected = allValues.includes(relationGroup.id);
+					$(element).append(new Option(relationGroup.name, relationGroup.id, false, selected));
+				})
+				$(element).selectpicker();
+				$(element).selectpicker('val', allValues);
+				$(element).selectpicker('refresh');
+			}
+		})
+	}
 
     var _clearAddModal = function () {
         $('#addProductImage').val('');
@@ -298,34 +364,46 @@ var DistributorProductsDataTable = (function () {
             _validator.destroy();
         }
         
-        var _mandatoryFields = [...mandatoryFields];
-        if (mode === "add") _mandatoryFields.push("stock");
-
-        var allFields = new Set([ ..._mandatoryFields, ...Object.keys(mapFieldStrRangeLength)]);
-        _validatorFields = {};
-        allFields.forEach((field) => {
-            var fieldValidators = {};
-
-            if(_mandatoryFields.includes(field)) {
-                fieldValidators.notEmpty = {
-                    message: WebAppLocals.getMessage('required')
+        if(mode === "editStock") {
+            _validatorFields = {
+                stock: {
+                    validators: {
+                        notEmpty: {
+                            message: WebAppLocals.getMessage('required')
+                        }
+                    }
                 }
-            }
-
-            if(field in mapFieldStrRangeLength) {
-                var strRangeLength = mapFieldStrRangeLength[field];
-                var message = WebAppLocals.getMessage('lengthError') + " " + strRangeLength[0] + " " + WebAppLocals.getMessage('and') + " " + strRangeLength[1] + " " + WebAppLocals.getMessage('characters');
-                fieldValidators.stringLength = {
-                    min: strRangeLength[0],
-                    max: strRangeLength[1],
-                    message: message,
+            };
+        } else {
+            var _mandatoryFields = [...mandatoryFields];
+            if (mode === "add") _mandatoryFields.push("stock");
+    
+            var allFields = new Set([ ..._mandatoryFields, ...Object.keys(mapFieldStrRangeLength)]);
+            _validatorFields = {};
+            allFields.forEach((field) => {
+                var fieldValidators = {};
+    
+                if(_mandatoryFields.includes(field)) {
+                    fieldValidators.notEmpty = {
+                        message: WebAppLocals.getMessage('required')
+                    }
                 }
-            }
-
-            _validatorFields[field] = {
-                validators: fieldValidators
-            }
-        })
+    
+                if(field in mapFieldStrRangeLength) {
+                    var strRangeLength = mapFieldStrRangeLength[field];
+                    var message = WebAppLocals.getMessage('lengthError') + " " + strRangeLength[0] + " " + WebAppLocals.getMessage('and') + " " + strRangeLength[1] + " " + WebAppLocals.getMessage('characters');
+                    fieldValidators.stringLength = {
+                        min: strRangeLength[0],
+                        max: strRangeLength[1],
+                        message: message,
+                    }
+                }
+    
+                _validatorFields[field] = {
+                    validators: fieldValidators
+                }
+            })
+        }
         
         var form = KTUtil.getById(mode + "ModalForm");
         _validator = FormValidation.formValidation(form, {
@@ -637,13 +715,92 @@ var DistributorProductsDataTable = (function () {
         DistributorProductsDataTable.reloadDatatable();
     }
 
+    var _productEditStock = function () {
+        _addModalValidation("editStock");
+
+        _validator.validate().then(function (status) {
+            let valid = true;
+            if(status != 'Valid') valid = false;
+            if (valid) {
+                var arrBonus = [];
+                if($('#editStockBonusCheckbox').is(":checked")) {
+                    $("#editStockBonusList > div").each(function(index, element) {
+                        var id = $(element).find("#editStockBonusId").val();
+                        var bonusTypeId = $(element).find("#editStockBonusTypeId").val();
+                        var minOrder = $(element).find("#editStockBonusQuantity").val();
+                        var bonus = $(element).find("#editStockBonus").val();
+                        arrBonus.push({
+                            id,
+                            bonusTypeId,
+                            minOrder,
+                            bonus,
+                        })
+                    });
+                }
+
+                if($('#editStockSpecialBonusCheckbox').is(":checked")) {
+                    $("#editStockSpecialBonusList > div").each(function(index, element) {
+                        var id = $(element).find("#editStockSpecialBonusId").val();
+                        var bonusTypeId = $(element).find("#editStockSpecialBonusTypeId").val();
+                        var minOrder = $(element).find("#editStockSpecialBonusQuantity").val();
+                        var bonus = $(element).find("#editStockSpecialBonus").val();
+                        var arrRelationGroup = $(element).find("#editStockSpecialRelationGroupId").val();
+                        arrBonus.push({
+                            id,
+                            bonusTypeId,
+                            minOrder,
+                            bonus,
+                            arrRelationGroup,
+                        })
+                    });
+                }
+
+                let body = {
+                    arrBonus
+                };
+    
+                let mapKeyElement = {
+                    id: 'input',
+                    stock: 'input',
+                };
+    
+                Object.keys(mapKeyElement).forEach((key) => {
+                    body[key] = $('#editStockModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+                });
+                
+                WebApp.post('/web/distributor/product/editStock', body, _productEditStockSuccessCallback);
+            } else {
+                Swal.fire({
+                    text: WebAppLocals.getMessage('validationError'),
+                    icon: 'error',
+                    buttonsStyling: false,
+                    confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+                    customClass: {
+                        confirmButton: 'btn font-weight-bold btn-light',
+                    },
+                }).then(function () {
+                    KTUtil.scrollTop();
+                });
+            }
+        });
+    }
+
+    var _productEditStockSuccessCallback = function () {
+        $("#editStockModal").modal('hide');
+        // DistributorProductsDataTable.reloadDatatable();
+        window.location.reload();
+    }
+
     return {
         // public functions
         reloadDatatable: function () {
             WebApp.reloadDatatable();
         },
-        productEditQuantityModal: function (productId) {
-            _productEditQuantityModal(productId);
+        productAddModal: function () {
+            _productAddModal();
+        },
+        productAdd: function () {
+            _productAdd();
         },
         productEditModal: function (productId) {
             _productEditModal(productId);
@@ -651,11 +808,11 @@ var DistributorProductsDataTable = (function () {
         productEdit: function () {
             _productEdit();
         },
-        productAddModal: function () {
-            _productAddModal();
+        productEditStockModal: function (productId) {
+            _productEditStockModal(productId);
         },
-        productAdd: function () {
-            _productAdd();
+        productEditStock: function () {
+            _productEditStock();
         },
         closeImageModal: function() {
             _closeImageModal();
