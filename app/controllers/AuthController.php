@@ -668,8 +668,7 @@ class AuthController extends Controller {
         $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
 
-        $newFileName = $fileName . "-" . time() . ".$ext";
-        $targetFile = "files/uploads/documents/" . $newFileName;
+        $targetFile = Helper::createUploadedFileName($fileName,$ext,"files/uploads/documents/");
 
         if (in_array($ext, $allValidExtensions)) {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {

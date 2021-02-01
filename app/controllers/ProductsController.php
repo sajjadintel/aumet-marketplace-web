@@ -309,8 +309,7 @@ class ProductsController extends Controller {
         $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
 
-        $newFileName = $fileName . "-" . time() . ".$ext";
-        $targetFile = "assets/img/products/" . $newFileName;
+        $targetFile = Helper::createUploadedFileName($fileName,$ext,"assets/img/products/");
 
         if (in_array($ext, $allValidExtensions)) {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
