@@ -117,6 +117,7 @@ class NotificationHelper {
         $title = "Modify Shipped Quantity in Order #" . $orderId;
         $f3->set('domainUrl', getenv('DOMAIN_URL'));
         $f3->set('title', $title);
+        $f3->set('orderId', $orderId);
         $f3->set('emailType', 'modifiedOrderProducts');
         $f3->set('products', $dbProduct);
 
