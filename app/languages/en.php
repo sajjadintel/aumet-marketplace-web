@@ -232,8 +232,10 @@ return array(
     'vModule_cart_subTotal' => 'SubTotal',
     'vModule_cart_grandSubTotal' => 'Grand SubTotal',
     'vModule_cart_formula' => 'Formula',
-    'vModule_cart_productOrderPrice' => 'Product Price',
+    'vModule_cart_productOrderPrice' => 'Price',
     'vModule_cart_entityOrderPrice' => 'Distributor Invoice',
+    'vModule_cart_orderTotal' => 'Order Total',
+    'vModule_cart_orderSubTotal' => 'Sub Total',
     'vModule_cart_term' => 'Prices shown are prone to changes upon price update from the Distributor',
 
     'vModule_cart_offersTitle' => 'Offers',
