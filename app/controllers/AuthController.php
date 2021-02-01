@@ -454,6 +454,18 @@ class AuthController extends Controller {
         $allValues->cityId = $cityId;
         $allValues->address = $address;
         $allValues->tradeLicenseUrl = $pharmacyDocument;
+        $allValues->roleId = $dbUser->roleId;
+
+        $dbCountry = new BaseModel($this->db, "country");
+        $dbCountry->name = "name_en";
+        $country = $dbCountry->getById($allValues->countryId)[0];
+        $allValues->countryName = $country['name'];
+
+        $dbCity = new BaseModel($this->db, "city");
+        $dbCity->name = "nameEn";
+        $city = $dbCity->getById($allValues->cityId)[0];
+        $allValues->cityName = $city['name'];
+
         if (Helper::isPharmacy($dbUser->roleId)) {
             NotificationHelper::sendVerificationPharmacyNotification($this->f3, $this->db, $allValues, $dbUser->id, $dbEntity->id, $dbEntityBranch->id);
         } else {
@@ -462,6 +474,7 @@ class AuthController extends Controller {
 
         $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         $this->webResponse->message = $this->f3->get("vMessage_signupSuccessful");
+        $this->webResponse->data = $allValues;
         echo $this->webResponse->jsonResponse();
     }
 
