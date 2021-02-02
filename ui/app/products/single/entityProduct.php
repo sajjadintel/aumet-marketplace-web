@@ -444,9 +444,12 @@ function compress_htmlcode($codedata)
                     buttons: [],
                     bPaginate: false,
                     bLengthChange: false,
-                    bFilter: true,
+                    bFilter: false,
                     bInfo: false,
-                    bAutoWidth: false
+                    bAutoWidth: false,
+                    bServerSide: false ,
+                    processing: false,
+                    stateSave: true
                 }
             };
 
