@@ -43,7 +43,7 @@ var WebFeedbackModals = (function () {
         $('#feedbackModalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
         $('#feedbackModalStatusText').html(status);
         $('#feedbackModalTotalLabel').html(WebAppLocals.getMessage('orderTotal'));
-        $('#feedbackModalTotalText').html(webResponse.data.order.currency + WebApp.formatMoney(webResponse.data.order.total);
+        $('#feedbackModalTotalText').html(webResponse.data.order.currency + WebApp.formatMoney(webResponse.data.order.total));
         $('#feedbackModalDateLabel').html(WebAppLocals.getMessage('insertDate'));
         $('#feedbackModalDateText').html(webResponse.data.order.insertDateTime);
         $('#feedbackModalAddressLabel').html(WebAppLocals.getMessage('address'));

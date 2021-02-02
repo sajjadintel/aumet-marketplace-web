@@ -160,6 +160,8 @@ var Profile = (function () {
 		}
 
 		_handleMenuChange('myProfile');
+
+		_handleChangeProfileImage();
     }
 
     var _initializeDropzone = function () {
@@ -725,6 +727,60 @@ var Profile = (function () {
         WebApp.alertSuccess(webResponse.message);
 	};
 
+	// upload profile image
+	var _handleChangeProfileImage = function () {
+		(new KTImageInput('profile-image')).on('change', function(imageInput) {
+			// let profileImage = $('#profile-image .image-input-wrapper').css('backgroundImage');
+			// console.log(profileImage);
+
+			var formData = new FormData();
+			formData.append('profile_image', imageInput.input.files[0]);
+
+			$.ajax({
+				url: '/web/distributor/profile/image',
+				type: 'POST',
+				data: formData,
+				cache: false,
+				contentType: false,
+				processData: false,
+				success: function (webResponse) {
+					console.log(webResponse.title);
+					if (webResponse.data) {
+						Swal.fire({
+							title: webResponse.message,
+							icon: 'success',
+							buttonsStyling: false,
+							confirmButtonText: WebAppLocals.getMessage('success_confirmButtonText'),
+							customClass: {
+								confirmButton: 'btn btn-primary font-weight-bold',
+							}
+						});
+					} else {
+						Swal.fire({
+							title: webResponse.message,
+							icon: 'error',
+							buttonsStyling: false,
+							confirmButtonText: WebAppLocals.getMessage('success_confirmButtonText'),
+							customClass: {
+								confirmButton: 'btn btn-primary font-weight-bold',
+							}
+						});
+					}
+				}
+			});
+		}).on('remove', function(imageInput) {
+			Swal.fire({
+				title: 'Image successfully removed !',
+				type: 'error',
+				buttonsStyling: false,
+				confirmButtonText: WebAppLocals.getMessage('success_confirmButtonText'),
+				customClass: {
+					confirmButton: 'btn btn-primary font-weight-bold',
+				}
+			});
+		});
+	};
+
 	// Public Functions
 	return {
         init: function () {
@@ -747,6 +803,6 @@ var Profile = (function () {
 		},
 		saveDistributorPaymentSetting: function () {
 			_saveDistributorPaymentSetting();
-		},
+		}
 	};
 })();

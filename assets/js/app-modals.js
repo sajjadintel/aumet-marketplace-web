@@ -233,7 +233,7 @@ var OrderMissingProductListModals = (function () {
             title: WebAppLocals.getMessage('unitPrice'),
             data: 'unitPrice',
             render: function (data, type, row, meta) {
-                var output = row.currency + ' <strong>' + WebApp.formatMoney((row.unitPrice) + '</strong>';
+                var output = row.currency + ' <strong>' + WebApp.formatMoney(row.unitPrice) + '</strong>';
                 return output;
             },
         },
@@ -242,7 +242,7 @@ var OrderMissingProductListModals = (function () {
             title: WebAppLocals.getMessage('tax'),
             data: 'tax',
             render: function (data, type, row, meta) {
-                var output = WebApp.formatMoney((row.tax) + '%';
+                var output = WebApp.formatMoney(row.tax) + '%';
                 return output;
             },
         },
