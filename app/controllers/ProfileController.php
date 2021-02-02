@@ -20,6 +20,7 @@ class ProfileController extends Controller {
                 $user = $dbUser->getWhere("userId=".$this->objUser->id)[0];
                 $this->f3->set('user', $user);
                 $this->f3->set('entityBranchTradeLicenseUrlDecoded', urldecode($user->entityBranchTradeLicenseUrl));
+                $this->f3->set('entityImage', $user->entityImage);
 
                 // Get all payment methods
                 $dbPaymentMethod = new BaseModel($this->db, "paymentMethod");
@@ -227,7 +228,7 @@ class ProfileController extends Controller {
                 $message = $this->f3->get("vModule_profile_requestSent");
 
                 $approvalUrl = "web/pharmacy/profile/approve";
-                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl, $dbUser);
+                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl);
             } else {
                 $message = $this->f3->get("vModule_profile_myProfileSaved");
             }
@@ -391,7 +392,7 @@ class ProfileController extends Controller {
                 $message = $this->f3->get("vModule_profile_requestSent");
 
                 $approvalUrl = "web/distributor/profile/approve";
-                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl, $dbUser);
+                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl);
             } else {
                 $message = $this->f3->get("vModule_profile_myProfileSaved");
             }
@@ -554,6 +555,46 @@ class ProfileController extends Controller {
         }
     }
 
+    function postDistributorProfileImage()
+    {
+        $success = false;
+        try {
+            $allValidExtensions = ['jpeg', 'jpg', 'png'];
+
+            if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+                $fileName = pathinfo(basename($_FILES['profile_image']['name']), PATHINFO_FILENAME);
+                $ext = pathinfo(basename($_FILES['profile_image']['name']), PATHINFO_EXTENSION);
+
+                $targetFile = Helper::createUploadedFileName($fileName,$ext,'assets/img/profiles/');
+
+                if (in_array($ext, $allValidExtensions)) {
+                    if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetFile)) {
+                        $entityId = array_keys($this->f3->get('SESSION.arrEntities'))[0];
+                        $this->db->exec("UPDATE entity SET image = '{$targetFile}' WHERE id = '{$entityId}'");
+
+                        $message ='File is successfully uploaded.';
+                        $success = true;
+                    } else {
+                        $message = 'There was some error moving the file to upload directory. Please make sure the upload directory is writable by web server.';
+                    }
+                } else {
+                    $message = 'Upload failed. Allowed file types: ' . implode(',', $allValidExtensions);
+                }
+            } else {
+                $message = 'Error:' . $_FILES['uploadedFile']['error'];
+            }
+
+            $this->webResponse->data = $success;
+            $this->webResponse->message = $message;
+        } catch (Exception $e) {
+            $this->webResponse->data = $success;
+            $this->webResponse->message = $e->getMessage();
+        }
+
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+        echo $this->webResponse->jsonResponse();
+    }
+
     function sendChangeApprovalEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $tradeLicenseUrl, $approvalUrl, $dbUser)
     {
         $emailHandler = new EmailHandler($this->db);
@@ -565,7 +606,6 @@ class ProfileController extends Controller {
         $this->f3->set('mapDisplayNameOldNewValue', $mapDisplayNameOldNewValue);
         $this->f3->set('tradeLicenseUrl', $tradeLicenseUrl);
         $this->f3->set('approvalUrl', $approvalUrl);
-        $this->f3->set('userEmail', $dbUser->userEmail);
 
         $payload = [
             'entityChangeApprovalId' => $entityChangeApprovalId
@@ -596,9 +636,7 @@ class ProfileController extends Controller {
 
             if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
-                $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad Abbasi");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
-                $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad");
             }
         }
         $emailHandler->sendEmail(Constants::EMAIL_CHANGE_PROFILE_APPROVAL, $subject, $htmlContent);
@@ -788,7 +826,6 @@ class ProfileController extends Controller {
             if (getenv('ENV') == Constants::ENV_LOC) {
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
-                $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad");
             }
         }
         $emailHandler->sendEmail(Constants::EMAIL_CHANGE_PROFILE_APPROVED, $subject, $htmlContent);

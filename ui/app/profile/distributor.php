@@ -28,8 +28,23 @@
             <div class="col-3">
                 <div class="card card-custom card-body card-stretch gutter-b px-0 pt-0" style="height: 550px;">
                     <div style="background-color: #D8D8D8; height: 120px;"></div>   
-                    <div class="symbol symbol-150 mt-n30" style="display: flex; justify-content: center;">
+                    <div class="symbol symbol-150 mt-n30" style="display: none; justify-content: center;">
                         <img src="/assets/img/profile.png" style="border: 4px solid #FFF;"/>
+                    </div>
+                    <div class="d-flex justify-content-center mt-n20" id="profile-image-form">
+                        <div class="image-input image-input-empty image-input-outline" id="profile-image" style="background-image: url('/assets/img/profile.png')">
+                            <div class="image-input-wrapper" style="background-image: url('/<?php echo $user->entityImage ?>')"></div>
+
+                            <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Change avatar">
+                                <i class="fa fa-pen icon-sm text-muted"></i>
+                                <input type="file" name="profile_avatar" accept=".png, .jpg, .jpeg"/>
+                                <input type="hidden" name="profile_avatar_remove"/>
+                            </label>
+
+                            <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="remove" data-toggle="tooltip" title="Remove avatar">
+                                <i class="ki ki-bold-close icon-xs text-muted"></i>
+                            </span>
+                        </div>
                     </div>
                     <div class="pt-8" style="text-align: center;">
                         <h3 class="text-muted m-0"><?php echo $user->userFullName; ?></h3>
