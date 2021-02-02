@@ -558,7 +558,7 @@ class ProfileController extends Controller
         }
     }
 
-    function _postProfileImage()
+    function handlePostProfileImage()
     {
         $success = false;
         try {
@@ -600,12 +600,12 @@ class ProfileController extends Controller
 
     function postDistributorProfileImage()
     {
-        $this->_postProfileImage();
+        $this->handlePostProfileImage();
     }
 
     function postPharmacyProfileImage()
     {
-        $this->_postProfileImage();
+        $this->handlePostProfileImage();
     }
 
     function sendChangeApprovalEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $tradeLicenseUrl, $approvalUrl, $dbUser)
