@@ -16,7 +16,7 @@
         <!--begin::Header-->
         <div class="d-flex align-items-center mt-5">
             <div class="symbol symbol-100 mr-5" style="cursor: pointer;" onclick="window.location.href = '/web/profile';">
-                <div class="symbol-label" style="background-image:url('/assets/img/profile.png')"></div>
+                <div class="symbol-label" style="background-image: url('/assets/img/profile.png')"></div>
                 <i class="symbol-badge bg-success"></i>
             </div>
             <div class="d-flex flex-column">

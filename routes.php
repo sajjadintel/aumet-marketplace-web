@@ -179,3 +179,4 @@ $f3->route('POST /web/distributor/profile/paymentSetting', 'ProfileController->p
 $f3->route('POST /web/distributor/profile/image', 'ProfileController->postDistributorProfileImage');
 $f3->route('GET /web/pharmacy/profile/approve', 'ProfileController->getPharmacyProfileApprove');
 $f3->route('GET /web/distributor/profile/approve', 'ProfileController->getDistributorProfileApprove');
+$f3->route('POST /web/pharmacy/profile/image', 'ProfileController->postPharmacyProfileImage');

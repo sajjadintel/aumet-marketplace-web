@@ -28,9 +28,6 @@
             <div class="col-3">
                 <div class="card card-custom card-body card-stretch gutter-b px-0 pt-0" style="height: 550px;">
                     <div style="background-color: #D8D8D8; height: 120px;"></div>   
-                    <div class="symbol symbol-150 mt-n30" style="display: none; justify-content: center;">
-                        <img src="/assets/img/profile.png" style="border: 4px solid #FFF;"/>
-                    </div>
                     <div class="d-flex justify-content-center mt-n20" id="profile-image-form">
                         <div class="image-input image-input-empty image-input-outline" id="profile-image" style="background-image: url('/assets/img/profile.png')">
                             <div class="image-input-wrapper" style="background-image: url('/<?php echo $user->entityImage ?>')"></div>
