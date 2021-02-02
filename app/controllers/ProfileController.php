@@ -2,7 +2,8 @@
 
 use Ahc\Jwt\JWT;
 
-class ProfileController extends Controller {
+class ProfileController extends Controller
+{
 
     function getProfile()
     {
@@ -17,7 +18,7 @@ class ProfileController extends Controller {
                 $dbUser->entityCountryName = "entityCountryName_" . $this->objUser->language;
                 $dbUser->entityBranchCityName = "entityBranchCityName_" . $this->objUser->language;
                 $dbUser->entityBranchAddress = "entityBranchAddress_" . $this->objUser->language;
-                $user = $dbUser->getWhere("userId=".$this->objUser->id)[0];
+                $user = $dbUser->getWhere("userId=" . $this->objUser->id)[0];
                 $this->f3->set('user', $user);
                 $this->f3->set('entityBranchTradeLicenseUrlDecoded', urldecode($user->entityBranchTradeLicenseUrl));
                 $this->f3->set('entityImage', $user->entityImage);
@@ -34,7 +35,7 @@ class ProfileController extends Controller {
                 $dbEntityPaymentMethod = new BaseModel($this->db, "entityPaymentMethod");
                 $arrEntityPaymentMethod = $dbEntityPaymentMethod->getWhere("entityId = $entityId");
                 $arrEntityPaymentMethodId = [];
-                foreach($arrEntityPaymentMethod as $entityPaymentMethod) {
+                foreach ($arrEntityPaymentMethod as $entityPaymentMethod) {
                     array_push($arrEntityPaymentMethodId, $entityPaymentMethod['paymentMethodId']);
                 }
                 $this->f3->set('arrEntityPaymentMethodId', $arrEntityPaymentMethodId);
@@ -43,22 +44,22 @@ class ProfileController extends Controller {
                 $dbEntityMinimumValueOrder = new BaseModel($this->db, "entityMinimumValueOrder");
                 $arrEntityMinimumValueOrder = $dbEntityMinimumValueOrder->getWhere("entityId = $entityId");
                 $arrEntityMinimumValueOrderId = [];
-                foreach($arrEntityMinimumValueOrder as $entityMinimumValueOrder) {
+                foreach ($arrEntityMinimumValueOrder as $entityMinimumValueOrder) {
                     array_push($arrEntityMinimumValueOrderId, $entityMinimumValueOrder['id']);
                 }
 
                 // Group all minimum value orders' cities
                 $arrEntityMinimumValueOrderGrouped = [];
-                if(count($arrEntityMinimumValueOrderId) > 0) {
+                if (count($arrEntityMinimumValueOrderId) > 0) {
                     $dbEntityMinimumValueOrderCity = new BaseModel($this->db, "entityMinimumValueOrderCity");
                     $strEntityMinimumValueOrderId = implode(",", $arrEntityMinimumValueOrderId);
                     $arrEntityMinimumValueOrderCity = $dbEntityMinimumValueOrderCity->getWhere("entityMinimumValueOrderId IN ($strEntityMinimumValueOrderId)");
 
                     $mapEntityMinimumValueOrderIdCityId = [];
-                    foreach($arrEntityMinimumValueOrderCity as $entityMinimumValueOrderCity) {
+                    foreach ($arrEntityMinimumValueOrderCity as $entityMinimumValueOrderCity) {
                         $entityMinimumValueOrderId = $entityMinimumValueOrderCity['entityMinimumValueOrderId'];
                         $cityId = $entityMinimumValueOrderCity['cityId'];
-                        if(array_key_exists($entityMinimumValueOrderId, $mapEntityMinimumValueOrderIdCityId)) {
+                        if (array_key_exists($entityMinimumValueOrderId, $mapEntityMinimumValueOrderIdCityId)) {
                             $allCityId = $mapEntityMinimumValueOrderIdCityId[$entityMinimumValueOrderId];
                             array_push($allCityId, $cityId);
                             $mapEntityMinimumValueOrderIdCityId[$entityMinimumValueOrderId] = $allCityId;
@@ -67,7 +68,7 @@ class ProfileController extends Controller {
                         }
                     }
 
-                    foreach($arrEntityMinimumValueOrder as $entityMinimumValueOrder) {
+                    foreach ($arrEntityMinimumValueOrder as $entityMinimumValueOrder) {
                         $entityMinimumValueOrderId = $entityMinimumValueOrder['id'];
 
                         $entityMinimumValueOrderGrouped = new stdClass();
@@ -90,9 +91,10 @@ class ProfileController extends Controller {
                 $dbUser->entityCountryName = "entityCountryName_" . $this->objUser->language;
                 $dbUser->entityBranchCityName = "entityBranchCityName_" . $this->objUser->language;
                 $dbUser->entityBranchAddress = "entityBranchAddress_" . $this->objUser->language;
-                $user = $dbUser->getWhere("userId=".$this->objUser->id)[0];
+                $user = $dbUser->getWhere("userId=" . $this->objUser->id)[0];
                 $this->f3->set('user', $user);
                 $this->f3->set('entityBranchTradeLicenseUrlDecoded', urldecode($user->entityBranchTradeLicenseUrl));
+                $this->f3->set('entityImage', $user->entityImage);
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_profile');
@@ -141,11 +143,11 @@ class ProfileController extends Controller {
 
         $this->checkLength($entityName, 'entityName', 100, 4);
         $this->checkLength($address, 'address', 500, 4);
-        if(strlen($tradeLicenseNumber) > 0) {
+        if (strlen($tradeLicenseNumber) > 0) {
             $this->checkLength($tradeLicenseNumber, 'tradeLicenseNumber', 200, 4);
         }
 
-        if(strlen($address) == 0) {
+        if (strlen($address) == 0) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
             echo $this->webResponse->jsonResponse();
@@ -163,16 +165,16 @@ class ProfileController extends Controller {
         } else {
             $dbEntity = new BaseModel($this->db, "entity");
             $dbEntity->getByField("id", $dbUser->entityId);
-            
+
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
             $dbEntityBranch->getByField("id", $dbUser->entityBranchId);
             $dbEntityBranch->address_ar = $address;
             $dbEntityBranch->address_en = $address;
             $dbEntityBranch->address_fr = $address;
             $dbEntityBranch->tradeLicenseUrl = $entityDocument;
-            
-            if($dbEntity->name_en != $entityName || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber) {
-                if(strlen($entityDocument) == 0) {
+
+            if ($dbEntity->name_en != $entityName || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber) {
+                if (strlen($entityDocument) == 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get("vModule_profile_missingDocumentApproval");
                     echo $this->webResponse->jsonResponse();
@@ -180,28 +182,28 @@ class ProfileController extends Controller {
                 }
 
                 $mapFieldNameOldNewValue = [];
-                if($dbEntity->name_en != $entityName) {
-                    $mapFieldNameOldNewValue["entity.name_ar"] = [ $dbEntity->name_ar, $entityName ];
-                    $mapFieldNameOldNewValue["entity.name_en"] = [ $dbEntity->name_en, $entityName ];
-                    $mapFieldNameOldNewValue["entity.name_fr"] = [ $dbEntity->name_fr, $entityName ];
-                    $mapFieldNameOldNewValue["entityBranch.name_ar"] = [ $dbEntity->name_ar, $entityName ];
-                    $mapFieldNameOldNewValue["entityBranch.name_en"] = [ $dbEntity->name_en, $entityName ];
-                    $mapFieldNameOldNewValue["entityBranch.name_fr"] = [ $dbEntity->name_fr, $entityName ];
+                if ($dbEntity->name_en != $entityName) {
+                    $mapFieldNameOldNewValue["entity.name_ar"] = [$dbEntity->name_ar, $entityName];
+                    $mapFieldNameOldNewValue["entity.name_en"] = [$dbEntity->name_en, $entityName];
+                    $mapFieldNameOldNewValue["entity.name_fr"] = [$dbEntity->name_fr, $entityName];
+                    $mapFieldNameOldNewValue["entityBranch.name_ar"] = [$dbEntity->name_ar, $entityName];
+                    $mapFieldNameOldNewValue["entityBranch.name_en"] = [$dbEntity->name_en, $entityName];
+                    $mapFieldNameOldNewValue["entityBranch.name_fr"] = [$dbEntity->name_fr, $entityName];
                 }
-                
-                if($dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber) {
-                    $mapFieldNameOldNewValue["entityBranch.tradeLicenseNumber"] = [ $dbEntityBranch->tradeLicenseNumber, $tradeLicenseNumber ];
+
+                if ($dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber) {
+                    $mapFieldNameOldNewValue["entityBranch.tradeLicenseNumber"] = [$dbEntityBranch->tradeLicenseNumber, $tradeLicenseNumber];
                 }
-            
+
                 $dbEntityChangeApproval = new BaseModel($this->db, "entityChangeApproval");
                 $dbEntityChangeApproval->tradeLicenseUrl = $entityDocument;
                 $dbEntityChangeApproval->entityId = $dbUser->entityId;
                 $dbEntityChangeApproval->userId = $userId;
                 $dbEntityChangeApproval->addReturnID();
-            
+
                 $dbEntityChangeApprovalField = new BaseModel($this->db, "entityChangeApprovalField");
                 $mapDisplayNameOldNewValue = [];
-                foreach($mapFieldNameOldNewValue as $fieldName => $oldNewValue) {
+                foreach ($mapFieldNameOldNewValue as $fieldName => $oldNewValue) {
                     $oldValue = $oldNewValue[0];
                     $newValue = $oldNewValue[1];
 
@@ -215,13 +217,13 @@ class ProfileController extends Controller {
                     // Fill map used to display data in the mail approval
                     $allParts = explode(".", $fieldName);
                     $name = end($allParts);
-                    if($name == "name_en") {
+                    if ($name == "name_en") {
                         $displayName = "Pharmacy Name";
-                    } else if($name == "tradeLicenseNumber") {
+                    } else if ($name == "tradeLicenseNumber") {
                         $displayName = "Trade License Number";
                     }
 
-                    if($displayName) {
+                    if ($displayName) {
                         $mapDisplayNameOldNewValue[$displayName] = $oldNewValue;
                     }
                 }
@@ -248,16 +250,16 @@ class ProfileController extends Controller {
         $newPassword = $this->f3->get("POST.newPassword");
         $newPasswordConfirmation = $this->f3->get("POST.newPasswordConfirmation");
 
-        if(strlen($oldPassword) == 0
-        || strlen($newPassword) == 0
-        || strlen($newPasswordConfirmation) == 0) {
+        if (strlen($oldPassword) == 0
+            || strlen($newPassword) == 0
+            || strlen($newPasswordConfirmation) == 0) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
             echo $this->webResponse->jsonResponse();
             return;
         }
 
-        if($newPassword != $newPasswordConfirmation) {
+        if ($newPassword != $newPasswordConfirmation) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_wrongPasswordConfirmation");
             echo $this->webResponse->jsonResponse();
@@ -273,12 +275,12 @@ class ProfileController extends Controller {
             echo $this->webResponse->jsonResponse();
         } else {
             // Check if oldPassword is correct
-            if(!password_verify($oldPassword, $dbUser->password)) {
+            if (!password_verify($oldPassword, $dbUser->password)) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->message = $this->f3->get("vModule_profile_wrongPassword");
                 echo $this->webResponse->jsonResponse();
             } else {
-                if(password_verify($newPassword, $dbUser->password)) {
+                if (password_verify($newPassword, $dbUser->password)) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get("vModule_profile_samePassword");
                     echo $this->webResponse->jsonResponse();
@@ -305,11 +307,11 @@ class ProfileController extends Controller {
 
         $this->checkLength($entityName, 'entityName', 100, 4);
         $this->checkLength($address, 'address', 500, 4);
-        if(strlen($tradeLicenseNumber) > 0) {
+        if (strlen($tradeLicenseNumber) > 0) {
             $this->checkLength($tradeLicenseNumber, 'tradeLicenseNumber', 200, 4);
         }
 
-        if(strlen($address) == 0) {
+        if (strlen($address) == 0) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
             echo $this->webResponse->jsonResponse();
@@ -327,16 +329,16 @@ class ProfileController extends Controller {
         } else {
             $dbEntity = new BaseModel($this->db, "entity");
             $dbEntity->getByField("id", $dbUser->entityId);
-            
+
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
             $dbEntityBranch->getByField("id", $dbUser->entityBranchId);
             $dbEntityBranch->address_ar = $address;
             $dbEntityBranch->address_en = $address;
             $dbEntityBranch->address_fr = $address;
             $dbEntityBranch->tradeLicenseUrl = $entityDocument;
-            
-            if($dbEntity->name_en != $entityName || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber) {
-                if(strlen($entityDocument) == 0) {
+
+            if ($dbEntity->name_en != $entityName || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber) {
+                if (strlen($entityDocument) == 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get("vModule_profile_missingDocumentApproval");
                     echo $this->webResponse->jsonResponse();
@@ -344,28 +346,28 @@ class ProfileController extends Controller {
                 }
 
                 $mapFieldNameOldNewValue = [];
-                if($dbEntity->name_en != $entityName) {
-                    $mapFieldNameOldNewValue["entity.name_ar"] = [ $dbEntity->name_ar, $entityName ];
-                    $mapFieldNameOldNewValue["entity.name_en"] = [ $dbEntity->name_en, $entityName ];
-                    $mapFieldNameOldNewValue["entity.name_fr"] = [ $dbEntity->name_fr, $entityName ];
-                    $mapFieldNameOldNewValue["entityBranch.name_ar"] = [ $dbEntity->name_ar, $entityName ];
-                    $mapFieldNameOldNewValue["entityBranch.name_en"] = [ $dbEntity->name_en, $entityName ];
-                    $mapFieldNameOldNewValue["entityBranch.name_fr"] = [ $dbEntity->name_fr, $entityName ];
+                if ($dbEntity->name_en != $entityName) {
+                    $mapFieldNameOldNewValue["entity.name_ar"] = [$dbEntity->name_ar, $entityName];
+                    $mapFieldNameOldNewValue["entity.name_en"] = [$dbEntity->name_en, $entityName];
+                    $mapFieldNameOldNewValue["entity.name_fr"] = [$dbEntity->name_fr, $entityName];
+                    $mapFieldNameOldNewValue["entityBranch.name_ar"] = [$dbEntity->name_ar, $entityName];
+                    $mapFieldNameOldNewValue["entityBranch.name_en"] = [$dbEntity->name_en, $entityName];
+                    $mapFieldNameOldNewValue["entityBranch.name_fr"] = [$dbEntity->name_fr, $entityName];
                 }
-                
-                if($dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber) {
-                    $mapFieldNameOldNewValue["entityBranch.tradeLicenseNumber"] = [ $dbEntityBranch->tradeLicenseNumber, $tradeLicenseNumber ];
+
+                if ($dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber) {
+                    $mapFieldNameOldNewValue["entityBranch.tradeLicenseNumber"] = [$dbEntityBranch->tradeLicenseNumber, $tradeLicenseNumber];
                 }
-            
+
                 $dbEntityChangeApproval = new BaseModel($this->db, "entityChangeApproval");
                 $dbEntityChangeApproval->tradeLicenseUrl = $entityDocument;
                 $dbEntityChangeApproval->entityId = $dbUser->entityId;
                 $dbEntityChangeApproval->userId = $userId;
                 $dbEntityChangeApproval->addReturnID();
-            
+
                 $dbEntityChangeApprovalField = new BaseModel($this->db, "entityChangeApprovalField");
                 $mapDisplayNameOldNewValue = [];
-                foreach($mapFieldNameOldNewValue as $fieldName => $oldNewValue) {
+                foreach ($mapFieldNameOldNewValue as $fieldName => $oldNewValue) {
                     $oldValue = $oldNewValue[0];
                     $newValue = $oldNewValue[1];
 
@@ -379,13 +381,13 @@ class ProfileController extends Controller {
                     // Fill map used to display data in the mail approval
                     $allParts = explode(".", $fieldName);
                     $name = end($allParts);
-                    if($name == "name_en") {
+                    if ($name == "name_en") {
                         $displayName = "Distributor Name";
-                    } else if($name == "tradeLicenseNumber") {
+                    } else if ($name == "tradeLicenseNumber") {
                         $displayName = "Trade License Number";
                     }
 
-                    if($displayName) {
+                    if ($displayName) {
                         $mapDisplayNameOldNewValue[$displayName] = $oldNewValue;
                     }
                 }
@@ -412,16 +414,16 @@ class ProfileController extends Controller {
         $newPassword = $this->f3->get("POST.newPassword");
         $newPasswordConfirmation = $this->f3->get("POST.newPasswordConfirmation");
 
-        if(strlen($oldPassword) == 0
-        || strlen($newPassword) == 0
-        || strlen($newPasswordConfirmation) == 0) {
+        if (strlen($oldPassword) == 0
+            || strlen($newPassword) == 0
+            || strlen($newPasswordConfirmation) == 0) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
             echo $this->webResponse->jsonResponse();
             return;
         }
 
-        if($newPassword != $newPasswordConfirmation) {
+        if ($newPassword != $newPasswordConfirmation) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_wrongPasswordConfirmation");
             echo $this->webResponse->jsonResponse();
@@ -437,12 +439,12 @@ class ProfileController extends Controller {
             echo $this->webResponse->jsonResponse();
         } else {
             // Check if oldPassword is correct
-            if(!password_verify($oldPassword, $dbUser->password)) {
+            if (!password_verify($oldPassword, $dbUser->password)) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->message = $this->f3->get("vModule_profile_wrongPassword");
                 echo $this->webResponse->jsonResponse();
             } else {
-                if(password_verify($newPassword, $dbUser->password)) {
+                if (password_verify($newPassword, $dbUser->password)) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get("vModule_profile_samePassword");
                     echo $this->webResponse->jsonResponse();
@@ -466,23 +468,23 @@ class ProfileController extends Controller {
         $allEntityMinimumValueOrder = $this->f3->get("POST.allEntityMinimumValueOrder");
 
         // Check if there is a payment method
-        if(!$allPaymentMethodId || count($allPaymentMethodId) == 0) {
+        if (!$allPaymentMethodId || count($allPaymentMethodId) == 0) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_paymentMethodRequired");
             echo $this->webResponse->jsonResponse();
             return;
         }
 
-        if(!$allEntityMinimumValueOrder) {
+        if (!$allEntityMinimumValueOrder) {
             $allEntityMinimumValueOrder = [];
         }
 
         // Check if a city is selected more than once
         $allSelectedCityId = [];
-        foreach($allEntityMinimumValueOrder as $entityMinimumValueOrder) {
+        foreach ($allEntityMinimumValueOrder as $entityMinimumValueOrder) {
             $allCityId = $entityMinimumValueOrder['minimumValueOrderCityId'];
-            foreach($allCityId as $cityId) {
-                if(in_array($cityId, $allSelectedCityId)) {
+            foreach ($allCityId as $cityId) {
+                if (in_array($cityId, $allSelectedCityId)) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get("vModule_profile_minimumValueOrderCityError");
                     echo $this->webResponse->jsonResponse();
@@ -511,7 +513,7 @@ class ProfileController extends Controller {
                 $dbEntityPaymentMethod->next();
             }
 
-            foreach($allPaymentMethodId as $paymentMethodId) {
+            foreach ($allPaymentMethodId as $paymentMethodId) {
                 $dbEntityPaymentMethod->entityId = $entityId;
                 $dbEntityPaymentMethod->paymentMethodId = $paymentMethodId;
                 $dbEntityPaymentMethod->add();
@@ -528,7 +530,7 @@ class ProfileController extends Controller {
             }
 
             $dbEntityMinimumValueOrderCity = new BaseModel($this->db, "entityMinimumValueOrderCity");
-            if(count($oldEntityMinimumValueOrderId) > 0) {
+            if (count($oldEntityMinimumValueOrderId) > 0) {
                 $oldEntityMinimumValueOrderIdStr = implode(",", $oldEntityMinimumValueOrderId);
                 $dbEntityMinimumValueOrderCity->getWhere("entityMinimumValueOrderId IN ($oldEntityMinimumValueOrderIdStr)");
                 while (!$dbEntityMinimumValueOrderCity->dry()) {
@@ -537,12 +539,12 @@ class ProfileController extends Controller {
                 }
             }
 
-            foreach($allEntityMinimumValueOrder as $entityMinimumValueOrder) {
+            foreach ($allEntityMinimumValueOrder as $entityMinimumValueOrder) {
                 $dbEntityMinimumValueOrder->entityId = $entityId;
                 $dbEntityMinimumValueOrder->minimumValueOrder = $entityMinimumValueOrder['minimumValueOrder'];
                 $dbEntityMinimumValueOrder->addReturnID();
                 $allCityId = $entityMinimumValueOrder['minimumValueOrderCityId'];
-                foreach($allCityId as $cityId) {
+                foreach ($allCityId as $cityId) {
                     $dbEntityMinimumValueOrderCity->entityMinimumValueOrderId = $dbEntityMinimumValueOrder['id'];
                     $dbEntityMinimumValueOrderCity->cityId = $cityId;
                     $dbEntityMinimumValueOrderCity->add();
@@ -555,7 +557,7 @@ class ProfileController extends Controller {
         }
     }
 
-    function postDistributorProfileImage()
+    function handlePostProfileImage()
     {
         $success = false;
         try {
@@ -565,14 +567,14 @@ class ProfileController extends Controller {
                 $fileName = pathinfo(basename($_FILES['profile_image']['name']), PATHINFO_FILENAME);
                 $ext = pathinfo(basename($_FILES['profile_image']['name']), PATHINFO_EXTENSION);
 
-                $targetFile = Helper::createUploadedFileName($fileName,$ext,'assets/img/profiles/');
+                $targetFile = Helper::createUploadedFileName($fileName, $ext, 'assets/img/profiles/');
 
                 if (in_array($ext, $allValidExtensions)) {
                     if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetFile)) {
                         $entityId = array_keys($this->f3->get('SESSION.arrEntities'))[0];
                         $this->db->exec("UPDATE entity SET image = '{$targetFile}' WHERE id = '{$entityId}'");
 
-                        $message ='File is successfully uploaded.';
+                        $message = 'File is successfully uploaded.';
                         $success = true;
                     } else {
                         $message = 'There was some error moving the file to upload directory. Please make sure the upload directory is writable by web server.';
@@ -595,6 +597,16 @@ class ProfileController extends Controller {
         echo $this->webResponse->jsonResponse();
     }
 
+    function postDistributorProfileImage()
+    {
+        $this->handlePostProfileImage();
+    }
+
+    function postPharmacyProfileImage()
+    {
+        $this->handlePostProfileImage();
+    }
+
     function sendChangeApprovalEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $tradeLicenseUrl, $approvalUrl, $dbUser)
     {
         $emailHandler = new EmailHandler($this->db);
@@ -602,7 +614,7 @@ class ProfileController extends Controller {
         $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
         $this->f3->set('title', 'Change Profile Approval');
         $this->f3->set('emailType', 'changeProfileApproval');
-        
+
         $this->f3->set('mapDisplayNameOldNewValue', $mapDisplayNameOldNewValue);
         $this->f3->set('tradeLicenseUrl', $tradeLicenseUrl);
         $this->f3->set('approvalUrl', $approvalUrl);
@@ -616,8 +628,8 @@ class ProfileController extends Controller {
 
         $emailList = explode(';', getenv('ADMIN_SUPPORT_EMAIL'));
         for ($i = 0; $i < count($emailList); $i++) {
-        	if(!$emailList[$i]) {
-				continue;
+            if (!$emailList[$i]) {
+                continue;
             }
 
             $currentEmail = explode(',', $emailList[$i]);
@@ -667,46 +679,46 @@ class ProfileController extends Controller {
 
         if ($dbEntityChangeApproval->dry()) {
             echo "Invalid";
-        } else if($dbEntityChangeApproval->isApproved) {
+        } else if ($dbEntityChangeApproval->isApproved) {
             echo "Already Approved";
         } else {
             $dbEntityChangeApproval->isApproved = 1;
             $dbEntityChangeApproval->updatedAt = date('Y-m-d H:i:s');
             $dbEntityChangeApproval->update();
-            
+
             $dbEntityChangeApprovalField = new BaseModel($this->db, "entityChangeApprovalField");
             $dbEntityChangeApprovalField->getWhere("entityChangeApprovalId=$entityChangeApprovalId");
-            
+
             $dbUser = new BaseModel($this->db, "vwEntityUserProfile");
             $dbUser->getWhere("userId=$dbEntityChangeApproval->userId");
 
             $dbEntity = new BaseModel($this->db, "entity");
             $dbEntity->getByField("id", $dbUser->entityId);
-            
+
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
             $dbEntityBranch->getByField("id", $dbUser->entityBranchId);
 
             $mapDisplayNameOldNewValue = [];
-            while(!$dbEntityChangeApprovalField->dry()) {
+            while (!$dbEntityChangeApprovalField->dry()) {
                 $allParts = explode(".", $dbEntityChangeApprovalField->fieldName);
                 $table = $allParts[0];
                 $name = end($allParts);
 
                 // Update information
-                if($table == "entity") {
+                if ($table == "entity") {
                     $dbEntity[$name] = $dbEntityChangeApprovalField->newValue;
-                } else if($table == "entityBranch") {
+                } else if ($table == "entityBranch") {
                     $dbEntityBranch[$name] = $dbEntityChangeApprovalField->newValue;
                 }
 
                 // Fill map used to display data in the mail approval
-                if($name == "name_en") {
+                if ($name == "name_en") {
                     $displayName = "Pharmacy Name";
-                } else if($name == "tradeLicenseNumber") {
+                } else if ($name == "tradeLicenseNumber") {
                     $displayName = "Trade License Number";
                 }
 
-                if($displayName) {
+                if ($displayName) {
                     $mapDisplayNameOldNewValue[$displayName] = [
                         $dbEntityChangeApprovalField->oldValue,
                         $dbEntityChangeApprovalField->newValue
@@ -749,46 +761,46 @@ class ProfileController extends Controller {
 
         if ($dbEntityChangeApproval->dry()) {
             echo "Invalid";
-        } else if($dbEntityChangeApproval->isApproved) {
+        } else if ($dbEntityChangeApproval->isApproved) {
             echo "Already Approved";
         } else {
             $dbEntityChangeApproval->isApproved = 1;
             $dbEntityChangeApproval->updatedAt = date('Y-m-d H:i:s');
             $dbEntityChangeApproval->update();
-            
+
             $dbEntityChangeApprovalField = new BaseModel($this->db, "entityChangeApprovalField");
             $dbEntityChangeApprovalField->getWhere("entityChangeApprovalId=$entityChangeApprovalId");
-            
+
             $dbUser = new BaseModel($this->db, "vwEntityUserProfile");
             $dbUser->getWhere("userId=$dbEntityChangeApproval->userId");
 
             $dbEntity = new BaseModel($this->db, "entity");
             $dbEntity->getByField("id", $dbUser->entityId);
-            
+
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
             $dbEntityBranch->getByField("id", $dbUser->entityBranchId);
 
             $mapDisplayNameOldNewValue = [];
-            while(!$dbEntityChangeApprovalField->dry()) {
+            while (!$dbEntityChangeApprovalField->dry()) {
                 $allParts = explode(".", $dbEntityChangeApprovalField->fieldName);
                 $table = $allParts[0];
                 $name = end($allParts);
 
                 // Update information
-                if($table == "entity") {
+                if ($table == "entity") {
                     $dbEntity[$name] = $dbEntityChangeApprovalField->newValue;
-                } else if($table == "entityBranch") {
+                } else if ($table == "entityBranch") {
                     $dbEntityBranch[$name] = $dbEntityChangeApprovalField->newValue;
                 }
 
                 // Fill map used to display data in the mail approval
-                if($name == "name_en") {
+                if ($name == "name_en") {
                     $displayName = "Distributor Name";
-                } else if($name == "tradeLicenseNumber") {
+                } else if ($name == "tradeLicenseNumber") {
                     $displayName = "Trade License Number";
                 }
 
-                if($displayName) {
+                if ($displayName) {
                     $mapDisplayNameOldNewValue[$displayName] = [
                         $dbEntityChangeApprovalField->oldValue,
                         $dbEntityChangeApprovalField->newValue
@@ -813,7 +825,7 @@ class ProfileController extends Controller {
         $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
         $this->f3->set('title', 'Change Profile Approved');
         $this->f3->set('emailType', 'changeProfileApproved');
-        
+
         $this->f3->set('mapDisplayNameOldNewValue', $mapDisplayNameOldNewValue);
         $this->f3->set('tradeLicenseUrl', $tradeLicenseUrl);
 
