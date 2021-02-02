@@ -173,7 +173,7 @@ function compress_htmlcode($codedata)
                 title: WebAppLocals.getMessage('unitPrice'),
                 data: 'unitPrice',
                 render: function (data, type, row, meta) {
-                    return '<span class="font-size-sm">' + row.currency + '</span>' + ' <b class="font-size-h4">' + row.unitPrice + '</b>';
+                    return '<span class="font-size-sm">' + row.currency + '</span>' + ' <b class="font-size-h4">' + WebApp.formatMoney(row.unitPrice) + '</b>';
                 }
             }, {
                 targets: 6,
