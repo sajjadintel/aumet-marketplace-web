@@ -223,7 +223,7 @@ function compress_htmlcode($codedata)
             title: WebAppLocals.getMessage('unitPrice'),
             data: 'unitPrice',
             render: function(data, type, row, meta) {
-                var output = row.unitPrice + ' ' + row.currency;
+                var output = WebApp.formatMoney(row.unitPrice)  + ' ' + row.currency;
 
                 return '<div style="width: max-content;">' + output + '</div>';
             },
