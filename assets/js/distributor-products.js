@@ -423,18 +423,178 @@ var DistributorProductsDataTable = (function () {
 		$('#' + mode + 'ProductSubcategory').prop('disabled', categoryId ? false : true);
 	};
 
-	var _updateActiveIngredientsVal = function (mode) {
-		$('#' + mode + 'ActiveIngredientsVal').val($('#' + mode + 'ActiveIngredients').val());
-	};
+    var _productEditStockModal = function (productId) {
+        WebApp.get('/web/distributor/product/stock/' + productId, _productEditStockModalOpen);
+    };
 
-	var _initializeSubimagesDropzone = function (mode, initialSubimages = []) {
-		// Set the dropzone container id
-		var id = '#' + mode + 'ProductSubimagesDropzone';
+    var _productEditStockModalOpen = function (webResponse) {
+        if(_validator) {
+            _validator.resetForm();
+            _validator.destroy();
+        }
 
-		let dropzoneControl = $(id)[0].dropzone;
-		if (dropzoneControl) {
-			dropzoneControl.destroy();
-		}
+        $('#editStockModalForm').attr('action', '/web/distributor/product/editStock');
+        $('#editStockProductId').val(webResponse.data.product.productId);
+
+        var arrBonus = [];
+        var arrSpecialBonus = [];
+        webResponse.data.arrBonus.forEach((bonus) => {
+            if(bonus.arrRelationGroup && bonus.arrRelationGroup.length > 0) arrSpecialBonus.push(bonus);
+            else arrBonus.push(bonus);
+        });
+        
+        $('#editStockBonusCheckbox').change(function () {
+            if($('#editStockBonusCheckbox').is(":checked")) {
+                $("#editStockBonusRepeater").show();
+            } else {
+                $("#editStockBonusRepeater").hide();
+            }
+        });
+        
+        $('#editStockSpecialBonusCheckbox').change(function () {
+            if($('#editStockSpecialBonusCheckbox').is(":checked")) {
+                $("#editStockSpecialBonusRepeater").show();
+            } else {
+                $("#editStockSpecialBonusRepeater").hide();
+            }
+        });
+        
+        _initializeBonusSection(arrBonus, webResponse.data.arrBonusType);
+        _initializeSpecialBonusSection(arrSpecialBonus, webResponse.data.arrBonusType, webResponse.data.arrRelationGroup);
+
+        $('#editStockStock').val(webResponse.data.product.stock);
+        $('#editStockModal').appendTo('body').modal('show');
+    };
+
+    var _initializeBonusSection = function (arrBonus, arrBonusType) {
+		var repeaterElementTemplate;
+		$("#editStockBonusList > div").each(function(index, element) {
+			repeaterElementTemplate = $(element).clone();
+		});
+
+		$('#editStockBonusRepeater').repeater({
+            initEmpty: true,
+            show: function() {
+				_initializeBonusRepeaterElements(arrBonusType);
+                $(this).slideDown();
+            },
+            hide: function(deleteElement) {
+				$(this).slideUp(deleteElement);
+            }
+        });
+
+        if(arrBonus.length > 0) {
+            $("#editStockBonusCheckbox").prop('checked', true);
+            arrBonus.forEach((repeaterData) => {
+                var repeaterRow = $(repeaterElementTemplate).clone();
+                $(repeaterRow).find("#editStockBonusId").val(repeaterData.bonusId);
+                $(repeaterRow).find("#editStockBonusTypeId").attr("data-value", repeaterData.bonusTypeId);
+                $(repeaterRow).find("#editStockBonusQuantity").val(repeaterData.minOrder);
+                $(repeaterRow).find("#editStockBonus").val(repeaterData.bonus);
+                $("#editStockBonusList").append(repeaterRow);
+            })
+        } else {
+            $("#editStockBonusCheckbox").prop('checked', false);
+            $("#editStockBonusRepeater").hide();
+        }
+
+        _initializeBonusRepeaterElements(arrBonusType);
+	}
+
+	var _initializeBonusRepeaterElements = function (arrBonusType) {
+		$('.selectpicker.bonusTypeSelect').each(function(index, element) {
+            var value = $(element).attr("data-value");
+			if(element.options.length === 0) {
+				arrBonusType.forEach((bonusType) => {
+                    var selected = bonusType.id == value; 
+					$(element).append(new Option(bonusType.name, bonusType.id, false, selected));
+				})
+				$(element).selectpicker();
+				$(element).selectpicker('val', value);
+				$(element).selectpicker('refresh');
+			}
+		})
+	}
+
+    var _initializeSpecialBonusSection = function (arrSpecialBonus, arrBonusType, arrRelationGroup) {
+		var repeaterElementTemplate;
+		$("#editStockSpecialBonusList > div").each(function(index, element) {
+			repeaterElementTemplate = $(element).clone();
+		});
+
+		$('#editStockSpecialBonusRepeater').repeater({
+            initEmpty: true,
+            show: function() {
+				_initializeSpecialBonusRepeaterElements(arrBonusType, arrRelationGroup);
+                $(this).slideDown();
+            },
+            hide: function(deleteElement) {
+				$(this).slideUp(deleteElement);
+            }
+        });
+        
+        if(arrSpecialBonus.length > 0) {
+            $("#editStockSpecialBonusCheckbox").prop('checked', true);
+            arrSpecialBonus.forEach((repeaterData) => {
+                var repeaterRow = $(repeaterElementTemplate).clone();
+                $(repeaterRow).find("#editStockSpecialBonusId").val(repeaterData.bonusId);
+                $(repeaterRow).find("#editStockSpecialBonusTypeId").attr("data-value", repeaterData.bonusTypeId);
+                $(repeaterRow).find("#editStockSpecialBonusQuantity").val(repeaterData.minOrder);
+                $(repeaterRow).find("#editStockSpecialBonus").val(repeaterData.bonus);
+                $(repeaterRow).find("#editStockSpecialRelationGroupId").attr("data-values", repeaterData.arrRelationGroup);
+                $("#editStockSpecialBonusList").append(repeaterRow);
+            })
+        } else {
+            $("#editStockSpecialBonusCheckbox").prop('checked', false);
+            $("#editStockSpecialBonusRepeater").hide();
+        }
+
+        _initializeSpecialBonusRepeaterElements(arrBonusType, arrRelationGroup);
+	}
+
+	var _initializeSpecialBonusRepeaterElements = function (arrBonusType, arrRelationGroup) {
+		$('.selectpicker.specialBonusTypeSelect').each(function(index, element) {
+            var value = $(element).attr("data-value");
+			if(element.options.length === 0) {
+				arrBonusType.forEach((bonusType) => {
+                    var selected = bonusType.id == value;
+					$(element).append(new Option(bonusType.name, bonusType.id, false, selected));
+				})
+				$(element).selectpicker();
+				$(element).selectpicker('val', value);
+				$(element).selectpicker('refresh');
+			}
+		})
+
+		$('.selectpicker.specialRelationGroupSelect').each(function(index, element) {
+            var allValues = $(element).attr("data-values");
+            if(!allValues) allValues = [];
+            else allValues = allValues.split(",");
+
+			if(element.options.length === 0) {
+				arrRelationGroup.forEach((relationGroup) => {
+					var selected = allValues.includes(relationGroup.id);
+					$(element).append(new Option(relationGroup.name, relationGroup.id, false, selected));
+				})
+				$(element).selectpicker();
+				$(element).selectpicker('val', allValues);
+				$(element).selectpicker('refresh');
+			}
+		})
+	}
+
+    var _updateActiveIngredientsVal = function (mode) {
+        $("#" + mode + "ActiveIngredientsVal").val($("#" + mode + "ActiveIngredients").val());
+    }
+
+    var _initializeSubimagesDropzone = function (mode, initialSubimages = []) {
+        // Set the dropzone container id
+        var id = '#' + mode + 'ProductSubimagesDropzone';
+        
+        let dropzoneControl = $(id)[0].dropzone;
+        if (dropzoneControl) {
+            dropzoneControl.destroy();
+        }
 
 		// Set the preview element template
 		var previewNode = $(id + ' .dropzone-item');
@@ -545,171 +705,247 @@ var DistributorProductsDataTable = (function () {
 	};
 
 	var _getFullUrl = function (filePath) {
-		return window.location.protocol + '//' + window.location.hostname + '/' + filePath;
-	};
+		return window.location.protocol + "//" + window.location.hostname + "/" + filePath;
+    }
 
-	var _openImageModal = function (imageUrl) {
-		$('#imageUrl').attr('src', '/' + imageUrl);
-		imageModal = $('#imageModal').clone();
-		$(imageModal).appendTo('body').modal('show');
-		$(imageModal).show();
-	};
+    var _openImageModal = function (imageUrl) {
+        $("#imageUrl").attr("src", '/'+ imageUrl);
+        imageModal = $("#imageModal").clone();
+        $(imageModal).appendTo('body').modal('show');
+        $(imageModal).show();
+    }
+    
+    var _closeImageModal = function () {
+        $("#imageUrl").attr("src", '/theme/assets/media/users/blank.png');
+        $(imageModal).remove();
+        $(".modal-backdrop.fade.show").slice(1).remove();
+    }
 
-	var _closeImageModal = function () {
-		$('#imageUrl').attr('src', '/theme/assets/media/users/blank.png');
-		$(imageModal).remove();
-		$('.modal-backdrop.fade.show').slice(1).remove();
-	};
+    var _productAdd = function () {
+        _addModalValidation("add");
 
-	var _productAdd = function () {
-		_addModalValidation('add');
+        _validator.validate().then(function (status) {
+            if (status == 'Valid') {
+                let body = {
+                    subimages: Object.keys(mapUuidSubimage).map((key) => mapUuidSubimage[key]),
+                };
 
-		_validator.validate().then(function (status) {
-			if (status == 'Valid') {
-				let body = {
-					subimages: Object.keys(mapUuidSubimage).map((key) => mapUuidSubimage[key]),
-				};
+                let mapKeyElement = {
+                    scientificNameId: 'select',
+                    madeInCountryId: 'select',
+                    name_en: 'input',
+                    name_ar: 'input',
+                    name_fr: 'input',
+                    image: 'input',
+                    stock: 'input',
+                    maximumOrderQuantity: 'input',
+                    subtitle_ar: 'input',
+                    subtitle_en: 'input',
+                    subtitle_fr: 'input',
+                    description_ar: 'textarea',
+                    description_en: 'textarea',
+                    description_fr: 'textarea',
+                    unitPrice: 'input',
+                    vat: 'input',
+                    manufacturerName: 'input',
+                    batchNumber: 'input',
+                    itemCode: 'input',
+                    categoryId: 'select',
+                    subcategoryId: 'select',
+                    activeIngredientsId: 'input',
+                    expiryDate: 'input',
+                    strength: 'input',
+                };
 
-				let mapKeyElement = {
-					scientificNameId: 'select',
-					madeInCountryId: 'select',
-					name_en: 'input',
-					name_ar: 'input',
-					name_fr: 'input',
-					image: 'input',
-					stock: 'input',
-					maximumOrderQuantity: 'input',
-					subtitle_ar: 'input',
-					subtitle_en: 'input',
-					subtitle_fr: 'input',
-					description_ar: 'textarea',
-					description_en: 'textarea',
-					description_fr: 'textarea',
-					unitPrice: 'input',
-					vat: 'input',
-					manufacturerName: 'input',
-					batchNumber: 'input',
-					itemCode: 'input',
-					categoryId: 'select',
-					subcategoryId: 'select',
-					activeIngredientsId: 'input',
-					expiryDate: 'input',
-					strength: 'input',
-				};
+                Object.keys(mapKeyElement).forEach((key) => {
+                    body[key] = $('#addModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+                });
 
-				Object.keys(mapKeyElement).forEach((key) => {
-					body[key] = $('#addModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
-				});
+                WebApp.post('/web/distributor/product/add', body, _productAddSuccessCallback);
+            } else {
+                Swal.fire({
+                    text: WebAppLocals.getMessage('validationError'),
+                    icon: 'error',
+                    buttonsStyling: false,
+                    confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+                    customClass: {
+                        confirmButton: 'btn font-weight-bold btn-light',
+                    },
+                }).then(function () {
+                    KTUtil.scrollTop();
+                });
+            }
+        });
+    }
 
-				WebApp.post('/web/distributor/product/add', body, _productAddSuccessCallback);
-			} else {
-				Swal.fire({
-					text: WebAppLocals.getMessage('validationError'),
-					icon: 'error',
-					buttonsStyling: false,
-					confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
-					customClass: {
-						confirmButton: 'btn font-weight-bold btn-light',
-					},
-				}).then(function () {
-					KTUtil.scrollTop();
-				});
-			}
-		});
-	};
+    var _productAddSuccessCallback = function () {
+        $("#addModal").modal('hide');
+        DistributorProductsDataTable.reloadDatatable();
+    }
 
-	var _productAddSuccessCallback = function () {
-		$('#addModal').modal('hide');
-		DistributorProductsDataTable.reloadDatatable();
-	};
+    var _productEdit = function () {
+        _addModalValidation("edit");
 
-	var _productEdit = function () {
-		_addModalValidation('edit');
+        _validator.validate().then(function (status) {
+            if (status == 'Valid') {
+                let body = {
+                    subimages: Object.keys(mapUuidSubimage).map((key) => mapUuidSubimage[key]),
+                };
 
-		_validator.validate().then(function (status) {
-			if (status == 'Valid') {
-				let body = {
-					subimages: Object.keys(mapUuidSubimage).map((key) => mapUuidSubimage[key]),
-				};
+                let mapKeyElement = {
+                    id: 'input',
+                    scientificNameId: 'select',
+                    madeInCountryId: 'select',
+                    name_en: 'input',
+                    name_ar: 'input',
+                    name_fr: 'input',
+                    image: 'input',
+                    maximumOrderQuantity: 'input',
+                    subtitle_ar: 'input',
+                    subtitle_en: 'input',
+                    subtitle_fr: 'input',
+                    description_ar: 'textarea',
+                    description_en: 'textarea',
+                    description_fr: 'textarea',
+                    unitPrice: 'input',
+                    vat: 'input',
+                    manufacturerName: 'input',
+                    batchNumber: 'input',
+                    itemCode: 'input',
+                    categoryId: 'select',
+                    subcategoryId: 'select',
+                    activeIngredientsId: 'input',
+                    expiryDate: 'input',
+                    strength: 'input',
+                };
 
-				let mapKeyElement = {
-					id: 'input',
-					scientificNameId: 'select',
-					madeInCountryId: 'select',
-					name_en: 'input',
-					name_ar: 'input',
-					name_fr: 'input',
-					image: 'input',
-					maximumOrderQuantity: 'input',
-					subtitle_ar: 'input',
-					subtitle_en: 'input',
-					subtitle_fr: 'input',
-					description_ar: 'textarea',
-					description_en: 'textarea',
-					description_fr: 'textarea',
-					unitPrice: 'input',
-					vat: 'input',
-					manufacturerName: 'input',
-					batchNumber: 'input',
-					itemCode: 'input',
-					categoryId: 'select',
-					subcategoryId: 'select',
-					activeIngredientsId: 'input',
-					expiryDate: 'input',
-					strength: 'input',
-				};
+                Object.keys(mapKeyElement).forEach((key) => {
+                    body[key] = $('#editModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+                });
 
-				Object.keys(mapKeyElement).forEach((key) => {
-					body[key] = $('#editModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
-				});
+                WebApp.post('/web/distributor/product/edit', body, _productEditSuccessCallback);
+            } else {
+                Swal.fire({
+                    text: WebAppLocals.getMessage('validationError'),
+                    icon: 'error',
+                    buttonsStyling: false,
+                    confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+                    customClass: {
+                        confirmButton: 'btn font-weight-bold btn-light',
+                    },
+                }).then(function () {
+                    KTUtil.scrollTop();
+                });
+            }
+        });
+    }
 
-				WebApp.post('/web/distributor/product/edit', body, _productEditSuccessCallback);
-			} else {
-				Swal.fire({
-					text: WebAppLocals.getMessage('validationError'),
-					icon: 'error',
-					buttonsStyling: false,
-					confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
-					customClass: {
-						confirmButton: 'btn font-weight-bold btn-light',
-					},
-				}).then(function () {
-					KTUtil.scrollTop();
-				});
-			}
-		});
-	};
+    var _productEditSuccessCallback = function () {
+        $("#editModal").modal('hide');
+        DistributorProductsDataTable.reloadDatatable();
+    }
 
-	var _productEditSuccessCallback = function () {
-		$('#editModal').modal('hide');
-		DistributorProductsDataTable.reloadDatatable();
-	};
+    var _productEditStock = function () {
+        _addModalValidation("editStock");
 
-	return {
-		// public functions
-		reloadDatatable: function () {
-			WebApp.reloadDatatable();
-		},
-		productEditQuantityModal: function (productId) {
-			_productEditQuantityModal(productId);
-		},
-		productEditModal: function (productId) {
-			_productEditModal(productId);
-		},
-		productEdit: function () {
-			_productEdit();
-		},
-		productAddModal: function () {
-			_productAddModal();
-		},
-		productAdd: function () {
-			_productAdd();
-		},
-		productBulkAdd: function () {
-			_productBulkAdd();
-		},
-		closeImageModal: function () {
-			_closeImageModal();
-		},
-	};
+        _validator.validate().then(function (status) {
+            let valid = true;
+            if(status != 'Valid') valid = false;
+            if (valid) {
+                var arrBonus = [];
+                if($('#editStockBonusCheckbox').is(":checked")) {
+                    $("#editStockBonusList > div").each(function(index, element) {
+                        var id = $(element).find("#editStockBonusId").val();
+                        var bonusTypeId = $(element).find("#editStockBonusTypeId").val();
+                        var minOrder = $(element).find("#editStockBonusQuantity").val();
+                        var bonus = $(element).find("#editStockBonus").val();
+                        arrBonus.push({
+                            id,
+                            bonusTypeId,
+                            minOrder,
+                            bonus,
+                        })
+                    });
+                }
+
+                if($('#editStockSpecialBonusCheckbox').is(":checked")) {
+                    $("#editStockSpecialBonusList > div").each(function(index, element) {
+                        var id = $(element).find("#editStockSpecialBonusId").val();
+                        var bonusTypeId = $(element).find("#editStockSpecialBonusTypeId").val();
+                        var minOrder = $(element).find("#editStockSpecialBonusQuantity").val();
+                        var bonus = $(element).find("#editStockSpecialBonus").val();
+                        var arrRelationGroup = $(element).find("#editStockSpecialRelationGroupId").val();
+                        arrBonus.push({
+                            id,
+                            bonusTypeId,
+                            minOrder,
+                            bonus,
+                            arrRelationGroup,
+                        })
+                    });
+                }
+
+                let body = {
+                    arrBonus
+                };
+    
+                let mapKeyElement = {
+                    id: 'input',
+                    stock: 'input',
+                };
+    
+                Object.keys(mapKeyElement).forEach((key) => {
+                    body[key] = $('#editStockModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+                });
+                
+                WebApp.post('/web/distributor/product/editStock', body, _productEditStockSuccessCallback);
+            } else {
+                Swal.fire({
+                    text: WebAppLocals.getMessage('validationError'),
+                    icon: 'error',
+                    buttonsStyling: false,
+                    confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+                    customClass: {
+                        confirmButton: 'btn font-weight-bold btn-light',
+                    },
+                }).then(function () {
+                    KTUtil.scrollTop();
+                });
+            }
+        });
+    }
+
+    var _productEditStockSuccessCallback = function () {
+        $("#editStockModal").modal('hide');
+        // DistributorProductsDataTable.reloadDatatable();
+        window.location.reload();
+    }
+
+    return {
+        // public functions
+        reloadDatatable: function () {
+            WebApp.reloadDatatable();
+        },
+        productAddModal: function () {
+            _productAddModal();
+        },
+        productAdd: function () {
+            _productAdd();
+        },
+        productEditModal: function (productId) {
+            _productEditModal(productId);
+        },
+        productEdit: function () {
+            _productEdit();
+        },
+        productEditStockModal: function (productId) {
+            _productEditStockModal(productId);
+        },
+        productEditStock: function () {
+            _productEditStock();
+        },
+        closeImageModal: function() {
+            _closeImageModal();
+        }
+    };
 })();
