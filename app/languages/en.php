@@ -243,8 +243,10 @@ return array(
     'vModule_cart_subTotal' => 'SubTotal',
     'vModule_cart_grandSubTotal' => 'Grand SubTotal',
     'vModule_cart_formula' => 'Formula',
-    'vModule_cart_productOrderPrice' => 'Product Price',
+    'vModule_cart_productOrderPrice' => 'Price',
     'vModule_cart_entityOrderPrice' => 'Distributor Invoice',
+    'vModule_cart_orderTotal' => 'Order Total',
+    'vModule_cart_orderSubTotal' => 'Sub Total',
     'vModule_cart_term' => 'Prices shown are prone to changes upon price update from the Distributor',
 
     'vModule_cart_offersTitle' => 'Offers',
@@ -369,6 +371,10 @@ return array(
     'vModule_profile_mobile' => 'Phone Number',
     'vModule_profile_missingDocumentApproval' => 'Document is required to submit profile modifications',
     'vModule_profile_requestSent' => 'Your request to update information has been sent to Aumet team, and we will validate it and get back to you within 24 to 48 hours',
+    'vModule_profile_successUploadingImage' => 'Success uploading profile image',
+    'vModule_profile_errorUploadingImage' => 'Error uploading profile image, please try again later',
+    'vModule_profile_failedToDecodeImage' => 'Error failing to decode image',
+    'vModule_profile_invalidImage' => 'Did not match data URI with image data',
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
     'error_filedTooShort' => ' field is too short! minimum length: ',

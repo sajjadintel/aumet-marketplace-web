@@ -83,7 +83,7 @@ class DashboardController extends Controller
                     $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];
                     $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];
                     $price = $priceUSD / $buyerCurrency['conversionToUSD'];
-                    $product->price = round($price, 2) . " " . $buyerCurrency['symbol'];
+                    $product->price = Helper::formatMoney($price, 2) . " " . $buyerCurrency['symbol'];
 
                     array_push($arrNewestProducts, $product);
                 }
@@ -102,7 +102,7 @@ class DashboardController extends Controller
                     $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];
                     $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];
                     $price = $priceUSD / $buyerCurrency['conversionToUSD'];
-                    $product->price = round($price, 2) . " " . $buyerCurrency['symbol'];
+                    $product->price = Helper::formatMoney($price, 2) . " " . $buyerCurrency['symbol'];
 
                     array_push($arrTopSellingProducts, $product);
                 }

@@ -339,7 +339,7 @@ function compress_htmlcode($codedata)
                     data: 'unitPrice',
                     visible: false,
                     render: function (data, type, row, meta) {
-                        return row.unitPrice + ' ' + row.currency;
+                        return  WebApp.formatMoney(row.unitPrice)  + ' ' + row.currency;
                     },
                 },
                 {
@@ -428,6 +428,7 @@ function compress_htmlcode($codedata)
                 opens: 'left',
                 startDate: moment().subtract(29, 'days'),
                 endDate: moment(),
+                maxDate: new Date(),
                 locale: {
                     format: 'DD/MM/YYYY',
                 }
