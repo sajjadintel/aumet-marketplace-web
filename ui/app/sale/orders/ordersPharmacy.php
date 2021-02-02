@@ -312,7 +312,7 @@ function compress_htmlcode($codedata)
                     data: 'unitPrice',
                     visible: false,
                     render: function (data, type, row, meta) {
-                        return row.unitPrice + ' ' + row.currency;
+                        return  WebApp.formatMoney(row.unitPrice)  + ' ' + row.currency;
                     },
                 },
                 {
