@@ -428,13 +428,18 @@ var Profile = (function () {
 		})
 
 		$('.selectpicker').each(function(index, element) {
-			var allValues = $(element).attr("data-values") || [];
+            var allValues = $(element).attr("data-values");
+            if(!allValues) allValues = [];
+			else allValues = allValues.split(",");
+			
 			if(element.options.length === 0) {
 				allCity.forEach((city) => {
 					var selected = allValues.includes(city.id);
 					$(element).append(new Option(city.name, city.id, false, selected));
 				})
 				$(element).selectpicker();
+				$(element).selectpicker('val', allValues);
+				$(element).selectpicker('refresh');
 			}
 
 			var cityErrorLabelCount = $(element).parent().parent().find('#cityErrorLabel').length;

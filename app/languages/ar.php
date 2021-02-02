@@ -140,6 +140,7 @@ return array(
     'vModule_product_select' => 'Select', // TODO: add translation
     'vModule_product_add' => 'أضف',
     'vModule_product_edit' => 'تعديل',
+    'vModule_product_editStock' => 'تحرير المخزون',
     'vModule_product_brandName' => 'اسم العلامة التجارية',
     'vModule_product_subtitle' => 'العنوان الفرعي',
     'vModule_product_description' => 'وصف',
@@ -154,7 +155,20 @@ return array(
     'vModule_product_activeIngredients' => 'مكونات نشطة',
     'vModule_product_strength' => 'قوة',
     'vModule_product_uploadSubimages' => 'تحميل الصور الفرعية',
-    'vModule_product_SubimagesExceeded' => 'تم الوصول إلى حد الصور الفرعية',
+    'vModule_product_subimagesExceeded' => 'تم الوصول إلى حد الصور الفرعية',
+    'vModule_product_subcategoryInvalid' => 'الفئة الفرعية غير صالحة',
+    'vModule_product_stockInvalid' => 'يجب أن تكون الكمية المتاحة عددًا صحيحًا موجبًا وليس فارغًا',
+    'vModule_product_maximumOrderQuantityInvalid' => 'يجب أن يكون الحد الأقصى لكمية الطلب عددًا صحيحًا موجبًا وليس فارغًا',
+    'vModule_product_unitPriceInvalid' => 'يجب أن يكون سعر الوحدة رقمًا موجبًا وليس فارغًا',
+    'vModule_product_vatInvalid' => 'يجب أن تكون ضريبة القيمة المضافة رقمًا موجبًا',
+    'vModule_product_missingFields' => 'بعض الحقول الإلزامية مفقودة',
+    'vModule_product_notFound' => 'الصنف غير موجود',
+    'vModule_product_bonusType' => 'نوع المكافأة',
+    'vModule_product_quantity' => 'كمية',
+    'vModule_product_bonus' => 'مكافأة',
+    'vModule_product_relationGroup' => 'مجموعة العملاء',
+    'vModule_product_addDefaultBonus' => 'أضف المكافآت الافتراضية',
+    'vModule_product_addSpecialBonus' => 'أضف مكافآت خاصة',
 
 
     'stockAvailability_available' => 'متوفر',
@@ -164,6 +178,7 @@ return array(
     'vModule_productAdded' => 'Product is added successfully!', // TODO: add translation
     'vModule_quantityEdited' => 'Product Quantity is edited successfully!', // TODO: add translation
     'vModule_productEdited' => 'Product is edited successfully!',// TODO: add translation
+    'vModule_productStockEdited' => 'Product stock is edited successfully!',// TODO: add translation
     'vModule_customerEdited' => 'Customer is edited successfully!',// TODO: add translation
 
     'vModule_order_title' => 'لائحة الطلبات',
@@ -342,12 +357,6 @@ return array(
     'vModule_profile_minimumValueOrderCityError' => 'تم اختيار بعض المدن أكثر من مرة',
     'vModule_profile_paymentMethodRequired' => 'طريقة الدفع المطلوبة',
     'vModule_profile_mobile' => 'رقم الهاتف',
-    'vModule_product_subcategoryInvalid' => 'الفئة الفرعية غير صالحة',
-    'vModule_product_stockInvalid' => 'يجب أن تكون الكمية المتاحة عددًا صحيحًا موجبًا وليس فارغًا',
-    'vModule_product_maximumOrderQuantityInvalid' => 'يجب أن يكون الحد الأقصى لكمية الطلب عددًا صحيحًا موجبًا وليس فارغًا',
-    'vModule_product_unitPriceInvalid' => 'يجب أن يكون سعر الوحدة رقمًا موجبًا وليس فارغًا',
-    'vModule_product_vatInvalid' => 'يجب أن تكون ضريبة القيمة المضافة رقمًا موجبًا',
-    'vModule_product_missingFields' => 'بعض الحقول الإلزامية مفقودة',
     'vModule_profile_missingDocumentApproval' => 'المستند مطلوب لتقديم تعديلات ملف التعريف',
     'vModule_profile_requestSent' => 'تم إرسال طلبك لتحديث المعلومات إلى فريق Aumet ، وسنقوم بالتحقق من صحة ذلك والرد عليك في غضون ٢٤ إلى ٤٨ ساعة',
     'vModule_profile_successUploadingImage' => 'Success uploading profile image', // TODO: translate

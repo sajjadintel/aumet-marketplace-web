@@ -244,6 +244,78 @@ class ProductsController extends Controller
         }
     }
 
+    function getProductStockDetails()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $id = $this->f3->get('PARAMS.productId');
+
+            $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
+            $product = $dbProduct->findWhere("id=$id")[0];
+            $entityId = $product['entityId'];
+            $productId = $product['productId'];
+            
+            $dbBonusType = new BaseModel($this->db, "bonusType");
+            $dbBonusType->name = "name_" . $this->objUser->language;
+            $arrBonusType = $dbBonusType->findAll();
+
+            $dbEntityRelationGroup = new BaseModel($this->db, "entityRelationGroup");
+            $dbEntityRelationGroup->name = "name_" . $this->objUser->language;
+            $arrRelationGroup = $dbEntityRelationGroup->findWhere("entityId=$entityId");
+
+            // Get all bonuses
+            $dbEntityProductBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+            $arrBonus = $dbEntityProductBonus->findWhere("isActive = 1 AND entityProductId=$productId");
+            $arrBonusId = [];
+            foreach($arrBonus as $bonus) {
+                array_push($arrBonusId, $bonus['id']);
+            }
+
+            // Group all bonuses' relation groups
+            $arrBonusGrouped = [];
+            if(count($arrBonus) > 0) {
+                $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
+                $strBonusId = implode(",", $arrBonusId);
+                $arrBonusRelationGroup = $dbBonusRelationGroup->getWhere("bonusId IN ($strBonusId)");
+
+                $mapBonusIdRelationGroupId = [];
+                foreach($arrBonusRelationGroup as $bonusRelationGroup) {
+                    $bonusId = $bonusRelationGroup['bonusId'];
+                    $relationGroupId = $bonusRelationGroup['relationGroupId'];
+                    if(array_key_exists($bonusId, $mapBonusIdRelationGroupId)) {
+                        $allRelationGroupId = $mapBonusIdRelationGroupId[$bonusId];
+                        array_push($allRelationGroupId, $relationGroupId);
+                        $mapBonusIdRelationGroupId[$bonusId] = $allRelationGroupId;
+                    } else {
+                        $mapBonusIdRelationGroupId[$bonusId] = [$relationGroupId];
+                    }
+                }
+
+                foreach($arrBonus as $bonus) {
+                    $bonusId = $bonus['id'];
+
+                    $bonusGrouped = new stdClass();
+                    $bonusGrouped->bonusId = $bonusId;
+                    $bonusGrouped->bonusTypeId = $bonus['bonusTypeId'];
+                    $bonusGrouped->minOrder = $bonus['minOrder'];
+                    $bonusGrouped->bonus = $bonus['bonus'];
+                    $bonusGrouped->arrRelationGroup = $mapBonusIdRelationGroupId[$bonusId];
+                    array_push($arrBonusGrouped, $bonusGrouped);
+                }
+            }
+
+            $data['product'] = $product;
+            $data['arrBonusType'] = $arrBonusType;
+            $data['arrBonus'] = $arrBonusGrouped;
+            $data['arrRelationGroup'] = $arrRelationGroup;
+
+            echo $this->webResponse->jsonResponseV2(1, "", "", $data);
+            return;
+        }
+    }
+
     function postDistributorProducts()
     {
         ## Read values from Datatables
@@ -388,8 +460,7 @@ class ProductsController extends Controller
 
             if ($dbEntityProduct->dry() || $dbProduct->dry()) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                $this->webResponse->title = "";
-                $this->webResponse->message = "No Product";
+                $this->webResponse->message = $this->f3->get('vModule_product_notFound');
                 echo $this->webResponse->jsonResponse();
             } else {
                 $scientificNameId = $this->f3->get('POST.scientificNameId');
@@ -545,15 +616,14 @@ class ProductsController extends Controller
                 }
 
                 $dbEntityProduct->unitPrice = $unitPrice;
+                $dbEntityProduct->vat = $vat;
                 $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
                 $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
 
                 $dbEntityProduct->update();
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
-                $this->webResponse->title = "";
                 $this->webResponse->message = $this->f3->get('vModule_productEdited');
-                $this->webResponse->data = $dbProduct->name_ar;
                 echo $this->webResponse->jsonResponse();
             }
         }
@@ -674,6 +744,109 @@ class ProductsController extends Controller
                 $this->webResponse->title = "";
                 $this->webResponse->message = $this->f3->get('vModule_quantityEdited');
                 $this->webResponse->data = $bonusRepeater;
+                echo $this->webResponse->jsonResponse();
+            }
+        }
+    }
+
+    function postEditStockDistributorProduct()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/product");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $productId = $this->f3->get('POST.id');
+
+            $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
+            $dbEntityProduct->getWhere("productId=$productId");
+
+            $dbProduct = new BaseModel($this->db, "product");
+            $dbProduct->getWhere("id=$productId");
+
+            if ($dbEntityProduct->dry() || $dbProduct->dry()) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->message = $this->f3->get('vModule_product_notFound');
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $stock = $this->f3->get('POST.stock');
+                $arrBonus = $this->f3->get('POST.arrBonus');
+                
+                if (!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get('vModule_product_stockInvalid');
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+
+                // Update bonus
+                if(!$arrBonus) {
+                    $arrBonus = [];
+                }
+
+                $mapBonusIdBonus = [];
+                foreach($arrBonus as $bonus) {
+                    if($bonus['id']) {
+                        $mapBonusIdBonus[$bonus['id']] = $bonus;
+                    }
+                }
+
+                $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+                $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
+                
+                $dbBonus->getWhere("isActive = 1 AND entityProductId=$productId");
+                while (!$dbBonus->dry()) {
+                    $bonusId = $dbBonus['id'];
+                    if(array_key_exists($bonusId, $mapBonusIdBonus)) {
+                        $newBonus = $mapBonusIdBonus[$bonusId];
+                        $dbBonus->bonusTypeId = $newBonus['bonusTypeId'];
+                        $dbBonus->minOrder = $newBonus['minOrder'];
+                        $dbBonus->bonus = $newBonus['bonus'];
+                        $dbBonus->update();
+
+                        $arrRelationGroup = $newBonus['arrRelationGroup'];
+                        $dbBonusRelationGroup->getWhere("bonusId=$bonusId");
+                        while (!$dbBonusRelationGroup->dry()) {
+                            $dbBonusRelationGroup->delete();
+                            $dbBonusRelationGroup->next();
+                        }
+                        if($arrRelationGroup) {
+                            foreach($arrRelationGroup as $relationGroupId) {
+                                $dbBonusRelationGroup->bonusId = $bonusId;
+                                $dbBonusRelationGroup->relationGroupId = $relationGroupId;
+                                $dbBonusRelationGroup->add();
+                            }
+                        }
+                    } else {
+                        $dbBonus->delete();
+                    }
+                    $dbBonus->next();
+                }
+                
+                foreach($arrBonus as $bonus) {
+                    if(!$bonus['id']) {
+                        $dbBonus->entityProductId = $productId;
+                        $dbBonus->bonusTypeId = $bonus['bonusTypeId'];
+                        $dbBonus->minOrder = $bonus['minOrder'];
+                        $dbBonus->bonus = $bonus['bonus'];
+                        $dbBonus->isActive = 1;
+                        $dbBonus->addReturnID();
+
+                        $arrRelationGroup = $bonus['arrRelationGroup'];
+                        if($arrRelationGroup) {
+                            foreach($arrRelationGroup as $relationGroupId) {
+                                $dbBonusRelationGroup->bonusId = $dbBonus['id'];
+                                $dbBonusRelationGroup->relationGroupId = $relationGroupId;
+                                $dbBonusRelationGroup->add();
+                            }
+                        }
+                    }
+                }
+
+                $dbEntityProduct->stock = $stock;
+                $dbEntityProduct->update();
+
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
+                $this->webResponse->message = $this->f3->get('vModule_productStockEdited');
                 echo $this->webResponse->jsonResponse();
             }
         }
@@ -850,9 +1023,7 @@ class ProductsController extends Controller
             $dbEntityProduct->add();
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
-            $this->webResponse->title = "";
             $this->webResponse->message = $this->f3->get('vModule_productAdded');
-            $this->webResponse->data = $dbProduct['name_' . $this->objUser->language];
             echo $this->webResponse->jsonResponse();
         }
     }

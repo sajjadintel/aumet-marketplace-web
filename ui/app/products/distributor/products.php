@@ -193,7 +193,7 @@ function compress_htmlcode($codedata)
                         '</a>';
 
                     var btnEditQuantity =
-                        '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditQuantityModal(' +
+                        '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditStockModal(' +
                         row.id +
                         ')\' \
                     class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
@@ -489,7 +489,6 @@ function compress_htmlcode($codedata)
 
             $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
-
             var initiate = function () {
                 updateDatatable();
             };
@@ -513,5 +512,6 @@ function compress_htmlcode($codedata)
     </script>
 <?php ob_end_flush(); ?>
 <?php include_once 'edit-modal.php';
+include_once 'edit-stock-modal.php';
 include_once 'add-modal.php'; 
 include_once 'image-modal.php'; ?>

@@ -274,7 +274,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-4">
-                                        <a href="javascript:;" id="minimumValueOrderDelete" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
+                                        <a href="javascript:;" id="minimumValueOrderAdd" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
                                             <i class="la la-plus"></i><?php echo $vButton_add; ?></a>
                                     </div>
                                 </div>

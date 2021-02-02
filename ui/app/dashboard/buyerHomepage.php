@@ -41,30 +41,31 @@
                     <!--begin::Banner-->
                     <?php if (count($arrBanner) > 0) : ?>
                         <div class="mb-10">
-                            <div class="autoplay" style="height: 280px;">
+                            <div class="slick-carousel" data-adaptive-height="true">
                                 <?php foreach ($arrBanner as $banner) : ?>
-                                    <div style="background-image: url('<?php echo $banner->image; ?>'); height: 280px; background-size: 100% 100%;">
-                                        <?php if ((($objUser->language == "ar") && ($banner->styleEn == 'ltr') || ($objUser->language !== "ar") && ($banner->styleEn == 'rtl'))) : ?>
-                                            <div style="height: 100%; display: flex; align-items: center; justify-content: flex-end;">
-                                                <div class="col-5" style="margin-right: 50px; text-align: right;">
-                                                    <h1 style="color: #FFF; font-size: 30px; font-weight: 700;"><?php echo $banner->title; ?></h1>
-                                                    <h1 style="color: #FFF; font-size: 30px; font-weight: 700;"><?php echo $banner->subtitle; ?></h1>
-                                                    <?php if (!is_null($banner->buttonText)) : ?>
-                                                        <button type="button" class="btn btn-primary btn-md mt-5" style="width: 140px; background-color: #1378BE; border-color: #1378BE;" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>');"><?php echo $banner->buttonText; ?></button>
-                                                    <?php endif; ?>
-                                                </div>
+                                    <div class="item">
+                                        <div class="img-fill">
+                                            <img src="<?php echo $banner->image; ?>" alt="">
+                                            <div class="info">
+                                                <?php if ((($objUser->language == "ar") && ($banner->styleEn == 'ltr') || ($objUser->language !== "ar") && ($banner->styleEn == 'rtl'))) : ?>
+                                                    <div class="col-md-5 offset-md-2 text-right h-100">
+                                                        <h1 class="slick-hero-title"><?php echo $banner->title; ?></h1>
+                                                        <h1 class="slick-hero-title"><?php echo $banner->subtitle; ?></h1>
+                                                        <?php if (!is_null($banner->buttonText)) : ?>
+                                                            <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>');"><?php echo $banner->buttonText; ?></button>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php else : ?>
+                                                    <div class="col-md-5 offset-md-2 text-left h-100">
+                                                        <h1 class="slick-hero-title"><?php echo $banner->title; ?></h1>
+                                                        <h1 class="slick-hero-title"><?php echo $banner->subtitle; ?></h1>
+                                                        <?php if (!is_null($banner->buttonText)) : ?>
+                                                            <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>'');"><?php echo $banner->buttonText; ?></button>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php endif; ?>
                                             </div>
-                                        <?php else : ?>
-                                            <div style="height: 100%; display: flex; align-items: center;">
-                                                <div class="col-5" style="margin-left: 50px">
-                                                    <h1 style="color: #FFF; font-size: 30px; font-weight: 700;"><?php echo $banner->title; ?></h1>
-                                                    <h1 style="color: #FFF; font-size: 30px; font-weight: 700;"><?php echo $banner->subtitle; ?></h1>
-                                                    <?php if (!is_null($banner->buttonText)) : ?>
-                                                        <button type="button" class="btn btn-primary btn-md mt-5" style="width: 140px; background-color: #1378BE; border-color: #1378BE;" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>'');"><?php echo $banner->buttonText; ?></button>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </div>
-                                        <?php endif; ?>
+                                        </div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -202,7 +203,7 @@
     })
 
     function initAutoplay() {
-        $('.autoplay').slick({
+        $('.slick-carousel').slick({
             arrows: false,
             dots: true,
             slidesToShow: 1,
