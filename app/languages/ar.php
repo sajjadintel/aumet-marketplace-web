@@ -169,6 +169,8 @@ return array(
     'vModule_product_relationGroup' => 'مجموعة العملاء',
     'vModule_product_addDefaultBonus' => 'أضف المكافآت الافتراضية',
     'vModule_product_addSpecialBonus' => 'أضف مكافآت خاصة',
+    'vModule_product_defaultBonusInvalid' => 'المكافآت الافتراضية غير صالحة',
+    'vModule_product_specialBonusInvalid' => 'المكافآت الخاصة غير صالحة',
 
 
     'stockAvailability_available' => 'متوفر',

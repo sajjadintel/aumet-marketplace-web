@@ -769,7 +769,16 @@ class ProductsController extends Controller
                 echo $this->webResponse->jsonResponse();
             } else {
                 $stock = $this->f3->get('POST.stock');
-                $arrBonus = $this->f3->get('POST.arrBonus');
+                $arrDefaultBonus = $this->f3->get('POST.arrDefaultBonus');
+                $arrSpecialBonus = $this->f3->get('POST.arrSpecialBonus');
+
+                if(!$arrDefaultBonus) {
+                    $arrDefaultBonus = [];
+                }
+
+                if(!$arrSpecialBonus) {
+                    $arrSpecialBonus = [];
+                }
                 
                 if (!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -778,10 +787,53 @@ class ProductsController extends Controller
                     return;
                 }
 
-                // Update bonus
-                if(!$arrBonus) {
-                    $arrBonus = [];
+                foreach($arrDefaultBonus as $bonus) {
+                    $bonusTypeId = $bonus['bonusTypeId'];
+                    $minOrder = $bonus['minOrder'];
+                    $bonusQty = $bonus['bonus'];
+                    
+                    $valid = false;
+                    if(strlen($bonusTypeId) != 0
+                    && strlen($minOrder) != 0
+                    && strlen($bonusQty) != 0) {
+                        if($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
+                            $valid = true;
+                        }
+                    }
+
+                    if(!$valid) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_defaultBonusInvalid');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
                 }
+
+                foreach($arrSpecialBonus as $bonus) {
+                    $bonusTypeId = $bonus['bonusTypeId'];
+                    $minOrder = $bonus['minOrder'];
+                    $bonusQty = $bonus['bonus'];
+                    $arrRelationGroup = $bonus['arrRelationGroup'];
+                    
+                    $valid = false;
+                    if(strlen($bonusTypeId) != 0
+                    && strlen($minOrder) != 0
+                    && strlen($bonusQty) != 0
+                    && $arrRelationGroup && count($arrRelationGroup) > 0) {
+                        if($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
+                            $valid = true;
+                        }
+                    }
+
+                    if(!$valid) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_specialBonusInvalid');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
+                }
+
+                $arrBonus = array_merge($arrDefaultBonus, $arrSpecialBonus);
 
                 $mapBonusIdBonus = [];
                 foreach($arrBonus as $bonus) {

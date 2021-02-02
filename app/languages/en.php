@@ -220,6 +220,8 @@ return array(
     'vModule_product_relationGroup' => 'Customer Group',
     'vModule_product_addDefaultBonus' => 'Add Default Bonuses',
     'vModule_product_addSpecialBonus' => 'Add Special Bonuses',
+    'vModule_product_defaultBonusInvalid' => 'Default Bonuses Invalid',
+    'vModule_product_specialBonusInvalid' => 'Special Bonuses Invalid',
     
     'vModule_product_stockStatus_NotAvailable' => 'Not Available',
     'vModule_product_stockStatus_ComingSoon' => 'Coming Soon',
