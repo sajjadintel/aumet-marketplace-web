@@ -10,6 +10,7 @@ class SearchController extends Controller {
             $dbStockStatus->name = "name_" . $this->objUser->language;
             $arrStockStatus = $dbStockStatus->all("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
+            $this->f3->set('objUser', $this->objUser);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_search_title');
@@ -383,11 +384,11 @@ class SearchController extends Controller {
             }
 
         }
-        
+
         $query .= " AND statusId = 1";
 
         $order = "$datatable->sortBy $datatable->sortByOrder";
-        
+
         if($order == "productName_en asc") {
             if($sortParam == "newest") {
                 $order = "insertDateTime DESC";
@@ -395,7 +396,7 @@ class SearchController extends Controller {
                 $order = "totalOrderQuantity DESC";
             }
         }
-        
+
         $query .= " AND statusId = 1";
 
         $roleId = $this->f3->get('SESSION.objUser')->roleId;

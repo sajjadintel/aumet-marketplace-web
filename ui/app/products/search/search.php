@@ -256,22 +256,27 @@ function compress_htmlcode($codedata)
             render: function(data, type, row, meta) {
                 var vQuantity = '';
                 var output = '';
-                var rowQuantity = 1;
+                var rowQuantity = (row.cart > 0) ? row.cart : 0;
                 if (row.quantity) {
                     rowQuantity = row.quantity
                 }
 
                 if (row.stockStatusId == 1) {
+
+                    let vMinusBtn = '<a class="btn btn-xs btn-light-success btn-icon mr-2 subQty"> <i class="ki ki-minus icon-xs"></i></a>';
+
+                    output += vMinusBtn;
+
                     let vQuantity =
-                        '<input id="quantity-' +
-                        row.id +
-                        '" type="number" min="0" style="width: 70px; direction: ltr" value="' +
-                        rowQuantity +
-                        '" onkeypress="return event.charCode >= 48 && event.charCode <= 57"' +
-                        '" oninput=\'SearchDataTable.changeProductQuantityCallback(' +
-                        JSON.stringify(row) +
-                        " )' >";
+                        '<input class="qtyBox" id="quantity-' + row.id + '" type="number" min="0" style="width: 65px; direction: ltr; margin-right: 5px;" ' +
+                        'value="' + rowQuantity + '" onkeypress="return event.charCode >= 48 && event.charCode <= 57" ' +
+                        'onchange=\'SearchDataTable.updateQty(' + JSON.stringify(row) + ' , <?PHP echo $objUser->id; ?>)\' />';
+
                     output += vQuantity;
+
+                    let vPlusBtn = '<a class="btn btn-xs btn-light-success btn-icon mr-2 addQty"> <i class="ki ki-plus icon-xs"></i></a>';
+
+                    output += vPlusBtn;
 
                     let vQuantityFree =
                         '<input class="quantityFreeInput" id="quantityFreeInput-' +
@@ -354,11 +359,12 @@ function compress_htmlcode($codedata)
                 switch (row.stockStatusId) {
                     case 1:
                         /*outActions += btnViewProduct;*/
-                        if (row.cart > 0) {
+                        /*if (row.cart > 0) {
                             outActions += btnAddMoreToCart;
                         } else {
                             outActions += btnAddToCart;
-                        }
+                        }*/
+                        outActions += outActions;
                         SearchDataTable.changeProductQuantityCallback(row);
                         break;
                     case 2:
@@ -675,6 +681,16 @@ function compress_htmlcode($codedata)
     }();
 
     $(document).ready(function() {
+        $(document.body).on("click", '.addQty' , function () {
+            $(this).prev().val(+$(this).prev().val() + 1);
+            $(this).prev().trigger("change");
+        });
+        $(document.body).on("click", '.subQty' , function () {
+            if ($(this).next().val() > 0){
+                $(this).next().val(+$(this).next().val() - 1);
+                $(this).next().trigger("change");
+            }
+        });
         PageClass.init();
     })
 </script>

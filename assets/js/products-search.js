@@ -320,10 +320,10 @@ var SearchDataTable = (function () {
 
 	var _productAddBonus = function(addButtonName) {
 		let bonusRepeaterIndex = addButtonName.charAt(14);
-		
+
 		let bonusMinOrderName = "bonusRepeater[" + bonusRepeaterIndex + "][minOrder]";
 		let bonusMinOrder = $($('[name ="' + bonusMinOrderName + '"]')[0]).val();
-		
+
 		let bonusBonusName = "bonusRepeater[" + bonusRepeaterIndex + "][bonus]";
 		let bonusBonus = $($('[name ="' + bonusBonusName + '"]')[0]).val();
 
@@ -331,10 +331,10 @@ var SearchDataTable = (function () {
 
 		let quantityId = "#quantity-" + productId;
 		$(quantityId).val(bonusMinOrder);
-		
+
 		let quantityFreeInputId = "#quantityFreeInput-" + productId;
 		$(quantityFreeInputId).val(bonusBonus);
-		
+
 		let quantityFreeHolderId = "#quantityFreeHolder-" + productId;
 		$(quantityFreeHolderId).html(bonusBonus);
 
@@ -387,12 +387,12 @@ var SearchDataTable = (function () {
 			// append to the body element
 			appendToBody: false,
 
-			// if true the dropdown will only show unique values. 
+			// if true the dropdown will only show unique values.
 			distinct: false
 
 		});*/
 	};
-	
+
 	return {
 		// public functions
 		init: function (objQuery) {
@@ -400,7 +400,7 @@ var SearchDataTable = (function () {
 		},
 		onClickAddToCart: function (row) {
 			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
-			WebApp.reloadDatatable();
+			//WebApp.reloadDatatable();
 		},
 		onClickAddMoreToCart: function (row) {
 			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
@@ -476,6 +476,12 @@ var SearchDataTable = (function () {
 		},
 		productAddBonus: function(addButtonName) {
 			_productAddBonus(addButtonName)
+		},
+		updateQty(row,userID){
+			WebApp.post('/web/cart/remove', { entityProductId: row.id, userID:userID },function(){
+				SearchDataTable.onClickAddToCart(row);
+				//WebApp.reloadDatatable();
+			});
 		}
 	};
 })();

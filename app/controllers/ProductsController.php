@@ -13,6 +13,7 @@ class ProductsController extends Controller
             $id = $this->f3->get('PARAMS.productId');
 
             $roleId = $this->f3->get('SESSION.objUser')->roleId;
+            $this->f3->set('objUser', $this->objUser);
 
             if ($entityId == 0)
                 $query = "id=$id";
@@ -117,11 +118,17 @@ class ProductsController extends Controller
 
 
                 for ($i = 0; $i < count($dbEntityProductOtherOffers); $i++) {
+
                     if ($dbEntityProductOtherOffers[$i]['bonusTypeId'] == 2) {
                         $dbEntityProductOtherOffers[$i]['bonusOptions'] = json_decode($dbEntityProductOtherOffers[$i]['bonusConfig']);
                         $dbEntityProductOtherOffers[$i]['bonusConfig'] = $dbEntityProductOtherOffers[$i]['bonusOptions'];
                         $dbEntityProductOtherOffers[$i]['bonuses'] = $mapProductIdBonuses[$dbEntityProductOtherOffers[$i]['id']];
                     }
+
+                    $cartDetail = new BaseModel($this->db, "cartDetail");
+                    $cartDetail->getWhere("userID =" . $this->objUser->id ." and entityProductId = ". $dbEntityProductOtherOffers[$i]['id']."");
+
+                    $dbEntityProductOtherOffers[$i]['cart'] = (!$cartDetail->dry()) ? $cartDetail->quantity : 0;
                 }
 
                 $this->f3->set('arrProductOtherOffers', $dbEntityProductOtherOffers);
@@ -256,7 +263,7 @@ class ProductsController extends Controller
             $product = $dbProduct->findWhere("id=$id")[0];
             $entityId = $product['entityId'];
             $productId = $product['productId'];
-            
+
             $dbBonusType = new BaseModel($this->db, "bonusType");
             $dbBonusType->name = "name_" . $this->objUser->language;
             $arrBonusType = $dbBonusType->findAll();
@@ -770,7 +777,7 @@ class ProductsController extends Controller
             } else {
                 $stock = $this->f3->get('POST.stock');
                 $arrBonus = $this->f3->get('POST.arrBonus');
-                
+
                 if (!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get('vModule_product_stockInvalid');
@@ -792,7 +799,7 @@ class ProductsController extends Controller
 
                 $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
                 $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
-                
+
                 $dbBonus->getWhere("isActive = 1 AND entityProductId=$productId");
                 while (!$dbBonus->dry()) {
                     $bonusId = $dbBonus['id'];
@@ -821,7 +828,7 @@ class ProductsController extends Controller
                     }
                     $dbBonus->next();
                 }
-                
+
                 foreach($arrBonus as $bonus) {
                     if(!$bonus['id']) {
                         $dbBonus->entityProductId = $productId;
