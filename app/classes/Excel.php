@@ -70,6 +70,7 @@ class Excel {
         
         switch($ext) {
             case "xlsx":
+            case "xlsm":
                 $writer = new Xlsx($spreadsheet);
                 $writer->setPreCalculateFormulas(false);
                 $writer->save($path);

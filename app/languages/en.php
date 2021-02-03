@@ -265,6 +265,7 @@ return array(
     'vModule_thankyou_viewOrder' => 'View my orders',
 
     'vModule_bonus_bonusTextTemplate' => 'For %q: %b',
+    'vModule_bonus_title' => 'Bonus Update',
 
     'vModule_order_dateFrom' => 'Get Orders Starting Date',
     'vModule_order_dateTo' => 'Get Orders Ending Date',

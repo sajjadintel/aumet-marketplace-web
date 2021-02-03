@@ -28,7 +28,7 @@ function compress_htmlcode($codedata)
     <div class="d-flex align-items-stretch flex-column">
 
         <div class="d-flex flex-column-fluid">
-            <a id="export-to-excel" class="btn btn-lg btn-primary mr-2 btn-lg-radius" title="Export To Excel" href="/appfiles/downloads/products-bonus-sample.xlsx" target="_blank">
+            <a id="export-to-excel" class="btn btn-lg btn-primary mr-2 btn-lg-radius" title="Export To Excel">
                 <i class="la la-file-excel-o"></i> Download Sample Bonus Excel File
             </a>
         </div>
@@ -48,7 +48,7 @@ function compress_htmlcode($codedata)
                 <div class="dropzone dropzone-default dropzone-success" id="dropZoneProductsBonusUpload">
                     <div class="dropzone-msg dz-message needsclick">
                         <h3 class="dropzone-msg-title">Drop files here or click to upload.</h3>
-                        <span class="dropzone-msg-desc">Only .xlsx,.xls,.csv files are allowed for upload</span>
+                        <span class="dropzone-msg-desc">Only .xlsm files are allowed for upload</span>
                     </div>
                 </div>
             </div>
@@ -57,14 +57,21 @@ function compress_htmlcode($codedata)
         </div>
     </div>
 
-    <div class="d-flex align-items-stretch flex-column mt-20" id="productsBonusUploadProcessResultContainer">
+    <div class="d-flex align-items-stretch flex-column" id="productsBonusUploadProcessResultContainer">
 
 
+    </div>
+
+    <div id="goBackContainer" class="row" style="display: none;">
+        <div class="col-4">
+            <div class="d-flex flex-column-fluid">
+                <a class="btn btn-lg btn-primary mr-2 btn-lg-radius" title="Go back" onclick="location.reload()">
+                    Go back
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 <!--end::Container-->
 <script type="text/javascript" src="/assets/js/products-bonus-upload.js<?php echo $platformVersion ?>"></script>
 <?php ob_end_flush(); ?>
-
-
-
