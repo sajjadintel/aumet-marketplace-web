@@ -65,13 +65,13 @@ function compress_htmlcode($codedata)
                                 <i class="nav-icon la la-plus p-0"></i> <?php echo $vButton_add; ?>
                             </button>
                         </label>
-                        
+
                         <label class="myLabel">
                             <button type="button" class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Bulk Add Products" onclick="DistributorProductsDataTable.productBulkAdd()">
                                 <i class="nav-icon la la-boxes p-0"></i> <?php echo $vButton_bulk_add; ?>
                             </button>
                         </label>
-                        
+
                         <!-- <label class="myLabel">
                             <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Bulk Add Images for Products" onclick="WebApp.loadPage('/web/distributor/product/bulk/add/image/upload')">
                                 <i class="nav-icon la la-images p-0"></i> <?php echo $vButton_bulk_add_image; ?>
@@ -217,6 +217,8 @@ function compress_htmlcode($codedata)
 
             var dbAdditionalOptions = {
                 datatableOptions: {
+                    "aLengthMenu": [[20, 50, 100], [20, 50, 100]],
+                    "iDisplayLength": 20,
                     processing: false,
                     order: [
                         [0, 'desc']
@@ -472,7 +474,7 @@ function compress_htmlcode($codedata)
                     rightArrow: '<i class="la la-angle-right"></i>'
                 }
             }
-            
+
             $('#addProductExpiryDate').datepicker({
                 rtl: KTUtil.isRTL(),
                 todayHighlight: true,
@@ -513,5 +515,5 @@ function compress_htmlcode($codedata)
 <?php ob_end_flush(); ?>
 <?php include_once 'edit-modal.php';
 include_once 'edit-stock-modal.php';
-include_once 'add-modal.php'; 
+include_once 'add-modal.php';
 include_once 'image-modal.php'; ?>

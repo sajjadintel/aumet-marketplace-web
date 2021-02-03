@@ -271,7 +271,7 @@ function compress_htmlcode($codedata)
                             WebAppLocals.getMessage('orderMissingProduct') +
                             '</a>';
 
-                            
+
                         var btnChangeRelationGroup =
                             '<a class="navi-link" href="javascript:;" onclick=\'DistributorCustomersDataTable.customerEditGroupModal(true, ' + row.entityBuyerId + ',' + row.entitySellerId + ')\' \
                                 class="btn btn-sm btn-primary btn-hover-primary  mr-2" navi-link title="Change Customer Group">\
@@ -387,6 +387,8 @@ function compress_htmlcode($codedata)
 
             var dbAdditionalOptions = {
                 datatableOptions: {
+                    "aLengthMenu": [[20, 50, 100], [20, 50, 100]],
+                    "iDisplayLength": 20,
                     order: [
                         [0, 'desc']
                     ],

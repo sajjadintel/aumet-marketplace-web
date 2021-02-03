@@ -260,9 +260,9 @@ var Profile = (function () {
 			var fileName = initialFileDecoded.substring(initialFileDecoded.lastIndexOf('/') + 1);
 			var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
 			var fileNameWithoutTimestamp = fileName.substring(0, fileName.lastIndexOf('-')) + "." + fileExtension;
-			
+
 			var fileUrl = _getFullUrl(initialFile);
-			
+
 			var file = {
 				status: 'success',
 				accepted: true,
@@ -411,6 +411,7 @@ var Profile = (function () {
 	var _initializeRepeaterElements = function (allCity) {
 		$('.minimumValueOrderInput').each(function(index, element) {
 			var minimumValueOrderErrorLabelCount = $(element).parent().find('#minimumValueOrderErrorLabel').length;
+			// console.log(minimumValueOrderErrorLabelCount);
 			if(minimumValueOrderErrorLabelCount === 0) {
 				$(element).parent().append('<div id="minimumValueOrderErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('required') + '</div></div>');
 			}
@@ -431,7 +432,7 @@ var Profile = (function () {
             var allValues = $(element).attr("data-values");
             if(!allValues) allValues = [];
 			else allValues = allValues.split(",");
-			
+
 			if(element.options.length === 0) {
 				allCity.forEach((city) => {
 					var selected = allValues.includes(city.id);
