@@ -704,3 +704,10 @@ input[type='number'] {
 	height: auto;
 	border: 1px solid transparent;
 }
+
+.column-name-fixed {
+	width: 300px;
+	max-width: 300px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
