@@ -375,6 +375,7 @@ return array(
     'vModule_profile_errorUploadingImage' => 'Error uploading profile image, please try again later',
     'vModule_profile_failedToDecodeImage' => 'Error failing to decode image',
     'vModule_profile_invalidImage' => 'Did not match data URI with image data',
+    'vModule_profile_tradeLicenseTaken' => 'Trade License Number already exists',
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
     'error_filedTooShort' => ' field is too short! minimum length: ',
