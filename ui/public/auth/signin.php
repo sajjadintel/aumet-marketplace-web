@@ -37,7 +37,7 @@
                         <!--begin::Form group-->
                         <div class="form-group">
                             <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vLogin_email ?></label>
-                            <input class="form-control h-auto py-7 px-6 rounded-lg border-0" type="email" name="email" required />
+                            <input class="form-control h-auto py-7 px-6 rounded-lg border-0" type="email" name="email" />
                         </div>
                         <!--end::Form group-->
                         <!--begin::Form group-->
@@ -46,7 +46,7 @@
                                 <label class="font-size-h6 font-weight-bolder text-dark pt-5"><?php echo $vLogin_password ?></label>
                                 <a href="/web/auth/forgot" class="text-success font-size-h6 font-weight-bolder pt-5"><?php echo $vLogin_forgotPassword ?></a>
                             </div>
-                            <input class="form-control h-auto py-7 px-6 rounded-lg border-0" type="password" name="password" required />
+                            <input class="form-control h-auto py-7 px-6 rounded-lg border-0" type="password" name="password" />
                         </div>
                         <!--end::Form group-->
                         <!--begin::Action-->
@@ -71,7 +71,7 @@
                             <!--                                            <path d="M12,22 C6.4771525,22 2,17.5228475 2,12 C2,6.4771525 6.4771525,2 12,2 C17.5228475,2 22,6.4771525 22,12 C22,17.5228475 17.5228475,22 12,22 Z M11.613922,13.2130341 C11.1688026,13.6581534 10.4887934,13.7685037 9.92575695,13.4869855 C9.36272054,13.2054673 8.68271128,13.3158176 8.23759191,13.760937 L6.72658218,15.2719467 C6.67169475,15.3268342 6.63034033,15.393747 6.60579393,15.4673862 C6.51847004,15.7293579 6.66005003,16.0125179 6.92202169,16.0998418 L8.27584113,16.5511149 C9.57592638,16.9844767 11.009274,16.6461092 11.9783003,15.6770829 L15.9775173,11.6778659 C16.867756,10.7876271 17.0884566,9.42760861 16.5254202,8.3015358 L15.8928491,7.03639343 C15.8688153,6.98832598 15.8371895,6.9444475 15.7991889,6.90644684 C15.6039267,6.71118469 15.2873442,6.71118469 15.0920821,6.90644684 L13.4995401,8.49898884 C13.0544207,8.94410821 12.9440704,9.62411747 13.2255886,10.1871539 C13.5071068,10.7501903 13.3967565,11.4301996 12.9516371,11.8753189 L11.613922,13.2130341 Z" fill="#000000" />-->
                             <!--                                        </g>-->
                             <!--                                    </svg>-->
-                            <!--                                </span>--><?php //echo $vLogin_signinWithPhone 
+                            <!--                                </span>--><?php //echo $vLogin_signinWithPhone
                                                                             ?>
                             <!--</button>-->
                         </div>
@@ -133,10 +133,10 @@
     <!--end::Login-->
 </div>
 <script>
-    jQuery(document).ready(function() {
+    /*jQuery(document).ready(function() {
         $('#kt_login_singin_form').submit(function(e) {
             e.preventDefault();
             WebAuth.signIn()
         });
-    });
+    });*/
 </script>
