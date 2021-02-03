@@ -201,25 +201,87 @@ var WebApp = (function () {
 
 						$(_pageContainerId).html(webResponse.data);
 
-						console.log('pushState', {id: _id, url: url, title: title,}, title, url);
+						if (window.history && window.history.pushState) {
+							window.history.pushState({id: _id, url: url, title: title}, title, url);
+							console.debug('pushState', {id: _id, url: url, title: title,}, title, url);
 
-						history.pushState({
-								id: _id,
-								url: url,
-								title: title,
-							},
-							title,
-							url);
+							// update title of webpage
+							if (title !== WebAppLocals.getMessage('appName')) {
+								document.title = title + ' | ' + WebAppLocals.getMessage('appName');
+							}
+						} else {
+							console.error('window.history.pushState not available. Are you using older browser?')
+						}
 
-						// window.history.pushState(
-						// 	{
-						// 		id: _id,
-						// 		url: url,
-						// 		title: title,
-						// 	},
-						// 	title,
-						// 	url
-						// );
+						if (typeof fnCallback === 'function') {
+							fnCallback();
+						}
+						_unblurPage();
+						_unblockPage();
+					} else if (webResponse.errorCode == 0) {
+						window.location.href = '/web';
+					} else {
+						_unblurPage();
+						_unblockPage();
+						_alertError(webResponse.message);
+					}
+				} else {
+					_unblurPage();
+					_unblockPage();
+					_alertError(WebAppLocals.getMessage('error'));
+				}
+
+				_initModal();
+			})
+			.fail(function (jqXHR, textStatus, errorThrown) {
+				_alertError(WebAppLocals.getMessage('error'));
+				_unblurPage();
+				_unblockPage();
+			});
+	};
+
+	var _handleBrowserNavigation = function (url, state = null, isSubPage = false, fnCallback = null) {
+		_blurPage();
+		_blockPage();
+		var fullUrl;
+		if(url.includes("?")) {
+			var allParts = url.split("?");
+			var mainUrl = allParts.shift();
+			var queryParams = allParts.join("?");
+
+			fullUrl = mainUrl + '?' + queryParams + '&_t=' + Date.now();
+		} else {
+			fullUrl = url + '?_t=' + Date.now();
+		}
+
+		$.ajax({
+			url: fullUrl,
+			type: 'GET',
+			dataType: 'json',
+			async: true,
+		})
+			.done(function (webResponse) {
+				if (webResponse && typeof webResponse === 'object') {
+					if (webResponse.errorCode == 1) {
+						var title = webResponse.title != null ? webResponse.title : document.title;
+
+						$('#subHeaderPageTitle').text(title);
+
+						webResponse.url = url;
+						if (!isSubPage) {
+							_lastWebResponse = webResponse;
+						} else {
+							_stackWebResponse.push(webResponse);
+						}
+
+						$(_pageContainerId).html(webResponse.data);
+
+						console.debug('browserNavigation', state, title, url);
+
+						// update title of webpage
+						if (title !== WebAppLocals.getMessage('appName')) {
+							document.title = title + ' | ' + WebAppLocals.getMessage('appName');
+						}
 
 						if (typeof fnCallback === 'function') {
 							fnCallback();
@@ -672,6 +734,11 @@ var WebApp = (function () {
 			//$("#webGuidedTourModal").modal();
 
 			_initNotificationTimer();
+
+			// handle browser navigation
+			$(window).on('popstate', function() {
+				_handleBrowserNavigation(window.history.state.url, window.history.state);
+			});
 		},
 		signout: function () {
 			return _signout();
@@ -710,7 +777,6 @@ var WebApp = (function () {
 			_openModal(webResponse);
 		},
 		CreateDatatableServerside: function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
-			console.log(vParams);
 			_createDatatableServerside(vTableName, vElementId, vUrl, vColumnDefs, vParams, vAdditionalOptions);
 		},
 		CreateDatatableLocal: function (vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions = null) {
