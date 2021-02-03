@@ -166,14 +166,29 @@ class ProfileController extends Controller
             $dbEntity = new BaseModel($this->db, "entity");
             $dbEntity->getByField("id", $dbUser->entityId);
 
+            $entityBranchId = $dbUser->entityBranchId;
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
-            $dbEntityBranch->getByField("id", $dbUser->entityBranchId);
+
+            if(strlen($tradeLicenseNumber) > 0) {
+                $dbEntityBranch->getWhere("id != $entityBranchId AND tradeLicenseNumber='$tradeLicenseNumber'");
+    
+                if (!$dbEntityBranch->dry()) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get("vModule_profile_tradeLicenseTaken");
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+            }
+
+            $dbEntityBranch->getByField("id", $entityBranchId);
             $dbEntityBranch->address_ar = $address;
             $dbEntityBranch->address_en = $address;
             $dbEntityBranch->address_fr = $address;
-            $dbEntityBranch->tradeLicenseUrl = $entityDocument;
 
-            if ($dbEntity->name_en != $entityName || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber) {
+            if ($dbEntity->name_en != $entityName
+            || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber
+            || $dbEntityBranch->tradeLicenseUrl != $entityDocument
+            ) {
                 if (strlen($entityDocument) == 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get("vModule_profile_missingDocumentApproval");
@@ -193,6 +208,10 @@ class ProfileController extends Controller
 
                 if ($dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber) {
                     $mapFieldNameOldNewValue["entityBranch.tradeLicenseNumber"] = [$dbEntityBranch->tradeLicenseNumber, $tradeLicenseNumber];
+                }
+
+                if ($dbEntityBranch->tradeLicenseUrl != $entityDocument) {
+                    $mapFieldNameOldNewValue["entityBranch.tradeLicenseUrl"] = [$dbEntityBranch->tradeLicenseUrl, $entityDocument];
                 }
 
                 $dbEntityChangeApproval = new BaseModel($this->db, "entityChangeApproval");
@@ -221,6 +240,8 @@ class ProfileController extends Controller
                         $displayName = "Pharmacy Name";
                     } else if ($name == "tradeLicenseNumber") {
                         $displayName = "Trade License Number";
+                    } else {
+                        $displayName = "";
                     }
 
                     if ($displayName) {
@@ -230,7 +251,7 @@ class ProfileController extends Controller
                 $message = $this->f3->get("vModule_profile_requestSent");
 
                 $approvalUrl = "web/pharmacy/profile/approve";
-                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl);
+                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $dbEntityBranch->tradeLicenseUrl, $entityDocument, $approvalUrl, $dbUser->userEmail);
             } else {
                 $message = $this->f3->get("vModule_profile_myProfileSaved");
             }
@@ -330,14 +351,29 @@ class ProfileController extends Controller
             $dbEntity = new BaseModel($this->db, "entity");
             $dbEntity->getByField("id", $dbUser->entityId);
 
+            $entityBranchId = $dbUser->entityBranchId;
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
-            $dbEntityBranch->getByField("id", $dbUser->entityBranchId);
+
+            if(strlen($tradeLicenseNumber) > 0) {
+                $dbEntityBranch->getWhere("id != $entityBranchId AND tradeLicenseNumber='$tradeLicenseNumber'");
+    
+                if (!$dbEntityBranch->dry()) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get("vModule_profile_tradeLicenseTaken");
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+            }
+
+            $dbEntityBranch->getByField("id", $entityBranchId);
             $dbEntityBranch->address_ar = $address;
             $dbEntityBranch->address_en = $address;
             $dbEntityBranch->address_fr = $address;
-            $dbEntityBranch->tradeLicenseUrl = $entityDocument;
 
-            if ($dbEntity->name_en != $entityName || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber) {
+            if ($dbEntity->name_en != $entityName
+            || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber
+            || $dbEntityBranch->tradeLicenseUrl != $entityDocument
+            ) {
                 if (strlen($entityDocument) == 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get("vModule_profile_missingDocumentApproval");
@@ -357,6 +393,10 @@ class ProfileController extends Controller
 
                 if ($dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber) {
                     $mapFieldNameOldNewValue["entityBranch.tradeLicenseNumber"] = [$dbEntityBranch->tradeLicenseNumber, $tradeLicenseNumber];
+                }
+
+                if ($dbEntityBranch->tradeLicenseUrl != $entityDocument) {
+                    $mapFieldNameOldNewValue["entityBranch.tradeLicenseUrl"] = [$dbEntityBranch->tradeLicenseUrl, $entityDocument];
                 }
 
                 $dbEntityChangeApproval = new BaseModel($this->db, "entityChangeApproval");
@@ -385,6 +425,8 @@ class ProfileController extends Controller
                         $displayName = "Distributor Name";
                     } else if ($name == "tradeLicenseNumber") {
                         $displayName = "Trade License Number";
+                    } else {
+                        $displayName = "";
                     }
 
                     if ($displayName) {
@@ -394,7 +436,7 @@ class ProfileController extends Controller
                 $message = $this->f3->get("vModule_profile_requestSent");
 
                 $approvalUrl = "web/distributor/profile/approve";
-                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $entityDocument, $approvalUrl);
+                $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $dbEntityBranch->tradeLicenseUrl, $entityDocument, $approvalUrl, $dbUser->userEmail);
             } else {
                 $message = $this->f3->get("vModule_profile_myProfileSaved");
             }
@@ -607,7 +649,7 @@ class ProfileController extends Controller
         $this->handlePostProfileImage();
     }
 
-    function sendChangeApprovalEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $tradeLicenseUrl, $approvalUrl, $dbUser)
+    function sendChangeApprovalEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $oldTradeLicenseUrl, $tradeLicenseUrl, $approvalUrl, $userEmail)
     {
         $emailHandler = new EmailHandler($this->db);
         $emailFile = "email/layout.php";
@@ -616,8 +658,12 @@ class ProfileController extends Controller
         $this->f3->set('emailType', 'changeProfileApproval');
 
         $this->f3->set('mapDisplayNameOldNewValue', $mapDisplayNameOldNewValue);
+        if($oldTradeLicenseUrl != $tradeLicenseUrl) {
+            $this->f3->set('oldTradeLicenseUrl', $oldTradeLicenseUrl);
+        }
         $this->f3->set('tradeLicenseUrl', $tradeLicenseUrl);
         $this->f3->set('approvalUrl', $approvalUrl);
+        $this->f3->set('userEmail', $userEmail);
 
         $payload = [
             'entityChangeApprovalId' => $entityChangeApprovalId
@@ -716,6 +762,8 @@ class ProfileController extends Controller
                     $displayName = "Pharmacy Name";
                 } else if ($name == "tradeLicenseNumber") {
                     $displayName = "Trade License Number";
+                } else {
+                    $displayName = "";
                 }
 
                 if ($displayName) {
@@ -725,13 +773,22 @@ class ProfileController extends Controller
                     ];
                 }
 
+                if($name == "tradeLicenseUrl") {
+                    $oldTradeLicenseUrl = $dbEntityChangeApprovalField->oldValue;
+                }
+
                 $dbEntityChangeApprovalField->next();
+            }
+
+            $tradeLicenseUrl = $dbEntityChangeApproval->tradeLicenseUrl;
+            if(strlen($oldTradeLicenseUrl) == 0) {
+                $oldTradeLicenseUrl = $tradeLicenseUrl;
             }
 
             $dbEntity->update();
             $dbEntityBranch->update();
 
-            $this->sendChangeApprovedEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $dbEntityChangeApproval->tradeLicenseUrl);
+            $this->sendChangeApprovedEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $oldTradeLicenseUrl, $tradeLicenseUrl);
             echo "Approved";
         }
     }
@@ -798,6 +855,8 @@ class ProfileController extends Controller
                     $displayName = "Distributor Name";
                 } else if ($name == "tradeLicenseNumber") {
                     $displayName = "Trade License Number";
+                } else {
+                    $displayName = "";
                 }
 
                 if ($displayName) {
@@ -807,18 +866,27 @@ class ProfileController extends Controller
                     ];
                 }
 
+                if($name == "tradeLicenseUrl") {
+                    $oldTradeLicenseUrl = $dbEntityChangeApprovalField->oldValue;
+                }
+
                 $dbEntityChangeApprovalField->next();
+            }
+
+            $tradeLicenseUrl = $dbEntityChangeApproval->tradeLicenseUrl;
+            if(strlen($oldTradeLicenseUrl) == 0) {
+                $oldTradeLicenseUrl = $tradeLicenseUrl;
             }
 
             $dbEntity->update();
             $dbEntityBranch->update();
 
-            $this->sendChangeApprovedEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $dbEntityChangeApproval->tradeLicenseUrl);
+            $this->sendChangeApprovedEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $oldTradeLicenseUrl, $tradeLicenseUrl);
             echo "Approved";
         }
     }
 
-    function sendChangeApprovedEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $tradeLicenseUrl)
+    function sendChangeApprovedEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $oldTradeLicenseUrl, $tradeLicenseUrl)
     {
         $emailHandler = new EmailHandler($this->db);
         $emailFile = "email/layout.php";
@@ -827,6 +895,9 @@ class ProfileController extends Controller
         $this->f3->set('emailType', 'changeProfileApproved');
 
         $this->f3->set('mapDisplayNameOldNewValue', $mapDisplayNameOldNewValue);
+        if($oldTradeLicenseUrl != $tradeLicenseUrl) {
+            $this->f3->set('oldTradeLicenseUrl', $oldTradeLicenseUrl);
+        }
         $this->f3->set('tradeLicenseUrl', $tradeLicenseUrl);
 
         $htmlContent = View::instance()->render($emailFile);
