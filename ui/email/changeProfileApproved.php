@@ -100,22 +100,47 @@
 								</td>
 							</tr>
 						<?php endforeach; ?>
-						<tr>
-							<td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ffffff;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">
-								<p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>Trade License Document</strong></p>
-								<table role="presentation" cellspacing="0" cellpadding="0" border="0">
-									<tbody>
-										<tr>
-											<td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">
-												<p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">
-													<a href="<?php echo $domainUrl . $tradeLicenseUrl; ?>" target="_blank">Download file</strong>
-												</p>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</td>
-						</tr>
+						<?php if (!$oldTradeLicenseUrl) : ?>
+							<tr>
+								<td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ffffff;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">
+									<p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>Trade License Document</strong></p>
+									<table role="presentation" cellspacing="0" cellpadding="0" border="0">
+										<tbody>
+											<tr>
+												<td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">
+													<p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">
+														<a href="<?php echo $domainUrl . $tradeLicenseUrl; ?>" target="_blank">Download file</strong>
+													</p>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+						<?php else : ?>
+							<tr>
+								<td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ffffff;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">
+									<p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>Trade License Document</strong></p>
+									<table role="presentation" cellspacing="0" cellpadding="0" border="0">
+										<tbody>
+											<tr>
+												<td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">
+													<p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">
+														<a href="<?php echo $domainUrl . $oldTradeLicenseUrl; ?>" target="_blank">Download file</strong>
+													</p>
+												</td>
+												<td style="padding: 10px;">To</td>
+												<td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">
+													<p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">
+														<a href="<?php echo $domainUrl . $tradeLicenseUrl; ?>" target="_blank">Download file</strong>
+													</p>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+							</tr>
+						<?php endif; ?>
 					</tbody>
 				</table>
 				<!--[if mso]></td></tr></table><![endif]-->

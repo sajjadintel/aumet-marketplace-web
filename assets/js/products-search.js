@@ -145,7 +145,7 @@ var SearchDataTable = (function () {
 					title: WebAppLocals.getMessage('unitPrice'),
 					autoHide: false,
 					template: function (row) {
-						return row.unitPrice + ' ' + row.currency;
+						return  WebApp.formatMoney(row.unitPrice)  + ' ' + row.currency;
 					},
 				},
 				{

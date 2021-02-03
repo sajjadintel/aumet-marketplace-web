@@ -94,7 +94,7 @@
 				  </td>
 				</tr>
 			<?php endforeach; ?>
-			<?php if ($tradeLicenseUrl) : ?>
+            <?php if ($tradeLicenseUrl && !empty($tradeLicenseUrl)) : ?>
 				<tr>
 					<td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ffffff;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">
 					<p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>Trade License Document</strong></p>
