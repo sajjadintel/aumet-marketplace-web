@@ -1,9 +1,3 @@
-################################
-######## 02/02/2021
-################################
-
-## Patrick Modifications
-
 ## 03/02/2021 -- Antoine Abou Cherfane
 
 # Modified vwEntityProductSellSummary
@@ -26,4 +20,16 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
         JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
         JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
         
+################################
+
+
+## 04/02/2021 -- Sajad Abbasi
+
+INSERT INTO `marketplace`.`paymentMethod` (`name_en`, `name_ar`, `name_fr`) VALUES ('Payment by Credit Facility', 'Payment by Credit Facility', 'Payment by Credit Facility');
+
+ALTER TABLE `marketplace`.`product`
+CHANGE COLUMN `description_en` `description_en` TEXT NULL DEFAULT NULL ,
+CHANGE COLUMN `description_fr` `description_fr` TEXT NULL DEFAULT NULL ,
+CHANGE COLUMN `description_ar` `description_ar` TEXT NULL DEFAULT NULL ;
+
 ################################
