@@ -148,6 +148,7 @@ class BaseModel extends DB\SQL\Mapper
             return TRUE;
         } catch (Exception $ex) {
             $this->exception = $ex->getMessage() . " - " . $ex->getTraceAsString();
+            echo $this->exception;
             return false;
         }
     }

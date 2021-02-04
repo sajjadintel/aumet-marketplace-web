@@ -93,6 +93,7 @@ $f3->route('POST /web/distributor/order/onhold', 'OrderController->postOnHoldOrd
 $f3->route('GET /web/distributor/product', 'ProductsController->getDistributorProducts');
 $f3->route('GET /web/distributor/product/@productId', 'ProductsController->getProductDetails');
 $f3->route('GET /web/distributor/product/quantity/@productId', 'ProductsController->getProductQuantityDetails');
+$f3->route('GET /web/distributor/product/stock/@productId', 'ProductsController->getProductStockDetails');
 
 $f3->route('POST /web/distributor/product', 'ProductsController->postDistributorProducts');
 $f3->route('GET /web/distributor/product/list', 'ProductsController->getProductList');
@@ -101,6 +102,7 @@ $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDi
 $f3->route('POST /web/distributor/product/image', 'ProductsController->postProductImage');
 $f3->route('POST /web/distributor/product/subimage', 'ProductsController->postProductSubimage');
 $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->postEditQuantityDistributorProduct');
+$f3->route('POST /web/distributor/product/editStock', 'ProductsController->postEditStockDistributorProduct');
 $f3->route('GET /web/distributor/product/canAdd', 'ProductsController->getDistributorCanAddProduct');
 
 // Bulk add 
@@ -174,5 +176,7 @@ $f3->route('POST /web/pharmacy/profile/accountSetting', 'ProfileController->post
 $f3->route('POST /web/distributor/profile/myProfile', 'ProfileController->postDistributorProfileMyProfile');
 $f3->route('POST /web/distributor/profile/accountSetting', 'ProfileController->postDistributorProfileAccountSetting');
 $f3->route('POST /web/distributor/profile/paymentSetting', 'ProfileController->postDistributorProfilePaymentSetting');
+$f3->route('POST /web/distributor/profile/image', 'ProfileController->postDistributorProfileImage');
 $f3->route('GET /web/pharmacy/profile/approve', 'ProfileController->getPharmacyProfileApprove');
 $f3->route('GET /web/distributor/profile/approve', 'ProfileController->getDistributorProfileApprove');
+$f3->route('POST /web/pharmacy/profile/image', 'ProfileController->postPharmacyProfileImage');

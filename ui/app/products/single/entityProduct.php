@@ -326,7 +326,7 @@ function compress_htmlcode($codedata)
                     title: WebAppLocals.getMessage('unitPrice'),
                     data: 'unitPrice',
                     render: function (data, type, row, meta) {
-                        var output = row.unitPrice + ' ' + row.currency;
+                        var output =  WebApp.formatMoney(row.unitPrice)  + ' ' + row.currency;
 
                         return '<div style="width: max-content;">' + output + '</div>';
                     },
@@ -444,9 +444,12 @@ function compress_htmlcode($codedata)
                     buttons: [],
                     bPaginate: false,
                     bLengthChange: false,
-                    bFilter: true,
+                    bFilter: false,
                     bInfo: false,
-                    bAutoWidth: false
+                    bAutoWidth: false,
+                    bServerSide: false ,
+                    processing: false,
+                    stateSave: true
                 }
             };
 
