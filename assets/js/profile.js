@@ -23,24 +23,22 @@ var Profile = (function () {
 				entityName: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
+							message: WebAppLocals.getMessage('pharmacyNameRequired'),
 						},
                         stringLength: {
 							min: 4,
-                            max: 100,
-                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 100 " + WebAppLocals.getMessage('characters')
+                            message: WebAppLocals.getMessage('pharmacyNameTooShort')
                         }
 					},
 				},
 				address: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
+							message: WebAppLocals.getMessage('addressRequired'),
 						},
                         stringLength: {
 							min: 4,
-                            max: 500,
-                            message: WebAppLocals.getMessage('lengthError') + "4 " + WebAppLocals.getMessage('and') + " 500 " + WebAppLocals.getMessage('characters')
+                            message: WebAppLocals.getMessage('addressTooShort')
                         }
 					},
 				},
@@ -48,8 +46,7 @@ var Profile = (function () {
 					validators: {
                         stringLength: {
 							min: 4,
-                            max: 200,
-                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 200 " + WebAppLocals.getMessage('characters')
+                            message: WebAppLocals.getMessage('tradeLicenseNumberTooShort')
                         }
 					},
 				}
@@ -58,14 +55,14 @@ var Profile = (function () {
 				oldPassword: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
+							message: WebAppLocals.getMessage('oldPasswordRequired'),
 						}
 					},
 				},
 				newPassword: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
+							message: WebAppLocals.getMessage('newPasswordRequired'),
 						}
 					},
 				},
@@ -86,24 +83,22 @@ var Profile = (function () {
 				entityName: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
+							message: WebAppLocals.getMessage('distributorNameRequired'),
 						},
                         stringLength: {
 							min: 4,
-                            max: 100,
-                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 100 " + WebAppLocals.getMessage('characters')
+                            message: WebAppLocals.getMessage('distributorNameTooShort')
                         }
 					},
 				},
 				address: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
+							message: WebAppLocals.getMessage('addressRequired'),
 						},
                         stringLength: {
 							min: 4,
-                            max: 500,
-                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 500 " + WebAppLocals.getMessage('characters')
+                            message: WebAppLocals.getMessage('addressTooShort')
                         }
 					},
 				},
@@ -111,8 +106,7 @@ var Profile = (function () {
 					validators: {
                         stringLength: {
 							min: 4,
-                            max: 200,
-                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 200 " + WebAppLocals.getMessage('characters')
+                            message: WebAppLocals.getMessage('tradeLicenseNumberTooShort')
                         }
 					},
 				}
@@ -121,14 +115,14 @@ var Profile = (function () {
 				oldPassword: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
+							message: WebAppLocals.getMessage('oldPasswordRequired'),
 						}
 					},
 				},
 				newPassword: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
+							message: WebAppLocals.getMessage('newPasswordRequired'),
 						}
 					},
 				},
@@ -412,7 +406,7 @@ var Profile = (function () {
 		$('.minimumValueOrderInput').each(function(index, element) {
 			var minimumValueOrderErrorLabelCount = $(element).parent().find('#minimumValueOrderErrorLabel').length;
 			if(minimumValueOrderErrorLabelCount === 0) {
-				$(element).parent().append('<div id="minimumValueOrderErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('required') + '</div></div>');
+				$(element).parent().append('<div id="minimumValueOrderErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('minimumValueOrderRequired') + '</div></div>');
 			}
 		})
 
@@ -444,7 +438,7 @@ var Profile = (function () {
 
 			var cityErrorLabelCount = $(element).parent().parent().find('#cityErrorLabel').length;
 			if(cityErrorLabelCount === 0) {
-				$(element).parent().parent().append('<div id="cityErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('required') + '</div></div>');
+				$(element).parent().parent().append('<div id="cityErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('cityRequired') + '</div></div>');
 			}
 		})
 
