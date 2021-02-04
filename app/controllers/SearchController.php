@@ -25,6 +25,9 @@ class SearchController extends Controller {
         $term = $_GET['query'];
         if (isset($term) && $term != "" && $term != null) {
             $where .= "AND ( scientificName LIKE '%{$term}%'";
+            $where .= " OR entityName_ar LIKE '%{$term}%'";
+            $where .= " OR entityName_en LIKE '%{$term}%'";
+            $where .= " OR entityName_fr LIKE '%{$term}%'";
             $where .= " OR productName_ar LIKE '%{$term}%'";
             $where .= " OR productName_en LIKE '%{$term}%'";
             $where .= " OR productName_fr LIKE '%{$term}%' ) ";
