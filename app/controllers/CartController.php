@@ -140,9 +140,16 @@ class CartController extends Controller
         } else {
 
             $id = $this->f3->get('POST.id');
+            $userId = $this->f3->get('POST.userID');
+            $entityProductId = $this->f3->get('POST.entityProductId');
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
-            $dbCartDetail->getByField("id", $id);
+            if(!empty($userId) && !empty($entityProductId)){
+                $dbCartDetail->getWhere("entityProductId=$entityProductId and userID=$userId");
+            }else{
+                $dbCartDetail->getByField("id", $id);
+            }
+
             $dbCartDetail->erase();
 
             // Get cart count

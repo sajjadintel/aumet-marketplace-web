@@ -459,6 +459,7 @@ var DistributorProductsDataTable = (function () {
             else arrBonus.push(bonus);
         });
         
+  		$("#editStockBonusCheckbox").unbind();
         $('#editStockBonusCheckbox').change(function () {
             if($('#editStockBonusCheckbox').is(":checked")) {
                 $("#editStockBonusRepeater").show();
@@ -467,19 +468,29 @@ var DistributorProductsDataTable = (function () {
             }
         });
         
+  		$('#editStockSpecialBonusCheckbox').unbind();
         $('#editStockSpecialBonusCheckbox').change(function () {
             if($('#editStockSpecialBonusCheckbox').is(":checked")) {
                 $("#editStockSpecialBonusRepeater").show();
             } else {
                 $("#editStockSpecialBonusRepeater").hide();
             }
-        });
+		});
+		
+		if($('.editStockModal').length != 1) {
+			_bonusRepeater = null;
+			_bonusRepeaterElementTemplate = null;
+			_specialBonusRepeater = null;
+			_specialBonusRepeaterElementTemplate = null;
+
+			$('.editStockModal').slice(1).remove();
+		}
         
         _initializeBonusSection(arrBonus, webResponse.data.arrBonusType);
         _initializeSpecialBonusSection(arrSpecialBonus, webResponse.data.arrBonusType, webResponse.data.arrRelationGroup);
 
-        $('#editStockStock').val(webResponse.data.product.stock);
-        $('#editStockModal').appendTo('body').modal('show');
+		$('#editStockStock').val(webResponse.data.product.stock);
+		$('#editStockModal').appendTo('body').modal('show');
     };
 
     var _initializeBonusSection = function (arrBonus, arrBonusType) {

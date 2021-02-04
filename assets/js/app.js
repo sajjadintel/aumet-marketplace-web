@@ -173,7 +173,7 @@ var WebApp = (function () {
 			var allParts = url.split("?");
 			var mainUrl = allParts.shift();
 			var queryParams = allParts.join("?");
-			
+
 			fullUrl = mainUrl + '?' + queryParams + '&_t=' + Date.now();
 		} else {
 			fullUrl = url + '?_t=' + Date.now();
@@ -201,25 +201,87 @@ var WebApp = (function () {
 
 						$(_pageContainerId).html(webResponse.data);
 
-						console.log('pushState', {id: _id, url: url, title: title,}, title, url);
+						if (window.history && window.history.pushState) {
+							window.history.pushState({id: _id, url: url, title: title}, title, url);
+							console.debug('pushState', {id: _id, url: url, title: title,}, title, url);
 
-						history.pushState({
-								id: _id,
-								url: url,
-								title: title,
-							},
-							title,
-							url);
+							// update title of webpage
+							if (title !== WebAppLocals.getMessage('appName')) {
+								document.title = title + ' | ' + WebAppLocals.getMessage('appName');
+							}
+						} else {
+							console.error('window.history.pushState not available. Are you using older browser?')
+						}
 
-						// window.history.pushState(
-						// 	{
-						// 		id: _id,
-						// 		url: url,
-						// 		title: title,
-						// 	},
-						// 	title,
-						// 	url
-						// );
+						if (typeof fnCallback === 'function') {
+							fnCallback();
+						}
+						_unblurPage();
+						_unblockPage();
+					} else if (webResponse.errorCode == 0) {
+						window.location.href = '/web';
+					} else {
+						_unblurPage();
+						_unblockPage();
+						_alertError(webResponse.message);
+					}
+				} else {
+					_unblurPage();
+					_unblockPage();
+					_alertError(WebAppLocals.getMessage('error'));
+				}
+
+				_initModal();
+			})
+			.fail(function (jqXHR, textStatus, errorThrown) {
+				_alertError(WebAppLocals.getMessage('error'));
+				_unblurPage();
+				_unblockPage();
+			});
+	};
+
+	var _handleBrowserNavigation = function (url, state = null, isSubPage = false, fnCallback = null) {
+		_blurPage();
+		_blockPage();
+		var fullUrl;
+		if(url.includes("?")) {
+			var allParts = url.split("?");
+			var mainUrl = allParts.shift();
+			var queryParams = allParts.join("?");
+
+			fullUrl = mainUrl + '?' + queryParams + '&_t=' + Date.now();
+		} else {
+			fullUrl = url + '?_t=' + Date.now();
+		}
+
+		$.ajax({
+			url: fullUrl,
+			type: 'GET',
+			dataType: 'json',
+			async: true,
+		})
+			.done(function (webResponse) {
+				if (webResponse && typeof webResponse === 'object') {
+					if (webResponse.errorCode == 1) {
+						var title = webResponse.title != null ? webResponse.title : document.title;
+
+						$('#subHeaderPageTitle').text(title);
+
+						webResponse.url = url;
+						if (!isSubPage) {
+							_lastWebResponse = webResponse;
+						} else {
+							_stackWebResponse.push(webResponse);
+						}
+
+						$(_pageContainerId).html(webResponse.data);
+
+						console.debug('browserNavigation', state, title, url);
+
+						// update title of webpage
+						if (title !== WebAppLocals.getMessage('appName')) {
+							document.title = title + ' | ' + WebAppLocals.getMessage('appName');
+						}
 
 						if (typeof fnCallback === 'function') {
 							fnCallback();
@@ -328,7 +390,7 @@ var WebApp = (function () {
 							}),
 						},
 					})
-					
+
 					$(".select2").on("change", function(ev) {
 						var field = $(this).attr("name");
 						if(field in _validatorFields) {
@@ -656,6 +718,83 @@ var WebApp = (function () {
 		return parseFloat(number).toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
 	}
 
+	var _supportModalForm = function () {
+		var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
+		var form = KTUtil.getById('supportModalForm');
+		var formSubmitUrl = KTUtil.attr(form, 'action');
+		var data = $(form).serializeJSON();
+		var formSubmitButton = KTUtil.getById('kt_cs_form_submit_button');
+
+		if (!form) {
+			return;
+		}
+
+		FormValidation.formValidation(form, {
+			fields: {
+				supportEmail: {
+					validators: {
+						notEmpty: {
+							message: 'Email is required',
+						},
+						emailAddress: {
+							message: 'The value is not a valid email address',
+						},
+					},
+				},
+				phone: {
+					validators: {
+						notEmpty: {
+							message: 'Phone Number is required',
+						},
+					},
+				},
+				supportReasonId: {
+					validators: {
+						notEmpty: {
+							message: 'Reason is required',
+						},
+					},
+				},
+			},
+			plugins: {
+				trigger: new FormValidation.plugins.Trigger(),
+				submitButton: new FormValidation.plugins.SubmitButton(),
+				//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
+				bootstrap: new FormValidation.plugins.Bootstrap({
+					//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
+					//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
+				}),
+			},
+		})
+			.on('core.form.valid', function () {
+				// Show loading state on button
+				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
+
+				var url = KTUtil.attr(form, 'action');
+				var data = $(form).serializeJSON();
+
+				if (!form) {
+					console.log('No Form');
+					return;
+				}
+				$('#support_modal').modal('hide');
+				WebApp.post(url, data);
+			})
+			.on('core.form.invalid', function () {
+				Swal.fire({
+					text: 'Sorry, looks like there are some errors detected, please try again.',
+					icon: 'error',
+					buttonsStyling: false,
+					confirmButtonText: 'Ok, got it!',
+					customClass: {
+						confirmButton: 'btn font-weight-bold btn-light-primary',
+					},
+				}).then(function () {
+					KTUtil.scrollTop();
+				});
+			});
+	};
+
 	// Public Functions
 	return {
 		init: function () {
@@ -672,6 +811,11 @@ var WebApp = (function () {
 			//$("#webGuidedTourModal").modal();
 
 			_initNotificationTimer();
+
+			// handle browser navigation
+			$(window).on('popstate', function() {
+				_handleBrowserNavigation(window.history.state.url, window.history.state);
+			});
 		},
 		signout: function () {
 			return _signout();
@@ -710,7 +854,6 @@ var WebApp = (function () {
 			_openModal(webResponse);
 		},
 		CreateDatatableServerside: function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
-			console.log(vParams);
 			_createDatatableServerside(vTableName, vElementId, vUrl, vColumnDefs, vParams, vAdditionalOptions);
 		},
 		CreateDatatableLocal: function (vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions = null) {
@@ -733,6 +876,9 @@ var WebApp = (function () {
 		},
 		formatMoney: function (number, n, x) {
 			return _formatMoney(number, n, x);
+		},
+		supportModalFormValidation: function () {
+			return _supportModalForm();
 		},
 		reloadDatatable: function (webResponse) {
 			if ($('#popupModal').is(':visible')) {

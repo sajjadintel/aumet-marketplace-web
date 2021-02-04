@@ -222,6 +222,8 @@ return array(
     'vModule_product_addSpecialBonus' => 'Add Special Bonuses',
     'vModule_product_defaultBonusInvalid' => 'Default Bonuses Invalid',
     'vModule_product_specialBonusInvalid' => 'Special Bonuses Invalid',
+    'vModule_product_quantityTooBig' => 'Quantity too big !',
+    'vModule_product_bonusTooBig' => 'Bonus too big !',
     
     'vModule_product_stockStatus_NotAvailable' => 'Not Available',
     'vModule_product_stockStatus_ComingSoon' => 'Coming Soon',
@@ -379,10 +381,12 @@ return array(
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
     'error_filedTooShort' => ' field is too short! minimum length: ',
-    'field_entityName' => 'Entity name',
+    'field_entityName' => 'Entity Name',
+    'field_pharmacyName' => 'Pharmacy Name',
+    'field_distributorName' => 'Distributor Name',
     'field_relationGroupName' => 'Customer group name',
     'field_address' => 'Address',
-    'field_tradeLicenseNumber' => 'Trade license number',
+    'field_tradeLicenseNumber' => 'Trade License Number',
     'field_nameAr' => 'Name AR',
     'field_nameEn' => 'Name EN',
     'field_nameFr' => 'Name FR',

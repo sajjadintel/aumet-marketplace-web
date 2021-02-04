@@ -4,3 +4,26 @@
 
 ## Patrick Modifications
 
+## 03/02/2021 -- Antoine Abou Cherfane
+
+# Modified vwEntityProductSellSummary
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
+    SELECT 
+        `ep`.`id` AS `id`,
+        `ep`.`entityId` AS `entityId`,
+        `e`.`name_ar` AS `entityName_ar`,
+        `e`.`name_en` AS `entityName_en`,
+        `e`.`name_fr` AS `entityName_fr`,
+        `ep`.`productId` AS `productId`,
+        `p`.`scientificNameId` AS `scientificNameId`,
+        `s`.`name` AS `scientificName`,
+        `p`.`name_ar` AS `productName_ar`,
+        `p`.`name_en` AS `productName_en`,
+        `p`.`name_fr` AS `productName_fr`
+    FROM
+        (((`entityProductSell` `ep`
+        JOIN `entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
+        JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
+        JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
+        
+################################
