@@ -133,11 +133,8 @@ function compress_htmlcode($codedata)
 
                             </div>
 
-                            <div>
-                                <span class="product-description">
-                                    asdfjlasd flksad fjlsakd fjlsadk fjasld fjaskd fjlsa dfjlsdak flkas fjlsa df
+                            <div class="product-description">
                                     <?php echo $objEntityProduct->description ?>
-                                </span>
                             </div>
 
                         </div>
