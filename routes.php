@@ -68,7 +68,7 @@ $f3->route('GET /web/thankyou/@grandOrderId', 'CartController->getThankyou');
 $f3->route('GET /web/demo/editor/scientificnames', 'DemoController->get');
 
 
-// START APM-10 APM-11 APM-35 
+// START APM-10 APM-11 APM-35
 $f3->route('GET /web/distributor/order/pending', 'OrderController->getDistributorOrdersPending');
 $f3->route('GET /web/distributor/order/unpaid', 'OrderController->getDistributorOrdersUnpaid');
 $f3->route('GET /web/distributor/order/history', 'OrderController->getDistributorOrdersHistory');
@@ -105,13 +105,13 @@ $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->po
 $f3->route('POST /web/distributor/product/editStock', 'ProductsController->postEditStockDistributorProduct');
 $f3->route('GET /web/distributor/product/canAdd', 'ProductsController->getDistributorCanAddProduct');
 
-// Bulk add 
+// Bulk add
 $f3->route('GET /web/distributor/product/bulk/add/download', 'ProductsController->getBulkAddDownload');
 $f3->route('GET /web/distributor/product/bulk/add/upload', 'ProductsController->getBulkAddUpload');
 $f3->route('POST /web/distributor/product/bulk/add/upload', 'ProductsController->postBulkAddUpload');
 $f3->route('POST /web/distributor/product/bulk/add/upload/process', 'ProductsController->postBulkAddUploadProcess');
 
-// Bulk add images 
+// Bulk add images
 $f3->route('GET /web/distributor/product/bulk/add/image/upload', 'ProductsController->getBulkAddImageUpload');
 $f3->route('POST /web/distributor/product/bulk/add/image/upload', 'ProductsController->postBulkAddImageUpload');
 $f3->route('POST /web/distributor/product/bulk/add/image/upload/process', 'ProductsController->postBulkAddImageUploadProcess');
@@ -180,3 +180,33 @@ $f3->route('POST /web/distributor/profile/image', 'ProfileController->postDistri
 $f3->route('GET /web/pharmacy/profile/approve', 'ProfileController->getPharmacyProfileApprove');
 $f3->route('GET /web/distributor/profile/approve', 'ProfileController->getDistributorProfileApprove');
 $f3->route('POST /web/pharmacy/profile/image', 'ProfileController->postPharmacyProfileImage');
+
+// Security-Authorization Issue: Users able to access non authorized pages - MPW-157 Start
+\Middleware::instance()->before('GET|POST /web/distributor/*', function(\Base $f3, $params, $alias) {
+    // if not distributor
+    if($f3->get('SESSION.objUser')->roleId != 10){
+        $f3->set('SESSION.notAuthorized',1,20);
+        $f3->reroute('/web');
+    }
+});
+
+\Middleware::instance()->before('GET|POST /web/pharmacy/*', function(\Base $f3, $params, $alias) {
+
+    // if not pharmacy
+    if($f3->get('SESSION.objUser')->roleId != 40){
+        $f3->set('SESSION.notAuthorized',1,20);
+        $f3->reroute('/web');
+    }
+});
+
+\Middleware::instance()->before('GET|POST /web/cart/*', function(\Base $f3, $params, $alias) {
+
+    // if not pharmacy
+    if($f3->get('SESSION.objUser')->roleId != 40){
+        $f3->set('SESSION.notAuthorized',1,20);
+        $f3->reroute('/web');
+    }
+});
+
+\Middleware::instance()->run();
+// Security-Authorization Issue: Users able to access non authorized pages - MPW-157 End
