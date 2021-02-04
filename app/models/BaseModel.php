@@ -195,4 +195,45 @@ class BaseModel extends DB\SQL\Mapper
 
         return $inp;
     }
+
+    public static function toObject($array)
+    {
+        $object= new stdClass();
+        return BaseModel::array_to_obj($array,$object);
+    }
+
+    private static function array_to_obj($array, &$obj)
+    {
+        foreach ($array as $key => $value)
+        {
+            if (is_array($value))
+            {
+                $obj->$key = new stdClass();
+                array_to_obj($value, $obj->$key);
+            }
+            else
+            {
+                $obj->$key = $value;
+            }
+        }
+        return $obj;
+    }
+
+    public static function convertToObj($obj){
+        if(!$obj->dry()) {
+            if(count($obj->query) == 1)
+                $response = BaseModel::toObject($obj->query[0]);
+            else {
+                $response = array_map(function ($obj) {
+                    return BaseModel::toObject($obj);
+                }, $obj->query);
+            }
+        }
+
+        echo "<pre>";
+        print_r($response);
+        exit();
+    }
+
+
 }
