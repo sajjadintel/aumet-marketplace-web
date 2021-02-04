@@ -146,13 +146,13 @@ class ProductsController extends Controller
             $entityId = array_keys($this->f3->get('SESSION.arrEntities'))[0];
             $results = $this->db->exec("CALL spCanAddProduct($entityId)");
 
-            if (count($results) > 0) {
-                $this->webResponse->title = 'Can\'t add product</br>Please complete your profile first!';
-                $this->webResponse->data = $results;
-            } else {
+//            if (count($results) > 0) {
+//                $this->webResponse->title = 'Can\'t add product</br>Please complete your profile first!';
+//                $this->webResponse->data = $results;
+//            } else {
                 $this->webResponse->title = 'Can add product';
                 $this->webResponse->data = [];
-            }
+//            }
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             echo $this->webResponse->jsonResponse();
         }
@@ -537,9 +537,9 @@ class ProductsController extends Controller
                 $this->checkLength($name_en, 'nameEn', 200, 4);
                 $this->checkLength($name_ar, 'nameAr', 200, 4);
                 $this->checkLength($name_fr, 'nameFr', 200, 4);
-                $this->checkLength($description_ar, 'descriptionAr', 1000, 4);
-                $this->checkLength($description_en, 'descriptionEn', 1000, 4);
-                $this->checkLength($description_fr, 'descriptionFr', 1000, 4);
+                $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
+                $this->checkLength($description_en, 'descriptionEn', 5000, 4);
+                $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
 
 
                 if ($subtitle_ar) {
@@ -936,9 +936,9 @@ class ProductsController extends Controller
             $this->checkLength($name_en, 'nameEn', 200, 4);
             $this->checkLength($name_ar, 'nameAr', 200, 4);
             $this->checkLength($name_fr, 'nameFr', 200, 4);
-            $this->checkLength($description_ar, 'descriptionAr', 1000, 4);
-            $this->checkLength($description_en, 'descriptionEn', 1000, 4);
-            $this->checkLength($description_fr, 'descriptionFr', 1000, 4);
+            $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
+            $this->checkLength($description_en, 'descriptionEn', 5000, 4);
+            $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
 
 
             if ($subtitle_ar) {
@@ -2245,8 +2245,8 @@ class ProductsController extends Controller
                             if (strlen($cellValue) == 0) {
                                 array_push($errors, "Description AR required");
                             } else {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
-                                    array_push($errors, "Description AR should be between 4 and 1000 characters");
+                                if (strlen($cellValue) < 4 || strlen($cellValue) > 5000) {
+                                    array_push($errors, "Description AR should be between 4 and 5000 characters");
                                 } else {
                                     $dbProduct->description_ar = $cellValue;
                                 }
@@ -2256,8 +2256,8 @@ class ProductsController extends Controller
                             if (strlen($cellValue) == 0) {
                                 array_push($errors, "Description EN required");
                             } else {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
-                                    array_push($errors, "Description EN should be between 4 and 1000 characters");
+                                if (strlen($cellValue) < 4 || strlen($cellValue) > 5000) {
+                                    array_push($errors, "Description EN should be between 4 and 5000 characters");
                                 } else {
                                     $dbProduct->description_en = $cellValue;
                                 }
@@ -2267,8 +2267,8 @@ class ProductsController extends Controller
                             if (strlen($cellValue) == 0) {
                                 array_push($errors, "Description FR required");
                             } else {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
-                                    array_push($errors, "Description FR should be between 4 and 1000 characters");
+                                if (strlen($cellValue) < 4 || strlen($cellValue) > 5000) {
+                                    array_push($errors, "Description FR should be between 4 and 5000 characters");
                                 } else {
                                     $dbProduct->description_fr = $cellValue;
                                 }
