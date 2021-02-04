@@ -150,6 +150,7 @@
             minimumResultsForSearch: -1,
         });
 
+        WebApp.supportModalFormValidation();
         _supportModalForm();
     });
 </script>
