@@ -6,17 +6,18 @@ var WebAuth = (function () {
 	var _pharmacyDocument;
 
 	var _handleFormSignin = function () {
-		console.log('Signin');
+		//console.log('Signin');
 
 		var form = KTUtil.getById('kt_login_singin_form');
 		var url = KTUtil.attr(form, 'action');
+		var formSubmitButton = KTUtil.getById('kt_login_singin_form_submit_button');
 		var data = $(form).serializeJSON();
 
 		if (!form) {
 			console.log('No Form');
 			return;
 		}
-		WebApp.post(url, data);
+
 
 		// firebase
 		// 	.auth()
@@ -39,51 +40,59 @@ var WebAuth = (function () {
 
 		// return;
 
-		// FormValidation.formValidation(form, {
-		// 	fields: {
-		// 		email: {
-		// 			validators: {
-		// 				notEmpty: {
-		// 					message: WebAppLocals.getMessage('error_emailNotEmpty'),
-		// 				},
-		// 				emailAddress: {
-		// 					message: WebAppLocals.getMessage('error_emailFormat'),
-		// 				},
-		// 			},
-		// 		},
-		// 		password: {
-		// 			validators: {
-		// 				notEmpty: {
-		// 					message: WebAppLocals.getMessage('error_passwordNotEmpty'),
-		// 				},
-		// 				/*regexp: {
-		// 							regexp: /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/,
-		// 							message: 'Ensure string has two uppercase letters.<br/>Ensure string has one special case letter.<br/>Ensure string has two digits.<br/>Ensure string has three lowercase letters.<br/>Ensure string is of length 8.'
-		// 						}*/
-		// 			},
-		// 		},
-		// 	},
-		// 	plugins: {
-		// 		trigger: new FormValidation.plugins.Trigger(),
-		// 		submitButton: new FormValidation.plugins.SubmitButton(),
-		// 		//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
-		// 		bootstrap: new FormValidation.plugins.Bootstrap({
-		// 			//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
-		// 			//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
-		// 		}),
-		// 	},
-		// })
-		// 	.on('core.form.valid', function () {
-		// 		console.log('valid');
-		// 		// Show loading state on button
-		// 		KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
+		FormValidation.formValidation(form, {
+			fields: {
+				email: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('error_emailNotEmpty'),
+						},
+						emailAddress: {
+							message: WebAppLocals.getMessage('error_emailFormat'),
+						},
+					},
+				},
+				password: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('error_passwordNotEmpty'),
+						},
+						/*regexp: {
+									regexp: /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/,
+									message: 'Ensure string has two uppercase letters.<br/>Ensure string has one special case letter.<br/>Ensure string has two digits.<br/>Ensure string has three lowercase letters.<br/>Ensure string is of length 8.'
+								}*/
+					},
+				},
+			},
+			plugins: {
+				trigger: new FormValidation.plugins.Trigger(),
+				submitButton: new FormValidation.plugins.SubmitButton(),
+				//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
+				bootstrap: new FormValidation.plugins.Bootstrap({
+					//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
+					//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
+				}),
+			},
+		})
+			.on('core.form.valid', function () {
+				// Show loading state on button
+				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
 
-		// 		// Form Validation & Ajax Submission: https://formvalidation.io/guide/examples/using-ajax-to-submit-the-form
-		// 	})
-		// 	.on('core.form.invalid', function () {
-		// 		console.log('invalid');
-		// 		KTUtil.scrollTop();
-		// 	});
+				var url = KTUtil.attr(form, 'action');
+				var data = $(form).serializeJSON();
+
+				if (!form) {
+					console.log('No Form');
+					return;
+				}
+				WebApp.post(url, data, function () {
+					KTUtil.btnRelease(formSubmitButton);
+				});
+			})
+			.on('core.form.invalid', function () {
+				console.log('invalid');
+				KTUtil.scrollTop();
+			});
 
 		// console.log('done');
 	};
@@ -788,7 +797,7 @@ var WebAuth = (function () {
 					'</tr>';
 			}
 		}
-		
+
 		if (allValues.tradeLicenseUrl) {
 			output += '<tr>' +
 			'    <td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">' +
@@ -824,12 +833,13 @@ var WebAuth = (function () {
 			_handleFormForgot();
 			_handleFormReset();
 			_handleFormSignup();
+			_handleFormSignin();
 
 			_initializeDropzone();
 		},
-		signIn: function () {
+		/*signIn: function () {
 			_handleFormSignin();
-		},
+		},*/
 		googleSignIn: function () {
 			_handleGoogleSignin();
 		},
