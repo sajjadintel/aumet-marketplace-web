@@ -146,13 +146,13 @@ class ProductsController extends Controller
             $entityId = array_keys($this->f3->get('SESSION.arrEntities'))[0];
             $results = $this->db->exec("CALL spCanAddProduct($entityId)");
 
-//            if (count($results) > 0) {
-//                $this->webResponse->title = 'Can\'t add product</br>Please complete your profile first!';
-//                $this->webResponse->data = $results;
-//            } else {
+            if (count($results) > 0) {
+                $this->webResponse->title = 'Can\'t add product</br>Please complete your profile first!';
+                $this->webResponse->data = $results;
+            } else {
                 $this->webResponse->title = 'Can add product';
                 $this->webResponse->data = [];
-//            }
+            }
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             echo $this->webResponse->jsonResponse();
         }
