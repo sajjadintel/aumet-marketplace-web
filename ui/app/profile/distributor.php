@@ -236,12 +236,11 @@
                                 <p class="card-label font-size-h4"><?php echo $vModule_profile_paymentOptionTitle ?></p>
                                 <div id="paymentMethodContainer" class="row checkbox-inline my-5">
                                     <?php foreach ($arrPaymentMethod as $paymentMethod) : ?>
-                                        <label class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 checkbox checkbox-outline checkbox-dark">
-                                            <?php if (in_array($paymentMethod['id'], $arrEntityPaymentMethodId)): ?>
-                                                <input type="checkbox" name="paymentMethodCheckbox" value="<?php echo $paymentMethod['id']; ?>" checked/>
-                                            <?php else: ?>
-                                                <input type="checkbox" name="paymentMethodCheckbox" value="<?php echo $paymentMethod['id']; ?>"/>
-                                            <?php endif; ?>
+                                        <label class="col-6 col-sm-6 col-md-3 col-lg-3 col-xl-3 checkbox checkbox-outline checkbox-dark">
+                                            
+                                                <input type="checkbox" name="paymentMethodCheckbox" value="<?php echo $paymentMethod['id']; ?>" 
+						       <?php if (in_array($paymentMethod['id'], $arrEntityPaymentMethodId)) { echo "checked";} ?>
+						/>
                                             <span style="background-color: white; border: unset;"></span>
                                             <?php echo $paymentMethod['name']; ?>
                                         </label>
