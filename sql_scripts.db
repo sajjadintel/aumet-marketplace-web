@@ -4,3 +4,15 @@
 
 ## Patrick Modifications
 
+################################
+######## 04/02/2021
+################################
+
+## Sajad Modifications
+
+INSERT INTO `marketplace`.`paymentMethod` (`name_en`, `name_ar`, `name_fr`) VALUES ('Payment by Credit Facility', 'Payment by Credit Facility', 'Payment by Credit Facility');
+
+ALTER TABLE `marketplace`.`product`
+CHANGE COLUMN `description_en` `description_en` TEXT NULL DEFAULT NULL ,
+CHANGE COLUMN `description_fr` `description_fr` TEXT NULL DEFAULT NULL ,
+CHANGE COLUMN `description_fr` `description_ar` TEXT NULL DEFAULT NULL ;
