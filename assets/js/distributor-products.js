@@ -39,6 +39,12 @@ var DistributorProductsDataTable = (function () {
 	var _validator;
 	var _validatorFields = {};
 
+	var _bonusRepeater;
+	var _bonusRepeaterElementTemplate;
+	var _specialBonusRepeater;
+	var _specialBonusRepeaterElementTemplate;
+	var BONUS_TYPE_PERCENTAGE = 2;
+
 	var _productEditModal = function (productId) {
 		WebApp.get('/web/distributor/product/' + productId, _productEditModalOpen);
 	};
@@ -336,44 +342,54 @@ var DistributorProductsDataTable = (function () {
 			_validator.destroy();
 		}
 
-		var _mandatoryFields = [...mandatoryFields];
-		if (mode === 'add') _mandatoryFields.push('stock');
-
-		var allFields = new Set([..._mandatoryFields, ...Object.keys(mapFieldStrRangeLength)]);
-		_validatorFields = {};
-		allFields.forEach((field) => {
-			var fieldValidators = {};
-
-			if (_mandatoryFields.includes(field)) {
-				fieldValidators.notEmpty = {
-					message: WebAppLocals.getMessage('required'),
+		if(mode != "editStock") {
+			var _mandatoryFields = [...mandatoryFields];
+			if (mode === 'add') _mandatoryFields.push('stock');
+	
+			var allFields = new Set([..._mandatoryFields, ...Object.keys(mapFieldStrRangeLength)]);
+			_validatorFields = {};
+			allFields.forEach((field) => {
+				var fieldValidators = {};
+	
+				if (_mandatoryFields.includes(field)) {
+					fieldValidators.notEmpty = {
+						message: WebAppLocals.getMessage('required'),
+					};
+				}
+	
+				if (field in mapFieldStrRangeLength) {
+					var strRangeLength = mapFieldStrRangeLength[field];
+					var message =
+						WebAppLocals.getMessage('lengthError') +
+						' ' +
+						strRangeLength[0] +
+						' ' +
+						WebAppLocals.getMessage('and') +
+						' ' +
+						strRangeLength[1] +
+						' ' +
+						WebAppLocals.getMessage('characters');
+					fieldValidators.stringLength = {
+						min: strRangeLength[0],
+						max: strRangeLength[1],
+						message: message,
+					};
+				}
+	
+				_validatorFields[field] = {
+					validators: fieldValidators,
 				};
+			});
+		} else {
+			_validatorFields.stock = {
+				validators: {
+					notEmpty: {
+						message: WebAppLocals.getMessage('required'),
+					}
+				}
 			}
-
-			if (field in mapFieldStrRangeLength) {
-				var strRangeLength = mapFieldStrRangeLength[field];
-				var message =
-					WebAppLocals.getMessage('lengthError') +
-					' ' +
-					strRangeLength[0] +
-					' ' +
-					WebAppLocals.getMessage('and') +
-					' ' +
-					strRangeLength[1] +
-					' ' +
-					WebAppLocals.getMessage('characters');
-				fieldValidators.stringLength = {
-					min: strRangeLength[0],
-					max: strRangeLength[1],
-					message: message,
-				};
-			}
-
-			_validatorFields[field] = {
-				validators: fieldValidators,
-			};
-		});
-
+		}
+		
 		var form = KTUtil.getById(mode + 'ModalForm');
 		_validator = FormValidation.formValidation(form, {
 			fields: _validatorFields,
@@ -467,32 +483,37 @@ var DistributorProductsDataTable = (function () {
     };
 
     var _initializeBonusSection = function (arrBonus, arrBonusType) {
-		var repeaterElementTemplate;
-		$("#editStockBonusList > div").each(function(index, element) {
-			repeaterElementTemplate = $(element).clone();
-		});
+		if(!_bonusRepeaterElementTemplate) {
+			$("#editStockBonusList > div").each(function(index, element) {
+				_bonusRepeaterElementTemplate = $(element).clone();
+			});
+		}
 
-		$('#editStockBonusRepeater').repeater({
-            initEmpty: true,
-            show: function() {
-				_initializeBonusRepeaterElements(arrBonusType);
-                $(this).slideDown();
-            },
-            hide: function(deleteElement) {
-				$(this).slideUp(deleteElement);
-            }
-        });
+		if(!_bonusRepeater) {
+			_bonusRepeater = $('#editStockBonusRepeater').repeater({
+				initEmpty: true,
+				show: function() {
+					_initializeBonusRepeaterElements(arrBonusType);
+					$(this).slideDown();
+				},
+				hide: function(deleteElement) {
+					$(this).slideUp(deleteElement);
+				}
+			});
+		}
 
+		_bonusRepeater.setList([]);
         if(arrBonus.length > 0) {
             $("#editStockBonusCheckbox").prop('checked', true);
             arrBonus.forEach((repeaterData) => {
-                var repeaterRow = $(repeaterElementTemplate).clone();
+                var repeaterRow = $(_bonusRepeaterElementTemplate).clone();
                 $(repeaterRow).find("#editStockBonusId").val(repeaterData.bonusId);
                 $(repeaterRow).find("#editStockBonusTypeId").attr("data-value", repeaterData.bonusTypeId);
                 $(repeaterRow).find("#editStockBonusQuantity").val(repeaterData.minOrder);
                 $(repeaterRow).find("#editStockBonus").val(repeaterData.bonus);
                 $("#editStockBonusList").append(repeaterRow);
             })
+            $("#editStockBonusRepeater").show();
         } else {
             $("#editStockBonusCheckbox").prop('checked', false);
             $("#editStockBonusRepeater").hide();
@@ -503,40 +524,56 @@ var DistributorProductsDataTable = (function () {
 
 	var _initializeBonusRepeaterElements = function (arrBonusType) {
 		$('.selectpicker.bonusTypeSelect').each(function(index, element) {
-            var value = $(element).attr("data-value");
-			if(element.options.length === 0) {
-				arrBonusType.forEach((bonusType) => {
-                    var selected = bonusType.id == value; 
-					$(element).append(new Option(bonusType.name, bonusType.id, false, selected));
-				})
-				$(element).selectpicker();
-				$(element).selectpicker('val', value);
+			if(!$(element).parent().is('.dropdown.bootstrap-select.form-control.bonusTypeSelect')) {
+				var value = $(element).attr("data-value");
+				if(element.options.length === 0) {
+					arrBonusType.forEach((bonusType) => {
+						var selected = bonusType.id == value; 
+						$(element).append(new Option(bonusType.name, bonusType.id, false, selected));
+					})
+					$(element).selectpicker();
+				}
+				$(element).selectpicker('val', value? value : null);
 				$(element).selectpicker('refresh');
 			}
+			_handlePercentageElement(element, "#editStockBonus");
 		})
+
+		$('.selectpicker.bonusTypeSelect').on('change', function() {
+			_handlePercentageElement(this, "#editStockBonus");
+		})
+		
+		$(".editStockBonusInput").on("change", function() {
+			_handlePercentageField(this);
+		});
 	}
 
     var _initializeSpecialBonusSection = function (arrSpecialBonus, arrBonusType, arrRelationGroup) {
-		var repeaterElementTemplate;
-		$("#editStockSpecialBonusList > div").each(function(index, element) {
-			repeaterElementTemplate = $(element).clone();
-		});
+		if(!_specialBonusRepeaterElementTemplate) {
+			$("#editStockSpecialBonusList > div").each(function(index, element) {
+				_specialBonusRepeaterElementTemplate = $(element).clone();
+			});
+		}
 
-		$('#editStockSpecialBonusRepeater').repeater({
-            initEmpty: true,
-            show: function() {
-				_initializeSpecialBonusRepeaterElements(arrBonusType, arrRelationGroup);
-                $(this).slideDown();
-            },
-            hide: function(deleteElement) {
-				$(this).slideUp(deleteElement);
-            }
-        });
-        
+
+		if(!_specialBonusRepeater) {
+			_specialBonusRepeater = $('#editStockSpecialBonusRepeater').repeater({
+				initEmpty: true,
+				show: function() {
+					_initializeSpecialBonusRepeaterElements(arrBonusType, arrRelationGroup);
+					$(this).slideDown();
+				},
+				hide: function(deleteElement) {
+					$(this).slideUp(deleteElement);
+				}
+			});
+		}
+		
+		_specialBonusRepeater.setList([]);
         if(arrSpecialBonus.length > 0) {
             $("#editStockSpecialBonusCheckbox").prop('checked', true);
             arrSpecialBonus.forEach((repeaterData) => {
-                var repeaterRow = $(repeaterElementTemplate).clone();
+                var repeaterRow = $(_specialBonusRepeaterElementTemplate).clone();
                 $(repeaterRow).find("#editStockSpecialBonusId").val(repeaterData.bonusId);
                 $(repeaterRow).find("#editStockSpecialBonusTypeId").attr("data-value", repeaterData.bonusTypeId);
                 $(repeaterRow).find("#editStockSpecialBonusQuantity").val(repeaterData.minOrder);
@@ -544,6 +581,7 @@ var DistributorProductsDataTable = (function () {
                 $(repeaterRow).find("#editStockSpecialRelationGroupId").attr("data-values", repeaterData.arrRelationGroup);
                 $("#editStockSpecialBonusList").append(repeaterRow);
             })
+            $("#editStockSpecialBonusRepeater").show();
         } else {
             $("#editStockSpecialBonusCheckbox").prop('checked', false);
             $("#editStockSpecialBonusRepeater").hide();
@@ -554,33 +592,77 @@ var DistributorProductsDataTable = (function () {
 
 	var _initializeSpecialBonusRepeaterElements = function (arrBonusType, arrRelationGroup) {
 		$('.selectpicker.specialBonusTypeSelect').each(function(index, element) {
-            var value = $(element).attr("data-value");
-			if(element.options.length === 0) {
-				arrBonusType.forEach((bonusType) => {
-                    var selected = bonusType.id == value;
-					$(element).append(new Option(bonusType.name, bonusType.id, false, selected));
-				})
-				$(element).selectpicker();
-				$(element).selectpicker('val', value);
+			if(!$(element).parent().is('.dropdown.bootstrap-select.form-control.specialBonusTypeSelect')) {
+				var value = $(element).attr("data-value");
+				if(element.options.length === 0) {
+					arrBonusType.forEach((bonusType) => {
+						var selected = bonusType.id == value;
+						$(element).append(new Option(bonusType.name, bonusType.id, false, selected));
+					})
+					$(element).selectpicker();
+				}
+				$(element).selectpicker('val', value? value : null);
 				$(element).selectpicker('refresh');
 			}
+			_handlePercentageElement(element, "#editStockSpecialBonus");
 		})
 
 		$('.selectpicker.specialRelationGroupSelect').each(function(index, element) {
-            var allValues = $(element).attr("data-values");
-            if(!allValues) allValues = [];
-            else allValues = allValues.split(",");
-
-			if(element.options.length === 0) {
-				arrRelationGroup.forEach((relationGroup) => {
-					var selected = allValues.includes(relationGroup.id);
-					$(element).append(new Option(relationGroup.name, relationGroup.id, false, selected));
-				})
-				$(element).selectpicker();
+			if(!$(element).parent().is('.dropdown.bootstrap-select.form-control.specialRelationGroupSelect')) {
+				var allValues = $(element).attr("data-values");
+				if(!allValues) allValues = [];
+				else allValues = allValues.split(",");
+	
+				if(element.options.length === 0) {
+					arrRelationGroup.forEach((relationGroup) => {
+						var selected = allValues.includes(relationGroup.id);
+						$(element).append(new Option(relationGroup.name, relationGroup.id, false, selected));
+					})
+					$(element).selectpicker();
+				}
 				$(element).selectpicker('val', allValues);
 				$(element).selectpicker('refresh');
 			}
 		})
+
+		$('.selectpicker.specialBonusTypeSelect').on('change', function() {
+			_handlePercentageElement(this, "#editStockSpecialBonus");
+		})
+		
+		$(".editStockSpecialBonusInput").on("change", function() {
+			_handlePercentageField(this);
+		});
+	}
+
+	var _handlePercentageElement = function (bonusTypeSelectElement, inputSelector) {
+		var inputElement = $(bonusTypeSelectElement).parent().parent().parent().find(inputSelector);
+		var value = $(inputElement).val();
+
+		if($(bonusTypeSelectElement).val() == BONUS_TYPE_PERCENTAGE) {
+			$(inputElement).attr("type", "text");
+			if(value > 100) value = 100;
+			if(value && !value.toString().includes("%")) {
+				value += "%";
+			}
+		} else {
+			$(inputElement).attr("type", "number");
+			if(value) {
+				value = value.toString().replace("%", "");
+			}
+		}
+		$(inputElement).val(value);
+	}
+
+	var _handlePercentageField = function (inputElement) {
+		var newValue = $(inputElement).val().toString().replace("%", "");
+		newValue = newValue > 0? newValue : !newValue? newValue : 0;
+		if($(inputElement).attr("type") == "text") {
+			if(newValue > 100) newValue = 100;
+			if(newValue) {
+				newValue += "%";
+			}
+		}
+		$(inputElement).val(newValue);
 	}
 
     var _updateActiveIngredientsVal = function (mode) {
@@ -850,16 +932,175 @@ var DistributorProductsDataTable = (function () {
 
         _validator.validate().then(function (status) {
             let valid = true;
-            if(status != 'Valid') valid = false;
+			if(status != 'Valid') valid = false;
+
+			if($('#editStockBonusCheckbox').is(":checked")) {
+				$("#editStockBonusList > div").each(function(index, element) {
+					var bonusTypeElement = $(element).find("#editStockBonusTypeId");
+					var bonusTypeId = $(bonusTypeElement).val();
+					if(!bonusTypeId) {
+						if(!$(bonusTypeElement).parent().hasClass("is-invalid")) {
+							$(bonusTypeElement).parent().addClass("is-invalid");
+							$(bonusTypeElement).parent().css('border', '1px solid #F64E60');
+						}
+					} else {
+						$(bonusTypeElement).parent().removeClass("is-invalid");
+						$(bonusTypeElement).parent().css('border', '');
+					}
+
+					var minOrderElement = $(element).find("#editStockBonusQuantity");
+					var minOrder = $(minOrderElement).val();
+					if(!minOrder) {
+						if(!$(minOrderElement).hasClass("is-invalid")) {
+							$(minOrderElement).addClass("is-invalid");
+						}
+					} else {
+						$(minOrderElement).removeClass("is-invalid");
+					}
+					
+					var bonusElement = $(element).find("#editStockBonus"); 
+					var bonus = $(bonusElement).val().toString().replace("%", "");
+					if(!bonus || (bonus > 100 && bonusTypeId == BONUS_TYPE_PERCENTAGE)) {
+						if(!$(bonusElement).hasClass("is-invalid")) {
+							$(bonusElement).addClass("is-invalid");
+						}
+					} else {
+						$(bonusElement).removeClass("is-invalid");
+					}
+					
+					valid = valid && bonusTypeId && minOrder && bonus && (bonusTypeId != BONUS_TYPE_PERCENTAGE || (bonus <= 100 && bonusTypeId == BONUS_TYPE_PERCENTAGE));
+				});
+			}
+			
+			$('.selectpicker.bonusTypeSelect').on('change', function() {
+				var value = $(this).val();
+				if(value) {
+					$(this).parent().removeClass("is-invalid");
+					$(this).parent().css('border', '');
+				} else {
+					$(this).parent().addClass("is-invalid");
+					$(this).parent().css('border', '1px solid #F64E60');
+				}
+			})
+			
+			$('.editStockBonusQuantityInput').on('change', function() {
+				var value = $(this).val();
+				if(value) {
+					$(this).removeClass("is-invalid");
+				} else {
+					$(this).addClass("is-invalid");
+				}
+			})
+			
+			$('.editStockBonusInput').on('change', function() {
+				var value = $(this).val();
+				if(value) {
+					$(this).removeClass("is-invalid");
+				} else {
+					$(this).addClass("is-invalid");
+				}
+			})
+
+			if($('#editStockSpecialBonusCheckbox').is(":checked")) {
+				$("#editStockSpecialBonusList > div").each(function(index, element) {
+					
+					var bonusTypeElement = $(element).find("#editStockSpecialBonusTypeId");
+					var bonusTypeId = $(bonusTypeElement).val();
+					if(!bonusTypeId) {
+						if(!$(bonusTypeElement).parent().hasClass("is-invalid")) {
+							$(bonusTypeElement).parent().addClass("is-invalid");
+							$(bonusTypeElement).parent().css('border', '1px solid #F64E60');
+						}
+					} else {
+						$(bonusTypeElement).parent().removeClass("is-invalid");
+						$(bonusTypeElement).parent().css('border', '');
+					}
+
+					var minOrderElement = $(element).find("#editStockSpecialBonusQuantity"); 
+					var minOrder = $(minOrderElement).val();
+					if(!minOrder) {
+						if(!$(minOrderElement).hasClass("is-invalid")) {
+							$(minOrderElement).addClass("is-invalid");
+						}
+					} else {
+						$(minOrderElement).removeClass("is-invalid");
+					}
+					
+					var bonusElement = $(element).find("#editStockSpecialBonus");
+					var bonus = $(bonusElement).val().toString().replace("%", "");
+					if(!bonus || (bonus > 100 && bonusTypeId == BONUS_TYPE_PERCENTAGE)) {
+						if(!$(bonusElement).hasClass("is-invalid")) {
+							$(bonusElement).addClass("is-invalid");
+						}
+					} else {
+						$(bonusElement).removeClass("is-invalid");
+					}
+					
+					var arrRelationGroupElement = $(element).find("#editStockSpecialRelationGroupId");
+					var arrRelationGroup = $(arrRelationGroupElement).val();
+					if(!arrRelationGroup || arrRelationGroup.length === 0) {
+						if(!$(arrRelationGroupElement).parent().hasClass("is-invalid")) {
+							$(arrRelationGroupElement).parent().addClass("is-invalid");
+							$(arrRelationGroupElement).parent().css('border', '1px solid #F64E60');
+						}
+					} else {
+						$(arrRelationGroupElement).parent().removeClass("is-invalid");
+						$(arrRelationGroupElement).parent().css('border', '');
+					}
+
+					valid = valid && (bonusTypeId && minOrder && bonus && (bonusTypeId != BONUS_TYPE_PERCENTAGE || (bonus <= 100 && bonusTypeId == BONUS_TYPE_PERCENTAGE)) && arrRelationGroup && arrRelationGroup.length > 0);
+				});
+			}
+
+			$('.selectpicker.specialBonusTypeSelect').on('change', function() {
+				var value = $(this).val();
+				if(value) {
+					$(this).parent().removeClass("is-invalid");
+					$(this).parent().css('border', '');
+				} else {
+					$(this).parent().addClass("is-invalid");
+					$(this).parent().css('border', '1px solid #F64E60');
+				}
+			})
+			
+			$('.editStockSpecialBonusQuantityInput').on('change', function() {
+				var value = $(this).val();
+				if(value) {
+					$(this).removeClass("is-invalid");
+				} else {
+					$(this).addClass("is-invalid");
+				}
+			})
+			
+			$('.editStockSpecialBonusInput').on('change', function() {
+				var value = $(this).val();
+				if(value) {
+					$(this).removeClass("is-invalid");
+				} else {
+					$(this).addClass("is-invalid");
+				}
+			})
+			
+			$('.selectpicker.specialRelationGroupSelect').on('change', function() {
+				var allValues = $(this).val();
+				if(allValues.length > 0) {
+					$(this).parent().removeClass("is-invalid");
+					$(this).parent().css('border', '');
+				} else {
+					$(this).parent().addClass("is-invalid");
+					$(this).parent().css('border', '1px solid #F64E60');
+				}
+			})
+
             if (valid) {
-                var arrBonus = [];
+				var arrDefaultBonus = [];
                 if($('#editStockBonusCheckbox').is(":checked")) {
                     $("#editStockBonusList > div").each(function(index, element) {
                         var id = $(element).find("#editStockBonusId").val();
                         var bonusTypeId = $(element).find("#editStockBonusTypeId").val();
                         var minOrder = $(element).find("#editStockBonusQuantity").val();
-                        var bonus = $(element).find("#editStockBonus").val();
-                        arrBonus.push({
+                        var bonus = $(element).find("#editStockBonus").val().toString().replace("%", "");
+                        arrDefaultBonus.push({
                             id,
                             bonusTypeId,
                             minOrder,
@@ -868,14 +1109,15 @@ var DistributorProductsDataTable = (function () {
                     });
                 }
 
+				var arrSpecialBonus = [];
                 if($('#editStockSpecialBonusCheckbox').is(":checked")) {
                     $("#editStockSpecialBonusList > div").each(function(index, element) {
                         var id = $(element).find("#editStockSpecialBonusId").val();
                         var bonusTypeId = $(element).find("#editStockSpecialBonusTypeId").val();
                         var minOrder = $(element).find("#editStockSpecialBonusQuantity").val();
-                        var bonus = $(element).find("#editStockSpecialBonus").val();
+                        var bonus = $(element).find("#editStockSpecialBonus").val().toString().replace("%", "");
                         var arrRelationGroup = $(element).find("#editStockSpecialRelationGroupId").val();
-                        arrBonus.push({
+                        arrSpecialBonus.push({
                             id,
                             bonusTypeId,
                             minOrder,
@@ -886,7 +1128,8 @@ var DistributorProductsDataTable = (function () {
                 }
 
                 let body = {
-                    arrBonus
+					arrDefaultBonus,
+					arrSpecialBonus
                 };
     
                 let mapKeyElement = {
@@ -917,8 +1160,7 @@ var DistributorProductsDataTable = (function () {
 
     var _productEditStockSuccessCallback = function () {
         $("#editStockModal").modal('hide');
-        // DistributorProductsDataTable.reloadDatatable();
-        window.location.reload();
+        DistributorProductsDataTable.reloadDatatable();
     }
 
     return {
