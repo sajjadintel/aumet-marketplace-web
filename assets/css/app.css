@@ -30,12 +30,14 @@ table.datatable.datatable-head-custom > tfoot > th {
 	top: 70px;
 }
 .slick-hero-subtitle {
+	position: absolute;
 	color: #fff !important;
 	font-size: 30px;
 	font-weight: 700;
 	top: 130px;
 }
 .slick-hero-button {
+	position: absolute;
 	width: 140px;
 	background-color: #1378be !important;
 	border-color: #1378be !important;
