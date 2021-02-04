@@ -40,11 +40,11 @@ function compress_htmlcode($codedata)
                                 <img src="<?php echo $objEntityProduct->image ?>">
                                 <?php if(count($arrSubimage) > 0) : ?>
                                     <div class="p-5">
-                                        <div id="autoplayContainer" class="autoplay" style="height: 100px;">
+                                        <div id="autoplayContainer" class="autoplay gallery" style="height: 100px;">
                                             <?php foreach ($arrSubimage as $subimageObj) : ?>
-                                                <div class="px-5 col-4 image-input image-input-empty image-input-outline" onclick="openImageModal('<?php echo $subimageObj->subimage; ?>');">
-                                                    <div class="image-input-wrapper" style="width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/<?php echo $subimageObj->subimage; ?>'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%); cursor: pointer;">
-                                                    </div>
+                                                <div class="px-5 col-4 image-input image-input-empty image-input-outline">
+                                                    <a href="/<?php echo $subimageObj->subimage; ?>" class="image-input-wrapper" style="display:block; width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/<?php echo $subimageObj->subimage; ?>'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%); cursor: pointer;">
+                                                    </a>
                                                 </div>
                                             <?php endforeach; ?>
                                         </div>
@@ -133,6 +133,9 @@ function compress_htmlcode($codedata)
 
                             </div>
 
+                            <div class="product-description">
+                                    <?php echo $objEntityProduct->description ?>
+                            </div>
 
                         </div>
 
@@ -264,14 +267,19 @@ function compress_htmlcode($codedata)
             <?php }?>
         }
 
-        function openImageModal(imageUrl) {
-            $("#imageUrl").attr("src", '/'+ imageUrl);
-            $("#imageModal").appendTo('body').modal('show');
-        }
-
         function closeImageModal() {
             $("#imageModal").modal('hide');
         }
+
+        $('.gallery').each(function () {
+            $(this).magnificPopup({
+                delegate: 'a',
+                type: 'image',
+                gallery: {
+                    enabled: true
+                }
+            });
+        });
 
     </script>
     <script>
@@ -284,6 +292,7 @@ function compress_htmlcode($codedata)
                     title: WebAppLocals.getMessage('sellingEntityName'),
                     data: 'productName',
                     render: function (data, type, row, meta) {
+                        console.log(row);
                         var output = row['productName'];
                         return output;
                     },
@@ -357,20 +366,29 @@ function compress_htmlcode($codedata)
                     data: 'id',
                     orderable: false,
                     render: function (data, type, row, meta) {
+                        console.log(row);
                         var vQuantity = '';
                         var output = '';
-                        var rowQuantity = 1;
-                        if (row.quantity) {
+                        var rowQuantity = (row.cart > 0) ? row.cart : 0;
+                        /*if (row.quantity) {
                             rowQuantity = row.quantity
-                        }
+                        }*/
                         if (row.stockStatusId == 1) {
+
+                            let vMinusBtn = '<a class="btn btn-xs btn-light-success btn-icon mr-2 subQty"> <i class="ki ki-minus icon-xs"></i></a>';
+
+                            output += vMinusBtn;
+
                             let vQuantity =
-                                '<input id="quantity-' +
-                                row.id +
-                                '"   oninput=\'SearchDataTable.changeProductQuantityCallback(' +
-                                JSON.stringify(row) +
-                                ")' >";
+                                '<input class="qtyBox" id="quantity-' + row.id + '" type="number" min="0" style="width: 65px; direction: ltr; margin-right: 5px;" ' +
+                                'value="' + rowQuantity + '" onkeypress="return event.charCode >= 48 && event.charCode <= 57" ' +
+                                'onchange=\'SearchDataTable.updateQty(' + JSON.stringify(row) + ' , <?PHP echo $objUser->id; ?>)\' />';
+
                             output += vQuantity;
+
+                            let vPlusBtn = '<a class="btn btn-xs btn-light-success btn-icon mr-2 addQty"> <i class="ki ki-plus icon-xs"></i></a>';
+
+                            output += vPlusBtn;
 
                             let vQuantityFree =
                                 '<input class="quantityFreeInput" id="quantityFreeInput-' +
@@ -420,8 +438,9 @@ function compress_htmlcode($codedata)
 
                         switch (row.stockStatusId) {
                             case 1:
-                                outActions += btnViewProduct;
-                                outActions += btnAddToCart;
+                                /*outActions += btnViewProduct;
+                                outActions += btnAddToCart;*/
+                                outActions += outActions;
                                 SearchDataTable.changeProductQuantityCallback(row);
                                 break;
                             case 2:
@@ -471,6 +490,16 @@ function compress_htmlcode($codedata)
 <?php include_once 'image-modal.php'; ?>
 <script>
     $(document).ready(function() {
+        $(document.body).on("click", '.addQty' , function () {
+            $(this).prev().val(+$(this).prev().val() + 1);
+            $(this).prev().trigger("change");
+        });
+        $(document.body).on("click", '.subQty' , function () {
+            if ($(this).next().val() > 0){
+                $(this).next().val(+$(this).next().val() - 1);
+                $(this).next().trigger("change");
+            }
+        });
         initAutoplay();
     })
 
