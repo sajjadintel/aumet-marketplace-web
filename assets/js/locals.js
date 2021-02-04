@@ -5,6 +5,11 @@ var WebAppLocals = (function () {
 	var lang = 'ar';
 
 	var _arrLocals = {
+		appName: {
+			en: 'Aumet Marketplace',
+			ar: 'Aumet Marketplace', // TODO: add translation
+			fr: 'Aumet Marketplace', // TODO: add translation
+		},
 		success: {
 			en: 'Your request was executed successfully',
 			ar: 'لقد تم تنفيذ طلبك بنجاح',
@@ -578,6 +583,61 @@ var WebAppLocals = (function () {
 		goToProfile: {
 			en: 'Go to Profile',
 			ar: 'Go to Profile', // TODO: translate
+			fr: ''
+		},
+		distributorNameRequired: {
+			en: 'Enter Distributor Name',
+			ar: 'أدخل اسم الموزع',
+			fr: ''
+		},
+		distributorNameTooShort: {
+			en: 'Sorry, the Distributor Name entered is too short',
+			ar: 'عذرًا ، اسم الموزع الذي تم إدخاله قصير جدًا',
+			fr: ''
+		},
+		pharmacyNameRequired: {
+			en: 'Enter Pharmacy Name',
+			ar: 'أدخل اسم الصيدلية',
+			fr: ''
+		},	
+		pharmacyNameTooShort: {
+			en: 'Sorry, the Pharmacy Name entered is too short',
+			ar: 'عذرًا ، اسم الصيدلية الذي تم إدخاله قصير جدًا',
+			fr: ''
+		},
+		tradeLicenseNumberTooShort: {
+			en: 'Sorry, the Trade License Number entered is too short',
+			ar: 'عذرًا ، رقم الترخيص التجاري الذي تم إدخاله قصير جدًا',
+			fr: ''
+		},
+		addressRequired: {
+			en: 'Enter Address',
+			ar: 'أدخل العنوان',
+			fr: ''
+		},
+		addressTooShort: {
+			en: 'Sorry, the Address entered is too short',
+			ar: 'عذرا ، العنوان الذي تم إدخاله قصير جدا',
+			fr: ''
+		},
+		minimumValueOrderRequired: {
+			en: 'Enter Minimum Value Order',
+			ar: 'أدخل أمر الحد الأدنى للقيمة',
+			fr: ''
+		},
+		cityRequired: {
+			en: 'Select City from dropdown menu',
+			ar: 'حدد المدينة من القائمة المنسدلة',
+			fr: ''
+		},
+		oldPasswordRequired: {
+			en: 'Enter Current Password',
+			ar: 'إدخل كلمة السر الحالية',
+			fr: ''
+		},
+		newPasswordRequired: {
+			en: 'Enter New Password',
+			ar: 'أدخل كلمة مرور جديدة',
 			fr: ''
 		},
 	};
