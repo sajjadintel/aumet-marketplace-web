@@ -5,6 +5,11 @@ var WebAppLocals = (function () {
 	var lang = 'ar';
 
 	var _arrLocals = {
+		appName: {
+			en: 'Aumet Marketplace',
+			ar: 'Aumet Marketplace', // TODO: add translation
+			fr: 'Aumet Marketplace', // TODO: add translation
+		},
 		success: {
 			en: 'Your request was executed successfully',
 			ar: 'لقد تم تنفيذ طلبك بنجاح',
