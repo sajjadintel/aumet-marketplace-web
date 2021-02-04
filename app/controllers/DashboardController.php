@@ -5,6 +5,7 @@ class DashboardController extends Controller
 
     function get()
     {
+        $this->f3->set('notAuthorized',$this->f3->get('SESSION.notAuthorized'));
         if (!$this->f3->ajax()) {
             $this->f3->set("pageURL", "/web");
             echo View::instance()->render('app/layout/layout.php');
@@ -25,6 +26,8 @@ class DashboardController extends Controller
                 $dbDataNewCustomerYesterday = new BaseModel($this->db, "vwNewCustomerYesterday");
                 $dbDataNewCustomerYesterday->getWhere($query);
                 // $data = $data[0];
+
+
 
                 $this->f3->set('dashboard_revenue', is_null($dbData['revenue']) ? 0 : $dbData['revenue']);
                 $this->f3->set('dashboard_order', is_null($dbData['orderCount']) ? 0 : $dbData['orderCount']);
