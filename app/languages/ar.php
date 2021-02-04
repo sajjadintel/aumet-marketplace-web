@@ -171,6 +171,8 @@ return array(
     'vModule_product_addSpecialBonus' => 'أضف مكافآت خاصة',
     'vModule_product_defaultBonusInvalid' => 'المكافآت الافتراضية غير صالحة',
     'vModule_product_specialBonusInvalid' => 'المكافآت الخاصة غير صالحة',
+    'vModule_product_quantityTooBig' => 'الكمية كبيرة جدًا!',
+    'vModule_product_bonusTooBig' => 'المكافأة كبيرة جدًا!',
 
 
     'stockAvailability_available' => 'متوفر',
