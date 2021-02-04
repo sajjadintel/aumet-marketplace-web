@@ -40,11 +40,11 @@ function compress_htmlcode($codedata)
                                 <img src="<?php echo $objEntityProduct->image ?>">
                                 <?php if(count($arrSubimage) > 0) : ?>
                                     <div class="p-5">
-                                        <div id="autoplayContainer" class="autoplay" style="height: 100px;">
+                                        <div id="autoplayContainer" class="autoplay gallery" style="height: 100px;">
                                             <?php foreach ($arrSubimage as $subimageObj) : ?>
-                                                <div class="px-5 col-4 image-input image-input-empty image-input-outline" onclick="openImageModal('<?php echo $subimageObj->subimage; ?>');">
-                                                    <div class="image-input-wrapper" style="width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/<?php echo $subimageObj->subimage; ?>'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%); cursor: pointer;">
-                                                    </div>
+                                                <div class="px-5 col-4 image-input image-input-empty image-input-outline">
+                                                    <a href="/<?php echo $subimageObj->subimage; ?>" class="image-input-wrapper" style="display:block; width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/<?php echo $subimageObj->subimage; ?>'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%); cursor: pointer;">
+                                                    </a>
                                                 </div>
                                             <?php endforeach; ?>
                                         </div>
@@ -267,14 +267,19 @@ function compress_htmlcode($codedata)
             <?php }?>
         }
 
-        function openImageModal(imageUrl) {
-            $("#imageUrl").attr("src", '/'+ imageUrl);
-            $("#imageModal").appendTo('body').modal('show');
-        }
-
         function closeImageModal() {
             $("#imageModal").modal('hide');
         }
+
+        $('.gallery').each(function () {
+            $(this).magnificPopup({
+                delegate: 'a',
+                type: 'image',
+                gallery: {
+                    enabled: true
+                }
+            });
+        });
 
     </script>
     <script>
