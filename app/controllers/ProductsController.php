@@ -807,6 +807,20 @@ class ProductsController extends Controller
                         echo $this->webResponse->jsonResponse();
                         return;
                     }
+
+                    if($minOrder > Constants::MAX_INT_VALUE) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_quantityTooBig');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
+
+                    if($bonusQty > Constants::MAX_INT_VALUE) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_bonusTooBig');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
                 }
 
                 foreach($arrSpecialBonus as $bonus) {
@@ -828,6 +842,20 @@ class ProductsController extends Controller
                     if(!$valid) {
                         $this->webResponse->errorCode = Constants::STATUS_ERROR;
                         $this->webResponse->message = $this->f3->get('vModule_product_specialBonusInvalid');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
+
+                    if($minOrder > Constants::MAX_INT_VALUE) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_quantityTooBig');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
+
+                    if($bonusQty > Constants::MAX_INT_VALUE) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_bonusTooBig');
                         echo $this->webResponse->jsonResponse();
                         return;
                     }
