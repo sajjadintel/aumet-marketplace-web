@@ -711,3 +711,10 @@ input[type='number'] {
 	text-justify: inter-word;
 	margin: 20px 0 0 0;
 }
+
+.column-name-fixed {
+	width: 300px;
+	max-width: 300px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

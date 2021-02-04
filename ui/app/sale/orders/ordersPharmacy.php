@@ -360,6 +360,8 @@ function compress_htmlcode($codedata)
 
             var dbAdditionalOptions = {
                 datatableOptions: {
+                    "pageLength": 20,
+                    "aLengthMenu": [[20, 50, 100], [20, 50, 100]],
                     order: [
                         [0, 'desc']
                     ],

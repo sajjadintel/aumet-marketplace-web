@@ -46,6 +46,9 @@ var Profile = (function () {
 				},
 				tradeLicenseNumber: {
 					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						},
                         stringLength: {
 							min: 4,
                             max: 200,
