@@ -141,7 +141,7 @@ class ProfileController extends Controller
         $address = $this->f3->get("POST.address");
         $entityDocument = $this->f3->get("POST.entityDocument");
 
-        $this->checkLength($entityName, 'entityName', 100, 4);
+        $this->checkLength($entityName, 'pharmacyName', 100, 4);
         $this->checkLength($address, 'address', 500, 4);
         if (strlen($tradeLicenseNumber) > 0) {
             $this->checkLength($tradeLicenseNumber, 'tradeLicenseNumber', 200, 4);
@@ -326,7 +326,7 @@ class ProfileController extends Controller
         $address = $this->f3->get("POST.address");
         $entityDocument = $this->f3->get("POST.entityDocument");
 
-        $this->checkLength($entityName, 'entityName', 100, 4);
+        $this->checkLength($entityName, 'distributorName', 100, 4);
         $this->checkLength($address, 'address', 500, 4);
         if (strlen($tradeLicenseNumber) > 0) {
             $this->checkLength($tradeLicenseNumber, 'tradeLicenseNumber', 200, 4);
