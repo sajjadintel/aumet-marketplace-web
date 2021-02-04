@@ -704,3 +704,10 @@ input[type='number'] {
 	height: auto;
 	border: 1px solid transparent;
 }
+
+.product-description {
+	font-size: 15px !important;
+	text-align: justify;
+	text-justify: inter-word;
+	margin: 20px 0 0 0;
+}
