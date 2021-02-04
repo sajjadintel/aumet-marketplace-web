@@ -143,12 +143,18 @@ function compress_htmlcode($codedata)
                                                         <input style="width: 100%;" type="text" id="note-<?php echo $item->productId ?>" onfocusout="CartCheckout.updateNote(<?php echo $item->productId ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>)" class="mr-2 font-weight-bolder quantity" value="<?php echo $item->note ?>" name="note">
                                                     </td>
 
-                                                    <td class="text-right align-middle font-weight-bolder font-size-h5"><?php echo $item->unitPrice . " " . $currencySymbol ?></td>
-                                                    <td class="text-right align-middle font-weight-bolder font-size-h5 productVat-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" id="productVat-<?php echo $item->productId ?>"><?php echo $item->vat . "%" ?></td>
-                                                    <td class="text-right align-middle font-weight-bolder font-size-h5 productPrice-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" data-vat="<?php echo $item->vat ?>" data-unitPrice="<?php echo $item->unitPrice ?>" data-productPrice="<?php echo $item->quantity * $item->unitPrice ?>" id="productPrice-<?php echo $item->productId ?>"><?php echo $item->quantity * $item->unitPrice . " " . $currencySymbol ?></td>
+                                                    <td class="text-right align-middle font-weight-bolder font-size-h5">
+                                                        <?php echo Helper::formatMoney($item->unitPrice, 2) . " " . $currencySymbol ?>
+                                                    </td>
+                                                    <td class="text-right align-middle font-weight-bolder font-size-h5 productVat-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" id="productVat-<?php echo $item->productId ?>">
+                                                        <?php echo Helper::formatMoney($item->vat, 2) . "%" ?>
+                                                    </td>
+                                                    <td class="text-right align-middle font-weight-bolder font-size-h5 productPrice-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" data-vat="<?php echo $item->vat ?>" data-unitPrice="<?php echo $item->unitPrice ?>" data-productPrice="<?php echo $item->quantity * $item->unitPrice ?>" id="productPrice-<?php echo $item->productId ?>">
+                                                        <?php echo Helper::formatMoney($item->quantity * $item->unitPrice, 2) . " " . $currencySymbol ?>
+                                                    </td>
                                                     <td class="text-right align-middle">
                                                         <a href="javascript:;" onclick="CartCheckout.removeItemModal(<?php echo $item->id ?>)" class="btn btn-sm btn-light btn-text-danger btn-hover-primary btn-icon  mr-2" title="">
-                                                <span class="svg-icon svg-icon-md">
+                                                            <span class="svg-icon svg-icon-md">
                                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                                             <rect x="0" y="0" width="24" height="24" />
@@ -176,7 +182,17 @@ function compress_htmlcode($codedata)
                                                     <div class="text-right pr-3">
                                                         <p class="font-weight-bolder font-size-h4">
                                                             <span class="text-primary"><?php echo $vModule_cart_subTotal ?></span>
-                                                            <span class="subTotalPrice" data-subTotalPrice="<?php echo $subTotalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="subTotalPrice-<?php echo $seller->sellerId ?>"><?php echo $subTotalPrice . " " . $currencySymbol ?></span>
+                                                            <span class="subTotalPrice" data-subTotalPrice="<?php echo $subTotalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="subTotalPrice-<?php echo $seller->sellerId ?>">
+                                                                <?php echo Helper::formatMoney($subTotalPrice, 2) . " " . $currencySymbol ?>
+                                                            </span>
+                                                        </p>
+                                                        <p class="font-weight-bolder font-size-h4 never">
+                                                            <span class="text-primary"><?php echo $vModule_cart_tax ?></span>
+                                                            <span class="tax" data-vat="<?php echo $tax ?>" data-currencyId="<?php echo $currencyId ?>" id="tax-<?php echo $seller->sellerId ?>"><?php echo $tax . " " . $currencySymbol ?></span>
+                                                        </p>
+                                                        <p class="font-weight-bolder font-size-h4 never">
+                                                            <span class="text-primary"><?php echo $vModule_cart_total ?></span>
+                                                            <span class="totalPrice" data-totalPrice="<?php echo $totalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="totalPrice-<?php echo $seller->sellerId ?>"><?php echo $totalPrice . " " . $currencySymbol ?></span>
                                                         </p>
                                                     </div>
 

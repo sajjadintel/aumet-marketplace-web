@@ -169,6 +169,8 @@ return array(
     'vModule_product_relationGroup' => 'مجموعة العملاء',
     'vModule_product_addDefaultBonus' => 'أضف المكافآت الافتراضية',
     'vModule_product_addSpecialBonus' => 'أضف مكافآت خاصة',
+    'vModule_product_defaultBonusInvalid' => 'المكافآت الافتراضية غير صالحة',
+    'vModule_product_specialBonusInvalid' => 'المكافآت الخاصة غير صالحة',
 
 
     'stockAvailability_available' => 'متوفر',
@@ -359,6 +361,11 @@ return array(
     'vModule_profile_mobile' => 'رقم الهاتف',
     'vModule_profile_missingDocumentApproval' => 'المستند مطلوب لتقديم تعديلات ملف التعريف',
     'vModule_profile_requestSent' => 'تم إرسال طلبك لتحديث المعلومات إلى فريق Aumet ، وسنقوم بالتحقق من صحة ذلك والرد عليك في غضون ٢٤ إلى ٤٨ ساعة',
+    'vModule_profile_successUploadingImage' => 'Success uploading profile image', // TODO: translate
+    'vModule_profile_errorUploadingImage' => 'Error uploading profile image, please try again later', // TODO: translate
+    'vModule_profile_failedToDecodeImage' => 'Error failing to decode image', // TODO: translate
+    'vModule_profile_invalidImage' => 'Did not match data URI with image data', // TODO: translate
+    'vModule_profile_tradeLicenseTaken' => 'Trade License Number already exists', // TODO: translate
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
     'error_filedTooShort' => ' field is too short! minimum length: ',
