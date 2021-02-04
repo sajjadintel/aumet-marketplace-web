@@ -17,6 +17,10 @@
 			padding-bottom: 10px !important;
 		}
 
+		.checkbox-inline .checkbox {
+			margin-right: 0 !important;
+		}
+
 </style>
 <!--begin::Entry-->
 <div class="d-flex flex-column-fluid">
@@ -230,10 +234,10 @@
                         <div class="row">
                             <div class="col-12 form-group">
                                 <p class="card-label font-size-h4"><?php echo $vModule_profile_paymentOptionTitle ?></p>
-                                <div id="paymentMethodContainer" class="row checkbox-inline my-5" style="flex-wrap: unset;">
-                                    <?php foreach($arrPaymentMethod as $paymentMethod) : ?>
-                                        <label class="col-3 checkbox checkbox-outline checkbox-dark">
-                                            <?php if(in_array($paymentMethod['id'], $arrEntityPaymentMethodId)): ?>
+                                <div id="paymentMethodContainer" class="row checkbox-inline my-5">
+                                    <?php foreach ($arrPaymentMethod as $paymentMethod) : ?>
+                                        <label class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-3 checkbox checkbox-outline checkbox-dark">
+                                            <?php if (in_array($paymentMethod['id'], $arrEntityPaymentMethodId)): ?>
                                                 <input type="checkbox" name="paymentMethodCheckbox" value="<?php echo $paymentMethod['id']; ?>" checked/>
                                             <?php else: ?>
                                                 <input type="checkbox" name="paymentMethodCheckbox" value="<?php echo $paymentMethod['id']; ?>"/>
