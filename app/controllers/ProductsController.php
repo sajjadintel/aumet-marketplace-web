@@ -24,6 +24,8 @@ class ProductsController extends Controller
             $dbEntityProduct->productName = "productName_" . $this->objUser->language;
             $dbEntityProduct->entityName = "entityName_" . $this->objUser->language;
             $dbEntityProduct->madeInCountryName = "madeInCountryName_" . $this->objUser->language;
+            $dbEntityProduct->subtitle = "subtitle_" . $this->objUser->language;
+            $dbEntityProduct->description = "description_" . $this->objUser->language;
             $dbEntityProduct->getWhere($query);
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");

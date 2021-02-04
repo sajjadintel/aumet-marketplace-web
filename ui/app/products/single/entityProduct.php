@@ -133,6 +133,9 @@ function compress_htmlcode($codedata)
 
                             </div>
 
+                            <div class="product-description">
+                                    <?php echo $objEntityProduct->description ?>
+                            </div>
 
                         </div>
 
