@@ -173,7 +173,7 @@ var WebApp = (function () {
 			var allParts = url.split("?");
 			var mainUrl = allParts.shift();
 			var queryParams = allParts.join("?");
-			
+
 			fullUrl = mainUrl + '?' + queryParams + '&_t=' + Date.now();
 		} else {
 			fullUrl = url + '?_t=' + Date.now();
@@ -328,7 +328,7 @@ var WebApp = (function () {
 							}),
 						},
 					})
-					
+
 					$(".select2").on("change", function(ev) {
 						var field = $(this).attr("name");
 						if(field in _validatorFields) {
@@ -656,6 +656,83 @@ var WebApp = (function () {
 		return parseFloat(number).toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
 	}
 
+	var _supportModalForm = function () {
+		var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
+		var form = KTUtil.getById('supportModalForm');
+		var formSubmitUrl = KTUtil.attr(form, 'action');
+		var data = $(form).serializeJSON();
+		var formSubmitButton = KTUtil.getById('kt_cs_form_submit_button');
+
+		if (!form) {
+			return;
+		}
+
+		FormValidation.formValidation(form, {
+			fields: {
+				supportEmail: {
+					validators: {
+						notEmpty: {
+							message: 'Email is required',
+						},
+						emailAddress: {
+							message: 'The value is not a valid email address',
+						},
+					},
+				},
+				phone: {
+					validators: {
+						notEmpty: {
+							message: 'Phone Number is required',
+						},
+					},
+				},
+				supportReasonId: {
+					validators: {
+						notEmpty: {
+							message: 'Reason is required',
+						},
+					},
+				},
+			},
+			plugins: {
+				trigger: new FormValidation.plugins.Trigger(),
+				submitButton: new FormValidation.plugins.SubmitButton(),
+				//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
+				bootstrap: new FormValidation.plugins.Bootstrap({
+					//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
+					//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
+				}),
+			},
+		})
+			.on('core.form.valid', function () {
+				// Show loading state on button
+				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
+
+				var url = KTUtil.attr(form, 'action');
+				var data = $(form).serializeJSON();
+
+				if (!form) {
+					console.log('No Form');
+					return;
+				}
+				$('#support_modal').modal('hide');
+				WebApp.post(url, data);
+			})
+			.on('core.form.invalid', function () {
+				Swal.fire({
+					text: 'Sorry, looks like there are some errors detected, please try again.',
+					icon: 'error',
+					buttonsStyling: false,
+					confirmButtonText: 'Ok, got it!',
+					customClass: {
+						confirmButton: 'btn font-weight-bold btn-light-primary',
+					},
+				}).then(function () {
+					KTUtil.scrollTop();
+				});
+			});
+	};
+
 	// Public Functions
 	return {
 		init: function () {
@@ -733,6 +810,9 @@ var WebApp = (function () {
 		},
 		formatMoney: function (number, n, x) {
 			return _formatMoney(number, n, x);
+		},
+		supportModalFormValidation: function () {
+			return _supportModalForm();
 		},
 		reloadDatatable: function (webResponse) {
 			if ($('#popupModal').is(':visible')) {
