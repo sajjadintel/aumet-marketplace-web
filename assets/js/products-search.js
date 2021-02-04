@@ -156,23 +156,25 @@ var SearchDataTable = (function () {
 					template: function (row) {
 						if (row.stockStatusId == 1) {
 							var tdText = '';
-							row.bonusOptions.sort((a, b) => parseInt(a.minOrder) - parseInt(b.minOrder));
-							row.bonusOptions.forEach((element) => {
-								tdText +=
-									'<a href="javascript:;" onclick=\'SearchDataTable.onBonusOptionCallback(' +
-									JSON.stringify(row) +
-									', ' +
-									JSON.stringify(element) +
-									' )\'><span id="bonusOption-' +
-									row.id +
-									'-' +
-									element.id +
-									'" class="label label-xl label-light label-square label-inline mr-2 bonus-option-label-' +
-									row.id +
-									'">' +
-									element.name +
-									' </span></a>';
-							});
+							if(row.bonusOptions) {
+								row.bonusOptions.sort((a, b) => parseInt(a.minOrder) - parseInt(b.minOrder));
+								row.bonusOptions.forEach((element) => {
+									tdText +=
+										'<a href="javascript:;" onclick=\'SearchDataTable.onBonusOptionCallback(' +
+										JSON.stringify(row) +
+										', ' +
+										JSON.stringify(element) +
+										' )\'><span id="bonusOption-' +
+										row.id +
+										'-' +
+										element.id +
+										'" class="label label-xl label-light label-square label-inline mr-2 bonus-option-label-' +
+										row.id +
+										'">' +
+										element.name +
+										' </span></a>';
+								});
+							}
 							//var bonus = math.evaluate('floor(quantity / 6) * 2', row);
 							//return '<span id="bonus-' + row.id + '" class="label label-xl label-rounded label-primary" style="width: 50px">' + bonus + ' </span>';
 							return tdText;
@@ -344,52 +346,37 @@ var SearchDataTable = (function () {
 	var _initSearchFilter = function () {
 		/*
 		$('#searchProductScientificNameInput').autocomplete({
-
 			nameProperty: 'name',
 			valueField: '#hidden-field',
 			dataSource: myData,
-
 			// value property
 			valueProperty: 'value',
-
 			// item filter
 			filter: function (input, data) {
 				return data.filter(x => ~x[this.options.nameProperty].toLowerCase().indexOf(input.toLowerCase()));
 			},
-
 			// trigger event
 			filterOn: 'input',
-
 			// called when the input is clicked
 			openOnInput: true,
-
 			// function(li, item)
 			preAppendDataItem: null,
-
 			// function(input, data) { ... }
 			validation: null,
-
 			// auto select the first matched item
 			selectFirstMatch: false,
-
 			// trigger element
 			validateOn: 'blur',
-
 			// called when selected
 			onSelected: null,
-
 			// class for invalid
 			invalidClass: 'invalid',
-
 			// triggered as soon as the initial value is selected
 			initialValueSelectedEvent: 'initial-value-selected.autocomplete',
-
 			// append to the body element
 			appendToBody: false,
-
 			// if true the dropdown will only show unique values. 
 			distinct: false
-
 		});*/
 	};
 	
@@ -425,15 +412,17 @@ var SearchDataTable = (function () {
 
 				var bonusOptionLabelId = '';
 
-				row.bonusOptions.forEach((bonusOption) => {
-					//var bonusOptionLabelId = '#bonusOption-' + row.id + '-' + element.id;
-					if (newQuantity >= bonusOption.minOrder) {
-						bonusOptionLabelId = '#bonusOption-' + row.id + '-' + bonusOption.id;
-						formulaConfig.minOrder = bonusOption.minOrder;
-						formulaConfig.formula = bonusOption.formula;
-						formulaConfig.bonus = bonusOption.bonus;
-					}
-				});
+				if(row.bonusOptions) {
+					row.bonusOptions.forEach((bonusOption) => {
+						//var bonusOptionLabelId = '#bonusOption-' + row.id + '-' + element.id;
+						if (newQuantity >= bonusOption.minOrder) {
+							bonusOptionLabelId = '#bonusOption-' + row.id + '-' + bonusOption.id;
+							formulaConfig.minOrder = bonusOption.minOrder;
+							formulaConfig.formula = bonusOption.formula;
+							formulaConfig.bonus = bonusOption.bonus;
+						}
+					});
+				}
 				var bonus = 0;
 				if (formulaConfig.bonus > 0) {
 					bonus = math.evaluate(formulaConfig.formula, formulaConfig);
