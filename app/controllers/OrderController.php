@@ -1,6 +1,7 @@
 <?php
 
-class OrderController extends Controller {
+class OrderController extends Controller
+{
 
     function getDistributorOrdersPending()
     {
@@ -262,7 +263,7 @@ class OrderController extends Controller {
                 $query .= " AND statusId IN (6,8)";
                 break;
             case 'pending':
-                $query .= " AND statusId IN (1,2,3)";
+                $query .= " AND statusId IN (1)";
                 break;
             case 'history':
                 $query .= " AND statusId IN (1,2,3,4,5,6,7,8,9)";
@@ -304,7 +305,7 @@ class OrderController extends Controller {
             $dbOrderDetail->productName = "productName" . ucfirst($this->objUser->language);
             $arrOrderDetail = $dbOrderDetail->findWhere("id = '{$order['id']}'");
 
-            if(sizeof($arrOrderDetail)==0){
+            if (sizeof($arrOrderDetail) == 0) {
                 $order['isVisible'] = true;
                 $ordersWithOrderDetail[] = $order;
                 continue;
@@ -363,7 +364,7 @@ class OrderController extends Controller {
                 $query .= " AND statusId IN (4,6,8) ";
                 break;
             case 'pending':
-                $query .= " AND statusId IN (1,2,3)";
+                $query .= " AND statusId IN (1)";
                 break;
             case 'history':
                 $query .= " AND statusId IN (1,2,3,4,5,6,7,8,9)";
@@ -405,7 +406,7 @@ class OrderController extends Controller {
             $dbOrderDetail->productName = "productName" . ucfirst($this->objUser->language);
             $arrOrderDetail = $dbOrderDetail->findWhere("id = '{$order['id']}'");
 
-            if(sizeof($arrOrderDetail)==0){
+            if (sizeof($arrOrderDetail) == 0) {
                 $order['isVisible'] = true;
                 $ordersWithOrderDetail[] = $order;
                 continue;
@@ -887,9 +888,14 @@ class OrderController extends Controller {
 
         $pdf->SetFont($font, '', 11);
 
-        $pharmacyTableHeader = array('Buyer Name', 'Customer Email');
-        $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer'], $arrOrder['userBuyerEmail']));
-        $pdf->FancyTable($pharmacyTableHeader, $pharmacyTableData);
+
+        $pharmacyTableHeader = array('Buyer Info');
+        if ($arrOrder['userBuyerEmail'] != null) {
+            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']), array($arrOrder['userBuyerEmail']));
+        } else {
+            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']));
+        }
+        $pdf->FancyOneTitleHeader($pharmacyTableHeader, $pharmacyTableData);
         $pdf->Ln(20);
 
         $orderDetailHeader = array('ID', 'Name', 'Quantity', 'Price', 'Total');
@@ -934,7 +940,10 @@ class OrderController extends Controller {
         $pdf = new PDF();
         // create new PDF document
         $pdf = new PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        // set margin for second page
+        $pdf->SetMargins(15, $pdf->top_margin, 15);
         $pdf->AddPage();
+        $pdf->SetMargins(15, $pdf->top_margin, 15);
 
         // Title
         $pdf->SetFont($font, 'B', 14);
@@ -949,27 +958,39 @@ class OrderController extends Controller {
 
         $pdf->SetFont($font, '', 11);
 
-        $pharmacyTableHeader = array('Distributor ID', 'Distributor Name', 'Email');
-        $pharmacyTableData = array(array($arrOrder['entitySellerId'], $arrOrder['entitySeller'], $arrOrder['userSellerEmail']));
-        $pdf->FancyTable($pharmacyTableHeader, $pharmacyTableData);
+        $pharmacyTableHeader = array('Seller Info');
+        if ($arrOrder['userSellerEmail'] != null) {
+            $pharmacyTableData = array(array('#' . $arrOrder['entitySellerId'] . ' - ' . $arrOrder['entitySeller']), array($arrOrder['userSellerEmail']));
+        } else {
+            $pharmacyTableData = array(array('#' . $arrOrder['entitySellerId'] . ' - ' . $arrOrder['entitySeller']));
+        }
+        $pdf->FancyOneTitleHeader($pharmacyTableHeader, $pharmacyTableData);
         $pdf->Ln(20);
 
-        $orderDetailHeader = array('Code', 'Name', 'Quantity', 'Price', 'VAT', 'Total');
+        $orderDetailHeader = array('ID', 'Name', 'Quantity', 'Price', 'Total');
         $dbOrderDetail = new BaseModel($this->db, 'vwOrderDetail');
         $arrOrderDetail = $dbOrderDetail->findWhere("id = $orderId");
 
         $orderDetailData = array();
         foreach ($arrOrderDetail as $item) {
-            array_push($orderDetailData, array($item['productCode'], $item['productNameEn'], $item['quantity'], $item['currency'] . " " . $item['unitPrice'], $item['tax'] . "%", $item['currency'] . " " . ($item['unitPrice'] * $item['quantity'])));
+            array_push($orderDetailData, array(
+                $item['productCode'],
+                $item['productNameEn'],
+                Helper::formatMoney($item['quantity'] + $item['quantityFree'], 0),
+                $item['currency'] . " " . Helper::formatMoney($item['unitPrice'], 1) . ($item['tax'] == 0 ? '' : ' +' . $item['tax'] . "%"),
+                $item['currency'] . " " . Helper::formatMoney($item['unitPrice'] * $item['quantity'], 1)
+            ));
         }
 
         $pdf->FancyTableOrderDetail($orderDetailHeader, $orderDetailData);
 
         $pdf->Ln(20);
 
-        $pdf->Cell(0, 0, 'Order: AED ' . $arrOrder['total'], 0, 0, 'R');
-        $pdf->Ln(10);
-        $pdf->Cell(0, 0, 'VAT: AED ' . round($arrOrder['tax'] * $arrOrder['total'], 2), 0, 0, 'R');
+        if ($arrOrder['tax'] != 0) {
+            $pdf->Cell(0, 0, 'Order: AED ' . $arrOrder['total'], 0, 0, 'R');
+            $pdf->Ln(10);
+            $pdf->Cell(0, 0, 'VAT: AED ' . round($arrOrder['tax'] * $arrOrder['total'], 2), 0, 0, 'R');
+        }
 
         $pdf->Ln(10);
         $pdf->Cell(0, 0, 'Total: AED ' . $arrOrder['total'], 0, 0, 'R');
@@ -977,4 +998,3 @@ class OrderController extends Controller {
         $pdf->Output();
     }
 }
-

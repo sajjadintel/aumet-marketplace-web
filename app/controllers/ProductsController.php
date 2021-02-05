@@ -82,7 +82,7 @@ class ProductsController extends Controller
                 $dbEntityProductOtherOffers->entityName = "entityName_" . $this->objUser->language;
 
                 $where = [
-                    "( TRIM(productName_ar) LIKE ? OR TRIM(productName_en) LIKE ? OR TRIM(productName_fr) LIKE ? AND id != ? )",
+                    "( (TRIM(productName_ar) LIKE ? OR TRIM(productName_en) LIKE ? OR TRIM(productName_fr) LIKE ? ) AND id != ? )",
                     trim($dbEntityProduct->productName_ar),
                     mb_strtolower(trim($dbEntityProduct->productName_en)),
                     mb_strtolower(trim($dbEntityProduct->productName_fr)),
@@ -128,7 +128,7 @@ class ProductsController extends Controller
                     }
 
                     $cartDetail = new BaseModel($this->db, "cartDetail");
-                    $cartDetail->getWhere("userID =" . $this->objUser->id ." and entityProductId = ". $dbEntityProductOtherOffers[$i]['id']."");
+                    $cartDetail->getWhere("userID =" . $this->objUser->id . " and entityProductId = " . $dbEntityProductOtherOffers[$i]['id'] . "");
 
                     $dbEntityProductOtherOffers[$i]['cart'] = (!$cartDetail->dry()) ? $cartDetail->quantity : 0;
                 }
@@ -278,22 +278,22 @@ class ProductsController extends Controller
             $dbEntityProductBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
             $arrBonus = $dbEntityProductBonus->findWhere("isActive = 1 AND entityProductId=$productId");
             $arrBonusId = [];
-            foreach($arrBonus as $bonus) {
+            foreach ($arrBonus as $bonus) {
                 array_push($arrBonusId, $bonus['id']);
             }
 
             // Group all bonuses' relation groups
             $arrBonusGrouped = [];
-            if(count($arrBonus) > 0) {
+            if (count($arrBonus) > 0) {
                 $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
                 $strBonusId = implode(",", $arrBonusId);
                 $arrBonusRelationGroup = $dbBonusRelationGroup->getWhere("bonusId IN ($strBonusId)");
 
                 $mapBonusIdRelationGroupId = [];
-                foreach($arrBonusRelationGroup as $bonusRelationGroup) {
+                foreach ($arrBonusRelationGroup as $bonusRelationGroup) {
                     $bonusId = $bonusRelationGroup['bonusId'];
                     $relationGroupId = $bonusRelationGroup['relationGroupId'];
-                    if(array_key_exists($bonusId, $mapBonusIdRelationGroupId)) {
+                    if (array_key_exists($bonusId, $mapBonusIdRelationGroupId)) {
                         $allRelationGroupId = $mapBonusIdRelationGroupId[$bonusId];
                         array_push($allRelationGroupId, $relationGroupId);
                         $mapBonusIdRelationGroupId[$bonusId] = $allRelationGroupId;
@@ -302,7 +302,7 @@ class ProductsController extends Controller
                     }
                 }
 
-                foreach($arrBonus as $bonus) {
+                foreach ($arrBonus as $bonus) {
                     $bonusId = $bonus['id'];
 
                     $bonusGrouped = new stdClass();
@@ -412,7 +412,7 @@ class ProductsController extends Controller
         $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
 
-        $targetFile = Helper::createUploadedFileName($fileName,$ext,"assets/img/products/");
+        $targetFile = Helper::createUploadedFileName($fileName, $ext, "assets/img/products/");
 
         if (in_array($ext, $allValidExtensions)) {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
@@ -781,14 +781,14 @@ class ProductsController extends Controller
                 $arrDefaultBonus = $this->f3->get('POST.arrDefaultBonus');
                 $arrSpecialBonus = $this->f3->get('POST.arrSpecialBonus');
 
-                if(!$arrDefaultBonus) {
+                if (!$arrDefaultBonus) {
                     $arrDefaultBonus = [];
                 }
 
-                if(!$arrSpecialBonus) {
+                if (!$arrSpecialBonus) {
                     $arrSpecialBonus = [];
                 }
-                
+
                 if (!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get('vModule_product_stockInvalid');
@@ -796,35 +796,37 @@ class ProductsController extends Controller
                     return;
                 }
 
-                foreach($arrDefaultBonus as $bonus) {
+                foreach ($arrDefaultBonus as $bonus) {
                     $bonusTypeId = $bonus['bonusTypeId'];
                     $minOrder = $bonus['minOrder'];
                     $bonusQty = $bonus['bonus'];
-                    
+
                     $valid = false;
-                    if(strlen($bonusTypeId) != 0
-                    && strlen($minOrder) != 0
-                    && strlen($bonusQty) != 0) {
-                        if($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
+                    if (
+                        strlen($bonusTypeId) != 0
+                        && strlen($minOrder) != 0
+                        && strlen($bonusQty) != 0
+                    ) {
+                        if ($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
                             $valid = true;
                         }
                     }
 
-                    if(!$valid) {
+                    if (!$valid) {
                         $this->webResponse->errorCode = Constants::STATUS_ERROR;
                         $this->webResponse->message = $this->f3->get('vModule_product_defaultBonusInvalid');
                         echo $this->webResponse->jsonResponse();
                         return;
                     }
 
-                    if($minOrder > Constants::MAX_INT_VALUE) {
+                    if ($minOrder > Constants::MAX_INT_VALUE) {
                         $this->webResponse->errorCode = Constants::STATUS_ERROR;
                         $this->webResponse->message = $this->f3->get('vModule_product_quantityTooBig');
                         echo $this->webResponse->jsonResponse();
                         return;
                     }
 
-                    if($bonusQty > Constants::MAX_INT_VALUE) {
+                    if ($bonusQty > Constants::MAX_INT_VALUE) {
                         $this->webResponse->errorCode = Constants::STATUS_ERROR;
                         $this->webResponse->message = $this->f3->get('vModule_product_bonusTooBig');
                         echo $this->webResponse->jsonResponse();
@@ -832,37 +834,39 @@ class ProductsController extends Controller
                     }
                 }
 
-                foreach($arrSpecialBonus as $bonus) {
+                foreach ($arrSpecialBonus as $bonus) {
                     $bonusTypeId = $bonus['bonusTypeId'];
                     $minOrder = $bonus['minOrder'];
                     $bonusQty = $bonus['bonus'];
                     $arrRelationGroup = $bonus['arrRelationGroup'];
-                    
+
                     $valid = false;
-                    if(strlen($bonusTypeId) != 0
-                    && strlen($minOrder) != 0
-                    && strlen($bonusQty) != 0
-                    && $arrRelationGroup && count($arrRelationGroup) > 0) {
-                        if($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
+                    if (
+                        strlen($bonusTypeId) != 0
+                        && strlen($minOrder) != 0
+                        && strlen($bonusQty) != 0
+                        && $arrRelationGroup && count($arrRelationGroup) > 0
+                    ) {
+                        if ($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
                             $valid = true;
                         }
                     }
 
-                    if(!$valid) {
+                    if (!$valid) {
                         $this->webResponse->errorCode = Constants::STATUS_ERROR;
                         $this->webResponse->message = $this->f3->get('vModule_product_specialBonusInvalid');
                         echo $this->webResponse->jsonResponse();
                         return;
                     }
 
-                    if($minOrder > Constants::MAX_INT_VALUE) {
+                    if ($minOrder > Constants::MAX_INT_VALUE) {
                         $this->webResponse->errorCode = Constants::STATUS_ERROR;
                         $this->webResponse->message = $this->f3->get('vModule_product_quantityTooBig');
                         echo $this->webResponse->jsonResponse();
                         return;
                     }
 
-                    if($bonusQty > Constants::MAX_INT_VALUE) {
+                    if ($bonusQty > Constants::MAX_INT_VALUE) {
                         $this->webResponse->errorCode = Constants::STATUS_ERROR;
                         $this->webResponse->message = $this->f3->get('vModule_product_bonusTooBig');
                         echo $this->webResponse->jsonResponse();
@@ -873,8 +877,8 @@ class ProductsController extends Controller
                 $arrBonus = array_merge($arrDefaultBonus, $arrSpecialBonus);
 
                 $mapBonusIdBonus = [];
-                foreach($arrBonus as $bonus) {
-                    if($bonus['id']) {
+                foreach ($arrBonus as $bonus) {
+                    if ($bonus['id']) {
                         $mapBonusIdBonus[$bonus['id']] = $bonus;
                     }
                 }
@@ -885,7 +889,7 @@ class ProductsController extends Controller
                 $dbBonus->getWhere("isActive = 1 AND entityProductId=$productId");
                 while (!$dbBonus->dry()) {
                     $bonusId = $dbBonus['id'];
-                    if(array_key_exists($bonusId, $mapBonusIdBonus)) {
+                    if (array_key_exists($bonusId, $mapBonusIdBonus)) {
                         $newBonus = $mapBonusIdBonus[$bonusId];
                         $dbBonus->bonusTypeId = $newBonus['bonusTypeId'];
                         $dbBonus->minOrder = $newBonus['minOrder'];
@@ -898,8 +902,8 @@ class ProductsController extends Controller
                             $dbBonusRelationGroup->delete();
                             $dbBonusRelationGroup->next();
                         }
-                        if($arrRelationGroup) {
-                            foreach($arrRelationGroup as $relationGroupId) {
+                        if ($arrRelationGroup) {
+                            foreach ($arrRelationGroup as $relationGroupId) {
                                 $dbBonusRelationGroup->bonusId = $bonusId;
                                 $dbBonusRelationGroup->relationGroupId = $relationGroupId;
                                 $dbBonusRelationGroup->add();
@@ -911,8 +915,8 @@ class ProductsController extends Controller
                     $dbBonus->next();
                 }
 
-                foreach($arrBonus as $bonus) {
-                    if(!$bonus['id']) {
+                foreach ($arrBonus as $bonus) {
+                    if (!$bonus['id']) {
                         $dbBonus->entityProductId = $productId;
                         $dbBonus->bonusTypeId = $bonus['bonusTypeId'];
                         $dbBonus->minOrder = $bonus['minOrder'];
@@ -921,8 +925,8 @@ class ProductsController extends Controller
                         $dbBonus->addReturnID();
 
                         $arrRelationGroup = $bonus['arrRelationGroup'];
-                        if($arrRelationGroup) {
-                            foreach($arrRelationGroup as $relationGroupId) {
+                        if ($arrRelationGroup) {
+                            foreach ($arrRelationGroup as $relationGroupId) {
                                 $dbBonusRelationGroup->bonusId = $dbBonus['id'];
                                 $dbBonusRelationGroup->relationGroupId = $relationGroupId;
                                 $dbBonusRelationGroup->add();

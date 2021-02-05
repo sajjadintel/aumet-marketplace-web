@@ -151,6 +151,7 @@ $f3->route('GET /web/notification/order/new', 'OrderController->getNotifcationsD
 $f3->route('GET /web/pharmacy/order/pending', 'OrderController->getPharmacyOrdersPending');
 $f3->route('GET /web/pharmacy/order/unpaid', 'OrderController->getPharmacyOrdersUnpaid');
 $f3->route('GET /web/pharmacy/order/history', 'OrderController->getPharmacyOrdersHistory');
+$f3->route('GET /web/pharmacy/order/@orderId', 'OrderController->getOrderDetails');
 
 $f3->route('POST /web/pharmacy/order/pending', 'OrderController->postPharmacyOrdersPending');
 $f3->route('POST /web/pharmacy/order/unpaid', 'OrderController->postPharmacyOrdersUnpaid');
