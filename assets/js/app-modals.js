@@ -380,7 +380,7 @@ var WebMissingProductModals = (function () {
 	var products;
 
 	var _orderMissingProductPharmacyModal = function (orderId) {
-		WebApp.get('/web/distributor/order/' + orderId, _missingProductModalOpen);
+		WebApp.get('/web/pharmacy/order/' + orderId, _missingProductModalOpen);
 	};
 
 	var _missingProductModalOpen = function (webResponse) {

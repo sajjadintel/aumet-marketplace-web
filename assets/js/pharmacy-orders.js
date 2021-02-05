@@ -322,7 +322,7 @@ var PharmacyOrdersDataTable = (function () {
     };
 
     var _orderViewModal = function (orderId) {
-        WebApp.get('/web/distributor/order/' + orderId, _orderViewModalOpen);
+        WebApp.get('/web/pharmacy/order/' + orderId, _orderViewModalOpen);
     };
 
     var _orderViewModalOpen = function (webResponse) {

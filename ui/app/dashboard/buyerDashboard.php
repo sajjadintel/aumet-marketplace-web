@@ -185,7 +185,7 @@
                     WebAppLocals.getMessage('print') +
                     '</a>';
                 var btnView =
-                    '<a href="javascript:;" onclick=\'WebAppModals.orderViewModal(' +
+                    '<a href="javascript:;" onclick=\'WebAppModals.orderViewPharmacyModal(' +
                     row.id +
                     ')\' \
 						class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
