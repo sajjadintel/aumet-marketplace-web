@@ -162,20 +162,18 @@ var WebAppModals = (function () {
 		$('#modalAddressLabel').html(WebAppLocals.getMessage('address'));
 		$('#modalAddressText').html(webResponse.data.order.addressBuyer);
 
-		$('#modalBootstrapOrderDetailLog').attr('data-on-text', WebAppLocals.getMessage('orderDetails'));
-		$('#modalBootstrapOrderDetailLog').attr('data-off-text', WebAppLocals.getMessage('orderLogs'));
 
-		$('#modalBootstrapOrderDetailLog')
-			.bootstrapSwitch()
-			.on('switchChange.bootstrapSwitch', function (event, state) {
-				if (state) {
-					WebApp.DestroyDatatable('#order_details_datatable');
-					WebApp.CreateDatatableLocal('Order Details', '#order_details_datatable', webResponse.data.orderDetail, columnDefsOrderDetails);
-				} else {
-					WebApp.DestroyDatatable('#order_details_datatable');
-					WebApp.CreateDatatableLocal('Order Details', '#order_details_datatable', webResponse.data.orderLog, columnDefsOrderLogs);
-				}
-			});
+		$('#smarttab').smartTab({
+			selected: 0,
+			theme: 'default',
+			orientation: 'horizontal',
+			justified: true,
+			autoAdjustHeight: true,
+		});
+
+
+		WebApp.CreateDatatableLocal('Order Details', '#order_details_datatable', webResponse.data.orderDetail, columnDefsOrderDetails);
+		WebApp.CreateDatatableLocal('Order Details', '#order_details_datatable_logs', webResponse.data.orderLog, columnDefsOrderLogs);
 
 		if (isPharmacy) {
 			$('#modalPrint').attr('href', '/web/pharmacy/order/print/' + webResponse.data.order.id);
@@ -183,9 +181,7 @@ var WebAppModals = (function () {
 			$('#modalPrint').attr('href', '/web/distributor/order/print/' + webResponse.data.order.id);
 		}
 
-		WebApp.CreateDatatableLocal('Order Details', '#order_details_datatable', webResponse.data.orderDetail, columnDefsOrderDetails);
 		$('#viewModal').modal('show');
-		// WebApp.ReloadDatatableLocal('#order_details_datatable');
 	};
 
 	return {

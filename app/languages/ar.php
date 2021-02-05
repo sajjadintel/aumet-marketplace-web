@@ -245,6 +245,10 @@ return array(
     'vModule_cart_entityOrderPrice' => 'قيمة فاتورة الموزع',
     'vModule_cart_term' => 'الأسعار أعلاه قابلة للتغيير تبعا لتوقيت تحديث الاسعار من قبل الموزع',
 
+
+    'orderDetails' => 'Order Details', // TODO: Add Translation
+    'orderLogs' => 'Order Logs', // TODO: Add Translation
+
     'vModule_cart_offersTitle' => 'العروض',
     'vModule_cart_offersMore' => 'تصفح المزيد من العروض',
 

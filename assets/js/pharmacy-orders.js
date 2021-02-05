@@ -5,7 +5,6 @@ var PharmacyOrdersDataTable = (function () {
     // Private functions
 
     var datatable;
-    var datatableDetail;
     var _readParams;
 
     var _init = function (objQuery) {
@@ -293,11 +292,8 @@ var PharmacyOrdersDataTable = (function () {
         });
     };
 
-    var _initDatatable = function (data, columns) {
-        if (datatableDetail != null) {
-            datatableDetail.destroy();
-        }
-        datatableDetail = $('#kt_datatable_detail').KTDatatable({
+    var _initDatatable = function (id, data, columns) {
+        $(id).KTDatatable({
             // datasource definition
 
             data: {
@@ -371,8 +367,8 @@ var PharmacyOrdersDataTable = (function () {
         $('#modalAddressLabel').html(WebAppLocals.getMessage('address'));
         $('#modalAddressText').html(webResponse.data.order.addressBuyer);
 
-        $('#modalBootstrapOrderDetailLog').attr('data-on-text', WebAppLocals.getMessage('orderDetails'));
-        $('#modalBootstrapOrderDetailLog').attr('data-off-text', WebAppLocals.getMessage('orderLogs'));
+        // $('#modalBootstrapOrderDetailLog').attr('data-on-text', WebAppLocals.getMessage('orderDetails'));
+        // $('#modalBootstrapOrderDetailLog').attr('data-off-text', WebAppLocals.getMessage('orderLogs'));
 
         var orderDetailColumns = [
             {
@@ -433,7 +429,7 @@ var PharmacyOrdersDataTable = (function () {
                 template: function (row) {
                     var output = '';
 
-                    var output = WebApp.formatMoney((row.tax) + '%';
+                    var output = WebApp.formatMoney((row.tax)) + '%';
                     return output;
                 },
             },
@@ -481,30 +477,27 @@ var PharmacyOrdersDataTable = (function () {
             },
         ];
 
-        $('#modalBootstrapOrderDetailLog')
-            .bootstrapSwitch()
-            .on('switchChange.bootstrapSwitch', function (event, state) {
-                if (state) {
-                    _initDatatable(webResponse.data.orderDetail, orderDetailColumns);
-                } else {
-                    _initDatatable(webResponse.data.orderLog, orderLogColumns);
-                }
-            });
+        _initDatatable('#kt_datatable_detail', webResponse.data.orderDetail, orderDetailColumns);
+        _initDatatable('#kt_datatable_detail_logs', webResponse.data.orderLog, orderLogColumns);
+
+        $('#smarttab').smartTab({
+            selected: 0,
+            theme: 'default',
+            orientation: 'horizontal',
+            justified: true,
+            autoAdjustHeight: true,
+        });
+
 
         $('#modalOrderDetailLabel').html(WebAppLocals.getMessage('orderDetails'));
         $('#modalPrint').attr('href', '/web/distributor/order/print/' + webResponse.data.order.id);
-        _initDatatable(webResponse.data.orderDetail, orderDetailColumns);
         $('#viewModal').appendTo('body').modal('show');
-        datatableDetail.reload();
     };
 
     return {
         // public functions
         init: function (objQuery) {
             _init(objQuery);
-        },
-        initDatatable: function (data, columns) {
-            _initDatatable(data, columns);
         },
         setReadParams: function (objQuery) {
             _readParams = objQuery;

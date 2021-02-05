@@ -251,6 +251,9 @@ return array(
     'vModule_cart_orderSubTotal' => 'Sub Total',
     'vModule_cart_term' => 'Prices shown are prone to changes upon price update from the Distributor',
 
+    'orderDetails' => 'Order Details',
+    'orderLogs' => 'Order Logs',
+
     'vModule_cart_offersTitle' => 'Offers',
     'vModule_cart_offersMore' => 'Browse More Offers',
 
