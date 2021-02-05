@@ -285,6 +285,7 @@ function compress_htmlcode($codedata)
 <script>
     var PageClass = function() {
         var elementId = "#datatableLocal";
+        var url = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 
         var columnDefs = [{
                 targets: 0,
@@ -472,7 +473,7 @@ function compress_htmlcode($codedata)
         };
 
         var initiate = function() {
-            WebApp.CreateDatatableLocal("Product List", elementId, <?php echo json_encode($arrProductOtherOffers) ?>, columnDefs, dbAdditionalOptions);
+            WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, null, dbAdditionalOptions);
         };
 
 
