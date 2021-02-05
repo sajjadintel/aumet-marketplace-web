@@ -934,7 +934,10 @@ class OrderController extends Controller {
         $pdf = new PDF();
         // create new PDF document
         $pdf = new PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        // set margin for second page
+        $pdf->SetMargins(15, $pdf->top_margin, 15);
         $pdf->AddPage();
+        $pdf->SetMargins(15, $pdf->top_margin, 15);
 
         // Title
         $pdf->SetFont($font, 'B', 14);
@@ -949,27 +952,35 @@ class OrderController extends Controller {
 
         $pdf->SetFont($font, '', 11);
 
-        $pharmacyTableHeader = array('Distributor ID', 'Distributor Name', 'Email');
-        $pharmacyTableData = array(array($arrOrder['entitySellerId'], $arrOrder['entitySeller'], $arrOrder['userSellerEmail']));
+        $pharmacyTableHeader = array('Seller Name', 'Distributor Email');
+        $pharmacyTableData = array(array('#' . $arrOrder['entitySellerId'] . ' - ' . $arrOrder['entitySeller'], $arrOrder['userSellerEmail']));
         $pdf->FancyTable($pharmacyTableHeader, $pharmacyTableData);
         $pdf->Ln(20);
 
-        $orderDetailHeader = array('Code', 'Name', 'Quantity', 'Price', 'VAT', 'Total');
+        $orderDetailHeader = array('ID', 'Name', 'Quantity', 'Price', 'Total');
         $dbOrderDetail = new BaseModel($this->db, 'vwOrderDetail');
         $arrOrderDetail = $dbOrderDetail->findWhere("id = $orderId");
 
         $orderDetailData = array();
         foreach ($arrOrderDetail as $item) {
-            array_push($orderDetailData, array($item['productCode'], $item['productNameEn'], $item['quantity'], $item['currency'] . " " . $item['unitPrice'], $item['tax'] . "%", $item['currency'] . " " . ($item['unitPrice'] * $item['quantity'])));
+            array_push($orderDetailData, array(
+                $item['productCode'],
+                $item['productNameEn'],
+                Helper::formatMoney($item['quantity'] + $item['quantityFree'], 0),
+                $item['currency'] . " " . Helper::formatMoney($item['unitPrice'], 1) . ($item['tax'] == 0 ? '' : ' +' . $item['tax'] . "%"),
+                $item['currency'] . " " . Helper::formatMoney($item['unitPrice'] * $item['quantity'], 1)
+            ));
         }
 
         $pdf->FancyTableOrderDetail($orderDetailHeader, $orderDetailData);
 
         $pdf->Ln(20);
 
-        $pdf->Cell(0, 0, 'Order: AED ' . $arrOrder['total'], 0, 0, 'R');
-        $pdf->Ln(10);
-        $pdf->Cell(0, 0, 'VAT: AED ' . round($arrOrder['tax'] * $arrOrder['total'], 2), 0, 0, 'R');
+        if ($arrOrder['tax'] != 0) {
+            $pdf->Cell(0, 0, 'Order: AED ' . $arrOrder['total'], 0, 0, 'R');
+            $pdf->Ln(10);
+            $pdf->Cell(0, 0, 'VAT: AED ' . round($arrOrder['tax'] * $arrOrder['total'], 2), 0, 0, 'R');
+        }
 
         $pdf->Ln(10);
         $pdf->Cell(0, 0, 'Total: AED ' . $arrOrder['total'], 0, 0, 'R');

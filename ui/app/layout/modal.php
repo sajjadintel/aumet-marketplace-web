@@ -17,6 +17,7 @@
                 <div class="modal-footer">
                     <div class="modal-add-button">
                         <button type="button" class="btn btn-primary font-weight-bold modalAction" id="modalAction">Save changes</button>
+                        <button type="button" class="btn btn-secondary font-weight-bold modalActionCancel" id="modalActionCancel"><?php echo $vButton_cancel ?></button>
                     </div>
                 </div>
             </form>
@@ -73,17 +74,36 @@
                         </div>
                     </div>
                 </div>
+
+
                 <div class="row">
                     <div class="col-md-12 form-group">
-                        <div>
-                            <input name="modalOrderDetailLog" id="modalBootstrapOrderDetailLog" data-switch="true" type="checkbox" checked="checked" data-on-text="True" data-handle-width="150" data-off-text="False" data-on-color="primary" data-off-color="secondary" />
+                        <div id="smarttab">
+
+                            <ul class="nav">
+                                <li>
+                                    <a class="nav-link" href="#tab-1">
+                                        <?php echo $orderDetails ?>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="#tab-2">
+                                        <?php echo $orderLogs ?>
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div id="tab-1" class="tab-pane" role="tabpanel">
+                                    <table id="order_details_datatable" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
+                                    </table>
+                                </div>
+                                <div id="tab-2" class="tab-pane" role="tabpanel">
+                                    <table id="order_details_datatable_logs" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-12">
-                        <!--begin: Datatable-->
-                        <table id="order_details_datatable" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
-                        </table>
-                        <!--end: Datatable-->
                     </div>
                     <div class="col-md-12 mt-10 text-center">
                         <a id="modalPrint" target="_blank" href="web/distributor/order/print" class="btn btn-sm btn-primary btn-hover-primary" title="Print Order">

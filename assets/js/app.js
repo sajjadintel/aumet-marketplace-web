@@ -432,6 +432,13 @@ var WebApp = (function () {
 		$('#popupModalValueId').val(webResponse.data.id);
 		$('.modalValueCallback').val(webResponse.data.fnCallback);
 		$('.modalAction').html(webResponse.data.modalButton);
+		$('.modalActionCancel').each(function () {
+			$(this).off('click');
+			$(this).click(function (e) {
+				e.preventDefault();
+				$('#popupModal').modal('hide');
+			});
+		});
 		$('#popupModal').modal('show');
 	};
 

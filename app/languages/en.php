@@ -238,7 +238,7 @@ return array(
     'vModule_cart_bonus' => 'Bonus',
     'vModule_cart_note' => 'Note',
     'vModule_cart_unitPrice' => 'Unit Price',
-    'vModule_cart_tax' => 'Tax',
+    'vModule_cart_tax' => 'VAT',
     'vModule_cart_totalPrice' => 'Total Price',
     'vModule_cart_grandTotal' => 'Grand Total',
     'vModule_cart_total' => 'Total',
@@ -250,6 +250,9 @@ return array(
     'vModule_cart_orderTotal' => 'Order Total',
     'vModule_cart_orderSubTotal' => 'Sub Total',
     'vModule_cart_term' => 'Prices shown are prone to changes upon price update from the Distributor',
+
+    'orderDetails' => 'Order Details',
+    'orderLogs' => 'Order Logs',
 
     'vModule_cart_offersTitle' => 'Offers',
     'vModule_cart_offersMore' => 'Browse More Offers',
@@ -293,6 +296,7 @@ return array(
     'vButton_bulk_add' => 'Bulk Add',
     'vButton_bulk_add_image' => 'Bulk Add Images',
     'vButton_confirm' => 'Confirm',
+    'vButton_cancel' => 'Cancel',
     'vButton_view_all' => 'View All',
     'vButton_save' => 'Save',
 
