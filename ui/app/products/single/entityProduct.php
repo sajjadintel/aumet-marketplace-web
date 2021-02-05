@@ -38,7 +38,7 @@ function compress_htmlcode($codedata)
                     <div class="row w-100 product-detail">
 
                         <div class="col-xxl-6 col-xl-6 col-lg-5 col-md-5 col-sm-12 col-xs-12 col-12">
-                            <img src="<?php echo $objEntityProduct->image ?>">
+                            <img class="productImage" src="<?php echo $objEntityProduct->image ?>">
                             <?php if (count($arrSubimage) > 0) : ?>
                                 <div class="p-5">
                                     <div id="autoplayContainer" class="autoplay gallery" style="height: 100px;">
@@ -179,7 +179,7 @@ function compress_htmlcode($codedata)
 
                                         <div class="image-wrapper">
                                             <div class="image">
-                                                <img src="<?php echo $objItem->image ?>" style="">
+                                                <img class="productImage" src="<?php echo $objItem->image ?>" style="">
                                             </div>
                                             <div class="image-hover-wrapper">
                                                 <div class="view-button">View</div>
@@ -219,7 +219,7 @@ function compress_htmlcode($codedata)
 
                                         <div class="image-wrapper">
                                             <div class="image">
-                                                <img src="<?php echo $objItem->image ?>" style="">
+                                                <img class="productImage" src="<?php echo $objItem->image ?>" style="">
                                             </div>
                                             <div class="image-hover-wrapper">
                                                 <div class="view-button">View</div>
@@ -513,4 +513,8 @@ function compress_htmlcode($codedata)
             });
         }
     }
+    
+    $('.productImage').on("error", function() {
+        $(this).attr('src', '/assets/img/default-product-image.png');
+    });
 </script>

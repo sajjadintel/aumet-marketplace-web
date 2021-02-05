@@ -146,9 +146,11 @@ var WebAppModals = (function () {
 		$('#modalBranchLabel').html(WebAppLocals.getMessage('branch'));
 		if (isPharmacy) {
 			$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entitySeller'));
+			$('#modalCustomerNameText').html(webResponse.data.order.entitySeller);
 			$('#modalBranchText').html(webResponse.data.order.branchSeller);
 		} else {
 			$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityBuyer'));
+			$('#modalCustomerNameText').html(webResponse.data.order.entityBuyer);
 			$('#modalBranchText').html(webResponse.data.order.branchBuyer);
 		}
 		$('#modalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));

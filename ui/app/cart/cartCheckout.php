@@ -122,8 +122,8 @@ function compress_htmlcode($codedata)
                                                     <tr>
                                                         <td class="d-flex align-items-center font-weight-bolder font-size-h5">
                                                             <div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light">
-                                                                <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->productId ?>')" class="text-dark text-hover-primary">
-                                                                    <div class="symbol-label" style="background-image: url('<?php echo $item->image ?>')"></div>
+                                                                <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->productId ?>')" class="text-dark text-hover-primary">                    
+                                                                    <img class="productImage" src="<?php echo $item->image ?>" style="width: 60px; height: 60px;">
                                                                 </a>
                                                             </div>
                                                             <div>
@@ -380,4 +380,7 @@ function compress_htmlcode($codedata)
         })
     }
 
+    $('.productImage').on("error", function() {
+        $(this).attr('src', '/assets/img/default-product-image.png');
+    });
 </script>

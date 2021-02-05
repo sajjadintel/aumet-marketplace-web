@@ -306,7 +306,7 @@ var DistributorProductsDataTable = (function () {
 	};
 
 	var _changeImageHolder = function (image, mode) {
-		let backgroundImageVal = '/theme/assets/media/users/blank.png';
+		let backgroundImageVal = '/assets/img/default-product-image.png';
 		if (image) {
 			backgroundImageVal = image;
 		}
@@ -809,7 +809,7 @@ var DistributorProductsDataTable = (function () {
     }
     
     var _closeImageModal = function () {
-        $("#imageUrl").attr("src", '/theme/assets/media/users/blank.png');
+        $("#imageUrl").attr("src", '/assets/img/default-product-image.png');
         $(imageModal).remove();
         $(".modal-backdrop.fade.show").slice(1).remove();
     }
@@ -1175,30 +1175,33 @@ var DistributorProductsDataTable = (function () {
     }
 
     return {
-        // public functions
-        reloadDatatable: function () {
-            WebApp.reloadDatatable();
-        },
-        productAddModal: function () {
-            _productAddModal();
-        },
-        productAdd: function () {
-            _productAdd();
-        },
-        productEditModal: function (productId) {
-            _productEditModal(productId);
-        },
-        productEdit: function () {
-            _productEdit();
-        },
-        productEditStockModal: function (productId) {
-            _productEditStockModal(productId);
-        },
-        productEditStock: function () {
-            _productEditStock();
-        },
-        closeImageModal: function() {
-            _closeImageModal();
-        }
-    };
+		// public functions
+		reloadDatatable: function () {
+			WebApp.reloadDatatable();
+		},
+		productAddModal: function () {
+			_productAddModal();
+		},
+		productAdd: function () {
+			_productAdd();
+		},
+		productBulkAdd: function () {
+			_productBulkAdd();
+		},
+		productEditModal: function (productId) {
+			_productEditModal(productId);
+		},
+		productEdit: function () {
+			_productEdit();
+		},
+		productEditStockModal: function (productId) {
+			_productEditStockModal(productId);
+		},
+		productEditStock: function () {
+			_productEditStock();
+		},
+		closeImageModal: function () {
+			_closeImageModal();
+		},
+	};
 })();
