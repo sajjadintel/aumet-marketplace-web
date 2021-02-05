@@ -60,7 +60,7 @@
                                                         <h1 class="slick-hero-title"><?php echo $banner->title; ?></h1>
                                                         <h1 class="slick-hero-title"><?php echo $banner->subtitle; ?></h1>
                                                         <?php if (!is_null($banner->buttonText)) : ?>
-                                                            <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>'');"><?php echo $banner->buttonText; ?></button>
+                                                            <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>');"><?php echo $banner->buttonText; ?></button>
                                                         <?php endif; ?>
                                                     </div>
                                                 <?php endif; ?>
@@ -86,8 +86,8 @@
                         <div class="row">
                             <?php foreach ($arrNewestProducts as $product) : ?>
                                 <div class="col-3">
-                                    <div class="symbol flex-shrink-0 bg-light mb-4" style="width: 100%; height: 150px;">
-                                        <div class="symbol-label" style="cursor: pointer; background-image: url('<?php echo $product->image; ?>'); width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"></div>
+                                    <div class="img-fill flex-shrink-0 bg-light mb-4" style="width: 100%; height: 150px;">
+                                        <img class="productImage" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
                                     </div>
                                     <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
                                     <p style="text-align: center;"><?php echo $product->price; ?></p>
@@ -110,8 +110,8 @@
                         <div class="row">
                             <?php foreach ($arrTopSellingProducts as $product) : ?>
                                 <div class="col-3">
-                                    <div class="symbol flex-shrink-0 bg-light mb-4" style="width: 100%; height: 150px;">
-                                        <div class="symbol-label" style="cursor: pointer; background-image: url('<?php echo $product->image; ?>'); width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"></div>
+                                    <div class="img-fill flex-shrink-0 bg-light mb-4" style="width: 100%; height: 150px;">
+                                        <img class="productImage" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
                                     </div>
                                     <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
                                     <p style="text-align: center;"><?php echo $product->price; ?></p>
@@ -260,4 +260,8 @@
             $(element).html(status[statusId].title);
         });
     }
+
+    $('.productImage').on("error", function() {
+        $(this).attr('src', '/assets/img/default-product-image.png');
+    });
 </script>

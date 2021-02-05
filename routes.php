@@ -178,9 +178,10 @@ $f3->route('POST /web/distributor/profile/myProfile', 'ProfileController->postDi
 $f3->route('POST /web/distributor/profile/accountSetting', 'ProfileController->postDistributorProfileAccountSetting');
 $f3->route('POST /web/distributor/profile/paymentSetting', 'ProfileController->postDistributorProfilePaymentSetting');
 $f3->route('POST /web/distributor/profile/image', 'ProfileController->postDistributorProfileImage');
-$f3->route('GET /web/pharmacy/profile/approve', 'ProfileController->getPharmacyProfileApprove');
-$f3->route('GET /web/distributor/profile/approve', 'ProfileController->getDistributorProfileApprove');
 $f3->route('POST /web/pharmacy/profile/image', 'ProfileController->postPharmacyProfileImage');
+
+$f3->route('GET /web/review/pharmacy/profile/approve', 'ReviewController->getReviewPharmacyProfileApprove');
+$f3->route('GET /web/review/distributor/profile/approve', 'ReviewController->getReviewDistributorProfileApprove');
 
 // Security-Authorization Issue: Users able to access non authorized pages - MPW-157 Start
 \Middleware::instance()->before('GET|POST /web/distributor/*', function(\Base $f3, $params, $alias) {
