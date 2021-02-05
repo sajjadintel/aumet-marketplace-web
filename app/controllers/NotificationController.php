@@ -10,7 +10,16 @@ class NotificationController extends Controller {
     {
         $supportReasonId = $this->f3->get("POST.supportReasonId");
         $email = $this->f3->get("POST.supportEmail");
-        $phone = $this->f3->get("POST.phone");
+        $phone = $this->f3->get("POST.supportPhone");
+
+        if(strlen($email) == 0
+            || strlen($phone) == 0
+            || strlen($supportReasonId) == 0) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = $this->f3->get('vSupport_missingFields');
+            echo $this->webResponse->jsonResponse();
+            return;
+        }
 
 
         $supportLog = new BaseModel($this->db, "supportLog");

@@ -29,8 +29,10 @@ return array(
     'vSupport_telephone' => 'Telephone no:', // TODO: Translate
     'vSupport_request_call' => 'Request a Call', // TODO: Translate
     'vSupport_title' => 'Title:', // TODO: Translate
+    'vSupport_reason' => 'Reason:', // TODO: Translate
     'vSupport_submit' => 'Submit', // TODO: Translate
     'vSupport_requestSent' => 'Request sent successfully!', // TODO: Translate
+    'vSupport_missingFields' => 'Some mandatory fields are missing', // TODO: Translate
 
     'vLogin_signin' => 'تسجيل الدخول',
     'vLogin_signinWithGoole' => 'سجل من خلال جوجل',

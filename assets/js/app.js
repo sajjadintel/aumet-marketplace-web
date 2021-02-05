@@ -15,6 +15,7 @@ var WebApp = (function () {
 	var _timeoutSession;
 
 	var _validator;
+	var _supportModalValidator;
 
 	var _alertError = function (msg) {
 		Swal.fire({
@@ -120,7 +121,7 @@ var WebApp = (function () {
 			});
 	};
 
-	var _post = function (url, data = null, fnCallback = null) {
+	var _post = function (url, data = null, fnCallback = null, submitButton = null) {
 		_blurPage();
 		_blockPage();
 		$.ajax({
@@ -157,11 +158,19 @@ var WebApp = (function () {
 					_unblockPage();
 					_alertError(WebAppLocals.getMessage('error'));
 				}
+				if(submitButton) {
+					KTUtil.btnRelease(submitButton);
+					$(submitButton).prop('disabled', false);
+				}
 			})
 			.fail(function (jqXHR, textStatus, errorThrown) {
 				_alertError(WebAppLocals.getMessage('error'));
 				_unblurPage();
 				_unblockPage();
+				if(submitButton) {
+					KTUtil.btnRelease(submitButton);
+					$(submitButton).prop('disabled', false);
+				}	
 			});
 	};
 
@@ -729,78 +738,98 @@ var WebApp = (function () {
 		var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
 		var form = KTUtil.getById('supportModalForm');
 		var formSubmitUrl = KTUtil.attr(form, 'action');
-		var data = $(form).serializeJSON();
 		var formSubmitButton = KTUtil.getById('kt_cs_form_submit_button');
 
 		if (!form) {
 			return;
 		}
+		
+		if(_supportModalValidator) {
+			_supportModalValidator.resetForm();
+			_supportModalValidator.destroy();
+		}
 
-		FormValidation.formValidation(form, {
+		_supportModalValidator = FormValidation.formValidation(form, {
 			fields: {
 				supportEmail: {
 					validators: {
 						notEmpty: {
-							message: 'Email is required',
+							message: WebAppLocals.getMessage('supportEmailRequired'),
 						},
 						emailAddress: {
-							message: 'The value is not a valid email address',
-						},
-					},
+							message: WebAppLocals.getMessage('supportEmailInvalid'),
+						}
+					}
 				},
-				phone: {
+				supportPhone: {
 					validators: {
 						notEmpty: {
-							message: 'Phone Number is required',
-						},
-					},
+							message: WebAppLocals.getMessage('supportPhoneRequired'),
+						}
+					}
 				},
 				supportReasonId: {
 					validators: {
 						notEmpty: {
-							message: 'Reason is required',
-						},
-					},
-				},
+							message: WebAppLocals.getMessage('supportReasonRequired'),
+						}
+					}
+				}
 			},
 			plugins: {
 				trigger: new FormValidation.plugins.Trigger(),
-				submitButton: new FormValidation.plugins.SubmitButton(),
-				//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
+				// Bootstrap Framework Integration
 				bootstrap: new FormValidation.plugins.Bootstrap({
-					//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
-					//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
+					//eleInvalidClass: '',
+					eleValidClass: '',
 				}),
 			},
-		})
-			.on('core.form.valid', function () {
+		});
+
+		$("#supportModalForm select[name=supportReasonId]").on("change", function(ev) {
+			var field = $(this).attr("name");
+			_supportModalValidator.revalidateField(field);
+		});
+
+		$("#support_modal").on("hidden.bs.modal", function() {
+			if(_supportModalValidator) {
+				_supportModalValidator.resetForm();
+				_supportModalValidator.destroy();
+			}
+		});
+
+		_supportModalValidator.validate().then(function (status) {
+			if (status == 'Valid') {
+                let body = {};
+
+                let mapKeyElement = {
+                    supportEmail: 'input',
+                    supportPhone: 'input',
+                    supportReasonId: 'select',
+                };
+
+                Object.keys(mapKeyElement).forEach((key) => {
+                    body[key] = $('#supportModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+                });
+
 				// Show loading state on button
 				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
+				$(formSubmitButton).prop('disabled', true);
 
-				var url = KTUtil.attr(form, 'action');
-				var data = $(form).serializeJSON();
-
-				if (!form) {
-					console.log('No Form');
-					return;
-				}
-				$('#support_modal').modal('hide');
-				WebApp.post(url, data);
-			})
-			.on('core.form.invalid', function () {
-				Swal.fire({
-					text: 'Sorry, looks like there are some errors detected, please try again.',
-					icon: 'error',
-					buttonsStyling: false,
-					confirmButtonText: 'Ok, got it!',
-					customClass: {
-						confirmButton: 'btn font-weight-bold btn-light-primary',
-					},
-				}).then(function () {
-					KTUtil.scrollTop();
-				});
-			});
+				_post(formSubmitUrl, body, _supportModalSuccessCallback, formSubmitButton);
+			}
+		});
 	};
+
+	var _supportModalSuccessCallback = function () {
+		if(_supportModalValidator) {
+			_supportModalValidator.resetForm();
+			_supportModalValidator.destroy();
+		}
+
+		$('#supportModalForm select[name=supportReasonId]').val('').trigger('change');
+		$('#support_modal').modal('hide');;
+	}
 
 	// Public Functions
 	return {

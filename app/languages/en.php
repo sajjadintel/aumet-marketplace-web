@@ -25,8 +25,10 @@ return array(
     'vSupport_telephone' => 'Telephone no:',
     'vSupport_request_call' => 'Request a Call',
     'vSupport_title' => 'Title:',
+    'vSupport_reason' => 'Reason:',
     'vSupport_submit' => 'Submit',
     'vSupport_requestSent' => 'Request sent successfully!',
+    'vSupport_missingFields' => 'Some mandatory fields are missing',
 
     'vLogin_signin' => 'Sign In',
     'vLogin_signinWithGoogle' => 'Sign in with Google',
