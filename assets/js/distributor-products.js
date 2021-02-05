@@ -1175,30 +1175,33 @@ var DistributorProductsDataTable = (function () {
     }
 
     return {
-        // public functions
-        reloadDatatable: function () {
-            WebApp.reloadDatatable();
-        },
-        productAddModal: function () {
-            _productAddModal();
-        },
-        productAdd: function () {
-            _productAdd();
-        },
-        productEditModal: function (productId) {
-            _productEditModal(productId);
-        },
-        productEdit: function () {
-            _productEdit();
-        },
-        productEditStockModal: function (productId) {
-            _productEditStockModal(productId);
-        },
-        productEditStock: function () {
-            _productEditStock();
-        },
-        closeImageModal: function() {
-            _closeImageModal();
-        }
-    };
+		// public functions
+		reloadDatatable: function () {
+			WebApp.reloadDatatable();
+		},
+		productAddModal: function () {
+			_productAddModal();
+		},
+		productAdd: function () {
+			_productAdd();
+		},
+		productBulkAdd: function () {
+			_productBulkAdd();
+		},
+		productEditModal: function (productId) {
+			_productEditModal(productId);
+		},
+		productEdit: function () {
+			_productEdit();
+		},
+		productEditStockModal: function (productId) {
+			_productEditStockModal(productId);
+		},
+		productEditStock: function () {
+			_productEditStock();
+		},
+		closeImageModal: function () {
+			_closeImageModal();
+		},
+	};
 })();
