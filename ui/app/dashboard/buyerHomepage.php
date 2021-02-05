@@ -60,7 +60,7 @@
                                                         <h1 class="slick-hero-title"><?php echo $banner->title; ?></h1>
                                                         <h1 class="slick-hero-title"><?php echo $banner->subtitle; ?></h1>
                                                         <?php if (!is_null($banner->buttonText)) : ?>
-                                                            <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>'');"><?php echo $banner->buttonText; ?></button>
+                                                            <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>');"><?php echo $banner->buttonText; ?></button>
                                                         <?php endif; ?>
                                                     </div>
                                                 <?php endif; ?>

@@ -11,7 +11,7 @@ var WebAppModals = (function () {
 		},
 		{
 			targets: 0,
-			title: WebAppLocals.getMessage('productCode'),
+			title: WebAppLocals.getMessage('id'),
 			data: 'productCode',
 		},
 		{
@@ -107,7 +107,7 @@ var WebAppModals = (function () {
 
 	var _orderViewModal = function (orderId, mIsPharmacy) {
 		isPharmacy = mIsPharmacy;
-		var url = mIsPharmacy ? '/web/pharmacy/order/' : '/web/distributor/order/'
+		var url = mIsPharmacy ? '/web/pharmacy/order/' : '/web/distributor/order/';
 		WebApp.get(url + orderId, _orderViewModalOpen);
 	};
 
@@ -146,11 +146,9 @@ var WebAppModals = (function () {
 		$('#modalBranchLabel').html(WebAppLocals.getMessage('branch'));
 		if (isPharmacy) {
 			$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entitySeller'));
-			$('#modalCustomerNameText').html(webResponse.data.order.entitySeller + ' (' + webResponse.data.order.userSeller + ')');
 			$('#modalBranchText').html(webResponse.data.order.branchSeller);
 		} else {
 			$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityBuyer'));
-			$('#modalCustomerNameText').html(webResponse.data.order.entityBuyer + ' (' + webResponse.data.order.userBuyer + ')');
 			$('#modalBranchText').html(webResponse.data.order.branchBuyer);
 		}
 		$('#modalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
@@ -162,7 +160,6 @@ var WebAppModals = (function () {
 		$('#modalAddressLabel').html(WebAppLocals.getMessage('address'));
 		$('#modalAddressText').html(webResponse.data.order.addressBuyer);
 
-
 		$('#smarttab').smartTab({
 			selected: 0,
 			theme: 'default',
@@ -171,9 +168,14 @@ var WebAppModals = (function () {
 			autoAdjustHeight: true,
 		});
 
-
-		WebApp.CreateDatatableLocal('Order Details', '#order_details_datatable', webResponse.data.orderDetail, columnDefsOrderDetails);
-		WebApp.CreateDatatableLocal('Order Details', '#order_details_datatable_logs', webResponse.data.orderLog, columnDefsOrderLogs);
+		var dbAdditionalOptions = {
+			processing: false,
+			datatableOptions: {
+				buttons: [],
+			},
+		};
+		WebApp.CreateDatatableLocal('Order Details', '#order_details_datatable', webResponse.data.orderDetail, columnDefsOrderDetails, dbAdditionalOptions);
+		WebApp.CreateDatatableLocal('Order Details', '#order_details_datatable_logs', webResponse.data.orderLog, columnDefsOrderLogs, dbAdditionalOptions);
 
 		if (isPharmacy) {
 			$('#modalPrint').attr('href', '/web/pharmacy/order/print/' + webResponse.data.order.id);
