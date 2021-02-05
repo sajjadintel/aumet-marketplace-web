@@ -245,6 +245,10 @@ return array(
     'vModule_cart_entityOrderPrice' => 'قيمة فاتورة الموزع',
     'vModule_cart_term' => 'الأسعار أعلاه قابلة للتغيير تبعا لتوقيت تحديث الاسعار من قبل الموزع',
 
+
+    'orderDetails' => 'Order Details', // TODO: Add Translation
+    'orderLogs' => 'Order Logs', // TODO: Add Translation
+
     'vModule_cart_offersTitle' => 'العروض',
     'vModule_cart_offersMore' => 'تصفح المزيد من العروض',
 
@@ -290,6 +294,7 @@ return array(
     'vButton_confirm' => 'تأكيد',
     'vButton_view_all' => 'مشاهدة الكل',
     'vButton_save' => 'حفظ',
+    'vButton_cancel' => 'Cancel', // TODO: add translation
 
     'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ', // TODO: add translation
     'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!', // TODO: add translation
