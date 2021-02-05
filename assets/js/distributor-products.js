@@ -306,7 +306,7 @@ var DistributorProductsDataTable = (function () {
 	};
 
 	var _changeImageHolder = function (image, mode) {
-		let backgroundImageVal = '/theme/assets/media/users/blank.png';
+		let backgroundImageVal = '/assets/img/default-product-image.png';
 		if (image) {
 			backgroundImageVal = image;
 		}
@@ -809,7 +809,7 @@ var DistributorProductsDataTable = (function () {
     }
     
     var _closeImageModal = function () {
-        $("#imageUrl").attr("src", '/theme/assets/media/users/blank.png');
+        $("#imageUrl").attr("src", '/assets/img/default-product-image.png');
         $(imageModal).remove();
         $(".modal-backdrop.fade.show").slice(1).remove();
     }

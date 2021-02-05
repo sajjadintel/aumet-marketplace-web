@@ -156,14 +156,13 @@ function compress_htmlcode($codedata)
                 title: WebAppLocals.getMessage('productName'),
                 data: 'productName_en',
                 render: function(data, type, row, meta) {
+                    if(!row.image) row.image = "/assets/img/default-product-image.png";
                     var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
                         row.id +
                         '\')"> ' +
-                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
-                        row.image +
-                        '\')" ></div></div>' +
+                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <img class="productImage" style="width: 60px;" src="' + row.image + '"></div>' +
                         '</a></div>';
                     output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
