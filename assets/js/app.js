@@ -734,7 +734,7 @@ var WebApp = (function () {
 		return parseFloat(number).toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
 	}
 
-	var _supportModalForm = function () {
+	var _initSupportModalForm = function () {
 		var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
 		var form = KTUtil.getById('supportModalForm');
 		var formSubmitUrl = KTUtil.attr(form, 'action');
@@ -744,79 +744,80 @@ var WebApp = (function () {
 			return;
 		}
 		
-		if(_supportModalValidator) {
-			_supportModalValidator.resetForm();
-			_supportModalValidator.destroy();
-		}
-
-		_supportModalValidator = FormValidation.formValidation(form, {
-			fields: {
-				supportEmail: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('supportEmailRequired'),
-						},
-						emailAddress: {
-							message: WebAppLocals.getMessage('supportEmailInvalid'),
-						}
-					}
-				},
-				supportPhone: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('supportPhoneRequired'),
-						}
-					}
-				},
-				supportReasonId: {
-					validators: {
-						notEmpty: {
-							message: WebAppLocals.getMessage('supportReasonRequired'),
-						}
-					}
-				}
-			},
-			plugins: {
-				trigger: new FormValidation.plugins.Trigger(),
-				// Bootstrap Framework Integration
-				bootstrap: new FormValidation.plugins.Bootstrap({
-					//eleInvalidClass: '',
-					eleValidClass: '',
-				}),
-			},
-		});
-
 		$("#supportModalForm select[name=supportReasonId]").on("change", function(ev) {
 			var field = $(this).attr("name");
 			_supportModalValidator.revalidateField(field);
+		});
+
+		$("#support_modal").on("shown.bs.modal", function() {
+			if(_supportModalValidator) {
+				_supportModalValidator.resetForm();
+				_supportModalValidator.destroy();
+			}
+
+			_supportModalValidator = FormValidation.formValidation(form, {
+				fields: {
+					supportEmail: {
+						validators: {
+							notEmpty: {
+								message: WebAppLocals.getMessage('supportEmailRequired'),
+							},
+							emailAddress: {
+								message: WebAppLocals.getMessage('supportEmailInvalid'),
+							}
+						}
+					},
+					supportPhone: {
+						validators: {
+							notEmpty: {
+								message: WebAppLocals.getMessage('supportPhoneRequired'),
+							}
+						}
+					},
+					supportReasonId: {
+						validators: {
+							notEmpty: {
+								message: WebAppLocals.getMessage('supportReasonRequired'),
+							}
+						}
+					}
+				},
+				plugins: {
+					trigger: new FormValidation.plugins.Trigger(),
+					submitButton: new FormValidation.plugins.SubmitButton(),
+					// Bootstrap Framework Integration
+					bootstrap: new FormValidation.plugins.Bootstrap({
+						//eleInvalidClass: '',
+						eleValidClass: '',
+					}),
+				},
+			});
+		
+			_supportModalValidator.on('core.form.valid', function () {
+				let body = {};
+	
+				let mapKeyElement = {
+					supportEmail: 'input',
+					supportPhone: 'input',
+					supportReasonId: 'select',
+				};
+	
+				Object.keys(mapKeyElement).forEach((key) => {
+					body[key] = $('#supportModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+				});
+	
+				// Show loading state on button
+				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
+				$(formSubmitButton).prop('disabled', true);
+	
+				_post(formSubmitUrl, body, _supportModalSuccessCallback, formSubmitButton);
+			});
 		});
 
 		$("#support_modal").on("hidden.bs.modal", function() {
 			if(_supportModalValidator) {
 				_supportModalValidator.resetForm();
 				_supportModalValidator.destroy();
-			}
-		});
-
-		_supportModalValidator.validate().then(function (status) {
-			if (status == 'Valid') {
-                let body = {};
-
-                let mapKeyElement = {
-                    supportEmail: 'input',
-                    supportPhone: 'input',
-                    supportReasonId: 'select',
-                };
-
-                Object.keys(mapKeyElement).forEach((key) => {
-                    body[key] = $('#supportModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
-                });
-
-				// Show loading state on button
-				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
-				$(formSubmitButton).prop('disabled', true);
-
-				_post(formSubmitUrl, body, _supportModalSuccessCallback, formSubmitButton);
 			}
 		});
 	};
@@ -852,6 +853,9 @@ var WebApp = (function () {
 			$(window).on('popstate', function() {
 				_handleBrowserNavigation(window.history.state.url, window.history.state);
 			});
+		},
+		initSupportModalForm: function () {
+			_initSupportModalForm();
 		},
 		signout: function () {
 			return _signout();

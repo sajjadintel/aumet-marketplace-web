@@ -33,6 +33,9 @@ return array(
     'vSupport_submit' => 'Submit', // TODO: Translate
     'vSupport_requestSent' => 'Request sent successfully!', // TODO: Translate
     'vSupport_missingFields' => 'Some mandatory fields are missing', // TODO: Translate
+    'vSupport_emailMissing' => 'Email is required', // TODO: Translate
+    'vSupport_phoneMissing' => 'Phone is required', // TODO: Translate
+    'vSupport_reasonMissing' => 'Reason is required', // TODO: Translate
 
     'vLogin_signin' => 'تسجيل الدخول',
     'vLogin_signinWithGoole' => 'سجل من خلال جوجل',

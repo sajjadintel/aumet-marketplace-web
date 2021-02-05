@@ -29,6 +29,9 @@ return array(
     'vSupport_submit' => 'Submit',
     'vSupport_requestSent' => 'Request sent successfully!',
     'vSupport_missingFields' => 'Some mandatory fields are missing',
+    'vSupport_emailMissing' => 'Email is required',
+    'vSupport_phoneMissing' => 'Phone is required',
+    'vSupport_reasonMissing' => 'Reason is required',
 
     'vLogin_signin' => 'Sign In',
     'vLogin_signinWithGoogle' => 'Sign in with Google',
