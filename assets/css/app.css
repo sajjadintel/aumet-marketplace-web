@@ -718,3 +718,9 @@ input[type='number'] {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+
+.brand-logo:hover {
+	background: #beebe5;
+	padding: 5px 0;
+	border-radius: 5px;
+}

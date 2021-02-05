@@ -281,11 +281,13 @@ function compress_htmlcode($codedata)
                         outActions += btnView;
                         /* outActions += btnPrint; */
 
+                        /*
                         if (row.statusId === 4 || row.statusId === 6)
                             outActions += reportMissing;
 
                         if (row.statusId === 8)
                             outActions += missingProduct;
+                         */
 
                         return outActions;
                     },

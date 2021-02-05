@@ -290,7 +290,7 @@ function compress_htmlcode($codedata)
                                 outActions += btnOrderPaid;
                                 break;
                             case 8:
-                                outActions += missingProduct;
+                                /*outActions += missingProduct;*/
                                 break;
                         }
 

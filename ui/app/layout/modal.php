@@ -17,6 +17,7 @@
                 <div class="modal-footer">
                     <div class="modal-add-button">
                         <button type="button" class="btn btn-primary font-weight-bold modalAction" id="modalAction">Save changes</button>
+                        <button type="button" class="btn btn-secondary font-weight-bold modalActionCancel" id="modalActionCancel"><?php echo $vButton_cancel ?></button>
                     </div>
                 </div>
             </form>

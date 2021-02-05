@@ -290,6 +290,7 @@ return array(
     'vButton_confirm' => 'تأكيد',
     'vButton_view_all' => 'مشاهدة الكل',
     'vButton_save' => 'حفظ',
+    'vButton_cancel' => 'Cancel', // TODO: add translation
 
     'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ', // TODO: add translation
     'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!', // TODO: add translation

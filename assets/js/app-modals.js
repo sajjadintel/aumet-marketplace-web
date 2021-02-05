@@ -107,7 +107,8 @@ var WebAppModals = (function () {
 
 	var _orderViewModal = function (orderId, mIsPharmacy) {
 		isPharmacy = mIsPharmacy;
-		WebApp.get('/web/distributor/order/' + orderId, _orderViewModalOpen);
+		var url = mIsPharmacy ? '/web/pharmacy/order/' : '/web/distributor/order/'
+		WebApp.get(url + orderId, _orderViewModalOpen);
 	};
 
 	var _orderViewModalOpen = function (webResponse) {
