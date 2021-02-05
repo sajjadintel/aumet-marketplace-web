@@ -883,8 +883,8 @@ var WebApp = (function () {
 		getAsync: function (url, fnCallback = null) {
 			return _getAsync(url, fnCallback);
 		},
-		post: function (url, data = null, fnCallback = null) {
-			return _post(url, data, fnCallback);
+		post: function (url, data = null, fnCallback = null, submitButton = null) {
+			return _post(url, data, fnCallback, submitButton);
 		},
 		openModal: function (webResponse) {
 			_openModal(webResponse);

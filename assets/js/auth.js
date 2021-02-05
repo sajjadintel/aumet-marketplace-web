@@ -77,6 +77,7 @@ var WebAuth = (function () {
 			.on('core.form.valid', function () {
 				// Show loading state on button
 				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
+				$(formSubmitButton).prop('disabled', true);
 
 				var url = KTUtil.attr(form, 'action');
 				var data = $(form).serializeJSON();
@@ -85,9 +86,7 @@ var WebAuth = (function () {
 					console.log('No Form');
 					return;
 				}
-				WebApp.post(url, data, function () {
-					KTUtil.btnRelease(formSubmitButton);
-				});
+				WebApp.post(url, data, null, formSubmitButton);
 			})
 			.on('core.form.invalid', function () {
 				console.log('invalid');
