@@ -432,7 +432,7 @@ class ProductsController extends Controller
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityId IN ($arrEntityId)";
-        $query .= " AND statusId = 1";
+        $query .= " AND quantityOrdered > 0 AND statusId = 1";
         $meta = array();
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
 
