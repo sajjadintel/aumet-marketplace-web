@@ -57,9 +57,9 @@
                         <!--end: Datatable-->
                     </div>
                     <div class="col-md-12 mt-10 text-center">
-                        <a id="modalPrint" target="_blank" href="web/distributor/order/print" class="btn btn-sm btn-primary btn-hover-primary" title="Print Order">
+                        <a id="modalPrint" target="_blank" href="web/distributor/order/print" class="btn btn-sm btn-primary btn-hover-primary" title="Download PDF">
                             <i class="nav-icon la la-print p-0"></i>
-                            Print Order
+                            Download PDF
                         </a>
                     </div>
                 </div>
