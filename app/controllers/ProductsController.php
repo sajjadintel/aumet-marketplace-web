@@ -147,6 +147,118 @@ class ProductsController extends Controller
         }
     }
 
+    function postEntityProduct()
+    {
+        ## Read values from Datatables
+        $datatable = new Datatable($_POST);
+
+        $entityId = $this->f3->get('PARAMS.entityId');
+        $id = $this->f3->get('PARAMS.productId');
+
+        if ($entityId == 0)
+            $productQuery = "id=$id";
+        else
+            $productQuery = "entityId=$entityId and id=$id";
+
+        $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
+        $dbEntityProduct->productName = "productName_" . $this->objUser->language;
+        $dbEntityProduct->entityName = "entityName_" . $this->objUser->language;
+        $dbEntityProduct->madeInCountryName = "madeInCountryName_" . $this->objUser->language;
+        $dbEntityProduct->subtitle = "subtitle_" . $this->objUser->language;
+        $dbEntityProduct->description = "description_" . $this->objUser->language;
+        $dbEntityProduct->getWhere($productQuery);
+
+        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+
+        $productName_ar = trim($dbEntityProduct->productName_ar);
+        $productName_en = mb_strtolower(trim($dbEntityProduct->productName_en));
+        $productName_fr = mb_strtolower(trim($dbEntityProduct->productName_fr));
+        $productId = $dbEntityProduct->id;
+        $query = [
+            "( (TRIM(productName_ar) LIKE ? OR TRIM(productName_en) LIKE ? OR TRIM(productName_fr) LIKE ? ) AND id != ? )",
+            trim($dbEntityProduct->productName_ar),
+            mb_strtolower(trim($dbEntityProduct->productName_en)),
+            mb_strtolower(trim($dbEntityProduct->productName_fr)),
+            $dbEntityProduct->id
+        ];
+
+        $dbData = new BaseModel($this->db, "vwEntityProductSell");
+        $dbData->productName = "productName_" . $this->objUser->language;
+        $dbData->entityName = "entityName_" . $this->objUser->language;
+        $data = [];
+
+        $totalRecords = $dbData->count($query);
+        $totalFiltered = $dbData->count($query);
+        
+        $order = "";
+        if(strlen($datatable->sortBy) > 0 && strlen($datatable->sortByOrder) > 0) {
+            $order = $datatable->sortBy . " " . $datatable->sortByOrder;
+        }
+
+        $limit = 0;
+        if($datatable->limit) {
+            $limit = $datatable->limit;
+        }
+
+        $offset = 0;
+        if($datatable->offset) {
+            $offset = $datatable->offset;
+        }
+        
+        $data = $dbData->findWhere($query, $order, $limit, $offset);
+
+        $allProductId = [];
+        foreach ($data as $product) {
+            array_push($allProductId, $product['id']);
+        }
+        $allProductId = implode(",", $allProductId);
+
+        $dbCartDetail = new BaseModel($this->db, "cartDetail");
+        $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+
+        if ($allProductId != null) {
+            $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+            $arrBonus = $dbBonus->findWhere("entityProductId IN ($allProductId) AND isActive = 1");
+
+            $mapProductIdBonuses = [];
+
+            foreach ($arrBonus as $bonus) {
+                $productId = $bonus['entityProductId'];
+                $allBonuses = [];
+                if (array_key_exists($productId, $mapProductIdBonuses)) {
+                    $allBonuses = $mapProductIdBonuses[$productId];
+                }
+                array_push($allBonuses, $bonus);
+                $mapProductIdBonuses[$productId] = $allBonuses;
+            }
+        }
+
+
+        for ($i = 0; $i < count($data); $i++) {
+
+            if ($data[$i]['bonusTypeId'] == 2) {
+                $data[$i]['bonusOptions'] = json_decode($data[$i]['bonusConfig']);
+                $data[$i]['bonusConfig'] = $data[$i]['bonusOptions'];
+                $data[$i]['bonuses'] = $mapProductIdBonuses[$data[$i]['id']];
+            }
+
+            $cartDetail = new BaseModel($this->db, "cartDetail");
+            $cartDetail->getWhere("userID =" . $this->objUser->id . " and entityProductId = " . $data[$i]['id'] . "");
+
+            $data[$i]['cart'] = (!$cartDetail->dry()) ? $cartDetail->quantity : 0;
+        }
+
+        ## Response
+        $response = array(
+            "draw" => intval($datatable->draw),
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $totalFiltered,
+            "data" => $data
+        );
+
+        $this->jsonResponseAPI($response);
+    }
+
     function getDistributorCanAddProduct()
     {
         if (!$this->f3->ajax()) {
