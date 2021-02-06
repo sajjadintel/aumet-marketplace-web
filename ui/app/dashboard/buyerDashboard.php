@@ -180,7 +180,7 @@
                 var btnPrint =
                     '<a href="/web/distributor/order/print/' +
                     row.id +
-                    '" target="_blank" class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="Print Order">\
+                    '" target="_blank" class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="Download PDF">\
 						<i class="nav-icon la la-print p-0"></i> &nbsp&nbsp' +
                     WebAppLocals.getMessage('print') +
                     '</a>';

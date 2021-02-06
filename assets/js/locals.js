@@ -56,8 +56,8 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		print: {
-			en: 'Print',
-			ar: 'طباعة',
+			en: 'Download PDF',
+			ar: 'طباعة', //TODO: Translation
 			fr: '',
 		},
 		options: {
@@ -558,87 +558,87 @@ var WebAppLocals = (function () {
 		characters: {
 			en: 'characters',
 			ar: 'الأحرف',
-			fr: '',	
+			fr: '',
 		},
 		fileTypeError: {
-			en: 'You can\'t upload files of this type',
+			en: "You can't upload files of this type",
 			ar: 'لا يمكنك تحميل ملفات من هذا النوع',
-			fr: ''
+			fr: '',
 		},
 		uploadSuccess: {
 			en: 'Upload Completed Successfully',
 			ar: 'اكتمل التحميل بنجاح',
-			fr: ''
+			fr: '',
 		},
 		uploadError: {
 			en: 'Upload failed',
 			ar: 'التحميل فشل',
-			fr: ''
+			fr: '',
 		},
 		bulkAddUploadError: {
 			en: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file',
 			ar: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file', // TODO: translate
-			fr: ''
+			fr: '',
 		},
 		goToProfile: {
 			en: 'Go to Profile',
 			ar: 'Go to Profile', // TODO: translate
-			fr: ''
+			fr: '',
 		},
 		distributorNameRequired: {
 			en: 'Enter Distributor Name',
 			ar: 'أدخل اسم الموزع',
-			fr: ''
+			fr: '',
 		},
 		distributorNameTooShort: {
 			en: 'Sorry, the Distributor Name entered is too short',
 			ar: 'عذرًا ، اسم الموزع الذي تم إدخاله قصير جدًا',
-			fr: ''
+			fr: '',
 		},
 		pharmacyNameRequired: {
 			en: 'Enter Pharmacy Name',
 			ar: 'أدخل اسم الصيدلية',
-			fr: ''
-		},	
+			fr: '',
+		},
 		pharmacyNameTooShort: {
 			en: 'Sorry, the Pharmacy Name entered is too short',
 			ar: 'عذرًا ، اسم الصيدلية الذي تم إدخاله قصير جدًا',
-			fr: ''
+			fr: '',
 		},
 		tradeLicenseNumberTooShort: {
 			en: 'Sorry, the Trade License Number entered is too short',
 			ar: 'عذرًا ، رقم الترخيص التجاري الذي تم إدخاله قصير جدًا',
-			fr: ''
+			fr: '',
 		},
 		addressRequired: {
 			en: 'Enter Address',
 			ar: 'أدخل العنوان',
-			fr: ''
+			fr: '',
 		},
 		addressTooShort: {
 			en: 'Sorry, the Address entered is too short',
 			ar: 'عذرا ، العنوان الذي تم إدخاله قصير جدا',
-			fr: ''
+			fr: '',
 		},
 		minimumValueOrderRequired: {
 			en: 'Enter Minimum Value Order',
 			ar: 'أدخل أمر الحد الأدنى للقيمة',
-			fr: ''
+			fr: '',
 		},
 		cityRequired: {
 			en: 'Select City from dropdown menu',
 			ar: 'حدد المدينة من القائمة المنسدلة',
-			fr: ''
+			fr: '',
 		},
 		oldPasswordRequired: {
 			en: 'Enter Current Password',
 			ar: 'إدخل كلمة السر الحالية',
-			fr: ''
+			fr: '',
 		},
 		newPasswordRequired: {
 			en: 'Enter New Password',
 			ar: 'أدخل كلمة مرور جديدة',
-			fr: ''
+			fr: '',
 		},
 	};
 
