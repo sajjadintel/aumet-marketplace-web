@@ -438,7 +438,7 @@ class ProductsController extends Controller
         $data = [];
 
         $totalRecords = $dbProducts->count($query);
-        $totalFiltered = $dbProducts->count($fullQuery);
+        $totalFiltered = MIN($dbProducts->count($fullQuery), 5);
         $data = $dbProducts->findWhere($fullQuery, "quantityOrdered DESC", 5, 0);
 
         ## Response
