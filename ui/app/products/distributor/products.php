@@ -186,6 +186,9 @@ function compress_htmlcode($codedata)
                 render: function (data, type, row, meta) {
                     var outActions = '';
 
+                    var startWrapper = '<div style="white-space: nowrap;">';
+                    var endWrapper = '</div>';
+
                     var btnEdit =
                         '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditModal(' +
                         row.id +
@@ -204,8 +207,10 @@ function compress_htmlcode($codedata)
                         WebAppLocals.getMessage('editQuantity') +
                         '</a>';
 
+                    outActions += startWrapper;
                     outActions += btnEdit;
                     outActions += btnEditQuantity;
+                    outActions += endWrapper;
 
                     return outActions;
                 },

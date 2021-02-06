@@ -88,8 +88,8 @@ class AuthController extends Controller {
 
     function postSignIn_NoFirebase()
     {
-        $email = $this->f3->get("POST.email");
-        $password = $this->f3->get("POST.password");
+        $email = trim($this->f3->get("POST.email"));
+        $password = trim($this->f3->get("POST.password"));
 
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getByField("email", $email);
@@ -272,7 +272,7 @@ class AuthController extends Controller {
 
     function postForgottenPassword()
     {
-        $email = $this->f3->get("POST.email");
+        $email = trim($this->f3->get("POST.email"));
 
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getByField("email", $email);
@@ -326,8 +326,8 @@ class AuthController extends Controller {
         $uid = $this->f3->get("POST.uid");
         $name = $this->f3->get("POST.name");
         $mobile = $this->f3->get("POST.mobile");
-        $email = $this->f3->get("POST.email");
-        $password = $this->f3->get("POST.password");
+        $email = trim($this->f3->get("POST.email"));
+        $password = trim($this->f3->get("POST.password"));
         $entityName = !empty($this->f3->get("POST.pharmacyName")) ? $this->f3->get("POST.pharmacyName") : $this->f3->get("POST.distributorName");
         $tradeLicenseNumber = $this->f3->get("POST.tradeLicenseNumber");
         $countryId = $this->f3->get("POST.country");
