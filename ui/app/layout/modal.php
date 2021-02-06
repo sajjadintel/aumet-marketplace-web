@@ -106,9 +106,9 @@
                         </div>
                     </div>
                     <div class="col-md-12 mt-10 text-center">
-                        <a id="modalPrint" target="_blank" href="web/distributor/order/print" class="btn btn-sm btn-primary btn-hover-primary" title="Print Order">
+                        <a id="modalPrint" target="_blank" href="web/distributor/order/print" class="btn btn-sm btn-primary btn-hover-primary" title="Download PDF">
                             <i class="nav-icon la la-print p-0"></i>
-                            Print Order
+                            Download PDF
                         </a>
                     </div>
                 </div>
@@ -186,7 +186,7 @@
 
                 <div class="row">
                     <div class="col-md-12 mt-10 text-center">
-                        <a id="feedbackModalSave" class="btn btn-sm btn-primary btn-hover-primary" title="Print Order">
+                        <a id="feedbackModalSave" class="btn btn-sm btn-primary btn-hover-primary" title="Save Feedback">
                             <i class="nav-icon la la-save p-0"></i>
                             Save Feedback
                         </a>
@@ -323,11 +323,7 @@
                                             <!--                                            <input type="hidden" id="missingProductId" name="productId" class="form-control">-->
                                             <div class="col-md-4">
                                                 <label><?php echo $vModal_product ?>:</label>
-                                                <select
-                                                    class="select2 form-control"
-                                                    name="productId"
-                                                    tabindex="-1"
-                                                >
+                                                <select class="select2 form-control" name="productId" tabindex="-1">
                                                 </select>
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
