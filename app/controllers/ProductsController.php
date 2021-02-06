@@ -433,13 +433,12 @@ class ProductsController extends Controller
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityId IN ($arrEntityId)";
         $query .= " AND quantityOrdered > 0 AND statusId = 1";
-        $meta = array();
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
 
         $data = [];
 
         $totalRecords = $dbProducts->count($query);
-        $totalFiltered = 5;
+        $totalFiltered = $totalRecords;
         $data = $dbProducts->findWhere($query, "quantityOrdered DESC", 5, 0);
 
         ## Response
