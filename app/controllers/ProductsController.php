@@ -431,15 +431,15 @@ class ProductsController extends Controller
         $datatable = new Datatable($_POST);
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
-        $query = "entityId IN ($arrEntityId)";
-        $query .= " AND quantityOrdered > 0 AND statusId = 1";
+        $query = "entityId IN ($arrEntityId) AND statusId = 1 ";
+        $fullQuery = $query . " AND quantityOrdered > 0";
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
 
         $data = [];
 
         $totalRecords = $dbProducts->count($query);
-        $totalFiltered = $totalRecords;
-        $data = $dbProducts->findWhere($query, "quantityOrdered DESC", 5, 0);
+        $totalFiltered = MIN($dbProducts->count($fullQuery), 5);
+        $data = $dbProducts->findWhere($fullQuery, "quantityOrdered DESC", 5, 0);
 
         ## Response
         $response = array(
