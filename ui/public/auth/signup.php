@@ -59,7 +59,7 @@
 							<!--begin::Form Group-->
 							<div class="form-group">
 								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_email ?></label>
-								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="email" placeholder="<?php echo $vSignup_email ?>" value="" style="direction: ltr;" />
+								<input type="email" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="email" placeholder="<?php echo $vSignup_email ?>" value="" style="direction: ltr;" />
 							</div>
 							<!--end::Form Group-->
 							<!--begin::Form Group-->
