@@ -533,7 +533,8 @@ input[type='number'] {
 
 /* product page */
 
-.never {
+.never,
+.display-none {
 	display: none;
 	visibility: hidden;
 }

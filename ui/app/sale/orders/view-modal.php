@@ -34,13 +34,13 @@
                             <div class="col-md-6 form-text" id="modalDateText"></div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 display-none">
                         <div class="row form-group">
                             <div class="col-md-6 form-label" id="modalBranchLabel"></div>
                             <div class="col-md-6 form-text" id="modalBranchText"></div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="row form-group">
                             <div class="col-md-6 form-label" id="modalAddressLabel"></div>
                             <div class="col-md-6 form-text" id="modalAddressText"></div>
