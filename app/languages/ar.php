@@ -117,6 +117,13 @@ return array(
     'vSignup_isVerifiedInvalidTitle' => 'Your verification token is invalid..',
     'vSignup_isVerifiedInvalidSubtitle' => '<a href="https://aumet.com">Request Assistance</a>',
 
+    'vSignup_isApprovedTitle' => 'User has been approved!',
+    'vSignup_isApprovedSubtitle' => 'An email will be sent to the user to login and get started.',
+    'vSignup_isApprovedAlreadyTitle' => 'User has already been approved!',
+    'vSignup_isApprovedAlreadySubtitle' => 'An email was already sent to the user. For any further escalation, review with the tech team.',
+    'vSignup_isApprovedInvalidTitle' => 'User invalid..',
+    'vSignup_isApprovedInvalidSubtitle' => 'For any further escalation, review with the tech team.',
+
     'vBack' => 'رجوع',
 
     'vModule_search_title' => 'Search for products...', // TODO: add translation
