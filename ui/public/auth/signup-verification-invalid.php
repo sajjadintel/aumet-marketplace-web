@@ -18,8 +18,8 @@
 				<!--begin::Thankyou-->
 				<div id="main" class="login-form login-form-signup">
 					<div class="pb-10 pb-lg-15">
-						<h3 class="font-weight-bolder text-dark display5"><?php echo $vSignup_isAlreadyVerifiedTitle ?></h3>
-						<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_isAlreadyVerifiedSubtitle ?></div>
+						<h3 class="font-weight-bolder text-dark display5"><?php echo $vSignup_isVerifiedInvalidTitle; ?></h3>
+						<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo htmlspecialchars_decode($vSignup_isVerifiedInvalidSubtitle); ?></div>
 
 						<a href="/web/auth/signin">
 							<button class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3"><?php echo $vSignup_thankyouHome ?></button>
