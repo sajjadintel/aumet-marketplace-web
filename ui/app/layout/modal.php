@@ -542,3 +542,64 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="welcomeModal" data-backdrop="static" data-role-name="<?php echo strtolower(trim(explode('-', $objUser->roleName)[0])) ?>" data-login-counter="<?php echo $objUser->loginCounter ?>" tabindex="-1" role="dialog" aria-labelledby="welcomeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="welcomeModalLabel"><?php echo $vModal_welcome_title; ?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-center justify-content-between p-4 flex-lg-wrap flex-xl-nowrap">
+                    <div class="d-flex flex-column mr-5">
+                        <a href="#" class="h4 text-dark text-hover-primary mb-5">
+                            <?php echo $vModal_welcome_message; ?>
+                        </a>
+
+                        <div class="timeline timeline-1">
+                            <div class="timeline-sep bg-primary-opacity-20"></div>
+                            <div class="timeline-item">
+                                <div class="timeline-label"><?php echo $vModal_welcome_step1_title; ?></div>
+                                <div class="timeline-badge">
+                                    <i class="fa fa-user text-primary"></i>
+                                </div>
+                                <div class="timeline-content text-muted font-weight-normal">
+                                    <?php echo $vModal_welcome_step1_message; ?>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-label"><?php echo $vModal_welcome_step2_title; ?></div>
+                                <div class="timeline-badge">
+                                    <i class="fa fa-credit-card text-primary"></i>
+                                </div>
+                                <div class="timeline-content text-muted font-weight-normal">
+                                    <?php echo $vModal_welcome_step2_message; ?>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-label"><?php echo $vModal_welcome_step3_title; ?></div>
+                                <div class="timeline-badge">
+                                    <i class="fa fa-map-marker-alt text-primary"></i>
+                                </div>
+                                <div class="timeline-content text-muted font-weight-normal">
+                                    <?php echo $vModal_welcome_step3_message; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ml-6 ml-lg-0 ml-xxl-6 flex-shrink-0">
+                        <a href="/web/profile" class="btn btn-success font-weight-bolder text-uppercase py-4 px-6">
+                            <?php echo $vModal_welcome_callToAction; ?>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
