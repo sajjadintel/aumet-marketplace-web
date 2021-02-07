@@ -53,7 +53,7 @@
                     <div class="card-footer align-items-center">
                         <!--begin::Compose-->
                         <div class="d-flex align-items-center justify-content-end">
-                            <button type="button" onclick="WebApp.supportModalFormValidation();" id="kt_cs_form_submit_button" class="btn btn-primary btn-lg text-uppercase font-weight-bold chat-send py-2 px-6"><?php echo $vSupport_submit ?></button>
+                            <button type="submit" id="kt_cs_form_submit_button" class="btn btn-primary btn-lg text-uppercase font-weight-bold chat-send py-2 px-6"><?php echo $vSupport_submit ?></button>
                         </div>
                         <!--begin::Compose-->
                     </div>
@@ -71,5 +71,6 @@
             placeholder: 'Please Select',
             minimumResultsForSearch: -1,
         });
+        WebApp.initSupportModalForm();
     });
 </script>
