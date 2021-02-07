@@ -415,4 +415,14 @@ return array(
     'field_batchNumber' => 'Batch Number',
     'field_itemCode' => 'Item Code',
     'field_strength' => 'Strength',
+
+    'vModal_welcome_title' => 'Welcome', // TODO: translate
+    'vModal_welcome_message' => 'Please complete your profile.', // TODO: translate
+    'vModal_welcome_step1_title' => 'Upload profile image.', // TODO: translate
+    'vModal_welcome_step1_message' => 'Upload profile image.', // TODO: translate
+    'vModal_welcome_step2_title' => 'Add payment method.', // TODO: translate
+    'vModal_welcome_step2_message' => 'Add payment method.', // TODO: translate
+    'vModal_welcome_step3_title' => 'Add minimum value order by location.', // TODO: translate
+    'vModal_welcome_step3_message' => 'Add minimum value order by location.', // TODO: translate
+    'vModal_welcome_callToAction' => 'Complete Profile', // TODO: translate
 );
