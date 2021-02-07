@@ -140,6 +140,7 @@ return array(
     'vModule_search_unavailableHeader' => 'Click here to inform of a lack of availability for the product and we\'ll work on resolving it as soon as possible',
 
     'vModule_product_title' => 'Product List',
+    'vModule_product_detail' => 'Product',
     'vModule_product_header' => 'You can search for products using the product name, or scientific name',
     'vModule_product_uploadStock' => 'Update Stock',
     'vModule_product_uploadBonus' => 'Update Bonus',
