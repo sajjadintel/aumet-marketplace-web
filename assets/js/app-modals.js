@@ -604,7 +604,7 @@ var ModifyQuantityOrderModals = (function () {
 (function ($) {
 	var welcomeModal = $('#welcomeModal');
 
-	if (welcomeModal.data('login-counter') && welcomeModal.data('login-counter') > 1 && JSON.parse(sessionStorage.getItem('showWelcomeModal')) === null) {
+	if (welcomeModal.data('login-counter') && welcomeModal.data('login-counter') === 1 && welcomeModal.data('role-name') === 'distributor' && JSON.parse(sessionStorage.getItem('showWelcomeModal')) === null) {
 		welcomeModal.modal('show');
 		sessionStorage.setItem('showWelcomeModal', JSON.stringify(false));
 	}
