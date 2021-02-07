@@ -41,8 +41,8 @@
                     </div>
                     <div class="col-md-12">
                         <div class="row form-group">
-                            <div class="col-md-6 form-label" id="missingProductListModalAddressLabel"></div>
-                            <div class="col-md-6 form-text" id="missingProductListModalAddressText"></div>
+                            <div class="col-md-3 form-label" id="missingProductListModalAddressLabel"></div>
+                            <div class="col-md-9 form-text" id="missingProductListModalAddressText"></div>
                         </div>
                     </div>
                 </div>
