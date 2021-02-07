@@ -58,8 +58,6 @@ return array(
     'vForgot_passwordChanged' => 'Password Changed successfully!',
     'vForgot_emailText' => 'You have recently requested on Aumet Marketplace to reset the password for your account. Click on the button below to reset it, or ignore the email if you didn\'t submit the request',
 
-    'vSignup_password' => 'Password',
-
     'vResetPassword_title' => 'Enter New Password',
     'vResetPassword_password' => 'New Password',
     'vResetPassword_passwordConfirm' => 'Confirm Password',
@@ -68,8 +66,6 @@ return array(
 
     'vChangePassword_title' => 'Change Password',
     'vChangePassword_subTitle' => 'Change Current Password',
-
-    'vBack' => 'Go Back',
 
     'vSignup_wizardUserInfo' => 'Account Information',
     'vSignup_wizardUserInfoDesc' => 'Set up your account information',
@@ -404,4 +400,14 @@ return array(
     'field_batchNumber' => 'Batch Number',
     'field_itemCode' => 'Item Code',
     'field_strength' => 'Strength',
+
+    'vModal_welcome_title' => 'Welcome',
+    'vModal_welcome_message' => 'Please complete your profile.',
+    'vModal_welcome_step1_title' => 'Step 1',
+    'vModal_welcome_step1_message' => 'Upload profile image.',
+    'vModal_welcome_step2_title' => 'Step 2',
+    'vModal_welcome_step2_message' => 'Add payment method.',
+    'vModal_welcome_step3_title' => 'Step 3',
+    'vModal_welcome_step3_message' => 'Add minimum value order by location.',
+    'vModal_welcome_callToAction' => 'Complete Profile',
 );

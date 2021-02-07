@@ -228,6 +228,7 @@ class AuthController extends Controller {
         $this->isAuth = true;
 
         $dbUser->loginCounter++;
+        $objUser->loginCounter = $dbUser->loginCounter;
         $dbUser->loginDateTime = date('Y-m-d H:i:s');
         $dbUser->update();
 

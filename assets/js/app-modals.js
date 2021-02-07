@@ -600,3 +600,12 @@ var ModifyQuantityOrderModals = (function () {
 		},
 	};
 })();
+
+(function ($) {
+	var welcomeModal = $('#welcomeModal');
+
+	if (welcomeModal.data('login-counter') && welcomeModal.data('login-counter') > 1 && JSON.parse(sessionStorage.getItem('showWelcomeModal')) === null) {
+		welcomeModal.modal('show');
+		sessionStorage.setItem('showWelcomeModal', JSON.stringify(false));
+	}
+})(jQuery);
