@@ -396,7 +396,7 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		stockUpdateDateTime: {
-			en: 'Stock Update Date Time',
+			en: 'Stock Last Updated',
 			ar: 'آخر تحديث لتوفر المنتج',
 			fr: '',
 		},
