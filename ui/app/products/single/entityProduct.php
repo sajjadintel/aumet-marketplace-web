@@ -290,10 +290,10 @@ function compress_htmlcode($codedata)
         var columnDefs = [{
                 targets: 0,
                 title: WebAppLocals.getMessage('sellingEntityName'),
-                data: 'productName',
+                data: 'entityName',
                 render: function(data, type, row, meta) {
-                    console.log(row);
-                    var output = row['productName'];
+                    console.log('testt', row.productName_ar, row.productName_en, row.productName_fr);
+                    var output = row['entityName'];
                     return output;
                 },
             },
