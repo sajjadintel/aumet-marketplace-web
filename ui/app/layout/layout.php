@@ -190,6 +190,7 @@ function compress_htmlcode($codedata)
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/3.1.0/jquery.serializejson.min.js" integrity="sha512-4y8bsEzrXJqRyl2dqjdKk/DetH59JcFTtYNMsy5DUpvVV8CXiSrQ1gSCL3+dFgj1Xco0ONPizsYd6wX2eAXL2g==" crossorigin="anonymous"></script>
         <script src="/assets/js/jquery.autocomplete.js"></script>
         <script src="/assets/js/jquery.magnific-popup.js"></script>
+        <script src="/assets/js/jquery.slider.js"></script>
 
         <!--end::Global Theme Bundle-->
 

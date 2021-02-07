@@ -41,13 +41,18 @@ function compress_htmlcode($codedata)
                             <img class="productImage" src="<?php echo $objEntityProduct->image ?>">
                             <?php if (count($arrSubimage) > 0) : ?>
                                 <div class="p-5">
-                                    <div id="autoplayContainer" class="autoplay gallery" style="height: 100px;">
-                                        <?php foreach ($arrSubimage as $subimageObj) : ?>
-                                            <div class="px-5 col-4 image-input image-input-empty image-input-outline">
-                                                <a href="/<?php echo $subimageObj->subimage; ?>" class="image-input-wrapper" style="display:block; width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/<?php echo $subimageObj->subimage; ?>'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%); cursor: pointer;">
-                                                </a>
-                                            </div>
-                                        <?php endforeach; ?>
+                                    <div style="height: 110px;position: relative;">
+                                        <button id="button-previous" type="button" data-role="none" class="slick-prev slick-arrow" aria-label="Previous" role="button" style="">Previous</button>
+                                        <div id="autoplayContainer" class="autoplay gallery" style="height: 110px;">
+                                            <?php foreach ($arrSubimage as $subimageObj) : ?>
+                                                <div class="px-5 col-4 image-input image-input-empty image-input-outline">
+                                                    <a href="/<?php echo $subimageObj->subimage; ?>" class="image-input-wrapper" style="display:flex; width: 100%; height: 100px;  box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%); cursor: pointer;">
+                                                        <img src="/<?php echo $subimageObj->subimage; ?>" style="max-width: 100%;max-height: 100%;object-fit: contain;" />
+                                                    </a>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        <button id="button-next" type="button" data-role="none" class="slick-next slick-arrow" aria-label="Next" role="button" style="">Next</button>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -506,11 +511,25 @@ function compress_htmlcode($codedata)
     function initAutoplay() {
         var slidesToShow = 3;
         if ($("#autoplayContainer").children().length > slidesToShow) {
-            $('.autoplay').slick({
-                arrows: true,
-                infinite: true,
-                slidesToShow: slidesToShow,
-                slidesToScroll: 1
+
+            $('.autoplay').sliders({
+                slidesPerPage: 3,
+                transition: 'slide',
+                queue: false,
+                delay: 5000,
+                speed: 450,
+                first: 0,
+                ease: 'swing',
+                play: false,
+                keyboardEvents: true
+            });
+
+            $('#button-next').click(function () {
+                $('.autoplay').sliders('goto', 'next');
+            });
+
+            $('#button-previous').click(function () {
+                $('.autoplay').sliders('goto', 'prev');
             });
         }
     }
