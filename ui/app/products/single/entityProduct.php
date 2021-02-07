@@ -509,7 +509,7 @@ function compress_htmlcode($codedata)
     })
 
     function initAutoplay() {
-        var slidesToShow = 3;
+        var slidesToShow = 2;
         if ($("#autoplayContainer").children().length > slidesToShow) {
 
             $('.autoplay').sliders({
