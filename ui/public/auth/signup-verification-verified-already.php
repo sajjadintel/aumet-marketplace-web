@@ -19,7 +19,7 @@
 				<div id="main" class="login-form login-form-signup">
 					<div class="pb-10 pb-lg-15">
 						<h3 class="font-weight-bolder text-dark display5"><?php echo $vSignup_isAlreadyVerifiedTitle ?></h3>
-						<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_isAlreadyVerifiedSubtitle ?></div>
+						<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo htmlspecialchars_decode($vSignup_isAlreadyVerifiedSubtitle); ?></div>
 
 						<a href="/web/auth/signin">
 							<button class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3"><?php echo $vSignup_thankyouHome ?></button>
@@ -69,7 +69,7 @@
 			</div>
 			<!--end::Aside Top-->
 			<!--begin::Aside Bottom-->
-			<div class="aside-img-wizard d-flex flex-row-fluid bgi-no-repeat pt-2 pt-lg-5" style="background-position: center; background-size: 70%; background-image: url(/assets/img/undraw_steps_ngvm.svg)"></div>
+			<div class="aside-img-wizard d-flex flex-row-fluid bgi-no-repeat pt-2 pt-lg-5" style="background-position: center; background-size: 70%; background-image: url(/assets/img/registration-verified.png)"></div>
 			<!--end::Aside Bottom-->
 		</div>
 		<!--begin::Aside-->
