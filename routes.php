@@ -173,13 +173,12 @@ $f3->route('POST /web/pharmacy/feedback/history', 'FeedbackController->postPharm
 
 $f3->route('GET /web/profile', 'ProfileController->getProfile');
 $f3->route('POST /web/profile/document/upload', 'ProfileController->postProfileDocumentUpload');
+$f3->route('POST /web/profile/image', 'ProfileController->postProfileImageUpload');
 $f3->route('POST /web/pharmacy/profile/myProfile', 'ProfileController->postPharmacyProfileMyProfile');
 $f3->route('POST /web/pharmacy/profile/accountSetting', 'ProfileController->postPharmacyProfileAccountSetting');
 $f3->route('POST /web/distributor/profile/myProfile', 'ProfileController->postDistributorProfileMyProfile');
 $f3->route('POST /web/distributor/profile/accountSetting', 'ProfileController->postDistributorProfileAccountSetting');
 $f3->route('POST /web/distributor/profile/paymentSetting', 'ProfileController->postDistributorProfilePaymentSetting');
-$f3->route('POST /web/distributor/profile/image', 'ProfileController->postDistributorProfileImage');
-$f3->route('POST /web/pharmacy/profile/image', 'ProfileController->postPharmacyProfileImage');
 
 $f3->route('GET /web/review/pharmacy/profile/approve', 'ReviewController->getReviewPharmacyProfileApprove');
 $f3->route('GET /web/review/distributor/profile/approve', 'ReviewController->getReviewDistributorProfileApprove');

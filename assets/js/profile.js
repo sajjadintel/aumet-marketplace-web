@@ -749,7 +749,7 @@ var Profile = (function () {
 				formData.append('profile_image', imageInput.input.files[0]);
 
 				$.ajax({
-					url: '/web/distributor/profile/image',
+					url: '/web/profile/image',
 					type: 'POST',
 					data: formData,
 					cache: false,

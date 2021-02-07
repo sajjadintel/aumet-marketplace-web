@@ -604,7 +604,7 @@ class ProfileController extends Controller
         }
     }
 
-    function handlePostProfileImage()
+    function handlePostProfileImageUpload()
     {
         $success = false;
         try {
@@ -644,14 +644,20 @@ class ProfileController extends Controller
         echo $this->webResponse->jsonResponse();
     }
 
-    function postDistributorProfileImage()
-    {
-        $this->handlePostProfileImage();
-    }
+    // TODO: Fix route logic in profile.js::_handleChangeProfileImage() to split routes for distr/pharm
+    // function postDistributorProfileImage()
+    // {
+    //     $this->handlePostProfileImage();
+    // }
 
-    function postPharmacyProfileImage()
+    // function postPharmacyProfileImage()
+    // {
+    //     $this->handlePostProfileImage();
+    // }
+
+    function postProfileImageUpload()
     {
-        $this->handlePostProfileImage();
+        $this->handlePostProfileImageUpload();
     }
 
     function sendChangeApprovalEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $oldTradeLicenseUrl, $tradeLicenseUrl, $approvalUrl, $userEmail)
