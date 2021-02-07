@@ -18,7 +18,7 @@
 				<!--begin::Thankyou-->
 				<div id="main" class="login-form login-form-signup">
 					<div class="pb-10 pb-lg-15">
-						<h3 class="font-weight-bolder text-dark display5"><?php echo $vSignup_isVerified ?></h3>
+						<h3 class="font-weight-bolder text-dark display5"><?php echo $vSignup_isVerifiedTitle ?></h3>
 						<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo htmlspecialchars_decode($vSignup_isVerifiedSubtitle); ?></div>
 
 						<a href="/web/auth/signin">
