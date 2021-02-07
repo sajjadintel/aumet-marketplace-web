@@ -120,6 +120,20 @@ return array(
     'vSignup_thankyouSubtitle' => 'An email has been sent to you to verify your account.',
     'vSignup_thankyouHome' => 'Go back to home',
 
+    'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',
+    'vSignup_isVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours.',
+    'vSignup_isAlreadyVerifiedTitle' => 'Your Email has already been Verified!',
+    'vSignup_isAlreadyVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours. Has it been longer? <a href="https://aumet.com">Request Assistance</a>',
+    'vSignup_isVerifiedInvalidTitle' => 'Your verification token is invalid..',
+    'vSignup_isVerifiedInvalidSubtitle' => '<a href="https://aumet.com">Request Assistance</a>',
+
+    'vSignup_isApprovedTitle' => 'User has been approved!',
+    'vSignup_isApprovedSubtitle' => 'An email will be sent to the user to login and get started.',
+    'vSignup_isApprovedAlreadyTitle' => 'User has already been approved!',
+    'vSignup_isApprovedAlreadySubtitle' => 'An email was already sent to the user. For any further escalation, review with the tech team.',
+    'vSignup_isApprovedInvalidTitle' => 'User invalid..',
+    'vSignup_isApprovedInvalidSubtitle' => 'For any further escalation, review with the tech team.',
+
     'vBack' => 'Go Back',
 
     'vModule_search_title' => 'Search for products...',
@@ -138,6 +152,7 @@ return array(
     'vModule_search_unavailableHeader' => 'Click here to inform of a lack of availability for the product and we\'ll work on resolving it as soon as possible',
 
     'vModule_product_title' => 'Product List',
+    'vModule_product_detail' => 'Product',
     'vModule_product_header' => 'You can search for products using the product name, or scientific name',
     'vModule_product_uploadStock' => 'Update Stock',
     'vModule_product_uploadBonus' => 'Update Bonus',
@@ -229,7 +244,7 @@ return array(
     'vModule_product_specialBonusInvalid' => 'Special Bonuses Invalid',
     'vModule_product_quantityTooBig' => 'Quantity too big !',
     'vModule_product_bonusTooBig' => 'Bonus too big !',
-    
+
     'vModule_product_stockStatus_NotAvailable' => 'Not Available',
     'vModule_product_stockStatus_ComingSoon' => 'Coming Soon',
 

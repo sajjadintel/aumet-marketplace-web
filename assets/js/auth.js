@@ -18,7 +18,6 @@ var WebAuth = (function () {
 			return;
 		}
 
-
 		// firebase
 		// 	.auth()
 		// 	.signInWithEmailAndPassword(form.querySelector('[name="email"]').value, form.querySelector('[name="password"]').value)
@@ -85,9 +84,14 @@ var WebAuth = (function () {
 					console.log('No Form');
 					return;
 				}
-				WebApp.post(url, data, function () {
-					KTUtil.btnRelease(formSubmitButton);
-				});
+				WebApp.post(
+					url,
+					data,
+					function () {
+						KTUtil.btnRelease(formSubmitButton);
+					},
+					true
+				);
 			})
 			.on('core.form.invalid', function () {
 				console.log('invalid');
@@ -133,6 +137,14 @@ var WebAuth = (function () {
 			});
 	};
 
+	var _handleTrimEmail = function () {
+		$("input[type = 'email']").each(function (i, obj) {
+			$(this).keyup(function () {
+				$(this).val($(this).val().replace(/ +?/g, ''));
+			});
+		});
+	};
+
 	var _handleFormForgot = function () {
 		var form = KTUtil.getById('kt_login_forgot_form');
 		var formSubmitUrl = KTUtil.attr(form, 'action');
@@ -176,6 +188,7 @@ var WebAuth = (function () {
 					console.log('No Form');
 					return;
 				}
+				console.log('test');
 				WebApp.post(url, data, function () {
 					KTUtil.btnRelease(formSubmitButton);
 				});
@@ -425,12 +438,10 @@ var WebAuth = (function () {
 								wizard.goTo(wizard.getNewStep());
 
 								let companyType = $('#kt_login_signup_form input[name=companyType]:checked').val();
-								if(companyType == 'pharmacy'){
+								if (companyType == 'pharmacy') {
 									$('.distributor').hide();
 									$('.pharmacy').show();
-
-								}else if(companyType == 'distributor'){
-
+								} else if (companyType == 'distributor') {
 									$('.pharmacy').hide();
 									$('.distributor').show();
 								}
@@ -678,7 +689,7 @@ var WebAuth = (function () {
 		var myDropzone = new Dropzone(id, {
 			// Make the whole body a dropzone
 			url: '/web/auth/signup/document/upload', // Set the url for your upload script location
-			acceptedFiles: '.pdf, .ppt, .xcl, .docx, .jpeg, .jpg, .png',
+			acceptedFiles: '.pdf, .ppt, .docx, .jpeg, .jpg, .png',
 			maxFilesize: 10, // Max filesize in MB
 			maxFiles: 1,
 			previewTemplate: previewTemplate,
@@ -763,31 +774,36 @@ var WebAuth = (function () {
 		var allValues = webResponse.data;
 		console.log(allValues);
 
-		var unitName = allValues.roleId == 40 ? "Pharmacy Name" : "Distributor Name";
+		var unitName = allValues.roleId == 40 ? 'Pharmacy Name' : 'Distributor Name';
 		var arrFields = {
-			"Name": allValues.name,
-			"Mobile": allValues.mobile,
-			"Email": allValues.email,
+			Name: allValues.name,
+			Mobile: allValues.mobile,
+			Email: allValues.email,
 			[unitName]: allValues.entityName,
-			"Trade License Number": allValues.tradeLicenseNumber,
-			"Country": allValues.countryName,
-			"City": allValues.cityName,
-			"Address": allValues.address,
+			'Trade License Number': allValues.tradeLicenseNumber,
+			Country: allValues.countryName,
+			City: allValues.cityName,
+			Address: allValues.address,
 		};
 
 		var output = '';
 		for (var key in arrFields) {
 			if (arrFields.hasOwnProperty(key)) {
-				console.log(key + " -> " + arrFields[key]);
-				output += '<tr>' +
+				console.log(key + ' -> ' + arrFields[key]);
+				output +=
+					'<tr>' +
 					'    <td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">' +
-					'        <p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>' + key + '</strong></p>' +
+					'        <p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>' +
+					key +
+					'</strong></p>' +
 					'        <table role="presentation" cellspacing="0" cellpadding="0" border="0">' +
 					'            <tbody>' +
 					'            <tr>' +
 					'                <td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">' +
 					'                    <p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">' +
-					'                        <strong>' + arrFields[key] + '</strong>' +
+					'                        <strong>' +
+					arrFields[key] +
+					'</strong>' +
 					'                    </p>' +
 					'                </td>' +
 					'            </tr>' +
@@ -799,26 +815,28 @@ var WebAuth = (function () {
 		}
 
 		if (allValues.tradeLicenseUrl) {
-			output += '<tr>' +
-			'    <td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">' +
-			'        <p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>Trade License Document</strong></p>' +
-			'        <table role="presentation" cellspacing="0" cellpadding="0" border="0">' +
-			'            <tbody>' +
-			'            <tr>' +
-			'                <td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">' +
-			'                    <p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">' +
-			'                        <a href="'+allValues.tradeLicenseUrl+'" target="_blank">Download file</strong>' +
-			'                    </p>' +
-			'                </td>' +
-			'            </tr>' +
-			'            </tbody>' +
-			'        </table>' +
-			'    </td>' +
-			'</tr>'
+			output +=
+				'<tr>' +
+				'    <td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">' +
+				'        <p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>Trade License Document</strong></p>' +
+				'        <table role="presentation" cellspacing="0" cellpadding="0" border="0">' +
+				'            <tbody>' +
+				'            <tr>' +
+				'                <td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">' +
+				'                    <p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">' +
+				'                        <a href="/' +
+				allValues.tradeLicenseUrl +
+				'" target="_blank">Download file</strong>' +
+				'                    </p>' +
+				'                </td>' +
+				'            </tr>' +
+				'            </tbody>' +
+				'        </table>' +
+				'    </td>' +
+				'</tr>';
 		}
 
 		$('#signupDetailData').html(output);
-
 
 		$('#thankyouContainer').css('display', 'block');
 	};
@@ -830,6 +848,7 @@ var WebAuth = (function () {
 				_setupFirebase();
 			}
 
+			_handleTrimEmail();
 			_handleFormForgot();
 			_handleFormReset();
 			_handleFormSignup();

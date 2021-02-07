@@ -203,7 +203,7 @@
                 var btnPrint =
                     '<a href="/web/distributor/order/print/' +
                     row.id +
-                    '" target="_blank" class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="Print Order">\
+                    '" target="_blank" class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="Download PDF">\
 						<i class="nav-icon la la-print p-0"></i></a>';
                 var btnView =
                     '<a href="javascript:;" onclick=\'WebAppModals.orderViewModal(' +
@@ -303,7 +303,7 @@
                 data: 'productName_en',
                 orderable: false,
                 render: function(data, type, row, meta) {
-                    if(!row.image) row.image = "/assets/img/default-product-image.png";
+                    if (!row.image) row.image = "/assets/img/default-product-image.png";
                     var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +

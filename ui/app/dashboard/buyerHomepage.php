@@ -4,7 +4,7 @@
         bottom: 20px;
         display: block;
         width: 100%;
-        padding: 10;
+        padding: 10px;
         margin: 0;
         list-style: none;
         text-align: center;

@@ -14,10 +14,10 @@ function compress_htmlcode($codedata)
 
 ?>
 <style>
-    .slick-prev:before,
-    .slick-next:before {
-        color: #13B9A9;
-    }
+	.slick-prev:before,
+	.slick-next:before {
+		color: #13B9A9;
+	}
 </style>
 <!--begin::Container-->
 <div class="container">
@@ -40,14 +40,19 @@ function compress_htmlcode($codedata)
                         <div class="col-xxl-6 col-xl-6 col-lg-5 col-md-5 col-sm-12 col-xs-12 col-12">
                             <img class="productImage" src="<?php echo $objEntityProduct->image ?>">
                             <?php if (count($arrSubimage) > 0) : ?>
-                                <div class="p-5">
-                                    <div id="autoplayContainer" class="autoplay gallery" style="height: 100px;">
-                                        <?php foreach ($arrSubimage as $subimageObj) : ?>
-                                            <div class="px-5 col-4 image-input image-input-empty image-input-outline">
-                                                <a href="/<?php echo $subimageObj->subimage; ?>" class="image-input-wrapper" style="display:block; width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/<?php echo $subimageObj->subimage; ?>'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%); cursor: pointer;">
-                                                </a>
-                                            </div>
-                                        <?php endforeach; ?>
+                                <div class="pr-5 pl-5">
+                                    <div style="height: 110px;position: relative;">
+                                        <button id="button-previous" type="button" data-role="none" class="slick-prev slick-arrow" aria-label="Previous" role="button" style="">Previous</button>
+                                        <div id="autoplayContainer" class="autoplay gallery" style="height: 110px;">
+                                            <?php foreach ($arrSubimage as $subimageObj) : ?>
+                                                <div class=" col-4 image-input image-input-empty image-input-outline">
+                                                    <a href="/<?php echo $subimageObj->subimage; ?>" class="image-input-wrapper" style="display:flex; width: 100%; height: 100px;  box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%); cursor: pointer;">
+                                                        <img src="/<?php echo $subimageObj->subimage; ?>" style="max-width: 100%;max-height: 100%;object-fit: contain;	object-fit: contain;width: 100%;" />
+                                                    </a>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        <button id="button-next" type="button" data-role="none" class="slick-next slick-arrow" aria-label="Next" role="button" style="">Next</button>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -254,17 +259,17 @@ function compress_htmlcode($codedata)
 
     function viewAllSameDistributor() {
         <?php if (Helper::isPharmacy($_SESSION['objUser']->roleId)) { ?>
-            WebApp.loadPage('/web/product/search?distributorId=<?php echo $objEntityProduct->entityId ?>');
+        WebApp.loadPage('/web/product/search?distributorId=<?php echo $objEntityProduct->entityId ?>');
         <?php } else { ?>
-            WebApp.loadPage('/web/distributor/product');
+        WebApp.loadPage('/web/distributor/product');
         <?php } ?>
     }
 
     function viewAllSameScientificName() {
         <?php if (Helper::isPharmacy($_SESSION['objUser']->roleId)) { ?>
-            WebApp.loadPage('/web/product/search?scientificNameId=<?php echo $objEntityProduct->scientificNameId ?>');
+        WebApp.loadPage('/web/product/search?scientificNameId=<?php echo $objEntityProduct->scientificNameId ?>');
         <?php } else { ?>
-            WebApp.loadPage('/web/distributor/product?scientificNameId=<?php echo $objEntityProduct->scientificNameId ?>');
+        WebApp.loadPage('/web/distributor/product?scientificNameId=<?php echo $objEntityProduct->scientificNameId ?>');
         <?php } ?>
     }
 
@@ -272,7 +277,7 @@ function compress_htmlcode($codedata)
         $("#imageModal").modal('hide');
     }
 
-    $('.gallery').each(function() {
+    $('.gallery').each(function () {
         $(this).magnificPopup({
             delegate: 'a',
             type: 'image',
@@ -283,25 +288,26 @@ function compress_htmlcode($codedata)
     });
 </script>
 <script>
-    var PageClass = function() {
+    var PageClass = function () {
         var elementId = "#datatableLocal";
+        var url = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 
         var columnDefs = [{
-                targets: 0,
-                title: WebAppLocals.getMessage('sellingEntityName'),
-                data: 'productName',
-                render: function(data, type, row, meta) {
-                    console.log(row);
-                    var output = row['productName'];
-                    return output;
-                },
+            targets: 0,
+            title: WebAppLocals.getMessage('sellingEntityName'),
+            data: 'entityName',
+            render: function (data, type, row, meta) {
+                console.log('testt', row.productName_ar, row.productName_en, row.productName_fr);
+                var output = row['entityName'];
+                return output;
             },
+        },
             {
                 targets: 1,
                 title: WebAppLocals.getMessage('stockAvailability'),
                 data: 'stockStatusId',
                 orderable: false,
-                render: function(data, type, row, meta) {
+                render: function (data, type, row, meta) {
                     var status = {
                         1: {
                             title: WebAppLocals.getMessage('stockAvailability_available'),
@@ -333,7 +339,7 @@ function compress_htmlcode($codedata)
                 targets: 2,
                 title: WebAppLocals.getMessage('unitPrice'),
                 data: 'unitPrice',
-                render: function(data, type, row, meta) {
+                render: function (data, type, row, meta) {
                     var output = WebApp.formatMoney(row.unitPrice) + ' ' + row.currency;
 
                     return '<div style="width: max-content;">' + output + '</div>';
@@ -364,7 +370,7 @@ function compress_htmlcode($codedata)
                 title: WebAppLocals.getMessage('quantity'),
                 data: 'id',
                 orderable: false,
-                render: function(data, type, row, meta) {
+                render: function (data, type, row, meta) {
                     console.log(row);
                     var vQuantity = '';
                     var output = '';
@@ -406,7 +412,7 @@ function compress_htmlcode($codedata)
                 title: '',
                 data: 'id',
                 orderable: false,
-                render: function(data, type, row, meta) {
+                render: function (data, type, row, meta) {
 
                     var btnAddToCart =
                         '<a style="display: flex;" href="javascript:;" ' + 'onclick="Cart.addItem(' + row.entityId + ',' + row.id + ',\'#quantity-' + row.id + '\',\'#quantityFreeInput-' + row.id + '\'' + ')"' + ' class="btn btn-sm btn-default btn-text-primary btn-hover-primary  mr-2 mb-2" title="Add to cart">\
@@ -471,13 +477,13 @@ function compress_htmlcode($codedata)
             }
         };
 
-        var initiate = function() {
-            WebApp.CreateDatatableLocal("Product List", elementId, <?php echo json_encode($arrProductOtherOffers) ?>, columnDefs, dbAdditionalOptions);
+        var initiate = function () {
+            WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, null, dbAdditionalOptions);
         };
 
 
         return {
-            init: function() {
+            init: function () {
                 initiate();
             },
         };
@@ -488,12 +494,12 @@ function compress_htmlcode($codedata)
 <?php ob_end_flush(); ?>
 <?php include_once 'image-modal.php'; ?>
 <script>
-    $(document).ready(function() {
-        $(document.body).on("click", '.addQty', function() {
+    $(document).ready(function () {
+        $(document.body).on("click", '.addQty', function () {
             $(this).prev().val(+$(this).prev().val() + 1);
             $(this).prev().trigger("change");
         });
-        $(document.body).on("click", '.subQty', function() {
+        $(document.body).on("click", '.subQty', function () {
             if ($(this).next().val() > 0) {
                 $(this).next().val(+$(this).next().val() - 1);
                 $(this).next().trigger("change");
@@ -503,18 +509,32 @@ function compress_htmlcode($codedata)
     })
 
     function initAutoplay() {
-        var slidesToShow = 3;
+        var slidesToShow = 2;
         if ($("#autoplayContainer").children().length > slidesToShow) {
-            $('.autoplay').slick({
-                arrows: true,
-                infinite: true,
-                slidesToShow: slidesToShow,
-                slidesToScroll: 1
+
+            $('.autoplay').sliders({
+                slidesPerPage: 3,
+                transition: 'slide',
+                queue: false,
+                delay: 5000,
+                speed: 450,
+                first: 0,
+                ease: 'swing',
+                play: false,
+                keyboardEvents: true
+            });
+
+            $('#button-next').click(function () {
+                $('.autoplay').sliders('goto', 'next');
+            });
+
+            $('#button-previous').click(function () {
+                $('.autoplay').sliders('goto', 'prev');
             });
         }
     }
-    
-    $('.productImage').on("error", function() {
+
+    $('.productImage').on("error", function () {
         $(this).attr('src', '/assets/img/default-product-image.png');
     });
 </script>

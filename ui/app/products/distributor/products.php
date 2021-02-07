@@ -88,7 +88,7 @@ function compress_htmlcode($codedata)
             <div class="card-body">
                 <!--begin: Datatable-->
                 <table
-                    id="datatable"
+                    id="datatableProducts"
                     class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
                 </table>
                 <!--end: Datatable-->
@@ -98,7 +98,7 @@ function compress_htmlcode($codedata)
     <!--end::Container-->
     <script>
         var PageClass = function () {
-            var elementId = "#datatable";
+            var elementId = "#datatableProducts";
             var url = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 
             var columnDefs = [
@@ -176,7 +176,7 @@ function compress_htmlcode($codedata)
                 title: WebAppLocals.getMessage('unitPrice'),
                 data: 'unitPrice',
                 render: function (data, type, row, meta) {
-                    return '<span class="font-size-sm">' + row.currency + '</span>' + ' <b class="font-size-h4">' + WebApp.formatMoney(row.unitPrice) + '</b>';
+                    return '<div style="white-space: nowrap;"><span class="font-size-sm">' + row.currency + '</span>' + ' <b class="font-size-h4">' + WebApp.formatMoney(row.unitPrice) + '</b></div>';
                 }
             }, {
                 targets: 6,
@@ -185,6 +185,9 @@ function compress_htmlcode($codedata)
                 orderable: false,
                 render: function (data, type, row, meta) {
                     var outActions = '';
+
+                    var startWrapper = '<div style="white-space: nowrap;">';
+                    var endWrapper = '</div>';
 
                     var btnEdit =
                         '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditModal(' +
@@ -204,8 +207,10 @@ function compress_htmlcode($codedata)
                         WebAppLocals.getMessage('editQuantity') +
                         '</a>';
 
+                    outActions += startWrapper;
                     outActions += btnEdit;
                     outActions += btnEditQuantity;
+                    outActions += endWrapper;
 
                     return outActions;
                 },

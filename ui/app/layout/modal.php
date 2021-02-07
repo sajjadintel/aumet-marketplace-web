@@ -61,16 +61,16 @@
                             <div class="col-md-6 form-text" id="modalDateText"></div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 display-none">
                         <div class="row form-group">
                             <div class="col-md-6 form-label" id="modalBranchLabel"></div>
                             <div class="col-md-6 form-text" id="modalBranchText"></div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalAddressLabel"></div>
-                            <div class="col-md-6 form-text" id="modalAddressText"></div>
+                            <div class="col-md-3 form-label" id="modalAddressLabel"></div>
+                            <div class="col-md-9 form-text" id="modalAddressText"></div>
                         </div>
                     </div>
                 </div>
@@ -106,9 +106,9 @@
                         </div>
                     </div>
                     <div class="col-md-12 mt-10 text-center">
-                        <a id="modalPrint" target="_blank" href="web/distributor/order/print" class="btn btn-sm btn-primary btn-hover-primary" title="Print Order">
+                        <a id="modalPrint" target="_blank" href="web/distributor/order/print" class="btn btn-sm btn-primary btn-hover-primary" title="Download PDF">
                             <i class="nav-icon la la-print p-0"></i>
-                            Print Order
+                            Download PDF
                         </a>
                     </div>
                 </div>
@@ -153,16 +153,16 @@
                             <div class="col-md-6 form-text" id="feedbackModalDateText"></div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 display-none">
                         <div class="row form-group">
                             <div class="col-md-6 form-label" id="feedbackModalBranchLabel"></div>
                             <div class="col-md-6 form-text" id="feedbackModalBranchText"></div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="row form-group">
-                            <div class="col-md-6 form-label" id="feedbackModalAddressLabel"></div>
-                            <div class="col-md-6 form-text" id="feedbackModalAddressText"></div>
+                            <div class="col-md-3 form-label" id="feedbackModalAddressLabel"></div>
+                            <div class="col-md-9 form-text" id="feedbackModalAddressText"></div>
                         </div>
                     </div>
 
@@ -186,7 +186,7 @@
 
                 <div class="row">
                     <div class="col-md-12 mt-10 text-center">
-                        <a id="feedbackModalSave" class="btn btn-sm btn-primary btn-hover-primary" title="Print Order">
+                        <a id="feedbackModalSave" class="btn btn-sm btn-primary btn-hover-primary" title="Save Feedback">
                             <i class="nav-icon la la-save p-0"></i>
                             Save Feedback
                         </a>
@@ -297,16 +297,16 @@
                                     <div class="col-md-6 form-text" id="missingProductModalDateText"></div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 display-none">
                                 <div class="row form-group">
                                     <div class="col-md-6 form-label" id="missingProductModalBranchLabel"></div>
                                     <div class="col-md-6 form-text" id="missingProductModalBranchText"></div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="row form-group">
-                                    <div class="col-md-6 form-label" id="missingProductModalAddressLabel"></div>
-                                    <div class="col-md-6 form-text" id="missingProductModalAddressText"></div>
+                                    <div class="col-md-3 form-label" id="missingProductModalAddressLabel"></div>
+                                    <div class="col-md-9 form-text" id="missingProductModalAddressText"></div>
                                 </div>
                             </div>
 
@@ -323,11 +323,7 @@
                                             <!--                                            <input type="hidden" id="missingProductId" name="productId" class="form-control">-->
                                             <div class="col-md-4">
                                                 <label><?php echo $vModal_product ?>:</label>
-                                                <select
-                                                    class="select2 form-control"
-                                                    name="productId"
-                                                    tabindex="-1"
-                                                >
+                                                <select class="select2 form-control" name="productId" tabindex="-1">
                                                 </select>
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
@@ -495,16 +491,16 @@
                                     <div class="col-md-6 form-text" id="modifyQuantityOrderModalDateText"></div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 display-none">
                                 <div class="row form-group">
                                     <div class="col-md-6 form-label" id="modifyQuantityOrderModalBranchLabel"></div>
                                     <div class="col-md-6 form-text" id="modifyQuantityOrderModalBranchText"></div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="row form-group">
-                                    <div class="col-md-6 form-label" id="modifyQuantityOrderModalAddressLabel"></div>
-                                    <div class="col-md-6 form-text" id="modifyQuantityOrderModalAddressText"></div>
+                                    <div class="col-md-3 form-label" id="modifyQuantityOrderModalAddressLabel"></div>
+                                    <div class="col-md-9 form-text" id="modifyQuantityOrderModalAddressText"></div>
                                 </div>
                             </div>
 
