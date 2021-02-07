@@ -122,38 +122,38 @@ function compress_htmlcode($codedata)
                                                     <tr>
                                                         <td class="d-flex align-items-center font-weight-bolder font-size-h5">
                                                             <div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light">
-                                                                <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->productId ?>')" class="text-dark text-hover-primary">                    
+                                                                <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->entityProductId ?>')" class="text-dark text-hover-primary">
                                                                     <img class="productImage" src="<?php echo $item->image ?>" style="width: 60px; height: 60px;">
                                                                 </a>
                                                             </div>
                                                             <div>
-                                                                <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->productId ?>')" class="text-dark text-hover-primary"><?php echo $item->name ?></a>
+                                                                <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->entityProductId ?>')" class="text-dark text-hover-primary"><?php echo $item->name ?></a>
                                                                 <?php if ($item->quantityFree > 0) : ?>
-                                                                    <p id="quantityFreeHolder-<?php echo $item->productId ?>" class="text-danger">Free <?php echo $item->name ?> x<span id="quantityFree-<?php echo $item->productId ?>"><?php echo $item->quantityFree ?></span></p>
+                                                                    <p id="quantityFreeHolder-<?php echo $item->entityProductId ?>" class="text-danger">Free <?php echo $item->name ?> x<span id="quantityFree-<?php echo $item->entityProductId ?>"><?php echo $item->quantityFree ?></span></p>
                                                                 <?php endif; ?>
                                                             </div>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <a onclick="CartCheckout.updateQuantity(<?php echo $item->productId ?>, -1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon mr-2">
+                                                            <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, -1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon mr-2">
                                                                 <i class="ki ki-minus icon-xs"></i>
                                                             </a>
-                                                            <input style="width: 40%;" type="number" id="quantity-<?php echo $item->productId ?>" onfocus="this.oldvalue = this.value;" onfocusout="CartCheckout.updateQuantity(<?php echo $item->productId ?>, 0, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, this.oldvalue)" class="mr-2 font-weight-bolder quantity" min="0" max="<?php echo min($item->stock, $item->maximumOrderQuantity); ?>" value="<?php echo $item->quantity ?>" name="quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                                                            <a onclick="CartCheckout.updateQuantity(<?php echo $item->productId ?>, 1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon">
+                                                            <input style="width: 40%;" type="number" id="quantity-<?php echo $item->entityProductId ?>" onfocus="this.oldvalue = this.value;" onfocusout="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, 0, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, this.oldvalue)" class="mr-2 font-weight-bolder quantity" min="0" max="<?php echo min($item->stock, $item->maximumOrderQuantity); ?>" value="<?php echo $item->quantity ?>" name="quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                                            <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, 1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon">
                                                                 <i class="ki ki-plus icon-xs"></i>
                                                             </a>
                                                         </td>
 
                                                         <td class="text-center align-middle">
-                                                            <input style="width: 100%;" type="text" id="note-<?php echo $item->productId ?>" onfocusout="CartCheckout.updateNote(<?php echo $item->productId ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>)" class="mr-2 font-weight-bolder quantity" value="<?php echo $item->note ?>" name="note">
+                                                            <input style="width: 100%;" type="text" id="note-<?php echo $item->entityProductId ?>" onfocusout="CartCheckout.updateNote(<?php echo $item->entityProductId ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>)" class="mr-2 font-weight-bolder quantity" value="<?php echo $item->note ?>" name="note">
                                                         </td>
 
                                                         <td class="text-right align-middle font-weight-bolder font-size-h5">
                                                             <?php echo Helper::formatMoney($item->unitPrice, 2) . " " . $currencySymbol ?>
                                                         </td>
-                                                        <td class="text-right align-middle font-weight-bolder font-size-h5 productVat-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" id="productVat-<?php echo $item->productId ?>">
+                                                        <td class="text-right align-middle font-weight-bolder font-size-h5 productVat-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" id="productVat-<?php echo $item->entityProductId ?>">
                                                             <?php echo Helper::formatMoney($item->vat, 2) . "%" ?>
                                                         </td>
-                                                        <td class="text-right align-middle font-weight-bolder font-size-h5 productPrice-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" data-vat="<?php echo $item->vat ?>" data-unitPrice="<?php echo $item->unitPrice ?>" data-productPrice="<?php echo $item->quantity * $item->unitPrice ?>" id="productPrice-<?php echo $item->productId ?>">
+                                                        <td class="text-right align-middle font-weight-bolder font-size-h5 productPrice-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" data-vat="<?php echo $item->vat ?>" data-unitPrice="<?php echo $item->unitPrice ?>" data-productPrice="<?php echo $item->quantity * $item->unitPrice ?>" id="productPrice-<?php echo $item->entityProductId ?>">
                                                             <?php echo Helper::formatMoney($item->quantity * $item->unitPrice, 2) . " " . $currencySymbol ?>
                                                         </td>
                                                         <td class="text-right align-middle">
