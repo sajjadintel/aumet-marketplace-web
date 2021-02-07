@@ -109,7 +109,6 @@ class ProfileController extends Controller
         $allValidExtensions = [
             "pdf",
             "ppt",
-            "xcl",
             "docx",
             "jpeg",
             "jpg",
@@ -120,7 +119,7 @@ class ProfileController extends Controller
         $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
 
-        $targetFile = Helper::createUploadedFileName($fileName,$ext,"files/uploads/documents/");
+        $targetFile = Helper::createUploadedFileName($fileName, $ext, "files/uploads/documents/");
 
         if (in_array($ext, $allValidExtensions)) {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
@@ -169,9 +168,9 @@ class ProfileController extends Controller
             $entityBranchId = $dbUser->entityBranchId;
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
 
-            if(strlen($tradeLicenseNumber) > 0) {
+            if (strlen($tradeLicenseNumber) > 0) {
                 $dbEntityBranch->getWhere("id != $entityBranchId AND tradeLicenseNumber='$tradeLicenseNumber'");
-    
+
                 if (!$dbEntityBranch->dry()) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get("vModule_profile_tradeLicenseTaken");
@@ -185,9 +184,10 @@ class ProfileController extends Controller
             $dbEntityBranch->address_en = $address;
             $dbEntityBranch->address_fr = $address;
 
-            if ($dbEntity->name_en != $entityName
-            || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber
-            || $dbEntityBranch->tradeLicenseUrl != $entityDocument
+            if (
+                $dbEntity->name_en != $entityName
+                || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber
+                || $dbEntityBranch->tradeLicenseUrl != $entityDocument
             ) {
                 if (strlen($entityDocument) == 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -271,9 +271,11 @@ class ProfileController extends Controller
         $newPassword = $this->f3->get("POST.newPassword");
         $newPasswordConfirmation = $this->f3->get("POST.newPasswordConfirmation");
 
-        if (strlen($oldPassword) == 0
+        if (
+            strlen($oldPassword) == 0
             || strlen($newPassword) == 0
-            || strlen($newPasswordConfirmation) == 0) {
+            || strlen($newPasswordConfirmation) == 0
+        ) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
             echo $this->webResponse->jsonResponse();
@@ -354,9 +356,9 @@ class ProfileController extends Controller
             $entityBranchId = $dbUser->entityBranchId;
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
 
-            if(strlen($tradeLicenseNumber) > 0) {
+            if (strlen($tradeLicenseNumber) > 0) {
                 $dbEntityBranch->getWhere("id != $entityBranchId AND tradeLicenseNumber='$tradeLicenseNumber'");
-    
+
                 if (!$dbEntityBranch->dry()) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get("vModule_profile_tradeLicenseTaken");
@@ -370,9 +372,10 @@ class ProfileController extends Controller
             $dbEntityBranch->address_en = $address;
             $dbEntityBranch->address_fr = $address;
 
-            if ($dbEntity->name_en != $entityName
-            || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber
-            || $dbEntityBranch->tradeLicenseUrl != $entityDocument
+            if (
+                $dbEntity->name_en != $entityName
+                || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber
+                || $dbEntityBranch->tradeLicenseUrl != $entityDocument
             ) {
                 if (strlen($entityDocument) == 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -456,9 +459,11 @@ class ProfileController extends Controller
         $newPassword = $this->f3->get("POST.newPassword");
         $newPasswordConfirmation = $this->f3->get("POST.newPasswordConfirmation");
 
-        if (strlen($oldPassword) == 0
+        if (
+            strlen($oldPassword) == 0
             || strlen($newPassword) == 0
-            || strlen($newPasswordConfirmation) == 0) {
+            || strlen($newPasswordConfirmation) == 0
+        ) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
             echo $this->webResponse->jsonResponse();
@@ -658,7 +663,7 @@ class ProfileController extends Controller
         $this->f3->set('emailType', 'changeProfileApproval');
 
         $this->f3->set('mapDisplayNameOldNewValue', $mapDisplayNameOldNewValue);
-        if($oldTradeLicenseUrl != $tradeLicenseUrl) {
+        if ($oldTradeLicenseUrl != $tradeLicenseUrl) {
             $this->f3->set('oldTradeLicenseUrl', $oldTradeLicenseUrl);
         }
         $this->f3->set('tradeLicenseUrl', $tradeLicenseUrl);

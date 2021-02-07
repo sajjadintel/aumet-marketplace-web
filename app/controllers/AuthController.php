@@ -5,7 +5,8 @@ use Kreait\Firebase\Auth;
 use Firebase\Auth\Token\Exception\InvalidToken;
 use Ahc\Jwt\JWT;
 
-class AuthController extends Controller {
+class AuthController extends Controller
+{
     function beforeroute()
     {
     }
@@ -657,7 +658,6 @@ class AuthController extends Controller {
         $allValidExtensions = [
             "pdf",
             "ppt",
-            "xcl",
             "docx",
             "jpeg",
             "jpg",
@@ -668,7 +668,7 @@ class AuthController extends Controller {
         $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
 
-        $targetFile = Helper::createUploadedFileName($fileName,$ext,"files/uploads/documents/");
+        $targetFile = Helper::createUploadedFileName($fileName, $ext, "files/uploads/documents/");
 
         if (in_array($ext, $allValidExtensions)) {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
@@ -810,41 +810,47 @@ class AuthController extends Controller {
     function getApproveAccount()
     {
         $token = $_GET['token'];
+        $isValid = true;
 
         if (!isset($token) || $token == null || $token == "") {
-            $this->rerouteAuth();
+            $this->f3->set('vAuthFile', 'signup-verification-invalid');
         }
         $token = urldecode($token);
         try {
             $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
             $accessTokenPayload = $jwt->decode($token);
         } catch (\Exception $e) {
-            $this->rerouteAuth();
+            $isValid = false;
+            $this->f3->set('vAuthFile', 'signup-verification-invalid');
         }
         if (!is_array($accessTokenPayload)) {
-            $this->rerouteAuth();
+            $isValid = false;
+            $this->f3->set('vAuthFile', 'signup-verification-invalid');
         }
 
-        $userId = $accessTokenPayload["userId"];
+        if ($isValid) {
+            $userId = $accessTokenPayload["userId"];
 
-        $dbUser = new BaseModel($this->db, "user");
-        $dbUser->getById($userId);
+            $dbUser = new BaseModel($this->db, "user");
+            $dbUser->getById($userId);
 
-        if ($dbUser->dry()) {
-            echo "Invalid";
-        } else if ($dbUser->statusId != Constants::USER_STATUS_PENDING_APPROVAL) {
-            echo "Already Approved";
-        } else {
-            $dbUser->statusId = Constants::USER_STATUS_ACCOUNT_ACTIVE;
-            $dbUser->update();
-
-            if (Helper::isPharmacy($dbUser->roleId)) {
-                NotificationHelper::sendAccountApprovedPharmacyNotification($this->f3, $this->db, $dbUser);
+            if ($dbUser->dry()) {
+                $this->f3->set('vAuthFile', 'signup-verification-invalid');
+            } else if ($dbUser->statusId != Constants::USER_STATUS_PENDING_APPROVAL) {
+                $this->f3->set('vAuthFile', 'signup-verification-verified-already');
             } else {
-                NotificationHelper::sendAccountApprovedDistributorNotification($this->f3, $this->db, $dbUser);
-            }
+                $dbUser->statusId = Constants::USER_STATUS_ACCOUNT_ACTIVE;
+                $dbUser->update();
 
-            echo "Approved";
+                if (Helper::isPharmacy($dbUser->roleId)) {
+                    NotificationHelper::sendAccountApprovedPharmacyNotification($this->f3, $this->db, $dbUser);
+                } else {
+                    NotificationHelper::sendAccountApprovedDistributorNotification($this->f3, $this->db, $dbUser);
+                }
+
+                $this->f3->set('vAuthFile', 'signup-verification-verified');
+            }
         }
+        echo View::instance()->render('public/auth/layout.php');
     }
 }

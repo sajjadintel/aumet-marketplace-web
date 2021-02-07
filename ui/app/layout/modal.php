@@ -69,8 +69,8 @@
                     </div>
                     <div class="col-md-12">
                         <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalAddressLabel"></div>
-                            <div class="col-md-6 form-text" id="modalAddressText"></div>
+                            <div class="col-md-3 form-label" id="modalAddressLabel"></div>
+                            <div class="col-md-9 form-text" id="modalAddressText"></div>
                         </div>
                     </div>
                 </div>
@@ -161,8 +161,8 @@
                     </div>
                     <div class="col-md-12">
                         <div class="row form-group">
-                            <div class="col-md-6 form-label" id="feedbackModalAddressLabel"></div>
-                            <div class="col-md-6 form-text" id="feedbackModalAddressText"></div>
+                            <div class="col-md-3 form-label" id="feedbackModalAddressLabel"></div>
+                            <div class="col-md-9 form-text" id="feedbackModalAddressText"></div>
                         </div>
                     </div>
 
@@ -305,8 +305,8 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="row form-group">
-                                    <div class="col-md-6 form-label" id="missingProductModalAddressLabel"></div>
-                                    <div class="col-md-6 form-text" id="missingProductModalAddressText"></div>
+                                    <div class="col-md-3 form-label" id="missingProductModalAddressLabel"></div>
+                                    <div class="col-md-9 form-text" id="missingProductModalAddressText"></div>
                                 </div>
                             </div>
 
@@ -499,8 +499,8 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="row form-group">
-                                    <div class="col-md-6 form-label" id="modifyQuantityOrderModalAddressLabel"></div>
-                                    <div class="col-md-6 form-text" id="modifyQuantityOrderModalAddressText"></div>
+                                    <div class="col-md-3 form-label" id="modifyQuantityOrderModalAddressLabel"></div>
+                                    <div class="col-md-9 form-text" id="modifyQuantityOrderModalAddressText"></div>
                                 </div>
                             </div>
 
