@@ -5,7 +5,7 @@ class DashboardController extends Controller
 
     function get()
     {
-        $this->f3->set('notAuthorized',$this->f3->get('SESSION.notAuthorized'));
+        $this->f3->set('notAuthorized', $this->f3->get('SESSION.notAuthorized'));
         $this->f3->clear('SESSION.notAuthorized');
         if (!$this->f3->ajax()) {
             $this->f3->set("pageURL", "/web");

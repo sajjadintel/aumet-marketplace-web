@@ -9,6 +9,7 @@ class AuthController extends Controller
 {
     function beforeroute()
     {
+        $this->f3->clear('SESSION.notAuthorized');
     }
 
     function getSignIn()
