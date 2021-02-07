@@ -90,6 +90,7 @@ var WebAuth = (function () {
 					function () {
 						KTUtil.btnRelease(formSubmitButton);
 					},
+					null,
 					true
 				);
 			})
