@@ -726,3 +726,7 @@ input[type='number'] {
 .tab-content {
 	height: auto !important;
 }
+
+#datatableProducts th {
+	white-space: nowrap;
+}
