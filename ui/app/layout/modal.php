@@ -543,7 +543,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="welcomeModal" data-backdrop="static" data-role-name="<?php echo strtolower(trim(explode('-', $objUser->roleName)[0])) ?>" data-login-counter="<?php echo $objUser->loginCounter ?>" tabindex="-1" role="dialog" aria-labelledby="welcomeModalLabel" aria-hidden="true">
+<div class="modal fade" id="welcomeModal" data-backdrop="static" data-user-id="<?php echo $objUser->id ?>" data-role-name="<?php echo strtolower(trim(explode('-', $objUser->roleName)[0])) ?>" data-login-counter="<?php echo $objUser->loginCounter ?>" tabindex="-1" role="dialog" aria-labelledby="welcomeModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
