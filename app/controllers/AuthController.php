@@ -5,7 +5,8 @@ use Kreait\Firebase\Auth;
 use Firebase\Auth\Token\Exception\InvalidToken;
 use Ahc\Jwt\JWT;
 
-class AuthController extends Controller {
+class AuthController extends Controller
+{
     function beforeroute()
     {
     }
@@ -657,7 +658,6 @@ class AuthController extends Controller {
         $allValidExtensions = [
             "pdf",
             "ppt",
-            "xcl",
             "docx",
             "jpeg",
             "jpg",
@@ -668,7 +668,7 @@ class AuthController extends Controller {
         $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
 
-        $targetFile = Helper::createUploadedFileName($fileName,$ext,"files/uploads/documents/");
+        $targetFile = Helper::createUploadedFileName($fileName, $ext, "files/uploads/documents/");
 
         if (in_array($ext, $allValidExtensions)) {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
