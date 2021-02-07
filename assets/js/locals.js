@@ -640,6 +640,26 @@ var WebAppLocals = (function () {
 			ar: 'أدخل كلمة مرور جديدة',
 			fr: '',
 		},
+		supportEmailRequired: {
+			en: 'Enter Email',
+			ar: 'أدخل البريد الإلكتروني',
+			fr: ''
+		},
+		supportEmailInvalid: {
+			en: 'Invalid Email',
+			ar: 'بريد إلكتروني خاطئ',
+			fr: ''
+		},
+		supportPhoneRequired: {
+			en: 'Enter Telephone no',
+			ar: 'أدخل رقم الهاتف',
+			fr: ''
+		},
+		supportReasonRequired: {
+			en: 'Select Reason from dropdown menu',
+			ar: 'حدد السبب من القائمة المنسدلة',
+			fr: ''
+		},
 	};
 
 	var _symbolsLocals = {

@@ -15,6 +15,7 @@ var WebApp = (function () {
 	var _timeoutSession;
 
 	var _validator;
+	var _supportModalValidator;
 
 	var _alertError = function (msg) {
 		Swal.fire({
@@ -120,7 +121,7 @@ var WebApp = (function () {
 			});
 	};
 
-	var _post = function (url, data = null, fnCallback = null, forceCallback = false) {
+	var _post = function (url, data = null, fnCallback = null, submitButton = null, forceCallback = false) {
 		_blurPage();
 		_blockPage();
 		$.ajax({
@@ -167,6 +168,10 @@ var WebApp = (function () {
 					_unblockPage();
 					_alertError(WebAppLocals.getMessage('error'));
 				}
+				if(submitButton) {
+					KTUtil.btnRelease(submitButton);
+					$(submitButton).prop('disabled', false);
+				}
 			})
 			.fail(function (jqXHR, textStatus, errorThrown) {
 				if (forceCallback) {
@@ -177,6 +182,10 @@ var WebApp = (function () {
 				_alertError(WebAppLocals.getMessage('error'));
 				_unblurPage();
 				_unblockPage();
+				if(submitButton) {
+					KTUtil.btnRelease(submitButton);
+					$(submitButton).prop('disabled', false);
+				}	
 			});
 	};
 
@@ -810,82 +819,103 @@ var WebApp = (function () {
 			.replace(new RegExp(re, 'g'), '$&,');
 	};
 
-	var _supportModalForm = function () {
+	var _initSupportModalForm = function () {
 		var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
 		var form = KTUtil.getById('supportModalForm');
 		var formSubmitUrl = KTUtil.attr(form, 'action');
-		var data = $(form).serializeJSON();
 		var formSubmitButton = KTUtil.getById('kt_cs_form_submit_button');
 
 		if (!form) {
 			return;
 		}
+		
+		$("#supportModalForm select[name=supportReasonId]").on("change", function(ev) {
+			var field = $(this).attr("name");
+			_supportModalValidator.revalidateField(field);
+		});
 
-		FormValidation.formValidation(form, {
-			fields: {
-				supportEmail: {
-					validators: {
-						notEmpty: {
-							message: 'Email is required',
-						},
-						emailAddress: {
-							message: 'The value is not a valid email address',
-						},
+		$("#support_modal").on("shown.bs.modal", function() {
+			if(_supportModalValidator) {
+				_supportModalValidator.resetForm();
+				_supportModalValidator.destroy();
+			}
+
+			_supportModalValidator = FormValidation.formValidation(form, {
+				fields: {
+					supportEmail: {
+						validators: {
+							notEmpty: {
+								message: WebAppLocals.getMessage('supportEmailRequired'),
+							},
+							emailAddress: {
+								message: WebAppLocals.getMessage('supportEmailInvalid'),
+							}
+						}
 					},
-				},
-				phone: {
-					validators: {
-						notEmpty: {
-							message: 'Phone Number is required',
-						},
+					supportPhone: {
+						validators: {
+							notEmpty: {
+								message: WebAppLocals.getMessage('supportPhoneRequired'),
+							}
+						}
 					},
+					supportReasonId: {
+						validators: {
+							notEmpty: {
+								message: WebAppLocals.getMessage('supportReasonRequired'),
+							}
+						}
+					}
 				},
-				supportReasonId: {
-					validators: {
-						notEmpty: {
-							message: 'Reason is required',
-						},
-					},
+				plugins: {
+					trigger: new FormValidation.plugins.Trigger(),
+					submitButton: new FormValidation.plugins.SubmitButton(),
+					// Bootstrap Framework Integration
+					bootstrap: new FormValidation.plugins.Bootstrap({
+						//eleInvalidClass: '',
+						eleValidClass: '',
+					}),
 				},
-			},
-			plugins: {
-				trigger: new FormValidation.plugins.Trigger(),
-				submitButton: new FormValidation.plugins.SubmitButton(),
-				//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
-				bootstrap: new FormValidation.plugins.Bootstrap({
-					//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
-					//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
-				}),
-			},
-		})
-			.on('core.form.valid', function () {
+			});
+		
+			_supportModalValidator.on('core.form.valid', function () {
+				let body = {};
+	
+				let mapKeyElement = {
+					supportEmail: 'input',
+					supportPhone: 'input',
+					supportReasonId: 'select',
+				};
+	
+				Object.keys(mapKeyElement).forEach((key) => {
+					body[key] = $('#supportModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+				});
+	
 				// Show loading state on button
 				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
-
-				var url = KTUtil.attr(form, 'action');
-				var data = $(form).serializeJSON();
-
-				if (!form) {
-					console.log('No Form');
-					return;
-				}
-				$('#support_modal').modal('hide');
-				WebApp.post(url, data);
-			})
-			.on('core.form.invalid', function () {
-				Swal.fire({
-					text: 'Sorry, looks like there are some errors detected, please try again.',
-					icon: 'error',
-					buttonsStyling: false,
-					confirmButtonText: 'Ok, got it!',
-					customClass: {
-						confirmButton: 'btn font-weight-bold btn-light-primary',
-					},
-				}).then(function () {
-					KTUtil.scrollTop();
-				});
+				$(formSubmitButton).prop('disabled', true);
+	
+				_post(formSubmitUrl, body, _supportModalSuccessCallback, formSubmitButton);
 			});
+		});
+
+		$("#support_modal").on("hidden.bs.modal", function() {
+			if(_supportModalValidator) {
+				_supportModalValidator.resetForm();
+				_supportModalValidator.destroy();
+			}
+		});
 	};
+
+	var _supportModalSuccessCallback = function () {
+		if(_supportModalValidator) {
+			_supportModalValidator.resetForm();
+			_supportModalValidator.destroy();
+		}
+
+		$('#supportModalForm select[name=supportReasonId]').val('').trigger('change');
+		$('#support_modal').modal('hide');;
+	}
 
 	// Public Functions
 	return {
@@ -908,6 +938,9 @@ var WebApp = (function () {
 			$(window).on('popstate', function () {
 				_handleBrowserNavigation(window.history.state.url, window.history.state);
 			});
+		},
+		initSupportModalForm: function () {
+			_initSupportModalForm();
 		},
 		signout: function () {
 			return _signout();
@@ -939,8 +972,8 @@ var WebApp = (function () {
 		getAsync: function (url, fnCallback = null) {
 			return _getAsync(url, fnCallback);
 		},
-		post: function (url, data = null, fnCallback = null, forceCallback = false) {
-			return _post(url, data, fnCallback, forceCallback);
+		post: function (url, data = null, fnCallback = null, submitButton = null, forceCallback = false) {
+			return _post(url, data, fnCallback, submitButton, forceCallback);
 		},
 		openModal: function (webResponse) {
 			_openModal(webResponse);
