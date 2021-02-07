@@ -133,6 +133,14 @@ var WebAuth = (function () {
 			});
 	};
 
+	var _handleTrimEmail = function () {
+		$("input[type = 'email']").each(function (i, obj) {
+			$(this).keyup(function () {
+				$(this).val($(this).val().replace(/ +?/g, ''));
+			});
+		});
+	}
+
 	var _handleFormForgot = function () {
 		var form = KTUtil.getById('kt_login_forgot_form');
 		var formSubmitUrl = KTUtil.attr(form, 'action');
@@ -830,6 +838,7 @@ var WebAuth = (function () {
 				_setupFirebase();
 			}
 
+			_handleTrimEmail();
 			_handleFormForgot();
 			_handleFormReset();
 			_handleFormSignup();
