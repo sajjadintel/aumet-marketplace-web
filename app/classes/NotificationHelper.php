@@ -189,6 +189,7 @@ class NotificationHelper {
                 $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajjad intel");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
                 $emailHandler->appendToAddress("n.javaid@aumet.com", "Naveed Javaid");
+                $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
             }
         }
 
@@ -234,6 +235,7 @@ class NotificationHelper {
                 $emailHandler->resetTos();
                 $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajjad intel");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
             }
         }
 
