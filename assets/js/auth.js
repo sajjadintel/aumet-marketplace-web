@@ -76,6 +76,7 @@ var WebAuth = (function () {
 			.on('core.form.valid', function () {
 				// Show loading state on button
 				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
+				$(formSubmitButton).prop('disabled', true);
 
 				var url = KTUtil.attr(form, 'action');
 				var data = $(form).serializeJSON();
