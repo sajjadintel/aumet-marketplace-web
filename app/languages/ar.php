@@ -135,6 +135,7 @@ return array(
     'vModule_search_unavailableHeader' => 'اضغط هنا للابلاغ عن عدم توفر المنتج المطلوب وسيتم العمل على مساعدتك بأسرع وقت ممكن',
 
     'vModule_product_title' => 'المنتجات',
+    'vModule_product_detail' => 'Product', // TODO: add translation
     'vModule_product_header' => 'يمكنك البحث عن المنتجات من خلال اسم المنتج أو الاسم العلمي للمنتج',
     'vModule_product_uploadStock' => 'تحديث المخزون',
     'vModule_product_uploadBonus' => 'تحديث البونص',

@@ -141,7 +141,7 @@ class ProductsController extends Controller
             $this->f3->set('arrSubimage', $arrSubimage);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-            $this->webResponse->title = $this->f3->get('vTitle_entityProductDetail');
+            $this->webResponse->title = $this->f3->get('vModule_product_detail') . " | " . $dbEntityProduct->productName;
             $this->webResponse->data = View::instance()->render('app/products/single/entityProduct.php');
             echo $this->webResponse->jsonResponse();
         }
@@ -189,22 +189,22 @@ class ProductsController extends Controller
 
         $totalRecords = $dbData->count($query);
         $totalFiltered = $dbData->count($query);
-        
+
         $order = "";
-        if(strlen($datatable->sortBy) > 0 && strlen($datatable->sortByOrder) > 0) {
+        if (strlen($datatable->sortBy) > 0 && strlen($datatable->sortByOrder) > 0) {
             $order = $datatable->sortBy . " " . $datatable->sortByOrder;
         }
 
         $limit = 0;
-        if($datatable->limit) {
+        if ($datatable->limit) {
             $limit = $datatable->limit;
         }
 
         $offset = 0;
-        if($datatable->offset) {
+        if ($datatable->offset) {
             $offset = $datatable->offset;
         }
-        
+
         $data = $dbData->findWhere($query, $order, $limit, $offset);
 
         $allProductId = [];
