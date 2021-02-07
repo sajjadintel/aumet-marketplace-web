@@ -84,9 +84,14 @@ var WebAuth = (function () {
 					console.log('No Form');
 					return;
 				}
-				WebApp.post(url, data, function () {
-					KTUtil.btnRelease(formSubmitButton);
-				});
+				WebApp.post(
+					url,
+					data,
+					function () {
+						KTUtil.btnRelease(formSubmitButton);
+					},
+					true
+				);
 			})
 			.on('core.form.invalid', function () {
 				console.log('invalid');
@@ -183,6 +188,7 @@ var WebAuth = (function () {
 					console.log('No Form');
 					return;
 				}
+				console.log('test');
 				WebApp.post(url, data, function () {
 					KTUtil.btnRelease(formSubmitButton);
 				});
