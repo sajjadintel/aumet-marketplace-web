@@ -603,9 +603,13 @@ var ModifyQuantityOrderModals = (function () {
 
 (function ($) {
 	var welcomeModal = $('#welcomeModal');
+	var userId = welcomeModal.data('user-id');
+	var showWelcomeModal = JSON.parse(sessionStorage.getItem('showWelcomeModal'));
 
-	if (welcomeModal.data('login-counter') && welcomeModal.data('login-counter') === 1 && welcomeModal.data('role-name') === 'distributor' && JSON.parse(sessionStorage.getItem('showWelcomeModal')) === null) {
+	if (welcomeModal.data('login-counter') && welcomeModal.data('login-counter') === 1
+		&& welcomeModal.data('role-name') === 'distributor'
+		&& (showWelcomeModal === null || showWelcomeModal.userId !== userId)) {
 		welcomeModal.modal('show');
-		sessionStorage.setItem('showWelcomeModal', JSON.stringify(false));
+		sessionStorage.setItem('showWelcomeModal', JSON.stringify({'userId': userId, 'show': false}));
 	}
 })(jQuery);
