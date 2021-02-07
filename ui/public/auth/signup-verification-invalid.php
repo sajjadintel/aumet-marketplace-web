@@ -69,7 +69,7 @@
 			</div>
 			<!--end::Aside Top-->
 			<!--begin::Aside Bottom-->
-			<div class="aside-img-wizard d-flex flex-row-fluid bgi-no-repeat pt-2 pt-lg-5" style="background-position: center; background-size: 70%; background-image: url(/assets/img/undraw_steps_ngvm.svg)"></div>
+			<div class="aside-img-wizard d-flex flex-row-fluid bgi-no-repeat pt-2 pt-lg-5" style="background-position: center; background-size: 70%; background-image: url(/assets/img/registration-verified.png)"></div>
 			<!--end::Aside Bottom-->
 		</div>
 		<!--begin::Aside-->
