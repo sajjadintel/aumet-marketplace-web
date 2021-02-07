@@ -831,9 +831,9 @@ class AuthController extends Controller
         $dbUser->getById($userId);
 
         if ($dbUser->dry()) {
-            echo "Invalid";
+            $this->f3->set('vAuthFile', 'signup-verification-invalid');
         } else if ($dbUser->statusId != Constants::USER_STATUS_PENDING_APPROVAL) {
-            echo "Already Approved";
+            $this->f3->set('vAuthFile', 'signup-verification-verified-already');
         } else {
             $dbUser->statusId = Constants::USER_STATUS_ACCOUNT_ACTIVE;
             $dbUser->update();
@@ -844,7 +844,8 @@ class AuthController extends Controller
                 NotificationHelper::sendAccountApprovedDistributorNotification($this->f3, $this->db, $dbUser);
             }
 
-            echo "Approved";
+            $this->f3->set('vAuthFile', 'signup-verification-verified');
         }
+        echo View::instance()->render('public/auth/layout.php');
     }
 }

@@ -110,6 +110,13 @@ return array(
     'vSignup_thankyouSubtitle' => 'تم إرسال بريد إلكتروني إليك للتحقق من حسابك.',
     'vSignup_thankyouHome' => 'العودة إلى الصفحة الرئيسية',
 
+    'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',
+    'vSignup_isVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours.',
+    'vSignup_isAlreadyVerifiedTitle' => 'Your Email has already been Verified!',
+    'vSignup_isAlreadyVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours. Has it been longer? <a href="aumet.com">Request Assistance</a>',
+    'vSignup_isVerifiedInvalidTitle' => 'Your verification token is invalid..',
+    'vSignup_isVerifiedInvalidSubtitle' => '<a href="aumet.com">Request Assistance</a>',
+
     'vBack' => 'رجوع',
 
     'vModule_search_title' => 'Search for products...', // TODO: add translation
@@ -181,9 +188,9 @@ return array(
 
     'vModule_productAdded' => 'Product is added successfully!', // TODO: add translation
     'vModule_quantityEdited' => 'Product Quantity is edited successfully!', // TODO: add translation
-    'vModule_productEdited' => 'Product is edited successfully!',// TODO: add translation
-    'vModule_productStockEdited' => 'Product stock is edited successfully!',// TODO: add translation
-    'vModule_customerEdited' => 'Customer is edited successfully!',// TODO: add translation
+    'vModule_productEdited' => 'Product is edited successfully!', // TODO: add translation
+    'vModule_productStockEdited' => 'Product stock is edited successfully!', // TODO: add translation
+    'vModule_customerEdited' => 'Customer is edited successfully!', // TODO: add translation
 
     'vModule_order_title' => 'لائحة الطلبات',
     'vModule_order_header' => 'يمكنك عرض قائمة بأوامرك',
