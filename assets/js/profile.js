@@ -283,6 +283,7 @@ var Profile = (function () {
 	};
 
 	var _getFullUrl = function (filePath) {
+		return filePath;
 		return window.location.protocol + '//' + window.location.hostname + '/' + filePath;
 	};
 
@@ -763,7 +764,8 @@ var Profile = (function () {
 					},
 					success: function (webResponse) {
 						console.debug(webResponse);
-						if (webResponse.data) { // success scenario
+						if (webResponse.data) {
+							// success scenario
 							Swal.fire({
 								title: webResponse.message,
 								icon: 'success',
@@ -773,9 +775,10 @@ var Profile = (function () {
 									confirmButton: 'btn btn-primary font-weight-bold',
 								},
 							}).then(function () {
-								$('#side-panel-profile-image').css({'backgroundImage': 'url(' + webResponse.data['image'] + ')'});
+								$('#side-panel-profile-image').css({ backgroundImage: 'url(' + webResponse.data['image'] + ')' });
 							});
-						} else { // error scenario
+						} else {
+							// error scenario
 							Swal.fire({
 								title: webResponse.message,
 								icon: 'error',
