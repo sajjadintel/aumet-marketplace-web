@@ -147,5 +147,3 @@ class Excel {
         return date($format, ($excelDate - 25569) * 86400);
     }
 }
-
-?>
