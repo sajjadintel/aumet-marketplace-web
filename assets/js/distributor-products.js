@@ -699,7 +699,7 @@ var DistributorProductsDataTable = (function () {
 			// Make the whole body a dropzone
 			url: '/web/distributor/product/subimage', // Set the url for your upload script location
 			acceptedFiles: '.jpeg, .jpg, .png',
-			maxFilesize: 10, // Max filesize in MB
+			maxFilesize: 2, // Max filesize in MB
 			maxFiles: 6,
 			previewTemplate: previewTemplate,
 			previewsContainer: id + ' .dropzone-items', // Define the container to display the previews
@@ -711,7 +711,6 @@ var DistributorProductsDataTable = (function () {
 			$(document)
 				.find(id + ' .dropzone-item')
 				.css('display', 'block');
-			$('#' + mode + 'MaxFilesExceededLabel').hide();
 		});
 
 		// Update the total progress bar
@@ -753,8 +752,29 @@ var DistributorProductsDataTable = (function () {
 
 		myDropZone.on('maxfilesexceeded', function (file) {
 			myDropZone.removeFile(file);
-			$('#' + mode + 'MaxFilesExceededLabel').show();
+			$('#' + mode + 'SubimagesErrorLabel').text(WebAppLocals.getMessage("subimagesExceeded"));
+			$('#' + mode + 'SubimagesErrorLabel').show();
 		});
+
+		myDropZone.on('error', function (file, errorMessage) {
+			var errorLabelText = "";
+			if(errorMessage.includes("too big")) {
+				errorLabelText = WebAppLocals.getMessage("subimagesMaximumSize");
+			} else if (errorMessage.includes("type")) {
+				errorLabelText = WebAppLocals.getMessage("subimagesWrongFormat");
+			}
+			
+			myDropZone.removeFile(file);
+			$('#' + mode + 'SubimagesErrorLabel').text(errorLabelText);
+			$('#' + mode + 'SubimagesErrorLabel').show();
+
+			setTimeout(() => {
+				$('#' + mode + 'SubimagesErrorLabel').text('');
+				$('#' + mode + 'SubimagesErrorLabel').hide();
+			}, 3000);
+		});
+
+		
 
 		if (initialSubimages.length > 0) {
 			initialSubimages.forEach((subimageObj) => {

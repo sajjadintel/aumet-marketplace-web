@@ -222,7 +222,6 @@ return array(
     'vModule_product_activeIngredients' => 'Active Ingredients',
     'vModule_product_strength' => 'Strength',
     'vModule_product_uploadSubimages' => 'Upload Subimages',
-    'vModule_product_subimagesExceeded' => 'Subimages limit reached',
     'vModule_product_subcategoryInvalid' => 'Subcategory invalid',
     'vModule_product_stockInvalid' => 'Available Quantity should be a positive whole number not null',
     'vModule_product_maximumOrderQuantityInvalid' => 'Maximum Order Quantity should be a positive whole number not null',
