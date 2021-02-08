@@ -172,6 +172,9 @@ var Profile = (function () {
 			previewTemplate: previewTemplate,
 			previewsContainer: id + ' .dropzone-items', // Define the container to display the previews
 			clickable: id + ' .dropzone-select', // Define the element that should be used as click trigger to select files.
+			init: function(){
+				this.on("error", function(file){if (!file.accepted) this.removeFile(file);});
+			},
 		});
 
 		_myDropZone.on('addedfile', function (file) {
