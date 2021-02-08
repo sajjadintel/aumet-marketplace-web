@@ -181,32 +181,4 @@ $f3->route('GET /web/pharmacy/profile/approve', 'ProfileController->getPharmacyP
 $f3->route('GET /web/distributor/profile/approve', 'ProfileController->getDistributorProfileApprove');
 $f3->route('POST /web/pharmacy/profile/image', 'ProfileController->postPharmacyProfileImage');
 
-// Security-Authorization Issue: Users able to access non authorized pages - MPW-157 Start
-\Middleware::instance()->before('GET|POST /web/distributor/*', function(\Base $f3, $params, $alias) {
-    // if not distributor
-    if($f3->get('SESSION.objUser')->roleId != 10){
-        $f3->set('SESSION.notAuthorized',1,20);
-        $f3->reroute('/web');
-    }
-});
-
-\Middleware::instance()->before('GET|POST /web/pharmacy/*', function(\Base $f3, $params, $alias) {
-
-    // if not pharmacy
-    if($f3->get('SESSION.objUser')->roleId != 40){
-        $f3->set('SESSION.notAuthorized',1,20);
-        $f3->reroute('/web');
-    }
-});
-
-\Middleware::instance()->before('GET|POST /web/cart/*', function(\Base $f3, $params, $alias) {
-
-    // if not pharmacy
-    if($f3->get('SESSION.objUser')->roleId != 40){
-        $f3->set('SESSION.notAuthorized',1,20);
-        $f3->reroute('/web');
-    }
-});
-
-\Middleware::instance()->run();
-// Security-Authorization Issue: Users able to access non authorized pages - MPW-157 End
+include_once('routes-permission.php');

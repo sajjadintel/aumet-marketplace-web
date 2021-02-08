@@ -42,7 +42,7 @@ class Helper {
 
     public static function isPharmacy($roleId)
     {
-        if ($roleId == 40) {
+        if ($roleId == 40 || $roleId == 41) {
             return true;
         }
         return false;
