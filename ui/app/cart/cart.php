@@ -100,7 +100,7 @@ function compress_htmlcode($codedata)
                     </h3>
                     <div class="card-toolbar">
                         <div class="dropdown dropdown-inline">
-                            <a href="javascript:;" class="btn btn-primary font-weight-bolder font-size-sm" onclick="WebApp.loadPage('/web/product/search');"><?php echo $vModule_cart_continueShopping ?></a>
+                            <a href="javascript:;" class="btn btn-primary font-weight-bolder font-size-sm" onclick="WebApp.loadPage('/web/pharmacy/product/search');"><?php echo $vModule_cart_continueShopping ?></a>
                         </div>
                     </div>
                 </div>
