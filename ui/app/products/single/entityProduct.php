@@ -159,15 +159,7 @@ function compress_htmlcode($codedata)
                         </div>
 
                         <div class="card-body product-description ">
-
                             <?php echo $objEntityProduct->description ?>
-
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi corporis delectus dolorum earum modi, natus officia veniam. Commodi, et fugiat id itaque labore molestiae quasi qui ut? Dolores placeat, reiciendis!
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi corporis delectus dolorum earum modi, natus officia veniam. Commodi, et fugiat id itaque labore molestiae quasi qui ut? Dolores placeat, reiciendis!
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi corporis delectus dolorum earum modi, natus officia veniam. Commodi, et fugiat id itaque labore molestiae quasi qui ut? Dolores placeat, reiciendis!
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi corporis delectus dolorum earum modi, natus officia veniam. Commodi, et fugiat id itaque labore molestiae quasi qui ut? Dolores placeat, reiciendis!
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi corporis delectus dolorum earum modi, natus officia veniam. Commodi, et fugiat id itaque labore molestiae quasi qui ut? Dolores placeat, reiciendis!
-
                         </div>
 
                     </div>
