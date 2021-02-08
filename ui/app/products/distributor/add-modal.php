@@ -71,7 +71,7 @@
                                     <div class="dropzone-items" id="addDropzoneItems" style="display: flex;">
                                         <div class="col-md-2 image-input image-input-empty image-input-outline dropzone-item" style="display: none; background-color: unset;">
                                             <div class="dropzone-error" data-dz-errormessage=""></div>
-                                            <div class="mb-2 image-input-wrapper" id="dropzoneImage" style="width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/theme/assets/media/users/blank.png'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%);">
+                                            <div class="mb-2 image-input-wrapper" id="dropzoneImage" style="width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/assets/img/default-product-image.png'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%);">
                                                 <div class="px-2 dropzone-progress" style="width: 100%; position: relative; top: 50%;">
                                                     <div class="progress">
                                                         <div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress=""></div>

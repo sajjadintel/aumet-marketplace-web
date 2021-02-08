@@ -6,17 +6,17 @@ var WebAuth = (function () {
 	var _pharmacyDocument;
 
 	var _handleFormSignin = function () {
-		console.log('Signin');
+		//console.log('Signin');
 
 		var form = KTUtil.getById('kt_login_singin_form');
 		var url = KTUtil.attr(form, 'action');
+		var formSubmitButton = KTUtil.getById('kt_login_singin_form_submit_button');
 		var data = $(form).serializeJSON();
 
 		if (!form) {
 			console.log('No Form');
 			return;
 		}
-		WebApp.post(url, data);
 
 		// firebase
 		// 	.auth()
@@ -39,51 +39,66 @@ var WebAuth = (function () {
 
 		// return;
 
-		// FormValidation.formValidation(form, {
-		// 	fields: {
-		// 		email: {
-		// 			validators: {
-		// 				notEmpty: {
-		// 					message: WebAppLocals.getMessage('error_emailNotEmpty'),
-		// 				},
-		// 				emailAddress: {
-		// 					message: WebAppLocals.getMessage('error_emailFormat'),
-		// 				},
-		// 			},
-		// 		},
-		// 		password: {
-		// 			validators: {
-		// 				notEmpty: {
-		// 					message: WebAppLocals.getMessage('error_passwordNotEmpty'),
-		// 				},
-		// 				/*regexp: {
-		// 							regexp: /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/,
-		// 							message: 'Ensure string has two uppercase letters.<br/>Ensure string has one special case letter.<br/>Ensure string has two digits.<br/>Ensure string has three lowercase letters.<br/>Ensure string is of length 8.'
-		// 						}*/
-		// 			},
-		// 		},
-		// 	},
-		// 	plugins: {
-		// 		trigger: new FormValidation.plugins.Trigger(),
-		// 		submitButton: new FormValidation.plugins.SubmitButton(),
-		// 		//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
-		// 		bootstrap: new FormValidation.plugins.Bootstrap({
-		// 			//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
-		// 			//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
-		// 		}),
-		// 	},
-		// })
-		// 	.on('core.form.valid', function () {
-		// 		console.log('valid');
-		// 		// Show loading state on button
-		// 		KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
+		FormValidation.formValidation(form, {
+			fields: {
+				email: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('error_emailNotEmpty'),
+						},
+						emailAddress: {
+							message: WebAppLocals.getMessage('error_emailFormat'),
+						},
+					},
+				},
+				password: {
+					validators: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('error_passwordNotEmpty'),
+						},
+						/*regexp: {
+									regexp: /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$/,
+									message: 'Ensure string has two uppercase letters.<br/>Ensure string has one special case letter.<br/>Ensure string has two digits.<br/>Ensure string has three lowercase letters.<br/>Ensure string is of length 8.'
+								}*/
+					},
+				},
+			},
+			plugins: {
+				trigger: new FormValidation.plugins.Trigger(),
+				submitButton: new FormValidation.plugins.SubmitButton(),
+				//defaultSubmit: new FormValidation.plugins.DefaultSubmit(), // Uncomment this line to enable normal button submit after form validation
+				bootstrap: new FormValidation.plugins.Bootstrap({
+					//	eleInvalidClass: '', // Repace with uncomment to hide bootstrap validation icons
+					//	eleValidClass: '',   // Repace with uncomment to hide bootstrap validation icons
+				}),
+			},
+		})
+			.on('core.form.valid', function () {
+				// Show loading state on button
+				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
+				$(formSubmitButton).prop('disabled', true);
 
-		// 		// Form Validation & Ajax Submission: https://formvalidation.io/guide/examples/using-ajax-to-submit-the-form
-		// 	})
-		// 	.on('core.form.invalid', function () {
-		// 		console.log('invalid');
-		// 		KTUtil.scrollTop();
-		// 	});
+				var url = KTUtil.attr(form, 'action');
+				var data = $(form).serializeJSON();
+
+				if (!form) {
+					console.log('No Form');
+					return;
+				}
+				WebApp.post(
+					url,
+					data,
+					function () {
+						KTUtil.btnRelease(formSubmitButton);
+					},
+					null,
+					true
+				);
+			})
+			.on('core.form.invalid', function () {
+				console.log('invalid');
+				KTUtil.scrollTop();
+			});
 
 		// console.log('done');
 	};
@@ -122,6 +137,14 @@ var WebAuth = (function () {
 					KTUtil.scrollTop();
 				});
 			});
+	};
+
+	var _handleTrimEmail = function () {
+		$("input[type = 'email']").each(function (i, obj) {
+			$(this).keyup(function () {
+				$(this).val($(this).val().replace(/ +?/g, ''));
+			});
+		});
 	};
 
 	var _handleFormForgot = function () {
@@ -167,6 +190,7 @@ var WebAuth = (function () {
 					console.log('No Form');
 					return;
 				}
+				console.log('test');
 				WebApp.post(url, data, function () {
 					KTUtil.btnRelease(formSubmitButton);
 				});
@@ -416,12 +440,10 @@ var WebAuth = (function () {
 								wizard.goTo(wizard.getNewStep());
 
 								let companyType = $('#kt_login_signup_form input[name=companyType]:checked').val();
-								if(companyType == 'pharmacy'){
+								if (companyType == 'pharmacy') {
 									$('.distributor').hide();
 									$('.pharmacy').show();
-
-								}else if(companyType == 'distributor'){
-
+								} else if (companyType == 'distributor') {
 									$('.pharmacy').hide();
 									$('.distributor').show();
 								}
@@ -669,7 +691,7 @@ var WebAuth = (function () {
 		var myDropzone = new Dropzone(id, {
 			// Make the whole body a dropzone
 			url: '/web/auth/signup/document/upload', // Set the url for your upload script location
-			acceptedFiles: '.pdf, .ppt, .xcl, .docx, .jpeg, .jpg, .png',
+			acceptedFiles: '.pdf, .ppt, .docx, .jpeg, .jpg, .png',
 			maxFilesize: 10, // Max filesize in MB
 			maxFiles: 1,
 			previewTemplate: previewTemplate,
@@ -754,31 +776,36 @@ var WebAuth = (function () {
 		var allValues = webResponse.data;
 		console.log(allValues);
 
-		var unitName = allValues.roleId == 40 ? "Pharmacy Name" : "Distributor Name";
+		var unitName = allValues.roleId == 40 ? 'Pharmacy Name' : 'Distributor Name';
 		var arrFields = {
-			"Name": allValues.name,
-			"Mobile": allValues.mobile,
-			"Email": allValues.email,
+			Name: allValues.name,
+			Mobile: allValues.mobile,
+			Email: allValues.email,
 			[unitName]: allValues.entityName,
-			"Trade License Number": allValues.tradeLicenseNumber,
-			"Country": allValues.countryName,
-			"City": allValues.cityName,
-			"Address": allValues.address,
+			'Trade License Number': allValues.tradeLicenseNumber,
+			Country: allValues.countryName,
+			City: allValues.cityName,
+			Address: allValues.address,
 		};
 
 		var output = '';
 		for (var key in arrFields) {
 			if (arrFields.hasOwnProperty(key)) {
-				console.log(key + " -> " + arrFields[key]);
-				output += '<tr>' +
+				console.log(key + ' -> ' + arrFields[key]);
+				output +=
+					'<tr>' +
 					'    <td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">' +
-					'        <p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>' + key + '</strong></p>' +
+					'        <p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>' +
+					key +
+					'</strong></p>' +
 					'        <table role="presentation" cellspacing="0" cellpadding="0" border="0">' +
 					'            <tbody>' +
 					'            <tr>' +
 					'                <td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">' +
 					'                    <p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">' +
-					'                        <strong>' + arrFields[key] + '</strong>' +
+					'                        <strong>' +
+					arrFields[key] +
+					'</strong>' +
 					'                    </p>' +
 					'                </td>' +
 					'            </tr>' +
@@ -788,28 +815,30 @@ var WebAuth = (function () {
 					'</tr>';
 			}
 		}
-		
+
 		if (allValues.tradeLicenseUrl) {
-			output += '<tr>' +
-			'    <td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">' +
-			'        <p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>Trade License Document</strong></p>' +
-			'        <table role="presentation" cellspacing="0" cellpadding="0" border="0">' +
-			'            <tbody>' +
-			'            <tr>' +
-			'                <td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">' +
-			'                    <p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">' +
-			'                        <a href="'+allValues.tradeLicenseUrl+'" target="_blank">Download file</strong>' +
-			'                    </p>' +
-			'                </td>' +
-			'            </tr>' +
-			'            </tbody>' +
-			'        </table>' +
-			'    </td>' +
-			'</tr>'
+			output +=
+				'<tr>' +
+				'    <td class="o_bg-white o_px-md o_py o_sans o_text-xs o_text-light" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;color: #82899a;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">' +
+				'        <p class="o_mb" style="margin-top: 0px;margin-bottom: 16px;"><strong>Trade License Document</strong></p>' +
+				'        <table role="presentation" cellspacing="0" cellpadding="0" border="0">' +
+				'            <tbody>' +
+				'            <tr>' +
+				'                <td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">' +
+				'                    <p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">' +
+				'                        <a href="/' +
+				allValues.tradeLicenseUrl +
+				'" target="_blank">Download file</strong>' +
+				'                    </p>' +
+				'                </td>' +
+				'            </tr>' +
+				'            </tbody>' +
+				'        </table>' +
+				'    </td>' +
+				'</tr>';
 		}
 
 		$('#signupDetailData').html(output);
-
 
 		$('#thankyouContainer').css('display', 'block');
 	};
@@ -821,15 +850,17 @@ var WebAuth = (function () {
 				_setupFirebase();
 			}
 
+			_handleTrimEmail();
 			_handleFormForgot();
 			_handleFormReset();
 			_handleFormSignup();
+			_handleFormSignin();
 
 			_initializeDropzone();
 		},
-		signIn: function () {
+		/*signIn: function () {
 			_handleFormSignin();
-		},
+		},*/
 		googleSignIn: function () {
 			_handleGoogleSignin();
 		},

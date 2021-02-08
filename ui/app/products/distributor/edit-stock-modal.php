@@ -20,7 +20,7 @@
     }
 </style>
 <!-- Modal-->
-<div class="modal fade" id="editStockModal" tabindex="-1" role="dialog" aria-labelledby="editStockModal" aria-hidden="true">
+<div class="modal fade editStockModal" id="editStockModal" tabindex="-1" role="dialog" aria-labelledby="editStockModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <form method="POST" action="/web/distributor/product/editStock" class="modalForm" id="editStockModalForm">
@@ -68,7 +68,7 @@
                                         </div>
                                         <div class="col-md-2 form-group">
                                             <label for="editStockBonus" class="form-control-label"><?php echo $vModule_product_bonus ?></label>
-                                            <input type="number" id="editStockBonus" name="bonus" class="form-control editStockBonusInput" min="0" step="1" onchange="this.value = this.value > 0? this.value : !this.value? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" autocomplete="off">
+                                            <input type="number" id="editStockBonus" name="bonus" class="form-control editStockBonusInput" min="0" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" autocomplete="off">
                                             <div class="d-md-none mb-2"></div>
                                         </div>
                                         <div class="col-md-2">
@@ -114,7 +114,7 @@
                                         </div>
                                         <div class="col-md-2 form-group">
                                             <label for="editStockBonus" class="form-control-label"><?php echo $vModule_product_bonus ?></label>
-                                            <input type="number" id="editStockSpecialBonus" name="bonus" class="form-control editStockSpecialBonusInput" min="0" step="1" onchange="this.value = this.value > 0? this.value : !this.value? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" autocomplete="off">
+                                            <input type="number" id="editStockSpecialBonus" name="bonus" class="form-control editStockSpecialBonusInput" min="0" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" autocomplete="off">
                                             <div class="d-md-none mb-2"></div>
                                         </div>
                                         <div class="col-md-4 form-group">

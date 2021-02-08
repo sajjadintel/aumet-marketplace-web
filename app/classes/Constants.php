@@ -79,4 +79,12 @@ class Constants
     const MENU_DISTRIBUTOR = 1;
     const MENU_PHARMACY = 2;
     const MENU_ADMIN = 1000;
+
+    ### Bonus type
+    const BONUS_TYPE_FIXED = 1;
+    const BONUS_TYPE_PERCENTAGE = 2;
+    const BONUS_TYPE_DYNAMIC = 3;
+
+    ### Database
+    const MAX_INT_VALUE = 2147483647;
 }
