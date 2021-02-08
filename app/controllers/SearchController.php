@@ -470,6 +470,7 @@ class SearchController extends Controller {
             if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
                 foreach ($arrCartDetail as $objCartItem) {
                     if ($objCartItem['entityProductId'] == $data[$i]['id']) {
+                        $data[$i]['cartDetailId'] += $objCartItem['id'];
                         $data[$i]['cart'] += $objCartItem['quantity'];
                         $data[$i]['cart'] += $objCartItem['quantityFree'];
                         $quantityFree = $objCartItem['quantityFree'];
