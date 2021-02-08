@@ -392,7 +392,7 @@ function compress_htmlcode($codedata)
         var _selectBrand = $('#searchProductsBrandNameInput').select2({
             placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
             ajax: {
-                url: '/web/product/brandname/list',
+                url: '/web/product/brandname/list?nameAsValue=true',
                 dataType: 'json',
                 processResults: function(response) {
                     return {
@@ -571,7 +571,7 @@ function compress_htmlcode($codedata)
         var _selectScientific = $('#searchProductsScieceNameInput').select2({
             placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
             ajax: {
-                url: '/web/product/scientificname/list',
+                url: '/web/product/scientificname/list?nameAsValue=true',
                 dataType: 'json',
                 processResults: function(response) {
                     return {
