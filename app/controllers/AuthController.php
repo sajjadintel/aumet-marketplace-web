@@ -669,21 +669,17 @@ class AuthController extends Controller
             "jpg",
             "png",
         ];
+
         $success = false;
 
-        $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
-
-        $targetFile = Helper::createUploadedFileName($fileName, $ext, "files/uploads/documents/");
-
         if (in_array($ext, $allValidExtensions)) {
-            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-                $success = true;
-            }
+            $success = true;
         }
 
         if ($success) {
-            echo $targetFile;
+            $objResult = AumetFileUploader::upload("s3", $_FILES["file"], $this->generateRandomString(64));
+            echo $objResult->fileLink;
         }
     }
 
