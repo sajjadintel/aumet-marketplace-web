@@ -65,7 +65,7 @@
                                             <!--end::Svg Icon-->
                                         </span><?php echo $vModule_product_uploadSubimages; ?>
                                     </a>
-                                    <span id="editMaxFilesExceededLabel" class="text-danger" style="display: none;"><?php echo $vModule_product_subimagesExceeded; ?></span>
+                                    <span id="editSubimagesErrorLabel" class="text-danger" style="display: none;"></span>
                                 </div>
                                 <div class="wrap-modal-slider">
                                     <div class="dropzone-items" id="editDropzoneItems" style="display: flex;">
