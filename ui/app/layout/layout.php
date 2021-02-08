@@ -387,7 +387,6 @@ function compress_htmlcode($codedata)
     </script>
 
     <?PHP
-    // Security-Authorization Issue: Users able to access non authorized pages - MPW-157 Start
     if ($notAuthorized == 1) { ?>
         <script>
             Swal.fire({
@@ -404,7 +403,6 @@ function compress_htmlcode($codedata)
         </script>
     <?PHP
     }
-    // Security-Authorization Issue: Users able to access non authorized pages - MPW-157 End
     ?>
 
 </body>
