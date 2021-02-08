@@ -115,7 +115,6 @@ var DistributorProductsDataTable = (function () {
 		$('#editProductNameEn').val(webResponse.data.product.productName_en);
 		$('#editProductNameFr').val(webResponse.data.product.productName_fr);
 		$('#editUnitPrice').val(webResponse.data.product.unitPrice);
-		$('#editVat').val(webResponse.data.product.vat);
 		$('#editMaximumOrderQuantity').val(webResponse.data.product.maximumOrderQuantity);
 		$('#editProductSubtitleAr').val(webResponse.data.product.subtitle_ar);
 		$('#editProductSubtitleEn').val(webResponse.data.product.subtitle_en);
@@ -129,6 +128,13 @@ var DistributorProductsDataTable = (function () {
 		$('#editProductExpiryDate').val(webResponse.data.product.productExpiryDate);
 		$('#editProductStrength').val(webResponse.data.product.strength);
 
+		var vat = webResponse.data.product.vat || "";
+		if(vat >= 0) vat += "%";
+		$('#editVat').val(vat);
+		$("#editVat").on("change", function() {
+			_handlePercentageField(this, true);
+		});
+		
 		$('#editProductScientificName').empty();
 		$('#editProductScientificName').append(new Option(webResponse.data.product.scientificName, webResponse.data.product.scientificNameId));
 		$('#editProductScientificName').val(webResponse.data.product.scientificNameId);
@@ -265,6 +271,10 @@ var DistributorProductsDataTable = (function () {
 		$('#addProductImage').on('change', (ev) => _changeProductImage(ev, 'add'));
 
 		$('#addActiveIngredients').on('change', (ev) => _updateActiveIngredientsVal('add'));
+		
+		$("#addVat").on("change", function() {
+			_handlePercentageField(this, true);
+		});
 
 		_initializeSubimagesDropzone('add');
 
@@ -664,9 +674,13 @@ var DistributorProductsDataTable = (function () {
 		$(inputElement).val(value);
 	}
 
-	var _handlePercentageField = function (inputElement) {
+	var _handlePercentageField = function (inputElement, float = false) {
 		var newValue = $(inputElement).val().toString().replace("%", "");
-		newValue = newValue > 0? newValue : !newValue? newValue : 0;
+		if(float) {
+			newValue = newValue > 0? parseFloat(newValue).toFixed(2) : !newValue? newValue : 0;
+		} else {
+			newValue = newValue > 0? newValue : !newValue? newValue : 0;
+		}
 		if($(inputElement).attr("type") == "text") {
 			if(newValue > 100) newValue = 100;
 			if(newValue) {
@@ -699,7 +713,7 @@ var DistributorProductsDataTable = (function () {
 			// Make the whole body a dropzone
 			url: '/web/distributor/product/subimage', // Set the url for your upload script location
 			acceptedFiles: '.jpeg, .jpg, .png',
-			maxFilesize: 10, // Max filesize in MB
+			maxFilesize: 2, // Max filesize in MB
 			maxFiles: 6,
 			previewTemplate: previewTemplate,
 			previewsContainer: id + ' .dropzone-items', // Define the container to display the previews
@@ -711,7 +725,6 @@ var DistributorProductsDataTable = (function () {
 			$(document)
 				.find(id + ' .dropzone-item')
 				.css('display', 'block');
-			$('#' + mode + 'MaxFilesExceededLabel').hide();
 		});
 
 		// Update the total progress bar
@@ -753,8 +766,29 @@ var DistributorProductsDataTable = (function () {
 
 		myDropZone.on('maxfilesexceeded', function (file) {
 			myDropZone.removeFile(file);
-			$('#' + mode + 'MaxFilesExceededLabel').show();
+			$('#' + mode + 'SubimagesErrorLabel').text(WebAppLocals.getMessage("subimagesExceeded"));
+			$('#' + mode + 'SubimagesErrorLabel').show();
 		});
+
+		myDropZone.on('error', function (file, errorMessage) {
+			var errorLabelText = "";
+			if(errorMessage.includes("too big")) {
+				errorLabelText = WebAppLocals.getMessage("subimagesMaximumSize");
+			} else if (errorMessage.includes("type")) {
+				errorLabelText = WebAppLocals.getMessage("subimagesWrongFormat");
+			}
+			
+			myDropZone.removeFile(file);
+			$('#' + mode + 'SubimagesErrorLabel').text(errorLabelText);
+			$('#' + mode + 'SubimagesErrorLabel').show();
+
+			setTimeout(() => {
+				$('#' + mode + 'SubimagesErrorLabel').text('');
+				$('#' + mode + 'SubimagesErrorLabel').hide();
+			}, 3000);
+		});
+
+		
 
 		if (initialSubimages.length > 0) {
 			initialSubimages.forEach((subimageObj) => {
@@ -851,7 +885,11 @@ var DistributorProductsDataTable = (function () {
                 };
 
                 Object.keys(mapKeyElement).forEach((key) => {
-                    body[key] = $('#addModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+					if(key == "vat") {
+						body[key] = $('#addModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val().toString().replace("%", "");
+					} else {
+						body[key] = $('#addModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+					}
                 });
 
                 WebApp.post('/web/distributor/product/add', body, _productAddSuccessCallback);
@@ -913,7 +951,11 @@ var DistributorProductsDataTable = (function () {
                 };
 
                 Object.keys(mapKeyElement).forEach((key) => {
-                    body[key] = $('#editModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+					if(key == "vat") {
+						body[key] = $('#editModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val().toString().replace("%", "");
+					} else {
+						body[key] = $('#editModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+					}
                 });
 
                 WebApp.post('/web/distributor/product/edit', body, _productEditSuccessCallback);

@@ -137,7 +137,7 @@ function compress_htmlcode($codedata)
 <script>
     var PageClass = function() {
         var elementId = "#datatable";
-        var url = '/web/product/search';
+        var url = '/web/pharmacy/product/search';
 
         var columnDefs = [{
                 className: "never",
@@ -156,7 +156,7 @@ function compress_htmlcode($codedata)
                 title: WebAppLocals.getMessage('productName'),
                 data: 'productName_en',
                 render: function(data, type, row, meta) {
-                    if(!row.image) row.image = "/assets/img/default-product-image.png";
+                    if (!row.image) row.image = "/assets/img/default-product-image.png";
                     var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +

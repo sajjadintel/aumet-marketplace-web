@@ -898,7 +898,7 @@ class OrderController extends Controller
         $pdf->FancyOneTitleHeader($pharmacyTableHeader, $pharmacyTableData);
         $pdf->Ln(20);
 
-        $orderDetailHeader = array('ID', 'Name', 'Quantity', 'Price', 'Total');
+        $orderDetailHeader = array('ID', 'Name', 'Quantity', 'Unit', 'Total');
         $dbOrderDetail = new BaseModel($this->db, 'vwOrderDetail');
         $arrOrderDetail = $dbOrderDetail->findWhere("id = $orderId");
 
@@ -908,8 +908,8 @@ class OrderController extends Controller
                 $item['productCode'],
                 $item['productNameEn'],
                 Helper::formatMoney($item['quantity'] + $item['quantityFree'], 0),
-                $item['currency'] . " " . Helper::formatMoney($item['unitPrice'], 1) . ($item['tax'] == 0 ? '' : ' +' . $item['tax'] . "%"),
-                $item['currency'] . " " . Helper::formatMoney($item['unitPrice'] * $item['quantity'], 1)
+                $item['currency'] . " " . Helper::formatMoney($item['unitPrice'], 2) . ($item['tax'] == 0 ? '' : ' +' . $item['tax'] . "%"),
+                $item['currency'] . " " . Helper::formatMoney($item['unitPrice'] * $item['quantity'] * (1.0 + $item['tax'] / 100.0))
             ));
         }
 
@@ -917,14 +917,14 @@ class OrderController extends Controller
 
         $pdf->Ln(20);
 
-        if ($arrOrder['tax'] != 0) {
-            $pdf->Cell(0, 0, 'Order: AED ' . $arrOrder['total'], 0, 0, 'R');
+        if ($item['tax'] != 0) {
+            $pdf->Cell(0, 0, "Subtotal: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal']), 0, 0, 'R');
             $pdf->Ln(10);
-            $pdf->Cell(0, 0, 'VAT: AED ' . round($arrOrder['tax'] * $arrOrder['total'], 2), 0, 0, 'R');
+            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal'] * $item['tax'] / 100.0, 2), 0, 0, 'R');
         }
 
         $pdf->Ln(10);
-        $pdf->Cell(0, 0, 'Total: AED ' . $arrOrder['total'], 0, 0, 'R');
+        $pdf->Cell(0, 0, "Total: {$item['currency']} " . Helper::formatMoney($arrOrder['total']), 0, 0, 'R');
 
         $pdf->Output();
     }
@@ -967,7 +967,7 @@ class OrderController extends Controller
         $pdf->FancyOneTitleHeader($pharmacyTableHeader, $pharmacyTableData);
         $pdf->Ln(20);
 
-        $orderDetailHeader = array('ID', 'Name', 'Quantity', 'Price', 'Total');
+        $orderDetailHeader = array('ID', 'Name', 'Quantity', 'Unit', 'Total');
         $dbOrderDetail = new BaseModel($this->db, 'vwOrderDetail');
         $arrOrderDetail = $dbOrderDetail->findWhere("id = $orderId");
 
@@ -977,8 +977,8 @@ class OrderController extends Controller
                 $item['productCode'],
                 $item['productNameEn'],
                 Helper::formatMoney($item['quantity'] + $item['quantityFree'], 0),
-                $item['currency'] . " " . Helper::formatMoney($item['unitPrice'], 1) . ($item['tax'] == 0 ? '' : ' +' . $item['tax'] . "%"),
-                $item['currency'] . " " . Helper::formatMoney($item['unitPrice'] * $item['quantity'], 1)
+                $item['currency'] . " " . Helper::formatMoney($item['unitPrice']) . ($item['tax'] == 0 ? '' : ' +' . $item['tax'] . "%"),
+                $item['currency'] . " " . Helper::formatMoney($item['unitPrice'] * $item['quantity'] * (1.0 + $item['tax'] / 100.0))
             ));
         }
 
@@ -986,14 +986,14 @@ class OrderController extends Controller
 
         $pdf->Ln(20);
 
-        if ($arrOrder['tax'] != 0) {
-            $pdf->Cell(0, 0, 'Order: AED ' . $arrOrder['total'], 0, 0, 'R');
+        if ($item['tax'] != 0) {
+            $pdf->Cell(0, 0, "Subtotal: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal']), 0, 0, 'R');
             $pdf->Ln(10);
-            $pdf->Cell(0, 0, 'VAT: AED ' . round($arrOrder['tax'] * $arrOrder['total'], 2), 0, 0, 'R');
+            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal'] * $item['tax'] / 100.0, 2), 0, 0, 'R');
         }
 
         $pdf->Ln(10);
-        $pdf->Cell(0, 0, 'Total: AED ' . $arrOrder['total'], 0, 0, 'R');
+        $pdf->Cell(0, 0, "Total: {$item['currency']} " . Helper::formatMoney($arrOrder['total']), 0, 0, 'R');
 
         $pdf->Output();
     }

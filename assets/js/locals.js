@@ -290,6 +290,11 @@ var WebAppLocals = (function () {
 			ar: 'سعر الوحدة',
 			fr: '',
 		},
+		unit: {
+			en: 'Unit',
+			ar: 'الوحدة',
+			fr: '',
+		},
 		tax: {
 			en: 'VAT',
 			ar: 'ضريبة',
@@ -576,8 +581,8 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		bulkAddUploadError: {
-			en: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file',
-			ar: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file', // TODO: translate
+			en: 'Error processing the file. Please ensure its format is .xslm and matches the structure of the sample file',
+			ar: 'Error processing the file. Please ensure its format is .xslm and matches the structure of the sample file', // TODO: translate
 			fr: '',
 		},
 		goToProfile: {
@@ -658,6 +663,21 @@ var WebAppLocals = (function () {
 		supportReasonRequired: {
 			en: 'Select Reason from dropdown menu',
 			ar: 'حدد السبب من القائمة المنسدلة',
+			fr: ''
+		},
+		subimagesExceeded: {
+			en: 'Max 6 images are allowed',
+			ar: 'Max 6 images are allowed', // TODO: translate
+			fr: ''
+		},
+		subimagesMaximumSize: {
+			en: 'The image maximum size is 2MB',
+			ar: 'The image maximum size is 2MB', // TODO: translate
+			fr: ''
+		},
+		subimagesWrongFormat: {
+			en: 'Allowed types are jpeg, jpg, png',
+			ar: 'Allowed types are jpeg, jpg, png', // TODO: translate
 			fr: ''
 		},
 	};

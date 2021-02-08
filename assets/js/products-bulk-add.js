@@ -12,7 +12,7 @@ var ProductsBulkAdd = function () {
             maxFiles: 1,
             maxFilesize: 100,
             addRemoveLinks: false,
-            acceptedFiles: ".xlsx",
+            acceptedFiles: ".xlsm",
             createImageThumbnails: false,
             accept: function (file, done) {
                 done();

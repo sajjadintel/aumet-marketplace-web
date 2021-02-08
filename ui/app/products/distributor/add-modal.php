@@ -65,7 +65,7 @@
                                             <!--end::Svg Icon-->
                                         </span><?php echo $vModule_product_uploadSubimages; ?>
                                     </a>
-                                    <span id="addMaxFilesExceededLabel" class="text-danger" style="display: none;"><?php echo $vModule_product_subimagesExceeded; ?></span>
+                                    <span id="addSubimagesErrorLabel" class="text-danger" style="display: none;"></span>
                                 </div>
                                 <div class="wrap-modal-slider">
                                     <div class="dropzone-items" id="addDropzoneItems" style="display: flex;">
@@ -138,7 +138,7 @@
                         </div>
                         <div class="col-md-3 form-group">
                             <label for="addVat" class="form-control-label"><?php echo $vModule_product_vat; ?></label>
-                            <input type="number" class="form-control" name="vat" id="addVat" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : !this.value? this.value : 0;" onkeypress="return ![43, 45, 101].includes(event.charCode)" autocomplete="off">
+                            <input type="text" class="form-control" name="vat" id="addVat" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onkeypress="return ![43, 45, 101].includes(event.charCode)" autocomplete="off">
                         </div>
                         <div class="col-md-3 form-group">
                             <label for="addStock" class="form-control-label"><?php echo $vModule_product_availableQuantity; ?></label>
