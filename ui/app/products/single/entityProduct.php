@@ -169,7 +169,7 @@ function compress_htmlcode($codedata)
 
 
             <?php if ($arrProductOtherOffers != null && sizeof($arrProductOtherOffers) != 0) { ?>
-                <div class="card card-custom row">
+                <div class="card card-custom row" style="margin-top: 30px;">
                     <div class="card-header border-0 py-5 product-item-similar-header" style="margin: 10px 0 0 0;">
                         <h3>
                             <?php echo $vModule_product_allOffers ?>
