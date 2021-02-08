@@ -175,7 +175,6 @@ return array(
     'vModule_product_activeIngredients' => 'مكونات نشطة',
     'vModule_product_strength' => 'قوة',
     'vModule_product_uploadSubimages' => 'تحميل الصور الفرعية',
-    'vModule_product_subimagesExceeded' => 'تم الوصول إلى حد الصور الفرعية',
     'vModule_product_subcategoryInvalid' => 'الفئة الفرعية غير صالحة',
     'vModule_product_stockInvalid' => 'يجب أن تكون الكمية المتاحة عددًا صحيحًا موجبًا وليس فارغًا',
     'vModule_product_maximumOrderQuantityInvalid' => 'يجب أن يكون الحد الأقصى لكمية الطلب عددًا صحيحًا موجبًا وليس فارغًا',

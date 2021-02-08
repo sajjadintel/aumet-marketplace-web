@@ -665,6 +665,21 @@ var WebAppLocals = (function () {
 			ar: 'حدد السبب من القائمة المنسدلة',
 			fr: ''
 		},
+		subimagesExceeded: {
+			en: 'Max 6 images are allowed',
+			ar: 'Max 6 images are allowed', // TODO: translate
+			fr: ''
+		},
+		subimagesMaximumSize: {
+			en: 'The image maximum size is 2MB',
+			ar: 'The image maximum size is 2MB', // TODO: translate
+			fr: ''
+		},
+		subimagesWrongFormat: {
+			en: 'Allowed types are jpeg, jpg, png',
+			ar: 'Allowed types are jpeg, jpg, png', // TODO: translate
+			fr: ''
+		},
 	};
 
 	var _symbolsLocals = {
