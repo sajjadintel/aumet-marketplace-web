@@ -604,7 +604,7 @@ class ProfileController extends Controller
 
     function handlePostProfileImageUpload()
     {
-        $success = false;
+        $is_uploaded = false;
         try {
             $allValidExtensions = ['jpeg', 'jpg', 'png'];
 
@@ -612,15 +612,19 @@ class ProfileController extends Controller
                 $fileName = pathinfo(basename($_FILES['profile_image']['name']), PATHINFO_FILENAME);
                 $ext = pathinfo(basename($_FILES['profile_image']['name']), PATHINFO_EXTENSION);
 
-                $targetFile = Helper::createUploadedFileName($fileName, $ext, 'assets/img/profiles/');
+                $targetFile = Helper::createUploadedFileName($fileName, $ext, '/assets/img/profiles/');
 
                 if (in_array($ext, $allValidExtensions)) {
-                    if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $targetFile)) {
+                    if (move_uploaded_file($_FILES['profile_image']['tmp_name'], ltrim($targetFile, '/'))) {
                         $entityId = array_keys($this->f3->get('SESSION.arrEntities'))[0];
                         $this->db->exec("UPDATE entity SET image = '{$targetFile}' WHERE id = '{$entityId}'");
 
+                        // update image for UI
+                        $this->objUser->entityImage = $targetFile;
+
+                        // return success message
                         $message = 'File is successfully uploaded.';
-                        $success = true;
+                        $is_uploaded = true;
                     } else {
                         $message = 'There was some error moving the file to upload directory. Please make sure the upload directory is writable by web server.';
                     }
@@ -631,10 +635,16 @@ class ProfileController extends Controller
                 $message = 'Error:' . $_FILES['uploadedFile']['error'];
             }
 
-            $this->webResponse->data = $success;
+            $this->webResponse->data = [
+                'image' => $this->objUser->entityImage,
+                'is_uploaded' => $is_uploaded
+            ];
             $this->webResponse->message = $message;
         } catch (Exception $e) {
-            $this->webResponse->data = $success;
+            $this->webResponse->data = [
+                'image' => null,
+                'is_uploaded' => $is_uploaded
+            ];
             $this->webResponse->message = $e->getMessage();
         }
 
