@@ -67,7 +67,7 @@ function compress_htmlcode($codedata)
 
         var columnDefs = [{
                 className: "export_datatable",
-                targets: [1, 2, 3, 4, 8, 9, 10, 11, 12, 13]
+                targets: [1, 2, 3, 4, 8, 9, 10, 11, 12, 13, 14]
             },
             {
                 targets: 0,
@@ -369,10 +369,11 @@ function compress_htmlcode($codedata)
             {
                 targets: 14,
                 title: WebAppLocals.getMessage('orderTotalWithVAT'),
-                data: 'quantity',
+                data: 'total',
                 visible: false,
                 render: function(data, type, row, meta) {
                     var total = row.quantity * row.unitPrice;
+                    total = parseFloat(total) * (1 + parseFloat(row.tax) / 100);
                     total = WebApp.formatMoney(total);
                     return total + ' ' + row.currency;
                 },
