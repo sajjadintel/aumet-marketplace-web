@@ -21,7 +21,6 @@ class ProfileController extends Controller
                 $user = $dbUser->getWhere("userId=" . $this->objUser->id)[0];
                 $this->f3->set('user', $user);
                 $this->f3->set('entityBranchTradeLicenseUrlDecoded', urldecode($user->entityBranchTradeLicenseUrl));
-                $this->f3->set('entityImage', $user->entityImage);
 
                 // Get all payment methods
                 $dbPaymentMethod = new BaseModel($this->db, "paymentMethod");
@@ -94,7 +93,6 @@ class ProfileController extends Controller
                 $user = $dbUser->getWhere("userId=" . $this->objUser->id)[0];
                 $this->f3->set('user', $user);
                 $this->f3->set('entityBranchTradeLicenseUrlDecoded', urldecode($user->entityBranchTradeLicenseUrl));
-                $this->f3->set('entityImage', $user->entityImage);
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_profile');
