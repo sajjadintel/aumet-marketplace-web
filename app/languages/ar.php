@@ -181,6 +181,7 @@ return array(
     'vModule_product_specialBonusInvalid' => 'المكافآت الخاصة غير صالحة',
     'vModule_product_quantityTooBig' => 'الكمية كبيرة جدًا!',
     'vModule_product_bonusTooBig' => 'المكافأة كبيرة جدًا!',
+    'vModule_product_productOverview' => 'Product Overview', // TODO: add translation
 
 
     'stockAvailability_available' => 'متوفر',

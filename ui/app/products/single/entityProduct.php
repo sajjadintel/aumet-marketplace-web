@@ -26,7 +26,7 @@ function compress_htmlcode($codedata)
         <div class="flex-row-fluid">
 
 
-            <div class="card card-custom gutter-b">
+            <div class="card card-custom gutter-b row">
                 <div class="card-header border-0 py-5">
                     <h3 class="card-title align-items-start flex-column">
                         <span class="card-label font-weight-bolder text-primary"></span>
@@ -139,13 +139,40 @@ function compress_htmlcode($codedata)
 
                         </div>
 
-                        <div class="product-description">
-                            <?php echo $objEntityProduct->description ?>
-                        </div>
-
                     </div>
 
                 </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-3 col-lg-3">
+
+                    <img class="product-overview-logo" src="<?php echo $objEntityProduct->entityImage ?>" />
+
+                </div>
+                <div class="col-12 col-md-9 col-lg-9 card  ">
+                    <div class="product-overview">
+                        <div class="card-header border-0 py-5 product-item-similar-header" style="margin: 10px 0 0 0;">
+                            <h3>
+                                <?php echo $vModule_product_productOverview ?>
+                            </h3>
+                        </div>
+
+                        <div class="card-body product-description ">
+
+                            <?php echo $objEntityProduct->description ?>
+
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi corporis delectus dolorum earum modi, natus officia veniam. Commodi, et fugiat id itaque labore molestiae quasi qui ut? Dolores placeat, reiciendis!
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi corporis delectus dolorum earum modi, natus officia veniam. Commodi, et fugiat id itaque labore molestiae quasi qui ut? Dolores placeat, reiciendis!
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi corporis delectus dolorum earum modi, natus officia veniam. Commodi, et fugiat id itaque labore molestiae quasi qui ut? Dolores placeat, reiciendis!
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi corporis delectus dolorum earum modi, natus officia veniam. Commodi, et fugiat id itaque labore molestiae quasi qui ut? Dolores placeat, reiciendis!
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi corporis delectus dolorum earum modi, natus officia veniam. Commodi, et fugiat id itaque labore molestiae quasi qui ut? Dolores placeat, reiciendis!
+
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
 
 
@@ -506,6 +533,10 @@ function compress_htmlcode($codedata)
             }
         });
         initAutoplay();
+
+        $('.product-overview').expandable({
+            height: 350
+        });
     })
 
     function initAutoplay() {

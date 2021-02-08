@@ -191,6 +191,7 @@ function compress_htmlcode($codedata)
         <script src="/assets/js/jquery.autocomplete.js"></script>
         <script src="/assets/js/jquery.magnific-popup.js"></script>
         <script src="/assets/js/jquery.slider.js"></script>
+        <script src="/assets/js/jquery.expandable.js"></script>
 
         <!--end::Global Theme Bundle-->
 
