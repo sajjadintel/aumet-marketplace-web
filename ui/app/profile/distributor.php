@@ -33,7 +33,7 @@
                     <div style="background-color: #D8D8D8; height: 120px;"></div>
                     <div class="d-flex justify-content-center mt-n20" id="profile-image-form">
                         <div class="image-input image-input-empty image-input-outline" id="profile-image" style="background-image: url('/assets/img/profile.png')">
-                            <div class="image-input-wrapper" style="background-image: url('/<?php echo $user->entityImage ?>')"></div>
+                            <div class="image-input-wrapper" style="background-image: url(<?php echo '/' . $objUser->entityImage ?>)"></div>
 
                             <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Change avatar">
                                 <i class="fa fa-pen icon-sm text-muted"></i>
@@ -237,9 +237,7 @@
                                     <?php foreach ($arrPaymentMethod as $paymentMethod) : ?>
                                         <label class="col-6 col-sm-6 col-md-3 col-lg-3 col-xl-3 checkbox checkbox-outline checkbox-dark">
 
-                                            <input type="checkbox" name="paymentMethodCheckbox" value="<?php echo $paymentMethod['id']; ?>" <?php if (in_array($paymentMethod['id'], $arrEntityPaymentMethodId)) {
-                                                                                                                                                echo "checked";
-                                                                                                                                            } ?> />
+                                            <input type="checkbox" name="paymentMethodCheckbox" value="<?php echo $paymentMethod['id']; ?>" <?php echo in_array($paymentMethod['id'], $arrEntityPaymentMethodId) ? 'checked' : '' ?> />
                                             <span style="background-color: white; border: unset;"></span>
                                             <?php echo $paymentMethod['name']; ?>
                                         </label>
