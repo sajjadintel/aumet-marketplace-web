@@ -189,6 +189,7 @@ var Profile = (function () {
 		_myDropZone.on('sending', function (file) {
 			// Show the total progress bar when upload starts
 			$(id + ' .progress-bar').css('opacity', '1');
+			$('#dropzoneFilenameImage').hide();
 		});
 
 		// Hide the total progress bar when nothing's uploading anymore
@@ -212,6 +213,7 @@ var Profile = (function () {
 				$('.dropzone-filename').magnificPopup({
 					type: 'image',
 				});
+				$(dropzoneFilenameImage).show();
 			} else if (_isPdfFile(response)) {
 				var link = _getFullUrl(response) + '#toolbar=0&navpanes=0';
 				console.log('is pdf', link);

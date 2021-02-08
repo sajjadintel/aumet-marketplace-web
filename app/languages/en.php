@@ -240,6 +240,7 @@ return array(
     'vModule_product_specialBonusInvalid' => 'Special Bonuses Invalid',
     'vModule_product_quantityTooBig' => 'Quantity too big !',
     'vModule_product_bonusTooBig' => 'Bonus too big !',
+    'vModule_product_productOverview' => 'Product Overview',
 
     'vModule_product_stockStatus_NotAvailable' => 'Not Available',
     'vModule_product_stockStatus_ComingSoon' => 'Coming Soon',
