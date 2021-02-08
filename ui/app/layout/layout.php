@@ -386,8 +386,7 @@ function compress_htmlcode($codedata)
         });
     </script>
 
-    <?PHP
-    if ($notAuthorized == 1) { ?>
+    <?php if ($notAuthorized == 1) { ?>
         <script>
             Swal.fire({
                 text: 'The URL you are trying to access is invalid.',
@@ -399,11 +398,10 @@ function compress_htmlcode($codedata)
                 },
             }).then(function() {
                 KTUtil.scrollTop();
+                window.location.href = '/web/auth/signout';
             });
         </script>
-    <?PHP
-    }
-    ?>
+    <?php } ?>
 
 </body>
 <!--end::Body-->
