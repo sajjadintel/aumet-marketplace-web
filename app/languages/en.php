@@ -227,7 +227,7 @@ return array(
     'vModule_product_stockInvalid' => 'Available Quantity should be a positive whole number not null',
     'vModule_product_maximumOrderQuantityInvalid' => 'Maximum Order Quantity should be a positive whole number not null',
     'vModule_product_unitPriceInvalid' => 'Unit Price should be a positive number not null',
-    'vModule_product_vatInvalid' => 'VAT should be a positive number',
+    'vModule_product_vatInvalid' => 'VAT should be a positive number between 0 and 100',
     'vModule_product_missingFields' => 'Some mandatory fields are missing',
     'vModule_product_notFound' => 'Product not found',
     'vModule_product_bonusType' => 'Bonus Type',

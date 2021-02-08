@@ -115,7 +115,6 @@ var DistributorProductsDataTable = (function () {
 		$('#editProductNameEn').val(webResponse.data.product.productName_en);
 		$('#editProductNameFr').val(webResponse.data.product.productName_fr);
 		$('#editUnitPrice').val(webResponse.data.product.unitPrice);
-		$('#editVat').val(webResponse.data.product.vat);
 		$('#editMaximumOrderQuantity').val(webResponse.data.product.maximumOrderQuantity);
 		$('#editProductSubtitleAr').val(webResponse.data.product.subtitle_ar);
 		$('#editProductSubtitleEn').val(webResponse.data.product.subtitle_en);
@@ -129,6 +128,13 @@ var DistributorProductsDataTable = (function () {
 		$('#editProductExpiryDate').val(webResponse.data.product.productExpiryDate);
 		$('#editProductStrength').val(webResponse.data.product.strength);
 
+		var vat = webResponse.data.product.vat || "";
+		if(vat >= 0) vat += "%";
+		$('#editVat').val(vat);
+		$("#editVat").on("change", function() {
+			_handlePercentageField(this, true);
+		});
+		
 		$('#editProductScientificName').empty();
 		$('#editProductScientificName').append(new Option(webResponse.data.product.scientificName, webResponse.data.product.scientificNameId));
 		$('#editProductScientificName').val(webResponse.data.product.scientificNameId);
@@ -265,6 +271,10 @@ var DistributorProductsDataTable = (function () {
 		$('#addProductImage').on('change', (ev) => _changeProductImage(ev, 'add'));
 
 		$('#addActiveIngredients').on('change', (ev) => _updateActiveIngredientsVal('add'));
+		
+		$("#addVat").on("change", function() {
+			_handlePercentageField(this, true);
+		});
 
 		_initializeSubimagesDropzone('add');
 
@@ -664,9 +674,13 @@ var DistributorProductsDataTable = (function () {
 		$(inputElement).val(value);
 	}
 
-	var _handlePercentageField = function (inputElement) {
+	var _handlePercentageField = function (inputElement, float = false) {
 		var newValue = $(inputElement).val().toString().replace("%", "");
-		newValue = newValue > 0? newValue : !newValue? newValue : 0;
+		if(float) {
+			newValue = newValue > 0? parseFloat(newValue).toFixed(2) : !newValue? newValue : 0;
+		} else {
+			newValue = newValue > 0? newValue : !newValue? newValue : 0;
+		}
 		if($(inputElement).attr("type") == "text") {
 			if(newValue > 100) newValue = 100;
 			if(newValue) {
@@ -851,7 +865,11 @@ var DistributorProductsDataTable = (function () {
                 };
 
                 Object.keys(mapKeyElement).forEach((key) => {
-                    body[key] = $('#addModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+					if(key == "vat") {
+						body[key] = $('#addModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val().toString().replace("%", "");
+					} else {
+						body[key] = $('#addModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+					}
                 });
 
                 WebApp.post('/web/distributor/product/add', body, _productAddSuccessCallback);
@@ -913,7 +931,11 @@ var DistributorProductsDataTable = (function () {
                 };
 
                 Object.keys(mapKeyElement).forEach((key) => {
-                    body[key] = $('#editModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+					if(key == "vat") {
+						body[key] = $('#editModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val().toString().replace("%", "");
+					} else {
+						body[key] = $('#editModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
+					}
                 });
 
                 WebApp.post('/web/distributor/product/edit', body, _productEditSuccessCallback);
