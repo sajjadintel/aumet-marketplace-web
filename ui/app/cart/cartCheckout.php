@@ -147,19 +147,14 @@ function compress_htmlcode($codedata)
                                                                 </a>
                                                             </td>
 
-                                                            <!--                                                        <td class="text-center align-middle cart-item-separator">-->
-                                                            <!--                                                            <input style="width: 100%;" type="text" id="note---><?php //echo $item->entityProductId 
-                                                                                                                                                                                ?>
-                                                            <!--" onfocusout="CartCheckout.updateNote(--><?php //echo $item->entityProductId 
-                                                                                                            ?>
-                                                            <!--, --><?php //echo $item->id 
-                                                                        ?>
-                                                            <!--, --><?php //echo $seller->sellerId 
-                                                                        ?>
-                                                            <!--)" class="mr-2 font-weight-bolder quantity" value="--><?php //echo $item->note 
-                                                                                                                        ?>
+                                                            <!--<td class="text-center align-middle cart-item-separator">-->
+                                                            <!--<input style="width: 100%;" type="text" id="note---><?php //echo $item->entityProductId  ?>
+                                                            <!--" onfocusout="CartCheckout.updateNote(--><?php //echo $item->entityProductId ?>
+                                                            <!--, --><?php //echo $item->id  ?>
+                                                            <!--, --><?php //echo $seller->sellerId c ?>
+                                                            <!--)" class="mr-2 font-weight-bolder quantity" value="--><?php //echo $item->note  ?>
                                                             <!--" name="note">-->
-                                                            <!--                                                        </td>-->
+                                                            <!--</td>-->
 
                                                             <td class="text-right align-middle font-weight-bolder font-size-h5 cart-item-separator">
                                                                 <?php echo Helper::formatMoney($item->unitPrice, 2) . " " . $currencySymbol ?>
@@ -168,7 +163,7 @@ function compress_htmlcode($codedata)
                                                                 <?php echo Helper::formatMoney($item->vat, 2) . "%" ?>
                                                             </td>
                                                             <td class="text-right align-middle font-weight-bolder font-size-h5 cart-item-separator productPrice-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" data-vat="<?php echo $item->vat ?>" data-unitPrice="<?php echo $item->unitPrice ?>" data-productPrice="<?php echo $item->quantity * $item->unitPrice ?>" id="productPrice-<?php echo $item->entityProductId ?>">
-                                                                <?php echo Helper::formatMoney($item->quantity * $item->unitPrice, 2) . " " . $currencySymbol ?>
+                                                                <?php echo Helper::formatMoney($item->quantity * $item->unitPrice * (1 + $item->vat / 100)) . " " . $currencySymbol ?>
                                                             </td>
                                                             <td class="text-right align-middle cart-item-separator">
                                                                 <a href="javascript:;" onclick="CartCheckout.removeItemModal(<?php echo $item->id ?>)" class="btn btn-sm btn-light btn-text-danger btn-hover-primary btn-icon  mr-2" title="">
