@@ -309,7 +309,7 @@
                         '/product/' +
                         row.id +
                         '\')"> ' +
-                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <img class="productImage" src="' + row.image + '"></div>' +
+                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <img  style="width: 60px;" class="productImage" src="' + row.image + '"></div>' +
                         '</a></div>';
                     output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
