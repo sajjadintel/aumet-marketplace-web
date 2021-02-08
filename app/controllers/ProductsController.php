@@ -495,19 +495,23 @@ class ProductsController extends Controller
 
     function postProductImage()
     {
-        $imageName = $this->f3->get('POST.imageName');
+        $allValidExtensions = [
+            "jpeg",
+            "jpg",
+            "png",
+        ];
+        $success = false;
 
-        $uploadDir = "assets/img/products/";
-        $this->f3->set('UPLOADS', $uploadDir);
+        $ext = pathinfo(basename($_FILES["product_image"]["name"]), PATHINFO_EXTENSION);
+        if (in_array($ext, $allValidExtensions)) {
+            $success = true;
+        }
+        $path = "";
 
-        $overwrite = true;
-
-        $web = \Web::instance();
-        $files = $web->receive(function ($file, $formFieldName) {
-            return true;
-        }, $overwrite, true);
-
-        $path = "/assets/img/products/" . $imageName;
+        if ($success) {
+            $objResult = AumetFileUploader::upload("s3", $_FILES["product_image"], $this->generateRandomString(64));
+            $path = $objResult->fileLink;
+        }
 
         $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         $this->webResponse->title = "Product Image Upload";
@@ -524,19 +528,14 @@ class ProductsController extends Controller
         ];
         $success = false;
 
-        $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
-
-        $targetFile = Helper::createUploadedFileName($fileName, $ext, "assets/img/products/");
-
         if (in_array($ext, $allValidExtensions)) {
-            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-                $success = true;
-            }
+            $success = true;
         }
 
         if ($success) {
-            echo $targetFile;
+            $objResult = AumetFileUploader::upload("s3", $_FILES["file"], $this->generateRandomString(64));
+            echo $objResult->fileLink;
         }
     }
 

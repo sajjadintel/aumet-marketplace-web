@@ -392,6 +392,12 @@ class CartController extends Controller
             $dbEntityProduct->getWhere("id=$productId");
 
             $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
+
+            if (!$dbEntityProduct->maximumOrderQuantity)
+                $maxOrder = $dbEntityProduct->stock;
+            if (!$dbEntityProduct->stock)
+                $maxOrder = 0;
+
             $total = $quantityFree + $quantity;
             if ($total > $maxOrder) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;

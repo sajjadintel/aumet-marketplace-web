@@ -467,21 +467,20 @@ var SearchDataTable = (function () {
 		productAddBonus: function (addButtonName) {
 			_productAddBonus(addButtonName);
 		},
-		updateQty(row, oldValue = null){
-
-			if(row.cart == 0){
+		updateQty(row, oldValue = null) {
+			if (row.cart == 0) {
 				Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
-			}else{
-				CartCheckout.updateQuantity(row.productId, 0, row.stock, row.cartDetailId, row.entityId,0, oldValue)
+			} else {
+				CartCheckout.updateQuantity(row.id, 0, row.stock, row.cartDetailId, row.entityId, 0, oldValue);
 			}
 			WebApp.reloadDatatable();
-		}
-        // TODO: Check Naveed fix
-//		updateQty(row, userID) {
-//			WebApp.post('/web/cart/remove', { entityProductId: row.id, userID: userID }, function () {
-//				SearchDataTable.onClickAddToCart(row);
-//				//WebApp.reloadDatatable();
-//			});
-//		},
+		},
+		// TODO: Check Naveed fix
+		//		updateQty(row, userID) {
+		//			WebApp.post('/web/cart/remove', { entityProductId: row.id, userID: userID }, function () {
+		//				SearchDataTable.onClickAddToCart(row);
+		//				//WebApp.reloadDatatable();
+		//			});
+		//		},
 	};
 })();

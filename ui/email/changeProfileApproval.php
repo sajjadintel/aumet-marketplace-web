@@ -38,8 +38,8 @@
 										</tbody>
 									</table>
 									<h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 30px;line-height: 39px;">Approve Profile Changes</h2>
-                                    <p style="margin-top: 0px;margin-bottom: 0px;text-align: left;">Dear Aumet Admin, kindly note that the user (<?php echo $userEmail ?>) has requested to update information on their profile
-                                        Check down below all the new information before approving these changes</p>
+									<p style="margin-top: 0px;margin-bottom: 0px;text-align: left;">Dear Aumet Admin, kindly note that the user (<?php echo $userEmail ?>) has requested to update information on their profile
+										Check down below all the new information before approving these changes</p>
 								</div>
 								<!--[if mso]></td></tr></table><![endif]-->
 							</td>
@@ -110,7 +110,7 @@
 											<tr>
 												<td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">
 													<p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">
-														<a href="<?php echo $domainUrl . $tradeLicenseUrl; ?>" target="_blank">Download file</strong>
+														<a href="<?php echo $tradeLicenseUrl; ?>" target="_blank">Download file</strong>
 													</p>
 												</td>
 											</tr>
@@ -127,13 +127,13 @@
 											<tr>
 												<td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">
 													<p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">
-														<a href="<?php echo $domainUrl . $oldTradeLicenseUrl; ?>" target="_blank">Download file</strong>
+														<a href="<?php echo $oldTradeLicenseUrl; ?>" target="_blank">Download file</strong>
 													</p>
 												</td>
 												<td style="padding: 10px;">To</td>
 												<td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">
 													<p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">
-														<a href="<?php echo $domainUrl . $tradeLicenseUrl; ?>" target="_blank">Download file</strong>
+														<a href="<?php echo $tradeLicenseUrl; ?>" target="_blank">Download file</strong>
 													</p>
 												</td>
 											</tr>
@@ -163,7 +163,7 @@
 									<tbody>
 										<tr>
 											<td width="300" class="o_btn o_bg-primary o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #126de5;border-radius: 4px;">
-												<a class="o_text-white" href="<?php echo $domainUrl . $approvalUrl ."?token=$token"; ?>" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">Approve Changes</a>
+												<a class="o_text-white" href="<?php echo $domainUrl . $approvalUrl . "?token=$token"; ?>" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">Approve Changes</a>
 											</td>
 										</tr>
 									</tbody>
