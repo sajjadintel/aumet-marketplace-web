@@ -245,7 +245,10 @@ class ProductsController extends Controller
             $cartDetail = new BaseModel($this->db, "cartDetail");
             $cartDetail->getWhere("userID =" . $this->objUser->id . " and entityProductId = " . $data[$i]['id'] . "");
 
-            $data[$i]['cart'] = (!$cartDetail->dry()) ? $cartDetail->quantity : 0;
+            if(!$cartDetail->dry()){
+                $data[$i]['cart'] = $cartDetail->quantity;
+                $data[$i]['cartDetailId'] = $cartDetail['id'];
+            }
         }
 
         ## Response
