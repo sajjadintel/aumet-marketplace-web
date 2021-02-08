@@ -225,6 +225,8 @@ function compress_htmlcode($codedata)
 
             var dbAdditionalOptions = {
                 datatableOptions: {
+                    "aLengthMenu": [[20, 50, 100], [20, 50, 100]],
+                    "iDisplayLength": 20,
                     processing: false,
                     order: [
                         [0, 'desc']
