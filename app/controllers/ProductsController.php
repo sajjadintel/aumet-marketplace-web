@@ -245,7 +245,7 @@ class ProductsController extends Controller
             $cartDetail = new BaseModel($this->db, "cartDetail");
             $cartDetail->getWhere("userID =" . $this->objUser->id . " and entityProductId = " . $data[$i]['id'] . "");
 
-            if(!$cartDetail->dry()){
+            if (!$cartDetail->dry()) {
                 $data[$i]['cart'] = $cartDetail->quantity;
                 $data[$i]['cartDetailId'] = $cartDetail['id'];
             }
@@ -2224,7 +2224,7 @@ class ProductsController extends Controller
 
         $targetFile = "files/uploads/reports/products-add/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
 
-        if ($ext == "xlsm") {
+        if ($ext == "xlsm" || ext == "xlsx") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
                 $dbBulkAddUpload = new BaseModel($this->db, "bulkAddUpload");
                 $dbBulkAddUpload->userId = $this->objUser->id;
@@ -2539,9 +2539,9 @@ class ProductsController extends Controller
                             break;
                         case "T":
                             $valid = true;
-                            if(strlen($cellValue) > 0) {
+                            if (strlen($cellValue) > 0) {
                                 $activeIngredientsTemp = explode(", ", $cellValue);
-                                foreach($activeIngredientsTemp as $ingredient) {
+                                foreach ($activeIngredientsTemp as $ingredient) {
                                     if (!in_array($ingredient, $allIngredientId)) {
                                         array_push($errors, "Active Ingredients invalid");
                                         $valid = false;
@@ -2591,7 +2591,7 @@ class ProductsController extends Controller
 
                     if (strlen($activeIngredients) > 0) {
                         $arrActiveIngredients = explode(", ", $activeIngredients);
-                        foreach($arrActiveIngredients as $ingredient) {
+                        foreach ($arrActiveIngredients as $ingredient) {
                             $dbProductIngredient->productId = $dbProduct->id;
                             $dbProductIngredient->ingredientId = $ingredient;
                             $dbProductIngredient->add();
@@ -2603,7 +2603,7 @@ class ProductsController extends Controller
                 } else {
                     array_push($failedProducts, $product);
                     array_push($allErrors, $errors);
-                    array_push($multiActiveIngredients, [ $activeIngredients ]);
+                    array_push($multiActiveIngredients, [$activeIngredients]);
                     $failedRecords++;
                 }
             }
@@ -2729,10 +2729,10 @@ class ProductsController extends Controller
                         } else if ($field == "subcategoryId") {
                             $cellValue = $mapSubcategoryIdName[$product[$j]];
                         } else if ($field == "activeIngredientsId") {
-                            if(strlen($product[$j]) > 0) {
+                            if (strlen($product[$j]) > 0) {
                                 $activeIngredientsId = explode(", ", $product[$j]);
                                 $activeIngredientsName = [];
-                                foreach($activeIngredientsId as $ingredientId) {
+                                foreach ($activeIngredientsId as $ingredientId) {
                                     array_push($activeIngredientsName, $mapIngredientIdName[$ingredientId]);
                                 }
                                 $cellValue = implode(", ", $activeIngredientsName);
