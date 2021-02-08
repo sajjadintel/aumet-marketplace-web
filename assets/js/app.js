@@ -168,7 +168,7 @@ var WebApp = (function () {
 					_unblockPage();
 					_alertError(WebAppLocals.getMessage('error'));
 				}
-				if(submitButton) {
+				if (submitButton) {
 					KTUtil.btnRelease(submitButton);
 					$(submitButton).prop('disabled', false);
 				}
@@ -182,10 +182,10 @@ var WebApp = (function () {
 				_alertError(WebAppLocals.getMessage('error'));
 				_unblurPage();
 				_unblockPage();
-				if(submitButton) {
+				if (submitButton) {
 					KTUtil.btnRelease(submitButton);
 					$(submitButton).prop('disabled', false);
-				}	
+				}
 			});
 	};
 
@@ -356,7 +356,7 @@ var WebApp = (function () {
 			_unblurPage();
 			_unblockPage();
 		} else {
-			_loadPage('/web/product/search');
+			_loadPage('/web/pharmacy/product/search');
 		}
 	};
 
@@ -553,7 +553,8 @@ var WebApp = (function () {
 				lengthMenu: '_MENU_',
 				info: 'Showing _START_ - _END_ of _TOTAL_',
 				infoEmpty: 'Showing 0',
-				infoFiltered: '(from _MAX_ total)',
+				// infoFiltered: '(from _MAX_ total)',
+				infoFiltered: '',
 			},
 			buttons: [
 				{
@@ -696,7 +697,8 @@ var WebApp = (function () {
 				lengthMenu: '_MENU_',
 				info: 'Showing _START_ - _END_ of _TOTAL_',
 				infoEmpty: 'Showing 0',
-				infoFiltered: '(from _MAX_ total)',
+				// infoFiltered: '(from _MAX_ total)',
+				infoFiltered: '',
 			},
 			buttons: [
 				{
@@ -828,14 +830,14 @@ var WebApp = (function () {
 		if (!form) {
 			return;
 		}
-		
-		$("#supportModalForm select[name=supportReasonId]").on("change", function(ev) {
-			var field = $(this).attr("name");
+
+		$('#supportModalForm select[name=supportReasonId]').on('change', function (ev) {
+			var field = $(this).attr('name');
 			_supportModalValidator.revalidateField(field);
 		});
 
-		$("#support_modal").on("shown.bs.modal", function() {
-			if(_supportModalValidator) {
+		$('#support_modal').on('shown.bs.modal', function () {
+			if (_supportModalValidator) {
 				_supportModalValidator.resetForm();
 				_supportModalValidator.destroy();
 			}
@@ -849,23 +851,23 @@ var WebApp = (function () {
 							},
 							emailAddress: {
 								message: WebAppLocals.getMessage('supportEmailInvalid'),
-							}
-						}
+							},
+						},
 					},
 					supportPhone: {
 						validators: {
 							notEmpty: {
 								message: WebAppLocals.getMessage('supportPhoneRequired'),
-							}
-						}
+							},
+						},
 					},
 					supportReasonId: {
 						validators: {
 							notEmpty: {
 								message: WebAppLocals.getMessage('supportReasonRequired'),
-							}
-						}
-					}
+							},
+						},
+					},
 				},
 				plugins: {
 					trigger: new FormValidation.plugins.Trigger(),
@@ -877,30 +879,30 @@ var WebApp = (function () {
 					}),
 				},
 			});
-		
+
 			_supportModalValidator.on('core.form.valid', function () {
 				let body = {};
-	
+
 				let mapKeyElement = {
 					supportEmail: 'input',
 					supportPhone: 'input',
 					supportReasonId: 'select',
 				};
-	
+
 				Object.keys(mapKeyElement).forEach((key) => {
 					body[key] = $('#supportModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
 				});
-	
+
 				// Show loading state on button
 				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
 				$(formSubmitButton).prop('disabled', true);
-	
+
 				_post(formSubmitUrl, body, _supportModalSuccessCallback, formSubmitButton);
 			});
 		});
 
-		$("#support_modal").on("hidden.bs.modal", function() {
-			if(_supportModalValidator) {
+		$('#support_modal').on('hidden.bs.modal', function () {
+			if (_supportModalValidator) {
 				_supportModalValidator.resetForm();
 				_supportModalValidator.destroy();
 			}
@@ -908,14 +910,14 @@ var WebApp = (function () {
 	};
 
 	var _supportModalSuccessCallback = function () {
-		if(_supportModalValidator) {
+		if (_supportModalValidator) {
 			_supportModalValidator.resetForm();
 			_supportModalValidator.destroy();
 		}
 
 		$('#supportModalForm select[name=supportReasonId]').val('').trigger('change');
-		$('#support_modal').modal('hide');;
-	}
+		$('#support_modal').modal('hide');
+	};
 
 	// Public Functions
 	return {

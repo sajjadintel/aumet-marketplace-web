@@ -30,9 +30,9 @@ $f3->route('POST /web/notification/support', 'NotificationController->support');
 $f3->route('GET /web/me/menu', 'UserController->getMenu');
 $f3->route('GET /web/me/switchLanguage/@lang', 'UserController->switchLanguage');
 
-$f3->route('GET /web/product/search', 'SearchController->getSearchProducts');
-$f3->route('POST /web/product/search', 'SearchController->postSearchProducts');
-$f3->route('POST /web/product/search/@sort', 'SearchController->postSearchProducts');
+$f3->route('GET /web/pharmacy/product/search', 'SearchController->getSearchProducts');
+$f3->route('POST /web/pharmacy/product/search', 'SearchController->postSearchProducts');
+$f3->route('POST /web/pharmacy/product/search/@sort', 'SearchController->postSearchProducts');
 $f3->route('GET /web/entity/@entityId/product/@productId', 'ProductsController->getEntityProduct');
 $f3->route('POST /web/entity/@entityId/product/@productId', 'ProductsController->postEntityProduct');
 
