@@ -289,7 +289,7 @@ var Profile = (function () {
 	var _isImageFile = function (filePath) {
 		var ext = filePath.split('.').pop();
 		ext = ext.toLowerCase();
-		console.log(ext);
+		console.debug(ext);
 		if (ext == 'png' || ext == 'jpg' || ext == 'jpeg') {
 			return true;
 		}
@@ -299,7 +299,7 @@ var Profile = (function () {
 	var _isPdfFile = function (filePath) {
 		var ext = filePath.split('.').pop();
 		ext = ext.toLowerCase();
-		console.log(ext);
+		console.debug(ext);
 		if (ext == 'pdf') {
 			return true;
 		}
@@ -757,9 +757,13 @@ var Profile = (function () {
 					cache: false,
 					contentType: false,
 					processData: false,
+					beforeSend: function () {
+						WebApp.blur();
+						WebApp.block();
+					},
 					success: function (webResponse) {
-						console.log(webResponse.title);
-						if (webResponse.data) {
+						console.debug(webResponse);
+						if (webResponse.data) { // success scenario
 							Swal.fire({
 								title: webResponse.message,
 								icon: 'success',
@@ -768,8 +772,10 @@ var Profile = (function () {
 								customClass: {
 									confirmButton: 'btn btn-primary font-weight-bold',
 								},
+							}).then(function () {
+								$('#side-panel-profile-image').css({'backgroundImage': 'url(' + webResponse.data['image'] + ')'});
 							});
-						} else {
+						} else { // error scenario
 							Swal.fire({
 								title: webResponse.message,
 								icon: 'error',
@@ -780,6 +786,10 @@ var Profile = (function () {
 								},
 							});
 						}
+					},
+					complete: function () {
+						WebApp.unblock();
+						WebApp.unblur();
 					},
 				});
 			})

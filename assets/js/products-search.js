@@ -16,7 +16,7 @@ var SearchDataTable = (function () {
 				type: 'remote',
 				source: {
 					read: {
-						url: '/web/product/search',
+						url: '/web/pharmacy/product/search',
 						params: _readParams,
 					},
 				},
@@ -145,7 +145,7 @@ var SearchDataTable = (function () {
 					title: WebAppLocals.getMessage('unitPrice'),
 					autoHide: false,
 					template: function (row) {
-						return  WebApp.formatMoney(row.unitPrice)  + ' ' + row.currency;
+						return WebApp.formatMoney(row.unitPrice) + ' ' + row.currency;
 					},
 				},
 				{
@@ -156,7 +156,7 @@ var SearchDataTable = (function () {
 					template: function (row) {
 						if (row.stockStatusId == 1) {
 							var tdText = '';
-							if(row.bonusOptions) {
+							if (row.bonusOptions) {
 								row.bonusOptions.sort((a, b) => parseInt(a.minOrder) - parseInt(b.minOrder));
 								row.bonusOptions.forEach((element) => {
 									tdText +=
@@ -310,7 +310,7 @@ var SearchDataTable = (function () {
 		$("label[for='addBonusAdd']").text(WebAppLocals.getMessage('add'));
 
 		var repeater = $('#addBonusListRepeater').repeater({
-			show: function() {
+			show: function () {
 				$(this).slideDown();
 			},
 		});
@@ -320,28 +320,28 @@ var SearchDataTable = (function () {
 		$('#addBonusModal').appendTo('body').modal('show');
 	};
 
-	var _productAddBonus = function(addButtonName) {
+	var _productAddBonus = function (addButtonName) {
 		let bonusRepeaterIndex = addButtonName.charAt(14);
 
-		let bonusMinOrderName = "bonusRepeater[" + bonusRepeaterIndex + "][minOrder]";
+		let bonusMinOrderName = 'bonusRepeater[' + bonusRepeaterIndex + '][minOrder]';
 		let bonusMinOrder = $($('[name ="' + bonusMinOrderName + '"]')[0]).val();
 
-		let bonusBonusName = "bonusRepeater[" + bonusRepeaterIndex + "][bonus]";
+		let bonusBonusName = 'bonusRepeater[' + bonusRepeaterIndex + '][bonus]';
 		let bonusBonus = $($('[name ="' + bonusBonusName + '"]')[0]).val();
 
 		let productId = $('#addBonusProductId').val();
 
-		let quantityId = "#quantity-" + productId;
+		let quantityId = '#quantity-' + productId;
 		$(quantityId).val(bonusMinOrder);
 
-		let quantityFreeInputId = "#quantityFreeInput-" + productId;
+		let quantityFreeInputId = '#quantityFreeInput-' + productId;
 		$(quantityFreeInputId).val(bonusBonus);
 
-		let quantityFreeHolderId = "#quantityFreeHolder-" + productId;
+		let quantityFreeHolderId = '#quantityFreeHolder-' + productId;
 		$(quantityFreeHolderId).html(bonusBonus);
 
 		$('#addBonusModal').appendTo('body').modal('hide');
-	}
+	};
 
 	var _initSearchFilter = function () {
 		/*
@@ -413,7 +413,7 @@ var SearchDataTable = (function () {
 
 				var bonusOptionLabelId = '';
 
-				if(row.bonusOptions) {
+				if (row.bonusOptions) {
 					row.bonusOptions.forEach((bonusOption) => {
 						//var bonusOptionLabelId = '#bonusOption-' + row.id + '-' + element.id;
 						if (newQuantity >= bonusOption.minOrder) {
@@ -431,22 +431,22 @@ var SearchDataTable = (function () {
 				}
 				$('#bonus-' + row.id).html(bonus);
 
-
 				let bonusVal = '';
 				let bestBonus = 0;
-				row.bonuses && row.bonuses.forEach((bonusOption) => {
-					if (newQuantity >= bonusOption.minOrder && bonusOption.minOrder > bestBonus) {
-						bonusVal = Math.floor(newQuantity / bonusOption.minOrder) * bonusOption.bonus;
-						bestBonus = bonusOption.minOrder;
-					}
-				});
+				row.bonuses &&
+					row.bonuses.forEach((bonusOption) => {
+						if (newQuantity >= bonusOption.minOrder && bonusOption.minOrder > bestBonus) {
+							bonusVal = Math.floor(newQuantity / bonusOption.minOrder) * bonusOption.bonus;
+							bestBonus = bonusOption.minOrder;
+						}
+					});
 				let activeBonus = row.activeBonus?.minOrder || 0;
-				if(activeBonus >= bestBonus) {
+				if (activeBonus >= bestBonus) {
 					bonusVal = '';
 					bestBonus = 0;
 				}
 
-				$("#quantityFreeHolder-" + row.id).html(bonusVal);
+				$('#quantityFreeHolder-' + row.id).html(bonusVal);
 				$('#quantityFreeInput-' + row.id).val(bonusVal);
 			}
 		},
@@ -461,17 +461,17 @@ var SearchDataTable = (function () {
 		hideColumn: function (columnName) {
 			datatable.hideColumn(columnName);
 		},
-		productAddBonusModal: function(productId, entityId, bonuses) {
-			_productAddBonusModal(productId, entityId, bonuses)
+		productAddBonusModal: function (productId, entityId, bonuses) {
+			_productAddBonusModal(productId, entityId, bonuses);
 		},
-		productAddBonus: function(addButtonName) {
-			_productAddBonus(addButtonName)
+		productAddBonus: function (addButtonName) {
+			_productAddBonus(addButtonName);
 		},
-		updateQty(row,userID){
-			WebApp.post('/web/cart/remove', { entityProductId: row.id, userID:userID },function(){
+		updateQty(row, userID) {
+			WebApp.post('/web/cart/remove', { entityProductId: row.id, userID: userID }, function () {
 				SearchDataTable.onClickAddToCart(row);
 				//WebApp.reloadDatatable();
 			});
-		}
+		},
 	};
 })();

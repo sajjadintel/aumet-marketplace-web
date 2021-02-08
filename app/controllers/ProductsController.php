@@ -626,7 +626,7 @@ class ProductsController extends Controller
 
                 if ((!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)
                     || (!is_numeric($unitPrice) || $unitPrice <= 0)
-                    || (!is_numeric($vat) || $vat < 0)
+                    || (!is_numeric($vat) || $vat < 0 || $vat > 100)
                 ) {
                     $arrError = [];
                     if (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0) {
@@ -635,7 +635,7 @@ class ProductsController extends Controller
                     if (!is_numeric($unitPrice) || $unitPrice <= 0) {
                         array_push($arrError, $this->f3->get('vModule_product_unitPriceInvalid'));
                     }
-                    if (!is_numeric($vat) || $vat < 0) {
+                    if (!is_numeric($vat) || $vat < 0 || $vat > 100) {
                         array_push($arrError, $this->f3->get('vModule_product_vatInvalid'));
                     }
 
@@ -1106,7 +1106,7 @@ class ProductsController extends Controller
             if ((!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0)
                 || (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)
                 || (!is_numeric($unitPrice) || $unitPrice <= 0)
-                || (!is_numeric($vat) || $vat < 0)
+                || (!is_numeric($vat) || $vat < 0 || $vat > 100)
             ) {
                 $arrError = [];
                 if (!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0) {
@@ -1118,7 +1118,7 @@ class ProductsController extends Controller
                 if (!is_numeric($unitPrice) || $unitPrice <= 0) {
                     array_push($arrError, $this->f3->get('vModule_product_unitPriceInvalid'));
                 }
-                if (!is_numeric($vat) || $vat < 0) {
+                if (!is_numeric($vat) || $vat < 0 || $vat > 100) {
                     array_push($arrError, $this->f3->get('vModule_product_vatInvalid'));
                 }
 
@@ -2168,7 +2168,7 @@ class ProductsController extends Controller
                 $arrIngredient[] = array($ingredient['name'], $ingredient['id']);
             }
 
-            $sampleFilePath = 'app/files/samples/products-add-sample.xlsx';
+            $sampleFilePath = 'app/files/samples/products-add-sample.xlsm';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
@@ -2187,7 +2187,7 @@ class ProductsController extends Controller
             Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
             Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
             Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$G$3:$H$' . $subcategoryNum);
-            Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$J$3:$K$' . $ingredientNum);
+            // Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$J$3:$K$' . $ingredientNum);
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -2203,7 +2203,7 @@ class ProductsController extends Controller
             Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
 
             // Create excel sheet
-            $productsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsx";
+            $productsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsm";
             Excel::saveSpreadsheetToPath($spreadsheet, $productsSheetUrl);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
@@ -2221,7 +2221,7 @@ class ProductsController extends Controller
 
         $targetFile = "files/uploads/reports/products-add/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
 
-        if ($ext == "xlsx") {
+        if ($ext == "xlsm") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
                 $dbBulkAddUpload = new BaseModel($this->db, "bulkAddUpload");
                 $dbBulkAddUpload->userId = $this->objUser->id;
@@ -2330,6 +2330,7 @@ class ProductsController extends Controller
             $failedProducts = [];
 
             $allErrors = [];
+            $multiActiveIngredients = [];
 
             $dbBulkAddUpload->recordsCount = 0;
             $successRecords = 0;
@@ -2486,8 +2487,8 @@ class ProductsController extends Controller
                             }
                             break;
                         case "M":
-                            if (!is_numeric($cellValue) || (float) $cellValue < 0) {
-                                array_push($errors, "VAT must be a positive number");
+                            if (!is_numeric($cellValue) || (float) $cellValue < 0 || (float) $cellValue > 100) {
+                                array_push($errors, "VAT must be a positive number between 0 and 100");
                             } else {
                                 $dbEntityProduct->vat = round((float) $cellValue, 2);
                             }
@@ -2534,11 +2535,18 @@ class ProductsController extends Controller
                             }
                             break;
                         case "T":
-                            if ($cellValue != "#N/A" && !in_array($cellValue, $allIngredientId)) {
-                                array_push($errors, "Ingredient invalid");
-                            } else {
-                                $activeIngredientsId = $cellValue;
+                            $valid = true;
+                            if(strlen($cellValue) > 0) {
+                                $activeIngredientsTemp = explode(", ", $cellValue);
+                                foreach($activeIngredientsTemp as $ingredient) {
+                                    if (!in_array($ingredient, $allIngredientId)) {
+                                        array_push($errors, "Active Ingredients invalid");
+                                        $valid = false;
+                                        break;
+                                    }
+                                }
                             }
+                            $activeIngredients = $cellValue;
                             break;
                         case "U":
                             if (!is_null($cellValue)) {
@@ -2578,10 +2586,13 @@ class ProductsController extends Controller
                     $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
                     $dbEntityProduct->add();
 
-                    if ($activeIngredientsId) {
-                        $dbProductIngredient->productId = $dbProduct->id;
-                        $dbProductIngredient->ingredientId = $activeIngredientsId;
-                        $dbProductIngredient->add();
+                    if (strlen($activeIngredients) > 0) {
+                        $arrActiveIngredients = explode(", ", $activeIngredients);
+                        foreach($arrActiveIngredients as $ingredient) {
+                            $dbProductIngredient->productId = $dbProduct->id;
+                            $dbProductIngredient->ingredientId = $ingredient;
+                            $dbProductIngredient->add();
+                        }
                     }
 
                     array_push($successProducts, $product);
@@ -2589,6 +2600,7 @@ class ProductsController extends Controller
                 } else {
                     array_push($failedProducts, $product);
                     array_push($allErrors, $errors);
+                    array_push($multiActiveIngredients, [ $activeIngredients ]);
                     $failedRecords++;
                 }
             }
@@ -2637,7 +2649,7 @@ class ProductsController extends Controller
                     $arrIngredient[] = array($ingredient['name'], $ingredient['id']);
                 }
 
-                $sampleFilePath = 'app/files/samples/products-add-sample.xlsx';
+                $sampleFilePath = 'app/files/samples/products-add-sample.xlsm';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
@@ -2656,7 +2668,7 @@ class ProductsController extends Controller
                 Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
                 Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
                 Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$G$3:$H$' . $subcategoryNum);
-                Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$J$3:$K$' . $ingredientNum);
+                // Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$J$3:$K$' . $ingredientNum);
 
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -2714,8 +2726,17 @@ class ProductsController extends Controller
                         } else if ($field == "subcategoryId") {
                             $cellValue = $mapSubcategoryIdName[$product[$j]];
                         } else if ($field == "activeIngredientsId") {
-                            $cellValue = $mapIngredientIdName[$product[$j]];
-                        } else if ($product[$j] !== 0) {
+                            if(strlen($product[$j]) > 0) {
+                                $activeIngredientsId = explode(", ", $product[$j]);
+                                $activeIngredientsName = [];
+                                foreach($activeIngredientsId as $ingredientId) {
+                                    array_push($activeIngredientsName, $mapIngredientIdName[$ingredientId]);
+                                }
+                                $cellValue = implode(", ", $activeIngredientsName);
+                            } else {
+                                $cellValue = $product[$j];
+                            }
+                        } else {
                             $cellValue = $product[$j];
                         }
                         array_push($singleProduct, $cellValue);
@@ -2730,8 +2751,17 @@ class ProductsController extends Controller
                 // Fill rows with products
                 $sheet->fromArray($multiProducts, NULL, 'A3', true);
 
+                // Change active sheet to user input
+                $sheet = $spreadsheet->setActiveSheetIndex(1);
+
+                // Fill rows with active ingredients column
+                $sheet->fromArray($multiActiveIngredients, NULL, 'T3', true);
+
+                // Change active sheet to user input
+                $sheet = $spreadsheet->setActiveSheetIndex(0);
+
                 // Create excel sheet
-                $failedProductsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsx";
+                $failedProductsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsm";
                 Excel::saveSpreadsheetToPath($spreadsheet, $failedProductsSheetUrl);
             }
 

@@ -16,7 +16,7 @@ class Helper {
     }
 
     // formats money to a whole number or with 2 decimals
-    public static function formatMoney($number, $cents = 1)
+    public static function formatMoney($number, $cents = 2)
     { // cents: 0=never, 1=if needed, 2=always
         if (is_numeric($number)) { // a number
             if (!$number) { // zero
