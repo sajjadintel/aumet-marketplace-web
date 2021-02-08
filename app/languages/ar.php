@@ -180,7 +180,7 @@ return array(
     'vModule_product_stockInvalid' => 'يجب أن تكون الكمية المتاحة عددًا صحيحًا موجبًا وليس فارغًا',
     'vModule_product_maximumOrderQuantityInvalid' => 'يجب أن يكون الحد الأقصى لكمية الطلب عددًا صحيحًا موجبًا وليس فارغًا',
     'vModule_product_unitPriceInvalid' => 'يجب أن يكون سعر الوحدة رقمًا موجبًا وليس فارغًا',
-    'vModule_product_vatInvalid' => 'يجب أن تكون ضريبة القيمة المضافة رقمًا موجبًا',
+    'vModule_product_vatInvalid' => 'يجب أن تكون ضريبة القيمة المضافة رقمًا موجبًا بين ٠ و ١٠٠',
     'vModule_product_missingFields' => 'بعض الحقول الإلزامية مفقودة',
     'vModule_product_notFound' => 'الصنف غير موجود',
     'vModule_product_bonusType' => 'نوع المكافأة',
@@ -255,6 +255,7 @@ return array(
     'vModule_cart_bonus' => 'Bonus', // TODO: Add Translation
     'vModule_cart_note' => 'Note', // TODO: Add Translation
     'vModule_cart_unitPrice' => 'سعر الوحدة',
+    'vModule_cart_unit' => 'Unit',
     'vModule_cart_tax' => 'ضريبة',
     'vModule_cart_totalPrice' => 'السعر الاجمالي',
     'vModule_cart_grandTotal' => 'المجموع الكلي',
