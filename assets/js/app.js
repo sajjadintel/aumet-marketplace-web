@@ -962,6 +962,12 @@ var WebApp = (function () {
 		unblock: function () {
 			return _unblockPage();
 		},
+		blur: function () {
+			return _blurPage();
+		},
+		unblur: function () {
+			return _unblurPage();
+		},
 		alertSuccess: function (msg) {
 			return _alertSuccess(msg);
 		},
