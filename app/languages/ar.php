@@ -29,8 +29,13 @@ return array(
     'vSupport_telephone' => 'Telephone no:', // TODO: Translate
     'vSupport_request_call' => 'Request a Call', // TODO: Translate
     'vSupport_title' => 'Title:', // TODO: Translate
+    'vSupport_reason' => 'Reason:', // TODO: Translate
     'vSupport_submit' => 'Submit', // TODO: Translate
     'vSupport_requestSent' => 'Request sent successfully!', // TODO: Translate
+    'vSupport_missingFields' => 'Some mandatory fields are missing', // TODO: Translate
+    'vSupport_emailMissing' => 'Email is required', // TODO: Translate
+    'vSupport_phoneMissing' => 'Phone is required', // TODO: Translate
+    'vSupport_reasonMissing' => 'Reason is required', // TODO: Translate
 
     'vLogin_signin' => 'تسجيل الدخول',
     'vLogin_signinWithGoole' => 'سجل من خلال جوجل',
@@ -116,6 +121,13 @@ return array(
     'vSignup_isAlreadyVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours. Has it been longer? <a href="https://aumet.com">Request Assistance</a>',
     'vSignup_isVerifiedInvalidTitle' => 'Your verification token is invalid..',
     'vSignup_isVerifiedInvalidSubtitle' => '<a href="https://aumet.com">Request Assistance</a>',
+
+    'vSignup_isApprovedTitle' => 'User has been approved!',
+    'vSignup_isApprovedSubtitle' => 'An email will be sent to the user to login and get started.',
+    'vSignup_isApprovedAlreadyTitle' => 'User has already been approved!',
+    'vSignup_isApprovedAlreadySubtitle' => 'An email was already sent to the user. For any further escalation, review with the tech team.',
+    'vSignup_isApprovedInvalidTitle' => 'User invalid..',
+    'vSignup_isApprovedInvalidSubtitle' => 'For any further escalation, review with the tech team.',
 
     'vBack' => 'رجوع',
 
@@ -404,4 +416,14 @@ return array(
     'field_batchNumber' => 'Batch Number',
     'field_itemCode' => 'Item Code',
     'field_strength' => 'Strength',
+
+    'vModal_welcome_title' => 'Welcome', // TODO: translate
+    'vModal_welcome_message' => 'Please complete your profile.', // TODO: translate
+    'vModal_welcome_step1_title' => 'Upload profile image.', // TODO: translate
+    'vModal_welcome_step1_message' => 'Upload profile image.', // TODO: translate
+    'vModal_welcome_step2_title' => 'Add payment method.', // TODO: translate
+    'vModal_welcome_step2_message' => 'Add payment method.', // TODO: translate
+    'vModal_welcome_step3_title' => 'Add minimum value order by location.', // TODO: translate
+    'vModal_welcome_step3_message' => 'Add minimum value order by location.', // TODO: translate
+    'vModal_welcome_callToAction' => 'Complete Profile', // TODO: translate
 );

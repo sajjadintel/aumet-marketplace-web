@@ -230,6 +230,7 @@ class AuthController extends Controller
         $this->isAuth = true;
 
         $dbUser->loginCounter++;
+        $objUser->loginCounter = $dbUser->loginCounter;
         $dbUser->loginDateTime = date('Y-m-d H:i:s');
         $dbUser->update();
 
@@ -815,7 +816,7 @@ class AuthController extends Controller
         $isValid = true;
 
         if (!isset($token) || $token == null || $token == "") {
-            $this->f3->set('vAuthFile', 'signup-verification-invalid');
+            $this->f3->set('vAuthFile', 'signup-approve-invalid');
         }
         $token = urldecode($token);
         try {
@@ -823,11 +824,11 @@ class AuthController extends Controller
             $accessTokenPayload = $jwt->decode($token);
         } catch (\Exception $e) {
             $isValid = false;
-            $this->f3->set('vAuthFile', 'signup-verification-invalid');
+            $this->f3->set('vAuthFile', 'signup-approve-invalid');
         }
         if (!is_array($accessTokenPayload)) {
             $isValid = false;
-            $this->f3->set('vAuthFile', 'signup-verification-invalid');
+            $this->f3->set('vAuthFile', 'signup-approve-invalid');
         }
 
         if ($isValid) {
@@ -837,9 +838,9 @@ class AuthController extends Controller
             $dbUser->getById($userId);
 
             if ($dbUser->dry()) {
-                $this->f3->set('vAuthFile', 'signup-verification-invalid');
+                $this->f3->set('vAuthFile', 'signup-approve-invalid');
             } else if ($dbUser->statusId != Constants::USER_STATUS_PENDING_APPROVAL) {
-                $this->f3->set('vAuthFile', 'signup-verification-verified-already');
+                $this->f3->set('vAuthFile', 'signup-approve-verified-already');
             } else {
                 $dbUser->statusId = Constants::USER_STATUS_ACCOUNT_ACTIVE;
                 $dbUser->update();
@@ -850,7 +851,7 @@ class AuthController extends Controller
                     NotificationHelper::sendAccountApprovedDistributorNotification($this->f3, $this->db, $dbUser);
                 }
 
-                $this->f3->set('vAuthFile', 'signup-verification-verified');
+                $this->f3->set('vAuthFile', 'signup-approve-verified');
             }
         }
         echo View::instance()->render('public/auth/layout.php');
