@@ -276,7 +276,7 @@ return array(
     'vModule_cart_offersMore' => 'Browse More Offers',
 
     'vModule_cartCheckout_empty' => 'Your cart is empty',
-    'vModule_cartCheckout_submitOrder' => 'Submit Order',
+    'vModule_cartCheckout_submitOrder' => 'SUBMIT ORDER',
     'vModule_cartCheckout_removalConfirmationTitle' => 'Removal Confirmation',
     'vModule_cartCheckout_removalConfirmation' => 'Are you sure you want to remove this item?',
     'vModule_cartCheckout_orderConfirmationTitle' => 'Order Confirmation',

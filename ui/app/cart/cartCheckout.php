@@ -75,9 +75,9 @@ function compress_htmlcode($codedata)
                                                 <th width="32%" class="text-center cart-table-header"><?php echo $vModule_product_name ?></th>
                                                 <th class="text-center cart-table-header" width="17%"><?php echo $vModule_cart_quantity ?></th>
 <!--                                                <th class="text-center cart-table-header" width="13%">--><?php //echo $vModule_cart_note ?><!--</th>-->
-                                                <th class="text-center cart-table-header" width="15%"><?php echo $vModule_cart_unit ?></th>
-                                                <th class="text-center cart-table-header" width="8%"><?php echo $vModule_cart_tax ?></th>
-                                                <th class="text-center cart-table-header" width="17%"><?php echo $vModule_cart_productOrderPrice ?></th>
+                                                <th class="text-center cart-table-header" width="10%"><?php echo $vModule_cart_unit ?></th>
+                                                <th class="text-center cart-table-header" width="6%"><?php echo $vModule_cart_tax ?></th>
+                                                <th class="text-center cart-table-header" width="10%"><?php echo $vModule_cart_productOrderPrice ?></th>
                                                 <th class="text-center cart-table-header" width="5%"></th>
                                             </tr>
                                             </thead>
@@ -100,9 +100,9 @@ function compress_htmlcode($codedata)
                                                     <th width="32%" class="cart-table-header-body"></th>
                                                     <th class="text-center cart-table-header-body" width="17%"></th>
 <!--                                                    <th class="text-center cart-table-header-body" width="13%"></th>-->
-                                                    <th class="text-right cart-table-header-body" width="15%"></th>
-                                                    <th class="text-right cart-table-header-body" width="8%"></th>
-                                                    <th class="text-right cart-table-header-body" width="17%"></th>
+                                                    <th class="text-right cart-table-header-body" width="10%"></th>
+                                                    <th class="text-right cart-table-header-body" width="6%"></th>
+                                                    <th class="text-right cart-table-header-body" width="10%"></th>
                                                     <th class="text-right cart-table-header-body" width="5%"></th>
                                                 </tr>
                                                 </thead>
@@ -220,7 +220,7 @@ function compress_htmlcode($codedata)
                                         <h2 class="title"><?php echo $vModule_cart_orderTotal ?></h2>
                                         <?php if (count($allSellers) > 0) : ?>
                                             <?php if (count($allCurrencyId) > 1) : ?>
-                                                <p class="font-weight-bolder font-size-h4"><span class="text-primary"><?php echo $vModule_cart_formula ?> </span> <span id="formula"></span></p>
+                                                <p class="font-weight-bolder font-size-h4 itemWrapper"><span class="text-primary item"><?php echo $vModule_cart_formula ?> </span> <span id="formula" class="price"></span></p>
                                             <?php endif; ?>
                                             <p class="font-weight-bolder font-size-h4 itemWrapper"><span class="text-primary item"><?php echo $vModule_cart_orderSubTotal ?> </span> <span id="grandSubTotal" class="price"></span></p>
                                             <p class="font-weight-bolder font-size-h4 itemWrapper"><span class="text-primary item"><?php echo $vModule_cart_tax ?> </span> <span id="tax" class="price"></span></p>

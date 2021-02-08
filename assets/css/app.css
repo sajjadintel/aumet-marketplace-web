@@ -588,6 +588,7 @@ input[type='number'] {
 	color: #9fa2a6;
 	font-weight: bold;
 	text-transform: uppercase;
+	text-align: right;
 }
 
 .cartRightWrapper .title {
@@ -600,7 +601,7 @@ input[type='number'] {
 
 .cartRightWrapper hr {
 	background-color: #c2c2c2;
-	height: 1px;
+	height: 2px;
 	border: 0;
 }
 
