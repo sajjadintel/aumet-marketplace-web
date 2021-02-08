@@ -290,6 +290,11 @@ var WebAppLocals = (function () {
 			ar: 'سعر الوحدة',
 			fr: '',
 		},
+		unit: {
+			en: 'Unit',
+			ar: 'الوحدة',
+			fr: '',
+		},
 		tax: {
 			en: 'VAT',
 			ar: 'ضريبة',

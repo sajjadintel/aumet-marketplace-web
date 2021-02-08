@@ -262,7 +262,7 @@ function compress_htmlcode($codedata)
             },
             {
                 targets: 10,
-                title: WebAppLocals.getMessage('unitPrice'),
+                title: WebAppLocals.getMessage('unit'),
                 data: 'unitPrice',
                 visible: false,
                 render: function(data, type, row, meta) {
