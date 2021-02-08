@@ -918,9 +918,9 @@ class OrderController extends Controller
         $pdf->Ln(20);
 
         if ($item['tax'] != 0) {
-            $pdf->Cell(0, 0, "Order: {$item['currency']} " . Helper::formatMoney($arrOrder['total']), 0, 0, 'R');
+            $pdf->Cell(0, 0, "Subtotal: {$item['currency']} " . Helper::formatMoney($arrOrder['total']), 0, 0, 'R');
             $pdf->Ln(10);
-            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($item['tax'] * $arrOrder['total'], 2), 0, 0, 'R');
+            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal'] * $item['tax'] / 100.0, 2), 0, 0, 'R');
         }
 
         $pdf->Ln(10);
@@ -987,9 +987,9 @@ class OrderController extends Controller
         $pdf->Ln(20);
 
         if ($item['tax'] != 0) {
-            $pdf->Cell(0, 0, "Order: {$item['currency']} " . Helper::formatMoney($arrOrder['total']), 0, 0, 'R');
+            $pdf->Cell(0, 0, "Subtotal: {$item['currency']} " . Helper::formatMoney($arrOrder['total']), 0, 0, 'R');
             $pdf->Ln(10);
-            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($item['tax'] * $arrOrder['total'], 2), 0, 0, 'R');
+            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal'] * $item['tax'] / 100.0, 2), 0, 0, 'R');
         }
 
         $pdf->Ln(10);
