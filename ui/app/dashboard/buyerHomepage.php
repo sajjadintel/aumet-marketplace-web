@@ -27,7 +27,7 @@
     .slick-dots li.slick-active button:before {
         color: #FFF;
     }
-    
+
     @media only screen and (max-width: 992px) {
         .dynamic-image {
             width: 100px;
@@ -35,7 +35,7 @@
             margin: auto;
         }
     }
-    
+
     @media only screen and (min-width: 992px) {
         .dynamic-image {
             width: 150px;
@@ -43,7 +43,7 @@
             margin: auto;
         }
     }
-    
+
     @media only screen and (min-width: 1440px) {
         .dynamic-image {
             width: 200px;
@@ -102,7 +102,7 @@
                                 <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_newProducts ?></span>
                             </div>
                             <div class="col-3" style="display: flex; justify-content: flex-end;">
-                                <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/product/search?sort=newest')">
+                                <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/product/search?sort=newest')">
                                     <?php echo $vButton_view_all; ?>
                                 </a>
                             </div>
@@ -126,7 +126,7 @@
                                 <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_topSelling ?></span>
                             </div>
                             <div class="col-3" style="display: flex; justify-content: flex-end;">
-                                <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/product/search?sort=top-selling')">
+                                <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/product/search?sort=top-selling')">
                                     <?php echo $vButton_view_all; ?>
                                 </a>
                             </div>
@@ -155,7 +155,7 @@
                                 <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_pendingOrders ?></span>
                             </div>
                             <div class="col-5" style="display: flex; justify-content: flex-end;">
-                                <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/order/history')">
+                                <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/order/pending')">
                                     <?php echo $vButton_view_all; ?>
                                 </a>
                             </div>
@@ -202,7 +202,7 @@
                         </div>
                         <div>
                             <?php foreach ($arrTopDistributors as $entity) : ?>
-                                <div class="font-size-h5" style="padding-top: 20px;display: flex;justify-content: space-between;align-items: center; cursor: pointer;" onclick="WebApp.loadPage('/web/product/search?distributorId=<?php echo $entity->id; ?>');">
+                                <div class="font-size-h5" style="padding-top: 20px;display: flex;justify-content: space-between;align-items: center; cursor: pointer;" onclick="WebApp.loadPage('/web/pharmacy/product/search?distributorId=<?php echo $entity->id; ?>');">
                                     <div class="col-9">
                                         <?php echo $entity->name; ?>
                                     </div>
