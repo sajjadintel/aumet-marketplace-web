@@ -759,9 +759,9 @@ var WebApp = (function () {
 	};
 
 	var _initNotificationTimer = function () {
-		setInterval(function () {
-			WebApp.getAsync('/web/notification/order/new', _handleNotificationTimer);
-		}, 5000);
+		// setInterval(function () {
+		// 	WebApp.getAsync('/web/notification/order/new', _handleNotificationTimer);
+		// }, 5000);
 	};
 
 	var _redirect = function (url) {

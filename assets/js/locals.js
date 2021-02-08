@@ -581,8 +581,8 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		bulkAddUploadError: {
-			en: 'Error processing the file. Please ensure its format is .xslm and matches the structure of the sample file',
-			ar: 'Error processing the file. Please ensure its format is .xslm and matches the structure of the sample file', // TODO: translate
+			en: 'Error processing the file. Please ensure its format is .xslm, .xsls and matches the structure of the sample file',
+			ar: 'Error processing the file. Please ensure its format is .xslm, .xsls and matches the structure of the sample file', // TODO: translate
 			fr: '',
 		},
 		goToProfile: {
@@ -648,37 +648,37 @@ var WebAppLocals = (function () {
 		supportEmailRequired: {
 			en: 'Enter Email',
 			ar: 'أدخل البريد الإلكتروني',
-			fr: ''
+			fr: '',
 		},
 		supportEmailInvalid: {
 			en: 'Invalid Email',
 			ar: 'بريد إلكتروني خاطئ',
-			fr: ''
+			fr: '',
 		},
 		supportPhoneRequired: {
 			en: 'Enter Telephone no',
 			ar: 'أدخل رقم الهاتف',
-			fr: ''
+			fr: '',
 		},
 		supportReasonRequired: {
 			en: 'Select Reason from dropdown menu',
 			ar: 'حدد السبب من القائمة المنسدلة',
-			fr: ''
+			fr: '',
 		},
 		subimagesExceeded: {
 			en: 'Max 6 images are allowed',
 			ar: 'Max 6 images are allowed', // TODO: translate
-			fr: ''
+			fr: '',
 		},
 		subimagesMaximumSize: {
 			en: 'The image maximum size is 2MB',
 			ar: 'The image maximum size is 2MB', // TODO: translate
-			fr: ''
+			fr: '',
 		},
 		subimagesWrongFormat: {
 			en: 'Allowed types are jpeg, jpg, png',
 			ar: 'Allowed types are jpeg, jpg, png', // TODO: translate
-			fr: ''
+			fr: '',
 		},
 	};
 
