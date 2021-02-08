@@ -61,7 +61,7 @@ var CartCheckout = (function () {
 		WebApp.redirect('/web/thankyou/' + webResponse.data);
 	};
 
-	var _updateQuantity = function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, oldValue = null) {
+	var _updateQuantity = function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice = 1, oldValue = null) {
 		let quantityId = '#quantity-' + productId;
 		let currentValue = 0;
 		if ($(quantityId).val() > 0) currentValue = parseInt($(quantityId).val());
@@ -139,7 +139,9 @@ var CartCheckout = (function () {
 		$(totalPriceId).attr('data-totalPrice', totalPrice);
 		$(totalPriceId).html(totalPrice + ' ' + currency);
 
-		updateTotalPrice();
+		if(updateTotalPrice == 1){
+			updateTotalPrice();
+		}
 	};
 
 	var _updateNote = function (productId, cartDetailId, sellerId) {
