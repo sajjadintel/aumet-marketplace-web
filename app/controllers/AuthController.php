@@ -260,6 +260,10 @@ class AuthController extends Controller
         }
 
         $this->f3->set('SESSION.arrEntities', $arrEntities);
+
+        $dbUserProfile = new BaseModel($this->db, "vwEntityUserProfile");
+        $userProfile = $dbUserProfile->getWhere("userId=" . $dbUser->id)[0];
+        $objUser->entityImage = $userProfile->entityImage;
     }
 
     function getForgottenPassword()
