@@ -65,13 +65,13 @@ function compress_htmlcode($codedata)
                                 <i class="nav-icon la la-plus p-0"></i> <?php echo $vButton_add; ?>
                             </button>
                         </label>
-                        
+
                         <label class="myLabel">
                             <button type="button" class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Bulk Add Products" onclick="DistributorProductsDataTable.productBulkAdd()">
                                 <i class="nav-icon la la-boxes p-0"></i> <?php echo $vButton_bulk_add; ?>
                             </button>
                         </label>
-                        
+
                         <!-- <label class="myLabel">
                             <a class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Bulk Add Images for Products" onclick="WebApp.loadPage('/web/distributor/product/bulk/add/image/upload')">
                                 <i class="nav-icon la la-images p-0"></i> <?php echo $vButton_bulk_add_image; ?>
@@ -88,7 +88,7 @@ function compress_htmlcode($codedata)
             <div class="card-body">
                 <!--begin: Datatable-->
                 <table
-                    id="datatable"
+                    id="datatableProducts"
                     class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
                 </table>
                 <!--end: Datatable-->
@@ -98,10 +98,14 @@ function compress_htmlcode($codedata)
     <!--end::Container-->
     <script>
         var PageClass = function () {
-            var elementId = "#datatable";
+            var elementId = "#datatableProducts";
             var url = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 
             var columnDefs = [
+                {
+                    className: "column-name-fixed",
+                    targets: [1]
+                },
                 {
                     className: "never",
                     targets: [0]
@@ -124,14 +128,13 @@ function compress_htmlcode($codedata)
                 title: WebAppLocals.getMessage('productName'),
                 data: 'productName_en',
                 render: function (data, type, row, meta) {
+                    if(!row.image) row.image = "/assets/img/default-product-image.png";
                     var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
                         row.id +
                         '\')"> ' +
-                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
-                        row.image +
-                        '\')" ></div></div>'
+                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <img class="productImage" src="' + row.image + '" ></div>'
                         + '</a></div>';
                     output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
@@ -173,7 +176,7 @@ function compress_htmlcode($codedata)
                 title: WebAppLocals.getMessage('unitPrice'),
                 data: 'unitPrice',
                 render: function (data, type, row, meta) {
-                    return '<span class="font-size-sm">' + row.currency + '</span>' + ' <b class="font-size-h4">' + WebApp.formatMoney(row.unitPrice) + '</b>';
+                    return '<div style="white-space: nowrap;"><span class="font-size-sm">' + row.currency + '</span>' + ' <b class="font-size-h4">' + WebApp.formatMoney(row.unitPrice) + '</b></div>';
                 }
             }, {
                 targets: 6,
@@ -182,6 +185,9 @@ function compress_htmlcode($codedata)
                 orderable: false,
                 render: function (data, type, row, meta) {
                     var outActions = '';
+
+                    var startWrapper = '<div style="white-space: nowrap;">';
+                    var endWrapper = '</div>';
 
                     var btnEdit =
                         '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditModal(' +
@@ -201,8 +207,10 @@ function compress_htmlcode($codedata)
                         WebAppLocals.getMessage('editQuantity') +
                         '</a>';
 
+                    outActions += startWrapper;
                     outActions += btnEdit;
                     outActions += btnEditQuantity;
+                    outActions += endWrapper;
 
                     return outActions;
                 },
@@ -217,6 +225,8 @@ function compress_htmlcode($codedata)
 
             var dbAdditionalOptions = {
                 datatableOptions: {
+                    "aLengthMenu": [[20, 50, 100], [20, 50, 100]],
+                    "iDisplayLength": 20,
                     processing: false,
                     order: [
                         [0, 'desc']
@@ -472,7 +482,7 @@ function compress_htmlcode($codedata)
                     rightArrow: '<i class="la la-angle-right"></i>'
                 }
             }
-            
+
             $('#addProductExpiryDate').datepicker({
                 rtl: KTUtil.isRTL(),
                 todayHighlight: true,
@@ -513,5 +523,5 @@ function compress_htmlcode($codedata)
 <?php ob_end_flush(); ?>
 <?php include_once 'edit-modal.php';
 include_once 'edit-stock-modal.php';
-include_once 'add-modal.php'; 
+include_once 'add-modal.php';
 include_once 'image-modal.php'; ?>

@@ -2,20 +2,12 @@
 
 // Class Definition
 var Profile = (function () {
-
-    var _entityDocument;
+	var _entityDocument;
 	var _myDropZone;
 	var _validator;
 	var _mapEntityTypeMenus = {
-		pharmacy: [
-			"myProfile",
-			"accountSetting"
-		],
-		distributor: [
-			"myProfile",
-			"accountSetting",
-			"paymentSetting"
-		]
+		pharmacy: ['myProfile', 'accountSetting'],
+		distributor: ['myProfile', 'accountSetting', 'paymentSetting'],
 	};
 	var _mapEntityTypeMenuValidatorFields = {
 		pharmacy: {
@@ -23,148 +15,145 @@ var Profile = (function () {
 				entityName: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
+							message: WebAppLocals.getMessage('pharmacyNameRequired'),
 						},
-                        stringLength: {
+						stringLength: {
 							min: 4,
-                            max: 100,
-                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 100 " + WebAppLocals.getMessage('characters')
-                        }
+							message: WebAppLocals.getMessage('pharmacyNameTooShort'),
+						},
 					},
 				},
 				address: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
+							message: WebAppLocals.getMessage('addressRequired'),
 						},
-                        stringLength: {
+						stringLength: {
 							min: 4,
-                            max: 500,
-                            message: WebAppLocals.getMessage('lengthError') + "4 " + WebAppLocals.getMessage('and') + " 500 " + WebAppLocals.getMessage('characters')
-                        }
+							message: WebAppLocals.getMessage('addressTooShort'),
+						},
 					},
 				},
 				tradeLicenseNumber: {
 					validators: {
-                        stringLength: {
+						notEmpty: {
+							message: WebAppLocals.getMessage('required'),
+						},
+						stringLength: {
 							min: 4,
-                            max: 200,
-                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 200 " + WebAppLocals.getMessage('characters')
-                        }
+							message: WebAppLocals.getMessage('tradeLicenseNumberTooShort'),
+						},
 					},
-				}
+				},
 			},
 			accountSetting: {
 				oldPassword: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
+							message: WebAppLocals.getMessage('oldPasswordRequired'),
+						},
 					},
 				},
 				newPassword: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
+							message: WebAppLocals.getMessage('newPasswordRequired'),
+						},
 					},
 				},
 				newPasswordConfirmation: {
 					validators: {
 						identical: {
 							compare: function () {
-								return accountSettingForm.querySelector("[name=newPassword]").value;
+								return accountSettingForm.querySelector('[name=newPassword]').value;
 							},
-							message: WebAppLocals.getMessage('wrongPasswordConfirmation')
-						}
+							message: WebAppLocals.getMessage('wrongPasswordConfirmation'),
+						},
 					},
-				}
-			}
+				},
+			},
 		},
 		distributor: {
 			myProfile: {
 				entityName: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
+							message: WebAppLocals.getMessage('distributorNameRequired'),
 						},
-                        stringLength: {
+						stringLength: {
 							min: 4,
-                            max: 100,
-                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 100 " + WebAppLocals.getMessage('characters')
-                        }
+							message: WebAppLocals.getMessage('distributorNameTooShort'),
+						},
 					},
 				},
 				address: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
+							message: WebAppLocals.getMessage('addressRequired'),
 						},
-                        stringLength: {
+						stringLength: {
 							min: 4,
-                            max: 500,
-                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 500 " + WebAppLocals.getMessage('characters')
-                        }
+							message: WebAppLocals.getMessage('addressTooShort'),
+						},
 					},
 				},
 				tradeLicenseNumber: {
 					validators: {
-                        stringLength: {
+						stringLength: {
 							min: 4,
-                            max: 200,
-                            message: WebAppLocals.getMessage('lengthError') + " 4 " + WebAppLocals.getMessage('and') + " 200 " + WebAppLocals.getMessage('characters')
-                        }
+							message: WebAppLocals.getMessage('tradeLicenseNumberTooShort'),
+						},
 					},
-				}
+				},
 			},
 			accountSetting: {
 				oldPassword: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
+							message: WebAppLocals.getMessage('oldPasswordRequired'),
+						},
 					},
 				},
 				newPassword: {
 					validators: {
 						notEmpty: {
-							message: WebAppLocals.getMessage('required'),
-						}
+							message: WebAppLocals.getMessage('newPasswordRequired'),
+						},
 					},
 				},
 				newPasswordConfirmation: {
 					validators: {
 						identical: {
 							compare: function () {
-								return accountSettingForm.querySelector("[name=newPassword]").value;
+								return accountSettingForm.querySelector('[name=newPassword]').value;
 							},
-							message: WebAppLocals.getMessage('wrongPasswordConfirmation')
-						}
+							message: WebAppLocals.getMessage('wrongPasswordConfirmation'),
+						},
 					},
-				}
-			}
-		}
+				},
+			},
+		},
 	};
 
-    var _init = function () {
+	var _init = function () {
 		_initializeDropzone();
 
 		_initializePasswordFields();
 
-		var entityType = $("#profileEntityType").val();
-		if(entityType === "distributor") {
+		var entityType = $('#profileEntityType').val();
+		if (entityType === 'distributor') {
 			_initializePaymentMethodCheckboxes();
 
-			var countryId = $("#paymentSettingSection input[name=countryId]").val();
+			var countryId = $('#paymentSettingSection input[name=countryId]').val();
 			WebApp.get('/web/city/list/' + countryId, _initializeMinimumValueOrderSection);
 		}
 
 		_handleMenuChange('myProfile');
 
 		_handleChangeProfileImage();
-    }
+	};
 
-    var _initializeDropzone = function () {
+	var _initializeDropzone = function () {
 		// Set the dropzone container id
 		var id = '#kt_dropzone';
 
@@ -177,7 +166,7 @@ var Profile = (function () {
 		_myDropZone = new Dropzone(id, {
 			// Make the whole body a dropzone
 			url: '/web/profile/document/upload', // Set the url for your upload script location
-			acceptedFiles: '.pdf, .ppt, .xcl, .docx, .jpeg, .jpg, .png',
+			acceptedFiles: '.pdf, .ppt, .docx, .jpeg, .jpg, .png',
 			maxFilesize: 10, // Max filesize in MB
 			maxFiles: 1,
 			previewTemplate: previewTemplate,
@@ -200,6 +189,7 @@ var Profile = (function () {
 		_myDropZone.on('sending', function (file) {
 			// Show the total progress bar when upload starts
 			$(id + ' .progress-bar').css('opacity', '1');
+			$('#dropzoneFilenameImage').hide();
 		});
 
 		// Hide the total progress bar when nothing's uploading anymore
@@ -214,24 +204,25 @@ var Profile = (function () {
 		_myDropZone.on('success', function (file, response) {
 			_entityDocument = response;
 
-			var dropzoneFilenameElement = $(file.previewTemplate).find("#dropzoneFilename");
-			$(dropzoneFilenameElement).attr("target", "_blank");
-			$(dropzoneFilenameElement).attr("href", _getFullUrl(response));
-			var dropzoneFilenameImage = $(file.previewTemplate).find("#dropzoneFilenameImage");
+			var dropzoneFilenameElement = $(file.previewTemplate).find('#dropzoneFilename');
+			$(dropzoneFilenameElement).attr('target', '_blank');
+			$(dropzoneFilenameElement).attr('href', _getFullUrl(response));
+			var dropzoneFilenameImage = $(file.previewTemplate).find('#dropzoneFilenameImage');
 			if (_isImageFile(response)) {
-				$(dropzoneFilenameImage).attr("src", _getFullUrl(response));
+				$(dropzoneFilenameImage).attr('src', _getFullUrl(response));
 				$('.dropzone-filename').magnificPopup({
-					type: 'image'
+					type: 'image',
 				});
+				$(dropzoneFilenameImage).show();
 			} else if (_isPdfFile(response)) {
-				var link = _getFullUrl(response) + "#toolbar=0&navpanes=0";
+				var link = _getFullUrl(response) + '#toolbar=0&navpanes=0';
 				console.log('is pdf', link);
-				$(dropzoneFilenameImage).attr("src", link);
+				$(dropzoneFilenameImage).attr('src', link);
 				$('.dropzone-filename').magnificPopup({
 					items: [
 						{
 							src: link,
-							type: 'iframe'
+							type: 'iframe',
 						},
 					],
 				});
@@ -249,26 +240,26 @@ var Profile = (function () {
 		});
 
 		// Overwrite previous file
-		_myDropZone.on("maxfilesexceeded", function(file) {
-            _myDropZone.removeAllFiles();
+		_myDropZone.on('maxfilesexceeded', function (file) {
+			_myDropZone.removeAllFiles();
 			_myDropZone.addFile(file);
 		});
 
-        var initialFile = $('#myProfileForm input[name=entityBranchTradeLicenseUrl]').val();
-		if(initialFile) {
+		var initialFile = $('#myProfileForm input[name=entityBranchTradeLicenseUrl]').val();
+		if (initialFile) {
 			var initialFileDecoded = $('#myProfileForm input[name=entityBranchTradeLicenseUrlDecoded]').val();
 			var fileName = initialFileDecoded.substring(initialFileDecoded.lastIndexOf('/') + 1);
 			var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
-			var fileNameWithoutTimestamp = fileName.substring(0, fileName.lastIndexOf('-')) + "." + fileExtension;
-			
+			var fileNameWithoutTimestamp = fileName.substring(0, fileName.lastIndexOf('-')) + '.' + fileExtension;
+
 			var fileUrl = _getFullUrl(initialFile);
-			
+
 			var file = {
 				status: 'success',
 				accepted: true,
 				name: fileNameWithoutTimestamp,
 				size: _getFileSize(fileUrl),
-				url: fileUrl
+				url: fileUrl,
 			};
 
 			_myDropZone.files.push(file);
@@ -276,7 +267,7 @@ var Profile = (function () {
 			_myDropZone.emit('complete', file);
 			_myDropZone.emit('success', file, initialFile);
 		}
-	}
+	};
 
 	var _getFileSize = function (url) {
 		var fileSize = '';
@@ -289,11 +280,11 @@ var Profile = (function () {
 		}
 
 		return fileSize;
-	}
+	};
 
 	var _getFullUrl = function (filePath) {
-		return window.location.protocol + "//" + window.location.hostname + "/" + filePath;
-	}
+		return window.location.protocol + '//' + window.location.hostname + '/' + filePath;
+	};
 
 	var _isImageFile = function (filePath) {
 		var ext = filePath.split('.').pop();
@@ -303,7 +294,7 @@ var Profile = (function () {
 			return true;
 		}
 		return false;
-	}
+	};
 
 	var _isPdfFile = function (filePath) {
 		var ext = filePath.split('.').pop();
@@ -313,11 +304,11 @@ var Profile = (function () {
 			return true;
 		}
 		return false;
-	}
+	};
 
 	var _initializeValidators = function () {
 		// Initialize validator on each menu
-		var entityType = $("#profileEntityType").val();
+		var entityType = $('#profileEntityType').val();
 		var _mapMenuValidatorFields = _mapEntityTypeMenuValidatorFields[entityType];
 		Object.keys(_mapMenuValidatorFields).forEach((menu) => {
 			var validatorFields = _mapMenuValidatorFields[menu];
@@ -333,175 +324,191 @@ var Profile = (function () {
 					}),
 				},
 			});
-		})
-	}
+		});
+	};
 
 	var _initializePasswordFields = function () {
-		$("#accountSettingForm input[name=oldPassword]").on("change", function() {
-			if(_validator) {
+		$('#accountSettingForm input[name=oldPassword]').on('change', function () {
+			if (_validator) {
 				_validator.revalidateField('newPassword');
 				_validator.revalidateField('newPasswordConfirmation');
 			}
 		});
 
-		$("#accountSettingForm input[name=newPassword]").on("change", function() {
-			if(_validator) {
+		$('#accountSettingForm input[name=newPassword]').on('change', function () {
+			if (_validator) {
 				_validator.revalidateField('oldPassword');
 				_validator.revalidateField('newPasswordConfirmation');
 			}
 		});
 
-		$("#accountSettingForm input[name=newPasswordConfirmation]").on("change", function() {
-			if(_validator) {
+		$('#accountSettingForm input[name=newPasswordConfirmation]').on('change', function () {
+			if (_validator) {
 				_validator.revalidateField('oldPassword');
 				_validator.revalidateField('newPassword');
 			}
 		});
-	}
+	};
 
 	var _initializePaymentMethodCheckboxes = function () {
-		$("#paymentMethodContainer").after('<div id="paymentMethodErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('required') + '</div></div>');
-		$("#paymentSettingForm input[name=paymentMethodCheckbox]").on('click', function() {
+		$('#paymentMethodContainer').after(
+			'<div id="paymentMethodErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' +
+				WebAppLocals.getMessage('required') +
+				'</div></div>'
+		);
+		$('#paymentSettingForm input[name=paymentMethodCheckbox]').on('click', function () {
 			var isChecked = false;
-			$("#paymentSettingForm input[name=paymentMethodCheckbox]").each(function(index, element) {
-				if ($(element).is(":checked")) {
+			$('#paymentSettingForm input[name=paymentMethodCheckbox]').each(function (index, element) {
+				if ($(element).is(':checked')) {
 					isChecked = true;
 				}
 			});
 
-			if(isChecked) {
-				$("#paymentMethodErrorLabel").hide();
+			if (isChecked) {
+				$('#paymentMethodErrorLabel').hide();
 			} else {
-				$("#paymentMethodErrorLabel").show();
+				$('#paymentMethodErrorLabel').show();
 			}
 		});
-	}
+	};
 
 	var _initializeMinimumValueOrderSection = function (webResponse) {
 		var repeaterElementTemplate;
-		$("#minimumValueOrderList > div").each(function(index, element) {
+		$('#minimumValueOrderList > div').each(function (index, element) {
 			repeaterElementTemplate = $(element).clone();
 		});
 
 		var allCity = webResponse.data;
 		$('#minimumValueOrderRepeater').repeater({
-            initEmpty: true,
-            show: function() {
+			initEmpty: true,
+			show: function () {
 				_initializeRepeaterElements(allCity);
-                $(this).slideDown();
-            },
-            hide: function(deleteElement) {
+				$(this).slideDown();
+			},
+			hide: function (deleteElement) {
 				$(this).slideUp(deleteElement);
-            }
+			},
 		});
 
-		var allRepeaterDataStr = $("#minimumValueOrderList").attr("data-repeaterdata") || "[]";
+		var allRepeaterDataStr = $('#minimumValueOrderList').attr('data-repeaterdata') || '[]';
 		var allRepeaterData = JSON.parse(allRepeaterDataStr);
 		allRepeaterData.forEach((repeaterData) => {
 			var repeaterRow = $(repeaterElementTemplate).clone();
-			$(repeaterRow).find("#minimumValueOrderId").val(repeaterData.entityMinimumValueOrderId);
-			$(repeaterRow).find("#minimumValueOrder").val(repeaterData.minimumValueOrder);
-			$(repeaterRow).find("#minimumValueOrderCityId").attr("data-values", repeaterData.allCity);
-			$("#minimumValueOrderList").append(repeaterRow);
-		})
+			$(repeaterRow).find('#minimumValueOrderId').val(repeaterData.entityMinimumValueOrderId);
+			$(repeaterRow).find('#minimumValueOrder').val(repeaterData.minimumValueOrder);
+			$(repeaterRow).find('#minimumValueOrderCityId').attr('data-values', repeaterData.allCity);
+			$('#minimumValueOrderList').append(repeaterRow);
+		});
 
 		_initializeRepeaterElements(allCity);
-	}
+	};
 
 	var _initializeRepeaterElements = function (allCity) {
-		$('.minimumValueOrderInput').each(function(index, element) {
+		$('.minimumValueOrderInput').each(function (index, element) {
 			var minimumValueOrderErrorLabelCount = $(element).parent().find('#minimumValueOrderErrorLabel').length;
-			if(minimumValueOrderErrorLabelCount === 0) {
-				$(element).parent().append('<div id="minimumValueOrderErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('required') + '</div></div>');
+			if (minimumValueOrderErrorLabelCount === 0) {
+				$(element)
+					.parent()
+					.append(
+						'<div id="minimumValueOrderErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' +
+							WebAppLocals.getMessage('minimumValueOrderRequired') +
+							'</div></div>'
+					);
 			}
-		})
+		});
 
-		$('.minimumValueOrderInput').on('change', function() {
+		$('.minimumValueOrderInput').on('change', function () {
 			var value = $(this).val();
-			if(value) {
+			if (value) {
 				$(this).parent().find('#minimumValueOrderErrorLabel').hide();
-				$(this).removeClass("is-invalid");
+				$(this).removeClass('is-invalid');
 			} else {
 				$(this).parent().find('#minimumValueOrderErrorLabel').show();
-				$(this).addClass("is-invalid");
+				$(this).addClass('is-invalid');
 			}
-		})
+		});
 
-		$('.selectpicker').each(function(index, element) {
-            var allValues = $(element).attr("data-values");
-            if(!allValues) allValues = [];
-			else allValues = allValues.split(",");
-			
-			if(element.options.length === 0) {
+		$('.selectpicker').each(function (index, element) {
+			var allValues = $(element).attr('data-values');
+			if (!allValues) allValues = [];
+			else allValues = allValues.split(',');
+
+			if (element.options.length === 0) {
 				allCity.forEach((city) => {
 					var selected = allValues.includes(city.id);
 					$(element).append(new Option(city.name, city.id, false, selected));
-				})
+				});
 				$(element).selectpicker();
 				$(element).selectpicker('val', allValues);
 				$(element).selectpicker('refresh');
 			}
 
 			var cityErrorLabelCount = $(element).parent().parent().find('#cityErrorLabel').length;
-			if(cityErrorLabelCount === 0) {
-				$(element).parent().parent().append('<div id="cityErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' + WebAppLocals.getMessage('required') + '</div></div>');
+			if (cityErrorLabelCount === 0) {
+				$(element)
+					.parent()
+					.parent()
+					.append(
+						'<div id="cityErrorLabel" class="fv-plugins-message-container" style="display: none;"><div class="fv-help-block">' +
+							WebAppLocals.getMessage('cityRequired') +
+							'</div></div>'
+					);
 			}
-		})
+		});
 
-		$('.selectpicker').on('change', function() {
+		$('.selectpicker').on('change', function () {
 			var allValues = $(this).val();
-			if(allValues.length > 0) {
+			if (allValues.length > 0) {
 				$(this).parent().parent().find('#cityErrorLabel').hide();
-				$(this).parent().removeClass("is-invalid");
+				$(this).parent().removeClass('is-invalid');
 				$(this).parent().css('border', '');
 			} else {
 				$(this).parent().parent().find('#cityErrorLabel').show();
-				$(this).parent().addClass("is-invalid");
+				$(this).parent().addClass('is-invalid');
 				$(this).parent().css('border', '1px solid #F64E60');
 			}
-		})
-
-	}
+		});
+	};
 
 	var _resetPasswordFields = function () {
-		$("#accountSettingForm input[name=oldPassword]").val('');
-		$("#accountSettingForm input[name=newPassword]").val('');
-		$("#accountSettingForm input[name=newPasswordConfirmation]").val('');
-	}
+		$('#accountSettingForm input[name=oldPassword]').val('');
+		$('#accountSettingForm input[name=newPassword]').val('');
+		$('#accountSettingForm input[name=newPasswordConfirmation]').val('');
+	};
 
 	var _handleMenuChange = function (menu) {
-		if(_validator) {
+		if (_validator) {
 			_validator.resetForm();
 			_validator.destroy();
 		}
 
 		$('#' + menu + 'Button').css({
 			'background-color': '#E8F8F6',
-			'cursor': ''
+			cursor: '',
 		});
 		$('#' + menu + 'Section').show();
 
-		var entityType = $("#profileEntityType").val();
+		var entityType = $('#profileEntityType').val();
 		var allMenus = _mapEntityTypeMenus[entityType];
 
 		allMenus.forEach((otherMenu) => {
-			if(otherMenu !== menu) {
+			if (otherMenu !== menu) {
 				$('#' + otherMenu + 'Button').css({
 					'background-color': '',
-					'cursor': 'pointer'
+					cursor: 'pointer',
 				});
 				$('#' + otherMenu + 'Section').hide();
 			}
-		})
+		});
 		KTUtil.scrollTop();
-	}
+	};
 
 	var _save = function (menu, saveFunction) {
-		var entityType = $("#profileEntityType").val();
+		var entityType = $('#profileEntityType').val();
 		var mapMenuValidatorFields = _mapEntityTypeMenuValidatorFields[entityType];
 		var validatorFields = mapMenuValidatorFields[menu];
-		if(validatorFields) {
-			if(_validator) {
+		if (validatorFields) {
+			if (_validator) {
 				_validator.resetForm();
 				_validator.destroy();
 			}
@@ -537,7 +544,7 @@ var Profile = (function () {
 						KTUtil.scrollTop();
 					});
 				}
-			})
+			});
 		} else {
 			saveFunction();
 		}
@@ -552,7 +559,7 @@ var Profile = (function () {
 			userId: 'input',
 			entityName: 'input',
 			tradeLicenseNumber: 'input',
-			address: 'textarea'
+			address: 'textarea',
 		};
 
 		Object.keys(mapKeyElement).forEach((key) => {
@@ -564,7 +571,7 @@ var Profile = (function () {
 
 	var _savePharmacyMyProfileCallback = function (webResponse) {
 		KTUtil.scrollTop();
-        WebApp.alertSuccess(webResponse.message);
+		WebApp.alertSuccess(webResponse.message);
 	};
 
 	var _savePharmacyAccountSetting = function () {
@@ -574,7 +581,7 @@ var Profile = (function () {
 			userId: 'input',
 			oldPassword: 'input',
 			newPassword: 'input',
-			newPasswordConfirmation: 'input'
+			newPasswordConfirmation: 'input',
 		};
 
 		Object.keys(mapKeyElement).forEach((key) => {
@@ -586,7 +593,7 @@ var Profile = (function () {
 	var _savePharmacyAccountSettingCallback = function (webResponse) {
 		_resetPasswordFields();
 		KTUtil.scrollTop();
-        WebApp.alertSuccess(webResponse.message);
+		WebApp.alertSuccess(webResponse.message);
 	};
 
 	var _saveDistributorMyProfile = function () {
@@ -598,7 +605,7 @@ var Profile = (function () {
 			userId: 'input',
 			entityName: 'input',
 			tradeLicenseNumber: 'input',
-			address: 'textarea'
+			address: 'textarea',
 		};
 
 		Object.keys(mapKeyElement).forEach((key) => {
@@ -610,7 +617,7 @@ var Profile = (function () {
 
 	var _saveDistributorMyProfileCallback = function (webResponse) {
 		KTUtil.scrollTop();
-        WebApp.alertSuccess(webResponse.message);
+		WebApp.alertSuccess(webResponse.message);
 	};
 
 	var _saveDistributorAccountSetting = function () {
@@ -620,7 +627,7 @@ var Profile = (function () {
 			userId: 'input',
 			oldPassword: 'input',
 			newPassword: 'input',
-			newPasswordConfirmation: 'input'
+			newPasswordConfirmation: 'input',
 		};
 
 		Object.keys(mapKeyElement).forEach((key) => {
@@ -632,86 +639,87 @@ var Profile = (function () {
 	var _saveDistributorAccountSettingCallback = function (webResponse) {
 		_resetPasswordFields();
 		KTUtil.scrollTop();
-        WebApp.alertSuccess(webResponse.message);
+		WebApp.alertSuccess(webResponse.message);
 	};
 
 	var _saveDistributorPaymentSetting = function () {
 		var valid = true;
-		var errorMessage = "";
+		var errorMessage = '';
 
 		var allPaymentMethodId = [];
-		$("#paymentSettingForm input[name=paymentMethodCheckbox]").each(function(index, element) {
-			if ($(element).is(":checked")) {
+		$('#paymentSettingForm input[name=paymentMethodCheckbox]').each(function (index, element) {
+			if ($(element).is(':checked')) {
 				allPaymentMethodId.push($(element).val());
 			}
 		});
 
-		if(allPaymentMethodId.length === 0) {
+		if (allPaymentMethodId.length === 0) {
 			valid = false;
 		}
 
-		$('.minimumValueOrderInput').each(function(index, element) {
+		$('.minimumValueOrderInput').each(function (index, element) {
 			var value = $(element).val();
-			if(value) {
+			if (value) {
 				$(element).parent().find('#minimumValueOrderErrorLabel').hide();
-				$(element).removeClass("is-invalid");
+				$(element).removeClass('is-invalid');
 			} else {
 				$(element).parent().find('#minimumValueOrderErrorLabel').show();
-				$(element).addClass("is-invalid");
+				$(element).addClass('is-invalid');
 				valid = false;
 			}
-		})
+		});
 
 		var allCityId = [];
-		$('.selectpicker').each(function(index, element) {
+		$('.selectpicker').each(function (index, element) {
 			var allValues = $(this).val();
 			allCityId.push(...allValues);
-			if(allValues.length > 0) {
+			if (allValues.length > 0) {
 				$(element).parent().parent().find('#cityErrorLabel').hide();
-				$(element).parent().removeClass("is-invalid");
+				$(element).parent().removeClass('is-invalid');
 				$(element).parent().css('border', '');
 			} else {
 				$(element).parent().parent().find('#cityErrorLabel').show();
-				$(element).parent().addClass("is-invalid");
+				$(element).parent().addClass('is-invalid');
 				$(element).parent().css('border', '1px solid #F64E60');
 				valid = false;
 			}
-		})
+		});
 
 		var allCityIdUnique = allCityId.length === new Set(allCityId).size;
-		if(valid && !allCityIdUnique) {
+		if (valid && !allCityIdUnique) {
 			var allCityNameDuplicates = [];
 			var allCityIdDuplicates = allCityId.filter((city, index, arr) => arr.indexOf(city) !== index);
-			$($('.selectpicker')[0]).find("option").each(function(index, element) {
-				if(allCityIdDuplicates.includes(element.value)) {
-					allCityNameDuplicates.push(element.text);
-				}
-			});
+			$($('.selectpicker')[0])
+				.find('option')
+				.each(function (index, element) {
+					if (allCityIdDuplicates.includes(element.value)) {
+						allCityNameDuplicates.push(element.text);
+					}
+				});
 
 			valid = false;
-			errorMessage = WebAppLocals.getMessage("minimumValueOrderCityError") + ": " + allCityNameDuplicates.join(", ");
+			errorMessage = WebAppLocals.getMessage('minimumValueOrderCityError') + ': ' + allCityNameDuplicates.join(', ');
 		}
-
 
 		if (valid) {
 			var userId = $('#paymentSettingForm input[name=userId]').val();
 
 			var allEntityMinimumValueOrder = [];
-			$("#minimumValueOrderList > div").each(function(index, element) {
-				var minimumValueOrder = $(element).find("#minimumValueOrder").val();
-				var minimumValueOrderCityId = $(element).find("#minimumValueOrderCityId").val();
+			$('#minimumValueOrderList > div').each(function (index, element) {
+				var minimumValueOrder = $(element).find('#minimumValueOrder').val();
+				var minimumValueOrderCityId = $(element).find('#minimumValueOrderCityId').val();
 				allEntityMinimumValueOrder.push({
 					minimumValueOrder,
-					minimumValueOrderCityId
-				})
+					minimumValueOrderCityId,
+				});
 			});
 
 			let body = {
 				userId,
 				allPaymentMethodId,
-				allEntityMinimumValueOrder
+				allEntityMinimumValueOrder,
 			};
-			WebApp.post('/web/distributor/profile/paymentSetting', body, _saveDistributorPaymentSettingCallback)
+			WebApp.post('/web/distributor/profile/paymentSetting', body, _saveDistributorPaymentSettingCallback);
 		} else {
 			Swal.fire({
 				text: errorMessage || WebAppLocals.getMessage('validationError'),
@@ -729,67 +737,69 @@ var Profile = (function () {
 
 	var _saveDistributorPaymentSettingCallback = function (webResponse) {
 		KTUtil.scrollTop();
-        WebApp.alertSuccess(webResponse.message);
+		WebApp.alertSuccess(webResponse.message);
 	};
 
 	// upload profile image
 	var _handleChangeProfileImage = function () {
-		(new KTImageInput('profile-image')).on('change', function(imageInput) {
-			// let profileImage = $('#profile-image .image-input-wrapper').css('backgroundImage');
-			// console.log(profileImage);
+		new KTImageInput('profile-image')
+			.on('change', function (imageInput) {
+				// let profileImage = $('#profile-image .image-input-wrapper').css('backgroundImage');
+				// console.log(profileImage);
 
-			var formData = new FormData();
-			formData.append('profile_image', imageInput.input.files[0]);
+				var formData = new FormData();
+				formData.append('profile_image', imageInput.input.files[0]);
 
-			$.ajax({
-				url: '/web/distributor/profile/image',
-				type: 'POST',
-				data: formData,
-				cache: false,
-				contentType: false,
-				processData: false,
-				success: function (webResponse) {
-					console.log(webResponse.title);
-					if (webResponse.data) {
-						Swal.fire({
-							title: webResponse.message,
-							icon: 'success',
-							buttonsStyling: false,
-							confirmButtonText: WebAppLocals.getMessage('success_confirmButtonText'),
-							customClass: {
-								confirmButton: 'btn btn-primary font-weight-bold',
-							}
-						});
-					} else {
-						Swal.fire({
-							title: webResponse.message,
-							icon: 'error',
-							buttonsStyling: false,
-							confirmButtonText: WebAppLocals.getMessage('success_confirmButtonText'),
-							customClass: {
-								confirmButton: 'btn btn-primary font-weight-bold',
-							}
-						});
-					}
-				}
+				$.ajax({
+					url: '/web/profile/image',
+					type: 'POST',
+					data: formData,
+					cache: false,
+					contentType: false,
+					processData: false,
+					success: function (webResponse) {
+						console.log(webResponse.title);
+						if (webResponse.data) {
+							Swal.fire({
+								title: webResponse.message,
+								icon: 'success',
+								buttonsStyling: false,
+								confirmButtonText: WebAppLocals.getMessage('success_confirmButtonText'),
+								customClass: {
+									confirmButton: 'btn btn-primary font-weight-bold',
+								},
+							});
+						} else {
+							Swal.fire({
+								title: webResponse.message,
+								icon: 'error',
+								buttonsStyling: false,
+								confirmButtonText: WebAppLocals.getMessage('success_confirmButtonText'),
+								customClass: {
+									confirmButton: 'btn btn-primary font-weight-bold',
+								},
+							});
+						}
+					},
+				});
+			})
+			.on('remove', function (imageInput) {
+				Swal.fire({
+					title: 'Image successfully removed !',
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonText: WebAppLocals.getMessage('success_confirmButtonText'),
+					customClass: {
+						confirmButton: 'btn btn-primary font-weight-bold',
+					},
+				});
 			});
-		}).on('remove', function(imageInput) {
-			Swal.fire({
-				title: 'Image successfully removed !',
-				type: 'error',
-				buttonsStyling: false,
-				confirmButtonText: WebAppLocals.getMessage('success_confirmButtonText'),
-				customClass: {
-					confirmButton: 'btn btn-primary font-weight-bold',
-				}
-			});
-		});
 	};
 
 	// Public Functions
 	return {
-        init: function () {
-            _init();
+		init: function () {
+			_init();
 		},
 		handleMenuChange: function (menuName) {
 			_handleMenuChange(menuName);
@@ -808,6 +818,6 @@ var Profile = (function () {
 		},
 		saveDistributorPaymentSetting: function () {
 			_saveDistributorPaymentSetting();
-		}
+		},
 	};
 })();

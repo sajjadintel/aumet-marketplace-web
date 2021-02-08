@@ -13,6 +13,7 @@ class ProductsController extends Controller
             $id = $this->f3->get('PARAMS.productId');
 
             $roleId = $this->f3->get('SESSION.objUser')->roleId;
+            $this->f3->set('objUser', $this->objUser);
 
             if ($entityId == 0)
                 $query = "id=$id";
@@ -23,6 +24,8 @@ class ProductsController extends Controller
             $dbEntityProduct->productName = "productName_" . $this->objUser->language;
             $dbEntityProduct->entityName = "entityName_" . $this->objUser->language;
             $dbEntityProduct->madeInCountryName = "madeInCountryName_" . $this->objUser->language;
+            $dbEntityProduct->subtitle = "subtitle_" . $this->objUser->language;
+            $dbEntityProduct->description = "description_" . $this->objUser->language;
             $dbEntityProduct->getWhere($query);
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
@@ -79,7 +82,7 @@ class ProductsController extends Controller
                 $dbEntityProductOtherOffers->entityName = "entityName_" . $this->objUser->language;
 
                 $where = [
-                    "( TRIM(productName_ar) LIKE ? OR TRIM(productName_en) LIKE ? OR TRIM(productName_fr) LIKE ? AND id != ? )",
+                    "( (TRIM(productName_ar) LIKE ? OR TRIM(productName_en) LIKE ? OR TRIM(productName_fr) LIKE ? ) AND id != ? )",
                     trim($dbEntityProduct->productName_ar),
                     mb_strtolower(trim($dbEntityProduct->productName_en)),
                     mb_strtolower(trim($dbEntityProduct->productName_fr)),
@@ -117,11 +120,17 @@ class ProductsController extends Controller
 
 
                 for ($i = 0; $i < count($dbEntityProductOtherOffers); $i++) {
+
                     if ($dbEntityProductOtherOffers[$i]['bonusTypeId'] == 2) {
                         $dbEntityProductOtherOffers[$i]['bonusOptions'] = json_decode($dbEntityProductOtherOffers[$i]['bonusConfig']);
                         $dbEntityProductOtherOffers[$i]['bonusConfig'] = $dbEntityProductOtherOffers[$i]['bonusOptions'];
                         $dbEntityProductOtherOffers[$i]['bonuses'] = $mapProductIdBonuses[$dbEntityProductOtherOffers[$i]['id']];
                     }
+
+                    $cartDetail = new BaseModel($this->db, "cartDetail");
+                    $cartDetail->getWhere("userID =" . $this->objUser->id . " and entityProductId = " . $dbEntityProductOtherOffers[$i]['id'] . "");
+
+                    $dbEntityProductOtherOffers[$i]['cart'] = (!$cartDetail->dry()) ? $cartDetail->quantity : 0;
                 }
 
                 $this->f3->set('arrProductOtherOffers', $dbEntityProductOtherOffers);
@@ -132,10 +141,122 @@ class ProductsController extends Controller
             $this->f3->set('arrSubimage', $arrSubimage);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-            $this->webResponse->title = $this->f3->get('vTitle_entityProductDetail');
+            $this->webResponse->title = $this->f3->get('vModule_product_detail') . " | " . $dbEntityProduct->productName;
             $this->webResponse->data = View::instance()->render('app/products/single/entityProduct.php');
             echo $this->webResponse->jsonResponse();
         }
+    }
+
+    function postEntityProduct()
+    {
+        ## Read values from Datatables
+        $datatable = new Datatable($_POST);
+
+        $entityId = $this->f3->get('PARAMS.entityId');
+        $id = $this->f3->get('PARAMS.productId');
+
+        if ($entityId == 0)
+            $productQuery = "id=$id";
+        else
+            $productQuery = "entityId=$entityId and id=$id";
+
+        $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
+        $dbEntityProduct->productName = "productName_" . $this->objUser->language;
+        $dbEntityProduct->entityName = "entityName_" . $this->objUser->language;
+        $dbEntityProduct->madeInCountryName = "madeInCountryName_" . $this->objUser->language;
+        $dbEntityProduct->subtitle = "subtitle_" . $this->objUser->language;
+        $dbEntityProduct->description = "description_" . $this->objUser->language;
+        $dbEntityProduct->getWhere($productQuery);
+
+        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+
+        $productName_ar = trim($dbEntityProduct->productName_ar);
+        $productName_en = mb_strtolower(trim($dbEntityProduct->productName_en));
+        $productName_fr = mb_strtolower(trim($dbEntityProduct->productName_fr));
+        $productId = $dbEntityProduct->id;
+        $query = [
+            "( (TRIM(productName_ar) LIKE ? OR TRIM(productName_en) LIKE ? OR TRIM(productName_fr) LIKE ? ) AND id != ? )",
+            trim($dbEntityProduct->productName_ar),
+            mb_strtolower(trim($dbEntityProduct->productName_en)),
+            mb_strtolower(trim($dbEntityProduct->productName_fr)),
+            $dbEntityProduct->id
+        ];
+
+        $dbData = new BaseModel($this->db, "vwEntityProductSell");
+        $dbData->productName = "productName_" . $this->objUser->language;
+        $dbData->entityName = "entityName_" . $this->objUser->language;
+        $data = [];
+
+        $totalRecords = $dbData->count($query);
+        $totalFiltered = $dbData->count($query);
+
+        $order = "";
+        if (strlen($datatable->sortBy) > 0 && strlen($datatable->sortByOrder) > 0) {
+            $order = $datatable->sortBy . " " . $datatable->sortByOrder;
+        }
+
+        $limit = 0;
+        if ($datatable->limit) {
+            $limit = $datatable->limit;
+        }
+
+        $offset = 0;
+        if ($datatable->offset) {
+            $offset = $datatable->offset;
+        }
+
+        $data = $dbData->findWhere($query, $order, $limit, $offset);
+
+        $allProductId = [];
+        foreach ($data as $product) {
+            array_push($allProductId, $product['id']);
+        }
+        $allProductId = implode(",", $allProductId);
+
+        $dbCartDetail = new BaseModel($this->db, "cartDetail");
+        $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+
+        if ($allProductId != null) {
+            $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+            $arrBonus = $dbBonus->findWhere("entityProductId IN ($allProductId) AND isActive = 1");
+
+            $mapProductIdBonuses = [];
+
+            foreach ($arrBonus as $bonus) {
+                $productId = $bonus['entityProductId'];
+                $allBonuses = [];
+                if (array_key_exists($productId, $mapProductIdBonuses)) {
+                    $allBonuses = $mapProductIdBonuses[$productId];
+                }
+                array_push($allBonuses, $bonus);
+                $mapProductIdBonuses[$productId] = $allBonuses;
+            }
+        }
+
+
+        for ($i = 0; $i < count($data); $i++) {
+
+            if ($data[$i]['bonusTypeId'] == 2) {
+                $data[$i]['bonusOptions'] = json_decode($data[$i]['bonusConfig']);
+                $data[$i]['bonusConfig'] = $data[$i]['bonusOptions'];
+                $data[$i]['bonuses'] = $mapProductIdBonuses[$data[$i]['id']];
+            }
+
+            $cartDetail = new BaseModel($this->db, "cartDetail");
+            $cartDetail->getWhere("userID =" . $this->objUser->id . " and entityProductId = " . $data[$i]['id'] . "");
+
+            $data[$i]['cart'] = (!$cartDetail->dry()) ? $cartDetail->quantity : 0;
+        }
+
+        ## Response
+        $response = array(
+            "draw" => intval($datatable->draw),
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $totalFiltered,
+            "data" => $data
+        );
+
+        $this->jsonResponseAPI($response);
     }
 
     function getDistributorCanAddProduct()
@@ -256,7 +377,7 @@ class ProductsController extends Controller
             $product = $dbProduct->findWhere("id=$id")[0];
             $entityId = $product['entityId'];
             $productId = $product['productId'];
-            
+
             $dbBonusType = new BaseModel($this->db, "bonusType");
             $dbBonusType->name = "name_" . $this->objUser->language;
             $arrBonusType = $dbBonusType->findAll();
@@ -269,22 +390,22 @@ class ProductsController extends Controller
             $dbEntityProductBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
             $arrBonus = $dbEntityProductBonus->findWhere("isActive = 1 AND entityProductId=$productId");
             $arrBonusId = [];
-            foreach($arrBonus as $bonus) {
+            foreach ($arrBonus as $bonus) {
                 array_push($arrBonusId, $bonus['id']);
             }
 
             // Group all bonuses' relation groups
             $arrBonusGrouped = [];
-            if(count($arrBonus) > 0) {
+            if (count($arrBonus) > 0) {
                 $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
                 $strBonusId = implode(",", $arrBonusId);
                 $arrBonusRelationGroup = $dbBonusRelationGroup->getWhere("bonusId IN ($strBonusId)");
 
                 $mapBonusIdRelationGroupId = [];
-                foreach($arrBonusRelationGroup as $bonusRelationGroup) {
+                foreach ($arrBonusRelationGroup as $bonusRelationGroup) {
                     $bonusId = $bonusRelationGroup['bonusId'];
                     $relationGroupId = $bonusRelationGroup['relationGroupId'];
-                    if(array_key_exists($bonusId, $mapBonusIdRelationGroupId)) {
+                    if (array_key_exists($bonusId, $mapBonusIdRelationGroupId)) {
                         $allRelationGroupId = $mapBonusIdRelationGroupId[$bonusId];
                         array_push($allRelationGroupId, $relationGroupId);
                         $mapBonusIdRelationGroupId[$bonusId] = $allRelationGroupId;
@@ -293,7 +414,7 @@ class ProductsController extends Controller
                     }
                 }
 
-                foreach($arrBonus as $bonus) {
+                foreach ($arrBonus as $bonus) {
                     $bonusId = $bonus['id'];
 
                     $bonusGrouped = new stdClass();
@@ -403,7 +524,7 @@ class ProductsController extends Controller
         $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
 
-        $targetFile = Helper::createUploadedFileName($fileName,$ext,"assets/img/products/");
+        $targetFile = Helper::createUploadedFileName($fileName, $ext, "assets/img/products/");
 
         if (in_array($ext, $allValidExtensions)) {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
@@ -422,16 +543,15 @@ class ProductsController extends Controller
         $datatable = new Datatable($_POST);
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
-        $query = "entityId IN ($arrEntityId)";
-        $query .= " AND statusId = 1";
-        $meta = array();
+        $query = "entityId IN ($arrEntityId) AND statusId = 1 ";
+        $fullQuery = $query . " AND quantityOrdered > 0";
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
 
         $data = [];
 
         $totalRecords = $dbProducts->count($query);
-        $totalFiltered = 5;
-        $data = $dbProducts->findWhere($query, "quantityOrdered DESC", 5, 0);
+        $totalFiltered = MIN($dbProducts->count($fullQuery), 5);
+        $data = $dbProducts->findWhere($fullQuery, "quantityOrdered DESC", 5, 0);
 
         ## Response
         $response = array(
@@ -537,9 +657,9 @@ class ProductsController extends Controller
                 $this->checkLength($name_en, 'nameEn', 200, 4);
                 $this->checkLength($name_ar, 'nameAr', 200, 4);
                 $this->checkLength($name_fr, 'nameFr', 200, 4);
-                $this->checkLength($description_ar, 'descriptionAr', 1000, 4);
-                $this->checkLength($description_en, 'descriptionEn', 1000, 4);
-                $this->checkLength($description_fr, 'descriptionFr', 1000, 4);
+                $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
+                $this->checkLength($description_en, 'descriptionEn', 5000, 4);
+                $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
 
 
                 if ($subtitle_ar) {
@@ -772,14 +892,14 @@ class ProductsController extends Controller
                 $arrDefaultBonus = $this->f3->get('POST.arrDefaultBonus');
                 $arrSpecialBonus = $this->f3->get('POST.arrSpecialBonus');
 
-                if(!$arrDefaultBonus) {
+                if (!$arrDefaultBonus) {
                     $arrDefaultBonus = [];
                 }
 
-                if(!$arrSpecialBonus) {
+                if (!$arrSpecialBonus) {
                     $arrSpecialBonus = [];
                 }
-                
+
                 if (!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get('vModule_product_stockInvalid');
@@ -787,47 +907,79 @@ class ProductsController extends Controller
                     return;
                 }
 
-                foreach($arrDefaultBonus as $bonus) {
+                foreach ($arrDefaultBonus as $bonus) {
                     $bonusTypeId = $bonus['bonusTypeId'];
                     $minOrder = $bonus['minOrder'];
                     $bonusQty = $bonus['bonus'];
-                    
+
                     $valid = false;
-                    if(strlen($bonusTypeId) != 0
-                    && strlen($minOrder) != 0
-                    && strlen($bonusQty) != 0) {
-                        if($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
+                    if (
+                        strlen($bonusTypeId) != 0
+                        && strlen($minOrder) != 0
+                        && strlen($bonusQty) != 0
+                    ) {
+                        if ($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
                             $valid = true;
                         }
                     }
 
-                    if(!$valid) {
+                    if (!$valid) {
                         $this->webResponse->errorCode = Constants::STATUS_ERROR;
                         $this->webResponse->message = $this->f3->get('vModule_product_defaultBonusInvalid');
                         echo $this->webResponse->jsonResponse();
                         return;
                     }
+
+                    if ($minOrder > Constants::MAX_INT_VALUE) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_quantityTooBig');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
+
+                    if ($bonusQty > Constants::MAX_INT_VALUE) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_bonusTooBig');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
                 }
 
-                foreach($arrSpecialBonus as $bonus) {
+                foreach ($arrSpecialBonus as $bonus) {
                     $bonusTypeId = $bonus['bonusTypeId'];
                     $minOrder = $bonus['minOrder'];
                     $bonusQty = $bonus['bonus'];
                     $arrRelationGroup = $bonus['arrRelationGroup'];
-                    
+
                     $valid = false;
-                    if(strlen($bonusTypeId) != 0
-                    && strlen($minOrder) != 0
-                    && strlen($bonusQty) != 0
-                    && $arrRelationGroup && count($arrRelationGroup) > 0) {
-                        if($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
+                    if (
+                        strlen($bonusTypeId) != 0
+                        && strlen($minOrder) != 0
+                        && strlen($bonusQty) != 0
+                        && $arrRelationGroup && count($arrRelationGroup) > 0
+                    ) {
+                        if ($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
                             $valid = true;
                         }
                     }
 
-                    if(!$valid) {
+                    if (!$valid) {
                         $this->webResponse->errorCode = Constants::STATUS_ERROR;
                         $this->webResponse->message = $this->f3->get('vModule_product_specialBonusInvalid');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
+
+                    if ($minOrder > Constants::MAX_INT_VALUE) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_quantityTooBig');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
+
+                    if ($bonusQty > Constants::MAX_INT_VALUE) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_bonusTooBig');
                         echo $this->webResponse->jsonResponse();
                         return;
                     }
@@ -836,19 +988,19 @@ class ProductsController extends Controller
                 $arrBonus = array_merge($arrDefaultBonus, $arrSpecialBonus);
 
                 $mapBonusIdBonus = [];
-                foreach($arrBonus as $bonus) {
-                    if($bonus['id']) {
+                foreach ($arrBonus as $bonus) {
+                    if ($bonus['id']) {
                         $mapBonusIdBonus[$bonus['id']] = $bonus;
                     }
                 }
 
                 $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
                 $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
-                
+
                 $dbBonus->getWhere("isActive = 1 AND entityProductId=$productId");
                 while (!$dbBonus->dry()) {
                     $bonusId = $dbBonus['id'];
-                    if(array_key_exists($bonusId, $mapBonusIdBonus)) {
+                    if (array_key_exists($bonusId, $mapBonusIdBonus)) {
                         $newBonus = $mapBonusIdBonus[$bonusId];
                         $dbBonus->bonusTypeId = $newBonus['bonusTypeId'];
                         $dbBonus->minOrder = $newBonus['minOrder'];
@@ -861,8 +1013,8 @@ class ProductsController extends Controller
                             $dbBonusRelationGroup->delete();
                             $dbBonusRelationGroup->next();
                         }
-                        if($arrRelationGroup) {
-                            foreach($arrRelationGroup as $relationGroupId) {
+                        if ($arrRelationGroup) {
+                            foreach ($arrRelationGroup as $relationGroupId) {
                                 $dbBonusRelationGroup->bonusId = $bonusId;
                                 $dbBonusRelationGroup->relationGroupId = $relationGroupId;
                                 $dbBonusRelationGroup->add();
@@ -873,9 +1025,9 @@ class ProductsController extends Controller
                     }
                     $dbBonus->next();
                 }
-                
-                foreach($arrBonus as $bonus) {
-                    if(!$bonus['id']) {
+
+                foreach ($arrBonus as $bonus) {
+                    if (!$bonus['id']) {
                         $dbBonus->entityProductId = $productId;
                         $dbBonus->bonusTypeId = $bonus['bonusTypeId'];
                         $dbBonus->minOrder = $bonus['minOrder'];
@@ -884,8 +1036,8 @@ class ProductsController extends Controller
                         $dbBonus->addReturnID();
 
                         $arrRelationGroup = $bonus['arrRelationGroup'];
-                        if($arrRelationGroup) {
-                            foreach($arrRelationGroup as $relationGroupId) {
+                        if ($arrRelationGroup) {
+                            foreach ($arrRelationGroup as $relationGroupId) {
                                 $dbBonusRelationGroup->bonusId = $dbBonus['id'];
                                 $dbBonusRelationGroup->relationGroupId = $relationGroupId;
                                 $dbBonusRelationGroup->add();
@@ -988,9 +1140,9 @@ class ProductsController extends Controller
             $this->checkLength($name_en, 'nameEn', 200, 4);
             $this->checkLength($name_ar, 'nameAr', 200, 4);
             $this->checkLength($name_fr, 'nameFr', 200, 4);
-            $this->checkLength($description_ar, 'descriptionAr', 1000, 4);
-            $this->checkLength($description_en, 'descriptionEn', 1000, 4);
-            $this->checkLength($description_fr, 'descriptionFr', 1000, 4);
+            $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
+            $this->checkLength($description_en, 'descriptionEn', 5000, 4);
+            $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
 
 
             if ($subtitle_ar) {
@@ -2297,8 +2449,8 @@ class ProductsController extends Controller
                             if (strlen($cellValue) == 0) {
                                 array_push($errors, "Description AR required");
                             } else {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
-                                    array_push($errors, "Description AR should be between 4 and 1000 characters");
+                                if (strlen($cellValue) < 4 || strlen($cellValue) > 5000) {
+                                    array_push($errors, "Description AR should be between 4 and 5000 characters");
                                 } else {
                                     $dbProduct->description_ar = $cellValue;
                                 }
@@ -2308,8 +2460,8 @@ class ProductsController extends Controller
                             if (strlen($cellValue) == 0) {
                                 array_push($errors, "Description EN required");
                             } else {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
-                                    array_push($errors, "Description EN should be between 4 and 1000 characters");
+                                if (strlen($cellValue) < 4 || strlen($cellValue) > 5000) {
+                                    array_push($errors, "Description EN should be between 4 and 5000 characters");
                                 } else {
                                     $dbProduct->description_en = $cellValue;
                                 }
@@ -2319,8 +2471,8 @@ class ProductsController extends Controller
                             if (strlen($cellValue) == 0) {
                                 array_push($errors, "Description FR required");
                             } else {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
-                                    array_push($errors, "Description FR should be between 4 and 1000 characters");
+                                if (strlen($cellValue) < 4 || strlen($cellValue) > 5000) {
+                                    array_push($errors, "Description FR should be between 4 and 5000 characters");
                                 } else {
                                     $dbProduct->description_fr = $cellValue;
                                 }

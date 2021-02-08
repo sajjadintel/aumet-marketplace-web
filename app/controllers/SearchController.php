@@ -10,6 +10,7 @@ class SearchController extends Controller {
             $dbStockStatus->name = "name_" . $this->objUser->language;
             $arrStockStatus = $dbStockStatus->all("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
+            $this->f3->set('objUser', $this->objUser);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_search_title');
@@ -24,6 +25,9 @@ class SearchController extends Controller {
         $term = $_GET['query'];
         if (isset($term) && $term != "" && $term != null) {
             $where .= "AND ( scientificName LIKE '%{$term}%'";
+            $where .= " OR entityName_ar LIKE '%{$term}%'";
+            $where .= " OR entityName_en LIKE '%{$term}%'";
+            $where .= " OR entityName_fr LIKE '%{$term}%'";
             $where .= " OR productName_ar LIKE '%{$term}%'";
             $where .= " OR productName_en LIKE '%{$term}%'";
             $where .= " OR productName_fr LIKE '%{$term}%' ) ";
@@ -71,10 +75,11 @@ class SearchController extends Controller {
     function handleGetListFilters($table, $queryTerms, $queryDisplay, $queryId = 'id', $additionalQuery = null)
     {
         $where = "";
+        $nameAsValue = isset($_GET['nameAsValue']);
         if ($additionalQuery != null) {
             $where = $additionalQuery;
         }
-        $term = $_GET['term'];
+        $term = trim($_GET['term']);
         if (isset($term) && $term != "" && $term != null) {
             if ($additionalQuery != null) {
                 $where .= " AND (";
@@ -109,12 +114,13 @@ class SearchController extends Controller {
         $select2Result->pagination = false;
 
         $dbNames = new BaseModel($this->db, $table);
-        $dbNames->getWhere($where, $queryDisplay, $pageSize, $page * $pageSize);
+        $dbNames->load(array($where), array('order' => $queryDisplay, 'limit' => $pageSize, 'offset' => $page * $pageSize, 'group' => $queryDisplay));
+
         $resultsCount = 0;
         while (!$dbNames->dry()) {
             $resultsCount++;
             $select2ResultItem = new stdClass();
-            $select2ResultItem->id = $dbNames[$queryId];
+            $select2ResultItem->id = $nameAsValue ? $dbNames[$queryDisplay] : $dbNames[$queryId];
             $select2ResultItem->text = $dbNames[$queryDisplay];
             $select2Result->results[] = $select2ResultItem;
             $dbNames->next();
@@ -133,8 +139,10 @@ class SearchController extends Controller {
     function getProductBrandNameList()
     {
         if ($this->f3->ajax()) {
+            $nameAsValue = isset($_GET['nameAsValue']);
+
             $where = "1=1";
-            $term = $_GET['term'];
+            $term = trim($_GET['term']);
             if (isset($term) && $term != "" && $term != null) {
                 $where .= " AND productName_" . $this->objUser->language . " like '%$term%'";
             }
@@ -160,13 +168,14 @@ class SearchController extends Controller {
             $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
             $dbProducts->productName = "productName_" . $this->objUser->language;
 
-            $dbProducts->getWhere($where, "productName_" . $this->objUser->language, $pageSize, $page * $pageSize);
+            $dbProducts->load(array($where), array('order' => "productName_" . $this->objUser->language, 'limit' => $pageSize, 'offset' => $page * $pageSize, 'group' => "productName_" . $this->objUser->language));
 
             $resultsCount = 0;
             while (!$dbProducts->dry()) {
                 $resultsCount++;
                 $select2ResultItem = new stdClass();
                 $select2ResultItem->id = $dbProducts->id;
+                $select2ResultItem->id = $nameAsValue ? $dbProducts->productName : $dbProducts->id;
                 $select2ResultItem->text = $dbProducts->productName;
                 $select2Result->results[] = $select2ResultItem;
                 $dbProducts->next();
@@ -203,7 +212,7 @@ class SearchController extends Controller {
     function getProductSubcategoryByCategoryList()
     {
         $categoryId = $this->f3->get("PARAMS.categoryId");
-        $this->handleGetListFilters("subcategory", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'categoryId = '.$categoryId);
+        $this->handleGetListFilters("subcategory", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'categoryId = ' . $categoryId);
     }
 
     function getProductIngredientList()
@@ -231,14 +240,14 @@ class SearchController extends Controller {
     function getRelationGroupByEnitityList()
     {
         $entityId = $this->f3->get("PARAMS.entityId");
-        $this->handleGetListFilters("entityRelationGroup", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'entityId = '.$entityId);
+        $this->handleGetListFilters("entityRelationGroup", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'entityId = ' . $entityId);
     }
 
     function getCategoryList()
     {
         if ($this->f3->ajax()) {
             $where = "";
-            $term = $_GET['term'];
+            $term = trim($_GET['term']);
             if (isset($term) && $term != "" && $term != null) {
                 $where = "name_" . $this->objUser->language . " like '%$term%' AND parent_id IS NULL";
             } else {
@@ -288,7 +297,7 @@ class SearchController extends Controller {
     {
         if ($this->f3->ajax()) {
             $where = "";
-            $term = $_GET['term'];
+            $term = trim($_GET['term']);
             if (isset($term) && $term != "" && $term != null) {
                 $where = "name_" . $this->objUser->language . " like '%$term%'";
             }
@@ -357,12 +366,14 @@ class SearchController extends Controller {
         if (is_array($datatable->query)) {
             $productId = $datatable->query['productId'];
             if (isset($productId) && is_array($productId)) {
-                $query .= " AND id in (" . implode(",", $productId) . ")";
+                $query .= " AND ( productName_en in ('" . implode("','", $productId) . "') OR";
+                $query .= " productName_fr in ('" . implode("','", $productId) . "') OR";
+                $query .= " productName_ar in ('" . implode("','", $productId) . "') )";
             }
 
             $scientificNameId = $datatable->query['scientificNameId'];
             if (isset($scientificNameId) && is_array($scientificNameId)) {
-                $query .= " AND scientificNameId in (" . implode(",", $scientificNameId) . ")";
+                $query .= " AND scientificNameId in ('" . implode("','", $scientificNameId) . "')";
             }
 
             if (!$isDistributor) {
@@ -383,19 +394,19 @@ class SearchController extends Controller {
             }
 
         }
-        
+
         $query .= " AND statusId = 1";
 
         $order = "$datatable->sortBy $datatable->sortByOrder";
-        
-        if($order == "productName_en asc") {
-            if($sortParam == "newest") {
+
+        if ($order == "productName_en asc") {
+            if ($sortParam == "newest") {
                 $order = "insertDateTime DESC";
-            } else if($sortParam == "top-selling") {
+            } else if ($sortParam == "top-selling") {
                 $order = "totalOrderQuantity DESC";
             }
         }
-        
+
         $query .= " AND statusId = 1";
 
         $roleId = $this->f3->get('SESSION.objUser')->roleId;
@@ -495,8 +506,8 @@ class SearchController extends Controller {
         $countryId = $this->f3->get("PARAMS.countryId");
 
         $dbCity = new BaseModel($this->db, "city");
-        $dbCity->name = "name".ucfirst($this->objUser->language);
-        $dbCity->getWhere("countryId=$countryId", "name".ucfirst($this->objUser->language)." ASC");
+        $dbCity->name = "name" . ucfirst($this->objUser->language);
+        $dbCity->getWhere("countryId=$countryId", "name" . ucfirst($this->objUser->language) . " ASC");
 
         $arrCities = [];
         while (!$dbCity->dry()) {

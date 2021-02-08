@@ -25,8 +25,13 @@ return array(
     'vSupport_telephone' => 'Telephone no:',
     'vSupport_request_call' => 'Request a Call',
     'vSupport_title' => 'Title:',
+    'vSupport_reason' => 'Reason:',
     'vSupport_submit' => 'Submit',
     'vSupport_requestSent' => 'Request sent successfully!',
+    'vSupport_missingFields' => 'Some mandatory fields are missing',
+    'vSupport_emailMissing' => 'Email is required',
+    'vSupport_phoneMissing' => 'Phone is required',
+    'vSupport_reasonMissing' => 'Reason is required',
 
     'vLogin_signin' => 'Sign In',
     'vLogin_signinWithGoogle' => 'Sign in with Google',
@@ -58,8 +63,6 @@ return array(
     'vForgot_passwordChanged' => 'Password Changed successfully!',
     'vForgot_emailText' => 'You have recently requested on Aumet Marketplace to reset the password for your account. Click on the button below to reset it, or ignore the email if you didn\'t submit the request',
 
-    'vSignup_password' => 'Password',
-
     'vResetPassword_title' => 'Enter New Password',
     'vResetPassword_password' => 'New Password',
     'vResetPassword_passwordConfirm' => 'Confirm Password',
@@ -68,8 +71,6 @@ return array(
 
     'vChangePassword_title' => 'Change Password',
     'vChangePassword_subTitle' => 'Change Current Password',
-
-    'vBack' => 'Go Back',
 
     'vSignup_wizardUserInfo' => 'Account Information',
     'vSignup_wizardUserInfoDesc' => 'Set up your account information',
@@ -115,6 +116,20 @@ return array(
     'vSignup_thankyouSubtitle' => 'An email has been sent to you to verify your account.',
     'vSignup_thankyouHome' => 'Go back to home',
 
+    'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',
+    'vSignup_isVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours.',
+    'vSignup_isAlreadyVerifiedTitle' => 'Your Email has already been Verified!',
+    'vSignup_isAlreadyVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours. Has it been longer? <a href="https://aumet.com">Request Assistance</a>',
+    'vSignup_isVerifiedInvalidTitle' => 'Your verification token is invalid..',
+    'vSignup_isVerifiedInvalidSubtitle' => '<a href="https://aumet.com">Request Assistance</a>',
+
+    'vSignup_isApprovedTitle' => 'User has been approved!',
+    'vSignup_isApprovedSubtitle' => 'An email will be sent to the user to login and get started.',
+    'vSignup_isApprovedAlreadyTitle' => 'User has already been approved!',
+    'vSignup_isApprovedAlreadySubtitle' => 'An email was already sent to the user. For any further escalation, review with the tech team.',
+    'vSignup_isApprovedInvalidTitle' => 'User invalid..',
+    'vSignup_isApprovedInvalidSubtitle' => 'For any further escalation, review with the tech team.',
+
     'vBack' => 'Go Back',
 
     'vModule_search_title' => 'Search for products...',
@@ -133,6 +148,7 @@ return array(
     'vModule_search_unavailableHeader' => 'Click here to inform of a lack of availability for the product and we\'ll work on resolving it as soon as possible',
 
     'vModule_product_title' => 'Product List',
+    'vModule_product_detail' => 'Product',
     'vModule_product_header' => 'You can search for products using the product name, or scientific name',
     'vModule_product_uploadStock' => 'Update Stock',
     'vModule_product_uploadBonus' => 'Update Bonus',
@@ -222,7 +238,10 @@ return array(
     'vModule_product_addSpecialBonus' => 'Add Special Bonuses',
     'vModule_product_defaultBonusInvalid' => 'Default Bonuses Invalid',
     'vModule_product_specialBonusInvalid' => 'Special Bonuses Invalid',
-    
+    'vModule_product_quantityTooBig' => 'Quantity too big !',
+    'vModule_product_bonusTooBig' => 'Bonus too big !',
+    'vModule_product_productOverview' => 'Product Overview',
+
     'vModule_product_stockStatus_NotAvailable' => 'Not Available',
     'vModule_product_stockStatus_ComingSoon' => 'Coming Soon',
 
@@ -236,7 +255,7 @@ return array(
     'vModule_cart_bonus' => 'Bonus',
     'vModule_cart_note' => 'Note',
     'vModule_cart_unitPrice' => 'Unit Price',
-    'vModule_cart_tax' => 'Tax',
+    'vModule_cart_tax' => 'VAT',
     'vModule_cart_totalPrice' => 'Total Price',
     'vModule_cart_grandTotal' => 'Grand Total',
     'vModule_cart_total' => 'Total',
@@ -248,6 +267,9 @@ return array(
     'vModule_cart_orderTotal' => 'Order Total',
     'vModule_cart_orderSubTotal' => 'Sub Total',
     'vModule_cart_term' => 'Prices shown are prone to changes upon price update from the Distributor',
+
+    'orderDetails' => 'Order Details',
+    'orderLogs' => 'Order Logs',
 
     'vModule_cart_offersTitle' => 'Offers',
     'vModule_cart_offersMore' => 'Browse More Offers',
@@ -291,6 +313,7 @@ return array(
     'vButton_bulk_add' => 'Bulk Add',
     'vButton_bulk_add_image' => 'Bulk Add Images',
     'vButton_confirm' => 'Confirm',
+    'vButton_cancel' => 'Cancel',
     'vButton_view_all' => 'View All',
     'vButton_save' => 'Save',
 
@@ -379,10 +402,12 @@ return array(
 
     'error_filedTooLong' => ' field is too long! maximum length: ',
     'error_filedTooShort' => ' field is too short! minimum length: ',
-    'field_entityName' => 'Entity name',
+    'field_entityName' => 'Entity Name',
+    'field_pharmacyName' => 'Pharmacy Name',
+    'field_distributorName' => 'Distributor Name',
     'field_relationGroupName' => 'Customer group name',
     'field_address' => 'Address',
-    'field_tradeLicenseNumber' => 'Trade license number',
+    'field_tradeLicenseNumber' => 'Trade License Number',
     'field_nameAr' => 'Name AR',
     'field_nameEn' => 'Name EN',
     'field_nameFr' => 'Name FR',
@@ -396,4 +421,14 @@ return array(
     'field_batchNumber' => 'Batch Number',
     'field_itemCode' => 'Item Code',
     'field_strength' => 'Strength',
+
+    'vModal_welcome_title' => 'Welcome',
+    'vModal_welcome_message' => 'Please complete your profile.',
+    'vModal_welcome_step1_title' => 'Step 1',
+    'vModal_welcome_step1_message' => 'Upload profile image.',
+    'vModal_welcome_step2_title' => 'Step 2',
+    'vModal_welcome_step2_message' => 'Add payment method.',
+    'vModal_welcome_step3_title' => 'Step 3',
+    'vModal_welcome_step3_message' => 'Add minimum value order by location.',
+    'vModal_welcome_callToAction' => 'Complete Profile',
 );

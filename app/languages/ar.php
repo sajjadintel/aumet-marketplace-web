@@ -29,8 +29,13 @@ return array(
     'vSupport_telephone' => 'Telephone no:', // TODO: Translate
     'vSupport_request_call' => 'Request a Call', // TODO: Translate
     'vSupport_title' => 'Title:', // TODO: Translate
+    'vSupport_reason' => 'Reason:', // TODO: Translate
     'vSupport_submit' => 'Submit', // TODO: Translate
     'vSupport_requestSent' => 'Request sent successfully!', // TODO: Translate
+    'vSupport_missingFields' => 'Some mandatory fields are missing', // TODO: Translate
+    'vSupport_emailMissing' => 'Email is required', // TODO: Translate
+    'vSupport_phoneMissing' => 'Phone is required', // TODO: Translate
+    'vSupport_reasonMissing' => 'Reason is required', // TODO: Translate
 
     'vLogin_signin' => 'تسجيل الدخول',
     'vLogin_signinWithGoole' => 'سجل من خلال جوجل',
@@ -110,6 +115,20 @@ return array(
     'vSignup_thankyouSubtitle' => 'تم إرسال بريد إلكتروني إليك للتحقق من حسابك.',
     'vSignup_thankyouHome' => 'العودة إلى الصفحة الرئيسية',
 
+    'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',
+    'vSignup_isVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours.',
+    'vSignup_isAlreadyVerifiedTitle' => 'Your Email has already been Verified!',
+    'vSignup_isAlreadyVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours. Has it been longer? <a href="https://aumet.com">Request Assistance</a>',
+    'vSignup_isVerifiedInvalidTitle' => 'Your verification token is invalid..',
+    'vSignup_isVerifiedInvalidSubtitle' => '<a href="https://aumet.com">Request Assistance</a>',
+
+    'vSignup_isApprovedTitle' => 'User has been approved!',
+    'vSignup_isApprovedSubtitle' => 'An email will be sent to the user to login and get started.',
+    'vSignup_isApprovedAlreadyTitle' => 'User has already been approved!',
+    'vSignup_isApprovedAlreadySubtitle' => 'An email was already sent to the user. For any further escalation, review with the tech team.',
+    'vSignup_isApprovedInvalidTitle' => 'User invalid..',
+    'vSignup_isApprovedInvalidSubtitle' => 'For any further escalation, review with the tech team.',
+
     'vBack' => 'رجوع',
 
     'vModule_search_title' => 'Search for products...', // TODO: add translation
@@ -128,6 +147,7 @@ return array(
     'vModule_search_unavailableHeader' => 'اضغط هنا للابلاغ عن عدم توفر المنتج المطلوب وسيتم العمل على مساعدتك بأسرع وقت ممكن',
 
     'vModule_product_title' => 'المنتجات',
+    'vModule_product_detail' => 'Product', // TODO: add translation
     'vModule_product_header' => 'يمكنك البحث عن المنتجات من خلال اسم المنتج أو الاسم العلمي للمنتج',
     'vModule_product_uploadStock' => 'تحديث المخزون',
     'vModule_product_uploadBonus' => 'تحديث البونص',
@@ -171,6 +191,9 @@ return array(
     'vModule_product_addSpecialBonus' => 'أضف مكافآت خاصة',
     'vModule_product_defaultBonusInvalid' => 'المكافآت الافتراضية غير صالحة',
     'vModule_product_specialBonusInvalid' => 'المكافآت الخاصة غير صالحة',
+    'vModule_product_quantityTooBig' => 'الكمية كبيرة جدًا!',
+    'vModule_product_bonusTooBig' => 'المكافأة كبيرة جدًا!',
+    'vModule_product_productOverview' => 'Product Overview', // TODO: add translation
 
 
     'stockAvailability_available' => 'متوفر',
@@ -179,9 +202,9 @@ return array(
 
     'vModule_productAdded' => 'Product is added successfully!', // TODO: add translation
     'vModule_quantityEdited' => 'Product Quantity is edited successfully!', // TODO: add translation
-    'vModule_productEdited' => 'Product is edited successfully!',// TODO: add translation
-    'vModule_productStockEdited' => 'Product stock is edited successfully!',// TODO: add translation
-    'vModule_customerEdited' => 'Customer is edited successfully!',// TODO: add translation
+    'vModule_productEdited' => 'Product is edited successfully!', // TODO: add translation
+    'vModule_productStockEdited' => 'Product stock is edited successfully!', // TODO: add translation
+    'vModule_customerEdited' => 'Customer is edited successfully!', // TODO: add translation
 
     'vModule_order_title' => 'لائحة الطلبات',
     'vModule_order_header' => 'يمكنك عرض قائمة بأوامرك',
@@ -243,6 +266,10 @@ return array(
     'vModule_cart_entityOrderPrice' => 'قيمة فاتورة الموزع',
     'vModule_cart_term' => 'الأسعار أعلاه قابلة للتغيير تبعا لتوقيت تحديث الاسعار من قبل الموزع',
 
+
+    'orderDetails' => 'Order Details', // TODO: Add Translation
+    'orderLogs' => 'Order Logs', // TODO: Add Translation
+
     'vModule_cart_offersTitle' => 'العروض',
     'vModule_cart_offersMore' => 'تصفح المزيد من العروض',
 
@@ -288,6 +315,7 @@ return array(
     'vButton_confirm' => 'تأكيد',
     'vButton_view_all' => 'مشاهدة الكل',
     'vButton_save' => 'حفظ',
+    'vButton_cancel' => 'Cancel', // TODO: add translation
 
     'vMissingProduct_ErrorInvalidQuantity' => 'Invalid quantity for ', // TODO: add translation
     'vMissingProduct_ErrorDuplicateProducts' => 'Duplicate Product!', // TODO: add translation
@@ -370,9 +398,11 @@ return array(
     'error_filedTooLong' => ' field is too long! maximum length: ',
     'error_filedTooShort' => ' field is too short! minimum length: ',
     'field_entityName' => 'Entity Name',
+    'field_pharmacyName' => 'Pharmacy Name',
+    'field_distributorName' => 'Distributor Name',
     'field_relationGroupName' => 'Customer group name',
     'field_address' => 'Address',
-    'field_tradeLicenseNumber' => 'Trade license number',
+    'field_tradeLicenseNumber' => 'Trade License Number',
     'field_nameAr' => 'Name AR',
     'field_nameEn' => 'Name EN',
     'field_nameFr' => 'Name FR',
@@ -386,4 +416,14 @@ return array(
     'field_batchNumber' => 'Batch Number',
     'field_itemCode' => 'Item Code',
     'field_strength' => 'Strength',
+
+    'vModal_welcome_title' => 'Welcome', // TODO: translate
+    'vModal_welcome_message' => 'Please complete your profile.', // TODO: translate
+    'vModal_welcome_step1_title' => 'Upload profile image.', // TODO: translate
+    'vModal_welcome_step1_message' => 'Upload profile image.', // TODO: translate
+    'vModal_welcome_step2_title' => 'Add payment method.', // TODO: translate
+    'vModal_welcome_step2_message' => 'Add payment method.', // TODO: translate
+    'vModal_welcome_step3_title' => 'Add minimum value order by location.', // TODO: translate
+    'vModal_welcome_step3_message' => 'Add minimum value order by location.', // TODO: translate
+    'vModal_welcome_callToAction' => 'Complete Profile', // TODO: translate
 );

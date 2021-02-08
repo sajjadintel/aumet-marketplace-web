@@ -15,8 +15,8 @@
     <div class="offcanvas-content pr-5 mr-n5">
         <!--begin::Header-->
         <div class="d-flex align-items-center mt-5">
-            <div class="symbol symbol-100 mr-5" style="cursor: pointer;" onclick="window.location.href = '/web/profile';">
-                <div class="symbol-label" style="background-image: url('/assets/img/profile.png')"></div>
+            <div class="symbol symbol-100 mr-5" style="cursor: pointer; border: 3px solid #fff; -webkit-box-shadow: 0 0.5rem 1.5rem 0.5rem rgba(0, 0, 0, 0.075); box-shadow: 0 0.5rem 1.5rem 0.5rem rgba(0, 0, 0, 0.075);" onclick="window.location.href = '/web/profile';">
+                <div class="symbol-label" style="background-image: url(<?php echo !empty($objUser->entityImage) && !is_null($objUser->entityImage) ? '/' . $objUser->entityImage : '/assets/img/profile.png' ?>)"></div>
                 <i class="symbol-badge bg-success"></i>
             </div>
             <div class="d-flex flex-column">

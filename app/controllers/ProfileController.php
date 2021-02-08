@@ -21,7 +21,6 @@ class ProfileController extends Controller
                 $user = $dbUser->getWhere("userId=" . $this->objUser->id)[0];
                 $this->f3->set('user', $user);
                 $this->f3->set('entityBranchTradeLicenseUrlDecoded', urldecode($user->entityBranchTradeLicenseUrl));
-                $this->f3->set('entityImage', $user->entityImage);
 
                 // Get all payment methods
                 $dbPaymentMethod = new BaseModel($this->db, "paymentMethod");
@@ -94,7 +93,6 @@ class ProfileController extends Controller
                 $user = $dbUser->getWhere("userId=" . $this->objUser->id)[0];
                 $this->f3->set('user', $user);
                 $this->f3->set('entityBranchTradeLicenseUrlDecoded', urldecode($user->entityBranchTradeLicenseUrl));
-                $this->f3->set('entityImage', $user->entityImage);
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_profile');
@@ -109,7 +107,6 @@ class ProfileController extends Controller
         $allValidExtensions = [
             "pdf",
             "ppt",
-            "xcl",
             "docx",
             "jpeg",
             "jpg",
@@ -120,7 +117,7 @@ class ProfileController extends Controller
         $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
 
-        $targetFile = Helper::createUploadedFileName($fileName,$ext,"files/uploads/documents/");
+        $targetFile = Helper::createUploadedFileName($fileName, $ext, "files/uploads/documents/");
 
         if (in_array($ext, $allValidExtensions)) {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
@@ -141,7 +138,7 @@ class ProfileController extends Controller
         $address = $this->f3->get("POST.address");
         $entityDocument = $this->f3->get("POST.entityDocument");
 
-        $this->checkLength($entityName, 'entityName', 100, 4);
+        $this->checkLength($entityName, 'pharmacyName', 100, 4);
         $this->checkLength($address, 'address', 500, 4);
         if (strlen($tradeLicenseNumber) > 0) {
             $this->checkLength($tradeLicenseNumber, 'tradeLicenseNumber', 200, 4);
@@ -169,9 +166,9 @@ class ProfileController extends Controller
             $entityBranchId = $dbUser->entityBranchId;
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
 
-            if(strlen($tradeLicenseNumber) > 0) {
+            if (strlen($tradeLicenseNumber) > 0) {
                 $dbEntityBranch->getWhere("id != $entityBranchId AND tradeLicenseNumber='$tradeLicenseNumber'");
-    
+
                 if (!$dbEntityBranch->dry()) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get("vModule_profile_tradeLicenseTaken");
@@ -185,9 +182,10 @@ class ProfileController extends Controller
             $dbEntityBranch->address_en = $address;
             $dbEntityBranch->address_fr = $address;
 
-            if ($dbEntity->name_en != $entityName
-            || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber
-            || $dbEntityBranch->tradeLicenseUrl != $entityDocument
+            if (
+                $dbEntity->name_en != $entityName
+                || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber
+                || $dbEntityBranch->tradeLicenseUrl != $entityDocument
             ) {
                 if (strlen($entityDocument) == 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -250,7 +248,7 @@ class ProfileController extends Controller
                 }
                 $message = $this->f3->get("vModule_profile_requestSent");
 
-                $approvalUrl = "web/pharmacy/profile/approve";
+                $approvalUrl = "web/review/pharmacy/profile/approve";
                 $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $dbEntityBranch->tradeLicenseUrl, $entityDocument, $approvalUrl, $dbUser->userEmail);
             } else {
                 $message = $this->f3->get("vModule_profile_myProfileSaved");
@@ -271,9 +269,11 @@ class ProfileController extends Controller
         $newPassword = $this->f3->get("POST.newPassword");
         $newPasswordConfirmation = $this->f3->get("POST.newPasswordConfirmation");
 
-        if (strlen($oldPassword) == 0
+        if (
+            strlen($oldPassword) == 0
             || strlen($newPassword) == 0
-            || strlen($newPasswordConfirmation) == 0) {
+            || strlen($newPasswordConfirmation) == 0
+        ) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
             echo $this->webResponse->jsonResponse();
@@ -326,7 +326,7 @@ class ProfileController extends Controller
         $address = $this->f3->get("POST.address");
         $entityDocument = $this->f3->get("POST.entityDocument");
 
-        $this->checkLength($entityName, 'entityName', 100, 4);
+        $this->checkLength($entityName, 'distributorName', 100, 4);
         $this->checkLength($address, 'address', 500, 4);
         if (strlen($tradeLicenseNumber) > 0) {
             $this->checkLength($tradeLicenseNumber, 'tradeLicenseNumber', 200, 4);
@@ -354,9 +354,9 @@ class ProfileController extends Controller
             $entityBranchId = $dbUser->entityBranchId;
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
 
-            if(strlen($tradeLicenseNumber) > 0) {
+            if (strlen($tradeLicenseNumber) > 0) {
                 $dbEntityBranch->getWhere("id != $entityBranchId AND tradeLicenseNumber='$tradeLicenseNumber'");
-    
+
                 if (!$dbEntityBranch->dry()) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get("vModule_profile_tradeLicenseTaken");
@@ -370,9 +370,10 @@ class ProfileController extends Controller
             $dbEntityBranch->address_en = $address;
             $dbEntityBranch->address_fr = $address;
 
-            if ($dbEntity->name_en != $entityName
-            || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber
-            || $dbEntityBranch->tradeLicenseUrl != $entityDocument
+            if (
+                $dbEntity->name_en != $entityName
+                || $dbEntityBranch->tradeLicenseNumber != $tradeLicenseNumber
+                || $dbEntityBranch->tradeLicenseUrl != $entityDocument
             ) {
                 if (strlen($entityDocument) == 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -435,7 +436,7 @@ class ProfileController extends Controller
                 }
                 $message = $this->f3->get("vModule_profile_requestSent");
 
-                $approvalUrl = "web/distributor/profile/approve";
+                $approvalUrl = "web/review/distributor/profile/approve";
                 $this->sendChangeApprovalEmail($dbEntityChangeApproval->id, $mapDisplayNameOldNewValue, $dbEntityBranch->tradeLicenseUrl, $entityDocument, $approvalUrl, $dbUser->userEmail);
             } else {
                 $message = $this->f3->get("vModule_profile_myProfileSaved");
@@ -456,9 +457,11 @@ class ProfileController extends Controller
         $newPassword = $this->f3->get("POST.newPassword");
         $newPasswordConfirmation = $this->f3->get("POST.newPasswordConfirmation");
 
-        if (strlen($oldPassword) == 0
+        if (
+            strlen($oldPassword) == 0
             || strlen($newPassword) == 0
-            || strlen($newPasswordConfirmation) == 0) {
+            || strlen($newPasswordConfirmation) == 0
+        ) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("vModule_profile_missingFields");
             echo $this->webResponse->jsonResponse();
@@ -599,7 +602,7 @@ class ProfileController extends Controller
         }
     }
 
-    function handlePostProfileImage()
+    function handlePostProfileImageUpload()
     {
         $success = false;
         try {
@@ -639,14 +642,20 @@ class ProfileController extends Controller
         echo $this->webResponse->jsonResponse();
     }
 
-    function postDistributorProfileImage()
-    {
-        $this->handlePostProfileImage();
-    }
+    // TODO: Fix route logic in profile.js::_handleChangeProfileImage() to split routes for distr/pharm
+    // function postDistributorProfileImage()
+    // {
+    //     $this->handlePostProfileImage();
+    // }
 
-    function postPharmacyProfileImage()
+    // function postPharmacyProfileImage()
+    // {
+    //     $this->handlePostProfileImage();
+    // }
+
+    function postProfileImageUpload()
     {
-        $this->handlePostProfileImage();
+        $this->handlePostProfileImageUpload();
     }
 
     function sendChangeApprovalEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $oldTradeLicenseUrl, $tradeLicenseUrl, $approvalUrl, $userEmail)
@@ -658,7 +667,7 @@ class ProfileController extends Controller
         $this->f3->set('emailType', 'changeProfileApproval');
 
         $this->f3->set('mapDisplayNameOldNewValue', $mapDisplayNameOldNewValue);
-        if($oldTradeLicenseUrl != $tradeLicenseUrl) {
+        if ($oldTradeLicenseUrl != $tradeLicenseUrl) {
             $this->f3->set('oldTradeLicenseUrl', $oldTradeLicenseUrl);
         }
         $this->f3->set('tradeLicenseUrl', $tradeLicenseUrl);
@@ -698,219 +707,5 @@ class ProfileController extends Controller
             }
         }
         $emailHandler->sendEmail(Constants::EMAIL_CHANGE_PROFILE_APPROVAL, $subject, $htmlContent);
-    }
-
-    function getPharmacyProfileApprove()
-    {
-        $token = $_GET['token'];
-
-        if (!isset($token) || $token == null || $token == "") {
-            $this->rerouteAuth();
-        }
-        $token = urldecode($token);
-        try {
-            $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
-            $accessTokenPayload = $jwt->decode($token);
-        } catch (\Exception $e) {
-            $this->rerouteAuth();
-        }
-        if (!is_array($accessTokenPayload)) {
-            $this->rerouteAuth();
-        }
-
-        $entityChangeApprovalId = $accessTokenPayload["entityChangeApprovalId"];
-
-        $dbEntityChangeApproval = new BaseModel($this->db, "entityChangeApproval");
-        $dbEntityChangeApproval->getById($entityChangeApprovalId);
-
-        if ($dbEntityChangeApproval->dry()) {
-            echo "Invalid";
-        } else if ($dbEntityChangeApproval->isApproved) {
-            echo "Already Approved";
-        } else {
-            $dbEntityChangeApproval->isApproved = 1;
-            $dbEntityChangeApproval->updatedAt = date('Y-m-d H:i:s');
-            $dbEntityChangeApproval->update();
-
-            $dbEntityChangeApprovalField = new BaseModel($this->db, "entityChangeApprovalField");
-            $dbEntityChangeApprovalField->getWhere("entityChangeApprovalId=$entityChangeApprovalId");
-
-            $dbUser = new BaseModel($this->db, "vwEntityUserProfile");
-            $dbUser->getWhere("userId=$dbEntityChangeApproval->userId");
-
-            $dbEntity = new BaseModel($this->db, "entity");
-            $dbEntity->getByField("id", $dbUser->entityId);
-
-            $dbEntityBranch = new BaseModel($this->db, "entityBranch");
-            $dbEntityBranch->getByField("id", $dbUser->entityBranchId);
-
-            $mapDisplayNameOldNewValue = [];
-            while (!$dbEntityChangeApprovalField->dry()) {
-                $allParts = explode(".", $dbEntityChangeApprovalField->fieldName);
-                $table = $allParts[0];
-                $name = end($allParts);
-
-                // Update information
-                if ($table == "entity") {
-                    $dbEntity[$name] = $dbEntityChangeApprovalField->newValue;
-                } else if ($table == "entityBranch") {
-                    $dbEntityBranch[$name] = $dbEntityChangeApprovalField->newValue;
-                }
-
-                // Fill map used to display data in the mail approval
-                if ($name == "name_en") {
-                    $displayName = "Pharmacy Name";
-                } else if ($name == "tradeLicenseNumber") {
-                    $displayName = "Trade License Number";
-                } else {
-                    $displayName = "";
-                }
-
-                if ($displayName) {
-                    $mapDisplayNameOldNewValue[$displayName] = [
-                        $dbEntityChangeApprovalField->oldValue,
-                        $dbEntityChangeApprovalField->newValue
-                    ];
-                }
-
-                if($name == "tradeLicenseUrl") {
-                    $oldTradeLicenseUrl = $dbEntityChangeApprovalField->oldValue;
-                }
-
-                $dbEntityChangeApprovalField->next();
-            }
-
-            $tradeLicenseUrl = $dbEntityChangeApproval->tradeLicenseUrl;
-            if(strlen($oldTradeLicenseUrl) == 0) {
-                $oldTradeLicenseUrl = $tradeLicenseUrl;
-            }
-
-            $dbEntity->update();
-            $dbEntityBranch->update();
-
-            $this->sendChangeApprovedEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $oldTradeLicenseUrl, $tradeLicenseUrl);
-            echo "Approved";
-        }
-    }
-
-    function getDistributorProfileApprove()
-    {
-        $token = $_GET['token'];
-
-        if (!isset($token) || $token == null || $token == "") {
-            $this->rerouteAuth();
-        }
-        $token = urldecode($token);
-        try {
-            $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
-            $accessTokenPayload = $jwt->decode($token);
-        } catch (\Exception $e) {
-            $this->rerouteAuth();
-        }
-        if (!is_array($accessTokenPayload)) {
-            $this->rerouteAuth();
-        }
-
-        $entityChangeApprovalId = $accessTokenPayload["entityChangeApprovalId"];
-
-        $dbEntityChangeApproval = new BaseModel($this->db, "entityChangeApproval");
-        $dbEntityChangeApproval->getById($entityChangeApprovalId);
-
-        if ($dbEntityChangeApproval->dry()) {
-            echo "Invalid";
-        } else if ($dbEntityChangeApproval->isApproved) {
-            echo "Already Approved";
-        } else {
-            $dbEntityChangeApproval->isApproved = 1;
-            $dbEntityChangeApproval->updatedAt = date('Y-m-d H:i:s');
-            $dbEntityChangeApproval->update();
-
-            $dbEntityChangeApprovalField = new BaseModel($this->db, "entityChangeApprovalField");
-            $dbEntityChangeApprovalField->getWhere("entityChangeApprovalId=$entityChangeApprovalId");
-
-            $dbUser = new BaseModel($this->db, "vwEntityUserProfile");
-            $dbUser->getWhere("userId=$dbEntityChangeApproval->userId");
-
-            $dbEntity = new BaseModel($this->db, "entity");
-            $dbEntity->getByField("id", $dbUser->entityId);
-
-            $dbEntityBranch = new BaseModel($this->db, "entityBranch");
-            $dbEntityBranch->getByField("id", $dbUser->entityBranchId);
-
-            $mapDisplayNameOldNewValue = [];
-            while (!$dbEntityChangeApprovalField->dry()) {
-                $allParts = explode(".", $dbEntityChangeApprovalField->fieldName);
-                $table = $allParts[0];
-                $name = end($allParts);
-
-                // Update information
-                if ($table == "entity") {
-                    $dbEntity[$name] = $dbEntityChangeApprovalField->newValue;
-                } else if ($table == "entityBranch") {
-                    $dbEntityBranch[$name] = $dbEntityChangeApprovalField->newValue;
-                }
-
-                // Fill map used to display data in the mail approval
-                if ($name == "name_en") {
-                    $displayName = "Distributor Name";
-                } else if ($name == "tradeLicenseNumber") {
-                    $displayName = "Trade License Number";
-                } else {
-                    $displayName = "";
-                }
-
-                if ($displayName) {
-                    $mapDisplayNameOldNewValue[$displayName] = [
-                        $dbEntityChangeApprovalField->oldValue,
-                        $dbEntityChangeApprovalField->newValue
-                    ];
-                }
-
-                if($name == "tradeLicenseUrl") {
-                    $oldTradeLicenseUrl = $dbEntityChangeApprovalField->oldValue;
-                }
-
-                $dbEntityChangeApprovalField->next();
-            }
-
-            $tradeLicenseUrl = $dbEntityChangeApproval->tradeLicenseUrl;
-            if(strlen($oldTradeLicenseUrl) == 0) {
-                $oldTradeLicenseUrl = $tradeLicenseUrl;
-            }
-
-            $dbEntity->update();
-            $dbEntityBranch->update();
-
-            $this->sendChangeApprovedEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $oldTradeLicenseUrl, $tradeLicenseUrl);
-            echo "Approved";
-        }
-    }
-
-    function sendChangeApprovedEmail($entityChangeApprovalId, $mapDisplayNameOldNewValue, $oldTradeLicenseUrl, $tradeLicenseUrl)
-    {
-        $emailHandler = new EmailHandler($this->db);
-        $emailFile = "email/layout.php";
-        $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
-        $this->f3->set('title', 'Change Profile Approved');
-        $this->f3->set('emailType', 'changeProfileApproved');
-
-        $this->f3->set('mapDisplayNameOldNewValue', $mapDisplayNameOldNewValue);
-        if($oldTradeLicenseUrl != $tradeLicenseUrl) {
-            $this->f3->set('oldTradeLicenseUrl', $oldTradeLicenseUrl);
-        }
-        $this->f3->set('tradeLicenseUrl', $tradeLicenseUrl);
-
-        $htmlContent = View::instance()->render($emailFile);
-
-        $subject = "Aumet - Change Profile Approved";
-        if (getenv('ENV') != Constants::ENV_PROD) {
-            $subject .= " - (Test: " . getenv('ENV') . ")";
-
-            if (getenv('ENV') == Constants::ENV_LOC) {
-                $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
-                $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
-            }
-        }
-        $emailHandler->sendEmail(Constants::EMAIL_CHANGE_PROFILE_APPROVED, $subject, $htmlContent);
     }
 }

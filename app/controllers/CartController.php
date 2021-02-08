@@ -140,9 +140,16 @@ class CartController extends Controller
         } else {
 
             $id = $this->f3->get('POST.id');
+            $userId = $this->f3->get('POST.userID');
+            $entityProductId = $this->f3->get('POST.entityProductId');
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
-            $dbCartDetail->getByField("id", $id);
+            if (!empty($userId) && !empty($entityProductId)) {
+                $dbCartDetail->getWhere("entityProductId=$entityProductId and userID=$userId");
+            } else {
+                $dbCartDetail->getByField("id", $id);
+            }
+
             $dbCartDetail->erase();
 
             // Get cart count
@@ -479,10 +486,14 @@ class CartController extends Controller
             // Get user account
             $dbAccount = new BaseModel($this->db, "account");
             $account = $dbAccount->getById($this->objUser->accountId)[0];
+            $dbUserAccount = new BaseModel($this->db, "userAccount");
 
             // TODO: Adjust buyerBranchId logic
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
             $entityBranch = $dbEntityBranch->getByField("entityId", $account->entityId)[0];
+
+            // TODO: Adjust buyerBranchId logic
+            $dbSellerUser = new BaseModel($this->db, "user");
 
             // Add to orderGrand
             $dbOrderGrand = new BaseModel($this->db, "orderGrand");
@@ -606,6 +617,9 @@ class CartController extends Controller
                 // TODO: Adjust sellerBranchId logic
                 $sellerEntityBranch = $dbEntityBranch->getByField("entityId", $sellerId)[0];
 
+                // TODO: Remove this when multiple user per account is managed
+                $sellerUser = $dbEntityBranch->getByField("entityId", $sellerId)[0];
+
                 // Add to order
                 $dbOrder = new BaseModel($this->db, "order");
                 $dbOrder->orderGrandId = $grandOrderId;
@@ -614,7 +628,12 @@ class CartController extends Controller
                 $dbOrder->branchBuyerId = $entityBranch->id;
                 $dbOrder->branchSellerId = $sellerEntityBranch->id;
                 $dbOrder->userBuyerId = $this->objUser->id;
-                $dbOrder->userSellerId = null;
+                // TODO: Remove this when multiple user per account is managed
+
+                $sellerAccount = $dbAccount->getByField("entityId", $sellerId)[0];
+                $sellerUserAccount = $dbUserAccount->getByField("accountId", $sellerAccount->id)[0];
+
+                $dbOrder->userSellerId = $sellerUserAccount->userId;
                 $dbOrder->statusId = 1;
                 $dbOrder->paymentMethodId = $paymentMethodId;
 

@@ -20,7 +20,7 @@
     }
 </style>
 <!-- Modal-->
-<div class="modal fade" id="editStockModal" tabindex="-1" role="dialog" aria-labelledby="editStockModal" aria-hidden="true">
+<div class="modal fade editStockModal" id="editStockModal" tabindex="-1" role="dialog" aria-labelledby="editStockModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <form method="POST" action="/web/distributor/product/editStock" class="modalForm" id="editStockModalForm">

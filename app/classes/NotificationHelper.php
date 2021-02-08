@@ -106,7 +106,7 @@ class NotificationHelper {
      * @param int[] $modifiedOrderDetailIds array of modified order detail ids
      * @param int $entityBuyerId entitySellerId
      */
-    public static function orderModifyShippedQuantityNotification($f3, $dbConnection, $orderId, $modifiedOrderDetailIds, $entityBuyerId)
+    public static function orderModifyShippedQuantityNotification($f3, $dbConnection, $orderId, $modifiedOrderDetailIds, $userId, $entityBuyerId)
     {
         $dbProduct = new BaseModel($dbConnection, "vwOrderDetail");
         $dbProduct->name = "productNameEn";
@@ -122,9 +122,14 @@ class NotificationHelper {
         $f3->set('products', $dbProduct);
 
 
+        // get user email
         $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
         $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $entityBuyerId);
-        $entityName = $arrEntityUserProfile[0]->entityName_en;
+
+        // get distributor entity name
+        $dbUser = new BaseModel($dbConnection, "vwEntityUserProfile");
+        $user = $dbUser->getWhere("userId=" . $userId)[0];
+        $entityName = $user->entityName_en;
         $f3->set('entityName', $entityName);
 
         foreach ($arrEntityUserProfile as $entityUserProfile) {
@@ -184,6 +189,7 @@ class NotificationHelper {
                 $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajjad intel");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
                 $emailHandler->appendToAddress("n.javaid@aumet.com", "Naveed Javaid");
+                $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
             }
         }
 
@@ -229,6 +235,7 @@ class NotificationHelper {
                 $emailHandler->resetTos();
                 $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajjad intel");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
             }
         }
 
@@ -268,6 +275,7 @@ class NotificationHelper {
                 $emailHandler->resetTos();
                 $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajjad intel");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                $emailHandler->appendToAddress("n.javaid@aumet.com", "Naveed Javaid");
             }
         }
 

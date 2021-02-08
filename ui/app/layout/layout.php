@@ -94,6 +94,7 @@ function compress_htmlcode($codedata)
 
         <link href="/assets/css/colors.css<?php echo $platformVersion ?>" rel="stylesheet" type="text/css" />
         <link href="/assets/css/magnific-popup.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/css/smart_tab.min.css" rel="stylesheet" type="text/css" />
 
         <link rel="apple-touch-icon" sizes="57x57" href="/favicons/apple-icon-57x57.png">
         <link rel="apple-touch-icon" sizes="60x60" href="/favicons/apple-icon-60x60.png">
@@ -189,6 +190,8 @@ function compress_htmlcode($codedata)
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/3.1.0/jquery.serializejson.min.js" integrity="sha512-4y8bsEzrXJqRyl2dqjdKk/DetH59JcFTtYNMsy5DUpvVV8CXiSrQ1gSCL3+dFgj1Xco0ONPizsYd6wX2eAXL2g==" crossorigin="anonymous"></script>
         <script src="/assets/js/jquery.autocomplete.js"></script>
         <script src="/assets/js/jquery.magnific-popup.js"></script>
+        <script src="/assets/js/jquery.slider.js"></script>
+        <script src="/assets/js/jquery.expandable.js"></script>
 
         <!--end::Global Theme Bundle-->
 
@@ -312,6 +315,7 @@ function compress_htmlcode($codedata)
     <script type="text/javascript" src="/assets/js/distributor-products.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/distributor-customers.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/profile.js<?php echo $platformVersion ?>"></script>
+    <script type="text/javascript" src="/assets/js/jquery.smartTab.min.js"></script>
 
 
     <script type="text/javascript" src="/assets/js/treeview.js<?php echo $platformVersion ?>"></script>
