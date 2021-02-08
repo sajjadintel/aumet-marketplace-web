@@ -72,13 +72,13 @@ function compress_htmlcode($codedata)
 
                                             <thead>
                                             <tr>
-                                                <th width="32%" class="cart-table-header"><?php echo $vModule_product_name ?></th>
-                                                <th class="text-center cart-table-header" width="15%"><?php echo $vModule_cart_quantity ?></th>
-                                                <th class="text-center cart-table-header" width="13%"><?php echo $vModule_cart_note ?></th>
-                                                <th class="text-right cart-table-header" width="13%"><?php echo $vModule_cart_unitPrice ?></th>
-                                                <th class="text-right cart-table-header" width="7%"><?php echo $vModule_cart_tax ?></th>
-                                                <th class="text-right cart-table-header" width="15%"><?php echo $vModule_cart_productOrderPrice ?></th>
-                                                <th class="text-right cart-table-header" width="5%"></th>
+                                                <th width="32%" class="text-center cart-table-header"><?php echo $vModule_product_name ?></th>
+                                                <th class="text-center cart-table-header" width="17%"><?php echo $vModule_cart_quantity ?></th>
+<!--                                                <th class="text-center cart-table-header" width="13%">--><?php //echo $vModule_cart_note ?><!--</th>-->
+                                                <th class="text-center cart-table-header" width="15%"><?php echo $vModule_cart_unit ?></th>
+                                                <th class="text-center cart-table-header" width="8%"><?php echo $vModule_cart_tax ?></th>
+                                                <th class="text-center cart-table-header" width="17%"><?php echo $vModule_cart_productOrderPrice ?></th>
+                                                <th class="text-center cart-table-header" width="5%"></th>
                                             </tr>
                                             </thead>
                                         </table>
@@ -98,11 +98,11 @@ function compress_htmlcode($codedata)
                                                 <thead>
                                                 <tr>
                                                     <th width="32%" class="cart-table-header-body"></th>
-                                                    <th class="text-center cart-table-header-body" width="15%"></th>
-                                                    <th class="text-center cart-table-header-body" width="13%"></th>
-                                                    <th class="text-right cart-table-header-body" width="13%"></th>
-                                                    <th class="text-right cart-table-header-body" width="7%"></th>
+                                                    <th class="text-center cart-table-header-body" width="17%"></th>
+<!--                                                    <th class="text-center cart-table-header-body" width="13%"></th>-->
                                                     <th class="text-right cart-table-header-body" width="15%"></th>
+                                                    <th class="text-right cart-table-header-body" width="8%"></th>
+                                                    <th class="text-right cart-table-header-body" width="17%"></th>
                                                     <th class="text-right cart-table-header-body" width="5%"></th>
                                                 </tr>
                                                 </thead>
@@ -112,15 +112,16 @@ function compress_htmlcode($codedata)
                                                     <td colspan="7">
                                                         <div class=" flex-wrap border-0 pb-6 pb-0" style="margin-top: -24px;">
                                                             <h6 class=" align-items-start flex-column">
-                                                                <span class=" font-weight-bolder font-size-h6 text-primary" style="background-color: #fff;padding: 0 5px 0 5px;"><?php echo $seller->name ?></span>
+                                                                <span class=" font-weight-bolder font-size-h6 text-primary" style="background-color: #fff;padding: 0 5px 0 5px;font-size: 1.05rem !important;"><?php echo $seller->name ?></span>
                                                             </h6>
                                                         </div>
                                                     </td>
                                                 </tr>
 
+                                                <?php $isFirstItem = true; ?>
                                                 <?php foreach ($allCartItems[$seller->sellerId] as $item) : ?>
-                                                    <tr>
-                                                        <td class="d-flex align-items-center font-weight-bolder font-size-h5">
+                                                    <tr style="">
+                                                        <td class="d-flex align-items-center font-weight-bolder font-size-h5 cart-item-separator">
                                                             <div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light">
                                                                 <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->entityProductId ?>')" class="text-dark text-hover-primary">
                                                                     <img class="productImage" src="<?php echo $item->image ?>" style="width: 60px; height: 60px;">
@@ -133,7 +134,7 @@ function compress_htmlcode($codedata)
                                                                 <?php endif; ?>
                                                             </div>
                                                         </td>
-                                                        <td class="text-center align-middle">
+                                                        <td class="text-center align-middle cart-item-separator">
                                                             <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, -1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon mr-2">
                                                                 <i class="ki ki-minus icon-xs"></i>
                                                             </a>
@@ -143,20 +144,20 @@ function compress_htmlcode($codedata)
                                                             </a>
                                                         </td>
 
-                                                        <td class="text-center align-middle">
-                                                            <input style="width: 100%;" type="text" id="note-<?php echo $item->entityProductId ?>" onfocusout="CartCheckout.updateNote(<?php echo $item->entityProductId ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>)" class="mr-2 font-weight-bolder quantity" value="<?php echo $item->note ?>" name="note">
-                                                        </td>
+<!--                                                        <td class="text-center align-middle cart-item-separator">-->
+<!--                                                            <input style="width: 100%;" type="text" id="note---><?php //echo $item->entityProductId ?><!--" onfocusout="CartCheckout.updateNote(--><?php //echo $item->entityProductId ?><!--, --><?php //echo $item->id ?><!--, --><?php //echo $seller->sellerId ?><!--)" class="mr-2 font-weight-bolder quantity" value="--><?php //echo $item->note ?><!--" name="note">-->
+<!--                                                        </td>-->
 
-                                                        <td class="text-right align-middle font-weight-bolder font-size-h5">
+                                                        <td class="text-right align-middle font-weight-bolder font-size-h5 cart-item-separator">
                                                             <?php echo Helper::formatMoney($item->unitPrice, 2) . " " . $currencySymbol ?>
                                                         </td>
-                                                        <td class="text-right align-middle font-weight-bolder font-size-h5 productVat-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" id="productVat-<?php echo $item->entityProductId ?>">
+                                                        <td class="text-right align-middle font-weight-bolder font-size-h5 cart-item-separator productVat-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" id="productVat-<?php echo $item->entityProductId ?>">
                                                             <?php echo Helper::formatMoney($item->vat, 2) . "%" ?>
                                                         </td>
-                                                        <td class="text-right align-middle font-weight-bolder font-size-h5 productPrice-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" data-vat="<?php echo $item->vat ?>" data-unitPrice="<?php echo $item->unitPrice ?>" data-productPrice="<?php echo $item->quantity * $item->unitPrice ?>" id="productPrice-<?php echo $item->entityProductId ?>">
+                                                        <td class="text-right align-middle font-weight-bolder font-size-h5 cart-item-separator productPrice-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" data-vat="<?php echo $item->vat ?>" data-unitPrice="<?php echo $item->unitPrice ?>" data-productPrice="<?php echo $item->quantity * $item->unitPrice ?>" id="productPrice-<?php echo $item->entityProductId ?>">
                                                             <?php echo Helper::formatMoney($item->quantity * $item->unitPrice, 2) . " " . $currencySymbol ?>
                                                         </td>
-                                                        <td class="text-right align-middle">
+                                                        <td class="text-right align-middle cart-item-separator">
                                                             <a href="javascript:;" onclick="CartCheckout.removeItemModal(<?php echo $item->id ?>)" class="btn btn-sm btn-light btn-text-danger btn-hover-primary btn-icon  mr-2" title="">
                                                             <span class="svg-icon svg-icon-md">
                                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -184,9 +185,9 @@ function compress_htmlcode($codedata)
                                                     <td colspan="7">
 
                                                         <div class="text-right pr-3">
-                                                            <p class="font-weight-bolder font-size-h4">
-                                                                <span class="text-primary"><?php echo $vModule_cart_subTotal ?></span>
-                                                                <span class="subTotalPrice" data-subTotalPrice="<?php echo $subTotalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="subTotalPrice-<?php echo $seller->sellerId ?>">
+                                                            <p class="font-weight-bolder font-size-h4" style="margin-bottom: 0;margin-top: 0.7rem;">
+                                                                <span class="text-primary" style="color: #b7b7b7 !important;font-weight: bold !important;font-size: 1.25rem !important;margin-right: 15px;"><?php echo $vModule_cart_subTotal ?></span>
+                                                                <span class="subTotalPrice" style="color: #b7b7b7 !important;font-weight: bold !important;font-size: 1.25rem !important;" data-subTotalPrice="<?php echo $subTotalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="subTotalPrice-<?php echo $seller->sellerId ?>">
                                                                 <?php echo Helper::formatMoney($subTotalPrice, 2) . " " . $currencySymbol ?>
                                                             </span>
                                                             </p>
@@ -226,21 +227,7 @@ function compress_htmlcode($codedata)
                                             <hr>
                                             <p class="font-weight-bolder font-size-h4 itemWrapper"><span class="text-primary total"><?php echo $vModule_cart_total ?> </span> <span id="grandTotal" class="price"></span></p>
                                         <?php endif; ?>
-                                        <div class="radio-inline py-10">
-                                            <label class="mr-5 radio radio-success"><?php echo $vModule_cartCheckout_paymentMethodTitle ?></label>
-                                            <?php foreach ($allPaymentMethods as $paymentMethod) : ?>
-                                                <label class="radio radio-success">
-                                                    <?php if ($paymentMethod->id == 1) : ?>
-                                                        <input type="radio" name="paymentMethod" id="paymentMethod-<?php echo $paymentMethod->id; ?>" checked />
-                                                    <?php else: ?>
-                                                        <input type="radio" name="paymentMethod" id="paymentMethod-<?php echo $paymentMethod->id; ?>" />
-                                                    <?php endif; ?>
-                                                    <span></span>
-                                                    <?php echo $paymentMethod->name; ?>
-                                                </label>
-                                            <?php endforeach; ?>
-                                        </div>
-                                        <a class="btn btn-success font-weight-bolder px-8" onclick="CartCheckout.submitOrderModal()">
+                                        <a class="btn btn-success font-weight-bolder px-8" style="margin-top: 40px;" onclick="CartCheckout.submitOrderModal()">
                                             <?php echo $vModule_cartCheckout_submitOrder ?>
                                         </a>
                                         <p class="border-0 text-muted pt-10"><?php echo $vModule_cart_term ?></p>

@@ -255,6 +255,7 @@ return array(
     'vModule_cart_bonus' => 'Bonus', // TODO: Add Translation
     'vModule_cart_note' => 'Note', // TODO: Add Translation
     'vModule_cart_unitPrice' => 'سعر الوحدة',
+    'vModule_cart_unit' => 'Unit',
     'vModule_cart_tax' => 'ضريبة',
     'vModule_cart_totalPrice' => 'السعر الاجمالي',
     'vModule_cart_grandTotal' => 'المجموع الكلي',
