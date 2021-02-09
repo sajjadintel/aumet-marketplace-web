@@ -53,7 +53,7 @@ var CartCheckout = (function () {
 		// let paymentMethodInputId = $("input[name='paymentMethod']:checked").attr('id');
 		// let allParts = paymentMethodInputId.split('-');
 		// let paymentMethodId = allParts[1];
-		WebApp.get('/web/cart/checkout/submit/confirm/1', WebApp.openModal);
+		WebApp.get('/web/cart/checkout/submit/confirm', WebApp.openModal);
 	};
 
 	var _submitOrderSuccess = function (webResponse) {
@@ -61,7 +61,7 @@ var CartCheckout = (function () {
 		WebApp.redirect('/web/thankyou/' + webResponse.data);
 	};
 
-	var _updateQuantity = function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice = 1, oldValue = null) {
+	var _updateQuantity = function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice = 0, oldValue = null) {
 		let quantityId = '#quantity-' + productId;
 		let currentValue = 0;
 		if ($(quantityId).val() > 0) currentValue = parseInt($(quantityId).val());
@@ -139,7 +139,7 @@ var CartCheckout = (function () {
 		$(totalPriceId).attr('data-totalPrice', totalPrice);
 		$(totalPriceId).html(totalPrice + ' ' + currency);
 
-		if(updateTotalPrice == 1){
+		if(updateTotalPrice){
 			updateTotalPrice();
 		}
 	};

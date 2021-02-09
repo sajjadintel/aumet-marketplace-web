@@ -326,12 +326,33 @@ class CartController extends Controller
             $buyerCurrency = $mapSellerIdCurrency[$account->entityId];
             $this->f3->set('buyerCurrency', $buyerCurrency);
 
-            // Set paymenet methods
-            $dbPaymentMethod = new BaseModel($this->db, "orderPaymentMethod");
+            // Set payment methods
+            $dbPaymentMethod = new BaseModel($this->db, "paymentMethod");
             $nameField = "name_" . $this->objUser->language;
             $dbPaymentMethod->name = $nameField;
-            $allPaymentMethods = $dbPaymentMethod->all();
-            $this->f3->set('allPaymentMethods', $allPaymentMethods);
+            $arrPaymentMethod = $dbPaymentMethod->findAll();
+            $mapPaymentMethodIdName = [];
+            foreach($arrPaymentMethod as $paymentMethod) {
+                $mapPaymentMethodIdName[$paymentMethod['id']] = $paymentMethod['name'];
+            }
+
+            $dbEntityPaymentMethod = new BaseModel($this->db, "entityPaymentMethod");
+            $mapSellerIdArrPaymentMethod = [];
+            foreach ($allSellers as $seller) {
+                $dbEntityPaymentMethod->getWhere("entityId=".$seller->sellerId);
+                $arrEntityPaymentMethod = [];
+                while(!$dbEntityPaymentMethod->dry()) {
+                    $paymentMethod = new stdClass();
+                    $paymentMethod->id = $dbEntityPaymentMethod['paymentMethodId'];
+                    $paymentMethod->name = $mapPaymentMethodIdName[$dbEntityPaymentMethod['paymentMethodId']];
+
+                    array_push($arrEntityPaymentMethod, $paymentMethod);
+                    $dbEntityPaymentMethod->next();
+                }
+
+                $mapSellerIdArrPaymentMethod[$seller->sellerId] = $arrEntityPaymentMethod;
+            }
+            $this->f3->set('mapSellerIdArrPaymentMethod', $mapSellerIdArrPaymentMethod);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vTitle_cart');
@@ -421,7 +442,7 @@ class CartController extends Controller
             }
 
             $cartDetail = new stdClass();
-            $cartDetail->productId = $cartDetailFull['productId'];
+            $cartDetail->productId = $cartDetailFull['entityProductId'];
             $cartDetail->quantity = $cartDetailFull['quantity'];
             $cartDetail->quantityFree = $cartDetailFull['quantityFree'];
             $cartDetail->entityId = $cartDetailFull['entityId'];
@@ -469,7 +490,7 @@ class CartController extends Controller
             $modal = new stdClass();
             $modal->modalTitle = $this->f3->get('vModule_cartCheckout_orderConfirmationTitle');
             $modal->modalText = $this->f3->get('vModule_cartCheckout_orderConfirmation');
-            $modal->modalRoute = '/web/cart/checkout/submit/' . $this->f3->get('PARAMS.paymentMethodId');
+            $modal->modalRoute = '/web/cart/checkout/submit';
             $modal->modalButton = $this->f3->get('vButton_confirm');
             $modal->id = $this->objUser->accountId;
             $modal->fnCallback = 'CartCheckout.submitOrderSuccess';
@@ -486,9 +507,6 @@ class CartController extends Controller
             $this->f3->set("pageURL", "/web/cart/checkout");
             echo View::instance()->render('app/layout/layout.php');
         } else {
-
-            $paymentMethodId = $this->f3->get('PARAMS.paymentMethodId');
-
             // Get user account
             $dbAccount = new BaseModel($this->db, "account");
             $account = $dbAccount->getById($this->objUser->accountId)[0];
@@ -506,8 +524,6 @@ class CartController extends Controller
             $dbOrderGrand->buyerEntityId = $account->entityId;
             $dbOrderGrand->buyerBranchId = $entityBranch->id;
             $dbOrderGrand->buyerUserId = $this->objUser->id;
-
-            $dbOrderGrand->paymentMethodId = $paymentMethodId;
 
             $dbOrderGrand->addReturnID();
             $grandOrderId = $dbOrderGrand->id;

@@ -96,6 +96,7 @@ function compress_htmlcode($codedata)
                                             if (!in_array($currencyId, $allCurrencyId)) {
                                                 array_push($allCurrencyId, $currencyId);
                                             }
+                                            $arrPaymentMethod = $mapSellerIdArrPaymentMethod[$seller->sellerId];
                                             ?>
                                             <table style="border-radius: 5px;border-color: #e7e7e7;border-width: 1px 1px 1px 1px;border-style: solid;border-collapse: separate !important; border-spacing: 0;width: 100%;margin-bottom: 20px;padding: 10px;min-width: 830px;">
                                                 <thead>
@@ -193,9 +194,17 @@ function compress_htmlcode($codedata)
                                                         <td colspan="7">
 
                                                             <div class="text-right pr-3">
-                                                                <p class="font-weight-bolder font-size-h4" style="margin-bottom: 0;margin-top: 0.7rem;">
-                                                                    <span class="text-primary" style="color: #b7b7b7 !important;font-weight: bold !important;font-size: 1.25rem !important;margin-right: 15px;"><?php echo $vModule_cart_subTotal ?></span>
-                                                                    <span class="subTotalPrice" style="color: #b7b7b7 !important;font-weight: bold !important;font-size: 1.25rem !important;" data-subTotalPrice="<?php echo $subTotalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="subTotalPrice-<?php echo $seller->sellerId ?>">
+                                                                <p class="font-weight-bolder font-size-h4 row justify-content-end align-items-center" style="margin-bottom: 0;margin-top: 0.7rem;">
+                                                                    <?php if (count($arrPaymentMethod) > 0) : ?>
+                                                                        <span style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem; margin-right: 15px;"><?php echo $vModule_cart_paymentOption ?></span>
+                                                                        <select name="paymentMethod" class="col-2 form-control selectpicker">
+                                                                            <?php foreach($arrPaymentMethod as $paymentMethod) : ?>
+                                                                                <option value="<?php echo $paymentMethod->id ?>"><?php echo $paymentMethod->name ?></option>
+                                                                            <?php endforeach; ?>
+                                                                        </select>
+                                                                    <?php endif; ?>
+                                                                    <span style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem; margin-left: 15px; margin-right: 15px;"><?php echo $vModule_cart_subTotal ?></span>
+                                                                    <span class="subTotalPrice" style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem;" data-subTotalPrice="<?php echo $subTotalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="subTotalPrice-<?php echo $seller->sellerId ?>">
                                                                         <?php echo Helper::formatMoney($subTotalPrice, 2) . " " . $currencySymbol ?>
                                                                     </span>
                                                                 </p>
@@ -378,4 +387,6 @@ function compress_htmlcode($codedata)
     $('.productImage').on("error", function() {
         $(this).attr('src', '/assets/img/default-product-image.png');
     });
+
+    $('.selectpicker').selectpicker('val', '');
 </script>
