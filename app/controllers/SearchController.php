@@ -361,7 +361,6 @@ class SearchController extends Controller
             $isDistributor = true;
         }
 
-
         if (is_array($datatable->query)) {
             // TODO: change 'productId' with 'productName' in JavaScript and here too in next line
             $productId = $datatable->query['productId'];
