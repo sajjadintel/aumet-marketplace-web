@@ -216,7 +216,7 @@ function compress_htmlcode($codedata)
 
 
         var searchQuery = {
-            productId: [],
+            productName: [],
             scientificName: [],
             stockOption: 1,
         };
@@ -239,7 +239,7 @@ function compress_htmlcode($codedata)
             placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
 
             ajax: {
-                url: '/web/product/brandname/list',
+                url: '/web/product/brandname/list?nameAsValue=true',
                 dataType: 'json',
                 processResults: function(response) {
                     return {
@@ -252,11 +252,11 @@ function compress_htmlcode($codedata)
             }
         });
         _selectBrand.on("select2:select", function(e) {
-            searchQuery.productId = $("#searchProductsBrandNameInput").val();
+            searchQuery.productName = $("#searchProductsBrandNameInput").val();
             updateDatatable();
         });
         _selectBrand.on("select2:unselect", function(e) {
-            searchQuery.productId = $("#searchProductsBrandNameInput").val();
+            searchQuery.productName = $("#searchProductsBrandNameInput").val();
             updateDatatable();
         });
 
