@@ -132,7 +132,7 @@
                                             <div class="dropzone-file">
                                                 <a class="dropzone-filename" id="dropzoneFilename">
                                                     <span data-dz-name="">some_image_file_name.jpg</span>
-                                                    <strong>(<span data-dz-size="">340kb</span>)</strong>
+                                                    <strong id="dropzoneFilesize" style="display: none;">(<span data-dz-size="">340kb</span>)</strong>
                                                     <img id="dropzoneFilenameImage" src="" style="width:300px;height:200px; object-fit: cover;">
                                                 </a>
                                                 <div class="dropzone-error" data-dz-errormessage=""></div>
