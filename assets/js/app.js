@@ -463,7 +463,9 @@ var WebApp = (function () {
 		$('#popupModalText').html(webResponse.data.modalText);
 		$('#popupModalValueId').val(webResponse.data.id);
 		$('.modalValueCallback').val(webResponse.data.fnCallback);
-		$('.modalValueBody').val(encodeURIComponent(JSON.stringify(webResponse.data.body)));
+		if (webResponse.data.body) {
+			$('.modalValueBody').val(encodeURIComponent(JSON.stringify(webResponse.data.body)));
+		}
 		$('.modalAction').html(webResponse.data.modalButton);
 		$('.modalActionCancel').each(function () {
 			$(this).off('click');
