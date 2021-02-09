@@ -188,9 +188,6 @@ var Profile = (function () {
 			$(document)
 				.find(id + ' .dropzone-item')
 				.css('display', '');
-			if(file.size != 0) {
-				
-			}
 		});
 
 		// Update the total progress bar
@@ -218,8 +215,6 @@ var Profile = (function () {
 
 			_entityDocument = response;
 
-			console.log('{ ...file }');
-			console.log({ ...file });
 			var dropzoneFilesizeElement = $(file.previewTemplate).find('#dropzoneFilesize');
 			if(file.size > 0) {
 				$(dropzoneFilesizeElement).show();
