@@ -826,7 +826,7 @@ var WebAuth = (function () {
 				'            <tr>' +
 				'                <td width="284" class="o_bg-ultra_light o_br o_text-xs o_sans o_px-xs o_py" align="center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;background-color: #ebf5fa;border-radius: 4px;padding-left: 8px;padding-right: 8px;padding-top: 16px;padding-bottom: 16px;">' +
 				'                    <p class="o_text-dark" style="color: #242b3d;margin-top: 0px;margin-bottom: 0px;">' +
-				'                        <a href="/' +
+				'                        <a href="' +
 				allValues.tradeLicenseUrl +
 				'" target="_blank">Download file</strong>' +
 				'                    </p>' +
