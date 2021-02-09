@@ -2223,7 +2223,7 @@ class ProductsController extends Controller
 
         $targetFile = "files/uploads/reports/products-add/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
 
-        if ($ext == "xlsm" || ext == "xlsx") {
+        if ($ext == "xlsm" || $ext == "xlsx") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
                 $dbBulkAddUpload = new BaseModel($this->db, "bulkAddUpload");
                 $dbBulkAddUpload->userId = $this->objUser->id;
