@@ -393,6 +393,10 @@ var WebApp = (function () {
 				var form = $(this).parent().parent().parent();
 				var url = $(form).attr('action');
 				var data = $(form).serializeJSON();
+				if(data.body) {
+					var dataBodyStr = $(form).find('.modalValueBody').val();
+					data.body = JSON.parse(decodeURIComponent(dataBodyStr));
+				}
 				var callback = null;
 				if ($(form).find('.modalValueCallback').val() != '') {
 					callback = eval($(form).find('.modalValueCallback').val());
@@ -455,6 +459,7 @@ var WebApp = (function () {
 		$('#popupModalText').html(webResponse.data.modalText);
 		$('#popupModalValueId').val(webResponse.data.id);
 		$('.modalValueCallback').val(webResponse.data.fnCallback);
+		$('.modalValueBody').val(encodeURIComponent(JSON.stringify(webResponse.data.body)));
 		$('.modalAction').html(webResponse.data.modalButton);
 		$('.modalActionCancel').each(function () {
 			$(this).off('click');
@@ -472,6 +477,7 @@ var WebApp = (function () {
 		$('#popupModalText').html('');
 		$('#popupModalValueId').val('');
 		$('.modalValueCallback').val('');
+		$('.modalValueBody').val('');
 		$('.modalAction').html('');
 	};
 

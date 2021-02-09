@@ -12,6 +12,7 @@
                 <div class="modal-body">
                     <input type="hidden" name="id" id="popupModalValueId" value="" />
                     <input type="hidden" name="fnCallback" class="modalValueCallback" id="modalValueCallback" value="" />
+                    <input type="hidden" name="body" class="modalValueBody" id="modalValueBody" value="" />
                     <p class="modal-text" id="popupModalText"></p>
                 </div>
                 <div class="modal-footer">

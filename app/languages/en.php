@@ -260,6 +260,7 @@ return array(
     'vModule_cart_grandTotal' => 'Grand Total',
     'vModule_cart_total' => 'Total',
     'vModule_cart_subTotal' => 'SUB TOTAL',
+    'vModule_cart_paymentOption' => 'PAYMENT OPTION',
     'vModule_cart_grandSubTotal' => 'Grand SubTotal',
     'vModule_cart_formula' => 'Formula',
     'vModule_cart_productOrderPrice' => 'Price',

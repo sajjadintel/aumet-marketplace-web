@@ -177,3 +177,15 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
 
 ################################
 
+## 03/02/2021 -- Antoine Abou Cherfane
+
+# Modified orderGrand
+ALTER TABLE `marketplace`.`orderGrand` 
+DROP COLUMN `paymentMethodId`;
+
+# Modified order
+ALTER TABLE `marketplace`.`order` 
+CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
+
+################################
+

@@ -226,6 +226,16 @@
                           <p class="o_sans o_text o_text-primary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #126de5;"><strong><?php echo $total . " " . $currencySymbol ?></strong></p>
                         </td>
                       </tr>
+                      <?php if($paymentMethod) : ?>
+                        <tr>
+                          <td width="50%" class="o_pt" align="left" style="padding-top: 16px;">
+                            <p class="o_sans o_text o_text-secondary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;"><strong>Payment Option</strong></p>
+                          </td>
+                          <td width="50%" class="o_pt" align="right" style="padding-top: 16px;">
+                            <p class="o_sans o_text o_text-primary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #126de5;"><strong><?php echo $paymentMethod ?></strong></p>
+                          </td>
+                        </tr>
+                      <?php endif; ?>
                     </tbody>
                   </table>
                 </div>
