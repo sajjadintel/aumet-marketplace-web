@@ -332,16 +332,16 @@ class CartController extends Controller
             $dbPaymentMethod->name = $nameField;
             $arrPaymentMethod = $dbPaymentMethod->findAll();
             $mapPaymentMethodIdName = [];
-            foreach($arrPaymentMethod as $paymentMethod) {
+            foreach ($arrPaymentMethod as $paymentMethod) {
                 $mapPaymentMethodIdName[$paymentMethod['id']] = $paymentMethod['name'];
             }
 
             $dbEntityPaymentMethod = new BaseModel($this->db, "entityPaymentMethod");
             $mapSellerIdArrPaymentMethod = [];
             foreach ($allSellers as $seller) {
-                $dbEntityPaymentMethod->getWhere("entityId=".$seller->sellerId);
+                $dbEntityPaymentMethod->getWhere("entityId=" . $seller->sellerId);
                 $arrEntityPaymentMethod = [];
-                while(!$dbEntityPaymentMethod->dry()) {
+                while (!$dbEntityPaymentMethod->dry()) {
                     $paymentMethod = new stdClass();
                     $paymentMethod->id = $dbEntityPaymentMethod['paymentMethodId'];
                     $paymentMethod->name = $mapPaymentMethodIdName[$dbEntityPaymentMethod['paymentMethodId']];
@@ -494,7 +494,7 @@ class CartController extends Controller
             $modal->modalButton = $this->f3->get('vButton_confirm');
             $modal->id = $this->objUser->accountId;
             $modal->fnCallback = 'CartCheckout.submitOrderSuccess';
-            
+
             $modalBody = new stdClass();
             $modalBody->mapSellerIdPaymentMethodId = $this->f3->get('POST.mapSellerIdPaymentMethodId');
             $modal->body = $modalBody;
@@ -514,7 +514,7 @@ class CartController extends Controller
 
             $modalBody = $this->f3->get('POST.body');
             $mapSellerIdPaymentMethodId = $modalBody['mapSellerIdPaymentMethodId'];
-            
+
             // Get user account
             $dbAccount = new BaseModel($this->db, "account");
             $account = $dbAccount->getById($this->objUser->accountId)[0];
@@ -550,7 +550,7 @@ class CartController extends Controller
             foreach ($arrPaymentMethod as $paymentMethod) {
                 $mapPaymentMethodIdName[$paymentMethod['id']] = $paymentMethod['name'];
             }
-            
+
             // Get all currencies
             $dbCurrencies = new BaseModel($this->db, "currency");
             $allCurrencies = $dbCurrencies->all();
@@ -712,7 +712,7 @@ class CartController extends Controller
                 $this->f3->set('subTotal', round($subTotal, 2));
                 $this->f3->set('tax', round($tax, 2));
                 $this->f3->set('total', round($total, 2));
-                $this->f3->set('ordersUrl', "web/distributor/order/new");
+                $this->f3->set('ordersUrl', "web/distributor/order/pending");
                 $this->f3->set('name', "Buyer name: " . $buyerName);
                 $this->f3->set('paymentMethod', $mapPaymentMethodIdName[$paymentMethodId]);
 
@@ -776,7 +776,7 @@ class CartController extends Controller
             $this->f3->set('name', $name);
 
             $this->f3->set('paymentMethod', null);
-            
+
             $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $account->entityId);
             foreach ($arrEntityUserProfile as $entityUserProfile) {
                 $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
