@@ -513,56 +513,63 @@ function compress_htmlcode($codedata)
 <?php include_once 'image-modal.php'; ?>
 <script>
     $(document).ready(function() {
-                $(document).ready(function() {
-                    $('.addQty').each(function(index, currentElement) {
-                        $(currentElement).off("click").click(function() {
-                            $(currentElement).prev().val(+$(this).prev().val() + 1);
-                            $(currentElement).prev().trigger("change");
-                        });
-                    });
-                    $('.subQty').each(function(index, currentElement) {
-                        $(currentElement).off("click").click(function() {
-                            if ($(currentElement).next().val() > 0) {
-                                $(currentElement).next().val(+$(this).next().val() - 1);
-                                $(currentElement).next().trigger("change");
-                            }
-                        });
-                    });
-
-                    initAutoplay();
-
-                    $('.product-overview').expandable({
-                        height: 350
-                    });
-                })
-
-                function initAutoplay() {
-                    var slidesToShow = 2;
-                    if ($("#autoplayContainer").children().length > slidesToShow) {
-
-                        $('.autoplay').sliders({
-                            slidesPerPage: 3,
-                            transition: 'slide',
-                            queue: false,
-                            delay: 5000,
-                            speed: 450,
-                            first: 0,
-                            ease: 'swing',
-                            play: false,
-                            keyboardEvents: true
-                        });
-
-                        $('#button-next').click(function() {
-                            $('.autoplay').sliders('goto', 'next');
-                        });
-
-                        $('#button-previous').click(function() {
-                            $('.autoplay').sliders('goto', 'prev');
-                        });
-                    }
+        $('.addQty').each(function(index, currentElement) {
+            $(currentElement).off("click").click(function() {
+                $(currentElement).prev().val(+$(this).prev().val() + 1);
+                $(currentElement).prev().trigger("change");
+            });
+        });
+        $('.subQty').each(function(index, currentElement) {
+            $(currentElement).off("click").click(function() {
+                if ($(currentElement).next().val() > 0) {
+                    $(currentElement).next().val(+$(this).next().val() - 1);
+                    $(currentElement).next().trigger("change");
                 }
+            });
+        });
 
-                $('.productImage').on("error", function() {
-                    $(this).attr('src', '/assets/img/default-product-image.png');
-                });
+        console.log('before')
+        initAutoplay();
+        console.log('after');
+
+        $('.product-overview').expandable({
+            height: 350
+        });
+    })
+
+    function initAutoplay() {
+        var slidesToShow = 3;
+        var subimagesCount = $("#autoplayContainer").children().length;
+        if (subimagesCount >= slidesToShow) {
+
+            $('.autoplay').sliders({
+                slidesPerPage: 3,
+                transition: 'slide',
+                queue: false,
+                delay: 5000,
+                speed: 450,
+                first: 0,
+                ease: 'swing',
+                play: false,
+                keyboardEvents: true
+            });
+        }
+
+        if(subimagesCount > slidesToShow) {
+            $('#button-next').click(function() {
+                $('.autoplay').sliders('goto', 'next');
+            });
+
+            $('#button-previous').click(function() {
+                $('.autoplay').sliders('goto', 'prev');
+            });
+        } else {
+            $('#button-next').hide();
+            $('#button-previous').hide();
+        }
+    }
+
+    $('.productImage').on("error", function() {
+        $(this).attr('src', '/assets/img/default-product-image.png');
+    });
 </script>
