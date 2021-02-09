@@ -37,12 +37,13 @@ var CartCheckout = (function () {
 		}
 	};
 
-	var _removeItem = function (productId) {
-		WebApp.post('/web/cart/remove', { id: productId }, (webResponse) => _updateQuantityDeleteCallback(webResponse), null, false, true);
+	var _removeItem = function (productId, submitButton, forceCallback, forcePreventUnblur) {
+		WebApp.post('/web/cart/remove', {id: productId}, (webResponse) => _updateQuantityDeleteCallback(webResponse), submitButton, forceCallback, forcePreventUnblur);
 	};
 
 	var _removeItemModal = function (itemId) {
 		WebApp.get('/web/cart/remove/confirm/' + itemId, WebApp.openModal);
+		WebApp.reloadDatatable();
 	};
 
 	var _removeItemSuccess = function (webResponse) {
@@ -109,7 +110,7 @@ var CartCheckout = (function () {
 		WebApp.redirect('/web/thankyou/' + webResponse.data);
 	};
 
-	var _updateQuantity = function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice = 0, oldValue = null, shouldShowRemoveModal = true) {
+	var _updateQuantity = function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice = 0, oldValue = null, shouldShowRemoveModal = true, submitButton = null, forceCallback = false, forcePreventUnblur = false) {
 		let quantityId = '#quantity-' + productId;
 		let currentValue = 0;
 		if ($(quantityId).val() > 0) currentValue = parseInt($(quantityId).val());
@@ -119,16 +120,16 @@ var CartCheckout = (function () {
 			if (shouldShowRemoveModal) {
 				_removeItemModal(cartDetailId);
 			} else {
-				_removeItem(cartDetailId);
+				_removeItem(cartDetailId, submitButton, forceCallback, forcePreventUnblur);
 			}
 		} else {
 			WebApp.post(
 				'/web/cart/checkout/update',
 				{ cartDetailId, sellerId, productId, quantity: newValue },
 				(webResponse) => _updateQuantityCallback(webResponse, updateTotalPrice),
-				null,
-				false,
-				true
+				submitButton,
+				forceCallback,
+				forcePreventUnblur
 			);
 		}
 	};
@@ -197,6 +198,7 @@ var CartCheckout = (function () {
 		if (updateTotalPrice) {
 			updateTotalPrice();
 		}
+		WebApp.reloadDatatable();
 	};
 
 	var _updateQuantityDeleteCallback = function (webResponse) {
@@ -207,6 +209,7 @@ var CartCheckout = (function () {
 		if (webResponse.data !== 0) $('#cartCount').css('display', 'flex');
 		else $('#cartCount').css('display', 'none');
 		$('#cartCount').html(cartCount);
+		WebApp.reloadDatatable();
 	};
 
 	var _updateNote = function (productId, cartDetailId, sellerId) {
@@ -235,8 +238,8 @@ var CartCheckout = (function () {
 		submitOrderSuccess: function (webResponse) {
 			_submitOrderSuccess(webResponse);
 		},
-		updateQuantity: function (productId, increment, stock, cardDetailId, sellerId, updateTotalPrice, oldValue, shouldShowRemoveModal) {
-			_updateQuantity(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice, oldValue, shouldShowRemoveModal);
+		updateQuantity: function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, oldValue, shouldShowRemoveModal, submitButton, forceCallback, forcePreventUnblur) {
+			_updateQuantity(productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, oldValue, shouldShowRemoveModal, submitButton, forceCallback, forcePreventUnblur);
 		},
 		updateNote: function (productId, cardDetailId, sellerId) {
 			_updateNote(productId, cardDetailId, sellerId);

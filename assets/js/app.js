@@ -121,7 +121,7 @@ var WebApp = (function () {
 			});
 	};
 
-	var _post = function (url, data = null, fnCallback = null, submitButton = null, forceCallback = false, forcePrentUnblur = false) {
+	var _post = function (url, data = null, fnCallback = null, submitButton = null, forceCallback = false, forcePreventUnblur = false) {
 		_blurPage();
 		_blockPage();
 		$.ajax({
@@ -137,7 +137,7 @@ var WebApp = (function () {
 						if (typeof fnCallback === 'function') {
 							fnCallback(webResponse);
 						}
-						if (!forcePrentUnblur) {
+						if (!forcePreventUnblur) {
 							_unblurPage();
 							_unblockPage();
 						}
@@ -147,7 +147,7 @@ var WebApp = (function () {
 						if (typeof fnCallback === 'function') {
 							fnCallback(webResponse);
 						}
-						if (!forcePrentUnblur) {
+						if (!forcePreventUnblur) {
 							_unblurPage();
 							_unblockPage();
 						}
@@ -994,8 +994,8 @@ var WebApp = (function () {
 		getAsync: function (url, fnCallback = null) {
 			return _getAsync(url, fnCallback);
 		},
-		post: function (url, data = null, fnCallback = null, submitButton = null, forceCallback = false, forcePrentUnblur = false) {
-			return _post(url, data, fnCallback, submitButton, forceCallback, forcePrentUnblur);
+		post: function (url, data = null, fnCallback = null, submitButton = null, forceCallback = false, forcePreventUnblur = false) {
+			return _post(url, data, fnCallback, submitButton, forceCallback, forcePreventUnblur);
 		},
 		openModal: function (webResponse) {
 			_openModal(webResponse);
