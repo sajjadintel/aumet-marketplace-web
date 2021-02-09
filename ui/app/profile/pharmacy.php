@@ -146,6 +146,7 @@
                                     </div>
                                 </div>
                                 <div class="mt-5">
+                                    <div class="font-size-h6 font-weight-bolder text-muted" style="color:#e53935 !important;" id="errorMessage"></div>
                                     <div class="font-size-h6 font-weight-bolder text-muted">Max file size is 10mb and </div>
                                     <div class="font-size-h6 font-weight-bolder text-muted">File types allowed are .pdf, .ppt, .docx, .jpeg, .jpg, .png </div>
                                 </div>
