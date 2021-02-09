@@ -381,18 +381,21 @@ var SearchDataTable = (function () {
 		});*/
 	};
 
-
 	var _addQuantity = function addQuantity(object) {
 		console.log('test', $(object).prev().val());
-		$(object).prev().val(+$(object).prev().val() + 1);
-		$(object).prev().trigger("change");
+		$(object)
+			.prev()
+			.val(+$(object).prev().val() + 1);
+		$(object).prev().trigger('change');
 	};
 
 	var _subQuantity = function subQuantity(object) {
 		console.log('test', $(object).next().val());
 		if ($(object).next().val() > 0) {
-			$(object).next().val(+$(object).next().val() - 1);
-			$(object).next().trigger("change");
+			$(object)
+				.next()
+				.val(+$(object).next().val() - 1);
+			$(object).next().trigger('change');
 		}
 	};
 
@@ -408,7 +411,6 @@ var SearchDataTable = (function () {
 	};
 
 	var _updateQuantityOffline = function updateQuantityOffline(productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, oldValue, shouldShowRemoveModal) {
-
 		let quantityId = '#quantity-' + productId;
 		let btnGoToCartMore = '#btnGoToCartMore-' + productId;
 		let btnGoToCart = '#btnGoToCart-' + productId;
@@ -427,8 +429,32 @@ var SearchDataTable = (function () {
 			$(quantityId).parent().parent().next().find(btnGoToCartMore).find('.label-danger').html(newValue);
 		}
 
-		console.log('testtt', 'productId', productId, 'increment', increment, 'stock', stock, 'cartDetailId', cartDetailId, 'sellerId', sellerId, 'updateTotalPrice', updateTotalPrice, 'oldValue', oldValue, 'shouldShowRemoveModal', shouldShowRemoveModal, 'quantityId', quantityId, 'currentValue', currentValue, 'newValue', newValue)
-	}
+		console.log(
+			'testtt',
+			'productId',
+			productId,
+			'increment',
+			increment,
+			'stock',
+			stock,
+			'cartDetailId',
+			cartDetailId,
+			'sellerId',
+			sellerId,
+			'updateTotalPrice',
+			updateTotalPrice,
+			'oldValue',
+			oldValue,
+			'shouldShowRemoveModal',
+			shouldShowRemoveModal,
+			'quantityId',
+			quantityId,
+			'currentValue',
+			currentValue,
+			'newValue',
+			newValue
+		);
+	};
 
 	return {
 		// public functions

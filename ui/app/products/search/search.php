@@ -706,16 +706,16 @@ function compress_htmlcode($codedata)
 
 
         return {
-            init: function () {
+            init: function() {
                 initiate();
             },
-            updateQty: function (row, oldValue) {
+            updateQty: function(row, oldValue) {
                 updateQty(row, oldValue);
             },
         };
     }();
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         PageClass.init();
     })
 </script>

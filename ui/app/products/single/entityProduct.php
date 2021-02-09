@@ -541,7 +541,7 @@ function compress_htmlcode($codedata)
             });
         }
 
-        if(subimagesCount > slidesToShow) {
+        if (subimagesCount > slidesToShow) {
             $('#button-next').click(function() {
                 $('.autoplay').sliders('goto', 'next');
             });
