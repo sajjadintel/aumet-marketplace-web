@@ -391,11 +391,11 @@ function compress_htmlcode($codedata)
                             break;
                         case 2:
                             /*outActions += btnViewProduct;*/
-                            outActions += btnNotifyMe;
+                            /*outActions += btnNotifyMe;*/
                             break;
                         case 3:
                             /*outActions += btnViewProduct;*/
-                            outActions += btnNotifyMe;
+                            /*outActions += btnNotifyMe;*/
                             break;
                     }
 
