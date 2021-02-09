@@ -65,7 +65,9 @@ var Cart = (function () {
 			_topbarItemText.show();
 		}
 
-		if (quantityInputId != null && $(quantityInputId).val() < 1) return;
+		console.log('test additem', entityId, productId, quantityInputId, quantityFreeInputId);
+		//if (quantityInputId != null && $(quantityInputId).val() < 1) return;
+		console.log('test additem', entityId, productId, quantityInputId, quantityFreeInputId);
 
 		let body = {
 			entityId,
@@ -73,7 +75,7 @@ var Cart = (function () {
 			quantity: quantityInputId == null ? 1 : $(quantityInputId).val(),
 			quantityFree: quantityFreeInputId == null ? 0 : $(quantityFreeInputId).val(),
 		};
-		WebApp.post('/web/cart/add', body, _addItemSuccessCallback);
+		WebApp.post('/web/cart/add', body, _addItemSuccessCallback, null, false, true);
 	};
 
 	var _removeItem = function (id) {
