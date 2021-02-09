@@ -172,6 +172,15 @@ var Profile = (function () {
 			previewTemplate: previewTemplate,
 			previewsContainer: id + ' .dropzone-items', // Define the container to display the previews
 			clickable: id + ' .dropzone-select', // Define the element that should be used as click trigger to select files.
+			init: function () {
+				this.on("error", function (file, message, xhr) {
+					if (!file.accepted) this.removeFile(file);
+					if (message == "You can not upload any more files.") {
+						message = null;
+					}
+					$('#errorMessage').html(message);
+				});
+			},
 		});
 
 		_myDropZone.on('addedfile', function (file) {
@@ -202,6 +211,8 @@ var Profile = (function () {
 
 		// Add file to the list if success
 		_myDropZone.on('success', function (file, response) {
+			$('#errorMessage').html('');
+
 			_entityDocument = response;
 
 			var dropzoneFilenameElement = $(file.previewTemplate).find('#dropzoneFilename');
