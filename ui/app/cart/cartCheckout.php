@@ -149,11 +149,16 @@ function compress_htmlcode($codedata)
                                                             </td>
 
                                                             <!--<td class="text-center align-middle cart-item-separator">-->
-                                                            <!--<input style="width: 100%;" type="text" id="note---><?php //echo $item->entityProductId  ?>
-                                                            <!--" onfocusout="CartCheckout.updateNote(--><?php //echo $item->entityProductId ?>
-                                                            <!--, --><?php //echo $item->id  ?>
-                                                            <!--, --><?php //echo $seller->sellerId c ?>
-                                                            <!--)" class="mr-2 font-weight-bolder quantity" value="--><?php //echo $item->note  ?>
+                                                            <!--<input style="width: 100%;" type="text" id="note---><?php //echo $item->entityProductId  
+                                                                                                                    ?>
+                                                            <!--" onfocusout="CartCheckout.updateNote(--><?php //echo $item->entityProductId 
+                                                                                                            ?>
+                                                            <!--, --><?php //echo $item->id  
+                                                                        ?>
+                                                            <!--, --><?php //echo $seller->sellerId c 
+                                                                        ?>
+                                                            <!--)" class="mr-2 font-weight-bolder quantity" value="--><?php //echo $item->note  
+                                                                                                                        ?>
                                                             <!--" name="note">-->
                                                             <!--</td>-->
 
@@ -196,9 +201,9 @@ function compress_htmlcode($codedata)
                                                             <div class="text-right pr-3">
                                                                 <p class="font-weight-bolder font-size-h4 row justify-content-end align-items-center" style="margin-bottom: 0;margin-top: 0.7rem;">
                                                                     <?php if (count($arrPaymentMethod) > 0) : ?>
-                                                                        <span style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem; margin-right: 15px;"><?php echo $vModule_cart_paymentOption ?></span>
-                                                                        <select name="paymentMethod" class="col-2 form-control selectpicker paymentMethodId" data-sellerId="<?php echo $seller->sellerId; ?>">
-                                                                            <?php foreach($arrPaymentMethod as $paymentMethod) : ?>
+                                                                        <span class="mr-4" style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem;"><?php echo $vModule_cart_paymentOption ?></span>
+                                                                        <select name="paymentMethod" class="col-2 mr-5 form-control selectpicker paymentMethodId" data-none-selected-text="Please select" data-sellerId="<?php echo $seller->sellerId; ?>">
+                                                                            <?php foreach ($arrPaymentMethod as $paymentMethod) : ?>
                                                                                 <option value="<?php echo $paymentMethod->id ?>"><?php echo $paymentMethod->name ?></option>
                                                                             <?php endforeach; ?>
                                                                         </select>
