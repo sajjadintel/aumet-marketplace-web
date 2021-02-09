@@ -366,8 +366,11 @@ return array(
     'vModule_profile_city' => 'مدينة',
     'vModule_profile_address' => 'عنوان',
     'vModule_profile_pharmacyTradeLicenseDocument' => 'وثيقة الرخصة التجارية الصيدلانية',
-    'vModule_profile_uploadButton' => 'Upload Document',
-    'vModule_profile_uploadReplaceButton' => 'Replace Document',
+    'vModule_profile_uploadButton' => 'Upload Document', // TODO: translate
+    'vModule_profile_uploadReplaceButton' => 'Replace Document', // TODO: translate
+    'vModule_profile_viewLicenseDocumentButton' => 'View License Document', // TODO: translate
+    'vModule_profile_allowedLicenseDocumentFileSize' => 'Allowed max file size is 10MB', // TODO: translate
+    'vModule_profile_allowedLicenseDocumentFileType' => 'Allowed file types are .pdf, .ppt, .docx, .jpeg, .jpg, .png', // TODO: translate
     'vModule_profile_email' => 'عنوان البريد الالكترونى',
     'vModule_profile_pharmacyMobile' => 'رقم الصيدلية',
     'vModule_profile_changePasswordTitle' => 'غير كلمة السر',
