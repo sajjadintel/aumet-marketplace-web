@@ -382,7 +382,7 @@ function compress_htmlcode($codedata)
 
         var searchQuery = {
             productId: [],
-            scientificNameId: [],
+            scientificName: [],
             entityId: [],
             stockOption: 1,
             categoryId: null,
@@ -585,12 +585,12 @@ function compress_htmlcode($codedata)
         });
 
         _selectScientific.on("select2:select", function(e) {
-            searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
+            searchQuery.scientificName = $("#searchProductsScieceNameInput").val();
             updateDatatable();
         });
 
         _selectScientific.on("select2:unselect", function(e) {
-            searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
+            searchQuery.scientificName = $("#searchProductsScieceNameInput").val();
             updateDatatable();
         });
 
@@ -652,7 +652,7 @@ function compress_htmlcode($codedata)
 
         var query = <?php echo isset($_GET['query']) ? "'" . $_GET['query'] . "'" : 'null'; ?>;
         var distributorId = <?php echo isset($_GET['distributorId']) ? "'" . $_GET['distributorId'] . "'" : 'null'; ?>;
-        var scientificNameId = <?php echo isset($_GET['scientificNameId']) ? "'" . $_GET['scientificNameId'] . "'" : 'null'; ?>;
+        var scientificName = <?php echo isset($_GET['scientificName']) ? "'" . $_GET['scientificName'] . "'" : 'null'; ?>;
 
         var dbAdditionalOptions = {
             processing: false,
@@ -666,8 +666,8 @@ function compress_htmlcode($codedata)
                 searchQuery.query = query;
             if (distributorId != null && !searchQuery.entityId.includes(distributorId))
                 searchQuery.entityId.push(distributorId);
-            if (scientificNameId != null && !searchQuery.scientificNameId.includes(scientificNameId))
-                searchQuery.scientificNameId.push(scientificNameId);
+            if (scientificName != null && !searchQuery.scientificName.includes(scientificName))
+                searchQuery.scientificName.push(scientificName);
             WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
 
         }

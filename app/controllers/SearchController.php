@@ -1,6 +1,7 @@
 <?php
 
-class SearchController extends Controller {
+class SearchController extends Controller
+{
     function getSearchProducts()
     {
         if (!$this->f3->ajax()) {
@@ -320,15 +321,15 @@ class SearchController extends Controller {
             $dbProducts->parent_name = "parent_name_" . $this->objUser->language;
             $select2Result->results = $dbProducts->findWhere($where, "parent_id ASC, name_{$this->objUser->language} ASC", $pageSize, $page * $pageSize);
             $resultsCount = count($select2Result->results);
-//            while (!$dbProducts->dry()) {
-//                $resultsCount++;
-//                $select2ResultItem = new stdClass();
-//                $select2ResultItem->id = $dbProducts->id;
-//                $select2ResultItem->text = $dbProducts->name;
-//                $select2Result->results[] = $select2ResultItem;
-//                $select2Result->results[] = $dbProducts;
-//                $dbProducts->next();
-//            }
+            //            while (!$dbProducts->dry()) {
+            //                $resultsCount++;
+            //                $select2ResultItem = new stdClass();
+            //                $select2ResultItem->id = $dbProducts->id;
+            //                $select2ResultItem->text = $dbProducts->name;
+            //                $select2Result->results[] = $select2ResultItem;
+            //                $select2Result->results[] = $dbProducts;
+            //                $dbProducts->next();
+            //            }
 
             if ($resultsCount >= $pageSize) {
                 $select2Result->pagination = true;
@@ -371,11 +372,10 @@ class SearchController extends Controller {
                 $query .= " productName_ar in ('" . implode("','", $productId) . "') )";
             }
 
-            // TODO: change 'scientificNameId' with 'scientificNameId' in JavaScript and here too in next line
-            $scientificNameId = $datatable->query['scientificNameId'];
-            if (isset($scientificNameId) && is_array($scientificNameId)) {
+            $scientificName = $datatable->query['scientificName'];
+            if (isset($scientificName) && is_array($scientificName)) {
                 $query .= " AND (";
-                foreach ($scientificNameId as $key => $value) {
+                foreach ($scientificName as $key => $value) {
                     if ($key !== 0) {
                         $query .= " OR ";
                     }
@@ -400,7 +400,6 @@ class SearchController extends Controller {
             if (isset($categoryId) && is_array($categoryId)) {
                 $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
-
         }
 
         $query .= " AND statusId = 1";

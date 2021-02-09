@@ -455,9 +455,16 @@ class ProductsController extends Controller
                 $query .= " AND id in (" . implode(",", $productId) . ")";
             }
 
-            $scientificNameId = $datatable->query['scientificNameId'];
-            if (isset($scientificNameId) && is_array($scientificNameId)) {
-                $query .= " AND scientificNameId in (" . implode(",", $scientificNameId) . ")";
+            $scientificName = $datatable->query['scientificName'];
+            if (isset($scientificName) && is_array($scientificName)) {
+                $query .= " AND (";
+                foreach ($scientificName as $key => $value) {
+                    if ($key !== 0) {
+                        $query .= " OR ";
+                    }
+                    $query .= "scientificName LIKE '%{$value}%'";
+                }
+                $query .= ")";
             }
 
             $stockOption = $datatable->query['stockOption'];
