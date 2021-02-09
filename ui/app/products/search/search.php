@@ -405,7 +405,7 @@ function compress_htmlcode($codedata)
         ];
 
         var searchQuery = {
-            productId: [],
+            productName: [],
             scientificName: [],
             entityId: [],
             stockOption: 1,
@@ -430,12 +430,12 @@ function compress_htmlcode($codedata)
         });
 
         _selectBrand.on("select2:select", function(e) {
-            searchQuery.productId = $("#searchProductsBrandNameInput").val();
+            searchQuery.productName = $("#searchProductsBrandNameInput").val();
             updateDatatable();
         });
 
         _selectBrand.on("select2:unselect", function(e) {
-            searchQuery.productId = $("#searchProductsBrandNameInput").val();
+            searchQuery.productName = $("#searchProductsBrandNameInput").val();
             updateDatatable();
         });
 

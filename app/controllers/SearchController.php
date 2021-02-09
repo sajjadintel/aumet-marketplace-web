@@ -362,11 +362,10 @@ class SearchController extends Controller
         }
 
         if (is_array($datatable->query)) {
-            // TODO: change 'productId' with 'productName' in JavaScript and here too in next line
-            $productId = $datatable->query['productId'];
-            if (isset($productId) && is_array($productId)) {
+            $productName = $datatable->query['productName'];
+            if (isset($productName) && is_array($productName)) {
                 $query .= " AND (";
-                foreach ($productId as $key => $value) {
+                foreach ($productName as $key => $value) {
                     if ($key !== 0) {
                         $query .= " OR ";
                     }

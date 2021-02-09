@@ -450,9 +450,16 @@ class ProductsController extends Controller
         $query = "entityId IN ($arrEntityId)";
 
         if (is_array($datatable->query)) {
-            $productId = $datatable->query['productId'];
-            if (isset($productId) && is_array($productId)) {
-                $query .= " AND id in (" . implode(",", $productId) . ")";
+            $productName = $datatable->query['productName'];
+            if (isset($productName) && is_array($productName)) {
+                $query .= " AND (";
+                foreach ($productName as $key => $value) {
+                    if ($key !== 0) {
+                        $query .= " OR ";
+                    }
+                    $query .= "productName_en LIKE '%{$value}%' OR productName_ar LIKE '%{$value}%' OR productName_fr LIKE '%{$value}%'";
+                }
+                $query .= ")";
             }
 
             $scientificName = $datatable->query['scientificName'];
