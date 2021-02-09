@@ -365,20 +365,32 @@ var WebAuth = (function () {
 		validations.push(
 			FormValidation.formValidation(form, {
 				fields: {
-					/*pharmacyName: {
+					pharmacyName: {
 						validators: {
-							notEmpty: {
+							callback: {
 								message: 'Pharmacy Name is required',
+								callback: function(value, validator, $field) {
+									if($('input[name="companyType"]:checked').val() === 'pharmacy' && $('#pharmacyName').val() === ''){
+										return false;
+									}
+									return true;
+								}
 							},
 						},
 					},
 					distributorName: {
 						validators: {
-							notEmpty: {
+							callback: {
 								message: 'Distributor Name is required',
+								callback: function(value, validator, $field) {
+									if($('input[name="companyType"]:checked').val() === 'distributor' && $('#distributorName').val() === ''){
+										return false;
+									}
+									return true;
+								}
 							},
 						},
-					},*/
+					},
 					country: {
 						validators: {
 							notEmpty: {
@@ -454,7 +466,7 @@ var WebAuth = (function () {
 
 						KTUtil.scrollTop();
 					} else {
-						Swal.fire({
+						/*Swal.fire({
 							text: 'Sorry, looks like there are some errors detected, please try again.',
 							icon: 'error',
 							buttonsStyling: false,
@@ -464,7 +476,7 @@ var WebAuth = (function () {
 							},
 						}).then(function () {
 							KTUtil.scrollTop();
-						});
+						});*/
 					}
 				});
 			}
@@ -512,7 +524,7 @@ var WebAuth = (function () {
 							}
 						});
 					} else {
-						Swal.fire({
+						/*Swal.fire({
 							text: 'Sorry, looks like there are some errors detected, please try again.',
 							icon: 'error',
 							buttonsStyling: false,
@@ -522,7 +534,7 @@ var WebAuth = (function () {
 							},
 						}).then(function () {
 							KTUtil.scrollTop();
-						});
+						});*/
 					}
 				});
 			}
