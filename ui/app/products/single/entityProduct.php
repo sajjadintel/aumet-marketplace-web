@@ -286,9 +286,9 @@ function compress_htmlcode($codedata)
 
     function viewAllSameScientificName() {
         <?php if (Helper::isPharmacy($_SESSION['objUser']->roleId)) { ?>
-            WebApp.loadPage('/web/pharmacy/product/search?scientificNameId=<?php echo $objEntityProduct->scientificNameId ?>');
+            WebApp.loadPage('/web/pharmacy/product/search?scientificName=<?php echo $objEntityProduct->scientificName ?>');
         <?php } else { ?>
-            WebApp.loadPage('/web/distributor/product?scientificNameId=<?php echo $objEntityProduct->scientificNameId ?>');
+            WebApp.loadPage('/web/distributor/product?scientificName=<?php echo $objEntityProduct->scientificName ?>');
         <?php } ?>
     }
 
