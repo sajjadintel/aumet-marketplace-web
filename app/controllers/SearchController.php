@@ -175,9 +175,8 @@ class SearchController extends Controller
             while (!$dbProducts->dry()) {
                 $resultsCount++;
                 $select2ResultItem = new stdClass();
-                $select2ResultItem->id = $dbProducts->id;
-                $select2ResultItem->id = $nameAsValue ? $dbProducts->productName : $dbProducts->id;
-                $select2ResultItem->text = $dbProducts->productName;
+                $select2ResultItem->id = $nameAsValue ? trim($dbProducts->productName) : $dbProducts->id;
+                $select2ResultItem->text = trim($dbProducts->productName);
                 $select2Result->results[] = $select2ResultItem;
                 $dbProducts->next();
             }
@@ -354,7 +353,6 @@ class SearchController extends Controller
 
         $fullQuery = $query;
 
-
         $roleId = $this->f3->get('SESSION.objUser')->roleId;
 
         // if distributor
@@ -363,13 +361,18 @@ class SearchController extends Controller
             $isDistributor = true;
         }
 
-
         if (is_array($datatable->query)) {
+            // TODO: change 'productId' with 'productName' in JavaScript and here too in next line
             $productId = $datatable->query['productId'];
             if (isset($productId) && is_array($productId)) {
-                $query .= " AND ( productName_en in ('" . implode("','", $productId) . "') OR";
-                $query .= " productName_fr in ('" . implode("','", $productId) . "') OR";
-                $query .= " productName_ar in ('" . implode("','", $productId) . "') )";
+                $query .= " AND (";
+                foreach ($productId as $key => $value) {
+                    if ($key !== 0) {
+                        $query .= " OR ";
+                    }
+                    $query .= "productName_en LIKE '%{$value}%' OR productName_ar LIKE '%{$value}%' OR productName_fr LIKE '%{$value}%'";
+                }
+                $query .= ")";
             }
 
             $scientificName = $datatable->query['scientificName'];
@@ -414,10 +417,6 @@ class SearchController extends Controller
             }
         }
 
-        $query .= " AND statusId = 1";
-
-        $roleId = $this->f3->get('SESSION.objUser')->roleId;
-
         if ($isDistributor) {
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
             $query .= " AND entityId IN ($arrEntityId)";
@@ -433,8 +432,6 @@ class SearchController extends Controller
         }
 
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
-
-        $data = [];
 
         $totalRecords = $dbProducts->count($fullQuery);
         $totalFiltered = $dbProducts->count($query);
