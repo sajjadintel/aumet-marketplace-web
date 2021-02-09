@@ -46,8 +46,8 @@ function compress_htmlcode($codedata)
                                         <div id="autoplayContainer" class="autoplay gallery" style="height: 110px;">
                                             <?php foreach ($arrSubimage as $subimageObj) : ?>
                                                 <div class=" col-4 image-input image-input-empty image-input-outline">
-                                                    <a href="/<?php echo $subimageObj->subimage; ?>" class="image-input-wrapper" style="display:flex; width: 100%; height: 100px;  box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%); cursor: pointer;">
-                                                        <img src="/<?php echo $subimageObj->subimage; ?>" style="max-width: 100%;max-height: 100%;object-fit: contain;	object-fit: contain;width: 100%;" />
+                                                    <a href="<?php echo $subimageObj->subimage; ?>" class="image-input-wrapper" style="display:flex; width: 100%; height: 100px;  box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%); cursor: pointer;">
+                                                        <img src="<?php echo $subimageObj->subimage; ?>" style="max-width: 100%;max-height: 100%;object-fit: contain;	object-fit: contain;width: 100%;" />
                                                     </a>
                                                 </div>
                                             <?php endforeach; ?>
