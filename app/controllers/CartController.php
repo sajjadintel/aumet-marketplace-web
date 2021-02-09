@@ -140,7 +140,7 @@ class CartController extends Controller
         } else {
 
             $id = $this->f3->get('POST.id');
-            $userId = $this->f3->get('POST.userID');
+            $userId = $this->objUser->id;
             $entityProductId = $this->f3->get('POST.entityProductId');
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");

@@ -121,7 +121,7 @@ var WebApp = (function () {
 			});
 	};
 
-	var _post = function (url, data = null, fnCallback = null, submitButton = null, forceCallback = false) {
+	var _post = function (url, data = null, fnCallback = null, submitButton = null, forceCallback = false, forcePrentUnblur = false) {
 		_blurPage();
 		_blockPage();
 		$.ajax({
@@ -137,16 +137,20 @@ var WebApp = (function () {
 						if (typeof fnCallback === 'function') {
 							fnCallback(webResponse);
 						}
-						_unblurPage();
-						_unblockPage();
+						if(!forcePrentUnblur){
+							_unblurPage();
+							_unblockPage();
+						}
 					} else if (webResponse.errorCode == 0) {
 						window.location.href = '/web';
 					} else if (webResponse.errorCode == 3) {
 						if (typeof fnCallback === 'function') {
 							fnCallback(webResponse);
 						}
-						_unblurPage();
-						_unblockPage();
+						if(!forcePrentUnblur){
+							_unblurPage();
+							_unblockPage();
+						}
 						_alertSuccess(webResponse.message);
 					} else {
 						if (forceCallback) {
@@ -980,8 +984,8 @@ var WebApp = (function () {
 		getAsync: function (url, fnCallback = null) {
 			return _getAsync(url, fnCallback);
 		},
-		post: function (url, data = null, fnCallback = null, submitButton = null, forceCallback = false) {
-			return _post(url, data, fnCallback, submitButton, forceCallback);
+		post: function (url, data = null, fnCallback = null, submitButton = null, forceCallback = false, forcePrentUnblur = false) {
+			return _post(url, data, fnCallback, submitButton, forceCallback, forcePrentUnblur);
 		},
 		openModal: function (webResponse) {
 			_openModal(webResponse);
@@ -1018,7 +1022,7 @@ var WebApp = (function () {
 				$('#popupModal').modal('hide');
 			}
 			datatableVar.forEach(function (vValue) {
-				vValue.ajax.reload();
+				vValue.ajax.reload(null, false);
 			});
 		},
 	};
