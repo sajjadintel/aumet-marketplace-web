@@ -188,6 +188,9 @@ var Profile = (function () {
 			$(document)
 				.find(id + ' .dropzone-item')
 				.css('display', '');
+			if(file.size != 0) {
+				
+			}
 		});
 
 		// Update the total progress bar
@@ -214,6 +217,13 @@ var Profile = (function () {
 			$('#errorMessage').html('');
 
 			_entityDocument = response;
+
+			console.log('{ ...file }');
+			console.log({ ...file });
+			var dropzoneFilesizeElement = $(file.previewTemplate).find('#dropzoneFilesize');
+			if(file.size > 0) {
+				$(dropzoneFilesizeElement).show();
+			}
 
 			var dropzoneFilenameElement = $(file.previewTemplate).find('#dropzoneFilename');
 			$(dropzoneFilenameElement).attr('target', '_blank');
@@ -268,7 +278,7 @@ var Profile = (function () {
 			var file = {
 				status: 'success',
 				accepted: true,
-				name: fileNameWithoutTimestamp,
+				// name: fileNameWithoutTimestamp,
 				size: _getFileSize(fileUrl),
 				url: fileUrl,
 			};
@@ -281,13 +291,16 @@ var Profile = (function () {
 	};
 
 	var _getFileSize = function (url) {
-		var fileSize = '';
+		var fileSize = 0;
 		var http = new XMLHttpRequest();
-		http.open('HEAD', url, false);
-		http.send(null);
-
-		if (http.status === 200) {
-			fileSize = http.getResponseHeader('content-length');
+		try {
+			http.open('HEAD', url, false);
+			http.send(null);
+	
+			if (http.status === 200) {
+				fileSize = http.getResponseHeader('content-length');
+			}
+		} catch(err) {
 		}
 
 		return fileSize;
