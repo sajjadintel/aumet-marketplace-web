@@ -268,7 +268,7 @@ function compress_htmlcode($codedata)
                         let vQuantity =
                             '<input class="qtyBox" id="quantity-' + row.id + '" type="number" min="0" style="width: 65px; direction: ltr; margin-right: 5px;" ' +
                             'value="' + rowQuantity + '" onfocus="this.oldvalue = this.value;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" ' +
-                            'onchange=\'PageClass.updateQty(' + JSON.stringify(row) + ', this.oldvalue)\' />';
+                            'onchange=\'SearchDataTable.updateQty(' + JSON.stringify(row) + ', this.oldvalue)\' />';
 
                         output += vQuantity;
 
@@ -700,17 +700,9 @@ function compress_htmlcode($codedata)
 
         }
 
-        function updateQty(row, oldValue) {
-            SearchDataTable.updateQty(row, oldValue);
-        }
-
-
         return {
             init: function() {
                 initiate();
-            },
-            updateQty: function(row, oldValue) {
-                updateQty(row, oldValue);
             },
         };
     }();
