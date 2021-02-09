@@ -33,10 +33,10 @@
 							<div class="form-group">
 								<label class="font-size-h2 font-weight-bolder text-dark">I'm a</label>
 								<div class="radio-inline">
-									<label class="radio radio-square radio-lg font-size-h4 font-weight-bolder text-dark mr-5">
+									<label class="radio radio-square radio-lg font-size-h4 font-weight-bolder text-dark mr-5 companyType">
 										<input type="radio" checked name="companyType" value="pharmacy">
 										<span class=""></span>Pharmacy</label>
-									<label class="radio radio-square radio-lg font-size-h4 font-weight-bolder text-dark mr-5">
+									<label class="radio radio-square radio-lg font-size-h4 font-weight-bolder text-dark mr-5 companyType">
 										<input type="radio" name="companyType" value="distributor">
 										<span></span>Distributor</label>
 
@@ -93,12 +93,12 @@
 							<!--begin::Form Group-->
 							<div class="form-group pharmacy">
 								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_pharmacyName; ?></label>
-								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="pharmacyName" placeholder="<?php echo $vSignup_pharmacyName; ?>" value="" style="direction: ltr;" />
+								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" id="pharmacyName" name="pharmacyName" placeholder="<?php echo $vSignup_pharmacyName; ?>" value="" style="direction: ltr;" />
 							</div>
 
 							<div class="form-group distributor">
 								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_distributorName; ?></label>
-								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="distributorName" placeholder="<?php echo $vSignup_distributorName; ?>" value="" style="direction: ltr;" />
+								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" id="distributorName" name="distributorName" placeholder="<?php echo $vSignup_distributorName; ?>" value="" style="direction: ltr;" />
 							</div>
 							<!--end::Form Group-->
 							<!--begin::Form Group-->
