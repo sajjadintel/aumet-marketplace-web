@@ -260,6 +260,7 @@ return array(
     'vModule_cart_grandTotal' => 'المجموع الكلي',
     'vModule_cart_total' => 'مجموع',
     'vModule_cart_subTotal' => 'المجموع الفرعي',
+    'vModule_cart_paymentOption' => 'خيار الدفع',
     'vModule_cart_grandSubTotal' => 'المجموع الفرعي',
     'vModule_cart_formula' => 'معادلة',
     'vModule_cart_productOrderPrice' => 'سعر الكمية',
