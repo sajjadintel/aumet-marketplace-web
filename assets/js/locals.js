@@ -680,6 +680,11 @@ var WebAppLocals = (function () {
 			ar: 'Allowed types are jpeg, jpg, png', // TODO: translate
 			fr: '',
 		},
+		cartError: {
+			en: 'Payment methods missing',
+			ar: 'طرق الدفع مفقودة',
+			fr: ''
+		},
 	};
 
 	var _symbolsLocals = {

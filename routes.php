@@ -63,7 +63,7 @@ $f3->route('POST /web/cart/checkout/update', 'CartController->postCartCheckoutUp
 $f3->route('POST /web/cart/checkout/note', 'CartController->postNoteCartCheckoutUpdate');
 $f3->route('GET /web/cart/checkout', 'CartController->getCartCheckout');
 $f3->route('POST /web/cart/checkout/submit', 'CartController->postCartCheckoutSubmit');
-$f3->route('GET /web/cart/checkout/submit/confirm', 'CartController->getCartCheckoutSubmitConfirmation');
+$f3->route('POST /web/cart/checkout/submit/confirm', 'CartController->postCartCheckoutSubmitConfirmation');
 $f3->route('GET /web/thankyou/@grandOrderId', 'CartController->getThankyou');
 
 $f3->route('GET /web/demo/editor/scientificnames', 'DemoController->get');

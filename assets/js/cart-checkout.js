@@ -50,10 +50,53 @@ var CartCheckout = (function () {
 	};
 
 	var _submitOrderModal = function () {
-		// let paymentMethodInputId = $("input[name='paymentMethod']:checked").attr('id');
-		// let allParts = paymentMethodInputId.split('-');
-		// let paymentMethodId = allParts[1];
-		WebApp.get('/web/cart/checkout/submit/confirm', WebApp.openModal);
+		var valid = true;
+		$('.selectpicker.paymentMethodId').each(function(index, element) {
+			if(!$(element).val()) {
+				if(!$(element).parent().hasClass('is-invalid')) {
+					$(element).parent().addClass('is-invalid');
+					$(element).parent().css('border', '1px solid #F64E60');
+				}
+				valid = false;
+			} else {
+				$(element).parent().removeClass('is-invalid');
+				$(element).parent().css('border', '');
+			}
+		})
+		
+		if(valid) {
+			var mapSellerIdPaymentMethodId = {};
+			$('.selectpicker.paymentMethodId').each(function(index, element) {
+				let sellerId = $(element).attr('data-sellerId');
+				let paymentMethodId = $(element).val();
+				mapSellerIdPaymentMethodId[sellerId] = paymentMethodId;
+			})
+			WebApp.post('/web/cart/checkout/submit/confirm', { mapSellerIdPaymentMethodId }, WebApp.openModal);
+		} else {
+			$('.selectpicker.paymentMethodId').on("change", function() {
+				if(!$(this).val()) {
+					if(!$(this).parent().hasClass('is-invalid')) {
+						$(this).parent().addClass('is-invalid');
+						$(this).parent().css('border', '1px solid #F64E60');
+					}
+				} else {
+					$(this).parent().removeClass('is-invalid');
+					$(this).parent().css('border', '');
+				}
+			})
+
+			Swal.fire({
+				text: WebAppLocals.getMessage('cartError'),
+				icon: 'error',
+				buttonsStyling: false,
+				confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+				customClass: {
+					confirmButton: 'btn font-weight-bold btn-light',
+				},
+			}).then(function () {
+				KTUtil.scrollTop();
+			});
+		}
 	};
 
 	var _submitOrderSuccess = function (webResponse) {

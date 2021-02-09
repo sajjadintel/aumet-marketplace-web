@@ -197,7 +197,7 @@ function compress_htmlcode($codedata)
                                                                 <p class="font-weight-bolder font-size-h4 row justify-content-end align-items-center" style="margin-bottom: 0;margin-top: 0.7rem;">
                                                                     <?php if (count($arrPaymentMethod) > 0) : ?>
                                                                         <span style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem; margin-right: 15px;"><?php echo $vModule_cart_paymentOption ?></span>
-                                                                        <select name="paymentMethod" class="col-2 form-control selectpicker">
+                                                                        <select name="paymentMethod" class="col-2 form-control selectpicker paymentMethodId" data-sellerId="<?php echo $seller->sellerId; ?>">
                                                                             <?php foreach($arrPaymentMethod as $paymentMethod) : ?>
                                                                                 <option value="<?php echo $paymentMethod->id ?>"><?php echo $paymentMethod->name ?></option>
                                                                             <?php endforeach; ?>
