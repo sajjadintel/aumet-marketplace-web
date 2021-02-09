@@ -371,9 +371,17 @@ class SearchController extends Controller {
                 $query .= " productName_ar in ('" . implode("','", $productId) . "') )";
             }
 
+            // TODO: change 'scientificNameId' with 'scientificNameId' in JavaScript and here too in next line
             $scientificNameId = $datatable->query['scientificNameId'];
             if (isset($scientificNameId) && is_array($scientificNameId)) {
-                $query .= " AND scientificNameId in ('" . implode("','", $scientificNameId) . "')";
+                $query .= " AND (";
+                foreach ($scientificNameId as $key => $value) {
+                    if ($key !== 0) {
+                        $query .= " OR ";
+                    }
+                    $query .= "scientificName LIKE '%{$value}%'";
+                }
+                $query .= ")";
             }
 
             if (!$isDistributor) {
