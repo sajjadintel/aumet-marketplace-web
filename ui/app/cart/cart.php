@@ -100,7 +100,7 @@ function compress_htmlcode($codedata)
                     </h3>
                     <div class="card-toolbar">
                         <div class="dropdown dropdown-inline">
-                            <a href="javascript:;" class="btn btn-primary font-weight-bolder font-size-sm" onclick="WebApp.loadPage('/web/product/search');"><?php echo $vModule_cart_continueShopping ?></a>
+                            <a href="javascript:;" class="btn btn-primary font-weight-bolder font-size-sm" onclick="WebApp.loadPage('/web/pharmacy/product/search');"><?php echo $vModule_cart_continueShopping ?></a>
                         </div>
                     </div>
                 </div>
@@ -133,7 +133,7 @@ function compress_htmlcode($codedata)
                                         <td class="d-flex align-items-center font-weight-bolder font-size-h5">
 
                                             <div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light">
-                                                <div class="symbol-label" style="background-image: url('<?php echo $objItem->image ?>')"></div>
+                                                <img class="productImage" src="<?php echo $objItem->image ?>">
                                             </div>
                                             <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $objItem->entityId ?>/product/<?php echo $objItem->id ?>')" class="text-dark text-hover-primary"><?php echo $objItem->productName_en ?></a>
                                         </td>
@@ -233,6 +233,10 @@ function compress_htmlcode($codedata)
 </div>
 <!--end::Container-->
 <script>
+    $('.productImage').on("error", function() {
+        $(this).attr('src', '/assets/img/default-product-image.png');
+    });
+
     SearchDataTable.init();
 </script>
 <?php ob_end_flush(); ?>

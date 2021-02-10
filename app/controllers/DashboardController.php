@@ -1,9 +1,12 @@
 <?php
 
-class DashboardController extends Controller {
+class DashboardController extends Controller
+{
 
     function get()
     {
+        $this->f3->set('notAuthorized', $this->f3->get('SESSION.notAuthorized'));
+        $this->f3->clear('SESSION.notAuthorized');
         if (!$this->f3->ajax()) {
             $this->f3->set("pageURL", "/web");
             echo View::instance()->render('app/layout/layout.php');
@@ -24,6 +27,8 @@ class DashboardController extends Controller {
                 $dbDataNewCustomerYesterday = new BaseModel($this->db, "vwNewCustomerYesterday");
                 $dbDataNewCustomerYesterday->getWhere($query);
                 // $data = $data[0];
+
+
 
                 $this->f3->set('dashboard_revenue', is_null($dbData['revenue']) ? 0 : $dbData['revenue']);
                 $this->f3->set('dashboard_order', is_null($dbData['orderCount']) ? 0 : $dbData['orderCount']);
@@ -48,23 +53,23 @@ class DashboardController extends Controller {
                 foreach ($allCurrencies as $currency) {
                     $mapCurrencyIdCurrency[$currency['id']] = $currency;
                 }
-                
+
                 $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
-                
+
                 $dbEntities = new BaseModel($this->db, "entity");
                 $buyerEntity = $dbEntities->getWhere("id in ($arrEntityId)")[0];
-                
+
                 $buyerCurrency = $mapCurrencyIdCurrency[$buyerEntity['currencyId']];
 
                 // Get related banners
-                $dbBanner = new BaseModel($this->db, "vwEntityDashboardBanner");
-                $dbBanner->image = $this->objUser->language == "ar"? "imageRtl" : "imageLtr";
+                $dbBanner = new BaseModel($this->db, "entityDashboardBanner");
+                $dbBanner->image = $this->objUser->language == "ar" ? "imageRtl" : "imageLtr";
                 $dbBanner->title = "title" . ucfirst($this->objUser->language);
                 $dbBanner->subtitle = "subtitle" . ucfirst($this->objUser->language);
                 $dbBanner->buttonText = "buttonText" . ucfirst($this->objUser->language);
                 $arrBanner = $dbBanner->getWhere("countryId = $buyerEntity->countryId", "id DESC", 5, 0);
                 $this->f3->set('arrBanner', $arrBanner);
-                
+
 
                 $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
                 $dbProducts->name = "productName_" . $this->objUser->language;
@@ -72,7 +77,7 @@ class DashboardController extends Controller {
                 // Get newest products
                 $arrNewestProductsDb = $dbProducts->findWhere("statusId = 1", "insertDateTime DESC", 4, 0);
                 $arrNewestProducts = [];
-                foreach($arrNewestProductsDb as $productDb) {
+                foreach ($arrNewestProductsDb as $productDb) {
                     $product = new stdClass();
                     $product->name = $productDb['name'];
                     $product->image = $productDb['image'];
@@ -82,8 +87,8 @@ class DashboardController extends Controller {
                     $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];
                     $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];
                     $price = $priceUSD / $buyerCurrency['conversionToUSD'];
-                    $product->price = round($price, 2) . " " . $buyerCurrency['symbol'];
-                    
+                    $product->price = Helper::formatMoney($price, 2) . " " . $buyerCurrency['symbol'];
+
                     array_push($arrNewestProducts, $product);
                 }
                 $this->f3->set('arrNewestProducts', $arrNewestProducts);
@@ -91,7 +96,7 @@ class DashboardController extends Controller {
                 // Get top selling products
                 $arrTopSellingProductsDb = $dbProducts->findWhere("statusId = 1", "totalOrderQuantity DESC", 4, 0);
                 $arrTopSellingProducts = [];
-                foreach($arrTopSellingProductsDb as $productDb) {
+                foreach ($arrTopSellingProductsDb as $productDb) {
                     $product = new stdClass();
                     $product->name = $productDb['name'];
                     $product->image = $productDb['image'];
@@ -101,8 +106,8 @@ class DashboardController extends Controller {
                     $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];
                     $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];
                     $price = $priceUSD / $buyerCurrency['conversionToUSD'];
-                    $product->price = round($price, 2) . " " . $buyerCurrency['symbol'];
-                    
+                    $product->price = Helper::formatMoney($price, 2) . " " . $buyerCurrency['symbol'];
+
                     array_push($arrTopSellingProducts, $product);
                 }
                 $this->f3->set('arrTopSellingProducts', $arrTopSellingProducts);
@@ -111,18 +116,18 @@ class DashboardController extends Controller {
                 $dbOrder = new BaseModel($this->db, "vwOrderEntityUser");
                 $arrPendingOrders = $dbOrder->findWhere("entityBuyerId IN ($arrEntityId) AND statusId IN (1,2,3)", "insertDateTime DESC", 3, 0);
                 $this->f3->set('arrPendingOrders', $arrPendingOrders);
-                
-                if(count($arrPendingOrders) > 0) {
+
+                if (count($arrPendingOrders) > 0) {
                     $mapOrderIdOrderDetails = [];
-                    foreach($arrPendingOrders as $order) {
+                    foreach ($arrPendingOrders as $order) {
                         $mapOrderIdOrderDetails[$order["id"]] = [];
                     }
                     $allOrderId = implode(",", array_keys($mapOrderIdOrderDetails));
-    
+
                     $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
                     $dbOrderDetail->productName = "productName" . ucfirst($this->objUser->language);
                     $arrOrderDetails = $dbOrderDetail->findWhere("id IN ($allOrderId)");
-                    foreach($arrOrderDetails as $orderDetail) {
+                    foreach ($arrOrderDetails as $orderDetail) {
                         $allOrderDetails = $mapOrderIdOrderDetails[$orderDetail["id"]];
                         array_push($allOrderDetails, $orderDetail);
                         $mapOrderIdOrderDetails[$orderDetail["id"]] = $allOrderDetails;
@@ -134,17 +139,17 @@ class DashboardController extends Controller {
                 $dbEntityRelation = new BaseModel($this->db, "vwEntityRelation");
                 $dbEntityRelation->sellerName = "sellerName_" . $this->objUser->language;
                 $arrEntityRelation = $dbEntityRelation->findWhere("sellerCountryId = $buyerEntity->countryId");
-                
+
                 $mapEntityIdName = [];
                 $mapEntityIdTotal = [];
-                foreach($arrEntityRelation as $entityRelation) {
+                foreach ($arrEntityRelation as $entityRelation) {
                     $entitySellerId = $entityRelation["entitySellerId"];
                     $mapEntityIdName[$entitySellerId] = $entityRelation["sellerName"];
-                    
-                    if(array_key_exists($entitySellerId, $mapEntityIdTotal)) {
+
+                    if (array_key_exists($entitySellerId, $mapEntityIdTotal)) {
                         $orderTotalPaid = $mapEntityIdTotal[$entitySellerId];
                         $orderTotalPaid += $entityRelation["orderTotalPaid"];
-                        $mapEntityIdTotal[$entitySellerId] = $orderTotalPaid; 
+                        $mapEntityIdTotal[$entitySellerId] = $orderTotalPaid;
                     } else {
                         $mapEntityIdTotal[$entitySellerId] = $entityRelation["orderTotalPaid"];
                     }
@@ -153,12 +158,12 @@ class DashboardController extends Controller {
 
                 $topDistributorsCount = 5;
                 $arrTopDistributors = [];
-                foreach($mapEntityIdTotal as $entityId => $total) {
+                foreach ($mapEntityIdTotal as $entityId => $total) {
                     $entity = new stdClass();
                     $entity->id = $entityId;
                     $entity->name = $mapEntityIdName[$entityId];
 
-                    if(count($arrTopDistributors) < $topDistributorsCount) {
+                    if (count($arrTopDistributors) < $topDistributorsCount) {
                         array_push($arrTopDistributors, $entity);
                     } else {
                         break;
@@ -166,7 +171,7 @@ class DashboardController extends Controller {
                 }
                 $this->f3->set('arrTopDistributors', $arrTopDistributors);
 
-                
+
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_homepage');
@@ -236,5 +241,4 @@ class DashboardController extends Controller {
             }
         }
     }
-
 }

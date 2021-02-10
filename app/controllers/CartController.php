@@ -140,9 +140,16 @@ class CartController extends Controller
         } else {
 
             $id = $this->f3->get('POST.id');
+            $userId = $this->objUser->id;
+            $entityProductId = $this->f3->get('POST.entityProductId');
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
-            $dbCartDetail->getByField("id", $id);
+            if (!empty($userId) && !empty($entityProductId)) {
+                $dbCartDetail->getWhere("entityProductId=$entityProductId and userID=$userId");
+            } else {
+                $dbCartDetail->getByField("id", $id);
+            }
+
             $dbCartDetail->erase();
 
             // Get cart count
@@ -319,12 +326,33 @@ class CartController extends Controller
             $buyerCurrency = $mapSellerIdCurrency[$account->entityId];
             $this->f3->set('buyerCurrency', $buyerCurrency);
 
-            // Set paymenet methods
-            $dbPaymentMethod = new BaseModel($this->db, "orderPaymentMethod");
+            // Set payment methods
+            $dbPaymentMethod = new BaseModel($this->db, "paymentMethod");
             $nameField = "name_" . $this->objUser->language;
             $dbPaymentMethod->name = $nameField;
-            $allPaymentMethods = $dbPaymentMethod->all();
-            $this->f3->set('allPaymentMethods', $allPaymentMethods);
+            $arrPaymentMethod = $dbPaymentMethod->findAll();
+            $mapPaymentMethodIdName = [];
+            foreach ($arrPaymentMethod as $paymentMethod) {
+                $mapPaymentMethodIdName[$paymentMethod['id']] = $paymentMethod['name'];
+            }
+
+            $dbEntityPaymentMethod = new BaseModel($this->db, "entityPaymentMethod");
+            $mapSellerIdArrPaymentMethod = [];
+            foreach ($allSellers as $seller) {
+                $dbEntityPaymentMethod->getWhere("entityId=" . $seller->sellerId);
+                $arrEntityPaymentMethod = [];
+                while (!$dbEntityPaymentMethod->dry()) {
+                    $paymentMethod = new stdClass();
+                    $paymentMethod->id = $dbEntityPaymentMethod['paymentMethodId'];
+                    $paymentMethod->name = $mapPaymentMethodIdName[$dbEntityPaymentMethod['paymentMethodId']];
+
+                    array_push($arrEntityPaymentMethod, $paymentMethod);
+                    $dbEntityPaymentMethod->next();
+                }
+
+                $mapSellerIdArrPaymentMethod[$seller->sellerId] = $arrEntityPaymentMethod;
+            }
+            $this->f3->set('mapSellerIdArrPaymentMethod', $mapSellerIdArrPaymentMethod);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vTitle_cart');
@@ -385,6 +413,12 @@ class CartController extends Controller
             $dbEntityProduct->getWhere("id=$productId");
 
             $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
+
+            if (!$dbEntityProduct->maximumOrderQuantity)
+                $maxOrder = $dbEntityProduct->stock;
+            if (!$dbEntityProduct->stock)
+                $maxOrder = 0;
+
             $total = $quantityFree + $quantity;
             if ($total > $maxOrder) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -408,7 +442,7 @@ class CartController extends Controller
             }
 
             $cartDetail = new stdClass();
-            $cartDetail->productId = $cartDetailFull['productId'];
+            $cartDetail->productId = $cartDetailFull['entityProductId'];
             $cartDetail->quantity = $cartDetailFull['quantity'];
             $cartDetail->quantityFree = $cartDetailFull['quantityFree'];
             $cartDetail->entityId = $cartDetailFull['entityId'];
@@ -447,7 +481,7 @@ class CartController extends Controller
         }
     }
 
-    function getCartCheckoutSubmitConfirmation()
+    function postCartCheckoutSubmitConfirmation()
     {
         if (!$this->f3->ajax()) {
             $this->f3->set("pageURL", "/web/cart/checkout");
@@ -456,10 +490,14 @@ class CartController extends Controller
             $modal = new stdClass();
             $modal->modalTitle = $this->f3->get('vModule_cartCheckout_orderConfirmationTitle');
             $modal->modalText = $this->f3->get('vModule_cartCheckout_orderConfirmation');
-            $modal->modalRoute = '/web/cart/checkout/submit/' . $this->f3->get('PARAMS.paymentMethodId');
+            $modal->modalRoute = '/web/cart/checkout/submit';
             $modal->modalButton = $this->f3->get('vButton_confirm');
             $modal->id = $this->objUser->accountId;
             $modal->fnCallback = 'CartCheckout.submitOrderSuccess';
+
+            $modalBody = new stdClass();
+            $modalBody->mapSellerIdPaymentMethodId = $this->f3->get('POST.mapSellerIdPaymentMethodId');
+            $modal->body = $modalBody;
 
             $this->f3->set('modalArr', $modal);
             echo $this->webResponse->jsonResponseV2(1, "", "", $modal);
@@ -474,23 +512,26 @@ class CartController extends Controller
             echo View::instance()->render('app/layout/layout.php');
         } else {
 
-            $paymentMethodId = $this->f3->get('PARAMS.paymentMethodId');
+            $modalBody = $this->f3->get('POST.body');
+            $mapSellerIdPaymentMethodId = $modalBody['mapSellerIdPaymentMethodId'];
 
             // Get user account
             $dbAccount = new BaseModel($this->db, "account");
             $account = $dbAccount->getById($this->objUser->accountId)[0];
+            $dbUserAccount = new BaseModel($this->db, "userAccount");
 
             // TODO: Adjust buyerBranchId logic
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
             $entityBranch = $dbEntityBranch->getByField("entityId", $account->entityId)[0];
+
+            // TODO: Adjust buyerBranchId logic
+            $dbSellerUser = new BaseModel($this->db, "user");
 
             // Add to orderGrand
             $dbOrderGrand = new BaseModel($this->db, "orderGrand");
             $dbOrderGrand->buyerEntityId = $account->entityId;
             $dbOrderGrand->buyerBranchId = $entityBranch->id;
             $dbOrderGrand->buyerUserId = $this->objUser->id;
-
-            $dbOrderGrand->paymentMethodId = $paymentMethodId;
 
             $dbOrderGrand->addReturnID();
             $grandOrderId = $dbOrderGrand->id;
@@ -499,6 +540,16 @@ class CartController extends Controller
             $nameField = "productName_" . $this->objUser->language;
             $dbCartDetail->name = $nameField;
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+
+            // Get all payment methods
+            $dbPaymentMethod = new BaseModel($this->db, "paymentMethod");
+            $dbPaymentMethod->name = "name_" . $this->objUser->language;
+            $arrPaymentMethod = $dbPaymentMethod->all();
+
+            $mapPaymentMethodIdName = [];
+            foreach ($arrPaymentMethod as $paymentMethod) {
+                $mapPaymentMethodIdName[$paymentMethod['id']] = $paymentMethod['name'];
+            }
 
             // Get all currencies
             $dbCurrencies = new BaseModel($this->db, "currency");
@@ -606,6 +657,9 @@ class CartController extends Controller
                 // TODO: Adjust sellerBranchId logic
                 $sellerEntityBranch = $dbEntityBranch->getByField("entityId", $sellerId)[0];
 
+                // TODO: Remove this when multiple user per account is managed
+                $sellerUser = $dbEntityBranch->getByField("entityId", $sellerId)[0];
+
                 // Add to order
                 $dbOrder = new BaseModel($this->db, "order");
                 $dbOrder->orderGrandId = $grandOrderId;
@@ -614,8 +668,15 @@ class CartController extends Controller
                 $dbOrder->branchBuyerId = $entityBranch->id;
                 $dbOrder->branchSellerId = $sellerEntityBranch->id;
                 $dbOrder->userBuyerId = $this->objUser->id;
-                $dbOrder->userSellerId = null;
+                // TODO: Remove this when multiple user per account is managed
+
+                $sellerAccount = $dbAccount->getByField("entityId", $sellerId)[0];
+                $sellerUserAccount = $dbUserAccount->getByField("accountId", $sellerAccount->id)[0];
+
+                $dbOrder->userSellerId = $sellerUserAccount->userId;
                 $dbOrder->statusId = 1;
+
+                $paymentMethodId = $mapSellerIdPaymentMethodId[$sellerId];
                 $dbOrder->paymentMethodId = $paymentMethodId;
 
                 // TODO: Adjust serial logic
@@ -651,8 +712,9 @@ class CartController extends Controller
                 $this->f3->set('subTotal', round($subTotal, 2));
                 $this->f3->set('tax', round($tax, 2));
                 $this->f3->set('total', round($total, 2));
-                $this->f3->set('ordersUrl', "web/distributor/order/new");
+                $this->f3->set('ordersUrl', "web/distributor/order/pending");
                 $this->f3->set('name', "Buyer name: " . $buyerName);
+                $this->f3->set('paymentMethod', $mapPaymentMethodIdName[$paymentMethodId]);
 
                 $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $sellerId);
                 foreach ($arrEntityUserProfile as $entityUserProfile) {
@@ -712,6 +774,8 @@ class CartController extends Controller
             $name = count($allSellerNames) > 1 ? "Seller names: " : "Seller name: ";
             $name .= implode(", ", $allSellerNames);
             $this->f3->set('name', $name);
+
+            $this->f3->set('paymentMethod', null);
 
             $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $account->entityId);
             foreach ($arrEntityUserProfile as $entityUserProfile) {

@@ -65,13 +65,13 @@
                                             <!--end::Svg Icon-->
                                         </span><?php echo $vModule_product_uploadSubimages; ?>
                                     </a>
-                                    <span id="editMaxFilesExceededLabel" class="text-danger" style="display: none;"><?php echo $vModule_product_SubimagesExceeded; ?></span>
+                                    <span id="editSubimagesErrorLabel" class="text-danger" style="display: none;"></span>
                                 </div>
                                 <div class="wrap-modal-slider">
                                     <div class="dropzone-items" id="editDropzoneItems" style="display: flex;">
                                         <div class="col-md-2 image-input image-input-empty image-input-outline dropzone-item" style="display: none; background-color: unset;">
                                             <div class="dropzone-error" data-dz-errormessage=""></div>
-                                            <div class="mb-2 image-input-wrapper" id="dropzoneImage" style="width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/theme/assets/media/users/blank.png'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%);">
+                                            <div class="mb-2 image-input-wrapper" id="dropzoneImage" style="width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/assets/img/default-product-image.png'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%);">
                                                 <div class="px-2 dropzone-progress" style="width: 100%; position: relative; top: 50%;">
                                                     <div class="progress">
                                                         <div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress=""></div>
@@ -138,7 +138,7 @@
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="editVat" class="form-control-label"><?php echo $vModule_product_vat; ?></label>
-                            <input type="number" class="form-control" name="vat" id="editVat" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : !this.value? this.value : 0;" onkeypress="return ![43, 45, 101].includes(event.charCode)" autocomplete="off">
+                            <input type="text" class="form-control" name="vat" id="editVat" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onkeypress="return ![43, 45, 101].includes(event.charCode)" autocomplete="off">
                         </div>
                         <div class="col-md-4 form-group">
                             <label for="editMaximumOrderQuantity" class="form-control-label"><?php echo $vModule_product_maximumOrderQuantity; ?></label>

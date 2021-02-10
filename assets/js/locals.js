@@ -5,8 +5,13 @@ var WebAppLocals = (function () {
 	var lang = 'ar';
 
 	var _arrLocals = {
+		appName: {
+			en: 'Aumet Marketplace',
+			ar: 'Aumet Marketplace', // TODO: add translation
+			fr: 'Aumet Marketplace', // TODO: add translation
+		},
 		success: {
-			en: 'Your request was executed successfuly',
+			en: 'Your request was executed successfully',
 			ar: 'لقد تم تنفيذ طلبك بنجاح',
 			fr: '',
 		},
@@ -51,8 +56,8 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		print: {
-			en: 'Print',
-			ar: 'طباعة',
+			en: 'Download PDF',
+			ar: 'طباعة', //TODO: Translation
 			fr: '',
 		},
 		options: {
@@ -123,11 +128,6 @@ var WebAppLocals = (function () {
 		order: {
 			en: 'Order',
 			ar: 'طلب',
-			fr: '',
-		},
-		id: {
-			en: 'ID',
-			ar: '', // TODO: add translation
 			fr: '',
 		},
 		orderId: {
@@ -290,6 +290,11 @@ var WebAppLocals = (function () {
 			ar: 'سعر الوحدة',
 			fr: '',
 		},
+		unit: {
+			en: 'Unit',
+			ar: 'الوحدة',
+			fr: '',
+		},
 		tax: {
 			en: 'VAT',
 			ar: 'ضريبة',
@@ -396,7 +401,7 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		stockUpdateDateTime: {
-			en: 'Stock Update Date Time',
+			en: 'Stock Last Updated',
 			ar: 'آخر تحديث لتوفر المنتج',
 			fr: '',
 		},
@@ -558,26 +563,126 @@ var WebAppLocals = (function () {
 		characters: {
 			en: 'characters',
 			ar: 'الأحرف',
-			fr: '',	
+			fr: '',
 		},
 		fileTypeError: {
-			en: 'You can\'t upload files of this type',
+			en: "You can't upload files of this type",
 			ar: 'لا يمكنك تحميل ملفات من هذا النوع',
-			fr: ''
+			fr: '',
 		},
 		uploadSuccess: {
 			en: 'Upload Completed Successfully',
 			ar: 'اكتمل التحميل بنجاح',
-			fr: ''
+			fr: '',
 		},
 		uploadError: {
 			en: 'Upload failed',
 			ar: 'التحميل فشل',
-			fr: ''
+			fr: '',
 		},
 		bulkAddUploadError: {
-			en: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file',
-			ar: 'Error processing the file. Please ensure its format is .xsls and matches the structure of the sample file', // TODO: translate
+			en: 'Error processing the file. Please ensure its format is .xslm, .xsls and matches the structure of the sample file',
+			ar: 'Error processing the file. Please ensure its format is .xslm, .xsls and matches the structure of the sample file', // TODO: translate
+			fr: '',
+		},
+		goToProfile: {
+			en: 'Go to Profile',
+			ar: 'Go to Profile', // TODO: translate
+			fr: '',
+		},
+		distributorNameRequired: {
+			en: 'Enter Distributor Name',
+			ar: 'أدخل اسم الموزع',
+			fr: '',
+		},
+		distributorNameTooShort: {
+			en: 'Sorry, the Distributor Name entered is too short',
+			ar: 'عذرًا ، اسم الموزع الذي تم إدخاله قصير جدًا',
+			fr: '',
+		},
+		pharmacyNameRequired: {
+			en: 'Enter Pharmacy Name',
+			ar: 'أدخل اسم الصيدلية',
+			fr: '',
+		},
+		pharmacyNameTooShort: {
+			en: 'Sorry, the Pharmacy Name entered is too short',
+			ar: 'عذرًا ، اسم الصيدلية الذي تم إدخاله قصير جدًا',
+			fr: '',
+		},
+		tradeLicenseNumberTooShort: {
+			en: 'Sorry, the Trade License Number entered is too short',
+			ar: 'عذرًا ، رقم الترخيص التجاري الذي تم إدخاله قصير جدًا',
+			fr: '',
+		},
+		addressRequired: {
+			en: 'Enter Address',
+			ar: 'أدخل العنوان',
+			fr: '',
+		},
+		addressTooShort: {
+			en: 'Sorry, the Address entered is too short',
+			ar: 'عذرا ، العنوان الذي تم إدخاله قصير جدا',
+			fr: '',
+		},
+		minimumValueOrderRequired: {
+			en: 'Enter Minimum Value Order',
+			ar: 'أدخل أمر الحد الأدنى للقيمة',
+			fr: '',
+		},
+		cityRequired: {
+			en: 'Select City from dropdown menu',
+			ar: 'حدد المدينة من القائمة المنسدلة',
+			fr: '',
+		},
+		oldPasswordRequired: {
+			en: 'Enter Current Password',
+			ar: 'إدخل كلمة السر الحالية',
+			fr: '',
+		},
+		newPasswordRequired: {
+			en: 'Enter New Password',
+			ar: 'أدخل كلمة مرور جديدة',
+			fr: '',
+		},
+		supportEmailRequired: {
+			en: 'Enter Email',
+			ar: 'أدخل البريد الإلكتروني',
+			fr: '',
+		},
+		supportEmailInvalid: {
+			en: 'Invalid Email',
+			ar: 'بريد إلكتروني خاطئ',
+			fr: '',
+		},
+		supportPhoneRequired: {
+			en: 'Enter Telephone no',
+			ar: 'أدخل رقم الهاتف',
+			fr: '',
+		},
+		supportReasonRequired: {
+			en: 'Select Reason from dropdown menu',
+			ar: 'حدد السبب من القائمة المنسدلة',
+			fr: '',
+		},
+		subimagesExceeded: {
+			en: 'Max 6 images are allowed',
+			ar: 'Max 6 images are allowed', // TODO: translate
+			fr: '',
+		},
+		subimagesMaximumSize: {
+			en: 'The image maximum size is 2MB',
+			ar: 'The image maximum size is 2MB', // TODO: translate
+			fr: '',
+		},
+		subimagesWrongFormat: {
+			en: 'Allowed types are jpeg, jpg, png',
+			ar: 'Allowed types are jpeg, jpg, png', // TODO: translate
+			fr: '',
+		},
+		cartError: {
+			en: 'Payment methods missing',
+			ar: 'طرق الدفع مفقودة',
 			fr: ''
 		},
 	};

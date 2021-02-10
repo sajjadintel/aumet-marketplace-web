@@ -45,9 +45,10 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 30px;line-height: 39px;"><?php echo $title ?></h2>
-                            <h3 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 20px;line-height: 29px;">Order From: <?php echo $entityName ?></h3>
-
+                            <p style="margin-top: 0px;margin-bottom: 0px;text-align: left;">Dear Customer,
+                                Please note your supplier (<?php echo $entityName ?>) was not able to fulfil the quantity you ordered (Order #<?php echo $orderId ?>).
+                                Please see below the shipped quantity. If there are any issues with your order, please reach out directly to the supplier through Aumet.
+                            </p>
                         </div>
                         <!--[if mso]></td></tr></table><![endif]-->
                     </td>
@@ -142,7 +143,7 @@
                                     <td width="100" align="center" valign="top" style="padding: 0px 8px;"><![endif]-->
                             <div class="o_col o_col-1 o_col-full" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
                                 <div class="o_px-xs o_sans o_text o_center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;text-align: center;padding-left: 8px;padding-right: 8px;">
-                                    <p style="margin-top: 0px;margin-bottom: 0px;"><a class="o_text-primary" href="https://example.com/" style="text-decoration: none;outline: none;color: #126de5;"><img src="<?php echo $products->image ?>" width="84" height="84" alt="" style="max-width: 84px;-ms-interpolation-mode: bicubic;vertical-align: middle;border: 0;line-height: 100%;height: auto;outline: none;text-decoration: none;"></a></p>
+                                    <p style="margin-top: 0px;margin-bottom: 0px;"><a class="o_text-primary" href="https://example.com/" style="text-decoration: none;outline: none;color: #126de5;"><img src="<?php echo ($products->image) ? ($products->image) : $domainUrl."assets/img/default-product-image.png"; ?>" width="84" height="84" alt="" style="max-width: 84px;-ms-interpolation-mode: bicubic;vertical-align: middle;border: 0;line-height: 100%;height: auto;outline: none;text-decoration: none;"></a></p>
                                 </div>
                             </div>
                             <!--[if mso]></td>

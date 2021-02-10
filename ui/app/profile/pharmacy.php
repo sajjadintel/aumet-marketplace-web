@@ -1,22 +1,21 @@
 <style>
-	.dropzone-item {
-		background-color: #FFF !important; 
-	}
+    .dropzone-item {
+        background-color: #FFF !important;
+    }
 
-		textarea {
-			resize: none;
-		}
+    textarea {
+        resize: none;
+    }
 
-		.mfp-iframe-holder .mfp-content {
-			max-width: 100% !important;
-			height: 100%;
-		}
+    .mfp-iframe-holder .mfp-content {
+        max-width: 100% !important;
+        height: 100%;
+    }
 
-		.mfp-iframe-holder {
-			padding-top: 40px !important;
-			padding-bottom: 10px !important;
-		}
-
+    .mfp-iframe-holder {
+        padding-top: 40px !important;
+        padding-bottom: 10px !important;
+    }
 </style>
 <!--begin::Entry-->
 <div class="d-flex flex-column-fluid">
@@ -27,9 +26,21 @@
             <!--begin::Left Side-->
             <div class="col-3">
                 <div class="card card-custom card-body card-stretch gutter-b px-0 pt-0" style="height: 550px;">
-                    <div style="background-color: #D8D8D8; height: 120px;"></div>   
-                    <div class="symbol symbol-150 mt-n30" style="display: flex; justify-content: center;">
-                        <img src="/assets/img/profile.png" style="border: 4px solid #FFF;"/>
+                    <div style="background-color: #D8D8D8; height: 120px;"></div>
+                    <div class="d-flex justify-content-center mt-n20" id="profile-image-form">
+                        <div class="image-input image-input-empty image-input-outline" id="profile-image" style="background-image: url('/assets/img/profile.png')">
+                            <div class="image-input-wrapper" style="background-image: url(<?php echo $objUser->entityImage ?>)"></div>
+
+                            <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Change avatar">
+                                <i class="fa fa-pen icon-sm text-muted"></i>
+                                <input type="file" name="profile_avatar" accept=".png, .jpg, .jpeg" />
+                                <input type="hidden" name="profile_avatar_remove" />
+                            </label>
+
+                            <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="remove" data-toggle="tooltip" title="Remove avatar">
+                                <i class="ki ki-bold-close icon-xs text-muted"></i>
+                            </span>
+                        </div>
                     </div>
                     <div class="pt-8" style="text-align: center;">
                         <h3 class="text-muted m-0"><?php echo $user->userFullName; ?></h3>
@@ -47,12 +58,12 @@
             </div>
             <!--begin::Main-->
             <div class="col-9 px-10 py-5">
-                <input id="profileEntityType" type="hidden" name="entityType" value="pharmacy"/>
+                <input id="profileEntityType" type="hidden" name="entityType" value="pharmacy" />
                 <div id="myProfileSection">
                     <div class="card-label font-weight-bolder font-size-h1"><?php echo $vModule_profile_myProfileTitle ?></div>
                     <div class="card-label font-size-h5 text-muted"><?php echo $vModule_profile_myProfileSubtitle ?></div>
                     <form class="form pt-5" novalidate="novalidate" id="myProfileForm">
-                        <input type="hidden" name="userId" value="<?php echo $user->userId; ?>"/>
+                        <input type="hidden" name="userId" value="<?php echo $user->userId; ?>" />
                         <div class="row">
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
@@ -86,12 +97,19 @@
                             <!--end::Form Group-->
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
-                                <input type="hidden" name="entityBranchTradeLicenseUrl" value="<?php echo $user->entityBranchTradeLicenseUrl; ?>"/>
-                                <input type="hidden" name="entityBranchTradeLicenseUrlDecoded" value="<?php echo $entityBranchTradeLicenseUrlDecoded; ?>"/>
+                                <input type="hidden" name="entityBranchTradeLicenseUrl" value="<?php echo $user->entityBranchTradeLicenseUrl; ?>" />
+                                <input type="hidden" name="entityBranchTradeLicenseUrlDecoded" value="<?php echo $entityBranchTradeLicenseUrlDecoded; ?>" />
                                 <div>
                                     <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vModule_profile_pharmacyTradeLicenseDocument; ?></label>
                                 </div>
-                                
+
+                                <?php if (!is_null($user->entityBranchTradeLicenseUrl)) {
+                                    $licenseDocumentPieces = explode('.', $user->entityBranchTradeLicenseUrl);
+                                    if (count($licenseDocumentPieces) > 0 && in_array(end($licenseDocumentPieces), ['doc', 'docx', 'ppt', 'pptx', 'pdf'])) { ?>
+                                        <a href="<?php echo $user->entityBranchTradeLicenseUrl; ?>" class="btn btn-primary font-weight-bolder font-size-h6 pl-6 pr-8 py-4 my-3 mr-3" target="_blank"><?php echo $vModule_profile_viewLicenseDocumentButton; ?></a>
+                                    <?php }
+                                } ?>
+
                                 <div class="dropzone dropzone-multi" id="kt_dropzone" style="background-color: unset;">
                                     <div class="dropzone-panel mb-lg-0 mb-2">
                                         <a class="dropzone-select btn btn-light-primary font-weight-bolder font-size-h6 pl-6 pr-8 py-4 my-3 mr-3">
@@ -99,14 +117,15 @@
                                                 <!--begin::Svg Icon | path:assets/media/svg/icons/Files/Upload.svg-->
                                                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                        <rect x="0" y="0" width="24" height="24"></rect>
+                                                        ::<rect x="0" y="0" width="24" height="24"></rect>
                                                         <path d="M2,13 C2,12.5 2.5,12 3,12 C3.5,12 4,12.5 4,13 C4,13.3333333 4,15 4,18 C4,19.1045695 4.8954305,20 6,20 L18,20 C19.1045695,20 20,19.1045695 20,18 L20,13 C20,12.4477153 20.4477153,12 21,12 C21.5522847,12 22,12.4477153 22,13 L22,18 C22,20.209139 20.209139,22 18,22 L6,22 C3.790861,22 2,20.209139 2,18 C2,15 2,13.3333333 2,13 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"></path>
                                                         <rect fill="#000000" opacity="0.3" x="11" y="2" width="2" height="14" rx="1"></rect>
                                                         <path d="M12.0362375,3.37797611 L7.70710678,7.70710678 C7.31658249,8.09763107 6.68341751,8.09763107 6.29289322,7.70710678 C5.90236893,7.31658249 5.90236893,6.68341751 6.29289322,6.29289322 L11.2928932,1.29289322 C11.6689749,0.916811528 12.2736364,0.900910387 12.6689647,1.25670585 L17.6689647,5.75670585 C18.0794748,6.12616487 18.1127532,6.75845471 17.7432941,7.16896473 C17.3738351,7.57947475 16.7415453,7.61275317 16.3310353,7.24329415 L12.0362375,3.37797611 Z" fill="#000000" fill-rule="nonzero"></path>
                                                     </g>
                                                 </svg>
                                                 <!--end::Svg Icon-->
-                                            </span><?php echo $user->entityBranchTradeLicenseUrl == null ? $vModule_profile_uploadButton : $vModule_profile_uploadReplaceButton; ?>
+                                            </span>
+                                            <?php echo $user->entityBranchTradeLicenseUrl == null ? $vModule_profile_uploadButton : $vModule_profile_uploadReplaceButton; ?>
                                         </a>
                                     </div>
                                     <div class="dropzone-items">
@@ -114,8 +133,8 @@
                                             <div class="dropzone-file">
                                                 <a class="dropzone-filename" id="dropzoneFilename">
                                                     <span data-dz-name="">some_image_file_name.jpg</span>
-                                                    <strong>(<span data-dz-size="">340kb</span>)</strong>
-                                                    <img  id="dropzoneFilenameImage" src="" style="width:300px;height:200px; object-fit: cover;">
+                                                    <strong id="dropzoneFilesize" style="display: none;">(<span data-dz-size="">340kb</span>)</strong>
+                                                    <img id="dropzoneFilenameImage" src="" style="width:300px;height:200px; object-fit: cover;" alt="license document">
                                                 </a>
                                                 <div class="dropzone-error" data-dz-errormessage=""></div>
                                             </div>
@@ -135,14 +154,15 @@
                                     </div>
                                 </div>
                                 <div class="mt-5">
-                                    <div class="font-size-h6 font-weight-bolder text-muted">Max file size is 10mb and </div>
-                                    <div class="font-size-h6 font-weight-bolder text-muted">File types allowed are .pdf, .ppt, .xcl, .docx, .jpeg, .jpg, .png </div>
+                                    <div class="font-size-h6 font-weight-bolder text-muted" style="color:#e53935 !important;" id="errorMessage"></div>
+                                    <div class="font-size-h6 font-weight-bolder text-muted"><?php echo $vModule_profile_allowedLicenseDocumentFileSize; ?></div>
+                                    <div class="font-size-h6 font-weight-bolder text-muted"><?php echo $vModule_profile_allowedLicenseDocumentFileType; ?></div>
                                 </div>
                             </div>
                             <!--end::Form Group-->
                         </div>
                         <!--begin::Save Button-->
-                        <div>        
+                        <div>
                             <a class="btn btn-primary font-weight-bolder font-size-h5 pl-12 pr-12 py-4 my-3 mr-3" onclick="Profile.savePharmacyMyProfile();">
                                 <?php echo $vModule_profile_saveButton; ?>
                             </a>
@@ -154,7 +174,7 @@
                     <div class="card-label font-weight-bolder font-size-h1"><?php echo $vModule_profile_accountSettingTitle ?></div>
                     <div class="card-label font-size-h5 text-muted"><?php echo $vModule_profile_accountSettingSubtitle ?></div>
                     <form class="form pt-5" novalidate="novalidate" id="accountSettingForm">
-                        <input type="hidden" name="userId" value="<?php echo $user->userId; ?>"/>
+                        <input type="hidden" name="userId" value="<?php echo $user->userId; ?>" />
                         <div class="row">
                             <!--begin::Form Group-->
                             <div class="col-6 form-group">
@@ -199,7 +219,7 @@
                             <!--end::Form Group-->
                         </div>
                         <!--begin::Save Button-->
-                        <div>        
+                        <div>
                             <a class="btn btn-primary font-weight-bolder font-size-h5 pl-12 pr-12 py-4 my-3 mr-3" onclick="Profile.savePharmacyAccountSetting();">
                                 <?php echo $vModule_profile_saveButton; ?>
                             </a>

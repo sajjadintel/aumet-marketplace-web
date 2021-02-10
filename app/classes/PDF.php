@@ -1,6 +1,7 @@
 <?php
 
-class PDF extends TCPDF {
+class PDF extends TCPDF
+{
 
     var $top_margin = 20;
 
@@ -122,4 +123,34 @@ class PDF extends TCPDF {
         $this->writeHTML($html, true, false, false, false, '');
     }
 
+    // Colored table
+    function FancyOneTitleHeader($header, $data)
+    {
+        // use html for table
+        $html = "<table border=\"0.5\" cellpadding=\"3\"><thead><tr>";
+
+        // Header
+        $w = array(510);
+        for ($i = 0; $i < count($header); $i++)
+            $html .= "<th width=\" $w[$i] \" style=\"background-color:#13b9a9;color:#ffffff;text-align:center;font-weight:bold;\"> $header[$i] </th>";
+
+
+        $html .= "</tr ></thead><tbody>";
+
+        $fill = false;
+        foreach ($data as $row) {
+            $fillText = $fill ? "background-color:#e1eaff;" : '';
+
+            $html .= "<tr nobr=\"true\">";
+            for ($i = 0; $i < count($row); $i++)
+                $html .= "<td style=\"$fillText color:#000000;\" width=\"$w[$i]\" >$row[$i]</td>";
+            $html .= "</tr>";
+
+            $fill = !$fill;
+        }
+
+        $html .= "</tbody></table>";
+
+        $this->writeHTML($html, true, false, false, false, '');
+    }
 }

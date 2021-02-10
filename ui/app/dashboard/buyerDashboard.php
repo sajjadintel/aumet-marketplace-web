@@ -8,7 +8,7 @@
             <div class="col-md-6">
                 <div class="card card-custom bg-NavyBlue card-stretch gutter-b">
                     <div class="card-body my-4">
-                        <a href="/web/distributor/order/new" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Orders</a>
+                        <a href="/web/distributor/order/pending" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Orders</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
                                 <?php /* if ($dashboard_order > $dashboard_orderYesterday) {
@@ -29,7 +29,7 @@
             <div class="col-md-6">
                 <div class="card card-custom bg-Blue card-stretch gutter-b">
                     <div class="card-body my-4">
-                        <a href="web/distributor/order/new" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Invoices</a>
+                        <a href="web/distributor/order/pending" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Invoices</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
                                 <?php /* if ($dashboard_invoice > $dashboard_invoiceYesterday) {
@@ -107,7 +107,7 @@
             title: WebAppLocals.getMessage('orderTotalWithVAT'),
             data: 'total',
             render: function(data, type, row, meta) {
-                var output = row.currency + ' <strong>' + Math.round((parseFloat(row.total) + Number.EPSILON) * 100) / 100 + ' </strong>';
+                var output = row.currency + ' <strong>' + WebApp.formatMoney(row.total) + ' </strong>';
                 return output;
             },
         }, {
@@ -180,12 +180,12 @@
                 var btnPrint =
                     '<a href="/web/distributor/order/print/' +
                     row.id +
-                    '" target="_blank" class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="Print Order">\
+                    '" target="_blank" class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="Download PDF">\
 						<i class="nav-icon la la-print p-0"></i> &nbsp&nbsp' +
                     WebAppLocals.getMessage('print') +
                     '</a>';
                 var btnView =
-                    '<a href="javascript:;" onclick=\'WebAppModals.orderViewModal(' +
+                    '<a href="javascript:;" onclick=\'WebAppModals.orderViewPharmacyModal(' +
                     row.id +
                     ')\' \
 						class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\

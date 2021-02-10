@@ -30,10 +30,11 @@ $f3->route('POST /web/notification/support', 'NotificationController->support');
 $f3->route('GET /web/me/menu', 'UserController->getMenu');
 $f3->route('GET /web/me/switchLanguage/@lang', 'UserController->switchLanguage');
 
-$f3->route('GET /web/product/search', 'SearchController->getSearchProducts');
-$f3->route('POST /web/product/search', 'SearchController->postSearchProducts');
-$f3->route('POST /web/product/search/@sort', 'SearchController->postSearchProducts');
+$f3->route('GET /web/pharmacy/product/search', 'SearchController->getSearchProducts');
+$f3->route('POST /web/pharmacy/product/search', 'SearchController->postSearchProducts');
+$f3->route('POST /web/pharmacy/product/search/@sort', 'SearchController->postSearchProducts');
 $f3->route('GET /web/entity/@entityId/product/@productId', 'ProductsController->getEntityProduct');
+$f3->route('POST /web/entity/@entityId/product/@productId', 'ProductsController->postEntityProduct');
 
 $f3->route('GET /web/product/brandname/list', 'SearchController->getProductBrandNameList');
 $f3->route('GET /web/product/category', 'SearchController->getAllCategoryList');
@@ -61,14 +62,14 @@ $f3->route('GET /web/cart/remove/confirm/@itemId', 'CartController->getRemoveIte
 $f3->route('POST /web/cart/checkout/update', 'CartController->postCartCheckoutUpdate');
 $f3->route('POST /web/cart/checkout/note', 'CartController->postNoteCartCheckoutUpdate');
 $f3->route('GET /web/cart/checkout', 'CartController->getCartCheckout');
-$f3->route('POST /web/cart/checkout/submit/@paymentMethodId', 'CartController->postCartCheckoutSubmit');
-$f3->route('GET /web/cart/checkout/submit/confirm/@paymentMethodId', 'CartController->getCartCheckoutSubmitConfirmation');
+$f3->route('POST /web/cart/checkout/submit', 'CartController->postCartCheckoutSubmit');
+$f3->route('POST /web/cart/checkout/submit/confirm', 'CartController->postCartCheckoutSubmitConfirmation');
 $f3->route('GET /web/thankyou/@grandOrderId', 'CartController->getThankyou');
 
 $f3->route('GET /web/demo/editor/scientificnames', 'DemoController->get');
 
 
-// START APM-10 APM-11 APM-35 
+// START APM-10 APM-11 APM-35
 $f3->route('GET /web/distributor/order/pending', 'OrderController->getDistributorOrdersPending');
 $f3->route('GET /web/distributor/order/unpaid', 'OrderController->getDistributorOrdersUnpaid');
 $f3->route('GET /web/distributor/order/history', 'OrderController->getDistributorOrdersHistory');
@@ -93,6 +94,7 @@ $f3->route('POST /web/distributor/order/onhold', 'OrderController->postOnHoldOrd
 $f3->route('GET /web/distributor/product', 'ProductsController->getDistributorProducts');
 $f3->route('GET /web/distributor/product/@productId', 'ProductsController->getProductDetails');
 $f3->route('GET /web/distributor/product/quantity/@productId', 'ProductsController->getProductQuantityDetails');
+$f3->route('GET /web/distributor/product/stock/@productId', 'ProductsController->getProductStockDetails');
 
 $f3->route('POST /web/distributor/product', 'ProductsController->postDistributorProducts');
 $f3->route('GET /web/distributor/product/list', 'ProductsController->getProductList');
@@ -101,14 +103,16 @@ $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDi
 $f3->route('POST /web/distributor/product/image', 'ProductsController->postProductImage');
 $f3->route('POST /web/distributor/product/subimage', 'ProductsController->postProductSubimage');
 $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->postEditQuantityDistributorProduct');
+$f3->route('POST /web/distributor/product/editStock', 'ProductsController->postEditStockDistributorProduct');
+$f3->route('GET /web/distributor/product/canAdd', 'ProductsController->getDistributorCanAddProduct');
 
-// Bulk add 
+// Bulk add
 $f3->route('GET /web/distributor/product/bulk/add/download', 'ProductsController->getBulkAddDownload');
 $f3->route('GET /web/distributor/product/bulk/add/upload', 'ProductsController->getBulkAddUpload');
 $f3->route('POST /web/distributor/product/bulk/add/upload', 'ProductsController->postBulkAddUpload');
 $f3->route('POST /web/distributor/product/bulk/add/upload/process', 'ProductsController->postBulkAddUploadProcess');
 
-// Bulk add images 
+// Bulk add images
 $f3->route('GET /web/distributor/product/bulk/add/image/upload', 'ProductsController->getBulkAddImageUpload');
 $f3->route('POST /web/distributor/product/bulk/add/image/upload', 'ProductsController->postBulkAddImageUpload');
 $f3->route('POST /web/distributor/product/bulk/add/image/upload/process', 'ProductsController->postBulkAddImageUploadProcess');
@@ -148,6 +152,7 @@ $f3->route('GET /web/notification/order/new', 'OrderController->getNotifcationsD
 $f3->route('GET /web/pharmacy/order/pending', 'OrderController->getPharmacyOrdersPending');
 $f3->route('GET /web/pharmacy/order/unpaid', 'OrderController->getPharmacyOrdersUnpaid');
 $f3->route('GET /web/pharmacy/order/history', 'OrderController->getPharmacyOrdersHistory');
+$f3->route('GET /web/pharmacy/order/@orderId', 'OrderController->getOrderDetails');
 
 $f3->route('POST /web/pharmacy/order/pending', 'OrderController->postPharmacyOrdersPending');
 $f3->route('POST /web/pharmacy/order/unpaid', 'OrderController->postPharmacyOrdersUnpaid');
@@ -168,10 +173,15 @@ $f3->route('POST /web/pharmacy/feedback/history', 'FeedbackController->postPharm
 
 $f3->route('GET /web/profile', 'ProfileController->getProfile');
 $f3->route('POST /web/profile/document/upload', 'ProfileController->postProfileDocumentUpload');
+$f3->route('POST /web/profile/image', 'ProfileController->postProfileImageUpload');
 $f3->route('POST /web/pharmacy/profile/myProfile', 'ProfileController->postPharmacyProfileMyProfile');
 $f3->route('POST /web/pharmacy/profile/accountSetting', 'ProfileController->postPharmacyProfileAccountSetting');
 $f3->route('POST /web/distributor/profile/myProfile', 'ProfileController->postDistributorProfileMyProfile');
 $f3->route('POST /web/distributor/profile/accountSetting', 'ProfileController->postDistributorProfileAccountSetting');
 $f3->route('POST /web/distributor/profile/paymentSetting', 'ProfileController->postDistributorProfilePaymentSetting');
-$f3->route('GET /web/pharmacy/profile/approve', 'ProfileController->getPharmacyProfileApprove');
-$f3->route('GET /web/distributor/profile/approve', 'ProfileController->getDistributorProfileApprove');
+
+$f3->route('GET /web/review/pharmacy/profile/approve', 'ReviewController->getReviewPharmacyProfileApprove');
+$f3->route('GET /web/review/distributor/profile/approve', 'ReviewController->getReviewDistributorProfileApprove');
+
+
+include_once('routes-permission.php');
