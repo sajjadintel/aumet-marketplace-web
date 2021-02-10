@@ -123,6 +123,15 @@ var CartCheckout = (function () {
 				_removeItem(cartDetailId, submitButton, forceCallback, forcePreventUnblur);
 			}
 		} else {
+			// set previous value in case of error if it's succeeded will reload datatable and set new value
+			if (newValue > 0) {
+				// if oldValue is null plus icon is used so mines one else it's changed manually and we can revert to old value
+				if (!oldValue) {
+					$(quantityId).val(newValue - 1);
+				} else {
+					$(quantityId).val(oldValue);
+				}
+			}
 			WebApp.post(
 				'/web/cart/checkout/update',
 				{ cartDetailId, sellerId, productId, quantity: newValue },
