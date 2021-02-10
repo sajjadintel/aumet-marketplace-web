@@ -123,6 +123,7 @@ function compress_htmlcode($codedata)
                                                     </tr>
 
                                                     <?php $isFirstItem = true; ?>
+                                                    <?php $tax = 0; ?>
                                                     <?php foreach ($allCartItems[$seller->sellerId] as $item) : ?>
                                                         <tr style="">
                                                             <td class="d-flex align-items-center font-weight-bolder font-size-h5 cart-item-separator">
@@ -187,7 +188,7 @@ function compress_htmlcode($codedata)
                                                         </tr>
                                                         <?php
                                                         $productPrice = $item->quantity * $item->unitPrice;
-                                                        $productTax = ($item->vat / 100) * $productPrice;
+                                                        $productTax = $productPrice * $item->vat / 100.0;
 
                                                         $subTotalPrice += $productPrice;
                                                         $tax += $productTax;
@@ -199,6 +200,16 @@ function compress_htmlcode($codedata)
                                                         <td colspan="7">
 
                                                             <div class="text-right pr-3">
+                                                                <p class="font-weight-bolder font-size-h4 row justify-content-end align-items-center never" style="margin-bottom: 0;margin-top: 0.7rem;">
+                                                                    <span style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem; margin-left: 15px; margin-right: 15px;"><?php echo $vModule_cart_subTotal ?></span>
+                                                                    <span class="subTotalPrice" style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem;" data-subTotalPrice="<?php echo $subTotalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="subTotalPrice-<?php echo $seller->sellerId ?>">
+                                                                        <?php echo Helper::formatMoney($subTotalPrice) . " " . $currencySymbol ?>
+                                                                    </span>
+                                                                </p>
+                                                                <p class="font-weight-bolder font-size-h4 never">
+                                                                    <span class="text-primary"><?php echo $vModule_cart_tax ?></span>
+                                                                    <span class="tax" data-vat="<?php echo $tax ?>" data-currencyId="<?php echo $currencyId ?>" id="tax-<?php echo $seller->sellerId ?>"><?php echo $tax . " " . $currencySymbol ?></span>
+                                                                </p>
                                                                 <p class="font-weight-bolder font-size-h4 row justify-content-end align-items-center" style="margin-bottom: 0;margin-top: 0.7rem;">
                                                                     <?php if (count($arrPaymentMethod) > 0) : ?>
                                                                         <span class="mr-4" style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem;"><?php echo $vModule_cart_paymentOption ?></span>
@@ -208,18 +219,12 @@ function compress_htmlcode($codedata)
                                                                             <?php endforeach; ?>
                                                                         </select>
                                                                     <?php endif; ?>
-                                                                    <span style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem; margin-left: 15px; margin-right: 15px;"><?php echo $vModule_cart_subTotal ?></span>
-                                                                    <span class="subTotalPrice" style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem;" data-subTotalPrice="<?php echo $subTotalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="subTotalPrice-<?php echo $seller->sellerId ?>">
-                                                                        <?php echo Helper::formatMoney($subTotalPrice, 2) . " " . $currencySymbol ?>
+                                                                    <span class="text-primary" style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem; margin-left: 15px; margin-right: 15px;">
+                                                                        <?php echo $vModule_cart_subTotal ?>
                                                                     </span>
-                                                                </p>
-                                                                <p class="font-weight-bolder font-size-h4 never">
-                                                                    <span class="text-primary"><?php echo $vModule_cart_tax ?></span>
-                                                                    <span class="tax" data-vat="<?php echo $tax ?>" data-currencyId="<?php echo $currencyId ?>" id="tax-<?php echo $seller->sellerId ?>"><?php echo $tax . " " . $currencySymbol ?></span>
-                                                                </p>
-                                                                <p class="font-weight-bolder font-size-h4 never">
-                                                                    <span class="text-primary"><?php echo $vModule_cart_total ?></span>
-                                                                    <span class="totalPrice" data-totalPrice="<?php echo $totalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="totalPrice-<?php echo $seller->sellerId ?>"><?php echo $totalPrice . " " . $currencySymbol ?></span>
+                                                                    <span class="totalPrice" style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem;" data-totalPrice="<?php echo $totalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="totalPrice-<?php echo $seller->sellerId ?>">
+                                                                        <?php echo Helper::formatMoney($totalPrice) . " " . $currencySymbol ?>
+                                                                    </span>
                                                                 </p>
                                                             </div>
 
