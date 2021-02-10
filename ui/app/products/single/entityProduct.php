@@ -151,7 +151,7 @@ function compress_htmlcode($codedata)
 
                 </div>
                 <div class="col-12 col-md-9 col-lg-9 card  ">
-                    <div class="product-overview">
+                    <div id="productOverviewContainer" class="product-overview">
                         <div class="card-header border-0 py-5 product-item-similar-header" style="margin: 10px 0 0 0;">
                             <h3>
                                 <?php echo $vModule_product_productOverview ?>
@@ -536,14 +536,8 @@ function compress_htmlcode($codedata)
 <?php include_once 'image-modal.php'; ?>
 <script>
     $(document).ready(function() {
-
-        console.log('before')
         initAutoplay();
-        console.log('after');
-
-        $('.product-overview').expandable({
-            height: 350
-        });
+        initExpendable();
     })
 
     function initAutoplay() {
@@ -576,6 +570,19 @@ function compress_htmlcode($codedata)
             $('#button-next').hide();
             $('#button-previous').hide();
         }
+    }
+
+    function initExpendable() {
+        $('.product-overview').expandable({
+            height: 350
+        });
+        $('.expand-bar').on('click', function() {
+            if($('#productOverviewContainer').hasClass('pb-8')) {
+                $('#productOverviewContainer').removeClass('pb-8');
+            } else {
+                $('#productOverviewContainer').addClass('pb-8');
+            }
+        })
     }
 
     $('.productImage').on("error", function() {
