@@ -114,7 +114,7 @@ var CartCheckout = (function () {
 		let quantityId = '#quantity-' + productId;
 		let currentValue = 0;
 		if ($(quantityId).val() > 0) currentValue = parseInt($(quantityId).val());
-		let newValue = currentValue;
+		let newValue = currentValue + increment;
 
 		if (newValue === 0) {
 			if (shouldShowRemoveModal) {
