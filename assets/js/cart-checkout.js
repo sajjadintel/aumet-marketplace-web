@@ -172,7 +172,9 @@ var CartCheckout = (function () {
 		let productPriceId = '#productPrice-' + productId;
 		let unitPrice = $(productPriceId).attr('data-unitPrice');
 		let currency = $(productPriceId).attr('data-currency');
-		let productPrice = (quantity * unitPrice).toFixed(2);
+		let vat = $(productPriceId).attr('data-vat');
+		let total = parseFloat(quantity) * parseFloat(unitPrice) * (100.0 + parseFloat(vat)) / 100.0;
+		let productPrice = WebApp.formatMoney(total)
 
 		$(productPriceId).attr('data-productPrice', productPrice);
 		$(productPriceId).html(productPrice + ' ' + currency);

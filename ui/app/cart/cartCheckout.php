@@ -200,16 +200,6 @@ function compress_htmlcode($codedata)
                                                         <td colspan="7">
 
                                                             <div class="text-right pr-3">
-                                                                <p class="font-weight-bolder font-size-h4 row justify-content-end align-items-center never" style="margin-bottom: 0;margin-top: 0.7rem;">
-                                                                    <span style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem; margin-left: 15px; margin-right: 15px;"><?php echo $vModule_cart_subTotal ?></span>
-                                                                    <span class="subTotalPrice" style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem;" data-subTotalPrice="<?php echo $subTotalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="subTotalPrice-<?php echo $seller->sellerId ?>">
-                                                                        <?php echo Helper::formatMoney($subTotalPrice) . " " . $currencySymbol ?>
-                                                                    </span>
-                                                                </p>
-                                                                <p class="font-weight-bolder font-size-h4 never">
-                                                                    <span class="text-primary"><?php echo $vModule_cart_tax ?></span>
-                                                                    <span class="tax" data-vat="<?php echo $tax ?>" data-currencyId="<?php echo $currencyId ?>" id="tax-<?php echo $seller->sellerId ?>"><?php echo $tax . " " . $currencySymbol ?></span>
-                                                                </p>
                                                                 <p class="font-weight-bolder font-size-h4 row justify-content-end align-items-center" style="margin-bottom: 0;margin-top: 0.7rem;">
                                                                     <?php if (count($arrPaymentMethod) > 0) : ?>
                                                                         <span class="mr-4" style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem;"><?php echo $vModule_cart_paymentOption ?></span>
@@ -219,6 +209,17 @@ function compress_htmlcode($codedata)
                                                                             <?php endforeach; ?>
                                                                         </select>
                                                                     <?php endif; ?>
+                                                                    <span style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem; margin-left: 15px; margin-right: 15px;"><?php echo $vModule_cart_subTotal ?></span>
+                                                                    <span class="subTotalPrice" style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem;" data-subTotalPrice="<?php echo $subTotalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="subTotalPrice-<?php echo $seller->sellerId ?>">
+                                                                        <?php echo Helper::formatMoney($subTotalPrice) . " " . $currencySymbol ?>
+                                                                    </span>
+                                                                </p>
+                                                                <p class="font-weight-bolder font-size-h4 never">
+                                                                    <span class="text-primary"><?php echo $vModule_cart_tax ?></span>
+                                                                    <span class="tax" data-vat="<?php echo $tax ?>" data-currencyId="<?php echo $currencyId ?>" id="tax-<?php echo $seller->sellerId ?>"><?php echo $tax . " " . $currencySymbol ?></span>
+                                                                </p>
+                                                                <p class="font-weight-bolder font-size-h4 row justify-content-end align-items-center never" style="margin-bottom: 0;margin-top: 0.7rem;">
+
                                                                     <span class="text-primary" style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem; margin-left: 15px; margin-right: 15px;">
                                                                         <?php echo $vModule_cart_subTotal ?>
                                                                     </span>
