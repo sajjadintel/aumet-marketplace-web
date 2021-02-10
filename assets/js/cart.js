@@ -46,6 +46,7 @@ var Cart = (function () {
 		if (webResponse.data !== 0) $('#cartCount').css('display', 'flex');
 		else $('#cartCount').css('display', 'none');
 		$('#cartCount').html(cartCount);
+		WebApp.reloadDatatable();
 	};
 
 	var _removeItemSuccessCallback = function (webResponse) {
@@ -58,14 +59,14 @@ var Cart = (function () {
 		WebApp.loadPage('/web/cart');
 	};
 
-	var _addItem = function (entityId, productId, quantityInputId = null, quantityFreeInputId = null) {
+	var _addItem = function (entityId, productId, quantityInputId = null, quantityFreeInputId = null, submitButton = null, forceCallback = false, forcePreventUnblur = false) {
 		if (_itemsCount <= 0) {
 			_topBarItemSvgIcon.removeClass(_svgIconNoColor_NoItems).addClass(_svgIconNoColor_Items);
 			_topbarItemTextContainer.addClass(_addPulse).addClass(_addPulseColor);
 			_topbarItemText.show();
 		}
 
-		if (quantityInputId != null && $(quantityInputId).val() < 1) return;
+		//if (quantityInputId != null && $(quantityInputId).val() < 1) return;
 
 		let body = {
 			entityId,
@@ -73,7 +74,7 @@ var Cart = (function () {
 			quantity: quantityInputId == null ? 1 : $(quantityInputId).val(),
 			quantityFree: quantityFreeInputId == null ? 0 : $(quantityFreeInputId).val(),
 		};
-		WebApp.post('/web/cart/add', body, _addItemSuccessCallback);
+		WebApp.post('/web/cart/add', body, _addItemSuccessCallback, submitButton, forceCallback, forcePreventUnblur);
 	};
 
 	var _removeItem = function (id) {
@@ -98,8 +99,8 @@ var Cart = (function () {
 		init: function () {
 			_int();
 		},
-		addItem: function (entityId, productId, quantityInputId = null, quantityFreeInputId = null) {
-			_addItem(entityId, productId, quantityInputId, quantityFreeInputId);
+		addItem: function (entityId, productId, quantityInputId = null, quantityFreeInputId, submitButton, forceCallback, forcePreventUnblur) {
+			_addItem(entityId, productId, quantityInputId, quantityFreeInputId, submitButton, forceCallback, forcePreventUnblur);
 		},
 		removeItem: function (id) {
 			_removeItem(id);

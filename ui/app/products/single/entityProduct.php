@@ -399,7 +399,7 @@ function compress_htmlcode($codedata)
                     }*/
                     if (row.stockStatusId == 1) {
 
-                        let vMinusBtn = '<a class="btn btn-xs btn-light-success btn-icon mr-2 subQty"> <i class="ki ki-minus icon-xs"></i></a>';
+                        let vMinusBtn = '<a class="btn btn-xs btn-light-success btn-icon mr-2 subQty" onclick="SearchDataTable.subQuantity(this)"> <i class="ki ki-minus icon-xs"></i></a>';
 
                         output += vMinusBtn;
 
@@ -410,7 +410,7 @@ function compress_htmlcode($codedata)
 
                         output += vQuantity;
 
-                        let vPlusBtn = '<a class="btn btn-xs btn-light-success btn-icon mr-2 addQty"> <i class="ki ki-plus icon-xs"></i></a>';
+                        let vPlusBtn = '<a class="btn btn-xs btn-light-success btn-icon mr-2 addQty" onclick="SearchDataTable.addQuantity(this)"> <i class="ki ki-plus icon-xs"></i></a>';
 
                         output += vPlusBtn;
 
@@ -513,20 +513,6 @@ function compress_htmlcode($codedata)
 <?php include_once 'image-modal.php'; ?>
 <script>
     $(document).ready(function() {
-        $('.addQty').each(function(index, currentElement) {
-            $(currentElement).off("click").click(function() {
-                $(currentElement).prev().val(+$(this).prev().val() + 1);
-                $(currentElement).prev().trigger("change");
-            });
-        });
-        $('.subQty').each(function(index, currentElement) {
-            $(currentElement).off("click").click(function() {
-                if ($(currentElement).next().val() > 0) {
-                    $(currentElement).next().val(+$(this).next().val() - 1);
-                    $(currentElement).next().trigger("change");
-                }
-            });
-        });
 
         console.log('before')
         initAutoplay();
@@ -555,7 +541,7 @@ function compress_htmlcode($codedata)
             });
         }
 
-        if(subimagesCount > slidesToShow) {
+        if (subimagesCount > slidesToShow) {
             $('#button-next').click(function() {
                 $('.autoplay').sliders('goto', 'next');
             });
