@@ -14,7 +14,7 @@ var WebAuth = (function () {
 		var data = $(form).serializeJSON();
 
 		if (!form) {
-			console.log('No Form');
+			console.debug('No Form');
 			return;
 		}
 
@@ -693,6 +693,10 @@ var WebAuth = (function () {
 	var _initializeDropzone = function () {
 		// Set the dropzone container id
 		var id = '#kt_dropzone';
+
+		if ($(id).length === 0) {
+			return;
+		}
 
 		// Set the preview element template
 		var previewNode = $(id + ' .dropzone-item');
