@@ -184,6 +184,7 @@ class OrderController extends Controller
             $orderId = $this->f3->get('PARAMS.orderId');
 
             $dbOrder = new BaseModel($this->db, "vwOrderEntityUser");
+            $dbOrder->orderPaymentMethodName = "orderPaymentMethodName_" . $this->objUser->language;
             $arrOrder = $dbOrder->findWhere("id = '$orderId'");
 
             $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");

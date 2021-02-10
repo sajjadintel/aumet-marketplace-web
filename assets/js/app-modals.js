@@ -144,14 +144,24 @@ var WebAppModals = (function () {
 		}
 		$('#viewModalTitle').html(WebAppLocals.getMessage('orderDetails'));
 		$('#modalBranchLabel').html(WebAppLocals.getMessage('branch'));
+		console.log("webResponse.data.order");
+		console.log(webResponse.data.order);
 		if (isPharmacy) {
 			$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entitySeller'));
 			$('#modalCustomerNameText').html(webResponse.data.order.entitySeller);
 			$('#modalBranchText').html(webResponse.data.order.branchSeller);
+			
+			$('#modalPaymentMethodLabel').html('');
+			$('#modalPaymentMethodText').html('');
+			$('#paymentMethodContainer').hide();
 		} else {
 			$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entityBuyer'));
 			$('#modalCustomerNameText').html(webResponse.data.order.entityBuyer);
 			$('#modalBranchText').html(webResponse.data.order.branchBuyer);
+
+			$('#modalPaymentMethodLabel').html(WebAppLocals.getMessage('paymentOption'));
+			$('#modalPaymentMethodText').html(webResponse.data.order.orderPaymentMethodName);
+			$('#paymentMethodContainer').show();
 		}
 		$('#modalStatusLabel').html(WebAppLocals.getMessage('orderStatus'));
 		$('#modalStatusText').html(status);

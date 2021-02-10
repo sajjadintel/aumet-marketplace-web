@@ -68,10 +68,16 @@
                             <div class="col-md-6 form-text" id="modalBranchText"></div>
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <div class="row form-group">
-                            <div class="col-md-3 form-label" id="modalAddressLabel"></div>
-                            <div class="col-md-9 form-text" id="modalAddressText"></div>
+                            <div class="col-md-6 form-label" id="modalAddressLabel"></div>
+                            <div class="col-md-6 form-text" id="modalAddressText"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6" id="paymentMethodContainer">
+                        <div class="row form-group">
+                            <div class="col-md-6 form-label" id="modalPaymentMethodLabel"></div>
+                            <div class="col-md-6 form-text" id="modalPaymentMethodText"></div>
                         </div>
                     </div>
                 </div>

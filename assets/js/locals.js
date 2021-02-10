@@ -685,6 +685,11 @@ var WebAppLocals = (function () {
 			ar: 'طرق الدفع مفقودة',
 			fr: ''
 		},
+		paymentOption: {
+			en: 'Payment Option',
+			ar: 'خيار الدفع',
+			fr: ''	
+		},
 	};
 
 	var _symbolsLocals = {
