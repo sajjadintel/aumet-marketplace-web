@@ -73,8 +73,9 @@ function compress_htmlcode($codedata)
 
                                             <thead>
                                                 <tr>
-                                                    <th width="32%" class="text-center cart-table-header"><?php echo $vModule_product_name ?></th>
-                                                    <th class="text-center cart-table-header" width="17%"><?php echo $vModule_cart_quantity ?></th>
+                                                    <th width="28%" class="text-center cart-table-header"><?php echo $vModule_product_name ?></th>
+                                                    <th class="text-center cart-table-header" width="14%"><?php echo $vModule_cart_quantity ?></th>
+                                                    <th class="text-center cart-table-header" width="10%"><?php echo $vModule_cart_bonusQuantity ?></th>
                                                     <!--                                                <th class="text-center cart-table-header" width="13%">--><?php //echo $vModule_cart_note 
                                                                                                                                                                     ?>
                                                     <!--</th>-->
@@ -101,8 +102,9 @@ function compress_htmlcode($codedata)
                                             <table style="border-radius: 5px;border-color: #e7e7e7;border-width: 1px 1px 1px 1px;border-style: solid;border-collapse: separate !important; border-spacing: 0;width: 100%;margin-bottom: 20px;padding: 10px;min-width: 830px;">
                                                 <thead>
                                                     <tr>
-                                                        <th width="32%" class="cart-table-header-body"></th>
-                                                        <th class="text-center cart-table-header-body" width="17%"></th>
+                                                        <th width="28%" class="cart-table-header-body"></th>
+                                                        <th class="text-center cart-table-header-body" width="14%"></th>
+                                                        <th class="text-center cart-table-header-body" width="10%"></th>
                                                         <!--                                                    <th class="text-center cart-table-header-body" width="13%"></th>-->
                                                         <th class="text-right cart-table-header-body" width="10%"></th>
                                                         <th class="text-right cart-table-header-body" width="6%"></th>
@@ -125,7 +127,7 @@ function compress_htmlcode($codedata)
                                                     <?php $isFirstItem = true; ?>
                                                     <?php $tax = 0; ?>
                                                     <?php foreach ($allCartItems[$seller->sellerId] as $item) : ?>
-                                                        <tr style="">
+                                                        <tr>
                                                             <td class="d-flex align-items-center font-weight-bolder font-size-h5 cart-item-separator">
                                                                 <div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light">
                                                                     <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->entityProductId ?>')" class="text-dark text-hover-primary">
@@ -134,19 +136,21 @@ function compress_htmlcode($codedata)
                                                                 </div>
                                                                 <div>
                                                                     <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->entityProductId ?>')" class="text-dark text-hover-primary"><?php echo $item->name ?></a>
-                                                                    <?php if ($item->quantityFree > 0) : ?>
-                                                                        <p id="quantityFreeHolder-<?php echo $item->entityProductId ?>" class="text-danger">Free <?php echo $item->name ?> x<span id="quantityFree-<?php echo $item->entityProductId ?>"><?php echo $item->quantityFree ?></span></p>
-                                                                    <?php endif; ?>
                                                                 </div>
                                                             </td>
                                                             <td class="text-center align-middle cart-item-separator">
-                                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, -1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon mr-2">
+                                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, -1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover)" class="btn btn-xs btn-light-success btn-icon mr-2">
                                                                     <i class="ki ki-minus icon-xs"></i>
                                                                 </a>
-                                                                <input style="width: 40%;" type="number" id="quantity-<?php echo $item->entityProductId ?>" onfocus="this.oldvalue = this.value;" onfocusout="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, 0, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, this.oldvalue)" class="mr-2 font-weight-bolder quantity" min="0" max="<?php echo min($item->stock, $item->maximumOrderQuantity); ?>" value="<?php echo $item->quantity ?>" name="quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, 1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice)" class="btn btn-xs btn-light-success btn-icon">
+                                                                <input style="width: 40%;" type="number" id="quantity-<?php echo $item->entityProductId ?>" onfocus="this.oldvalue = this.value;" onfocusout="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, 0, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover, this.oldvalue)" class="mr-2 font-weight-bolder quantity" min="0" max="<?php echo min($item->stock, $item->maximumOrderQuantity); ?>" value="<?php echo $item->quantity ?>" name="quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, 1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover)" class="btn btn-xs btn-light-success btn-icon">
                                                                     <i class="ki ki-plus icon-xs"></i>
                                                                 </a>
+                                                            </td>
+                                                            <td class="text-center align-middle cart-item-separator">
+                                                                <span class="bonusLabel cart-checkout-bonus-label py-1 px-6" data-toggle="popover" data-arrBonus="<?php echo htmlspecialchars(json_encode($item->arrBonus), ENT_QUOTES, 'UTF-8'); ?>" data-activeBonus="<?php echo htmlspecialchars(json_encode($item->activeBonus), ENT_QUOTES, 'UTF-8'); ?>">
+                                                                    Bonuses <span class="bonus"></span>
+                                                                </span>
                                                             </td>
 
                                                             <!--<td class="text-center align-middle cart-item-separator">-->
@@ -294,6 +298,10 @@ function compress_htmlcode($codedata)
     $(document).ready(function() {
         updateTotalPrice();
         preventEmptyInput();
+
+        $('.selectpicker').selectpicker('val', '');
+
+        initializeBonusPopover();
     });
 
     function updateTotalPrice() {
@@ -395,9 +403,114 @@ function compress_htmlcode($codedata)
         })
     }
 
+    function initializeBonusPopover() {
+        $('.bonusLabel').popover('dispose');
+        $('.bonusLabel').each(function(index, element) {
+            var arrBonusStr = $(element).attr('data-arrBonus') || "[]";
+            var arrBonus = JSON.parse(arrBonusStr);
+            if(arrBonus.length > 0) {
+                $(element).popover({
+                    html: true,
+                    sanitize: false,
+                    trigger: "hover",
+                    placement: "bottom",
+                    content: getBonusPopoverContent(element)
+                });
+            } else {
+                $(element).hide();
+            }
+        });
+    }
+
+    function getBonusPopoverContent(element) {
+        var arrBonusStr = $(element).attr('data-arrBonus') || "[]";
+        var arrBonus = JSON.parse(arrBonusStr);
+        var activeBonusStr = $(element).attr('data-activeBonus') || "{}";
+        var activeBonus = JSON.parse(activeBonusStr);
+
+        var tableElement = document.createElement("table");
+
+        var tableHead = [
+            "BONUSES TYPE",
+            "MIN QTY",
+            "BONUSES"
+        ]; 
+        var allTableData = [
+            tableHead,
+            ...arrBonus
+        ]
+        for(var i = 0; i < allTableData.length; i++) {
+            var row = allTableData[i];
+
+            if(i == 0) {
+                // Add table head
+                var trElement = document.createElement('tr');
+                for(var j = 0; j < row.length; j++) {
+                    var item = row[j];
+                    var thElement = document.createElement('th');
+                    thElement.className = "cart-checkout-bonus-th text-center p-1 pb-3";
+                    thElement.innerHTML = item;
+                    trElement.append(thElement);
+                }
+                tableElement.append(trElement);
+            } else {
+                var arrMinQty = row.arrMinQty || [];
+                var arrBonuses = row.arrBonuses || [];
+                if(arrMinQty.length > 0 && arrMinQty.length === arrBonuses.length) {
+                    // Add bonus type column
+                    var trElement = document.createElement('tr');
+
+                    var bonusType = row.bonusType;
+                    var tdBonusTypeElement = document.createElement('td');
+                    tdBonusTypeElement.className = "cart-checkout-bonus-td text-center p-1";
+                    if(i != allTableData.length - 1) tdBonusTypeElement.className += " border-bottom";
+                    if(arrMinQty.length > 1) tdBonusTypeElement.setAttribute('rowspan', arrMinQty.length);
+                    tdBonusTypeElement.innerHTML = bonusType;
+                    trElement.append(tdBonusTypeElement);
+
+                    // Add minQty and bonuses columns
+                    for(var j = 0; j < arrMinQty.length; j++) {
+                        if(j != 0) {
+                            trElement = document.createElement('tr');
+                        }
+
+                        var minQty = arrMinQty[j];
+                        var tdMinQtyElement = document.createElement('td');
+                        tdMinQtyElement.className = "cart-checkout-bonus-td text-center p-1 border-left";
+                        if(i != allTableData.length - 1 || j != arrMinQty.length - 1)
+                            tdMinQtyElement.className += " border-bottom";
+                        tdMinQtyElement.innerHTML = minQty;
+                        trElement.append(tdMinQtyElement);
+                        
+                        var bonuses = arrBonuses[j];
+                        var tdBonusesElement = document.createElement('td');
+                        tdBonusesElement.className = "cart-checkout-bonus-td text-center p-1 border-left";
+                        if(i != allTableData.length - 1 || j != arrMinQty.length - 1)
+                            tdBonusesElement.className += " border-bottom";
+                        tdBonusesElement.innerHTML = bonuses;
+                        trElement.append(tdBonusesElement);
+
+                        if(activeBonus) {
+                            if(bonusType == activeBonus.bonusType && minQty == activeBonus.minQty && bonuses == activeBonus.bonuses) {
+                                var tdCheckElement = document.createElement('td');
+                                tdCheckElement.className = "cart-checkout-bonus-td text-center p-1";
+                                tdCheckElement.innerHTML = "<i class='las la-check check'></i>";
+                                trElement.append(tdCheckElement);
+                            }
+                        }
+                        
+                        tableElement.append(trElement);
+                    }
+                }
+            }
+        }
+        if(activeBonus && activeBonus.totalBonus) {
+            $(element).find('.bonus').text("(+" + activeBonus.totalBonus + ")")
+        }
+        return tableElement.outerHTML;
+    }
+
     $('.productImage').on("error", function() {
         $(this).attr('src', '/assets/img/default-product-image.png');
     });
-
-    $('.selectpicker').selectpicker('val', '');
 </script>

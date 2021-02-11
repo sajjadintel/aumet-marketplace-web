@@ -851,3 +851,29 @@ input[type='number'] {
 }
 
 /* === expandable === */
+
+.cart-checkout-bonus-label {
+    background-color: #F3F3F3;
+    border-radius: 25px;
+	font-size: 12px;
+    white-space: nowrap;
+	cursor: pointer;
+}
+
+.cart-checkout-bonus-label > .bonus {
+	color: #0CA962;
+}
+
+.cart-checkout-bonus-th {
+	font-size: 10px;
+	color: #A9A9A9;
+}
+
+.cart-checkout-bonus-td {
+	color: #7A7A7A;
+	border-color: #F5F5F5;
+}
+
+.cart-checkout-bonus-td > .check {
+	color: #0CA962;
+}
