@@ -285,6 +285,21 @@ var WebAppLocals = (function () {
 			ar: 'السعر',
 			fr: '',
 		},
+		review: {
+			en: 'Review',
+			ar: 'Review', // TODO: Add translation
+			fr: '',
+		},
+		ignore: {
+			en: 'Ignore',
+			ar: 'Ignore', // TODO: Add translation
+			fr: '',
+		},
+		newOrderMessage: {
+			en: 'You have received ( {0} ) orders',
+			ar: 'You have received ( {0} ) orders', // TODO: Add translation
+			fr: '',
+		},
 		unitPrice: {
 			en: 'Unit Price',
 			ar: 'سعر الوحدة',
@@ -697,7 +712,20 @@ var WebAppLocals = (function () {
 
 	// Public Functions
 	return {
-		init: function () {},
+		init: function () {
+			// add support for string format
+			if (!String.prototype.format) {
+				String.prototype.format = function () {
+					var args = arguments;
+					return this.replace(/{(\d+)}/g, function (match, number) {
+						return typeof args[number] != 'undefined'
+							? args[number]
+							: match
+							;
+					});
+				};
+			}
+		},
 		getMessage(key) {
 			return _arrLocals[key][docLang];
 		},

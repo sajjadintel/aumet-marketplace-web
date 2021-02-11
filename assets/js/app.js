@@ -47,12 +47,12 @@ var WebApp = (function () {
 
 	var _alertNewOrders = function (ordersCount) {
 		Swal.fire({
-			text: 'You have received ( ' + ordersCount + ' ) orders',
+			text: WebAppLocals.getMessage('newOrderMessage').format(ordersCount),
 			icon: 'success',
 			buttonsStyling: false,
-			confirmButtonText: 'Start Working On Them',
+			confirmButtonText:  WebAppLocals.getMessage('review'),
 			showCancelButton: true,
-			cancelButtonText: 'Ok',
+			cancelButtonText:  WebAppLocals.getMessage('ignore'),
 			customClass: {
 				confirmButton: 'btn font-weight-bold btn-primary',
 				cancelButton: 'btn font-weight-bold btn-outline-primary',
