@@ -148,7 +148,7 @@ function compress_htmlcode($codedata)
                                                                 </a>
                                                             </td>
                                                             <td class="text-center align-middle cart-item-separator">
-                                                                <span class="bonusLabel cart-checkout-bonus-label py-1 px-6" data-toggle="popover" data-arrBonus="<?php echo htmlspecialchars(json_encode($item->arrBonus), ENT_QUOTES, 'UTF-8'); ?>" data-activeBonus="<?php echo htmlspecialchars(json_encode($item->activeBonus), ENT_QUOTES, 'UTF-8'); ?>">
+                                                                <span id="bonusLabel-<?php echo $item->entityProductId ?>" class="bonusLabel cart-checkout-bonus-label py-1 px-6" data-toggle="popover" data-arrBonus="<?php echo htmlspecialchars(json_encode($item->arrBonus), ENT_QUOTES, 'UTF-8'); ?>" data-activeBonus="<?php echo htmlspecialchars(json_encode($item->activeBonus), ENT_QUOTES, 'UTF-8'); ?>">
                                                                     Bonuses <span class="bonus"></span>
                                                                 </span>
                                                             </td>
@@ -506,6 +506,8 @@ function compress_htmlcode($codedata)
         }
         if(activeBonus && activeBonus.totalBonus) {
             $(element).find('.bonus').text("(+" + activeBonus.totalBonus + ")")
+        } else {
+            $(element).find('.bonus').text("")
         }
         return tableElement.outerHTML;
     }

@@ -211,6 +211,7 @@ var CartCheckout = (function () {
 			updateTotalPrice();
 		}
 
+		$("#bonusLabel-" + productId).attr("data-activeBonus", JSON.stringify(cartDetail.activeBonus))
 		if(initializeBonusPopover) {
 			initializeBonusPopover();
 		}
