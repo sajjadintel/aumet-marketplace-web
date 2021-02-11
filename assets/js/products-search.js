@@ -400,60 +400,11 @@ var SearchDataTable = (function () {
 	};
 
 	var _updateQty = function updateQty(row, oldValue) {
-		_updateQuantityOffline(row.id, 0, row.stock, row.cartDetailId, row.entityId, 0, oldValue, false);
-
 		if (row.cart == 0 && (oldValue == null || oldValue == 0)) {
-			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
+			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id, null, false, true);
 		} else {
-			CartCheckout.updateQuantity(row.id, 0, row.stock, row.cartDetailId, row.entityId, 0, oldValue, false);
+			CartCheckout.updateQuantity(row.id, 0, row.stock, row.cartDetailId, row.entityId, 0, oldValue, false, null, false, true);
 		}
-		WebApp.reloadDatatable();
-	};
-
-	var _updateQuantityOffline = function updateQuantityOffline(productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, oldValue, shouldShowRemoveModal) {
-		let quantityId = '#quantity-' + productId;
-		let btnGoToCartMore = '#btnGoToCartMore-' + productId;
-		let btnGoToCart = '#btnGoToCart-' + productId;
-		let currentValue = 0;
-		if ($(quantityId).val() > 0) currentValue = parseInt($(quantityId).val());
-		let newValue = currentValue + increment;
-		if (newValue < 0) newValue = 0;
-		else if (newValue > stock && oldValue) $(quantityId).val(oldValue);
-
-		if (newValue == 0) {
-			$(quantityId).parent().parent().next().find(btnGoToCartMore).css('display', 'none');
-			$(quantityId).parent().parent().next().find(btnGoToCart).css('display', 'flex');
-		} else {
-			$(quantityId).parent().parent().next().find(btnGoToCartMore).css('display', 'flex');
-			$(quantityId).parent().parent().next().find(btnGoToCart).css('display', 'none');
-			$(quantityId).parent().parent().next().find(btnGoToCartMore).find('.label-danger').html(newValue);
-		}
-
-		console.log(
-			'testtt',
-			'productId',
-			productId,
-			'increment',
-			increment,
-			'stock',
-			stock,
-			'cartDetailId',
-			cartDetailId,
-			'sellerId',
-			sellerId,
-			'updateTotalPrice',
-			updateTotalPrice,
-			'oldValue',
-			oldValue,
-			'shouldShowRemoveModal',
-			shouldShowRemoveModal,
-			'quantityId',
-			quantityId,
-			'currentValue',
-			currentValue,
-			'newValue',
-			newValue
-		);
 	};
 
 	return {

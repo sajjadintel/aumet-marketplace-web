@@ -37,12 +37,13 @@ var CartCheckout = (function () {
 		}
 	};
 
-	var _removeItem = function (productId) {
-		WebApp.post('/web/cart/remove', { id: productId }, (webResponse) => _updateQuantityDeleteCallback(webResponse), null, false, true);
+	var _removeItem = function (productId, submitButton, forceCallback, forcePreventUnblur) {
+		WebApp.post('/web/cart/remove', {id: productId}, (webResponse) => _updateQuantityDeleteCallback(webResponse), submitButton, forceCallback, forcePreventUnblur);
 	};
 
 	var _removeItemModal = function (itemId) {
 		WebApp.get('/web/cart/remove/confirm/' + itemId, WebApp.openModal);
+		WebApp.reloadDatatable();
 	};
 
 	var _removeItemSuccess = function (webResponse) {
@@ -109,26 +110,35 @@ var CartCheckout = (function () {
 		WebApp.redirect('/web/thankyou/' + webResponse.data);
 	};
 
-	var _updateQuantity = function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice = 0, oldValue = null, shouldShowRemoveModal = true) {
+	var _updateQuantity = function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice = 0, oldValue = null, shouldShowRemoveModal = true, submitButton = null, forceCallback = false, forcePreventUnblur = false) {
 		let quantityId = '#quantity-' + productId;
 		let currentValue = 0;
 		if ($(quantityId).val() > 0) currentValue = parseInt($(quantityId).val());
-		let newValue = currentValue;
+		let newValue = currentValue + increment;
 
 		if (newValue === 0) {
 			if (shouldShowRemoveModal) {
 				_removeItemModal(cartDetailId);
 			} else {
-				_removeItem(cartDetailId);
+				_removeItem(cartDetailId, submitButton, forceCallback, forcePreventUnblur);
 			}
 		} else {
+			// set previous value in case of error if it's succeeded will reload datatable and set new value
+			if (newValue > 0) {
+				// if oldValue is null plus icon is used so mines one else it's changed manually and we can revert to old value
+				if (!oldValue) {
+					$(quantityId).val(newValue - 1);
+				} else {
+					$(quantityId).val(oldValue);
+				}
+			}
 			WebApp.post(
 				'/web/cart/checkout/update',
 				{ cartDetailId, sellerId, productId, quantity: newValue },
 				(webResponse) => _updateQuantityCallback(webResponse, updateTotalPrice),
-				null,
-				false,
-				true
+				submitButton,
+				forceCallback,
+				forcePreventUnblur
 			);
 		}
 	};
@@ -162,9 +172,12 @@ var CartCheckout = (function () {
 		let productPriceId = '#productPrice-' + productId;
 		let unitPrice = $(productPriceId).attr('data-unitPrice');
 		let currency = $(productPriceId).attr('data-currency');
-		let productPrice = (quantity * unitPrice).toFixed(2);
+		let vat = $(productPriceId).attr('data-vat');
+		let subTotal = parseFloat(quantity) * parseFloat(unitPrice);
+		let total = subTotal * (100.0 + parseFloat(vat)) / 100.0;
+		let productPrice = WebApp.formatMoney(total);
 
-		$(productPriceId).attr('data-productPrice', productPrice);
+		$(productPriceId).attr('data-productPrice', subTotal);
 		$(productPriceId).html(productPrice + ' ' + currency);
 
 		// Update total price
@@ -197,6 +210,7 @@ var CartCheckout = (function () {
 		if (updateTotalPrice) {
 			updateTotalPrice();
 		}
+		WebApp.reloadDatatable();
 	};
 
 	var _updateQuantityDeleteCallback = function (webResponse) {
@@ -207,6 +221,7 @@ var CartCheckout = (function () {
 		if (webResponse.data !== 0) $('#cartCount').css('display', 'flex');
 		else $('#cartCount').css('display', 'none');
 		$('#cartCount').html(cartCount);
+		WebApp.reloadDatatable();
 	};
 
 	var _updateNote = function (productId, cartDetailId, sellerId) {
@@ -235,8 +250,8 @@ var CartCheckout = (function () {
 		submitOrderSuccess: function (webResponse) {
 			_submitOrderSuccess(webResponse);
 		},
-		updateQuantity: function (productId, increment, stock, cardDetailId, sellerId, updateTotalPrice, oldValue, shouldShowRemoveModal) {
-			_updateQuantity(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice, oldValue, shouldShowRemoveModal);
+		updateQuantity: function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, oldValue, shouldShowRemoveModal, submitButton, forceCallback, forcePreventUnblur) {
+			_updateQuantity(productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, oldValue, shouldShowRemoveModal, submitButton, forceCallback, forcePreventUnblur);
 		},
 		updateNote: function (productId, cardDetailId, sellerId) {
 			_updateNote(productId, cardDetailId, sellerId);

@@ -243,10 +243,11 @@ class ProductsController extends Controller
             }
 
             $cartDetail = new BaseModel($this->db, "cartDetail");
-            $cartDetail->getWhere("userID =" . $this->objUser->id . " and entityProductId = " . $data[$i]['id'] . "");
+            $cartDetail->getWhere("accountId =" . $this->objUser->accountId . " and entityProductId = " . $data[$i]['id'] . "");
 
+            $data[$i]['cart'] = 0;
             if (!$cartDetail->dry()) {
-                $data[$i]['cart'] = $cartDetail->quantity;
+                $data[$i]['cart'] = $cartDetail->quantity + $cartDetail->quantityFree;
                 $data[$i]['cartDetailId'] = $cartDetail['id'];
             }
         }

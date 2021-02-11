@@ -268,7 +268,7 @@ function compress_htmlcode($codedata)
                         let vQuantity =
                             '<input class="qtyBox" id="quantity-' + row.id + '" type="number" min="0" style="width: 65px; direction: ltr; margin-right: 5px;" ' +
                             'value="' + rowQuantity + '" onfocus="this.oldvalue = this.value;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" ' +
-                            'onchange=\'PageClass.updateQty(' + JSON.stringify(row) + ', this.oldvalue)\' />';
+                            'onchange=\'SearchDataTable.updateQty(' + JSON.stringify(row) + ', this.oldvalue)\' />';
 
                         output += vQuantity;
 
@@ -322,9 +322,8 @@ function compress_htmlcode($codedata)
                             <path d="M6.5,21 C5.67157288,21 5,20.3284271 5,19.5 C5,18.6715729 5.67157288,18 6.5,18 C7.32842712,18 8,18.6715729 8,19.5 C8,20.3284271 7.32842712,21 6.5,21 Z M15.5,21 C14.6715729,21 14,20.3284271 14,19.5 C14,18.6715729 14.6715729,18 15.5,18 C16.3284271,18 17,18.6715729 17,19.5 C17,20.3284271 16.3284271,21 15.5,21 Z" fill="#000000"/>\
                         </g></svg></span></a>';
 
-                    var btnGoToCartMoreTemp = (row.cart > 0) ? 'flex' : 'none';
                     var btnGoToCartMore =
-                        '<a style="display: ' + btnGoToCartMoreTemp + ';" id="btnGoToCartMore-' + row.id + '" href="javascript:;" onclick=\'WebApp.loadPage("/web/cart/checkout")\' class="btn btn-sm btn-primary btn-text-primary btn-hover-primary  mr-2 mb-2" title="Go to cart">\
+                        '<a style="display: flex;" id="btnGoToCartMore-' + row.id + '" href="javascript:;" onclick=\'WebApp.loadPage("/web/cart/checkout")\' class="btn btn-sm btn-primary btn-text-primary btn-hover-primary  mr-2 mb-2" title="Go to cart">\
                         <span class="svg-icon svg-icon-md">\
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -336,9 +335,8 @@ function compress_htmlcode($codedata)
                         row.cart +
                         '</span></a>';
 
-                    var btnGoToCartTemp = !(row.cart > 0) ? 'flex' : 'none';
                     var btnGoToCart =
-                        '<a style="display: ' + btnGoToCartTemp + ';" id="btnGoToCart-' + row.id + '" href="javascript:;" onclick=\'WebApp.loadPage("/web/cart/checkout")\' class="btn btn-sm btn-default btn-text-primary btn-hover-primary  mr-2 mb-2" title="Go to cart">\
+                        '<a style="display: flex;" id="btnGoToCart-' + row.id + '" href="javascript:;" onclick=\'WebApp.loadPage("/web/cart/checkout")\' class="btn btn-sm btn-default btn-text-primary btn-hover-primary  mr-2 mb-2" title="Go to cart">\
                         <span class="svg-icon svg-icon-md">\
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -382,14 +380,14 @@ function compress_htmlcode($codedata)
                     switch (row.stockStatusId) {
                         case 1:
                             /*outActions += btnViewProduct;*/
-                            outActions += btnGoToCartMore;
-                            outActions += btnGoToCart;
+                            /*outActions += btnGoToCartMore;*/
+                            /*outActions += btnGoToCart;*/
                             if (row.cart > 0) {
                                 /*outActions += btnAddMoreToCart;*/
-                                /*outActions += btnGoToCartMore;*/
+                                outActions += btnGoToCartMore;
                             } else {
                                 /*outActions += btnAddToCart;*/
-                                /*outActions += btnGoToCart;*/
+                                outActions += btnGoToCart;
                             }
                             SearchDataTable.changeProductQuantityCallback(row);
                             break;
@@ -700,17 +698,9 @@ function compress_htmlcode($codedata)
 
         }
 
-        function updateQty(row, oldValue) {
-            SearchDataTable.updateQty(row, oldValue);
-        }
-
-
         return {
             init: function() {
                 initiate();
-            },
-            updateQty: function(row, oldValue) {
-                updateQty(row, oldValue);
             },
         };
     }();
