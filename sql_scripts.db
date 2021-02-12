@@ -189,3 +189,187 @@ CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 
 ################################
 
+
+## 10/02/2021 -- Patrick Younes
+
+# Modified vwEntityProductSell
+
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
+    SELECT 
+        `ep`.`id` AS `id`,
+        `ep`.`entityId` AS `entityId`,
+        `e`.`name_ar` AS `entityName_ar`,
+        `e`.`name_en` AS `entityName_en`,
+        `e`.`name_fr` AS `entityName_fr`,
+        `ep`.`productId` AS `productId`,
+        `ep`.`totalOrderQuantity` AS `totalOrderQuantity`,
+        `ep`.`totalOrderCount` AS `totalOrderCount`,
+        `ep`.`maximumOrderQuantity` AS `maximumOrderQuantity`,
+        `p`.`scientificNameId` AS `scientificNameId`,
+        `s`.`name` AS `scientificName`,
+        `p`.`insertDateTime` AS `insertDateTime`,
+        `p`.`name_ar` AS `productName_ar`,
+        `p`.`name_en` AS `productName_en`,
+        `p`.`name_fr` AS `productName_fr`,
+        `p`.`subtitle_ar` AS `subtitle_ar`,
+        `p`.`subtitle_en` AS `subtitle_en`,
+        `p`.`subtitle_fr` AS `subtitle_fr`,
+        `p`.`description_ar` AS `description_ar`,
+        `p`.`description_en` AS `description_en`,
+        `p`.`description_fr` AS `description_fr`,
+        `p`.`strength` AS `strength`,
+        `p`.`manufacturerName` AS `manufacturerName`,
+        `p`.`batchNumber` AS `batchNumber`,
+        `p`.`itemCode` AS `itemCode`,
+        `p`.`expiryDate` AS `productExpiryDate`,
+        `p`.`categoryId` AS `productCategoryId`,
+        `productCategory`.`name_en` AS `productCategoryName_en`,
+        `productCategory`.`name_ar` AS `productCategoryName_ar`,
+        `productCategory`.`name_fr` AS `productCategoryName_fr`,
+        `p`.`subcategoryId` AS `productSubcategoryId`,
+        `productSubcategory`.`name_en` AS `productSubcategoryName_en`,
+        `productSubcategory`.`name_ar` AS `productSubcategoryName_ar`,
+        `productSubcategory`.`name_fr` AS `productSubcategoryName_fr`,
+        `s`.`categoryId` AS `categoryId`,
+        `s`.`subCategoryId` AS `subCategoryId`,
+        `marketplace`.`category`.`name_en` AS `category_name_en`,
+        `marketplace`.`category`.`name_ar` AS `category_name_ar`,
+        `marketplace`.`category`.`name_fr` AS `category_name_fr`,
+        `subCategory`.`name_en` AS `sub_category_name_en`,
+        `subCategory`.`name_ar` AS `sub_category_name_ar`,
+        `subCategory`.`name_fr` AS `sub_category_name_fr`,
+        `ep`.`unitPrice` AS `unitPrice`,
+        `ep`.`vat` AS `vat`,
+        `e`.`currencyId` AS `currencyId`,
+        `e`.`image` AS `entityImage`,
+        `ec`.`currency` AS `currency`,
+        `ep`.`expiryDate` AS `expiryDate`,
+        `ep`.`statusId` AS `statusId`,
+        `ep`.`stockStatusId` AS `stockStatusId`,
+        `ss`.`name_ar` AS `stockStatusName_ar`,
+        `ss`.`name_en` AS `stockStatusName_en`,
+        `ss`.`name_fr` AS `stockStatusName_fr`,
+        `ep`.`stock` AS `stock`,
+        `ep`.`stockUpdateDateTime` AS `stockUpdateDateTime`,
+        `p`.`image` AS `image`,
+        `p`.`madeInCountryId` AS `madeInCountryId`,
+        `c`.`name_ar` AS `madeInCountryName_ar`,
+        `c`.`name_en` AS `madeInCountryName_en`,
+        `c`.`name_fr` AS `madeInCountryName_fr`,
+        `ep`.`bonusCustomerGroupId` AS `bonusCustomerGroupId`,
+        `cg`.`name_ar` AS `bonusCustomerGroupName_ar`,
+        `cg`.`name_en` AS `bonusCustomerGroupName_en`,
+        `cg`.`name_fr` AS `bonusCustomerGroupName_fr`,
+        `ep`.`bonusTypeId` AS `bonusTypeId`,
+        `epbt`.`formula` AS `bonusFormula`,
+        `epbt`.`name_ar` AS `bonusTypeName_ar`,
+        `epbt`.`name_en` AS `bonusTypeName_en`,
+        `epbt`.`name_fr` AS `bonusTypeName_fr`,
+        IFNULL(MIN(`epbd`.`minOrder`), 10) AS `defaultQuantity`,
+        NULL AS `bonusConfig`,
+        IFNULL(`q`.`quantity`, 0) AS `quantityOrdered`
+    FROM
+        ((((((((((((`marketplace`.`entityProductSell` `ep`
+        JOIN `marketplace`.`product` `p` ON ((`ep`.`productId` = `p`.`id`)))
+        JOIN `marketplace`.`scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
+        JOIN `marketplace`.`entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
+        JOIN `marketplace`.`country` `c` ON ((`p`.`madeInCountryId` = `c`.`id`)))
+        JOIN `marketplace`.`country` `ec` ON ((`e`.`countryId` = `ec`.`id`)))
+        JOIN `marketplace`.`stockStatus` `ss` ON ((`ep`.`stockStatusId` = `ss`.`id`)))
+        JOIN `marketplace`.`entityProductBonusType` `epbt` ON ((`ep`.`bonusTypeId` = `epbt`.`id`)))
+        LEFT JOIN `marketplace`.`category` `productCategory` ON ((`p`.`categoryId` = `productCategory`.`id`)))
+        LEFT JOIN `marketplace`.`subcategory` `productSubcategory` ON ((`p`.`subcategoryId` = `productSubcategory`.`id`)))
+        LEFT JOIN `marketplace`.`vwOrderProductQuantity` `q` ON ((`q`.`entityProductId` = `ep`.`id`)))
+        LEFT JOIN `marketplace`.`entityProductSellBonusDetail` `epbd` ON ((`epbd`.`entityProductId` = `ep`.`id`)))
+        LEFT JOIN `marketplace`.`entityRelationGroup` `cg` ON ((`cg`.`id` = `ep`.`bonusCustomerGroupId`)))
+    GROUP BY `ep`.`id`;
+
+    
+## INDEXES 
+ALTER TABLE `marketplace`.`entityProductSellBonusDetail` 
+ADD INDEX `idx_entityProductId` (`entityProductId` ASC) VISIBLE;
+
+ALTER TABLE `marketplace`.`account` 
+ADD INDEX `idx_entityId` (`entityId` ASC) VISIBLE;
+
+ALTER TABLE `marketplace`.`cartDetail` 
+ADD INDEX `idx_accountId` (`accountId` ASC) VISIBLE;
+
+## FOREIGN KEYS
+
+ALTER TABLE `marketplace`.`entityProductSell` 
+ADD CONSTRAINT `fk_entityProductSell_product`
+  FOREIGN KEY (`productId`)
+  REFERENCES `marketplace`.`product` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`product` 
+ADD CONSTRAINT `fk_product_scientificName`
+  FOREIGN KEY (`scientificNameId`)
+  REFERENCES `marketplace`.`scientificName` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`entityProductSell` 
+ADD CONSTRAINT `fk_entityProductSell_entity`
+  FOREIGN KEY (`entityId`)
+  REFERENCES `marketplace`.`entity` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`product` 
+ADD CONSTRAINT `fk_product_country`
+  FOREIGN KEY (`madeInCountryId`)
+  REFERENCES `marketplace`.`country` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`entity` 
+ADD CONSTRAINT `fk_entity_country`
+  FOREIGN KEY (`countryId`)
+  REFERENCES `marketplace`.`country` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`entityProductSell` 
+ADD CONSTRAINT `fk_entityProductSell_stockStatus`
+  FOREIGN KEY (`stockStatusId`)
+  REFERENCES `marketplace`.`stockStatus` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`entityProductSell` 
+ADD CONSTRAINT `fk_entityProductSell_entityProductBonusType`
+  FOREIGN KEY (`bonusTypeId`)
+  REFERENCES `marketplace`.`entityProductBonusType` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`product` 
+ADD CONSTRAINT `fk_product_category`
+  FOREIGN KEY (`categoryId`)
+  REFERENCES `marketplace`.`category` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`product` 
+ADD CONSTRAINT `fk_product_subcategory`
+  FOREIGN KEY (`subcategoryId`)
+  REFERENCES `marketplace`.`subcategory` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`entityProductSell` 
+ADD CONSTRAINT `fk_entityProductSell_entityProductSellBonusDetail`
+  FOREIGN KEY (`entityProductId`)
+  REFERENCES `marketplace`.`entityProductSellBonusDetail` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`entityProductSell` 
+ADD CONSTRAINT `fk_entityProductSell_entityRelationGroup`
+  FOREIGN KEY (`bonusCustomerGroupId`)
+  REFERENCES `marketplace`.`entityRelationGroup` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
