@@ -703,8 +703,73 @@ class OrderController extends Controller
                 $dbProduct->totalOrderQuantity += $dbOrderItems->quantity;
                 $dbProduct->update();
 
-                if ($dbProduct->stock <= 5 * $dbProduct->totalOrderQuantity / $dbProduct->totalOrderCount)
-                    $lowStockProducts[] = $dbProduct->id;
+
+                $arrProductId = [$dbOrderItems->entityProductId];
+                $dbBonus = new BaseModel($this->db, "vwEntityProductSellBonusDetail");
+                $dbBonus->bonusTypeName = "bonusTypeName_" . $this->objUser->language;
+                $arrBonus = $dbBonus->getWhere("entityProductId IN (" . implode(",", $arrProductId) . ") AND isActive = 1");
+                $arrBonusId = [];
+                foreach ($arrBonus as $bonus) {
+                    array_push($arrBonusId, $bonus['id']);
+                }
+
+
+                $lowStockByBonus = [];
+
+                foreach ($arrBonus as $bonus) {
+                    $bonusType = $bonus['bonusTypeName'];
+                    $bonusTypeId = $bonus['bonusTypeId'];
+                    $bonusMinOrder = $bonus['minOrder'];
+                    $bonusBonus = $bonus['bonus'];
+
+                    // Check if bonus is possible
+                    $availableQuantity = min($dbProduct->stock, $dbProduct->maximumOrderQuantity);
+                    $totalOrder = 0;
+                    if ($bonusTypeId == Constants::BONUS_TYPE_FIXED || $bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
+                        $totalOrder = $bonusMinOrder + $bonusBonus;
+                    } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                        $totalOrder = $bonusMinOrder + floor($bonusBonus * $bonusMinOrder / 100);
+                    }
+                    if ($totalOrder > $availableQuantity) {
+                        continue;
+                    }
+
+                    $totalBonus = 0;
+                    if ($bonusTypeId == Constants::BONUS_TYPE_FIXED) {
+                        $totalBonus = $bonusMinOrder + $bonusBonus;
+                    } else if ($bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
+                        $totalBonus = $bonusMinOrder + $bonusBonus;
+                    } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                        $totalBonus = $bonusMinOrder + floor($bonusMinOrder * $bonusBonus / 100);
+                    }
+
+                    if ($totalBonus > $dbProduct->stock) {
+                        $lowStockByBonus[$bonusTypeId][] = $bonusMinOrder . ':' . ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE ? '%' . $bonusBonus : $bonusBonus);
+                    }
+
+                }
+
+
+                $averageQuantity = $dbProduct->totalOrderQuantity / $dbProduct->totalOrderCount;
+                $lowStockReasons = [];
+                if ($dbProduct->stock <= 5 * $averageQuantity)
+                    $lowStockReasons[] = 'Average quantity per order is ' . Helper::formatMoney($averageQuantity, 1);
+
+                foreach ($lowStockByBonus as $key => $lowStockByBonusItems) {
+                    $bonusName = '';
+                    if ($key == Constants::BONUS_TYPE_FIXED) {
+                        $bonusName = 'Fixed';
+                    } else if ($key == Constants::BONUS_TYPE_DYNAMIC) {
+                        $bonusName = 'Dynamic';
+                    } else if ($key == Constants::BONUS_TYPE_PERCENTAGE) {
+                        $bonusName = 'Percentage';
+                    }
+                    $lowStockReasons[] = 'You have a ' . $bonusName . ' bonus (' . implode(', ', $lowStockByBonusItems) . ')';
+                }
+
+                if (sizeof($lowStockReasons) > 0) {
+                    $lowStockProducts[] = ['id' => $dbProduct->id, 'reason' => $lowStockReasons];
+                }
 
                 $dbOrderItems->next();
             }
@@ -856,7 +921,6 @@ class OrderController extends Controller
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
 
         echo $this->webResponse->jsonResponseV2(3, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null);
-        return;
     }
 
     function getPrintOrderInvoice()
