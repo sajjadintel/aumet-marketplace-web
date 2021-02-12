@@ -110,7 +110,7 @@ var CartCheckout = (function () {
 		WebApp.redirect('/web/thankyou/' + webResponse.data);
 	};
 
-	var _updateQuantity = function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice = 0, oldValue = null, shouldShowRemoveModal = true, submitButton = null, forceCallback = false, forcePreventUnblur = false) {
+	var _updateQuantity = function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice = 0, initializeBonusPopover = 0, oldValue = null, shouldShowRemoveModal = true, submitButton = null, forceCallback = false, forcePreventUnblur = false) {
 		let quantityId = '#quantity-' + productId;
 		let currentValue = 0;
 		if ($(quantityId).val() > 0) currentValue = parseInt($(quantityId).val());
@@ -135,7 +135,7 @@ var CartCheckout = (function () {
 			WebApp.post(
 				'/web/cart/checkout/update',
 				{ cartDetailId, sellerId, productId, quantity: newValue },
-				(webResponse) => _updateQuantityCallback(webResponse, updateTotalPrice),
+				(webResponse) => _updateQuantityCallback(webResponse, updateTotalPrice, initializeBonusPopover),
 				submitButton,
 				forceCallback,
 				forcePreventUnblur
@@ -143,7 +143,7 @@ var CartCheckout = (function () {
 		}
 	};
 
-	var _updateQuantityCallback = function (webResponse, updateTotalPrice) {
+	var _updateQuantityCallback = function (webResponse, updateTotalPrice, initializeBonusPopover) {
 		let cartDetail = webResponse.data;
 
 		// Update cart count
@@ -210,6 +210,11 @@ var CartCheckout = (function () {
 		if (updateTotalPrice) {
 			updateTotalPrice();
 		}
+
+		$("#bonusLabel-" + productId).attr("data-activeBonus", JSON.stringify(cartDetail.activeBonus))
+		if(initializeBonusPopover) {
+			initializeBonusPopover();
+		}
 		WebApp.reloadDatatable();
 	};
 
@@ -250,8 +255,8 @@ var CartCheckout = (function () {
 		submitOrderSuccess: function (webResponse) {
 			_submitOrderSuccess(webResponse);
 		},
-		updateQuantity: function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, oldValue, shouldShowRemoveModal, submitButton, forceCallback, forcePreventUnblur) {
-			_updateQuantity(productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, oldValue, shouldShowRemoveModal, submitButton, forceCallback, forcePreventUnblur);
+		updateQuantity: function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, initializeBonusPopover, oldValue, shouldShowRemoveModal, submitButton, forceCallback, forcePreventUnblur) {
+			_updateQuantity(productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, initializeBonusPopover, oldValue, shouldShowRemoveModal, submitButton, forceCallback, forcePreventUnblur);
 		},
 		updateNote: function (productId, cardDetailId, sellerId) {
 			_updateNote(productId, cardDetailId, sellerId);

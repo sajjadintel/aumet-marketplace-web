@@ -251,6 +251,7 @@ return array(
     'vModule_cart_continueShopping' => 'إضافة المزيد من المنتجات',
     'vModule_cart_proceedToCheckOut' => 'إرسال قائمة الطلبات',
     'vModule_cart_quantity' => 'الكمية',
+    'vModule_cart_bonusQuantity' => 'مكافأة',
     'vModule_cart_bonus' => 'Bonus', // TODO: Add Translation
     'vModule_cart_note' => 'Note', // TODO: Add Translation
     'vModule_cart_unitPrice' => 'سعر الوحدة',

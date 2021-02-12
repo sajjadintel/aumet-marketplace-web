@@ -91,6 +91,10 @@ function compress_htmlcode($codedata)
                                             </div>
                                         </div>
 
+                                        <div>
+                                            <span id="mainBonusLabel" class="mainBonusLabel cart-checkout-bonus-label py-1 px-6" data-toggle="popover" data-arrBonus="<?php echo htmlspecialchars(json_encode($objEntityProduct->arrBonus), ENT_QUOTES, 'UTF-8'); ?>" data-activeBonus="<?php echo htmlspecialchars(json_encode($objEntityProduct->activeBonus), ENT_QUOTES, 'UTF-8'); ?>">Bonuses <span class="bonus"></span> </span>
+                                        </div>
+
                                         <?php if ($objEntityProduct->bonusTypeId == 2 && $objEntityProduct->bonusOptions != null) { ?>
                                             <div class="bonus">
                                                 <div class="title"><?php echo $vModule_cart_bonus ?></div>
@@ -179,7 +183,7 @@ function compress_htmlcode($codedata)
 
                     <div class="card-body">
 
-                        <table id="datatableLocal" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom text-left">
+                        <table id="datatable" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom text-left">
                         </table>
 
                     </div>
@@ -272,10 +276,6 @@ function compress_htmlcode($codedata)
 <script>
     var row = <?= json_encode(['id' => $objEntityProduct->id, 'entityId' => $objEntityProduct->entityId, 'productId' => $objEntityProduct->productId, 'quantity' => 1]); ?>;
 
-    function addToCart() {
-        SearchDataTable.onClickAddMoreToCart(row);
-    }
-
     function viewAllSameDistributor() {
         <?php if (Helper::isPharmacy($_SESSION['objUser']->roleId)) { ?>
             WebApp.loadPage('/web/pharmacy/product/search?distributorId=<?php echo $objEntityProduct->entityId ?>');
@@ -308,7 +308,7 @@ function compress_htmlcode($codedata)
 </script>
 <script>
     var PageClass = function() {
-        var elementId = "#datatableLocal";
+        var elementId = "#datatable";
         var url = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 
         var columnDefs = [{
@@ -403,10 +403,14 @@ function compress_htmlcode($codedata)
 
                         output += vMinusBtn;
 
+
+                        let rowClone = JSON.parse(JSON.stringify(row));
+                        rowClone.arrBonus = null;
+                        rowClone.activeBonus = null;
                         let vQuantity =
                             '<input class="qtyBox" id="quantity-' + row.id + '" type="number" min="0" style="width: 65px; direction: ltr; margin-right: 5px;" ' +
                             'value="' + rowQuantity + '" onfocus="this.oldvalue = this.value;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" ' +
-                            'onchange=\'SearchDataTable.updateQty(' + JSON.stringify(row) + ', this.oldvalue)\' />';
+                            'onchange=\'SearchDataTable.updateQty(' + JSON.stringify(rowClone) + ', this.oldvalue)\' />';
 
                         output += vQuantity;
 
@@ -428,6 +432,16 @@ function compress_htmlcode($codedata)
             },
             {
                 targets: 4,
+                title: WebAppLocals.getMessage('bonus'),
+                data: 'id',
+                orderable: false,
+                render: function (data, type, row, meta) {
+                    var output = '<span id="bonusLabel-' + row.id + '" class="bonusLabel cart-checkout-bonus-label py-1 px-6" data-toggle="popover" data-arrBonus="' + row.arrBonus + '" data-activeBonus="' + row.activeBonus + '">Bonuses <span class="bonus"></span> </span>';
+                    return output;
+                },
+            },
+            {
+                targets: 5,
                 title: '',
                 data: 'id',
                 orderable: false,
@@ -529,22 +543,24 @@ function compress_htmlcode($codedata)
             },
         };
     }();
-
-    PageClass.init();
 </script>
 <?php ob_end_flush(); ?>
 <?php include_once 'image-modal.php'; ?>
 <script>
     $(document).ready(function() {
-
-        console.log('before')
         initAutoplay();
-        console.log('after');
 
         $('.product-overview').expandable({
             height: 350
         });
-    })
+
+        initializeBonusPopover('.mainBonusLabel');
+
+        PageClass.init();
+        $('#datatable').on('draw.dt', function () {
+            initializeBonusPopover('.bonusLabel');
+        });
+    });
 
     function initAutoplay() {
         var slidesToShow = 3;
@@ -576,6 +592,134 @@ function compress_htmlcode($codedata)
             $('#button-next').hide();
             $('#button-previous').hide();
         }
+    }
+
+    function initializeBonusPopover(selector) {
+        $(selector).popover('dispose');
+        $(selector).each(function(index, element) {
+            var arrBonusStr = $(element).attr('data-arrBonus') || "[]";
+            var arrBonus = JSON.parse(arrBonusStr);
+            if(arrBonus.length > 0) {
+                $(element).popover({
+                    html: true,
+                    sanitize: false,
+                    trigger: "manual",
+                    placement: "bottom",
+                    content: getBonusPopoverContent(element),
+                }).on("mouseenter", function () {
+                    var _this = this;
+                    $(this).popover("show");
+                    $(".popover").on("mouseleave", function () {
+                        $(_this).popover('hide');
+                    });
+                }).on("mouseleave", function () {
+                    var _this = this;
+                    setTimeout(function () {
+                        if (!$(".popover:hover").length) {
+                            $(_this).popover("hide");
+                        }
+                    }, 300);
+                });
+            } else {
+                $(element).hide();
+            }
+        });
+    }
+
+    function getBonusPopoverContent(element) {
+        var arrBonusStr = $(element).attr('data-arrBonus') || "[]";
+        var arrBonus = JSON.parse(arrBonusStr);
+        var activeBonusStr = $(element).attr('data-activeBonus') || "{}";
+        var activeBonus = JSON.parse(activeBonusStr);
+
+        var tableElement = document.createElement("table");
+
+        var tableHead = [
+            "BONUSES TYPE",
+            "MIN QTY",
+            "BONUSES"
+        ];
+        var allTableData = [
+            tableHead,
+            ...arrBonus
+        ];
+        for(var i = 0; i < allTableData.length; i++) {
+            var row = allTableData[i];
+
+            if(i == 0) {
+                /* Add table head*/
+                var trElement = document.createElement('tr');
+                for(var j = 0; j < row.length; j++) {
+                    var item = row[j];
+                    var thElement = document.createElement('th');
+                    thElement.className = "cart-checkout-bonus-th text-center p-1 pb-3";
+                    thElement.innerHTML = item;
+                    trElement.append(thElement);
+                }
+                tableElement.append(trElement);
+            } else {
+                var arrMinQty = row.arrMinQty || [];
+                var arrBonuses = row.arrBonuses || [];
+                if(arrMinQty.length > 0 && arrMinQty.length === arrBonuses.length) {
+                    /* Add bonus type column*/
+                    var trElement = document.createElement('tr');
+
+                    var bonusType = row.bonusType;
+                    var tdBonusTypeElement = document.createElement('td');
+                    tdBonusTypeElement.className = "cart-checkout-bonus-td text-center p-1";
+                    if(i != allTableData.length - 1) tdBonusTypeElement.className += " border-bottom";
+                    if(arrMinQty.length > 1) tdBonusTypeElement.setAttribute('rowspan', arrMinQty.length);
+                    tdBonusTypeElement.innerHTML = bonusType;
+                    trElement.append(tdBonusTypeElement);
+
+                    /* Add minQty and bonuses columns*/
+                    for(var j = 0; j < arrMinQty.length; j++) {
+                        if(j != 0) {
+                            trElement = document.createElement('tr');
+                        }
+
+                        var minQty = arrMinQty[j];
+                        var tdMinQtyElement = document.createElement('td');
+                        tdMinQtyElement.className = "cart-checkout-bonus-td text-center p-1 border-left";
+                        if(i != allTableData.length - 1 || j != arrMinQty.length - 1){
+                            tdMinQtyElement.className += " border-bottom";
+                        }
+                        tdMinQtyElement.innerHTML = minQty;
+                        trElement.append(tdMinQtyElement);
+
+                        var bonuses = arrBonuses[j];
+                        var tdBonusesElement = document.createElement('td');
+                        tdBonusesElement.className = "cart-checkout-bonus-td text-center p-1 border-left";
+                        if (i != allTableData.length - 1 || j != arrMinQty.length - 1) {
+                            tdBonusesElement.className += " border-bottom";
+                        }
+                        tdBonusesElement.innerHTML = bonuses;
+                        trElement.append(tdBonusesElement);
+
+                        if(activeBonus) {
+                            if(bonusType == activeBonus.bonusType && minQty == activeBonus.minQty && bonuses == activeBonus.bonuses) {
+                                var tdCheckElement = document.createElement('td');
+                                tdCheckElement.className = "cart-checkout-bonus-td text-center p-1";
+                                tdCheckElement.innerHTML = "<i class='las la-check check'></i>";
+                                trElement.append(tdCheckElement);
+                            }
+                        }
+
+                        tableElement.append(trElement);
+                    }
+                }
+            }
+        }
+        if(activeBonus && activeBonus.totalBonus) {
+            $(element).find('.bonus').text("(+" + activeBonus.totalBonus + ")");
+        } else {
+            $(element).find('.bonus').text("");
+        }
+        return tableElement.outerHTML;
+    }
+
+    function addToCart() {
+        SearchDataTable.onClickAddMoreToCart(row);
     }
 
     $('.productImage').on("error", function() {
