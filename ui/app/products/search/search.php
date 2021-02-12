@@ -2,13 +2,13 @@
 ob_start("compress_htmlcode");
 function compress_htmlcode($codedata)
 {
-//    $searchdata = array(
-//        '/\>[^\S ]+/s', // remove whitespaces after tags
-//        '/[^\S ]+\</s', // remove whitespaces before tags
-//        '/(\s)+/s' // remove multiple whitespace sequences
-//    );
-//    $replacedata = array('>', '<', '\\1');
-//    $codedata = preg_replace($searchdata, $replacedata, $codedata);
+    $searchdata = array(
+        '/\>[^\S ]+/s', // remove whitespaces after tags
+        '/[^\S ]+\</s', // remove whitespaces before tags
+        '/(\s)+/s' // remove multiple whitespace sequences
+    );
+    $replacedata = array('>', '<', '\\1');
+    $codedata = preg_replace($searchdata, $replacedata, $codedata);
     return $codedata;
 }
 
@@ -773,7 +773,7 @@ function compress_htmlcode($codedata)
         var allTableData = [
             tableHead,
             ...arrBonus
-        ]
+        ];
         for(var i = 0; i < allTableData.length; i++) {
             var row = allTableData[i];
 
@@ -812,16 +812,18 @@ function compress_htmlcode($codedata)
                         var minQty = arrMinQty[j];
                         var tdMinQtyElement = document.createElement('td');
                         tdMinQtyElement.className = "cart-checkout-bonus-td text-center p-1 border-left";
-                        if(i != allTableData.length - 1 || j != arrMinQty.length - 1)
+                        if(i != allTableData.length - 1 || j != arrMinQty.length - 1){
                             tdMinQtyElement.className += " border-bottom";
+                        }
                         tdMinQtyElement.innerHTML = minQty;
                         trElement.append(tdMinQtyElement);
 
                         var bonuses = arrBonuses[j];
                         var tdBonusesElement = document.createElement('td');
                         tdBonusesElement.className = "cart-checkout-bonus-td text-center p-1 border-left";
-                        if(i != allTableData.length - 1 || j != arrMinQty.length - 1)
+                        if (i != allTableData.length - 1 || j != arrMinQty.length - 1) {
                             tdBonusesElement.className += " border-bottom";
+                        }
                         tdBonusesElement.innerHTML = bonuses;
                         trElement.append(tdBonusesElement);
 
@@ -840,9 +842,9 @@ function compress_htmlcode($codedata)
             }
         }
         if(activeBonus && activeBonus.totalBonus) {
-            $(element).find('.bonus').text("(+" + activeBonus.totalBonus + ")")
+            $(element).find('.bonus').text("(+" + activeBonus.totalBonus + ")");
         } else {
-            $(element).find('.bonus').text("")
+            $(element).find('.bonus').text("");
         }
         return tableElement.outerHTML;
     }
