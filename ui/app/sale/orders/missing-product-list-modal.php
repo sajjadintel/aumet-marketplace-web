@@ -33,16 +33,16 @@
                             <div class="col-md-6 form-text" id="missingProductListModalDateText"></div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 display-none">
                         <div class="row form-group">
                             <div class="col-md-6 form-label" id="missingProductListModalBranchLabel"></div>
                             <div class="col-md-6 form-text" id="missingProductListModalBranchText"></div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="row form-group">
-                            <div class="col-md-6 form-label" id="missingProductListModalAddressLabel"></div>
-                            <div class="col-md-6 form-text" id="missingProductListModalAddressText"></div>
+                            <div class="col-md-3 form-label" id="missingProductListModalAddressLabel"></div>
+                            <div class="col-md-9 form-text" id="missingProductListModalAddressText"></div>
                         </div>
                     </div>
                 </div>
@@ -64,4 +64,3 @@
         </div>
     </div>
 </div>
-

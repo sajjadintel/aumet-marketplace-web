@@ -137,10 +137,9 @@ function compress_htmlcode($codedata)
 <script>
     var PageClass = function() {
         var elementId = "#datatable";
-        var url = '/web/product/search';
+        var url = '/web/pharmacy/product/search';
 
-        var columnDefs = [
-            {
+        var columnDefs = [{
                 className: "never",
                 targets: [0]
             },
@@ -152,150 +151,169 @@ function compress_htmlcode($codedata)
                 targets: 0,
                 title: 'id',
                 data: 'id'
-            },{
-            targets: 1,
-            title: WebAppLocals.getMessage('productName'),
-            data: 'productName_en',
-            render: function(data, type, row, meta) {
-                var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
-                    row.entityId +
-                    '/product/' +
-                    row.id +
-                    '\')"> ' +
-                    '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <div class="symbol-label" style="background-image: url(\'' +
-                    row.image +
-                    '\')" ></div></div>' +
-                    '</a></div>';
-                output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
-                    row.entityId +
-                    '/product/' +
-                    row.id +
-                    '\')" title="' +
-                    row['productName_' + docLang] +
-                    '"> ' +
-                    WebApp.truncateText(row['productName_' + docLang], 100) +
-                    '</span></div></div>';
-                return output;
-            },
-        }, {
-            targets: 2,
-            title: WebAppLocals.getMessage('productScientificName'),
-            data: 'scientificName'
-        }, {
-            targets: 3,
-            title: WebAppLocals.getMessage('sellingEntityName'),
-            data: 'entityName_' + docLang,
-            render: $.fn.dataTable.render.ellipsis(100)
-        }, {
-            targets: 4,
-            title: WebAppLocals.getMessage('stockAvailability'),
-            data: 'stockStatusId',
-            orderable: false,
-            render: function(data, type, row, meta) {
-                var status = {
-                    1: {
-                        title: WebAppLocals.getMessage('stockAvailability_available'),
-                        class: ' label-primary',
-                    },
-                    2: {
-                        title: WebAppLocals.getMessage('stockAvailability_notAvailable'),
-                        class: ' label-danger',
-                    },
-                    3: {
-                        title: WebAppLocals.getMessage('stockAvailability_availableSoon'),
-                        class: ' label-warning',
-                    },
-                };
-
-                var output = '';
-
-                output +=
-                    '<div><span class="label label-lg font-weight-bold ' +
-                    status[row.stockStatusId].class +
-                    ' label-inline">' +
-                    status[row.stockStatusId].title +
-                    '</span></div>';
-
-                return output;
-            },
-        }, {
-            targets: 5,
-            title: WebAppLocals.getMessage('unitPrice'),
-            data: 'unitPrice',
-            render: function(data, type, row, meta) {
-                var output = WebApp.formatMoney(row.unitPrice)  + ' ' + row.currency;
-
-                return '<div style="width: max-content;">' + output + '</div>';
-            },
-        },
-        /*{
-            targets: 6,
-            title: WebAppLocals.getMessage('bonus'),
-            data: 'activeBonus',
-            render: function(data, type, row, meta) {
-                let output = "";
-                if (row.bonusTypeId === 2 && row.bonuses != null) {
-                    /* let btnText = row.activeBonus ? row.activeBonus.minOrder + " / +" + row.activeBonus.bonus : "Select";
-                    let btnText = "Select";
-                    let allBonuses = row.bonuses.filter((bonus) => !row.activeBonus || row.activeBonus.id !== bonus.id);
-                    let btnShowBonuses =
-                        '<a style="width: max-content;" href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.id + ', ' + row.entityId + ', ' + JSON.stringify(allBonuses) + ')\'\
-                        class="btn btn-sm btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="View Bonuses">\
-                        <span>' + btnText + '</span></a>';
-                    output += btnShowBonuses;
-                }
-
-                return output;
-            },
-        }, */
-        {
-            targets: 6,
-            title: WebAppLocals.getMessage('quantity'),
-            data: 'id',
-            orderable: false,
-            render: function(data, type, row, meta) {
-                var vQuantity = '';
-                var output = '';
-                var rowQuantity = 1;
-                if (row.quantity) {
-                    rowQuantity = row.quantity
-                }
-
-                if (row.stockStatusId == 1) {
-                    let vQuantity =
-                        '<input id="quantity-' +
+            }, {
+                targets: 1,
+                title: WebAppLocals.getMessage('productName'),
+                data: 'productName_en',
+                render: function(data, type, row, meta) {
+                    if (!row.image) row.image = "/assets/img/default-product-image.png";
+                    var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        row.entityId +
+                        '/product/' +
                         row.id +
-                        '" type="number" min="0" style="width: 70px; direction: ltr" value="' +
-                        rowQuantity +
-                        '" onkeypress="return event.charCode >= 48 && event.charCode <= 57"' +
-                        '" oninput=\'SearchDataTable.changeProductQuantityCallback(' +
-                        JSON.stringify(row) +
-                        " )' >";
-                    output += vQuantity;
-
-                    let vQuantityFree =
-                        '<input class="quantityFreeInput" id="quantityFreeInput-' +
+                        '\')"> ' +
+                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <img class="productImage" style="width: 60px;" src="' + row.image + '"></div>' +
+                        '</a></div>';
+                    output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        row.entityId +
+                        '/product/' +
                         row.id +
-                        '" required style="display: none;">\
+                        '\')" title="' +
+                        row['productName_' + docLang] +
+                        '"> ' +
+                        WebApp.truncateText(row['productName_' + docLang], 100) +
+                        '</span></div></div>';
+                    return output;
+                },
+            }, {
+                targets: 2,
+                title: WebAppLocals.getMessage('productScientificName'),
+                data: 'scientificName'
+            }, {
+                targets: 3,
+                title: WebAppLocals.getMessage('sellingEntityName'),
+                data: 'entityName_' + docLang,
+                render: $.fn.dataTable.render.ellipsis(100)
+            }, {
+                targets: 4,
+                title: WebAppLocals.getMessage('stockAvailability'),
+                data: 'stockStatusId',
+                orderable: false,
+                render: function(data, type, row, meta) {
+                    var status = {
+                        1: {
+                            title: WebAppLocals.getMessage('stockAvailability_available'),
+                            class: ' label-primary',
+                        },
+                        2: {
+                            title: WebAppLocals.getMessage('stockAvailability_notAvailable'),
+                            class: ' label-danger',
+                        },
+                        3: {
+                            title: WebAppLocals.getMessage('stockAvailability_availableSoon'),
+                            class: ' label-warning',
+                        },
+                    };
+
+                    var output = '';
+
+                    output +=
+                        '<div><span class="label label-lg font-weight-bold ' +
+                        status[row.stockStatusId].class +
+                        ' label-inline">' +
+                        status[row.stockStatusId].title +
+                        '</span></div>';
+
+                    return output;
+                },
+            }, {
+                targets: 5,
+                title: WebAppLocals.getMessage('unitPrice'),
+                data: 'unitPrice',
+                render: function(data, type, row, meta) {
+                    var output = WebApp.formatMoney(row.unitPrice) + ' ' + row.currency;
+
+                    return '<div style="width: max-content;">' + output + '</div>';
+                },
+            },
+            /*{
+                targets: 6,
+                title: WebAppLocals.getMessage('bonus'),
+                data: 'activeBonus',
+                render: function(data, type, row, meta) {
+                    let output = "";
+                    if (row.bonusTypeId === 2 && row.bonuses != null) {
+                        /* let btnText = row.activeBonus ? row.activeBonus.minOrder + " / +" + row.activeBonus.bonus : "Select";
+                        let btnText = "Select";
+                        let allBonuses = row.bonuses.filter((bonus) => !row.activeBonus || row.activeBonus.id !== bonus.id);
+                        let btnShowBonuses =
+                            '<a style="width: max-content;" href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.id + ', ' + row.entityId + ', ' + JSON.stringify(allBonuses) + ')\'\
+                            class="btn btn-sm btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="View Bonuses">\
+                            <span>' + btnText + '</span></a>';
+                        output += btnShowBonuses;
+                    }
+
+                    return output;
+                },
+            }, */
+            {
+                targets: 6,
+                title: WebAppLocals.getMessage('quantity'),
+                data: 'id',
+                orderable: false,
+                render: function(data, type, row, meta) {
+                    var vQuantity = '';
+                    var output = '';
+                    var rowQuantity = (row.cart > 0) ? row.cart : 0;
+                    if (row.quantity) {
+                        rowQuantity = row.quantity
+                    }
+
+                    if (row.stockStatusId == 1) {
+
+                        let vMinusBtn = '<a class="btn btn-xs btn-light-success btn-icon mr-2 subQty" onclick="SearchDataTable.subQuantity(this)"> <i class="ki ki-minus icon-xs"></i></a>';
+
+                        output += vMinusBtn;
+
+
+                        let rowClone = JSON.parse(JSON.stringify(row));
+                        rowClone.arrBonus = null;
+                        rowClone.activeBonus = null;
+                        let vQuantity =
+                            '<input class="qtyBox" id="quantity-' + row.id + '" type="number" min="0" style="width: 65px; direction: ltr; margin-right: 5px;" ' +
+                            'value="' + rowQuantity + '" onfocus="this.oldvalue = this.value;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" ' +
+                            'onchange=\'SearchDataTable.updateQty(' + JSON.stringify(rowClone) + ', this.oldvalue)\' />';
+
+                        output += vQuantity;
+
+                        let vPlusBtn = '<a class="btn btn-xs btn-light-success btn-icon mr-2 addQty" onclick="SearchDataTable.addQuantity(this)"> <i class="ki ki-plus icon-xs"></i></a>';
+
+                        output += vPlusBtn;
+
+                        let vQuantityFree =
+                            '<input class="quantityFreeInput" id="quantityFreeInput-' +
+                            row.id +
+                            '" required style="display: none;">\
                             <span id="quantityFreeHolder-' +
-                        row.id +
-                        '" class="quantityFreeHolder label label-lg font-weight-bold label-primary label-inline" style="margin-left: 5px;"></span>';
-                    output += vQuantityFree;
-                }
+                            row.id +
+                            '" class="quantityFreeHolder label label-lg font-weight-bold label-primary label-inline" style="margin-left: 5px;"></span>';
+                        /* output += vQuantityFree; */
+                    }
 
-                return '<div style="display: flex;">' + output + '</div>';
+                    return '<div style="display: flex;">' + output + '</div>';
+                },
             },
-        }, {
-            targets: 7,
-            title: '',
-            data: 'id',
-            orderable: false,
-            render: function(data, type, row, meta) {
+            {
+                targets: 7,
+                title: WebAppLocals.getMessage('bonus'),
+                data: 'id',
+                orderable: false,
+                render: function(data, type, row, meta) {
+                    var output = '<span id="bonusLabel-' + row.id + '" class="bonusLabel cart-checkout-bonus-label py-1 px-6" data-toggle="popover" data-arrBonus="' + row.arrBonus + '" data-activeBonus="' + row.activeBonus + '">Bonuses <span class="bonus"></span> </span>';
+                    return output;
+                },
+            },
+            {
+                targets: 8,
+                title: '',
+                data: 'id',
+                orderable: false,
+                render: function(data, type, row, meta) {
 
-                var btnAddMoreToCart =
-                    '<a style="display: flex;" href="javascript:;" onclick=\'SearchDataTable.onClickAddMoreToCart(' +
-                    JSON.stringify(row) +
-                    ' )\' class="btn btn-sm btn-primary btn-text-primary btn-hover-primary  mr-2 mb-2" title="Add to cart">\
+                    var btnAddMoreToCart =
+                        '<a style="display: flex;" href="javascript:;" onclick=\'SearchDataTable.onClickAddMoreToCart(' +
+                        JSON.stringify(row) +
+                        ' )\' class="btn btn-sm btn-primary btn-text-primary btn-hover-primary  mr-2 mb-2" title="Add to cart">\
                         <span class="svg-icon svg-icon-md">\
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -304,13 +322,13 @@ function compress_htmlcode($codedata)
                             <path d="M6.5,21 C5.67157288,21 5,20.3284271 5,19.5 C5,18.6715729 5.67157288,18 6.5,18 C7.32842712,18 8,18.6715729 8,19.5 C8,20.3284271 7.32842712,21 6.5,21 Z M15.5,21 C14.6715729,21 14,20.3284271 14,19.5 C14,18.6715729 14.6715729,18 15.5,18 C16.3284271,18 17,18.6715729 17,19.5 C17,20.3284271 16.3284271,21 15.5,21 Z" fill="#000000"/>\
                         </g></svg></span>\
                         <span class="label label-danger ml-2">' +
-                    row.cart +
-                    '</span></a>';
+                        row.cart +
+                        '</span></a>';
 
-                var btnAddToCart =
-                    '<a style="display: flex;" href="javascript:;" onclick=\'SearchDataTable.onClickAddToCart(' +
-                    JSON.stringify(row) +
-                    ' )\' class="btn btn-sm btn-default btn-text-primary btn-hover-primary  mr-2 mb-2" title="Add to cart">\
+                    var btnAddToCart =
+                        '<a style="display: flex;" href="javascript:;" onclick=\'SearchDataTable.onClickAddToCart(' +
+                        JSON.stringify(row) +
+                        ' )\' class="btn btn-sm btn-default btn-text-primary btn-hover-primary  mr-2 mb-2" title="Add to cart">\
                         <span class="svg-icon svg-icon-md">\
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -319,8 +337,31 @@ function compress_htmlcode($codedata)
                             <path d="M6.5,21 C5.67157288,21 5,20.3284271 5,19.5 C5,18.6715729 5.67157288,18 6.5,18 C7.32842712,18 8,18.6715729 8,19.5 C8,20.3284271 7.32842712,21 6.5,21 Z M15.5,21 C14.6715729,21 14,20.3284271 14,19.5 C14,18.6715729 14.6715729,18 15.5,18 C16.3284271,18 17,18.6715729 17,19.5 C17,20.3284271 16.3284271,21 15.5,21 Z" fill="#000000"/>\
                         </g></svg></span></a>';
 
-                var btnNotifyMe =
-                    '<a href="javascript:;" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2 mb-2" title="Add to cart">\
+                    var btnGoToCartMore =
+                        '<a style="display: flex;" id="btnGoToCartMore-' + row.id + '" href="javascript:;" onclick=\'WebApp.loadPage("/web/cart/checkout")\' class="btn btn-sm btn-primary btn-text-primary btn-hover-primary  mr-2 mb-2" title="Go to cart">\
+                        <span class="svg-icon svg-icon-md">\
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
+                            <rect x="0" y="0" width="24" height="24"/>\
+                            <path d="M18.1446364,11.84388 L17.4471627,16.0287218 C17.4463569,16.0335568 17.4455155,16.0383857 17.4446387,16.0432083 C17.345843,16.5865846 16.8252597,16.9469884 16.2818833,16.8481927 L4.91303792,14.7811299 C4.53842737,14.7130189 4.23500006,14.4380834 4.13039941,14.0719812 L2.30560137,7.68518803 C2.28007524,7.59584656 2.26712532,7.50338343 2.26712532,7.4104669 C2.26712532,6.85818215 2.71484057,6.4104669 3.26712532,6.4104669 L16.9929851,6.4104669 L17.606173,3.78251876 C17.7307772,3.24850086 18.2068633,2.87071314 18.7552257,2.87071314 L20.8200821,2.87071314 C21.4717328,2.87071314 22,3.39898039 22,4.05063106 C22,4.70228173 21.4717328,5.23054898 20.8200821,5.23054898 L19.6915238,5.23054898 L18.1446364,11.84388 Z" fill="#000000" opacity="0.3"/>\
+                            <path d="M6.5,21 C5.67157288,21 5,20.3284271 5,19.5 C5,18.6715729 5.67157288,18 6.5,18 C7.32842712,18 8,18.6715729 8,19.5 C8,20.3284271 7.32842712,21 6.5,21 Z M15.5,21 C14.6715729,21 14,20.3284271 14,19.5 C14,18.6715729 14.6715729,18 15.5,18 C16.3284271,18 17,18.6715729 17,19.5 C17,20.3284271 16.3284271,21 15.5,21 Z" fill="#000000"/>\
+                        </g></svg></span>\
+                        <span class="label label-danger ml-2">' +
+                        row.cart +
+                        '</span></a>';
+
+                    var btnGoToCart =
+                        '<a style="display: flex;" id="btnGoToCart-' + row.id + '" href="javascript:;" onclick=\'WebApp.loadPage("/web/cart/checkout")\' class="btn btn-sm btn-default btn-text-primary btn-hover-primary  mr-2 mb-2" title="Go to cart">\
+                        <span class="svg-icon svg-icon-md">\
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
+                            <rect x="0" y="0" width="24" height="24"/>\
+                            <path d="M18.1446364,11.84388 L17.4471627,16.0287218 C17.4463569,16.0335568 17.4455155,16.0383857 17.4446387,16.0432083 C17.345843,16.5865846 16.8252597,16.9469884 16.2818833,16.8481927 L4.91303792,14.7811299 C4.53842737,14.7130189 4.23500006,14.4380834 4.13039941,14.0719812 L2.30560137,7.68518803 C2.28007524,7.59584656 2.26712532,7.50338343 2.26712532,7.4104669 C2.26712532,6.85818215 2.71484057,6.4104669 3.26712532,6.4104669 L16.9929851,6.4104669 L17.606173,3.78251876 C17.7307772,3.24850086 18.2068633,2.87071314 18.7552257,2.87071314 L20.8200821,2.87071314 C21.4717328,2.87071314 22,3.39898039 22,4.05063106 C22,4.70228173 21.4717328,5.23054898 20.8200821,5.23054898 L19.6915238,5.23054898 L18.1446364,11.84388 Z" fill="#000000" opacity="0.3"/>\
+                            <path d="M6.5,21 C5.67157288,21 5,20.3284271 5,19.5 C5,18.6715729 5.67157288,18 6.5,18 C7.32842712,18 8,18.6715729 8,19.5 C8,20.3284271 7.32842712,21 6.5,21 Z M15.5,21 C14.6715729,21 14,20.3284271 14,19.5 C14,18.6715729 14.6715729,18 15.5,18 C16.3284271,18 17,18.6715729 17,19.5 C17,20.3284271 16.3284271,21 15.5,21 Z" fill="#000000"/>\
+                        </g></svg></span></a>';
+
+                    var btnNotifyMe =
+                        '<a href="javascript:;" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2 mb-2" title="Add to cart">\
                         <span class="svg-icon svg-icon-md">\
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -329,12 +370,12 @@ function compress_htmlcode($codedata)
                             <circle fill="#000000" opacity="0.3" cx="19.5" cy="17.5" r="2.5"/>\
                             </g></svg></span></a>';
 
-                var btnViewProduct =
-                    '<a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
-                    row.entityId +
-                    '/product/' +
-                    row.id +
-                    '\')" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2 mb-2" title="View">\
+                    var btnViewProduct =
+                        '<a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        row.entityId +
+                        '/product/' +
+                        row.id +
+                        '\')" class="btn btn-sm btn-default btn-text-primary btn-hover-primary btn-icon mr-2 mb-2" title="View">\
                         <span class="svg-icon svg-icon-md">\
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">\
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
@@ -344,40 +385,45 @@ function compress_htmlcode($codedata)
                             <path d="M10.5,10.5 L10.5,9.5 C10.5,9.22385763 10.7238576,9 11,9 C11.2761424,9 11.5,9.22385763 11.5,9.5 L11.5,10.5 L12.5,10.5 C12.7761424,10.5 13,10.7238576 13,11 C13,11.2761424 12.7761424,11.5 12.5,11.5 L11.5,11.5 L11.5,12.5 C11.5,12.7761424 11.2761424,13 11,13 C10.7238576,13 10.5,12.7761424 10.5,12.5 L10.5,11.5 L9.5,11.5 C9.22385763,11.5 9,11.2761424 9,11 C9,10.7238576 9.22385763,10.5 9.5,10.5 L10.5,10.5 Z" fill="#000000" opacity="0.3"/>\
                             </g></svg></span></a>';
 
-                var btnShowBonuses =
-                    '<a href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.id + ')\'\
+                    var btnShowBonuses =
+                        '<a href="javascript:;" onclick=\'SearchDataTable.productAddBonusModal(' + row.id + ')\'\
                     class="btn btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="View">\
                     <span>Show Bonuses</span></a>';
 
-                var outActions = '';
+                    var outActions = '';
 
-                switch (row.stockStatusId) {
-                    case 1:
-                        /*outActions += btnViewProduct;*/
-                        if (row.cart > 0) {
-                            outActions += btnAddMoreToCart;
-                        } else {
-                            outActions += btnAddToCart;
-                        }
-                        SearchDataTable.changeProductQuantityCallback(row);
-                        break;
-                    case 2:
-                        /*outActions += btnViewProduct;*/
-                        outActions += btnNotifyMe;
-                        break;
-                    case 3:
-                        /*outActions += btnViewProduct;*/
-                        outActions += btnNotifyMe;
-                        break;
-                }
+                    switch (row.stockStatusId) {
+                        case 1:
+                            /*outActions += btnViewProduct;*/
+                            /*outActions += btnGoToCartMore;*/
+                            /*outActions += btnGoToCart;*/
+                            if (row.cart > 0) {
+                                /*outActions += btnAddMoreToCart;*/
+                                outActions += btnGoToCartMore;
+                            } else {
+                                /*outActions += btnAddToCart;*/
+                                outActions += btnGoToCart;
+                            }
+                            SearchDataTable.changeProductQuantityCallback(row);
+                            break;
+                        case 2:
+                            /*outActions += btnViewProduct;*/
+                            /*outActions += btnNotifyMe;*/
+                            break;
+                        case 3:
+                            /*outActions += btnViewProduct;*/
+                            /*outActions += btnNotifyMe;*/
+                            break;
+                    }
 
-                return '<div style="display: flex;">' + outActions + '</div>';
-            },
-        }];
+                    return '<div style="display: flex;">' + outActions + '</div>';
+                },
+            }
+        ];
 
         var searchQuery = {
-            productId: [],
-            scientificNameId: [],
+            productName: [],
+            scientificName: [],
             entityId: [],
             stockOption: 1,
             categoryId: null,
@@ -387,7 +433,7 @@ function compress_htmlcode($codedata)
         var _selectBrand = $('#searchProductsBrandNameInput').select2({
             placeholder: "<?php echo $vModule_search_brandNameplaceholder ?>",
             ajax: {
-                url: '/web/product/brandname/list',
+                url: '/web/product/brandname/list?nameAsValue=true',
                 dataType: 'json',
                 processResults: function(response) {
                     return {
@@ -401,12 +447,12 @@ function compress_htmlcode($codedata)
         });
 
         _selectBrand.on("select2:select", function(e) {
-            searchQuery.productId = $("#searchProductsBrandNameInput").val();
+            searchQuery.productName = $("#searchProductsBrandNameInput").val();
             updateDatatable();
         });
 
         _selectBrand.on("select2:unselect", function(e) {
-            searchQuery.productId = $("#searchProductsBrandNameInput").val();
+            searchQuery.productName = $("#searchProductsBrandNameInput").val();
             updateDatatable();
         });
 
@@ -566,7 +612,7 @@ function compress_htmlcode($codedata)
         var _selectScientific = $('#searchProductsScieceNameInput').select2({
             placeholder: "<?php echo $vModule_search_scientificNamePlaceholder ?>",
             ajax: {
-                url: '/web/product/scientificname/list',
+                url: '/web/product/scientificname/list?nameAsValue=true',
                 dataType: 'json',
                 processResults: function(response) {
                     return {
@@ -580,12 +626,12 @@ function compress_htmlcode($codedata)
         });
 
         _selectScientific.on("select2:select", function(e) {
-            searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
+            searchQuery.scientificName = $("#searchProductsScieceNameInput").val();
             updateDatatable();
         });
 
         _selectScientific.on("select2:unselect", function(e) {
-            searchQuery.scientificNameId = $("#searchProductsScieceNameInput").val();
+            searchQuery.scientificName = $("#searchProductsScieceNameInput").val();
             updateDatatable();
         });
 
@@ -647,7 +693,7 @@ function compress_htmlcode($codedata)
 
         var query = <?php echo isset($_GET['query']) ? "'" . $_GET['query'] . "'" : 'null'; ?>;
         var distributorId = <?php echo isset($_GET['distributorId']) ? "'" . $_GET['distributorId'] . "'" : 'null'; ?>;
-        var scientificNameId = <?php echo isset($_GET['scientificNameId']) ? "'" . $_GET['scientificNameId'] . "'" : 'null'; ?>;
+        var scientificName = <?php echo isset($_GET['scientificName']) ? "'" . $_GET['scientificName'] . "'" : 'null'; ?>;
 
         var dbAdditionalOptions = {
             processing: false,
@@ -661,8 +707,8 @@ function compress_htmlcode($codedata)
                 searchQuery.query = query;
             if (distributorId != null && !searchQuery.entityId.includes(distributorId))
                 searchQuery.entityId.push(distributorId);
-            if (scientificNameId != null && !searchQuery.scientificNameId.includes(scientificNameId))
-                searchQuery.scientificNameId.push(scientificNameId);
+            if (scientificName != null && !searchQuery.scientificName.includes(scientificName))
+                searchQuery.scientificName.push(scientificName);
             WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
 
         }
@@ -676,6 +722,135 @@ function compress_htmlcode($codedata)
 
     $(document).ready(function() {
         PageClass.init();
-    })
+
+        $('#datatable').on('draw.dt', function() {
+            initializeBonusPopover();
+        });
+    });
+
+
+    function initializeBonusPopover() {
+        $('.bonusLabel').popover('dispose');
+        $('.bonusLabel').each(function(index, element) {
+            var arrBonusStr = $(element).attr('data-arrBonus') || "[]";
+            var arrBonus = JSON.parse(arrBonusStr);
+            if (arrBonus.length > 0) {
+                $(element).popover({
+                    html: true,
+                    sanitize: false,
+                    trigger: "manual",
+                    placement: "bottom",
+                    content: getBonusPopoverContent(element),
+                }).on("mouseenter", function() {
+                    var _this = this;
+                    $(this).popover("show");
+                    $(".popover").on("mouseleave", function() {
+                        $(_this).popover('hide');
+                    });
+                }).on("mouseleave", function() {
+                    var _this = this;
+                    setTimeout(function() {
+                        if (!$(".popover:hover").length) {
+                            $(_this).popover("hide");
+                        }
+                    }, 300);
+                });
+            } else {
+                $(element).hide();
+            }
+        });
+    }
+
+    function getBonusPopoverContent(element) {
+        var arrBonusStr = $(element).attr('data-arrBonus') || "[]";
+        var arrBonus = JSON.parse(arrBonusStr);
+        var activeBonusStr = $(element).attr('data-activeBonus') || "{}";
+        var activeBonus = JSON.parse(activeBonusStr);
+
+        var tableElement = document.createElement("table");
+
+        var tableHead = [
+            "BONUSES TYPE",
+            "MIN QTY",
+            "BONUSES"
+        ];
+        var allTableData = [
+            tableHead,
+            ...arrBonus
+        ];
+        for (var i = 0; i < allTableData.length; i++) {
+            var row = allTableData[i];
+
+            if (i == 0) {
+                /* Add table head*/
+                var trElement = document.createElement('tr');
+                for (var j = 0; j < row.length; j++) {
+                    var item = row[j];
+                    var thElement = document.createElement('th');
+                    thElement.className = "cart-checkout-bonus-th text-center p-1 pb-3";
+                    thElement.innerHTML = item;
+                    trElement.append(thElement);
+                }
+                tableElement.append(trElement);
+            } else {
+                var arrMinQty = row.arrMinQty || [];
+                var arrBonuses = row.arrBonuses || [];
+                if (arrMinQty.length > 0 && arrMinQty.length === arrBonuses.length) {
+                    /* Add bonus type column*/
+                    var trElement = document.createElement('tr');
+
+                    var bonusType = row.bonusType;
+                    var tdBonusTypeElement = document.createElement('td');
+                    tdBonusTypeElement.className = "cart-checkout-bonus-td text-center p-1";
+                    if (i != allTableData.length - 1) tdBonusTypeElement.className += " border-bottom";
+                    if (arrMinQty.length > 1) tdBonusTypeElement.setAttribute('rowspan', arrMinQty.length);
+                    tdBonusTypeElement.innerHTML = bonusType;
+                    trElement.append(tdBonusTypeElement);
+
+                    /* Add minQty and bonuses columns*/
+                    for (var j = 0; j < arrMinQty.length; j++) {
+                        if (j != 0) {
+                            trElement = document.createElement('tr');
+                        }
+
+                        var minQty = arrMinQty[j];
+                        var tdMinQtyElement = document.createElement('td');
+                        tdMinQtyElement.className = "cart-checkout-bonus-td text-center p-1 border-left";
+                        if (i != allTableData.length - 1 || j != arrMinQty.length - 1) {
+                            tdMinQtyElement.className += " border-bottom";
+                        }
+                        tdMinQtyElement.innerHTML = minQty;
+                        trElement.append(tdMinQtyElement);
+
+                        var bonuses = arrBonuses[j];
+                        var tdBonusesElement = document.createElement('td');
+                        tdBonusesElement.className = "cart-checkout-bonus-td text-center p-1 border-left";
+                        if (i != allTableData.length - 1 || j != arrMinQty.length - 1) {
+                            tdBonusesElement.className += " border-bottom";
+                        }
+                        tdBonusesElement.innerHTML = bonuses;
+                        trElement.append(tdBonusesElement);
+
+                        if (activeBonus) {
+                            if (bonusType == activeBonus.bonusType && minQty == activeBonus.minQty && bonuses == activeBonus.bonuses) {
+                                var tdCheckElement = document.createElement('td');
+                                tdCheckElement.className = "cart-checkout-bonus-td text-center p-1";
+                                tdCheckElement.innerHTML = "<i class='las la-check check'></i>";
+                                trElement.append(tdCheckElement);
+                            }
+                        }
+
+                        tableElement.append(trElement);
+                    }
+                }
+            }
+        }
+        if (activeBonus && activeBonus.totalBonus) {
+            $(element).find('.bonus').text("(+" + activeBonus.totalBonus + ")");
+        } else {
+            $(element).find('.bonus').text("");
+        }
+        return tableElement.outerHTML;
+    }
 </script>
 <?php ob_end_flush(); ?>

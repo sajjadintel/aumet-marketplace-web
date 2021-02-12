@@ -12,11 +12,13 @@
                 <div class="modal-body">
                     <input type="hidden" name="id" id="popupModalValueId" value="" />
                     <input type="hidden" name="fnCallback" class="modalValueCallback" id="modalValueCallback" value="" />
+                    <input type="hidden" name="body" class="modalValueBody" id="modalValueBody" value="" />
                     <p class="modal-text" id="popupModalText"></p>
                 </div>
                 <div class="modal-footer">
                     <div class="modal-add-button">
                         <button type="button" class="btn btn-primary font-weight-bold modalAction" id="modalAction">Save changes</button>
+                        <button type="button" class="btn btn-secondary font-weight-bold modalActionCancel" id="modalActionCancel"><?php echo $vButton_cancel ?></button>
                     </div>
                 </div>
             </form>
@@ -35,60 +37,86 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalCustomerNameLabel"></div>
-                            <div class="col-md-6 form-text" id="modalCustomerNameText"></div>
-                        </div>
+                <div class="p-4 mb-6 border rounded">
+                    <div class="flex-wrap border-0 pb-6 pb-0 mt-n7">
+                        <h6 class="align-items-start flex-column">
+                            <span class="font-weight-bolder font-size-h6 text-primary px-2 bg-white"><?php echo $vModule_orderDetails_orderInformation ?></span>
+                        </h6>
                     </div>
-                    <div class="col-md-6">
-                        <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalStatusLabel"></div>
-                            <div class="col-md-6 form-text" id="modalStatusText"></div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row form-group">
+                                <div class="col-md-6 form-label" id="modalCustomerNameLabel"></div>
+                                <div class="col-md-6 form-text" id="modalCustomerNameText"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalTotalLabel"></div>
-                            <div class="col-md-6 form-text" id="modalTotalText"></div>
+                        <div class="col-md-6">
+                            <div class="row form-group">
+                                <div class="col-md-6 form-label" id="modalStatusLabel"></div>
+                                <div class="col-md-6 form-text" id="modalStatusText"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalDateLabel"></div>
-                            <div class="col-md-6 form-text" id="modalDateText"></div>
+                        <div class="col-md-6">
+                            <div class="row form-group">
+                                <div class="col-md-6 form-label" id="modalTotalLabel"></div>
+                                <div class="col-md-6 form-text" id="modalTotalText"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalBranchLabel"></div>
-                            <div class="col-md-6 form-text" id="modalBranchText"></div>
+                        <div class="col-md-6">
+                            <div class="row form-group">
+                                <div class="col-md-6 form-label" id="modalDateLabel"></div>
+                                <div class="col-md-6 form-text" id="modalDateText"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalAddressLabel"></div>
-                            <div class="col-md-6 form-text" id="modalAddressText"></div>
+                        <div class="col-md-6 display-none">
+                            <div class="row form-group">
+                                <div class="col-md-6 form-label" id="modalBranchLabel"></div>
+                                <div class="col-md-6 form-text" id="modalBranchText"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row form-group">
+                                <div class="col-md-3 form-label" id="modalAddressLabel"></div>
+                                <div class="col-md-9 form-text" id="modalAddressText"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-12 form-group">
-                        <div>
-                            <input name="modalOrderDetailLog" id="modalBootstrapOrderDetailLog" data-switch="true" type="checkbox" checked="checked" data-on-text="True" data-handle-width="150" data-off-text="False" data-on-color="primary" data-off-color="secondary" />
+                        <div id="smarttab" class="orderdetails-smarttab">
+
+                            <ul class="nav">
+                                <li>
+                                    <a class="nav-link" href="#tab-1">
+                                        <?php echo $orderDetails ?>
+                                    </a>
+                                </li>
+                                <div class="border-left broder-right"></div>
+                                <li>
+                                    <a class="nav-link" href="#tab-2">
+                                        <?php echo $orderLogs ?>
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div id="tab-1" class="tab-pane" role="tabpanel">
+                                    <table id="order_details_datatable" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
+                                    </table>
+                                </div>
+                                <div id="tab-2" class="tab-pane" role="tabpanel">
+                                    <table id="order_details_datatable_logs" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <!--begin: Datatable-->
-                        <table id="order_details_datatable" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
-                        </table>
-                        <!--end: Datatable-->
-                    </div>
                     <div class="col-md-12 mt-10 text-center">
-                        <a id="modalPrint" target="_blank" href="web/distributor/order/print" class="btn btn-sm btn-primary btn-hover-primary" title="Print Order">
+                        <a id="modalPrint" target="_blank" href="web/distributor/order/print" class="btn btn-sm btn-primary btn-hover-primary" title="Download PDF">
                             <i class="nav-icon la la-print p-0"></i>
-                            Print Order
+                            Download PDF
                         </a>
                     </div>
                 </div>
@@ -133,16 +161,16 @@
                             <div class="col-md-6 form-text" id="feedbackModalDateText"></div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 display-none">
                         <div class="row form-group">
                             <div class="col-md-6 form-label" id="feedbackModalBranchLabel"></div>
                             <div class="col-md-6 form-text" id="feedbackModalBranchText"></div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="row form-group">
-                            <div class="col-md-6 form-label" id="feedbackModalAddressLabel"></div>
-                            <div class="col-md-6 form-text" id="feedbackModalAddressText"></div>
+                            <div class="col-md-3 form-label" id="feedbackModalAddressLabel"></div>
+                            <div class="col-md-9 form-text" id="feedbackModalAddressText"></div>
                         </div>
                     </div>
 
@@ -166,7 +194,7 @@
 
                 <div class="row">
                     <div class="col-md-12 mt-10 text-center">
-                        <a id="feedbackModalSave" class="btn btn-sm btn-primary btn-hover-primary" title="Print Order">
+                        <a id="feedbackModalSave" class="btn btn-sm btn-primary btn-hover-primary" title="Save Feedback">
                             <i class="nav-icon la la-save p-0"></i>
                             Save Feedback
                         </a>
@@ -277,16 +305,16 @@
                                     <div class="col-md-6 form-text" id="missingProductModalDateText"></div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 display-none">
                                 <div class="row form-group">
                                     <div class="col-md-6 form-label" id="missingProductModalBranchLabel"></div>
                                     <div class="col-md-6 form-text" id="missingProductModalBranchText"></div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="row form-group">
-                                    <div class="col-md-6 form-label" id="missingProductModalAddressLabel"></div>
-                                    <div class="col-md-6 form-text" id="missingProductModalAddressText"></div>
+                                    <div class="col-md-3 form-label" id="missingProductModalAddressLabel"></div>
+                                    <div class="col-md-9 form-text" id="missingProductModalAddressText"></div>
                                 </div>
                             </div>
 
@@ -303,11 +331,7 @@
                                             <!--                                            <input type="hidden" id="missingProductId" name="productId" class="form-control">-->
                                             <div class="col-md-4">
                                                 <label><?php echo $vModal_product ?>:</label>
-                                                <select
-                                                    class="select2 form-control"
-                                                    name="productId"
-                                                    tabindex="-1"
-                                                >
+                                                <select class="select2 form-control" name="productId" tabindex="-1">
                                                 </select>
                                                 <div class="d-md-none mb-2"></div>
                                             </div>
@@ -475,16 +499,16 @@
                                     <div class="col-md-6 form-text" id="modifyQuantityOrderModalDateText"></div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 display-none">
                                 <div class="row form-group">
                                     <div class="col-md-6 form-label" id="modifyQuantityOrderModalBranchLabel"></div>
                                     <div class="col-md-6 form-text" id="modifyQuantityOrderModalBranchText"></div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="row form-group">
-                                    <div class="col-md-6 form-label" id="modifyQuantityOrderModalAddressLabel"></div>
-                                    <div class="col-md-6 form-text" id="modifyQuantityOrderModalAddressText"></div>
+                                    <div class="col-md-3 form-label" id="modifyQuantityOrderModalAddressLabel"></div>
+                                    <div class="col-md-9 form-text" id="modifyQuantityOrderModalAddressText"></div>
                                 </div>
                             </div>
 
@@ -523,6 +547,67 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="welcomeModal" data-backdrop="static" data-user-id="<?php echo $objUser->id ?>" data-role-name="<?php echo strtolower(trim(explode('-', $objUser->roleName)[0])) ?>" data-login-counter="<?php echo $objUser->loginCounter ?>" tabindex="-1" role="dialog" aria-labelledby="welcomeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="welcomeModalLabel"><?php echo $vModal_welcome_title; ?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-center justify-content-between p-4 flex-lg-wrap flex-xl-nowrap">
+                    <div class="d-flex flex-column mr-5">
+                        <a href="#" class="h4 text-dark text-hover-primary mb-5">
+                            <?php echo $vModal_welcome_message; ?>
+                        </a>
+
+                        <div class="timeline timeline-1">
+                            <div class="timeline-sep bg-primary-opacity-20"></div>
+                            <div class="timeline-item">
+                                <div class="timeline-label"><?php echo $vModal_welcome_step1_title; ?></div>
+                                <div class="timeline-badge">
+                                    <i class="fa fa-user text-primary"></i>
+                                </div>
+                                <div class="timeline-content text-muted font-weight-normal">
+                                    <?php echo $vModal_welcome_step1_message; ?>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-label"><?php echo $vModal_welcome_step2_title; ?></div>
+                                <div class="timeline-badge">
+                                    <i class="fa fa-credit-card text-primary"></i>
+                                </div>
+                                <div class="timeline-content text-muted font-weight-normal">
+                                    <?php echo $vModal_welcome_step2_message; ?>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-label"><?php echo $vModal_welcome_step3_title; ?></div>
+                                <div class="timeline-badge">
+                                    <i class="fa fa-map-marker-alt text-primary"></i>
+                                </div>
+                                <div class="timeline-content text-muted font-weight-normal">
+                                    <?php echo $vModal_welcome_step3_message; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ml-6 ml-lg-0 ml-xxl-6 flex-shrink-0">
+                        <a href="/web/profile" class="btn btn-success font-weight-bolder text-uppercase py-4 px-6">
+                            <?php echo $vModal_welcome_callToAction; ?>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>

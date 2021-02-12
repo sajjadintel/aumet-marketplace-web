@@ -1,6 +1,7 @@
 <?php
 
-class Controller {
+class Controller
+{
 
     protected $f3;
     protected $db;
@@ -43,7 +44,6 @@ class Controller {
 
             $this->f3->set('objUser', $this->objUser);
             $this->f3->set('isAuth', true);
-
         } else {
             $this->isAuth = false;
         }
@@ -130,6 +130,7 @@ class Controller {
     {
         if ($this->f3->ajax()) {
             echo $this->webResponse->jsonResponse();
+            die();
         } else {
             $this->f3->reroute('/web/auth/signin');
         }
@@ -730,7 +731,7 @@ class Controller {
             echo $this->webResponse->jsonResponse();
             exit;
         }
-        
+
         if (strlen($variable) < $minLength) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = $this->f3->get("field_" . $variableName) . $this->f3->get("error_filedTooShort") . $minLength;
@@ -738,5 +739,4 @@ class Controller {
             exit;
         }
     }
-
 }

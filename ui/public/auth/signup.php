@@ -30,18 +30,18 @@
 								</div>
 							</div>
 
-                            <div class="form-group">
-                                <label class="font-size-h2 font-weight-bolder text-dark">I'm a</label>
-                                <div class="radio-inline">
-                                    <label class="radio radio-square radio-lg font-size-h4 font-weight-bolder text-dark mr-5">
-                                        <input type="radio" checked name="companyType" value="pharmacy">
-                                        <span class=""></span>Pharmacy</label>
-                                    <label class="radio radio-square radio-lg font-size-h4 font-weight-bolder text-dark mr-5">
-                                        <input type="radio" name="companyType" value="distributor">
-                                        <span></span>Distributor</label>
+							<div class="form-group">
+								<label class="font-size-h2 font-weight-bolder text-dark">I'm a</label>
+								<div class="radio-inline">
+									<label class="radio radio-square radio-lg font-size-h4 font-weight-bolder text-dark mr-5 companyType">
+										<input type="radio" checked name="companyType" value="pharmacy">
+										<span class=""></span>Pharmacy</label>
+									<label class="radio radio-square radio-lg font-size-h4 font-weight-bolder text-dark mr-5 companyType">
+										<input type="radio" name="companyType" value="distributor">
+										<span></span>Distributor</label>
 
-                                </div>
-                            </div>
+								</div>
+							</div>
 
 							<!--begin::Title-->
 							<!--begin::Form Group-->
@@ -59,7 +59,7 @@
 							<!--begin::Form Group-->
 							<div class="form-group">
 								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_email ?></label>
-								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="email" placeholder="<?php echo $vSignup_email ?>" value="" style="direction: ltr;" />
+								<input type="email" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="email" placeholder="<?php echo $vSignup_email ?>" value="" style="direction: ltr;" />
 							</div>
 							<!--end::Form Group-->
 							<!--begin::Form Group-->
@@ -84,22 +84,22 @@
 								<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_wizardPharmacyInfoSubtitle; ?></div>
 							</div>
 
-                            <div class="pt-lg-0 pt-5 pb-15 distributor">
-                                <h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg"><?php echo $vSignup_wizardDistributorInfoTitle; ?></h3>
-                                <div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_wizardDistributorInfoSubtitle; ?></div>
-                            </div>
+							<div class="pt-lg-0 pt-5 pb-15 distributor">
+								<h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg"><?php echo $vSignup_wizardDistributorInfoTitle; ?></h3>
+								<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_wizardDistributorInfoSubtitle; ?></div>
+							</div>
 
 							<!--end::Title-->
 							<!--begin::Form Group-->
 							<div class="form-group pharmacy">
 								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_pharmacyName; ?></label>
-								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="pharmacyName" placeholder="<?php echo $vSignup_pharmacyName; ?>" value="" style="direction: ltr;" />
+								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" id="pharmacyName" name="pharmacyName" placeholder="<?php echo $vSignup_pharmacyName; ?>" value="" style="direction: ltr;" />
 							</div>
 
-                            <div class="form-group distributor">
-                                <label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_distributorName; ?></label>
-                                <input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" name="distributorName" placeholder="<?php echo $vSignup_distributorName; ?>" value="" style="direction: ltr;" />
-                            </div>
+							<div class="form-group distributor">
+								<label class="font-size-h6 font-weight-bolder text-dark"><?php echo $vSignup_distributorName; ?></label>
+								<input type="text" class="form-control h-auto py-7 px-6 border-0 rounded-lg font-size-h6" id="distributorName" name="distributorName" placeholder="<?php echo $vSignup_distributorName; ?>" value="" style="direction: ltr;" />
+							</div>
 							<!--end::Form Group-->
 							<!--begin::Form Group-->
 							<div class="form-group">
@@ -189,7 +189,7 @@
 								</div>
 								<div class="mt-5">
 									<div class="font-size-h6 font-weight-bolder text-muted">Max file size is 10mb and </div>
-									<div class="font-size-h6 font-weight-bolder text-muted">File types allowed are .pdf, .ppt, .xcl, .docx, .jpeg, .jpg, .png </div>
+									<div class="font-size-h6 font-weight-bolder text-muted">File types allowed are .pdf, .ppt, .docx, .jpeg, .jpg, .png </div>
 								</div>
 							</div>
 							<!--end::Form Group-->
@@ -249,28 +249,28 @@
 						<h3 class="font-weight-bolder text-dark display5"><?php echo $vSignup_thankyouTitle ?></h3>
 						<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_thankyouSubtitle ?></div>
 
-                        <a href="/web/auth/signin">
-                            <button class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3"><?php echo $vSignup_thankyouHome ?></button>
+						<a href="/web/auth/signin">
+							<button class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3"><?php echo $vSignup_thankyouHome ?></button>
 						</a>
 					</div>
-                    <div>
+					<div>
 
-                        <table width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation">
-                            <tbody>
-                            <tr>
-                                <td class="o_bg-light o_px-xs" align="center" style="padding-left: 8px;padding-right: 8px;">
-                                    <!--[if mso]><table width="800" cellspacing="0" cellpadding="0" border="0" role="presentation"><tbody><tr><td><![endif]-->
-                                    <table class="o_block-lg" width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation" style="max-width: 800px;margin: 0 auto;">
-                                        <tbody id="signupDetailData">
-                                        </tbody>
-                                    </table>
-                                    <!--[if mso]></td></tr></table><![endif]-->
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+						<table width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation">
+							<tbody>
+								<tr>
+									<td class="o_bg-light o_px-xs" align="center" style="padding-left: 8px;padding-right: 8px;">
+										<!--[if mso]><table width="800" cellspacing="0" cellpadding="0" border="0" role="presentation"><tbody><tr><td><![endif]-->
+										<table class="o_block-lg" width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation" style="max-width: 800px;margin: 0 auto;">
+											<tbody id="signupDetailData">
+											</tbody>
+										</table>
+										<!--[if mso]></td></tr></table><![endif]-->
+									</td>
+								</tr>
+							</tbody>
+						</table>
 
-                    </div>
+					</div>
 				</div>
 				<!--end::Thankyou-->
 			</div>

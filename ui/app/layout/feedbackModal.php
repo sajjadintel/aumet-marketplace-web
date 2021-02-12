@@ -60,22 +60,22 @@
                             <div class="col-md-6 form-text" id="modalDateText"></div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 display-none">
                         <div class="row form-group">
                             <div class="col-md-6 form-label" id="modalBranchLabel"></div>
                             <div class="col-md-6 form-text" id="modalBranchText"></div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalAddressLabel"></div>
-                            <div class="col-md-6 form-text" id="modalAddressText"></div>
+                            <div class="col-md-3 form-label" id="modalAddressLabel"></div>
+                            <div class="col-md-9 form-text" id="modalAddressText"></div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
 
-	                  <div class="col-md-12 mt-10 text-center">
+                    <div class="col-md-12 mt-10 text-center">
                         <a id="modelFeedback" target="_blank" href="web/distributor/order/print" class="btn btn-sm btn-primary btn-hover-primary" title="Save Feedback">
                             <i class="nav-icon la la-save p-0"></i>
                             Save Feedback

@@ -13,11 +13,11 @@ function compress_htmlcode($codedata)
 }
 ?>
 <script>
-    $('#export-to-excel').on('click', function (e) {
+    $('#export-to-excel').on('click', function(e) {
         e.preventDefault();
-		WebApp.get('/web/distributor/product/bulk/add/download', downloadExcelSheet);
+        WebApp.get('/web/distributor/product/bulk/add/download', downloadExcelSheet);
     });
-    
+
     function downloadExcelSheet(webResponse) {
         const link = webResponse.data;
         window.open(link, "_blank");
@@ -48,7 +48,7 @@ function compress_htmlcode($codedata)
                 <div class="dropzone dropzone-default dropzone-success" id="dropZoneProductsBulkAdd">
                     <div class="dropzone-msg dz-message needsclick">
                         <h3 class="dropzone-msg-title">Drop files here or click to upload.</h3>
-                        <span class="dropzone-msg-desc">Only .xlsx files are allowed for upload</span>
+                        <span class="dropzone-msg-desc">Only .xlsm, .xlsx files are allowed for upload</span>
                     </div>
                 </div>
             </div>

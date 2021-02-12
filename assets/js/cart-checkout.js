@@ -37,9 +37,15 @@ var CartCheckout = (function () {
 		}
 	};
 
+	var _removeItem = function (productId, submitButton, forceCallback, forcePreventUnblur) {
+		WebApp.post('/web/cart/remove', { id: productId }, (webResponse) => _updateQuantityDeleteCallback(webResponse), submitButton, forceCallback, forcePreventUnblur);
+	};
+
 	var _removeItemModal = function (itemId) {
 		WebApp.get('/web/cart/remove/confirm/' + itemId, WebApp.openModal);
+		WebApp.reloadDatatable();
 	};
+
 	var _removeItemSuccess = function (webResponse) {
 		// Update cart count
 		let cartCount = webResponse.data > 9 ? '9+' : webResponse.data;
@@ -50,10 +56,53 @@ var CartCheckout = (function () {
 	};
 
 	var _submitOrderModal = function () {
-		let paymentMethodInputId = $("input[name='paymentMethod']:checked").attr('id');
-		let allParts = paymentMethodInputId.split('-');
-		let paymentMethodId = allParts[1];
-		WebApp.get('/web/cart/checkout/submit/confirm/' + paymentMethodId, WebApp.openModal);
+		var valid = true;
+		$('.selectpicker.paymentMethodId').each(function (index, element) {
+			if (!$(element).val()) {
+				if (!$(element).parent().hasClass('is-invalid')) {
+					$(element).parent().addClass('is-invalid');
+					$(element).parent().css('border', '1px solid #F64E60');
+				}
+				valid = false;
+			} else {
+				$(element).parent().removeClass('is-invalid');
+				$(element).parent().css('border', '');
+			}
+		});
+
+		if (valid) {
+			var mapSellerIdPaymentMethodId = {};
+			$('.selectpicker.paymentMethodId').each(function (index, element) {
+				let sellerId = $(element).attr('data-sellerId');
+				let paymentMethodId = $(element).val();
+				mapSellerIdPaymentMethodId[sellerId] = paymentMethodId;
+			});
+			WebApp.post('/web/cart/checkout/submit/confirm', { mapSellerIdPaymentMethodId }, WebApp.openModal);
+		} else {
+			$('.selectpicker.paymentMethodId').on('change', function () {
+				if (!$(this).val()) {
+					if (!$(this).parent().hasClass('is-invalid')) {
+						$(this).parent().addClass('is-invalid');
+						$(this).parent().css('border', '1px solid #F64E60');
+					}
+				} else {
+					$(this).parent().removeClass('is-invalid');
+					$(this).parent().css('border', '');
+				}
+			});
+
+			Swal.fire({
+				text: WebAppLocals.getMessage('cartError'),
+				icon: 'error',
+				buttonsStyling: false,
+				confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
+				customClass: {
+					confirmButton: 'btn font-weight-bold btn-light',
+				},
+			}).then(function () {
+				KTUtil.scrollTop();
+			});
+		}
 	};
 
 	var _submitOrderSuccess = function (webResponse) {
@@ -61,24 +110,53 @@ var CartCheckout = (function () {
 		WebApp.redirect('/web/thankyou/' + webResponse.data);
 	};
 
-	var _updateQuantity = function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, oldValue = null) {
+	var _updateQuantity = function (
+		productId,
+		increment,
+		stock,
+		cartDetailId,
+		sellerId,
+		updateTotalPrice = 0,
+		initializeBonusPopover = 0,
+		oldValue = null,
+		shouldShowRemoveModal = true,
+		submitButton = null,
+		forceCallback = false,
+		forcePreventUnblur = false
+	) {
 		let quantityId = '#quantity-' + productId;
 		let currentValue = 0;
 		if ($(quantityId).val() > 0) currentValue = parseInt($(quantityId).val());
 		let newValue = currentValue + increment;
-		if (newValue < 0) newValue = 0;
-		else if (newValue > stock && oldValue) $(quantityId).val(oldValue);
 
 		if (newValue === 0) {
-			_removeItemModal(cartDetailId);
+			if (shouldShowRemoveModal) {
+				_removeItemModal(cartDetailId);
+			} else {
+				_removeItem(cartDetailId, submitButton, forceCallback, forcePreventUnblur);
+			}
 		} else {
-			WebApp.post('/web/cart/checkout/update', { cartDetailId, sellerId, productId, quantity: newValue }, (webResponse) =>
-				_updateQuantityCallback(webResponse, updateTotalPrice)
+			// set previous value in case of error if it's succeeded will reload datatable and set new value
+			if (newValue > 0) {
+				// if oldValue is null plus icon is used so mines one else it's changed manually and we can revert to old value
+				if (!oldValue) {
+					$(quantityId).val(newValue - 1);
+				} else {
+					$(quantityId).val(oldValue);
+				}
+			}
+			WebApp.post(
+				'/web/cart/checkout/update',
+				{ cartDetailId, sellerId, productId, quantity: newValue },
+				(webResponse) => _updateQuantityCallback(webResponse, updateTotalPrice, initializeBonusPopover),
+				submitButton,
+				forceCallback,
+				forcePreventUnblur
 			);
 		}
 	};
 
-	var _updateQuantityCallback = function (webResponse, updateTotalPrice) {
+	var _updateQuantityCallback = function (webResponse, updateTotalPrice, initializeBonusPopover) {
 		let cartDetail = webResponse.data;
 
 		// Update cart count
@@ -101,15 +179,18 @@ var CartCheckout = (function () {
 		$(quantityFreeId).html(quantityFree);
 
 		let quantityFreeHolderId = '#quantityFreeHolder-' + productId;
-		$(quantityFreeHolderId).css('display', quantityFree > 0 ? 'block' : 'none');
+		$(quantityFreeHolderId).css('display', 'none');
 
 		// Update product price
 		let productPriceId = '#productPrice-' + productId;
 		let unitPrice = $(productPriceId).attr('data-unitPrice');
 		let currency = $(productPriceId).attr('data-currency');
-		let productPrice = (quantity * unitPrice).toFixed(2);
+		let vat = $(productPriceId).attr('data-vat');
+		let subTotal = parseFloat(quantity) * parseFloat(unitPrice);
+		let total = (subTotal * (100.0 + parseFloat(vat))) / 100.0;
+		let productPrice = WebApp.formatMoney(total);
 
-		$(productPriceId).attr('data-productPrice', productPrice);
+		$(productPriceId).attr('data-productPrice', subTotal);
 		$(productPriceId).html(productPrice + ' ' + currency);
 
 		// Update total price
@@ -139,7 +220,26 @@ var CartCheckout = (function () {
 		$(totalPriceId).attr('data-totalPrice', totalPrice);
 		$(totalPriceId).html(totalPrice + ' ' + currency);
 
-		updateTotalPrice();
+		if (updateTotalPrice) {
+			updateTotalPrice();
+		}
+
+		$('#bonusLabel-' + productId).attr('data-activeBonus', JSON.stringify(cartDetail.activeBonus));
+		if (initializeBonusPopover) {
+			initializeBonusPopover();
+		}
+		WebApp.reloadDatatable();
+	};
+
+	var _updateQuantityDeleteCallback = function (webResponse) {
+		let cartDetail = webResponse.data;
+
+		// Update cart count
+		let cartCount = cartDetail > 9 ? '9+' : cartDetail;
+		if (webResponse.data !== 0) $('#cartCount').css('display', 'flex');
+		else $('#cartCount').css('display', 'none');
+		$('#cartCount').html(cartCount);
+		WebApp.reloadDatatable();
 	};
 
 	var _updateNote = function (productId, cartDetailId, sellerId) {
@@ -168,8 +268,34 @@ var CartCheckout = (function () {
 		submitOrderSuccess: function (webResponse) {
 			_submitOrderSuccess(webResponse);
 		},
-		updateQuantity: function (productId, increment, stock, cardDetailId, sellerId, updateTotalPrice, oldValue) {
-			_updateQuantity(productId, increment, stock, cardDetailId, sellerId, updateTotalPrice, oldValue);
+		updateQuantity: function (
+			productId,
+			increment,
+			stock,
+			cartDetailId,
+			sellerId,
+			updateTotalPrice,
+			initializeBonusPopover,
+			oldValue,
+			shouldShowRemoveModal,
+			submitButton,
+			forceCallback,
+			forcePreventUnblur
+		) {
+			_updateQuantity(
+				productId,
+				increment,
+				stock,
+				cartDetailId,
+				sellerId,
+				updateTotalPrice,
+				initializeBonusPopover,
+				oldValue,
+				shouldShowRemoveModal,
+				submitButton,
+				forceCallback,
+				forcePreventUnblur
+			);
 		},
 		updateNote: function (productId, cardDetailId, sellerId) {
 			_updateNote(productId, cardDetailId, sellerId);

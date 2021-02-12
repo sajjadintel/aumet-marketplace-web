@@ -13,6 +13,7 @@ class ProductsController extends Controller
             $id = $this->f3->get('PARAMS.productId');
 
             $roleId = $this->f3->get('SESSION.objUser')->roleId;
+            $this->f3->set('objUser', $this->objUser);
 
             if ($entityId == 0)
                 $query = "id=$id";
@@ -23,25 +24,21 @@ class ProductsController extends Controller
             $dbEntityProduct->productName = "productName_" . $this->objUser->language;
             $dbEntityProduct->entityName = "entityName_" . $this->objUser->language;
             $dbEntityProduct->madeInCountryName = "madeInCountryName_" . $this->objUser->language;
+            $dbEntityProduct->subtitle = "subtitle_" . $this->objUser->language;
+            $dbEntityProduct->description = "description_" . $this->objUser->language;
             $dbEntityProduct->getWhere($query);
+            $productId = $dbEntityProduct['productId'];
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
-            $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+            $userId = $this->objUser->id;
+            $dbCartDetail->getWhere("entityProductId=$id and userId=$userId");
 
-
-            if ($dbEntityProduct['bonusTypeId'] == 2) {
-                $dbEntityProduct['bonusOptions'] = json_decode($dbEntityProduct->bonusConfig);
-            }
-
-            $dbEntityProduct['cart'] = 0;
-            if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
-                foreach ($arrCartDetail as $objCartItem) {
-                    if ($objCartItem['entityProductId'] == $dbEntityProduct['id']) {
-                        $dbEntityProduct['cart'] += $objCartItem['quantity'];
-                        $dbEntityProduct['cart'] += $objCartItem['quantityFree'];
-                    }
-                }
-            }
+            $availableQuantity = min($dbEntityProduct['stock'], $dbEntityProduct['maximumOrderQuantity']);
+            
+            if (!$dbEntityProduct['maximumOrderQuantity'])
+                $availableQuantity = $dbEntityProduct['stock'];
+            if (!$dbEntityProduct['stock'])
+                $availableQuantity = 0;
 
             $found = false;
             if (array_key_exists((string)$dbEntityProduct->entityId, $this->f3->get('SESSION.arrEntities'))) {
@@ -53,6 +50,133 @@ class ProductsController extends Controller
                 echo $this->webResponse->jsonResponse();
                 return;
             }
+    
+            // Get all related bonuses
+            $mapBonusIdRelationGroup = [];
+            $mapSellerIdRelationGroupId = [];
+            $dbBonus = new BaseModel($this->db, "vwEntityProductSellBonusDetail");
+            $dbBonus->bonusTypeName = "bonusTypeName_" . $this->objUser->language;
+            $arrBonus = $dbBonus->getWhere("entityProductId = $productId AND isActive = 1");
+            $arrBonusId = [];
+            foreach ($arrBonus as $bonus) {
+                array_push($arrBonusId, $bonus['id']);
+            }
+
+            // Get special bonuses
+            if (count($arrBonusId) > 0) {
+                $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
+                $arrBonusRelationGroup = $dbBonusRelationGroup->getWhere("bonusId IN (" . implode(",", $arrBonusId) . ")");
+
+                foreach ($arrBonusRelationGroup as $bonusRelationGroup) {
+                    $bonusId = $bonusRelationGroup['bonusId'];
+                    $arrRelationGroup = [];
+                    if (array_key_exists($bonusId, $mapBonusIdRelationGroup)) {
+                        $arrRelationGroup = $mapBonusIdRelationGroup[$bonusId];
+                    }
+
+                    array_push($arrRelationGroup, $bonusRelationGroup['relationGroupId']);
+                    $mapBonusIdRelationGroup[$bonusId] = $arrRelationGroup;
+                }
+            }
+
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $dbEntityRelation = new BaseModel($this->db, "entityRelation");
+            $arrEntityRelation = $dbEntityRelation->getWhere("entityBuyerId IN ($arrEntityId)");
+            foreach ($arrEntityRelation as $entityRelation) {
+                $mapSellerIdRelationGroupId[$entityRelation['entitySellerId']] = $entityRelation['relationGroupId'];
+            }
+    
+            $arrProductBonus = [];
+            $activeBonus = new stdClass();
+            $activeBonus->totalBonus = 0;
+            foreach ($arrBonus as $bonus) {
+                $bonusId = $bonus['id'];
+
+                // Check if bonus available for buyer
+                $valid = false;
+                if (array_key_exists($bonusId, $mapBonusIdRelationGroup)) {
+                    $arrRelationGroup = $mapBonusIdRelationGroup[$bonusId];
+                    if (array_key_exists($entityId, $mapSellerIdRelationGroupId)) {
+                        $relationGroupId = $mapSellerIdRelationGroupId[$entityId];
+                        if (in_array($relationGroupId, $arrRelationGroup)) {
+                            $valid = true;
+                        }
+                    }
+                } else {
+                    $valid = true;
+                }
+
+                if (!$valid) {
+                    continue;
+                }
+
+                $bonusType = $bonus['bonusTypeName'];
+                $bonusTypeId = $bonus['bonusTypeId'];
+                $bonusMinOrder = $bonus['minOrder'];
+                $bonusBonus = $bonus['bonus'];
+
+                // Check if bonus is possible
+                $totalOrder = 0;
+                if ($bonusTypeId == Constants::BONUS_TYPE_FIXED || $bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
+                    $totalOrder = $bonusMinOrder + $bonusBonus;
+                } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                    $totalOrder = $bonusMinOrder + floor($bonusBonus * $bonusMinOrder / 100);
+                }
+                if ($totalOrder > $availableQuantity) {
+                    continue;
+                }
+
+                $totalBonus = 0;
+                if ($dbCartDetail['quantity'] >= $bonusMinOrder) {
+                    if ($bonusTypeId == Constants::BONUS_TYPE_FIXED) {
+                        $totalBonus = $bonusBonus;
+                    } else if ($bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
+                        $totalBonus = floor($dbCartDetail['quantity'] / $bonusMinOrder) * $bonusBonus;
+                    } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                        $totalBonus = floor($dbCartDetail['quantity'] * $bonusBonus / 100);
+                    }
+                }
+
+                if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                    $bonusBonus .= "%";
+                }
+
+                if ($totalBonus > $activeBonus->totalBonus) {
+                    $activeBonus->bonusType = $bonusType;
+                    $activeBonus->minQty = $bonusMinOrder;
+                    $activeBonus->bonuses = $bonusBonus;
+                    $activeBonus->totalBonus = $totalBonus;
+                }
+
+                $found = false;
+                for ($j = 0; $j < count($arrProductBonus); $j++) {
+                    $productBonus = $arrProductBonus[$j];
+                    if ($productBonus->bonusType == $bonusType) {
+                        $arrMinQty = $productBonus->arrMinQty;
+                        array_push($arrMinQty, $bonusMinOrder);
+                        $productBonus->arrMinQty = $arrMinQty;
+
+                        $arrBonuses = $productBonus->arrBonuses;
+                        array_push($arrBonuses, $bonusBonus);
+                        $productBonus->arrBonuses = $arrBonuses;
+
+                        $arrProductBonus[$j] = $productBonus;
+                        $found = true;
+                        break;
+                    }
+                }
+
+                if (!$found) {
+                    $productBonus = new stdClass();
+                    $productBonus->bonusType = $bonusType;
+                    $productBonus->arrMinQty = [$bonusMinOrder];
+                    $productBonus->arrBonuses = [$bonusBonus];
+                    array_push($arrProductBonus, $productBonus);
+                }
+            }
+
+            $dbEntityProduct['arrBonus'] = $arrProductBonus;
+            $dbEntityProduct['activeBonus'] = $activeBonus;
 
             $this->f3->set('objEntityProduct', $dbEntityProduct);
 
@@ -79,7 +203,7 @@ class ProductsController extends Controller
                 $dbEntityProductOtherOffers->entityName = "entityName_" . $this->objUser->language;
 
                 $where = [
-                    "( TRIM(productName_ar) LIKE ? OR TRIM(productName_en) LIKE ? OR TRIM(productName_fr) LIKE ? AND id != ? )",
+                    "( (TRIM(productName_ar) LIKE ? OR TRIM(productName_en) LIKE ? OR TRIM(productName_fr) LIKE ? ) AND id != ? )",
                     trim($dbEntityProduct->productName_ar),
                     mb_strtolower(trim($dbEntityProduct->productName_en)),
                     mb_strtolower(trim($dbEntityProduct->productName_fr)),
@@ -117,11 +241,17 @@ class ProductsController extends Controller
 
 
                 for ($i = 0; $i < count($dbEntityProductOtherOffers); $i++) {
+
                     if ($dbEntityProductOtherOffers[$i]['bonusTypeId'] == 2) {
                         $dbEntityProductOtherOffers[$i]['bonusOptions'] = json_decode($dbEntityProductOtherOffers[$i]['bonusConfig']);
                         $dbEntityProductOtherOffers[$i]['bonusConfig'] = $dbEntityProductOtherOffers[$i]['bonusOptions'];
                         $dbEntityProductOtherOffers[$i]['bonuses'] = $mapProductIdBonuses[$dbEntityProductOtherOffers[$i]['id']];
                     }
+
+                    $cartDetail = new BaseModel($this->db, "cartDetail");
+                    $cartDetail->getWhere("userID =" . $this->objUser->id . " and entityProductId = " . $dbEntityProductOtherOffers[$i]['id'] . "");
+
+                    $dbEntityProductOtherOffers[$i]['cart'] = (!$cartDetail->dry()) ? $cartDetail->quantity : 0;
                 }
 
                 $this->f3->set('arrProductOtherOffers', $dbEntityProductOtherOffers);
@@ -132,10 +262,288 @@ class ProductsController extends Controller
             $this->f3->set('arrSubimage', $arrSubimage);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-            $this->webResponse->title = $this->f3->get('vTitle_entityProductDetail');
+            $this->webResponse->title = $this->f3->get('vModule_product_detail') . " | " . $dbEntityProduct->productName;
             $this->webResponse->data = View::instance()->render('app/products/single/entityProduct.php');
             echo $this->webResponse->jsonResponse();
         }
+    }
+
+    function postEntityProduct()
+    {
+        ## Read values from Datatables
+        $datatable = new Datatable($_POST);
+
+        $entityId = $this->f3->get('PARAMS.entityId');
+        $id = $this->f3->get('PARAMS.productId');
+
+        if ($entityId == 0)
+            $productQuery = "id=$id";
+        else
+            $productQuery = "entityId=$entityId and id=$id";
+
+        $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
+        $dbEntityProduct->productName = "productName_" . $this->objUser->language;
+        $dbEntityProduct->entityName = "entityName_" . $this->objUser->language;
+        $dbEntityProduct->madeInCountryName = "madeInCountryName_" . $this->objUser->language;
+        $dbEntityProduct->subtitle = "subtitle_" . $this->objUser->language;
+        $dbEntityProduct->description = "description_" . $this->objUser->language;
+        $dbEntityProduct->getWhere($productQuery);
+
+        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+
+        $productName_ar = trim($dbEntityProduct->productName_ar);
+        $productName_en = mb_strtolower(trim($dbEntityProduct->productName_en));
+        $productName_fr = mb_strtolower(trim($dbEntityProduct->productName_fr));
+        $productId = $dbEntityProduct->id;
+        $query = [
+            "( (TRIM(productName_ar) LIKE ? OR TRIM(productName_en) LIKE ? OR TRIM(productName_fr) LIKE ? ) AND id != ? )",
+            trim($dbEntityProduct->productName_ar),
+            mb_strtolower(trim($dbEntityProduct->productName_en)),
+            mb_strtolower(trim($dbEntityProduct->productName_fr)),
+            $dbEntityProduct->id
+        ];
+
+        $dbData = new BaseModel($this->db, "vwEntityProductSell");
+        $dbData->productName = "productName_" . $this->objUser->language;
+        $dbData->entityName = "entityName_" . $this->objUser->language;
+        $data = [];
+
+        $totalRecords = $dbData->count($query);
+        $totalFiltered = $dbData->count($query);
+
+        $order = "";
+        if (strlen($datatable->sortBy) > 0 && strlen($datatable->sortByOrder) > 0) {
+            $order = $datatable->sortBy . " " . $datatable->sortByOrder;
+        }
+
+        $limit = 0;
+        if ($datatable->limit) {
+            $limit = $datatable->limit;
+        }
+
+        $offset = 0;
+        if ($datatable->offset) {
+            $offset = $datatable->offset;
+        }
+
+        $data = $dbData->findWhere($query, $order, $limit, $offset);
+
+        $allProductId = [];
+        foreach ($data as $product) {
+            array_push($allProductId, $product['id']);
+        }
+        $allProductId = implode(",", $allProductId);
+
+        $dbCartDetail = new BaseModel($this->db, "cartDetail");
+        $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+
+        if ($allProductId != null) {
+            $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+            $arrBonus = $dbBonus->findWhere("entityProductId IN ($allProductId) AND isActive = 1");
+
+            $mapProductIdBonuses = [];
+
+            foreach ($arrBonus as $bonus) {
+                $productId = $bonus['entityProductId'];
+                $allBonuses = [];
+                if (array_key_exists($productId, $mapProductIdBonuses)) {
+                    $allBonuses = $mapProductIdBonuses[$productId];
+                }
+                array_push($allBonuses, $bonus);
+                $mapProductIdBonuses[$productId] = $allBonuses;
+            }
+        }
+
+
+        for ($i = 0; $i < count($data); $i++) {
+            $data[$i]['cart'] = 0;
+            if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
+                foreach ($arrCartDetail as $objCartItem) {
+                    if ($objCartItem['entityProductId'] == $data[$i]['id']) {
+                        $data[$i]['cartDetailId'] += $objCartItem['id'];
+                        $data[$i]['quantity'] = $objCartItem['quantity'];
+                        $data[$i]['cart'] += $objCartItem['quantity'];
+                        $data[$i]['cart'] += $objCartItem['quantityFree'];
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        // Get all product ids
+        $arrProductId = [];
+        foreach ($data as $productItem) {
+            array_push($arrProductId, $productItem['id']);
+        }
+
+        // Get all related bonuses
+        $mapProductIdBonus = [];
+        $mapBonusIdRelationGroup = [];
+        $mapSellerIdRelationGroupId = [];
+        if (count($arrProductId) > 0) {
+            $dbBonus = new BaseModel($this->db, "vwEntityProductSellBonusDetail");
+            $dbBonus->bonusTypeName = "bonusTypeName_" . $this->objUser->language;
+            $arrBonus = $dbBonus->getWhere("entityProductId IN (" . implode(",", $arrProductId) . ") AND isActive = 1");
+            $arrBonusId = [];
+            foreach ($arrBonus as $bonus) {
+                array_push($arrBonusId, $bonus['id']);
+            }
+
+            // Get special bonuses
+            if (count($arrBonusId) > 0) {
+                $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
+                $arrBonusRelationGroup = $dbBonusRelationGroup->getWhere("bonusId IN (" . implode(",", $arrBonusId) . ")");
+
+                foreach ($arrBonusRelationGroup as $bonusRelationGroup) {
+                    $bonusId = $bonusRelationGroup['bonusId'];
+                    $arrRelationGroup = [];
+                    if (array_key_exists($bonusId, $mapBonusIdRelationGroup)) {
+                        $arrRelationGroup = $mapBonusIdRelationGroup[$bonusId];
+                    }
+
+                    array_push($arrRelationGroup, $bonusRelationGroup['relationGroupId']);
+                    $mapBonusIdRelationGroup[$bonusId] = $arrRelationGroup;
+                }
+            }
+
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $dbEntityRelation = new BaseModel($this->db, "entityRelation");
+            $arrEntityRelation = $dbEntityRelation->getWhere("entityBuyerId IN ($arrEntityId)");
+            foreach ($arrEntityRelation as $entityRelation) {
+                $mapSellerIdRelationGroupId[$entityRelation['entitySellerId']] = $entityRelation['relationGroupId'];
+            }
+
+            foreach ($arrBonus as $bonus) {
+                $productId = $bonus['entityProductId'];
+                $arrProductBonus = [];
+                if (array_key_exists($productId, $mapProductIdBonus)) {
+                    $arrProductBonus = $mapProductIdBonus[$productId];
+                }
+                array_push($arrProductBonus, $bonus);
+                $mapProductIdBonus[$productId] = $arrProductBonus;
+            }
+        }
+
+        for ($i = 0; $i < sizeof($data); $i++) {
+            $sellerId = $data[$i]['entityId'];
+            $productId = $data[$i]['productId'];
+
+            $arrProductBonus = [];
+            $activeBonus = new stdClass();
+            $activeBonus->totalBonus = 0;
+            if (array_key_exists($productId, $mapProductIdBonus)) {
+
+                $arrBonus = $mapProductIdBonus[$productId];
+                foreach ($arrBonus as $bonus) {
+                    $bonusId = $bonus['id'];
+
+                    // Check if bonus available for buyer
+                    $valid = false;
+                    if (array_key_exists($bonusId, $mapBonusIdRelationGroup)) {
+                        $arrRelationGroup = $mapBonusIdRelationGroup[$bonusId];
+                        if (array_key_exists($sellerId, $mapSellerIdRelationGroupId)) {
+                            $relationGroupId = $mapSellerIdRelationGroupId[$sellerId];
+                            if (in_array($relationGroupId, $arrRelationGroup)) {
+                                $valid = true;
+                            }
+                        }
+                    } else {
+                        $valid = true;
+                    }
+
+                    if (!$valid) {
+                        continue;
+                    }
+
+                    $bonusType = $bonus['bonusTypeName'];
+                    $bonusTypeId = $bonus['bonusTypeId'];
+                    $bonusMinOrder = $bonus['minOrder'];
+                    $bonusBonus = $bonus['bonus'];
+
+                    // Check if bonus is possible
+                    $productDetail = $data[$i];
+                    $availableQuantity = min($productDetail['stock'], $productDetail['maximumOrderQuantity']);
+            
+                    if (!$productDetail['maximumOrderQuantity'])
+                        $availableQuantity = $productDetail['stock'];
+                    if (!$productDetail['stock'])
+                        $availableQuantity = 0;
+
+                    $totalOrder = 0;
+                    if ($bonusTypeId == Constants::BONUS_TYPE_FIXED || $bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
+                        $totalOrder = $bonusMinOrder + $bonusBonus;
+                    } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                        $totalOrder = $bonusMinOrder + floor($bonusBonus * $bonusMinOrder / 100);
+                    }
+                    if ($totalOrder > $availableQuantity) {
+                        continue;
+                    }
+
+                    $totalBonus = 0;
+                    if ($productDetail['quantity'] >= $bonusMinOrder) {
+                        if ($bonusTypeId == Constants::BONUS_TYPE_FIXED) {
+                            $totalBonus = $bonusBonus;
+                        } else if ($bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
+                            $totalBonus = floor($productDetail['quantity'] / $bonusMinOrder) * $bonusBonus;
+                        } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                            $totalBonus = floor($productDetail['quantity'] * $bonusBonus / 100);
+                        }
+                    }
+
+                    if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                        $bonusBonus .= "%";
+                    }
+
+                    if ($totalBonus > $activeBonus->totalBonus) {
+                        $activeBonus->bonusType = $bonusType;
+                        $activeBonus->minQty = $bonusMinOrder;
+                        $activeBonus->bonuses = $bonusBonus;
+                        $activeBonus->totalBonus = $totalBonus;
+                    }
+
+                    $found = false;
+                    for ($j = 0; $j < count($arrProductBonus); $j++) {
+                        $productBonus = $arrProductBonus[$j];
+                        if ($productBonus->bonusType == $bonusType) {
+                            $arrMinQty = $productBonus->arrMinQty;
+                            array_push($arrMinQty, $bonusMinOrder);
+                            $productBonus->arrMinQty = $arrMinQty;
+
+                            $arrBonuses = $productBonus->arrBonuses;
+                            array_push($arrBonuses, $bonusBonus);
+                            $productBonus->arrBonuses = $arrBonuses;
+
+                            $arrProductBonus[$j] = $productBonus;
+                            $found = true;
+                            break;
+                        }
+                    }
+
+                    if (!$found) {
+                        $productBonus = new stdClass();
+                        $productBonus->bonusType = $bonusType;
+                        $productBonus->arrMinQty = [$bonusMinOrder];
+                        $productBonus->arrBonuses = [$bonusBonus];
+                        array_push($arrProductBonus, $productBonus);
+                    }
+                }
+            }
+
+            $data[$i]['arrBonus'] = htmlspecialchars(json_encode($arrProductBonus), ENT_QUOTES, 'UTF-8');
+            $data[$i]['activeBonus'] = htmlspecialchars(json_encode($activeBonus), ENT_QUOTES, 'UTF-8');
+        }
+
+
+        ## Response
+        $response = array(
+            "draw" => intval($datatable->draw),
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $totalFiltered,
+            "data" => $data
+        );
+
+        $this->jsonResponseAPI($response);
     }
 
     function getDistributorCanAddProduct()
@@ -256,7 +664,7 @@ class ProductsController extends Controller
             $product = $dbProduct->findWhere("id=$id")[0];
             $entityId = $product['entityId'];
             $productId = $product['productId'];
-            
+
             $dbBonusType = new BaseModel($this->db, "bonusType");
             $dbBonusType->name = "name_" . $this->objUser->language;
             $arrBonusType = $dbBonusType->findAll();
@@ -269,22 +677,22 @@ class ProductsController extends Controller
             $dbEntityProductBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
             $arrBonus = $dbEntityProductBonus->findWhere("isActive = 1 AND entityProductId=$productId");
             $arrBonusId = [];
-            foreach($arrBonus as $bonus) {
+            foreach ($arrBonus as $bonus) {
                 array_push($arrBonusId, $bonus['id']);
             }
 
             // Group all bonuses' relation groups
             $arrBonusGrouped = [];
-            if(count($arrBonus) > 0) {
+            if (count($arrBonus) > 0) {
                 $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
                 $strBonusId = implode(",", $arrBonusId);
                 $arrBonusRelationGroup = $dbBonusRelationGroup->getWhere("bonusId IN ($strBonusId)");
 
                 $mapBonusIdRelationGroupId = [];
-                foreach($arrBonusRelationGroup as $bonusRelationGroup) {
+                foreach ($arrBonusRelationGroup as $bonusRelationGroup) {
                     $bonusId = $bonusRelationGroup['bonusId'];
                     $relationGroupId = $bonusRelationGroup['relationGroupId'];
-                    if(array_key_exists($bonusId, $mapBonusIdRelationGroupId)) {
+                    if (array_key_exists($bonusId, $mapBonusIdRelationGroupId)) {
                         $allRelationGroupId = $mapBonusIdRelationGroupId[$bonusId];
                         array_push($allRelationGroupId, $relationGroupId);
                         $mapBonusIdRelationGroupId[$bonusId] = $allRelationGroupId;
@@ -293,7 +701,7 @@ class ProductsController extends Controller
                     }
                 }
 
-                foreach($arrBonus as $bonus) {
+                foreach ($arrBonus as $bonus) {
                     $bonusId = $bonus['id'];
 
                     $bonusGrouped = new stdClass();
@@ -326,14 +734,28 @@ class ProductsController extends Controller
         $query = "entityId IN ($arrEntityId)";
 
         if (is_array($datatable->query)) {
-            $productId = $datatable->query['productId'];
-            if (isset($productId) && is_array($productId)) {
-                $query .= " AND id in (" . implode(",", $productId) . ")";
+            $productName = $datatable->query['productName'];
+            if (isset($productName) && is_array($productName)) {
+                $query .= " AND (";
+                foreach ($productName as $key => $value) {
+                    if ($key !== 0) {
+                        $query .= " OR ";
+                    }
+                    $query .= "productName_en LIKE '%{$value}%' OR productName_ar LIKE '%{$value}%' OR productName_fr LIKE '%{$value}%'";
+                }
+                $query .= ")";
             }
 
-            $scientificNameId = $datatable->query['scientificNameId'];
-            if (isset($scientificNameId) && is_array($scientificNameId)) {
-                $query .= " AND scientificNameId in (" . implode(",", $scientificNameId) . ")";
+            $scientificName = $datatable->query['scientificName'];
+            if (isset($scientificName) && is_array($scientificName)) {
+                $query .= " AND (";
+                foreach ($scientificName as $key => $value) {
+                    if ($key !== 0) {
+                        $query .= " OR ";
+                    }
+                    $query .= "scientificName LIKE '%{$value}%'";
+                }
+                $query .= ")";
             }
 
             $stockOption = $datatable->query['stockOption'];
@@ -371,19 +793,23 @@ class ProductsController extends Controller
 
     function postProductImage()
     {
-        $imageName = $this->f3->get('POST.imageName');
+        $allValidExtensions = [
+            "jpeg",
+            "jpg",
+            "png",
+        ];
+        $success = false;
 
-        $uploadDir = "assets/img/products/";
-        $this->f3->set('UPLOADS', $uploadDir);
+        $ext = pathinfo(basename($_FILES["product_image"]["name"]), PATHINFO_EXTENSION);
+        if (in_array($ext, $allValidExtensions)) {
+            $success = true;
+        }
+        $path = "";
 
-        $overwrite = true;
-
-        $web = \Web::instance();
-        $files = $web->receive(function ($file, $formFieldName) {
-            return true;
-        }, $overwrite, true);
-
-        $path = "/assets/img/products/" . $imageName;
+        if ($success) {
+            $objResult = AumetFileUploader::upload("s3", $_FILES["product_image"], $this->generateRandomString(64));
+            $path = $objResult->fileLink;
+        }
 
         $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
         $this->webResponse->title = "Product Image Upload";
@@ -400,19 +826,14 @@ class ProductsController extends Controller
         ];
         $success = false;
 
-        $fileName = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_FILENAME);
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
-
-        $targetFile = Helper::createUploadedFileName($fileName,$ext,"assets/img/products/");
-
         if (in_array($ext, $allValidExtensions)) {
-            if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
-                $success = true;
-            }
+            $success = true;
         }
 
         if ($success) {
-            echo $targetFile;
+            $objResult = AumetFileUploader::upload("s3", $_FILES["file"], $this->generateRandomString(64));
+            echo $objResult->fileLink;
         }
     }
 
@@ -422,16 +843,15 @@ class ProductsController extends Controller
         $datatable = new Datatable($_POST);
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
-        $query = "entityId IN ($arrEntityId)";
-        $query .= " AND statusId = 1";
-        $meta = array();
+        $query = "entityId IN ($arrEntityId) AND statusId = 1 ";
+        $fullQuery = $query . " AND quantityOrdered > 0";
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
 
         $data = [];
 
         $totalRecords = $dbProducts->count($query);
-        $totalFiltered = 5;
-        $data = $dbProducts->findWhere($query, "quantityOrdered DESC", 5, 0);
+        $totalFiltered = MIN($dbProducts->count($fullQuery), 5);
+        $data = $dbProducts->findWhere($fullQuery, "quantityOrdered DESC", 5, 0);
 
         ## Response
         $response = array(
@@ -467,17 +887,17 @@ class ProductsController extends Controller
                 $madeInCountryId = $this->f3->get('POST.madeInCountryId');
                 $name_en = $this->f3->get('POST.name_en');
                 $name_ar = $this->f3->get('POST.name_ar');
-                $name_fr = $this->f3->get('POST.name_fr');
+                // $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
                 $subimages = $this->f3->get('POST.subimages');
                 $unitPrice = $this->f3->get('POST.unitPrice');
                 $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
                 $subtitle_ar = $this->f3->get('POST.subtitle_ar');
                 $subtitle_en = $this->f3->get('POST.subtitle_en');
-                $subtitle_fr = $this->f3->get('POST.subtitle_fr');
+                // $subtitle_fr = $this->f3->get('POST.subtitle_fr');
                 $description_ar = $this->f3->get('POST.description_ar');
                 $description_en = $this->f3->get('POST.description_en');
-                $description_fr = $this->f3->get('POST.description_fr');
+                // $description_fr = $this->f3->get('POST.description_fr');
                 $unitPrice = $this->f3->get('POST.unitPrice');
                 $vat = $this->f3->get('POST.vat');
                 $manufacturerName = $this->f3->get('POST.manufacturerName');
@@ -490,13 +910,12 @@ class ProductsController extends Controller
                 $strength = $this->f3->get('POST.strength');
 
                 if (
-                    strlen($scientificNameId) == 0 || strlen($madeInCountryId) == 0
+                    strlen($madeInCountryId) == 0
+                    // || strlen($scientificNameId) == 0
                     || strlen($name_en) == 0 || strlen($name_ar) == 0
-                    || strlen($name_fr) == 0 || strlen($unitPrice) == 0
-                    || strlen($vat) == 0 || strlen($maximumOrderQuantity) == 0
-                    || strlen($description_ar) == 0 || strlen($description_en) == 0
-                    || strlen($description_fr) == 0 || strlen($categoryId) == 0
-                    || strlen($subcategoryId) == 0
+                    // || strlen($name_fr) == 0
+                    || strlen($unitPrice) == 0 || strlen($vat) == 0
+                    || strlen($categoryId) == 0 || strlen($subcategoryId) == 0
                 ) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get('vModule_product_missingFields');
@@ -504,18 +923,18 @@ class ProductsController extends Controller
                     return;
                 }
 
-                if ((!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)
+                if ((strlen($maximumOrderQuantity) > 0 && (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0))
                     || (!is_numeric($unitPrice) || $unitPrice <= 0)
-                    || (!is_numeric($vat) || $vat < 0)
+                    || (!is_numeric($vat) || $vat < 0 || $vat > 100)
                 ) {
                     $arrError = [];
-                    if (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0) {
+                    if (strlen($maximumOrderQuantity) > 0 && (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)) {
                         array_push($arrError, $this->f3->get('vModule_product_maximumOrderQuantityInvalid'));
                     }
                     if (!is_numeric($unitPrice) || $unitPrice <= 0) {
                         array_push($arrError, $this->f3->get('vModule_product_unitPriceInvalid'));
                     }
-                    if (!is_numeric($vat) || $vat < 0) {
+                    if (!is_numeric($vat) || $vat < 0 || $vat > 100) {
                         array_push($arrError, $this->f3->get('vModule_product_vatInvalid'));
                     }
 
@@ -536,11 +955,19 @@ class ProductsController extends Controller
 
                 $this->checkLength($name_en, 'nameEn', 200, 4);
                 $this->checkLength($name_ar, 'nameAr', 200, 4);
-                $this->checkLength($name_fr, 'nameFr', 200, 4);
-                $this->checkLength($description_ar, 'descriptionAr', 1000, 4);
-                $this->checkLength($description_en, 'descriptionEn', 1000, 4);
-                $this->checkLength($description_fr, 'descriptionFr', 1000, 4);
+                // $this->checkLength($name_fr, 'nameFr', 200, 4);
 
+                if ($description_ar) {
+                    $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
+                }
+                
+                if ($description_en) {
+                    $this->checkLength($description_en, 'descriptionEn', 5000, 4);
+                }
+                
+                // if ($description_fr) {
+                //     $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
+                // }
 
                 if ($subtitle_ar) {
                     $this->checkLength($subtitle_ar, 'subtitleAr', 200, 4);
@@ -550,9 +977,9 @@ class ProductsController extends Controller
                     $this->checkLength($subtitle_en, 'subtitleEn', 200, 4);
                 }
 
-                if ($subtitle_fr) {
-                    $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
-                }
+                // if ($subtitle_fr) {
+                //     $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
+                // }
 
                 if ($manufacturerName) {
                     $this->checkLength($manufacturerName, 'manufacturerName', 200, 4);
@@ -562,18 +989,25 @@ class ProductsController extends Controller
                     $this->checkLength($strength, 'strength', 200, 4);
                 }
 
-                $dbProduct->scientificNameId = $scientificNameId;
+                if($scientificNameId) {
+                    $dbProduct->scientificNameId = $scientificNameId;
+                } else {
+                    $dbProduct->scientificNameId = null;
+                }
                 $dbProduct->madeInCountryId = $madeInCountryId;
                 $dbProduct->name_en = $name_en;
-                $dbProduct->name_fr = $name_fr;
+                $dbProduct->name_fr = $name_en;
+                // $dbProduct->name_fr = $name_fr;
                 $dbProduct->name_ar = $name_ar;
                 $dbProduct->image = $image;
                 $dbProduct->subtitle_ar = $subtitle_ar;
                 $dbProduct->subtitle_en = $subtitle_en;
-                $dbProduct->subtitle_fr = $subtitle_fr;
+                $dbProduct->subtitle_fr = $subtitle_en;
+                // $dbProduct->subtitle_fr = $subtitle_fr;
                 $dbProduct->description_ar = $description_ar;
                 $dbProduct->description_en = $description_en;
-                $dbProduct->description_fr = $description_fr;
+                $dbProduct->description_fr = $description_en;
+                // $dbProduct->description_fr = $description_fr;
                 $dbProduct->manufacturerName = $manufacturerName;
                 $dbProduct->batchNumber = $batchNumber;
                 $dbProduct->itemCode = $itemCode;
@@ -618,7 +1052,12 @@ class ProductsController extends Controller
                 $dbEntityProduct->unitPrice = $unitPrice;
                 $dbEntityProduct->vat = $vat;
                 $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
-                $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
+                
+                if(strlen($maximumOrderQuantity) > 0) {
+                    $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
+                } else {
+                    $dbEntityProduct->maximumOrderQuantity = null;
+                }
 
                 $dbEntityProduct->update();
 
@@ -772,14 +1211,14 @@ class ProductsController extends Controller
                 $arrDefaultBonus = $this->f3->get('POST.arrDefaultBonus');
                 $arrSpecialBonus = $this->f3->get('POST.arrSpecialBonus');
 
-                if(!$arrDefaultBonus) {
+                if (!$arrDefaultBonus) {
                     $arrDefaultBonus = [];
                 }
 
-                if(!$arrSpecialBonus) {
+                if (!$arrSpecialBonus) {
                     $arrSpecialBonus = [];
                 }
-                
+
                 if (!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get('vModule_product_stockInvalid');
@@ -787,47 +1226,79 @@ class ProductsController extends Controller
                     return;
                 }
 
-                foreach($arrDefaultBonus as $bonus) {
+                foreach ($arrDefaultBonus as $bonus) {
                     $bonusTypeId = $bonus['bonusTypeId'];
                     $minOrder = $bonus['minOrder'];
                     $bonusQty = $bonus['bonus'];
-                    
+
                     $valid = false;
-                    if(strlen($bonusTypeId) != 0
-                    && strlen($minOrder) != 0
-                    && strlen($bonusQty) != 0) {
-                        if($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
+                    if (
+                        strlen($bonusTypeId) != 0
+                        && strlen($minOrder) != 0
+                        && strlen($bonusQty) != 0
+                    ) {
+                        if ($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
                             $valid = true;
                         }
                     }
 
-                    if(!$valid) {
+                    if (!$valid) {
                         $this->webResponse->errorCode = Constants::STATUS_ERROR;
                         $this->webResponse->message = $this->f3->get('vModule_product_defaultBonusInvalid');
                         echo $this->webResponse->jsonResponse();
                         return;
                     }
+
+                    if ($minOrder > Constants::MAX_INT_VALUE) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_quantityTooBig');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
+
+                    if ($bonusQty > Constants::MAX_INT_VALUE) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_bonusTooBig');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
                 }
 
-                foreach($arrSpecialBonus as $bonus) {
+                foreach ($arrSpecialBonus as $bonus) {
                     $bonusTypeId = $bonus['bonusTypeId'];
                     $minOrder = $bonus['minOrder'];
                     $bonusQty = $bonus['bonus'];
                     $arrRelationGroup = $bonus['arrRelationGroup'];
-                    
+
                     $valid = false;
-                    if(strlen($bonusTypeId) != 0
-                    && strlen($minOrder) != 0
-                    && strlen($bonusQty) != 0
-                    && $arrRelationGroup && count($arrRelationGroup) > 0) {
-                        if($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
+                    if (
+                        strlen($bonusTypeId) != 0
+                        && strlen($minOrder) != 0
+                        && strlen($bonusQty) != 0
+                        && $arrRelationGroup && count($arrRelationGroup) > 0
+                    ) {
+                        if ($bonusTypeId != Constants::BONUS_TYPE_PERCENTAGE || ($bonusQty <= 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE)) {
                             $valid = true;
                         }
                     }
 
-                    if(!$valid) {
+                    if (!$valid) {
                         $this->webResponse->errorCode = Constants::STATUS_ERROR;
                         $this->webResponse->message = $this->f3->get('vModule_product_specialBonusInvalid');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
+
+                    if ($minOrder > Constants::MAX_INT_VALUE) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_quantityTooBig');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
+
+                    if ($bonusQty > Constants::MAX_INT_VALUE) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_bonusTooBig');
                         echo $this->webResponse->jsonResponse();
                         return;
                     }
@@ -836,19 +1307,19 @@ class ProductsController extends Controller
                 $arrBonus = array_merge($arrDefaultBonus, $arrSpecialBonus);
 
                 $mapBonusIdBonus = [];
-                foreach($arrBonus as $bonus) {
-                    if($bonus['id']) {
+                foreach ($arrBonus as $bonus) {
+                    if ($bonus['id']) {
                         $mapBonusIdBonus[$bonus['id']] = $bonus;
                     }
                 }
 
                 $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
                 $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
-                
+
                 $dbBonus->getWhere("isActive = 1 AND entityProductId=$productId");
                 while (!$dbBonus->dry()) {
                     $bonusId = $dbBonus['id'];
-                    if(array_key_exists($bonusId, $mapBonusIdBonus)) {
+                    if (array_key_exists($bonusId, $mapBonusIdBonus)) {
                         $newBonus = $mapBonusIdBonus[$bonusId];
                         $dbBonus->bonusTypeId = $newBonus['bonusTypeId'];
                         $dbBonus->minOrder = $newBonus['minOrder'];
@@ -861,8 +1332,8 @@ class ProductsController extends Controller
                             $dbBonusRelationGroup->delete();
                             $dbBonusRelationGroup->next();
                         }
-                        if($arrRelationGroup) {
-                            foreach($arrRelationGroup as $relationGroupId) {
+                        if ($arrRelationGroup) {
+                            foreach ($arrRelationGroup as $relationGroupId) {
                                 $dbBonusRelationGroup->bonusId = $bonusId;
                                 $dbBonusRelationGroup->relationGroupId = $relationGroupId;
                                 $dbBonusRelationGroup->add();
@@ -873,9 +1344,9 @@ class ProductsController extends Controller
                     }
                     $dbBonus->next();
                 }
-                
-                foreach($arrBonus as $bonus) {
-                    if(!$bonus['id']) {
+
+                foreach ($arrBonus as $bonus) {
+                    if (!$bonus['id']) {
                         $dbBonus->entityProductId = $productId;
                         $dbBonus->bonusTypeId = $bonus['bonusTypeId'];
                         $dbBonus->minOrder = $bonus['minOrder'];
@@ -884,8 +1355,8 @@ class ProductsController extends Controller
                         $dbBonus->addReturnID();
 
                         $arrRelationGroup = $bonus['arrRelationGroup'];
-                        if($arrRelationGroup) {
-                            foreach($arrRelationGroup as $relationGroupId) {
+                        if ($arrRelationGroup) {
+                            foreach ($arrRelationGroup as $relationGroupId) {
                                 $dbBonusRelationGroup->bonusId = $dbBonus['id'];
                                 $dbBonusRelationGroup->relationGroupId = $relationGroupId;
                                 $dbBonusRelationGroup->add();
@@ -914,17 +1385,17 @@ class ProductsController extends Controller
             $madeInCountryId = $this->f3->get('POST.madeInCountryId');
             $name_en = $this->f3->clean($this->f3->get('POST.name_en'));
             $name_ar = $this->f3->clean($this->f3->get('POST.name_ar'));
-            $name_fr = $this->f3->clean($this->f3->get('POST.name_fr'));
+            // $name_fr = $this->f3->clean($this->f3->get('POST.name_fr'));
             $image = $this->f3->get('POST.image');
             $subimages = $this->f3->get('POST.subimages');
             $stock = $this->f3->get('POST.stock');
             $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
             $subtitle_ar = $this->f3->clean($this->f3->get('POST.subtitle_ar'));
             $subtitle_en = $this->f3->clean($this->f3->get('POST.subtitle_en'));
-            $subtitle_fr = $this->f3->clean($this->f3->get('POST.subtitle_fr'));
+            // $subtitle_fr = $this->f3->clean($this->f3->get('POST.subtitle_fr'));
             $description_ar = $this->f3->clean($this->f3->get('POST.description_ar'));
             $description_en = $this->f3->clean($this->f3->get('POST.description_en'));
-            $description_fr = $this->f3->clean($this->f3->get('POST.description_fr'));
+            // $description_fr = $this->f3->clean($this->f3->get('POST.description_fr'));
             $unitPrice = $this->f3->get('POST.unitPrice');
             $vat = $this->f3->get('POST.vat');
             $manufacturerName = $this->f3->clean($this->f3->get('POST.manufacturerName'));
@@ -937,12 +1408,11 @@ class ProductsController extends Controller
             $strength = $this->f3->clean($this->f3->get('POST.strength'));
 
             if (
-                strlen($scientificNameId) == 0 || strlen($madeInCountryId) == 0
+                strlen($madeInCountryId) == 0
+                // || strlen($scientificNameId) == 0
                 || strlen($name_en) == 0 || strlen($name_ar) == 0
-                || strlen($name_fr) == 0 || strlen($unitPrice) == 0
-                || strlen($vat) == 0 || strlen($stock) == 0
-                || strlen($maximumOrderQuantity) == 0 || strlen($description_ar) == 0
-                || strlen($description_en) == 0 || strlen($description_fr) == 0
+                // || strlen($name_fr) == 0
+                || strlen($unitPrice) == 0 || strlen($vat) == 0 || strlen($stock) == 0
                 || strlen($categoryId) == 0 || strlen($subcategoryId) == 0
             ) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -952,21 +1422,21 @@ class ProductsController extends Controller
             }
 
             if ((!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0)
-                || (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)
+                || (strlen($maximumOrderQuantity) > 0 && !(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)
                 || (!is_numeric($unitPrice) || $unitPrice <= 0)
-                || (!is_numeric($vat) || $vat < 0)
+                || (!is_numeric($vat) || $vat < 0 || $vat > 100)
             ) {
                 $arrError = [];
                 if (!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0) {
                     array_push($arrError, $this->f3->get('vModule_product_stockInvalid'));
                 }
-                if (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0) {
+                if (strlen($maximumOrderQuantity) > 0 && !(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0) {
                     array_push($arrError, $this->f3->get('vModule_product_maximumOrderQuantityInvalid'));
                 }
                 if (!is_numeric($unitPrice) || $unitPrice <= 0) {
                     array_push($arrError, $this->f3->get('vModule_product_unitPriceInvalid'));
                 }
-                if (!is_numeric($vat) || $vat < 0) {
+                if (!is_numeric($vat) || $vat < 0 || $vat > 100) {
                     array_push($arrError, $this->f3->get('vModule_product_vatInvalid'));
                 }
 
@@ -987,12 +1457,21 @@ class ProductsController extends Controller
 
             $this->checkLength($name_en, 'nameEn', 200, 4);
             $this->checkLength($name_ar, 'nameAr', 200, 4);
-            $this->checkLength($name_fr, 'nameFr', 200, 4);
-            $this->checkLength($description_ar, 'descriptionAr', 1000, 4);
-            $this->checkLength($description_en, 'descriptionEn', 1000, 4);
-            $this->checkLength($description_fr, 'descriptionFr', 1000, 4);
+            // $this->checkLength($name_fr, 'nameFr', 200, 4);
 
 
+            if ($description_ar) {
+                $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
+            }
+            
+            if ($description_en) {
+                $this->checkLength($description_en, 'descriptionEn', 5000, 4);
+            }
+            
+            // if ($description_fr) {
+            //     $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
+            // }
+            
             if ($subtitle_ar) {
                 $this->checkLength($subtitle_ar, 'subtitleAr', 200, 4);
             }
@@ -1001,9 +1480,9 @@ class ProductsController extends Controller
                 $this->checkLength($subtitle_en, 'subtitleEn', 200, 4);
             }
 
-            if ($subtitle_fr) {
-                $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
-            }
+            // if ($subtitle_fr) {
+            //     $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
+            // }
 
             if ($manufacturerName) {
                 $this->checkLength($manufacturerName, 'manufacturerName', 200, 4);
@@ -1015,18 +1494,25 @@ class ProductsController extends Controller
 
 
             $dbProduct = new BaseModel($this->db, "product");
-            $dbProduct->scientificNameId = $scientificNameId;
+            if($scientificNameId) {
+                $dbProduct->scientificNameId = $scientificNameId;
+            } else {
+                $dbProduct->scientificNameId = null;
+            }
             $dbProduct->madeInCountryId = $madeInCountryId;
             $dbProduct->name_en = $name_en;
-            $dbProduct->name_fr = $name_fr;
+            // $dbProduct->name_fr = $name_fr;
+            $dbProduct->name_fr = $name_en;
             $dbProduct->name_ar = $name_ar;
             $dbProduct->image = $image;
             $dbProduct->subtitle_ar = $subtitle_ar;
             $dbProduct->subtitle_en = $subtitle_en;
-            $dbProduct->subtitle_fr = $subtitle_fr;
+            // $dbProduct->subtitle_fr = $subtitle_fr;
+            $dbProduct->subtitle_fr = $subtitle_en;
             $dbProduct->description_ar = $description_ar;
             $dbProduct->description_en = $description_en;
-            $dbProduct->description_fr = $description_fr;
+            // $dbProduct->description_fr = $description_fr;
+            $dbProduct->description_fr = $description_en;
             $dbProduct->manufacturerName = $manufacturerName;
             $dbProduct->batchNumber = $batchNumber;
             $dbProduct->itemCode = $itemCode;
@@ -1070,7 +1556,12 @@ class ProductsController extends Controller
             $dbEntityProduct->stockStatusId = 1;
             $dbEntityProduct->bonusTypeId = 1;
             $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
-            $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
+            
+            if(strlen($maximumOrderQuantity) > 0) {
+                $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
+            } else {
+                $dbEntityProduct->maximumOrderQuantity = null;
+            }
 
             $dbEntityProduct->add();
 
@@ -2170,7 +2661,7 @@ class ProductsController extends Controller
                 $arrIngredient[] = array($ingredient['name'], $ingredient['id']);
             }
 
-            $sampleFilePath = 'app/files/samples/products-add-sample.xlsx';
+            $sampleFilePath = 'app/files/samples/products-add-sample.xlsm';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
@@ -2188,8 +2679,8 @@ class ProductsController extends Controller
             // Set validation and formula
             Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
             Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
-            Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$G$3:$H$' . $subcategoryNum);
-            Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$J$3:$K$' . $ingredientNum);
+            Excel::setCellFormulaVLookup($sheet, 'P3', 2505, "'User Input'!P", 'Variables!$G$3:$H$' . $subcategoryNum);
+            // Excel::setCellFormulaVLookup($sheet, 'Q3', 2505, "'User Input'!Q", 'Variables!$J$3:$K$' . $ingredientNum);
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -2201,11 +2692,11 @@ class ProductsController extends Controller
             // Set data validation for dropdowns
             Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
             Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
-            Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
-            Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
+            Excel::setDataValidation($sheet, 'P3', 'P2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
+            Excel::setDataValidation($sheet, 'Q3', 'Q2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
 
             // Create excel sheet
-            $productsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsx";
+            $productsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsm";
             Excel::saveSpreadsheetToPath($spreadsheet, $productsSheetUrl);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
@@ -2223,7 +2714,7 @@ class ProductsController extends Controller
 
         $targetFile = "files/uploads/reports/products-add/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
 
-        if ($ext == "xlsx") {
+        if ($ext == "xlsm" || $ext == "xlsx") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
                 $dbBulkAddUpload = new BaseModel($this->db, "bulkAddUpload");
                 $dbBulkAddUpload->userId = $this->objUser->id;
@@ -2308,30 +2799,28 @@ class ProductsController extends Controller
                 "B" => "madeInCountryId",
                 "C" => "name_en",
                 "D" => "name_ar",
-                "E" => "name_fr",
-                "F" => "subtitle_ar",
-                "G" => "subtitle_en",
-                "H" => "subtitle_fr",
-                "I" => "description_ar",
-                "J" => "description_en",
-                "K" => "description_fr",
-                "L" => "unitPrice",
-                "M" => "vat",
-                "N" => "stock",
-                "O" => "maximumOrderQuantity",
-                "P" => "manufacturerName",
-                "Q" => "batchNumber",
-                "R" => "itemCode",
-                "S" => "subcategoryId",
-                "T" => "activeIngredientsId",
-                "U" => "expiryDate",
-                "V" => "strength"
+                "E" => "subtitle_ar",
+                "F" => "subtitle_en",
+                "G" => "description_ar",
+                "H" => "description_en",
+                "I" => "unitPrice",
+                "J" => "vat",
+                "K" => "stock",
+                "L" => "maximumOrderQuantity",
+                "M" => "manufacturerName",
+                "N" => "batchNumber",
+                "O" => "itemCode",
+                "P" => "subcategoryId",
+                "Q" => "activeIngredientsId",
+                "R" => "expiryDate",
+                "S" => "strength"
             ];
 
             $successProducts = [];
             $failedProducts = [];
 
             $allErrors = [];
+            $multiActiveIngredients = [];
 
             $dbBulkAddUpload->recordsCount = 0;
             $successRecords = 0;
@@ -2374,15 +2863,17 @@ class ProductsController extends Controller
 
                     switch ($cellLetter) {
                         case "A":
-                            if (!in_array($cellValue, $allScientificId)) {
-                                $finished = true;
-                            } else {
-                                $dbProduct->scientificNameId = $cellValue;
+                            if ($cellValue != "#N/A") {
+                                if (!in_array($cellValue, $allScientificId)) {
+                                    array_push($errors, "Scientific Name is invalid");
+                                } else {
+                                    $dbProduct->scientificNameId = $cellValue;
+                                }
                             }
                             break;
                         case "B":
                             if (!in_array($cellValue, $allCountryId)) {
-                                array_push($errors, "Made In invalid");
+                                $finished = true;
                             } else {
                                 $dbProduct->madeInCountryId = $cellValue;
                             }
@@ -2406,21 +2897,11 @@ class ProductsController extends Controller
                                     array_push($errors, "Brand Name EN should be between 4 and 200 characters");
                                 } else {
                                     $dbProduct->name_en = $cellValue;
-                                }
-                            }
-                            break;
-                        case "E":
-                            if (strlen($cellValue) == 0) {
-                                array_push($errors, "Brand Name FR required");
-                            } else {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 200) {
-                                    array_push($errors, "Brand Name FR should be between 4 and 200 characters");
-                                } else {
                                     $dbProduct->name_fr = $cellValue;
                                 }
                             }
                             break;
-                        case "F":
+                        case "E":
                             if (strlen($cellValue) != 0) {
                                 if (strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Subtitle AR should be between 4 and 200 characters");
@@ -2429,86 +2910,66 @@ class ProductsController extends Controller
                                 }
                             }
                             break;
-                        case "G":
+                        case "F":
                             if (strlen($cellValue) != 0) {
                                 if (strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Subtitle EN should be between 4 and 200 characters");
                                 } else {
                                     $dbProduct->subtitle_en = $cellValue;
-                                }
-                            }
-                            break;
-                        case "H":
-                            if (strlen($cellValue) != 0) {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 200) {
-                                    array_push($errors, "Subtitle FR should be between 4 and 200 characters");
-                                } else {
                                     $dbProduct->subtitle_fr = $cellValue;
                                 }
                             }
                             break;
-                        case "I":
-                            if (strlen($cellValue) == 0) {
-                                array_push($errors, "Description AR required");
-                            } else {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
-                                    array_push($errors, "Description AR should be between 4 and 1000 characters");
+                        case "G":
+                            if (strlen($cellValue) != 0) {
+                                if (strlen($cellValue) < 4 || strlen($cellValue) > 5000) {
+                                    array_push($errors, "Description AR should be between 4 and 5000 characters");
                                 } else {
                                     $dbProduct->description_ar = $cellValue;
                                 }
                             }
                             break;
-                        case "J":
-                            if (strlen($cellValue) == 0) {
-                                array_push($errors, "Description EN required");
-                            } else {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
-                                    array_push($errors, "Description EN should be between 4 and 1000 characters");
+                        case "H":
+                            if (strlen($cellValue) != 0) {
+                                if (strlen($cellValue) < 4 || strlen($cellValue) > 5000) {
+                                    array_push($errors, "Description EN should be between 4 and 5000 characters");
                                 } else {
                                     $dbProduct->description_en = $cellValue;
-                                }
-                            }
-                            break;
-                        case "K":
-                            if (strlen($cellValue) == 0) {
-                                array_push($errors, "Description FR required");
-                            } else {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 1000) {
-                                    array_push($errors, "Description FR should be between 4 and 1000 characters");
-                                } else {
                                     $dbProduct->description_fr = $cellValue;
                                 }
                             }
                             break;
-                        case "L":
+                        case "I":
                             if (!is_numeric($cellValue) || (float) $cellValue <= 0) {
                                 array_push($errors, "Unit Price must be a positive number not null");
                             } else {
                                 $dbEntityProduct->unitPrice = round((float)$cellValue, 2);
                             }
                             break;
-                        case "M":
-                            if (!is_numeric($cellValue) || (float) $cellValue < 0) {
-                                array_push($errors, "VAT must be a positive number");
+                        case "J":
+                            if (!is_numeric($cellValue) || (float) $cellValue < 0 || (float) $cellValue > 100) {
+                                array_push($errors, "VAT must be a positive number between 0 and 100");
                             } else {
                                 $dbEntityProduct->vat = round((float) $cellValue, 2);
                             }
                             break;
-                        case "N":
+                        case "K":
                             if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
                                 array_push($errors, "Available Quantity must be a positive whole number");
                             } else {
                                 $dbEntityProduct->stock = (int) $cellValue;
                             }
                             break;
-                        case "O":
-                            if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
-                                array_push($errors, "Maximum Order Quantity must be a positive whole number");
-                            } else {
-                                $dbEntityProduct->maximumOrderQuantity = (int) $cellValue;
+                        case "L":
+                            if(strlen($cellValue) > 0) {
+                                if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
+                                    array_push($errors, "Maximum Order Quantity must be a positive whole number");
+                                } else {
+                                    $dbEntityProduct->maximumOrderQuantity = (int) $cellValue;
+                                }
                             }
                             break;
-                        case "P":
+                        case "M":
                             if (strlen($cellValue) != 0) {
                                 if (strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Manufacturer Name should be between 4 and 200 characters");
@@ -2517,32 +2978,39 @@ class ProductsController extends Controller
                                 }
                             }
                             break;
-                        case "Q":
+                        case "N":
                             if (strlen($cellValue) != 0) {
                                 $dbProduct->batchNumber = $cellValue;
                             }
                             break;
-                        case "R":
+                        case "O":
                             if (strlen($cellValue) != 0) {
                                 $dbProduct->itemCode = $cellValue;
                             }
                             break;
-                        case "S":
+                        case "P":
                             if (!in_array($cellValue, $allSubcategoryId)) {
-                                array_push($errors, "Subcategory invalid");
+                                array_push($errors, "Category - Subcategory invalid");
                             } else {
                                 $dbProduct->subcategoryId = $cellValue;
                                 $dbProduct->categoryId = $mapSubcategoryIdCategoryId[$cellValue];
                             }
                             break;
-                        case "T":
-                            if ($cellValue != "#N/A" && !in_array($cellValue, $allIngredientId)) {
-                                array_push($errors, "Ingredient invalid");
-                            } else {
-                                $activeIngredientsId = $cellValue;
+                        case "Q":
+                            $valid = true;
+                            if (strlen($cellValue) > 0) {
+                                $activeIngredientsTemp = explode(", ", $cellValue);
+                                foreach ($activeIngredientsTemp as $ingredient) {
+                                    if (!in_array($ingredient, $allIngredientId)) {
+                                        array_push($errors, "Active Ingredients invalid");
+                                        $valid = false;
+                                        break;
+                                    }
+                                }
                             }
+                            $activeIngredients = $cellValue;
                             break;
-                        case "U":
+                        case "R":
                             if (!is_null($cellValue)) {
                                 if (!is_int($cellValue)) {
                                     array_push($errors, "Expiry Date must fit a date format (mm/dd/yyyy)");
@@ -2552,7 +3020,7 @@ class ProductsController extends Controller
                                 }
                             }
                             break;
-                        case "V":
+                        case "S":
                             if (strlen($cellValue) != 0) {
                                 if (strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Strength should be between 4 and 200 characters");
@@ -2580,10 +3048,13 @@ class ProductsController extends Controller
                     $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
                     $dbEntityProduct->add();
 
-                    if ($activeIngredientsId) {
-                        $dbProductIngredient->productId = $dbProduct->id;
-                        $dbProductIngredient->ingredientId = $activeIngredientsId;
-                        $dbProductIngredient->add();
+                    if (strlen($activeIngredients) > 0) {
+                        $arrActiveIngredients = explode(", ", $activeIngredients);
+                        foreach ($arrActiveIngredients as $ingredient) {
+                            $dbProductIngredient->productId = $dbProduct->id;
+                            $dbProductIngredient->ingredientId = $ingredient;
+                            $dbProductIngredient->add();
+                        }
                     }
 
                     array_push($successProducts, $product);
@@ -2591,6 +3062,7 @@ class ProductsController extends Controller
                 } else {
                     array_push($failedProducts, $product);
                     array_push($allErrors, $errors);
+                    array_push($multiActiveIngredients, [$activeIngredients]);
                     $failedRecords++;
                 }
             }
@@ -2639,7 +3111,7 @@ class ProductsController extends Controller
                     $arrIngredient[] = array($ingredient['name'], $ingredient['id']);
                 }
 
-                $sampleFilePath = 'app/files/samples/products-add-sample.xlsx';
+                $sampleFilePath = 'app/files/samples/products-add-sample.xlsm';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
@@ -2657,8 +3129,8 @@ class ProductsController extends Controller
                 // Set validation and formula
                 Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
                 Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
-                Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$G$3:$H$' . $subcategoryNum);
-                Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$J$3:$K$' . $ingredientNum);
+                Excel::setCellFormulaVLookup($sheet, 'P3', 2505, "'User Input'!P", 'Variables!$G$3:$H$' . $subcategoryNum);
+                // Excel::setCellFormulaVLookup($sheet, 'Q3', 2505, "'User Input'!Q", 'Variables!$J$3:$K$' . $ingredientNum);
 
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -2670,11 +3142,11 @@ class ProductsController extends Controller
                 // Set data validation for dropdowns
                 Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
                 Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
-                Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
-                Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
+                Excel::setDataValidation($sheet, 'P3', 'P2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
+                Excel::setDataValidation($sheet, 'Q3', 'Q2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
 
-                $sheet->setCellValue('W2', 'Error');
-                $sheet->getStyle('W2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
+                $sheet->setCellValue('T2', 'Error');
+                $sheet->getStyle('T2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
 
                 // Add all products to multidimensional array
                 $multiProducts = [];
@@ -2683,13 +3155,10 @@ class ProductsController extends Controller
                     "madeInCountryId",
                     "name_en",
                     "name_ar",
-                    "name_fr",
                     "subtitle_ar",
                     "subtitle_en",
-                    "subtitle_fr",
                     "description_ar",
                     "description_en",
-                    "description_fr",
                     "unitPrice",
                     "vat",
                     "stock",
@@ -2716,8 +3185,17 @@ class ProductsController extends Controller
                         } else if ($field == "subcategoryId") {
                             $cellValue = $mapSubcategoryIdName[$product[$j]];
                         } else if ($field == "activeIngredientsId") {
-                            $cellValue = $mapIngredientIdName[$product[$j]];
-                        } else if ($product[$j] !== 0) {
+                            if (strlen($product[$j]) > 0) {
+                                $activeIngredientsId = explode(", ", $product[$j]);
+                                $activeIngredientsName = [];
+                                foreach ($activeIngredientsId as $ingredientId) {
+                                    array_push($activeIngredientsName, $mapIngredientIdName[$ingredientId]);
+                                }
+                                $cellValue = implode(", ", $activeIngredientsName);
+                            } else {
+                                $cellValue = $product[$j];
+                            }
+                        } else {
                             $cellValue = $product[$j];
                         }
                         array_push($singleProduct, $cellValue);
@@ -2732,8 +3210,17 @@ class ProductsController extends Controller
                 // Fill rows with products
                 $sheet->fromArray($multiProducts, NULL, 'A3', true);
 
+                // Change active sheet to user input
+                $sheet = $spreadsheet->setActiveSheetIndex(1);
+
+                // Fill rows with active ingredients column
+                $sheet->fromArray($multiActiveIngredients, NULL, 'T3', true);
+
+                // Change active sheet to user input
+                $sheet = $spreadsheet->setActiveSheetIndex(0);
+
                 // Create excel sheet
-                $failedProductsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsx";
+                $failedProductsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsm";
                 Excel::saveSpreadsheetToPath($spreadsheet, $failedProductsSheetUrl);
             }
 

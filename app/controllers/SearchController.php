@@ -1,6 +1,7 @@
 <?php
 
-class SearchController extends Controller {
+class SearchController extends Controller
+{
     function getSearchProducts()
     {
         if (!$this->f3->ajax()) {
@@ -10,6 +11,7 @@ class SearchController extends Controller {
             $dbStockStatus->name = "name_" . $this->objUser->language;
             $arrStockStatus = $dbStockStatus->all("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
+            $this->f3->set('objUser', $this->objUser);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_search_title');
@@ -24,6 +26,9 @@ class SearchController extends Controller {
         $term = $_GET['query'];
         if (isset($term) && $term != "" && $term != null) {
             $where .= "AND ( scientificName LIKE '%{$term}%'";
+            $where .= " OR entityName_ar LIKE '%{$term}%'";
+            $where .= " OR entityName_en LIKE '%{$term}%'";
+            $where .= " OR entityName_fr LIKE '%{$term}%'";
             $where .= " OR productName_ar LIKE '%{$term}%'";
             $where .= " OR productName_en LIKE '%{$term}%'";
             $where .= " OR productName_fr LIKE '%{$term}%' ) ";
@@ -71,10 +76,11 @@ class SearchController extends Controller {
     function handleGetListFilters($table, $queryTerms, $queryDisplay, $queryId = 'id', $additionalQuery = null)
     {
         $where = "";
+        $nameAsValue = isset($_GET['nameAsValue']);
         if ($additionalQuery != null) {
             $where = $additionalQuery;
         }
-        $term = $_GET['term'];
+        $term = trim($_GET['term']);
         if (isset($term) && $term != "" && $term != null) {
             if ($additionalQuery != null) {
                 $where .= " AND (";
@@ -109,12 +115,13 @@ class SearchController extends Controller {
         $select2Result->pagination = false;
 
         $dbNames = new BaseModel($this->db, $table);
-        $dbNames->getWhere($where, $queryDisplay, $pageSize, $page * $pageSize);
+        $dbNames->load(array($where), array('order' => $queryDisplay, 'limit' => $pageSize, 'offset' => $page * $pageSize, 'group' => $queryDisplay));
+
         $resultsCount = 0;
         while (!$dbNames->dry()) {
             $resultsCount++;
             $select2ResultItem = new stdClass();
-            $select2ResultItem->id = $dbNames[$queryId];
+            $select2ResultItem->id = $nameAsValue ? $dbNames[$queryDisplay] : $dbNames[$queryId];
             $select2ResultItem->text = $dbNames[$queryDisplay];
             $select2Result->results[] = $select2ResultItem;
             $dbNames->next();
@@ -133,8 +140,10 @@ class SearchController extends Controller {
     function getProductBrandNameList()
     {
         if ($this->f3->ajax()) {
+            $nameAsValue = isset($_GET['nameAsValue']);
+
             $where = "1=1";
-            $term = $_GET['term'];
+            $term = trim($_GET['term']);
             if (isset($term) && $term != "" && $term != null) {
                 $where .= " AND productName_" . $this->objUser->language . " like '%$term%'";
             }
@@ -160,14 +169,14 @@ class SearchController extends Controller {
             $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
             $dbProducts->productName = "productName_" . $this->objUser->language;
 
-            $dbProducts->getWhere($where, "productName_" . $this->objUser->language, $pageSize, $page * $pageSize);
+            $dbProducts->load(array($where), array('order' => "productName_" . $this->objUser->language, 'limit' => $pageSize, 'offset' => $page * $pageSize, 'group' => "productName_" . $this->objUser->language));
 
             $resultsCount = 0;
             while (!$dbProducts->dry()) {
                 $resultsCount++;
                 $select2ResultItem = new stdClass();
-                $select2ResultItem->id = $dbProducts->id;
-                $select2ResultItem->text = $dbProducts->productName;
+                $select2ResultItem->id = $nameAsValue ? trim($dbProducts->productName) : $dbProducts->id;
+                $select2ResultItem->text = trim($dbProducts->productName);
                 $select2Result->results[] = $select2ResultItem;
                 $dbProducts->next();
             }
@@ -203,7 +212,7 @@ class SearchController extends Controller {
     function getProductSubcategoryByCategoryList()
     {
         $categoryId = $this->f3->get("PARAMS.categoryId");
-        $this->handleGetListFilters("subcategory", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'categoryId = '.$categoryId);
+        $this->handleGetListFilters("subcategory", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'categoryId = ' . $categoryId);
     }
 
     function getProductIngredientList()
@@ -231,14 +240,14 @@ class SearchController extends Controller {
     function getRelationGroupByEnitityList()
     {
         $entityId = $this->f3->get("PARAMS.entityId");
-        $this->handleGetListFilters("entityRelationGroup", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'entityId = '.$entityId);
+        $this->handleGetListFilters("entityRelationGroup", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'entityId = ' . $entityId);
     }
 
     function getCategoryList()
     {
         if ($this->f3->ajax()) {
             $where = "";
-            $term = $_GET['term'];
+            $term = trim($_GET['term']);
             if (isset($term) && $term != "" && $term != null) {
                 $where = "name_" . $this->objUser->language . " like '%$term%' AND parent_id IS NULL";
             } else {
@@ -288,7 +297,7 @@ class SearchController extends Controller {
     {
         if ($this->f3->ajax()) {
             $where = "";
-            $term = $_GET['term'];
+            $term = trim($_GET['term']);
             if (isset($term) && $term != "" && $term != null) {
                 $where = "name_" . $this->objUser->language . " like '%$term%'";
             }
@@ -311,15 +320,15 @@ class SearchController extends Controller {
             $dbProducts->parent_name = "parent_name_" . $this->objUser->language;
             $select2Result->results = $dbProducts->findWhere($where, "parent_id ASC, name_{$this->objUser->language} ASC", $pageSize, $page * $pageSize);
             $resultsCount = count($select2Result->results);
-//            while (!$dbProducts->dry()) {
-//                $resultsCount++;
-//                $select2ResultItem = new stdClass();
-//                $select2ResultItem->id = $dbProducts->id;
-//                $select2ResultItem->text = $dbProducts->name;
-//                $select2Result->results[] = $select2ResultItem;
-//                $select2Result->results[] = $dbProducts;
-//                $dbProducts->next();
-//            }
+            //            while (!$dbProducts->dry()) {
+            //                $resultsCount++;
+            //                $select2ResultItem = new stdClass();
+            //                $select2ResultItem->id = $dbProducts->id;
+            //                $select2ResultItem->text = $dbProducts->name;
+            //                $select2Result->results[] = $select2ResultItem;
+            //                $select2Result->results[] = $dbProducts;
+            //                $dbProducts->next();
+            //            }
 
             if ($resultsCount >= $pageSize) {
                 $select2Result->pagination = true;
@@ -344,7 +353,6 @@ class SearchController extends Controller {
 
         $fullQuery = $query;
 
-
         $roleId = $this->f3->get('SESSION.objUser')->roleId;
 
         // if distributor
@@ -353,16 +361,29 @@ class SearchController extends Controller {
             $isDistributor = true;
         }
 
-
         if (is_array($datatable->query)) {
-            $productId = $datatable->query['productId'];
-            if (isset($productId) && is_array($productId)) {
-                $query .= " AND id in (" . implode(",", $productId) . ")";
+            $productName = $datatable->query['productName'];
+            if (isset($productName) && is_array($productName)) {
+                $query .= " AND (";
+                foreach ($productName as $key => $value) {
+                    if ($key !== 0) {
+                        $query .= " OR ";
+                    }
+                    $query .= "productName_en LIKE '%{$value}%' OR productName_ar LIKE '%{$value}%' OR productName_fr LIKE '%{$value}%'";
+                }
+                $query .= ")";
             }
 
-            $scientificNameId = $datatable->query['scientificNameId'];
-            if (isset($scientificNameId) && is_array($scientificNameId)) {
-                $query .= " AND scientificNameId in (" . implode(",", $scientificNameId) . ")";
+            $scientificName = $datatable->query['scientificName'];
+            if (isset($scientificName) && is_array($scientificName)) {
+                $query .= " AND (";
+                foreach ($scientificName as $key => $value) {
+                    if ($key !== 0) {
+                        $query .= " OR ";
+                    }
+                    $query .= "scientificName LIKE '%{$value}%'";
+                }
+                $query .= ")";
             }
 
             if (!$isDistributor) {
@@ -381,24 +402,19 @@ class SearchController extends Controller {
             if (isset($categoryId) && is_array($categoryId)) {
                 $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
             }
-
         }
-        
+
         $query .= " AND statusId = 1";
 
         $order = "$datatable->sortBy $datatable->sortByOrder";
-        
-        if($order == "productName_en asc") {
-            if($sortParam == "newest") {
+
+        if ($order == "productName_en asc") {
+            if ($sortParam == "newest") {
                 $order = "insertDateTime DESC";
-            } else if($sortParam == "top-selling") {
+            } else if ($sortParam == "top-selling") {
                 $order = "totalOrderQuantity DESC";
             }
         }
-        
-        $query .= " AND statusId = 1";
-
-        $roleId = $this->f3->get('SESSION.objUser')->roleId;
 
         if ($isDistributor) {
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
@@ -416,15 +432,13 @@ class SearchController extends Controller {
 
         $dbProducts = new BaseModel($this->db, "vwEntityProductSell");
 
-        $data = [];
-
         $totalRecords = $dbProducts->count($fullQuery);
         $totalFiltered = $dbProducts->count($query);
         $data = $dbProducts->findWhere($query, $order, $datatable->limit, $datatable->offset);
 
         $allProductId = [];
         foreach ($data as $product) {
-            array_push($allProductId, $product['id']);
+            array_push($allProductId, $product['productId']);
         }
         $allProductId = implode(",", $allProductId);
 
@@ -448,36 +462,186 @@ class SearchController extends Controller {
             }
         }
 
-        for ($i = 0; $i < count($data); $i++) {
-            if ($data[$i]['bonusTypeId'] == 2) {
-                $data[$i]['bonusOptions'] = json_decode($data[$i]['bonusConfig']);
-                $data[$i]['bonuses'] = $mapProductIdBonuses[$data[$i]['id']];
-            }
 
-            $quantityFree = 0;
+        for ($i = 0; $i < count($data); $i++) {
             $data[$i]['cart'] = 0;
             if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
                 foreach ($arrCartDetail as $objCartItem) {
                     if ($objCartItem['entityProductId'] == $data[$i]['id']) {
+                        $data[$i]['cartDetailId'] += $objCartItem['id'];
+                        $data[$i]['quantity'] = $objCartItem['quantity'];
                         $data[$i]['cart'] += $objCartItem['quantity'];
                         $data[$i]['cart'] += $objCartItem['quantityFree'];
-                        $quantityFree = $objCartItem['quantityFree'];
-                        break;
-                    }
-                }
-            }
-
-            $data[$i]['activeBonus'] = null;
-            if ($quantityFree > 0) {
-                $allBonuses = $data[$i]['bonuses'];
-                foreach ($allBonuses as $bonus) {
-                    if ($bonus['bonus'] === $quantityFree) {
-                        $data[$i]['activeBonus'] = $bonus;
                         break;
                     }
                 }
             }
         }
+
+
+        // Get all product ids
+        $arrProductId = [];
+        foreach ($data as $productItem) {
+            array_push($arrProductId, $productItem['productId']);
+        }
+
+        // Get all related bonuses
+        $mapProductIdBonus = [];
+        $mapBonusIdRelationGroup = [];
+        $mapSellerIdRelationGroupId = [];
+        if (count($arrProductId) > 0) {
+            $dbBonus = new BaseModel($this->db, "vwEntityProductSellBonusDetail");
+            $dbBonus->bonusTypeName = "bonusTypeName_" . $this->objUser->language;
+            $arrBonus = $dbBonus->getWhere("entityProductId IN (" . implode(",", $arrProductId) . ") AND isActive = 1");
+            $arrBonusId = [];
+            foreach ($arrBonus as $bonus) {
+                array_push($arrBonusId, $bonus['id']);
+            }
+
+            // Get special bonuses
+            if (count($arrBonusId) > 0) {
+                $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
+                $arrBonusRelationGroup = $dbBonusRelationGroup->getWhere("bonusId IN (" . implode(",", $arrBonusId) . ")");
+
+                foreach ($arrBonusRelationGroup as $bonusRelationGroup) {
+                    $bonusId = $bonusRelationGroup['bonusId'];
+                    $arrRelationGroup = [];
+                    if (array_key_exists($bonusId, $mapBonusIdRelationGroup)) {
+                        $arrRelationGroup = $mapBonusIdRelationGroup[$bonusId];
+                    }
+
+                    array_push($arrRelationGroup, $bonusRelationGroup['relationGroupId']);
+                    $mapBonusIdRelationGroup[$bonusId] = $arrRelationGroup;
+                }
+            }
+
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $dbEntityRelation = new BaseModel($this->db, "entityRelation");
+            $arrEntityRelation = $dbEntityRelation->getWhere("entityBuyerId IN ($arrEntityId)");
+            foreach ($arrEntityRelation as $entityRelation) {
+                $mapSellerIdRelationGroupId[$entityRelation['entitySellerId']] = $entityRelation['relationGroupId'];
+            }
+
+            foreach ($arrBonus as $bonus) {
+                $productId = $bonus['entityProductId'];
+                $arrProductBonus = [];
+                if (array_key_exists($productId, $mapProductIdBonus)) {
+                    $arrProductBonus = $mapProductIdBonus[$productId];
+                }
+                array_push($arrProductBonus, $bonus);
+                $mapProductIdBonus[$productId] = $arrProductBonus;
+            }
+        }
+
+        for ($i = 0; $i < sizeof($data); $i++) {
+            $sellerId = $data[$i]['entityId'];
+            $productId = $data[$i]['productId'];
+
+            $arrProductBonus = [];
+            $activeBonus = new stdClass();
+            $activeBonus->totalBonus = 0;
+            if (array_key_exists($productId, $mapProductIdBonus)) {
+
+                $arrBonus = $mapProductIdBonus[$productId];
+                foreach ($arrBonus as $bonus) {
+                    $bonusId = $bonus['id'];
+
+                    // Check if bonus available for buyer
+                    $valid = false;
+                    if (array_key_exists($bonusId, $mapBonusIdRelationGroup)) {
+                        $arrRelationGroup = $mapBonusIdRelationGroup[$bonusId];
+                        if (array_key_exists($sellerId, $mapSellerIdRelationGroupId)) {
+                            $relationGroupId = $mapSellerIdRelationGroupId[$sellerId];
+                            if (in_array($relationGroupId, $arrRelationGroup)) {
+                                $valid = true;
+                            }
+                        }
+                    } else {
+                        $valid = true;
+                    }
+
+                    if (!$valid) {
+                        continue;
+                    }
+
+                    $bonusType = $bonus['bonusTypeName'];
+                    $bonusTypeId = $bonus['bonusTypeId'];
+                    $bonusMinOrder = $bonus['minOrder'];
+                    $bonusBonus = $bonus['bonus'];
+
+                    // Check if bonus is possible
+                    $productDetail = $data[$i];
+                    $availableQuantity = min($productDetail['stock'], $productDetail['maximumOrderQuantity']);
+
+                    if (!$productDetail['maximumOrderQuantity'])
+                        $availableQuantity = $productDetail['stock'];
+                    if (!$productDetail['stock'])
+                        $availableQuantity = 0;
+
+                    $totalOrder = 0;
+                    if ($bonusTypeId == Constants::BONUS_TYPE_FIXED || $bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
+                        $totalOrder = $bonusMinOrder + $bonusBonus;
+                    } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                        $totalOrder = $bonusMinOrder + floor($bonusBonus * $bonusMinOrder / 100);
+                    }
+                    if ($totalOrder > $availableQuantity) {
+                        continue;
+                    }
+
+                    $totalBonus = 0;
+                    if ($productDetail['quantity'] >= $bonusMinOrder) {
+                        if ($bonusTypeId == Constants::BONUS_TYPE_FIXED) {
+                            $totalBonus = $bonusBonus;
+                        } else if ($bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
+                            $totalBonus = floor($productDetail['quantity'] / $bonusMinOrder) * $bonusBonus;
+                        } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                            $totalBonus = floor($productDetail['quantity'] * $bonusBonus / 100);
+                        }
+                    }
+
+                    if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                        $bonusBonus .= "%";
+                    }
+
+                    if ($totalBonus > $activeBonus->totalBonus) {
+                        $activeBonus->bonusType = $bonusType;
+                        $activeBonus->minQty = $bonusMinOrder;
+                        $activeBonus->bonuses = $bonusBonus;
+                        $activeBonus->totalBonus = $totalBonus;
+                    }
+
+                    $found = false;
+                    for ($j = 0; $j < count($arrProductBonus); $j++) {
+                        $productBonus = $arrProductBonus[$j];
+                        if ($productBonus->bonusType == $bonusType) {
+                            $arrMinQty = $productBonus->arrMinQty;
+                            array_push($arrMinQty, $bonusMinOrder);
+                            $productBonus->arrMinQty = $arrMinQty;
+
+                            $arrBonuses = $productBonus->arrBonuses;
+                            array_push($arrBonuses, $bonusBonus);
+                            $productBonus->arrBonuses = $arrBonuses;
+
+                            $arrProductBonus[$j] = $productBonus;
+                            $found = true;
+                            break;
+                        }
+                    }
+
+                    if (!$found) {
+                        $productBonus = new stdClass();
+                        $productBonus->bonusType = $bonusType;
+                        $productBonus->arrMinQty = [$bonusMinOrder];
+                        $productBonus->arrBonuses = [$bonusBonus];
+                        array_push($arrProductBonus, $productBonus);
+                    }
+                }
+            }
+
+            $data[$i]['arrBonus'] = htmlspecialchars(json_encode($arrProductBonus), ENT_QUOTES, 'UTF-8');
+            $data[$i]['activeBonus'] = htmlspecialchars(json_encode($activeBonus), ENT_QUOTES, 'UTF-8');
+        }
+
 
         ## Response
         $response = array(
@@ -495,8 +659,8 @@ class SearchController extends Controller {
         $countryId = $this->f3->get("PARAMS.countryId");
 
         $dbCity = new BaseModel($this->db, "city");
-        $dbCity->name = "name".ucfirst($this->objUser->language);
-        $dbCity->getWhere("countryId=$countryId", "name".ucfirst($this->objUser->language)." ASC");
+        $dbCity->name = "name" . ucfirst($this->objUser->language);
+        $dbCity->getWhere("countryId=$countryId", "name" . ucfirst($this->objUser->language) . " ASC");
 
         $arrCities = [];
         while (!$dbCity->dry()) {

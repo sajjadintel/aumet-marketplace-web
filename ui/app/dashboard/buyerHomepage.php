@@ -4,7 +4,7 @@
         bottom: 20px;
         display: block;
         width: 100%;
-        padding: 10;
+        padding: 10px;
         margin: 0;
         list-style: none;
         text-align: center;
@@ -26,6 +26,30 @@
 
     .slick-dots li.slick-active button:before {
         color: #FFF;
+    }
+
+    @media only screen and (max-width: 992px) {
+        .dynamic-image {
+            width: 100px;
+            height: 100px;
+            margin: auto;
+        }
+    }
+
+    @media only screen and (min-width: 992px) {
+        .dynamic-image {
+            width: 150px;
+            height: 150px;
+            margin: auto;
+        }
+    }
+
+    @media only screen and (min-width: 1440px) {
+        .dynamic-image {
+            width: 200px;
+            height: 200px;
+            margin: auto;
+        }
     }
 </style>
 <!--begin::Entry-->
@@ -60,7 +84,7 @@
                                                         <h1 class="slick-hero-title"><?php echo $banner->title; ?></h1>
                                                         <h1 class="slick-hero-title"><?php echo $banner->subtitle; ?></h1>
                                                         <?php if (!is_null($banner->buttonText)) : ?>
-                                                            <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>'');"><?php echo $banner->buttonText; ?></button>
+                                                            <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>');"><?php echo $banner->buttonText; ?></button>
                                                         <?php endif; ?>
                                                     </div>
                                                 <?php endif; ?>
@@ -78,7 +102,7 @@
                                 <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_newProducts ?></span>
                             </div>
                             <div class="col-3" style="display: flex; justify-content: flex-end;">
-                                <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/product/search?sort=newest')">
+                                <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/product/search?sort=newest')">
                                     <?php echo $vButton_view_all; ?>
                                 </a>
                             </div>
@@ -86,8 +110,8 @@
                         <div class="row">
                             <?php foreach ($arrNewestProducts as $product) : ?>
                                 <div class="col-3">
-                                    <div class="symbol flex-shrink-0 bg-light mb-4" style="width: 100%; height: 150px;">
-                                        <div class="symbol-label" style="cursor: pointer; background-image: url('<?php echo $product->image; ?>'); width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"></div>
+                                    <div class="img-fill flex-shrink-0 bg-light mb-4 dynamic-image">
+                                        <img class="productImage" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
                                     </div>
                                     <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
                                     <p style="text-align: center;"><?php echo $product->price; ?></p>
@@ -102,7 +126,7 @@
                                 <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_topSelling ?></span>
                             </div>
                             <div class="col-3" style="display: flex; justify-content: flex-end;">
-                                <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/product/search?sort=top-selling')">
+                                <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/product/search?sort=top-selling')">
                                     <?php echo $vButton_view_all; ?>
                                 </a>
                             </div>
@@ -110,8 +134,8 @@
                         <div class="row">
                             <?php foreach ($arrTopSellingProducts as $product) : ?>
                                 <div class="col-3">
-                                    <div class="symbol flex-shrink-0 bg-light mb-4" style="width: 100%; height: 150px;">
-                                        <div class="symbol-label" style="cursor: pointer; background-image: url('<?php echo $product->image; ?>'); width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"></div>
+                                    <div class="img-fill flex-shrink-0 bg-light mb-4 dynamic-image">
+                                        <img class="productImage" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
                                     </div>
                                     <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
                                     <p style="text-align: center;"><?php echo $product->price; ?></p>
@@ -131,7 +155,7 @@
                                 <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_pendingOrders ?></span>
                             </div>
                             <div class="col-5" style="display: flex; justify-content: flex-end;">
-                                <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/order/history')">
+                                <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/order/pending')">
                                     <?php echo $vButton_view_all; ?>
                                 </a>
                             </div>
@@ -178,7 +202,7 @@
                         </div>
                         <div>
                             <?php foreach ($arrTopDistributors as $entity) : ?>
-                                <div class="font-size-h5" style="padding-top: 20px;display: flex;justify-content: space-between;align-items: center; cursor: pointer;" onclick="WebApp.loadPage('/web/product/search?distributorId=<?php echo $entity->id; ?>');">
+                                <div class="font-size-h5" style="padding-top: 20px;display: flex;justify-content: space-between;align-items: center; cursor: pointer;" onclick="WebApp.loadPage('/web/pharmacy/product/search?distributorId=<?php echo $entity->id; ?>');">
                                     <div class="col-9">
                                         <?php echo $entity->name; ?>
                                     </div>
@@ -260,4 +284,8 @@
             $(element).html(status[statusId].title);
         });
     }
+
+    $('.productImage').on("error", function() {
+        $(this).attr('src', '/assets/img/default-product-image.png');
+    });
 </script>

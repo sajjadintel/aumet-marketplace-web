@@ -15,18 +15,22 @@ class NotificationHelper {
     {
         $dbProduct = new BaseModel($dbConnection, "vwEntityProductSell");
         $dbProduct->name = "productName_en";
-        $dbProduct->getWhere("id IN (" . implode(",", $lowStockProducts) . ")");
+        $arrProducts = $dbProduct->findWhere("id IN (" . implode(",", array_column($lowStockProducts, 'id')) . ")");
+
+        for ($i = 0; $i < sizeof($arrProducts); $i++) {
+            $arrProducts[$i]['reason'] = self::getProductFromArrayById($arrProducts[$i]['id'], $lowStockProducts)['reason'];
+        }
 
         $emailHandler = new EmailHandler($dbConnection);
         $emailFile = "email/layout.php";
         $f3->set('domainUrl', getenv('DOMAIN_URL'));
         $f3->set('title', 'Low Stock');
         $f3->set('emailType', 'lowStock');
-        $f3->set('products', $dbProduct);
+        $f3->set('products', $arrProducts);
 
 
         $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
-        $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $dbProduct->entityId);
+        $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $arrProducts[0]['entityId']);
         foreach ($arrEntityUserProfile as $entityUserProfile) {
             $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
         }
@@ -46,6 +50,15 @@ class NotificationHelper {
 
         $emailHandler->sendEmail(Constants::EMAIL_LOW_STOCK, $subject, $htmlContent);
         $emailHandler->resetTos();
+    }
+
+    static function getProductFromArrayById($productId, $products)
+    {
+        foreach ($products as $product) {
+            if ($product['id'] == $productId)
+                return $product;
+        }
+        return null;
     }
 
     /**
@@ -106,7 +119,7 @@ class NotificationHelper {
      * @param int[] $modifiedOrderDetailIds array of modified order detail ids
      * @param int $entityBuyerId entitySellerId
      */
-    public static function orderModifyShippedQuantityNotification($f3, $dbConnection, $orderId, $modifiedOrderDetailIds, $entityBuyerId)
+    public static function orderModifyShippedQuantityNotification($f3, $dbConnection, $orderId, $modifiedOrderDetailIds, $userId, $entityBuyerId)
     {
         $dbProduct = new BaseModel($dbConnection, "vwOrderDetail");
         $dbProduct->name = "productNameEn";
@@ -122,9 +135,14 @@ class NotificationHelper {
         $f3->set('products', $dbProduct);
 
 
+        // get user email
         $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
         $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $entityBuyerId);
-        $entityName = $arrEntityUserProfile[0]->entityName_en;
+
+        // get distributor entity name
+        $dbUser = new BaseModel($dbConnection, "vwEntityUserProfile");
+        $user = $dbUser->getWhere("userId=" . $userId)[0];
+        $entityName = $user->entityName_en;
         $f3->set('entityName', $entityName);
 
         foreach ($arrEntityUserProfile as $entityUserProfile) {
@@ -183,6 +201,8 @@ class NotificationHelper {
                 $emailHandler->resetTos();
                 $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajjad intel");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                $emailHandler->appendToAddress("n.javaid@aumet.com", "Naveed Javaid");
+                $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
             }
         }
 
@@ -228,6 +248,7 @@ class NotificationHelper {
                 $emailHandler->resetTos();
                 $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajjad intel");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
             }
         }
 
@@ -267,6 +288,7 @@ class NotificationHelper {
                 $emailHandler->resetTos();
                 $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajjad intel");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                $emailHandler->appendToAddress("n.javaid@aumet.com", "Naveed Javaid");
             }
         }
 
@@ -596,7 +618,6 @@ class NotificationHelper {
         $f3->set('domainUrl', getenv('DOMAIN_URL'));
         $f3->set('title', 'Pharmacy Account Verification');
         $f3->set('emailType', 'pharmacyAccountVerification');
-
 
 
         $arrFields = [

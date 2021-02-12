@@ -20,12 +20,12 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label class="support-modal-text"><?php echo $vSupport_email ?></label>
-                            <input name="supportEmail" type="email" value="<?php echo $isAuth ? $_SESSION['objUser']->email : '' ?>" class="form-control" placeholder="jogndoe@gmail.com" required <?php echo $isAuth ? 'disabled' : '' ?> />
+                            <input name="supportEmail" type="email" value="<?php echo $isAuth ? $_SESSION['objUser']->email : '' ?>" class="form-control" placeholder="jogndoe@gmail.com" <?php echo $isAuth ? 'disabled' : '' ?> />
                         </div>
 
                         <div class="form-group">
                             <label class="support-modal-text"><?php echo $vSupport_telephone ?></label>
-                            <input name="phone" type="number" class="form-control" placeholder="eg 00977442424242" required />
+                            <input name="supportPhone" type="number" class="form-control" placeholder="eg 00977442424242" />
                         </div>
 
 <!--                        <div>-->
@@ -37,9 +37,9 @@
 <!--                        </div>-->
 
                         <div class="form-group support-modal-select">
-                            <label class="col-form-label text-right support-modal-text"><?php echo $vSupport_title ?></label>
+                            <label class="col-form-label text-right support-modal-text"><?php echo $vSupport_reason ?></label>
                             <div class="">
-                                <select class="form-control select2" id="supportReason" name="supportReasonId" required>
+                                <select class="form-control select2" id="supportReason" name="supportReasonId">
                                     <option selected></option>
                                     <?php foreach ($supportReasons as $supportReason) { ?>
                                         <option value="<?php echo $supportReason['id'] ?>"><?php echo $supportReason['name'] ?></option>
@@ -53,7 +53,7 @@
                     <div class="card-footer align-items-center">
                         <!--begin::Compose-->
                         <div class="d-flex align-items-center justify-content-end">
-                            <button type="submit" class="btn btn-primary btn-lg text-uppercase font-weight-bold chat-send py-2 px-6"><?php echo $vSupport_submit ?></button>
+                            <button type="submit" id="kt_cs_form_submit_button" class="btn btn-primary btn-lg text-uppercase font-weight-bold chat-send py-2 px-6"><?php echo $vSupport_submit ?></button>
                         </div>
                         <!--begin::Compose-->
                     </div>
@@ -66,25 +66,11 @@
 </div>
 
 <script>
-    jQuery(document).ready(function () {
+    $(document).ready(function () {
         $('#supportReason').select2({
             placeholder: 'Please Select',
             minimumResultsForSearch: -1,
         });
-
-        var form = $('#supportModalForm');
-        form.submit(function (e) {
-            e.preventDefault();
-
-            var url = form.attr('action');
-            var data = $(form).serializeJSON();
-
-            if (!form) {
-                console.log('No Form');
-                return;
-            }
-            $('#support_modal').modal('hide');
-            WebApp.post(url, data);
-        });
+        WebApp.initSupportModalForm();
     });
 </script>
