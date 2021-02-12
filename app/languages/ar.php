@@ -292,6 +292,7 @@ return array(
     'vModule_order_dateFrom' => 'أدخل تاريخ بدء الطلبات',
     'vModule_order_dateTo' => 'أدخل تاريخ انتهاء الطلبات',
     'vModule_order_date' => 'أدخل تاريخ الطلبات',
+    'vModule_orderDetails_orderInformation' => 'معلومات الطلب',
 
     'vModule_customer_relationGroupTitle' => 'مجموعة العملاء',
     'vModule_customer_relationGroup' => 'مجموعة العملاء',
