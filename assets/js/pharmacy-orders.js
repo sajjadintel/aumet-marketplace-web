@@ -396,7 +396,10 @@ var PharmacyOrdersDataTable = (function () {
 				title: WebAppLocals.getMessage('orderShippedQuantity'),
 				data: 'shippedQuantity',
 				render: function (data, type, row, meta) {
-					return row.shippedQuantity;
+					output = row.quantity;
+					if (row.freeQuantity > 0);
+					output += ' (+' + row.freeQuantity + ')';
+					return output;
 				},
 			},
 			{

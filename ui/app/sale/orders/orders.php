@@ -347,7 +347,10 @@ function compress_htmlcode($codedata)
                 data: 'shippedQuantity',
                 visible: false,
                 render: function(data, type, row, meta) {
-                    return row.shippedQuantity;
+                    output = row.quantity;
+                    if (row.freeQuantity > 0);
+                    output += ' (+' + row.freeQuantity + ')';
+                    return output;
                 },
             },
             {
@@ -387,12 +390,15 @@ function compress_htmlcode($codedata)
 
         var dbAdditionalOptions = {
             datatableOptions: {
-                "aLengthMenu": [[20, 50, 100], [20, 50, 100]],
+                "aLengthMenu": [
+                    [20, 50, 100],
+                    [20, 50, 100]
+                ],
                 "iDisplayLength": 20,
                 order: [
                     [0, 'desc']
                 ],
-                rowCallback: function (row, data, index) {
+                rowCallback: function(row, data, index) {
                     if (!data['isVisible']) {
                         $(row).hide();
                     }
