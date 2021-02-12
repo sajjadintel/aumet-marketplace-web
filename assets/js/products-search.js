@@ -403,7 +403,7 @@ var SearchDataTable = (function () {
 		if (row.cart == 0 && (oldValue == null || oldValue == 0)) {
 			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id, null, false, true);
 		} else {
-			CartCheckout.updateQuantity(row.id, 0, row.stock, row.cartDetailId, row.entityId, 0, oldValue, false, null, false, true);
+			CartCheckout.updateQuantity(row.id, 0, row.stock, row.cartDetailId, row.entityId, 0, 0, oldValue, false, null, false, true);
 		}
 	};
 
@@ -416,8 +416,8 @@ var SearchDataTable = (function () {
 			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
 			//WebApp.reloadDatatable();
 		},
-		onClickAddMoreToCart: function (row) {
-			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
+		onClickAddMoreToCart: function (row, fromProductPage = false) {
+			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id, 0, null, false, true, fromProductPage);
 			WebApp.reloadDatatable();
 		},
 		onBonusOptionCallback: function (row, bonusOption) {
