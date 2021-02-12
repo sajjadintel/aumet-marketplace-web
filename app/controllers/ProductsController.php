@@ -604,17 +604,17 @@ class ProductsController extends Controller
                 $madeInCountryId = $this->f3->get('POST.madeInCountryId');
                 $name_en = $this->f3->get('POST.name_en');
                 $name_ar = $this->f3->get('POST.name_ar');
-                $name_fr = $this->f3->get('POST.name_fr');
+                // $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
                 $subimages = $this->f3->get('POST.subimages');
                 $unitPrice = $this->f3->get('POST.unitPrice');
                 $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
                 $subtitle_ar = $this->f3->get('POST.subtitle_ar');
                 $subtitle_en = $this->f3->get('POST.subtitle_en');
-                $subtitle_fr = $this->f3->get('POST.subtitle_fr');
+                // $subtitle_fr = $this->f3->get('POST.subtitle_fr');
                 $description_ar = $this->f3->get('POST.description_ar');
                 $description_en = $this->f3->get('POST.description_en');
-                $description_fr = $this->f3->get('POST.description_fr');
+                // $description_fr = $this->f3->get('POST.description_fr');
                 $unitPrice = $this->f3->get('POST.unitPrice');
                 $vat = $this->f3->get('POST.vat');
                 $manufacturerName = $this->f3->get('POST.manufacturerName');
@@ -627,13 +627,12 @@ class ProductsController extends Controller
                 $strength = $this->f3->get('POST.strength');
 
                 if (
-                    strlen($scientificNameId) == 0 || strlen($madeInCountryId) == 0
+                    strlen($madeInCountryId) == 0
+                    // || strlen($scientificNameId) == 0
                     || strlen($name_en) == 0 || strlen($name_ar) == 0
-                    || strlen($name_fr) == 0 || strlen($unitPrice) == 0
-                    || strlen($vat) == 0 || strlen($maximumOrderQuantity) == 0
-                    || strlen($description_ar) == 0 || strlen($description_en) == 0
-                    || strlen($description_fr) == 0 || strlen($categoryId) == 0
-                    || strlen($subcategoryId) == 0
+                    // || strlen($name_fr) == 0
+                    || strlen($unitPrice) == 0 || strlen($vat) == 0
+                    || strlen($categoryId) == 0 || strlen($subcategoryId) == 0
                 ) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get('vModule_product_missingFields');
@@ -641,12 +640,12 @@ class ProductsController extends Controller
                     return;
                 }
 
-                if ((!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)
+                if ((strlen($maximumOrderQuantity) > 0 && (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0))
                     || (!is_numeric($unitPrice) || $unitPrice <= 0)
                     || (!is_numeric($vat) || $vat < 0 || $vat > 100)
                 ) {
                     $arrError = [];
-                    if (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0) {
+                    if (strlen($maximumOrderQuantity) > 0 && (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)) {
                         array_push($arrError, $this->f3->get('vModule_product_maximumOrderQuantityInvalid'));
                     }
                     if (!is_numeric($unitPrice) || $unitPrice <= 0) {
@@ -673,11 +672,19 @@ class ProductsController extends Controller
 
                 $this->checkLength($name_en, 'nameEn', 200, 4);
                 $this->checkLength($name_ar, 'nameAr', 200, 4);
-                $this->checkLength($name_fr, 'nameFr', 200, 4);
-                $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
-                $this->checkLength($description_en, 'descriptionEn', 5000, 4);
-                $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
+                // $this->checkLength($name_fr, 'nameFr', 200, 4);
 
+                if ($description_ar) {
+                    $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
+                }
+                
+                if ($description_en) {
+                    $this->checkLength($description_en, 'descriptionEn', 5000, 4);
+                }
+                
+                // if ($description_fr) {
+                //     $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
+                // }
 
                 if ($subtitle_ar) {
                     $this->checkLength($subtitle_ar, 'subtitleAr', 200, 4);
@@ -687,9 +694,9 @@ class ProductsController extends Controller
                     $this->checkLength($subtitle_en, 'subtitleEn', 200, 4);
                 }
 
-                if ($subtitle_fr) {
-                    $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
-                }
+                // if ($subtitle_fr) {
+                //     $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
+                // }
 
                 if ($manufacturerName) {
                     $this->checkLength($manufacturerName, 'manufacturerName', 200, 4);
@@ -702,15 +709,18 @@ class ProductsController extends Controller
                 $dbProduct->scientificNameId = $scientificNameId;
                 $dbProduct->madeInCountryId = $madeInCountryId;
                 $dbProduct->name_en = $name_en;
-                $dbProduct->name_fr = $name_fr;
+                $dbProduct->name_fr = $name_en;
+                // $dbProduct->name_fr = $name_fr;
                 $dbProduct->name_ar = $name_ar;
                 $dbProduct->image = $image;
                 $dbProduct->subtitle_ar = $subtitle_ar;
                 $dbProduct->subtitle_en = $subtitle_en;
-                $dbProduct->subtitle_fr = $subtitle_fr;
+                $dbProduct->subtitle_fr = $subtitle_en;
+                // $dbProduct->subtitle_fr = $subtitle_fr;
                 $dbProduct->description_ar = $description_ar;
                 $dbProduct->description_en = $description_en;
-                $dbProduct->description_fr = $description_fr;
+                $dbProduct->description_fr = $description_en;
+                // $dbProduct->description_fr = $description_fr;
                 $dbProduct->manufacturerName = $manufacturerName;
                 $dbProduct->batchNumber = $batchNumber;
                 $dbProduct->itemCode = $itemCode;
@@ -1083,17 +1093,17 @@ class ProductsController extends Controller
             $madeInCountryId = $this->f3->get('POST.madeInCountryId');
             $name_en = $this->f3->clean($this->f3->get('POST.name_en'));
             $name_ar = $this->f3->clean($this->f3->get('POST.name_ar'));
-            $name_fr = $this->f3->clean($this->f3->get('POST.name_fr'));
+            // $name_fr = $this->f3->clean($this->f3->get('POST.name_fr'));
             $image = $this->f3->get('POST.image');
             $subimages = $this->f3->get('POST.subimages');
             $stock = $this->f3->get('POST.stock');
             $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
             $subtitle_ar = $this->f3->clean($this->f3->get('POST.subtitle_ar'));
             $subtitle_en = $this->f3->clean($this->f3->get('POST.subtitle_en'));
-            $subtitle_fr = $this->f3->clean($this->f3->get('POST.subtitle_fr'));
+            // $subtitle_fr = $this->f3->clean($this->f3->get('POST.subtitle_fr'));
             $description_ar = $this->f3->clean($this->f3->get('POST.description_ar'));
             $description_en = $this->f3->clean($this->f3->get('POST.description_en'));
-            $description_fr = $this->f3->clean($this->f3->get('POST.description_fr'));
+            // $description_fr = $this->f3->clean($this->f3->get('POST.description_fr'));
             $unitPrice = $this->f3->get('POST.unitPrice');
             $vat = $this->f3->get('POST.vat');
             $manufacturerName = $this->f3->clean($this->f3->get('POST.manufacturerName'));
@@ -1106,12 +1116,11 @@ class ProductsController extends Controller
             $strength = $this->f3->clean($this->f3->get('POST.strength'));
 
             if (
-                strlen($scientificNameId) == 0 || strlen($madeInCountryId) == 0
+                strlen($madeInCountryId) == 0
+                // || strlen($scientificNameId) == 0
                 || strlen($name_en) == 0 || strlen($name_ar) == 0
-                || strlen($name_fr) == 0 || strlen($unitPrice) == 0
-                || strlen($vat) == 0 || strlen($stock) == 0
-                || strlen($maximumOrderQuantity) == 0 || strlen($description_ar) == 0
-                || strlen($description_en) == 0 || strlen($description_fr) == 0
+                // || strlen($name_fr) == 0
+                || strlen($unitPrice) == 0 || strlen($vat) == 0 || strlen($stock) == 0
                 || strlen($categoryId) == 0 || strlen($subcategoryId) == 0
             ) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -1121,7 +1130,7 @@ class ProductsController extends Controller
             }
 
             if ((!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0)
-                || (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)
+                || (strlen($maximumOrderQuantity) > 0 && !(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)
                 || (!is_numeric($unitPrice) || $unitPrice <= 0)
                 || (!is_numeric($vat) || $vat < 0 || $vat > 100)
             ) {
@@ -1129,7 +1138,7 @@ class ProductsController extends Controller
                 if (!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0) {
                     array_push($arrError, $this->f3->get('vModule_product_stockInvalid'));
                 }
-                if (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0) {
+                if (strlen($maximumOrderQuantity) > 0 && !(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0) {
                     array_push($arrError, $this->f3->get('vModule_product_maximumOrderQuantityInvalid'));
                 }
                 if (!is_numeric($unitPrice) || $unitPrice <= 0) {
@@ -1156,12 +1165,21 @@ class ProductsController extends Controller
 
             $this->checkLength($name_en, 'nameEn', 200, 4);
             $this->checkLength($name_ar, 'nameAr', 200, 4);
-            $this->checkLength($name_fr, 'nameFr', 200, 4);
-            $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
-            $this->checkLength($description_en, 'descriptionEn', 5000, 4);
-            $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
+            // $this->checkLength($name_fr, 'nameFr', 200, 4);
 
 
+            if ($description_ar) {
+                $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
+            }
+            
+            if ($description_en) {
+                $this->checkLength($description_en, 'descriptionEn', 5000, 4);
+            }
+            
+            // if ($description_fr) {
+            //     $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
+            // }
+            
             if ($subtitle_ar) {
                 $this->checkLength($subtitle_ar, 'subtitleAr', 200, 4);
             }
@@ -1170,9 +1188,9 @@ class ProductsController extends Controller
                 $this->checkLength($subtitle_en, 'subtitleEn', 200, 4);
             }
 
-            if ($subtitle_fr) {
-                $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
-            }
+            // if ($subtitle_fr) {
+            //     $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
+            // }
 
             if ($manufacturerName) {
                 $this->checkLength($manufacturerName, 'manufacturerName', 200, 4);
@@ -1187,15 +1205,18 @@ class ProductsController extends Controller
             $dbProduct->scientificNameId = $scientificNameId;
             $dbProduct->madeInCountryId = $madeInCountryId;
             $dbProduct->name_en = $name_en;
-            $dbProduct->name_fr = $name_fr;
+            // $dbProduct->name_fr = $name_fr;
+            $dbProduct->name_fr = $name_en;
             $dbProduct->name_ar = $name_ar;
             $dbProduct->image = $image;
             $dbProduct->subtitle_ar = $subtitle_ar;
             $dbProduct->subtitle_en = $subtitle_en;
-            $dbProduct->subtitle_fr = $subtitle_fr;
+            // $dbProduct->subtitle_fr = $subtitle_fr;
+            $dbProduct->subtitle_fr = $subtitle_en;
             $dbProduct->description_ar = $description_ar;
             $dbProduct->description_en = $description_en;
-            $dbProduct->description_fr = $description_fr;
+            // $dbProduct->description_fr = $description_fr;
+            $dbProduct->description_fr = $description_en;
             $dbProduct->manufacturerName = $manufacturerName;
             $dbProduct->batchNumber = $batchNumber;
             $dbProduct->itemCode = $itemCode;

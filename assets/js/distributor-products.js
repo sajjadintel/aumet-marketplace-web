@@ -4,14 +4,14 @@ var DistributorProductsDataTable = (function () {
 	var repeater;
 
 	var mandatoryFields = [
-		'scientificNameId',
+		// 'scientificNameId',
 		'madeInCountryId',
 		'name_ar',
 		'name_en',
-		'name_fr',
+		// 'name_fr',
 		'description_ar',
 		'description_en',
-		'description_fr',
+		// 'description_fr',
 		'unitPrice',
 		'vat',
 		'maximumOrderQuantity',
@@ -23,13 +23,13 @@ var DistributorProductsDataTable = (function () {
 	var mapFieldStrRangeLength = {
 		name_en: [4, 200],
 		name_ar: [4, 200],
-		name_fr: [4, 200],
+		// name_fr: [4, 200],
 		description_ar: [4, 5000],
 		description_en: [4, 5000],
-		description_fr: [4, 5000],
+		// description_fr: [4, 5000],
 		subtitle_ar: [4, 200],
 		subtitle_en: [4, 200],
-		subtitle_fr: [4, 200],
+		// subtitle_fr: [4, 200],
 		manufacturerName: [4, 200],
 		strength: [4, 200],
 	};
@@ -113,15 +113,15 @@ var DistributorProductsDataTable = (function () {
 		$('#editProductId').val(webResponse.data.product.productId);
 		$('#editProductNameAr').val(webResponse.data.product.productName_ar);
 		$('#editProductNameEn').val(webResponse.data.product.productName_en);
-		$('#editProductNameFr').val(webResponse.data.product.productName_fr);
+		// $('#editProductNameFr').val(webResponse.data.product.productName_fr);
 		$('#editUnitPrice').val(webResponse.data.product.unitPrice);
 		$('#editMaximumOrderQuantity').val(webResponse.data.product.maximumOrderQuantity);
 		$('#editProductSubtitleAr').val(webResponse.data.product.subtitle_ar);
 		$('#editProductSubtitleEn').val(webResponse.data.product.subtitle_en);
-		$('#editProductSubtitleFr').val(webResponse.data.product.subtitle_fr);
+		// $('#editProductSubtitleFr').val(webResponse.data.product.subtitle_fr);
 		$('#editProductDescriptionAr').val(webResponse.data.product.description_ar);
 		$('#editProductDescriptionEn').val(webResponse.data.product.description_en);
-		$('#editProductDescriptionFr').val(webResponse.data.product.description_fr);
+		// $('#editProductDescriptionFr').val(webResponse.data.product.description_fr);
 		$('#editProductManufacturerName').val(webResponse.data.product.manufacturerName);
 		$('#editProductBatchNumber').val(webResponse.data.product.batchNumber);
 		$('#editProductItemCode').val(webResponse.data.product.itemCode);
@@ -288,13 +288,13 @@ var DistributorProductsDataTable = (function () {
 		$('#addProductCountry').val('').change();
 		$('#addProductNameAr').val('');
 		$('#addProductNameEn').val('');
-		$('#addProductNameFr').val('');
+		// $('#addProductNameFr').val('');
 		$('#addProductSubtitleAr').val('');
 		$('#addProductSubtitleEn').val('');
-		$('#addProductSubtitleFr').val('');
+		// $('#addProductSubtitleFr').val('');
 		$('#addProductDescriptionAr').val('');
 		$('#addProductDescriptionEn').val('');
-		$('#addProductDescriptionFr').val('');
+		// $('#addProductDescriptionFr').val('');
 		$('#addUnitPrice').val('');
 		$('#addVat').val('');
 		$('#addStock').val('');
@@ -852,16 +852,16 @@ var DistributorProductsDataTable = (function () {
 					madeInCountryId: 'select',
 					name_en: 'input',
 					name_ar: 'input',
-					name_fr: 'input',
+					// name_fr: 'input',
 					image: 'input',
 					stock: 'input',
 					maximumOrderQuantity: 'input',
 					subtitle_ar: 'input',
 					subtitle_en: 'input',
-					subtitle_fr: 'input',
+					// subtitle_fr: 'input',
 					description_ar: 'textarea',
 					description_en: 'textarea',
-					description_fr: 'textarea',
+					// description_fr: 'textarea',
 					unitPrice: 'input',
 					vat: 'input',
 					manufacturerName: 'input',
@@ -922,15 +922,15 @@ var DistributorProductsDataTable = (function () {
 					madeInCountryId: 'select',
 					name_en: 'input',
 					name_ar: 'input',
-					name_fr: 'input',
+					// name_fr: 'input',
 					image: 'input',
 					maximumOrderQuantity: 'input',
 					subtitle_ar: 'input',
 					subtitle_en: 'input',
-					subtitle_fr: 'input',
+					// subtitle_fr: 'input',
 					description_ar: 'textarea',
 					description_en: 'textarea',
-					description_fr: 'textarea',
+					// description_fr: 'textarea',
 					unitPrice: 'input',
 					vat: 'input',
 					manufacturerName: 'input',
