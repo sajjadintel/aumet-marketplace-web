@@ -373,3 +373,17 @@ ADD CONSTRAINT `fk_entityProductSell_entityRelationGroup`
   REFERENCES `marketplace`.`entityRelationGroup` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+
+################################
+
+## 12/02/2021 -- Antoine Abou Cherfane
+
+# Modified city
+UPDATE `marketplace`.`city` SET `nameEn` = 'Ra’s al-Khaimah', `nameAr` = 'Ra’s al-Khaimah', `nameFr` = 'Ra’s al-Khaimah' WHERE (`id` = '53773');
+UPDATE `marketplace`.`city` SET `nameEn` = 'Umm al-Qaiwain', `nameAr` = 'Umm al-Qaiwain', `nameFr` = 'Umm al-Qaiwain' WHERE (`id` = '53767');
+UPDATE `marketplace`.`city` SET `nameEn` = 'Ajman', `nameAr` = 'Ajman', `nameFr` = 'Ajman' WHERE (`id` = '53768');
+DELETE FROM `marketplace`.`city` WHERE (`id` = '53769');
+DELETE FROM `marketplace`.`city` WHERE (`id` = '53770');
+
+################################
+
