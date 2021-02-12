@@ -746,7 +746,6 @@ class OrderController extends Controller
                     if ($totalBonus > $dbProduct->stock) {
                         $lowStockByBonus[$bonusTypeId][] = $bonusMinOrder . ':' . ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE ? '%' . $bonusBonus : $bonusBonus);
                     }
-
                 }
 
 
@@ -968,10 +967,14 @@ class OrderController extends Controller
 
         $orderDetailData = array();
         foreach ($arrOrderDetail as $item) {
+            $quantity = $item['quantity'];
+            if ($item['quantityFree'] > 0) {
+                $quantity .= " (+" . $item['quantityFree'] . ")";
+            }
             array_push($orderDetailData, array(
                 $item['productCode'],
                 $item['productNameEn'],
-                Helper::formatMoney($item['quantity'] + $item['quantityFree'], 0),
+                $quantity,
                 $item['currency'] . " " . Helper::formatMoney($item['unitPrice'], 2) . ($item['tax'] == 0 ? '' : ' +' . $item['tax'] . "%"),
                 $item['currency'] . " " . Helper::formatMoney($item['unitPrice'] * $item['quantity'] * (1.0 + $item['tax'] / 100.0))
             ));
@@ -1037,10 +1040,14 @@ class OrderController extends Controller
 
         $orderDetailData = array();
         foreach ($arrOrderDetail as $item) {
+            $quantity = $item['quantity'];
+            if ($item['quantityFree'] > 0) {
+                $quantity .= " (+" . $item['quantityFree'] . ")";
+            }
             array_push($orderDetailData, array(
                 $item['productCode'],
                 $item['productNameEn'],
-                Helper::formatMoney($item['quantity'] + $item['quantityFree'], 0),
+                $quantity,
                 $item['currency'] . " " . Helper::formatMoney($item['unitPrice']) . ($item['tax'] == 0 ? '' : ' +' . $item['tax'] . "%"),
                 $item['currency'] . " " . Helper::formatMoney($item['unitPrice'] * $item['quantity'] * (1.0 + $item['tax'] / 100.0))
             ));
