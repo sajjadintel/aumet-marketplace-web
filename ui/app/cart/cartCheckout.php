@@ -99,13 +99,13 @@ function compress_htmlcode($codedata)
                                             }
                                             $arrPaymentMethod = $mapSellerIdArrPaymentMethod[$seller->sellerId];
                                             ?>
-                                            <table style="border-radius: 5px;border-color: #e7e7e7;border-width: 1px 1px 1px 1px;border-style: solid;border-collapse: separate !important; border-spacing: 0;width: 100%;margin-bottom: 20px;padding: 10px;min-width: 830px;">
-                                                <thead>
+                                            <table style="border-radius: 5px; border-color: #e7e7e7; border-width: 1px 1px 1px 1px; border-style: solid; border-collapse: separate !important; border-spacing: 0; width: 100%; margin-bottom: 20px; padding: 10px; min-width: 830px;">
+                                            <thead>
                                                     <tr>
                                                         <th width="28%" class="cart-table-header-body"></th>
                                                         <th class="text-center cart-table-header-body" width="14%"></th>
                                                         <th class="text-center cart-table-header-body" width="10%"></th>
-                                                        <!--                                                    <th class="text-center cart-table-header-body" width="13%"></th>-->
+                                                        <!--<th class="text-center cart-table-header-body" width="13%"></th>-->
                                                         <th class="text-right cart-table-header-body" width="10%"></th>
                                                         <th class="text-right cart-table-header-body" width="6%"></th>
                                                         <th class="text-right cart-table-header-body" width="10%"></th>
@@ -412,9 +412,22 @@ function compress_htmlcode($codedata)
                 $(element).popover({
                     html: true,
                     sanitize: false,
-                    trigger: "hover",
+                    trigger: "manual",
                     placement: "bottom",
-                    content: getBonusPopoverContent(element)
+                    content: getBonusPopoverContent(element),
+                }).on("mouseenter", function () {
+                    var _this = this;
+                    $(this).popover("show");
+                    $(".popover").on("mouseleave", function () {
+                        $(_this).popover('hide');
+                    });
+                }).on("mouseleave", function () {
+                    var _this = this;
+                    setTimeout(function () {
+                        if (!$(".popover:hover").length) {
+                            $(_this).popover("hide");
+                        }
+                    }, 300);
                 });
             } else {
                 $(element).hide();
