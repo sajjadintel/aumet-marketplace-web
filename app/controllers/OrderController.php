@@ -698,9 +698,9 @@ class OrderController extends Controller
             while (!$dbOrderItems->dry()) {
                 $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
 
-                $dbProduct->stock -= $dbOrderItems->quantity;
+                $dbProduct->stock -= $dbOrderItems->shippedQuantity;
                 $dbProduct->totalOrderCount += 1;
-                $dbProduct->totalOrderQuantity += $dbOrderItems->quantity;
+                $dbProduct->totalOrderQuantity += $dbOrderItems->shippedQuantity;
                 $dbProduct->update();
 
 
