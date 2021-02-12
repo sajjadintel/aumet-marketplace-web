@@ -42,7 +42,7 @@ function compress_htmlcode($codedata)
                             <?php if (count($arrSubimage) > 0) : ?>
                                 <div class="pr-5 pl-5">
                                     <div style="height: 110px;position: relative;">
-                                        <button id="button-previous" type="button" data-role="none" class="slick-prev slick-arrow" aria-label="Previous" role="button" style="">Previous</button>
+                                        <button id="button-previous" type="button" data-role="none" class="slick-prev slick-arrow" aria-label="Previous" role="button">Previous</button>
                                         <div id="autoplayContainer" class="autoplay gallery" style="height: 110px;">
                                             <?php foreach ($arrSubimage as $subimageObj) : ?>
                                                 <div class=" col-4 image-input image-input-empty image-input-outline">
@@ -52,7 +52,7 @@ function compress_htmlcode($codedata)
                                                 </div>
                                             <?php endforeach; ?>
                                         </div>
-                                        <button id="button-next" type="button" data-role="none" class="slick-next slick-arrow" aria-label="Next" role="button" style="">Next</button>
+                                        <button id="button-next" type="button" data-role="none" class="slick-next slick-arrow" aria-label="Next" role="button">Next</button>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -535,7 +535,9 @@ function compress_htmlcode($codedata)
         };
 
         var initiate = function() {
-            WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, null, dbAdditionalOptions);
+            <?php if ($arrProductOtherOffers != null && sizeof($arrProductOtherOffers) != 0) { ?>
+                WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, null, dbAdditionalOptions);
+            <?php } ?>
         };
 
 
@@ -559,9 +561,11 @@ function compress_htmlcode($codedata)
         initializeBonusPopover('.mainBonusLabel');
 
         PageClass.init();
-        $('#datatable').on('draw.dt', function() {
-            initializeBonusPopover('.bonusLabel');
-        });
+        <?php if ($arrProductOtherOffers != null && sizeof($arrProductOtherOffers) != 0) { ?>
+            $('#datatable').on('draw.dt', function() {
+                initializeBonusPopover('.bonusLabel');
+            });
+        <?php } ?>
     });
 
     function initAutoplay() {

@@ -50,9 +50,9 @@ var WebApp = (function () {
 			text: WebAppLocals.getMessage('newOrderMessage').format(ordersCount),
 			icon: 'success',
 			buttonsStyling: false,
-			confirmButtonText:  WebAppLocals.getMessage('review'),
+			confirmButtonText: WebAppLocals.getMessage('review'),
 			showCancelButton: true,
-			cancelButtonText:  WebAppLocals.getMessage('ignore'),
+			cancelButtonText: WebAppLocals.getMessage('ignore'),
 			customClass: {
 				confirmButton: 'btn font-weight-bold btn-primary',
 				cancelButton: 'btn font-weight-bold btn-outline-primary',
