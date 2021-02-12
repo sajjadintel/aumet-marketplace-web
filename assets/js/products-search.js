@@ -416,8 +416,8 @@ var SearchDataTable = (function () {
 			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
 			//WebApp.reloadDatatable();
 		},
-		onClickAddMoreToCart: function (row) {
-			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
+		onClickAddMoreToCart: function (row, fromProductPage = false) {
+			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id, 0, null, false, true, fromProductPage);
 			WebApp.reloadDatatable();
 		},
 		onBonusOptionCallback: function (row, bonusOption) {
