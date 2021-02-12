@@ -425,7 +425,7 @@ function compress_htmlcode($codedata)
                                 <span id="quantityFreeHolder-' +
                             row.id +
                             '" class="quantityFreeHolder label label-lg font-weight-bold label-primary label-inline" style="margin-left: 5px;"></span>';
-                        // output += vQuantityFree;
+                        /* output += vQuantityFree; */
                     }
                     return '<div style="display: flex;">' + output + '</div>';
                 },
