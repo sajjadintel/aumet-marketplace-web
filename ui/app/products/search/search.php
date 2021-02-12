@@ -265,10 +265,14 @@ function compress_htmlcode($codedata)
 
                         output += vMinusBtn;
 
+
+                        let rowClone = JSON.parse(JSON.stringify(row));
+                        rowClone.arrBonus = null;
+                        rowClone.activeBonus = null;
                         let vQuantity =
                             '<input class="qtyBox" id="quantity-' + row.id + '" type="number" min="0" style="width: 65px; direction: ltr; margin-right: 5px;" ' +
                             'value="' + rowQuantity + '" onfocus="this.oldvalue = this.value;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" ' +
-                            'onchange=\'SearchDataTable.updateQty(' + JSON.stringify(row) + ', this.oldvalue)\' />';
+                            'onchange=\'SearchDataTable.updateQty(' + JSON.stringify(rowClone) + ', this.oldvalue)\' />';
 
                         output += vQuantity;
 
