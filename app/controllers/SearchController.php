@@ -480,9 +480,8 @@ class SearchController extends Controller {
 
         // Get all product ids
         $arrProductId = [];
-        foreach ($data as $cartDetail) {
-            array_push($arrProductId, $cartDetail['id']);
-
+        foreach ($data as $productItem) {
+            array_push($arrProductId, $productItem['id']);
         }
 
         // Get all related bonuses
@@ -605,8 +604,8 @@ class SearchController extends Controller {
                     }
 
                     $found = false;
-                    for ($i = 0; $i < count($arrProductBonus); $i++) {
-                        $productBonus = $arrProductBonus[$i];
+                    for ($j = 0; $j < count($arrProductBonus); $j++) {
+                        $productBonus = $arrProductBonus[$j];
                         if ($productBonus->bonusType == $bonusType) {
                             $arrMinQty = $productBonus->arrMinQty;
                             array_push($arrMinQty, $bonusMinOrder);
@@ -616,7 +615,7 @@ class SearchController extends Controller {
                             array_push($arrBonuses, $bonusBonus);
                             $productBonus->arrBonuses = $arrBonuses;
 
-                            $arrProductBonus[$i] = $productBonus;
+                            $arrProductBonus[$j] = $productBonus;
                             $found = true;
                             break;
                         }
