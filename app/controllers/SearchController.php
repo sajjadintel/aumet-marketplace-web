@@ -571,6 +571,12 @@ class SearchController extends Controller {
                     // Check if bonus is possible
                     $productDetail = $data[$i];
                     $availableQuantity = min($productDetail['stock'], $productDetail['maximumOrderQuantity']);
+            
+                    if (!$productDetail['maximumOrderQuantity'])
+                        $availableQuantity = $productDetail['stock'];
+                    if (!$productDetail['stock'])
+                        $availableQuantity = 0;
+                        
                     $totalOrder = 0;
                     if ($bonusTypeId == Constants::BONUS_TYPE_FIXED || $bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
                         $totalOrder = $bonusMinOrder + $bonusBonus;

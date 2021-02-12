@@ -34,6 +34,11 @@ class ProductsController extends Controller
             $dbCartDetail->getWhere("entityProductId=$id and userId=$userId");
 
             $availableQuantity = min($dbEntityProduct['stock'], $dbEntityProduct['maximumOrderQuantity']);
+            
+            if (!$dbEntityProduct['maximumOrderQuantity'])
+                $availableQuantity = $dbEntityProduct['stock'];
+            if (!$dbEntityProduct['stock'])
+                $availableQuantity = 0;
 
             $found = false;
             if (array_key_exists((string)$dbEntityProduct->entityId, $this->f3->get('SESSION.arrEntities'))) {
@@ -459,6 +464,12 @@ class ProductsController extends Controller
                     // Check if bonus is possible
                     $productDetail = $data[$i];
                     $availableQuantity = min($productDetail['stock'], $productDetail['maximumOrderQuantity']);
+            
+                    if (!$productDetail['maximumOrderQuantity'])
+                        $availableQuantity = $productDetail['stock'];
+                    if (!$productDetail['stock'])
+                        $availableQuantity = 0;
+
                     $totalOrder = 0;
                     if ($bonusTypeId == Constants::BONUS_TYPE_FIXED || $bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
                         $totalOrder = $bonusMinOrder + $bonusBonus;

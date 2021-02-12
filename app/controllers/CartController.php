@@ -65,6 +65,11 @@ class CartController extends Controller
 
                 $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
 
+                if (!$dbEntityProduct->maximumOrderQuantity)
+                    $maxOrder = $dbEntityProduct->stock;
+                if (!$dbEntityProduct->stock)
+                    $maxOrder = 0;
+
                 // Get all related bonuses
                 $mapBonusIdRelationGroup = [];
                 $mapSellerIdRelationGroupId = [];
@@ -163,11 +168,6 @@ class CartController extends Controller
                         $quantityFree = $totalBonus;
                     }
                 }
-
-                if (!$dbEntityProduct->maximumOrderQuantity)
-                    $maxOrder = $dbEntityProduct->stock;
-                if (!$dbEntityProduct->stock)
-                    $maxOrder = 0;
 
                 $total = $quantityFree + $dbCartDetail->quantity;
                 if ($total > $maxOrder) {
@@ -466,6 +466,12 @@ class CartController extends Controller
                         // Check if bonus is possible
                         $productDetail = $mapProductIdDetail[$productId];
                         $availableQuantity = min($productDetail->stock, $productDetail->maximumOrderQuantity);
+                        
+                        if (!$productDetail->maximumOrderQuantity)
+                            $availableQuantity = $productDetail->stock;
+                        if (!$productDetail->stock)
+                            $availableQuantity = 0;
+
                         $totalOrder = 0;
                         if($bonusTypeId == Constants::BONUS_TYPE_FIXED || $bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
                             $totalOrder = $bonusMinOrder + $bonusBonus;
@@ -653,6 +659,11 @@ class CartController extends Controller
             $productId = $dbEntityProduct->productId;
 
             $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
+            
+            if (!$dbEntityProduct->maximumOrderQuantity)
+                $maxOrder = $dbEntityProduct->stock;
+            if (!$dbEntityProduct->stock)
+                $maxOrder = 0;
 
             // Get all related bonuses
             $mapBonusIdRelationGroup = [];
@@ -752,11 +763,6 @@ class CartController extends Controller
                     $quantityFree = $totalBonus;
                 }
             }
-
-            if (!$dbEntityProduct->maximumOrderQuantity)
-                $maxOrder = $dbEntityProduct->stock;
-            if (!$dbEntityProduct->stock)
-                $maxOrder = 0;
 
             $total = $quantityFree + $quantity;
             if ($total > $maxOrder) {
