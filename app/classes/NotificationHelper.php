@@ -15,18 +15,22 @@ class NotificationHelper {
     {
         $dbProduct = new BaseModel($dbConnection, "vwEntityProductSell");
         $dbProduct->name = "productName_en";
-        $dbProduct->getWhere("id IN (" . implode(",", $lowStockProducts) . ")");
+        $arrProducts = $dbProduct->findWhere("id IN (" . implode(",", array_column($lowStockProducts, 'id')) . ")");
+
+        for ($i = 0; $i < sizeof($arrProducts); $i++) {
+            $arrProducts[$i]['reason'] = self::getProductFromArrayById($arrProducts[$i]['id'], $lowStockProducts)['reason'];
+        }
 
         $emailHandler = new EmailHandler($dbConnection);
         $emailFile = "email/layout.php";
         $f3->set('domainUrl', getenv('DOMAIN_URL'));
         $f3->set('title', 'Low Stock');
         $f3->set('emailType', 'lowStock');
-        $f3->set('products', $dbProduct);
+        $f3->set('products', $arrProducts);
 
 
         $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
-        $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $dbProduct->entityId);
+        $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $arrProducts[0]['entityId']);
         foreach ($arrEntityUserProfile as $entityUserProfile) {
             $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
         }
@@ -46,6 +50,15 @@ class NotificationHelper {
 
         $emailHandler->sendEmail(Constants::EMAIL_LOW_STOCK, $subject, $htmlContent);
         $emailHandler->resetTos();
+    }
+
+    static function getProductFromArrayById($productId, $products)
+    {
+        foreach ($products as $product) {
+            if ($product['id'] == $productId)
+                return $product;
+        }
+        return null;
     }
 
     /**
@@ -605,7 +618,6 @@ class NotificationHelper {
         $f3->set('domainUrl', getenv('DOMAIN_URL'));
         $f3->set('title', 'Pharmacy Account Verification');
         $f3->set('emailType', 'pharmacyAccountVerification');
-
 
 
         $arrFields = [
