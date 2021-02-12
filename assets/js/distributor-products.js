@@ -9,12 +9,8 @@ var DistributorProductsDataTable = (function () {
 		'name_ar',
 		'name_en',
 		// 'name_fr',
-		'description_ar',
-		'description_en',
-		// 'description_fr',
 		'unitPrice',
 		'vat',
-		'maximumOrderQuantity',
 		'categoryId',
 		'subcategoryId',
 	];
