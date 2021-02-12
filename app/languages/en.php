@@ -293,6 +293,7 @@ return array(
     'vModule_order_dateFrom' => 'Get Orders Starting Date',
     'vModule_order_dateTo' => 'Get Orders Ending Date',
     'vModule_order_date' => 'Get Orders Date',
+    'vModule_orderDetails_orderInformation' => 'Order Information',
 
     'vModule_customer_relationGroupTitle' => 'Customer Group',
     'vModule_customer_relationGroup' => 'Customer Group',

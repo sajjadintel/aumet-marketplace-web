@@ -887,17 +887,17 @@ class ProductsController extends Controller
                 $madeInCountryId = $this->f3->get('POST.madeInCountryId');
                 $name_en = $this->f3->get('POST.name_en');
                 $name_ar = $this->f3->get('POST.name_ar');
-                $name_fr = $this->f3->get('POST.name_fr');
+                // $name_fr = $this->f3->get('POST.name_fr');
                 $image = $this->f3->get('POST.image');
                 $subimages = $this->f3->get('POST.subimages');
                 $unitPrice = $this->f3->get('POST.unitPrice');
                 $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
                 $subtitle_ar = $this->f3->get('POST.subtitle_ar');
                 $subtitle_en = $this->f3->get('POST.subtitle_en');
-                $subtitle_fr = $this->f3->get('POST.subtitle_fr');
+                // $subtitle_fr = $this->f3->get('POST.subtitle_fr');
                 $description_ar = $this->f3->get('POST.description_ar');
                 $description_en = $this->f3->get('POST.description_en');
-                $description_fr = $this->f3->get('POST.description_fr');
+                // $description_fr = $this->f3->get('POST.description_fr');
                 $unitPrice = $this->f3->get('POST.unitPrice');
                 $vat = $this->f3->get('POST.vat');
                 $manufacturerName = $this->f3->get('POST.manufacturerName');
@@ -910,13 +910,12 @@ class ProductsController extends Controller
                 $strength = $this->f3->get('POST.strength');
 
                 if (
-                    strlen($scientificNameId) == 0 || strlen($madeInCountryId) == 0
+                    strlen($madeInCountryId) == 0
+                    // || strlen($scientificNameId) == 0
                     || strlen($name_en) == 0 || strlen($name_ar) == 0
-                    || strlen($name_fr) == 0 || strlen($unitPrice) == 0
-                    || strlen($vat) == 0 || strlen($maximumOrderQuantity) == 0
-                    || strlen($description_ar) == 0 || strlen($description_en) == 0
-                    || strlen($description_fr) == 0 || strlen($categoryId) == 0
-                    || strlen($subcategoryId) == 0
+                    // || strlen($name_fr) == 0
+                    || strlen($unitPrice) == 0 || strlen($vat) == 0
+                    || strlen($categoryId) == 0 || strlen($subcategoryId) == 0
                 ) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get('vModule_product_missingFields');
@@ -924,12 +923,12 @@ class ProductsController extends Controller
                     return;
                 }
 
-                if ((!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)
+                if ((strlen($maximumOrderQuantity) > 0 && (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0))
                     || (!is_numeric($unitPrice) || $unitPrice <= 0)
                     || (!is_numeric($vat) || $vat < 0 || $vat > 100)
                 ) {
                     $arrError = [];
-                    if (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0) {
+                    if (strlen($maximumOrderQuantity) > 0 && (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)) {
                         array_push($arrError, $this->f3->get('vModule_product_maximumOrderQuantityInvalid'));
                     }
                     if (!is_numeric($unitPrice) || $unitPrice <= 0) {
@@ -956,11 +955,19 @@ class ProductsController extends Controller
 
                 $this->checkLength($name_en, 'nameEn', 200, 4);
                 $this->checkLength($name_ar, 'nameAr', 200, 4);
-                $this->checkLength($name_fr, 'nameFr', 200, 4);
-                $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
-                $this->checkLength($description_en, 'descriptionEn', 5000, 4);
-                $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
+                // $this->checkLength($name_fr, 'nameFr', 200, 4);
 
+                if ($description_ar) {
+                    $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
+                }
+                
+                if ($description_en) {
+                    $this->checkLength($description_en, 'descriptionEn', 5000, 4);
+                }
+                
+                // if ($description_fr) {
+                //     $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
+                // }
 
                 if ($subtitle_ar) {
                     $this->checkLength($subtitle_ar, 'subtitleAr', 200, 4);
@@ -970,9 +977,9 @@ class ProductsController extends Controller
                     $this->checkLength($subtitle_en, 'subtitleEn', 200, 4);
                 }
 
-                if ($subtitle_fr) {
-                    $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
-                }
+                // if ($subtitle_fr) {
+                //     $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
+                // }
 
                 if ($manufacturerName) {
                     $this->checkLength($manufacturerName, 'manufacturerName', 200, 4);
@@ -982,18 +989,25 @@ class ProductsController extends Controller
                     $this->checkLength($strength, 'strength', 200, 4);
                 }
 
-                $dbProduct->scientificNameId = $scientificNameId;
+                if($scientificNameId) {
+                    $dbProduct->scientificNameId = $scientificNameId;
+                } else {
+                    $dbProduct->scientificNameId = null;
+                }
                 $dbProduct->madeInCountryId = $madeInCountryId;
                 $dbProduct->name_en = $name_en;
-                $dbProduct->name_fr = $name_fr;
+                $dbProduct->name_fr = $name_en;
+                // $dbProduct->name_fr = $name_fr;
                 $dbProduct->name_ar = $name_ar;
                 $dbProduct->image = $image;
                 $dbProduct->subtitle_ar = $subtitle_ar;
                 $dbProduct->subtitle_en = $subtitle_en;
-                $dbProduct->subtitle_fr = $subtitle_fr;
+                $dbProduct->subtitle_fr = $subtitle_en;
+                // $dbProduct->subtitle_fr = $subtitle_fr;
                 $dbProduct->description_ar = $description_ar;
                 $dbProduct->description_en = $description_en;
-                $dbProduct->description_fr = $description_fr;
+                $dbProduct->description_fr = $description_en;
+                // $dbProduct->description_fr = $description_fr;
                 $dbProduct->manufacturerName = $manufacturerName;
                 $dbProduct->batchNumber = $batchNumber;
                 $dbProduct->itemCode = $itemCode;
@@ -1038,7 +1052,12 @@ class ProductsController extends Controller
                 $dbEntityProduct->unitPrice = $unitPrice;
                 $dbEntityProduct->vat = $vat;
                 $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
-                $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
+                
+                if(strlen($maximumOrderQuantity) > 0) {
+                    $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
+                } else {
+                    $dbEntityProduct->maximumOrderQuantity = null;
+                }
 
                 $dbEntityProduct->update();
 
@@ -1366,17 +1385,17 @@ class ProductsController extends Controller
             $madeInCountryId = $this->f3->get('POST.madeInCountryId');
             $name_en = $this->f3->clean($this->f3->get('POST.name_en'));
             $name_ar = $this->f3->clean($this->f3->get('POST.name_ar'));
-            $name_fr = $this->f3->clean($this->f3->get('POST.name_fr'));
+            // $name_fr = $this->f3->clean($this->f3->get('POST.name_fr'));
             $image = $this->f3->get('POST.image');
             $subimages = $this->f3->get('POST.subimages');
             $stock = $this->f3->get('POST.stock');
             $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
             $subtitle_ar = $this->f3->clean($this->f3->get('POST.subtitle_ar'));
             $subtitle_en = $this->f3->clean($this->f3->get('POST.subtitle_en'));
-            $subtitle_fr = $this->f3->clean($this->f3->get('POST.subtitle_fr'));
+            // $subtitle_fr = $this->f3->clean($this->f3->get('POST.subtitle_fr'));
             $description_ar = $this->f3->clean($this->f3->get('POST.description_ar'));
             $description_en = $this->f3->clean($this->f3->get('POST.description_en'));
-            $description_fr = $this->f3->clean($this->f3->get('POST.description_fr'));
+            // $description_fr = $this->f3->clean($this->f3->get('POST.description_fr'));
             $unitPrice = $this->f3->get('POST.unitPrice');
             $vat = $this->f3->get('POST.vat');
             $manufacturerName = $this->f3->clean($this->f3->get('POST.manufacturerName'));
@@ -1389,12 +1408,11 @@ class ProductsController extends Controller
             $strength = $this->f3->clean($this->f3->get('POST.strength'));
 
             if (
-                strlen($scientificNameId) == 0 || strlen($madeInCountryId) == 0
+                strlen($madeInCountryId) == 0
+                // || strlen($scientificNameId) == 0
                 || strlen($name_en) == 0 || strlen($name_ar) == 0
-                || strlen($name_fr) == 0 || strlen($unitPrice) == 0
-                || strlen($vat) == 0 || strlen($stock) == 0
-                || strlen($maximumOrderQuantity) == 0 || strlen($description_ar) == 0
-                || strlen($description_en) == 0 || strlen($description_fr) == 0
+                // || strlen($name_fr) == 0
+                || strlen($unitPrice) == 0 || strlen($vat) == 0 || strlen($stock) == 0
                 || strlen($categoryId) == 0 || strlen($subcategoryId) == 0
             ) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -1404,7 +1422,7 @@ class ProductsController extends Controller
             }
 
             if ((!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0)
-                || (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)
+                || (strlen($maximumOrderQuantity) > 0 && !(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0)
                 || (!is_numeric($unitPrice) || $unitPrice <= 0)
                 || (!is_numeric($vat) || $vat < 0 || $vat > 100)
             ) {
@@ -1412,7 +1430,7 @@ class ProductsController extends Controller
                 if (!(is_numeric($stock) && (int) $stock == $stock) || $stock < 0) {
                     array_push($arrError, $this->f3->get('vModule_product_stockInvalid'));
                 }
-                if (!(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0) {
+                if (strlen($maximumOrderQuantity) > 0 && !(is_numeric($maximumOrderQuantity) && (int) $maximumOrderQuantity == $maximumOrderQuantity) || $maximumOrderQuantity < 0) {
                     array_push($arrError, $this->f3->get('vModule_product_maximumOrderQuantityInvalid'));
                 }
                 if (!is_numeric($unitPrice) || $unitPrice <= 0) {
@@ -1439,12 +1457,21 @@ class ProductsController extends Controller
 
             $this->checkLength($name_en, 'nameEn', 200, 4);
             $this->checkLength($name_ar, 'nameAr', 200, 4);
-            $this->checkLength($name_fr, 'nameFr', 200, 4);
-            $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
-            $this->checkLength($description_en, 'descriptionEn', 5000, 4);
-            $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
+            // $this->checkLength($name_fr, 'nameFr', 200, 4);
 
 
+            if ($description_ar) {
+                $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
+            }
+            
+            if ($description_en) {
+                $this->checkLength($description_en, 'descriptionEn', 5000, 4);
+            }
+            
+            // if ($description_fr) {
+            //     $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
+            // }
+            
             if ($subtitle_ar) {
                 $this->checkLength($subtitle_ar, 'subtitleAr', 200, 4);
             }
@@ -1453,9 +1480,9 @@ class ProductsController extends Controller
                 $this->checkLength($subtitle_en, 'subtitleEn', 200, 4);
             }
 
-            if ($subtitle_fr) {
-                $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
-            }
+            // if ($subtitle_fr) {
+            //     $this->checkLength($subtitle_fr, 'subtitleFr', 200, 4);
+            // }
 
             if ($manufacturerName) {
                 $this->checkLength($manufacturerName, 'manufacturerName', 200, 4);
@@ -1467,18 +1494,25 @@ class ProductsController extends Controller
 
 
             $dbProduct = new BaseModel($this->db, "product");
-            $dbProduct->scientificNameId = $scientificNameId;
+            if($scientificNameId) {
+                $dbProduct->scientificNameId = $scientificNameId;
+            } else {
+                $dbProduct->scientificNameId = null;
+            }
             $dbProduct->madeInCountryId = $madeInCountryId;
             $dbProduct->name_en = $name_en;
-            $dbProduct->name_fr = $name_fr;
+            // $dbProduct->name_fr = $name_fr;
+            $dbProduct->name_fr = $name_en;
             $dbProduct->name_ar = $name_ar;
             $dbProduct->image = $image;
             $dbProduct->subtitle_ar = $subtitle_ar;
             $dbProduct->subtitle_en = $subtitle_en;
-            $dbProduct->subtitle_fr = $subtitle_fr;
+            // $dbProduct->subtitle_fr = $subtitle_fr;
+            $dbProduct->subtitle_fr = $subtitle_en;
             $dbProduct->description_ar = $description_ar;
             $dbProduct->description_en = $description_en;
-            $dbProduct->description_fr = $description_fr;
+            // $dbProduct->description_fr = $description_fr;
+            $dbProduct->description_fr = $description_en;
             $dbProduct->manufacturerName = $manufacturerName;
             $dbProduct->batchNumber = $batchNumber;
             $dbProduct->itemCode = $itemCode;
@@ -1522,7 +1556,12 @@ class ProductsController extends Controller
             $dbEntityProduct->stockStatusId = 1;
             $dbEntityProduct->bonusTypeId = 1;
             $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
-            $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
+            
+            if(strlen($maximumOrderQuantity) > 0) {
+                $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
+            } else {
+                $dbEntityProduct->maximumOrderQuantity = null;
+            }
 
             $dbEntityProduct->add();
 
@@ -2486,8 +2525,8 @@ class ProductsController extends Controller
             // Set validation and formula
             Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
             Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
-            Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$G$3:$H$' . $subcategoryNum);
-            // Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$J$3:$K$' . $ingredientNum);
+            Excel::setCellFormulaVLookup($sheet, 'P3', 2505, "'User Input'!P", 'Variables!$G$3:$H$' . $subcategoryNum);
+            // Excel::setCellFormulaVLookup($sheet, 'Q3', 2505, "'User Input'!Q", 'Variables!$J$3:$K$' . $ingredientNum);
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -2499,8 +2538,8 @@ class ProductsController extends Controller
             // Set data validation for dropdowns
             Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
             Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
-            Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
-            Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
+            Excel::setDataValidation($sheet, 'P3', 'P2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
+            Excel::setDataValidation($sheet, 'Q3', 'Q2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
 
             // Create excel sheet
             $productsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsm";
@@ -2606,24 +2645,21 @@ class ProductsController extends Controller
                 "B" => "madeInCountryId",
                 "C" => "name_en",
                 "D" => "name_ar",
-                "E" => "name_fr",
-                "F" => "subtitle_ar",
-                "G" => "subtitle_en",
-                "H" => "subtitle_fr",
-                "I" => "description_ar",
-                "J" => "description_en",
-                "K" => "description_fr",
-                "L" => "unitPrice",
-                "M" => "vat",
-                "N" => "stock",
-                "O" => "maximumOrderQuantity",
-                "P" => "manufacturerName",
-                "Q" => "batchNumber",
-                "R" => "itemCode",
-                "S" => "subcategoryId",
-                "T" => "activeIngredientsId",
-                "U" => "expiryDate",
-                "V" => "strength"
+                "E" => "subtitle_ar",
+                "F" => "subtitle_en",
+                "G" => "description_ar",
+                "H" => "description_en",
+                "I" => "unitPrice",
+                "J" => "vat",
+                "K" => "stock",
+                "L" => "maximumOrderQuantity",
+                "M" => "manufacturerName",
+                "N" => "batchNumber",
+                "O" => "itemCode",
+                "P" => "subcategoryId",
+                "Q" => "activeIngredientsId",
+                "R" => "expiryDate",
+                "S" => "strength"
             ];
 
             $successProducts = [];
@@ -2673,15 +2709,17 @@ class ProductsController extends Controller
 
                     switch ($cellLetter) {
                         case "A":
-                            if (!in_array($cellValue, $allScientificId)) {
-                                $finished = true;
-                            } else {
-                                $dbProduct->scientificNameId = $cellValue;
+                            if ($cellValue != "#N/A") {
+                                if (!in_array($cellValue, $allScientificId)) {
+                                    array_push($errors, "Scientific Name is invalid");
+                                } else {
+                                    $dbProduct->scientificNameId = $cellValue;
+                                }
                             }
                             break;
                         case "B":
                             if (!in_array($cellValue, $allCountryId)) {
-                                array_push($errors, "Made In invalid");
+                                $finished = true;
                             } else {
                                 $dbProduct->madeInCountryId = $cellValue;
                             }
@@ -2705,21 +2743,11 @@ class ProductsController extends Controller
                                     array_push($errors, "Brand Name EN should be between 4 and 200 characters");
                                 } else {
                                     $dbProduct->name_en = $cellValue;
-                                }
-                            }
-                            break;
-                        case "E":
-                            if (strlen($cellValue) == 0) {
-                                array_push($errors, "Brand Name FR required");
-                            } else {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 200) {
-                                    array_push($errors, "Brand Name FR should be between 4 and 200 characters");
-                                } else {
                                     $dbProduct->name_fr = $cellValue;
                                 }
                             }
                             break;
-                        case "F":
+                        case "E":
                             if (strlen($cellValue) != 0) {
                                 if (strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Subtitle AR should be between 4 and 200 characters");
@@ -2728,28 +2756,18 @@ class ProductsController extends Controller
                                 }
                             }
                             break;
-                        case "G":
+                        case "F":
                             if (strlen($cellValue) != 0) {
                                 if (strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Subtitle EN should be between 4 and 200 characters");
                                 } else {
                                     $dbProduct->subtitle_en = $cellValue;
-                                }
-                            }
-                            break;
-                        case "H":
-                            if (strlen($cellValue) != 0) {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 200) {
-                                    array_push($errors, "Subtitle FR should be between 4 and 200 characters");
-                                } else {
                                     $dbProduct->subtitle_fr = $cellValue;
                                 }
                             }
                             break;
-                        case "I":
-                            if (strlen($cellValue) == 0) {
-                                array_push($errors, "Description AR required");
-                            } else {
+                        case "G":
+                            if (strlen($cellValue) != 0) {
                                 if (strlen($cellValue) < 4 || strlen($cellValue) > 5000) {
                                     array_push($errors, "Description AR should be between 4 and 5000 characters");
                                 } else {
@@ -2757,57 +2775,47 @@ class ProductsController extends Controller
                                 }
                             }
                             break;
-                        case "J":
-                            if (strlen($cellValue) == 0) {
-                                array_push($errors, "Description EN required");
-                            } else {
+                        case "H":
+                            if (strlen($cellValue) != 0) {
                                 if (strlen($cellValue) < 4 || strlen($cellValue) > 5000) {
                                     array_push($errors, "Description EN should be between 4 and 5000 characters");
                                 } else {
                                     $dbProduct->description_en = $cellValue;
-                                }
-                            }
-                            break;
-                        case "K":
-                            if (strlen($cellValue) == 0) {
-                                array_push($errors, "Description FR required");
-                            } else {
-                                if (strlen($cellValue) < 4 || strlen($cellValue) > 5000) {
-                                    array_push($errors, "Description FR should be between 4 and 5000 characters");
-                                } else {
                                     $dbProduct->description_fr = $cellValue;
                                 }
                             }
                             break;
-                        case "L":
+                        case "I":
                             if (!is_numeric($cellValue) || (float) $cellValue <= 0) {
                                 array_push($errors, "Unit Price must be a positive number not null");
                             } else {
                                 $dbEntityProduct->unitPrice = round((float)$cellValue, 2);
                             }
                             break;
-                        case "M":
+                        case "J":
                             if (!is_numeric($cellValue) || (float) $cellValue < 0 || (float) $cellValue > 100) {
                                 array_push($errors, "VAT must be a positive number between 0 and 100");
                             } else {
                                 $dbEntityProduct->vat = round((float) $cellValue, 2);
                             }
                             break;
-                        case "N":
+                        case "K":
                             if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
                                 array_push($errors, "Available Quantity must be a positive whole number");
                             } else {
                                 $dbEntityProduct->stock = (int) $cellValue;
                             }
                             break;
-                        case "O":
-                            if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
-                                array_push($errors, "Maximum Order Quantity must be a positive whole number");
-                            } else {
-                                $dbEntityProduct->maximumOrderQuantity = (int) $cellValue;
+                        case "L":
+                            if(strlen($cellValue) > 0) {
+                                if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
+                                    array_push($errors, "Maximum Order Quantity must be a positive whole number");
+                                } else {
+                                    $dbEntityProduct->maximumOrderQuantity = (int) $cellValue;
+                                }
                             }
                             break;
-                        case "P":
+                        case "M":
                             if (strlen($cellValue) != 0) {
                                 if (strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Manufacturer Name should be between 4 and 200 characters");
@@ -2816,25 +2824,25 @@ class ProductsController extends Controller
                                 }
                             }
                             break;
-                        case "Q":
+                        case "N":
                             if (strlen($cellValue) != 0) {
                                 $dbProduct->batchNumber = $cellValue;
                             }
                             break;
-                        case "R":
+                        case "O":
                             if (strlen($cellValue) != 0) {
                                 $dbProduct->itemCode = $cellValue;
                             }
                             break;
-                        case "S":
+                        case "P":
                             if (!in_array($cellValue, $allSubcategoryId)) {
-                                array_push($errors, "Subcategory invalid");
+                                array_push($errors, "Category - Subcategory invalid");
                             } else {
                                 $dbProduct->subcategoryId = $cellValue;
                                 $dbProduct->categoryId = $mapSubcategoryIdCategoryId[$cellValue];
                             }
                             break;
-                        case "T":
+                        case "Q":
                             $valid = true;
                             if (strlen($cellValue) > 0) {
                                 $activeIngredientsTemp = explode(", ", $cellValue);
@@ -2848,7 +2856,7 @@ class ProductsController extends Controller
                             }
                             $activeIngredients = $cellValue;
                             break;
-                        case "U":
+                        case "R":
                             if (!is_null($cellValue)) {
                                 if (!is_int($cellValue)) {
                                     array_push($errors, "Expiry Date must fit a date format (mm/dd/yyyy)");
@@ -2858,7 +2866,7 @@ class ProductsController extends Controller
                                 }
                             }
                             break;
-                        case "V":
+                        case "S":
                             if (strlen($cellValue) != 0) {
                                 if (strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Strength should be between 4 and 200 characters");
@@ -2967,8 +2975,8 @@ class ProductsController extends Controller
                 // Set validation and formula
                 Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
                 Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
-                Excel::setCellFormulaVLookup($sheet, 'S3', 2505, "'User Input'!S", 'Variables!$G$3:$H$' . $subcategoryNum);
-                // Excel::setCellFormulaVLookup($sheet, 'T3', 2505, "'User Input'!T", 'Variables!$J$3:$K$' . $ingredientNum);
+                Excel::setCellFormulaVLookup($sheet, 'P3', 2505, "'User Input'!P", 'Variables!$G$3:$H$' . $subcategoryNum);
+                // Excel::setCellFormulaVLookup($sheet, 'Q3', 2505, "'User Input'!Q", 'Variables!$J$3:$K$' . $ingredientNum);
 
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -2980,11 +2988,11 @@ class ProductsController extends Controller
                 // Set data validation for dropdowns
                 Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
                 Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
-                Excel::setDataValidation($sheet, 'S3', 'S2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
-                Excel::setDataValidation($sheet, 'T3', 'T2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
+                Excel::setDataValidation($sheet, 'P3', 'P2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
+                Excel::setDataValidation($sheet, 'Q3', 'Q2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
 
-                $sheet->setCellValue('W2', 'Error');
-                $sheet->getStyle('W2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
+                $sheet->setCellValue('T2', 'Error');
+                $sheet->getStyle('T2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
 
                 // Add all products to multidimensional array
                 $multiProducts = [];
@@ -2993,13 +3001,10 @@ class ProductsController extends Controller
                     "madeInCountryId",
                     "name_en",
                     "name_ar",
-                    "name_fr",
                     "subtitle_ar",
                     "subtitle_en",
-                    "subtitle_fr",
                     "description_ar",
                     "description_en",
-                    "description_fr",
                     "unitPrice",
                     "vat",
                     "stock",
