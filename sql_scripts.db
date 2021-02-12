@@ -190,6 +190,46 @@ CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 ################################
 
 
+## 03/02/2021 -- Antoine Abou Cherfane
+
+# Activated the menuItem for the Bonus Update
+UPDATE `marketplace`.`menuItem` SET `menuId` = '1' WHERE (`id` = '20');
+
+# Created vwEntityProductSellBonusDetail view for the bonuses
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`%` 
+    SQL SECURITY DEFINER
+VIEW `vwEntityProductSellBonusDetail` AS
+    SELECT 
+        `bonus`.`id` AS `id`,
+        `bonus`.`entityProductId` AS `entityProductId`,
+        `product`.`name_en` AS `productName_en`,
+        `product`.`name_ar` AS `productName_ar`,
+        `product`.`name_fr` AS `productName_fr`,
+        `bonus`.`bonusTypeId` AS `bonusTypeId`,
+        `bonusType`.`name_en` AS `bonusTypeName_en`,
+        `bonusType`.`name_ar` AS `bonusTypeName_ar`,
+        `bonusType`.`name_fr` AS `bonusTypeName_fr`,
+        `bonus`.`isActive` AS `isActive`,
+        `bonus`.`minOrder` AS `minOrder`,
+        `bonus`.`bonus` AS `bonus`
+    FROM
+        ((`entityProductSellBonusDetail` `bonus`
+        LEFT JOIN `product` ON ((`product`.`id` = `bonus`.`entityProductId`)))
+        LEFT JOIN `bonusType` ON ((`bonusType`.`id` = `bonus`.`bonusTypeId`)))
+
+# Modified vwEntityProductSellSummary
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`%` 
+    SQL SECURITY DEFINER
+VIEW `vwEntityProductSellSummary` AS
+    SELECT 
+        `ep`.`id` AS `id`,
+        `ep`.`entityId` AS `entityId`,
+        `ep`.`productId` AS `productId`,
+        
 ## 10/02/2021 -- Patrick Younes
 
 # Modified vwEntityProductSell
@@ -437,6 +477,11 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
         `p`.`name_en` AS `productName_en`,
         `p`.`name_fr` AS `productName_fr`
     FROM
+        (`entityProductSell` `ep`
+        JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
+
+
+################################
         (((`entityProductSell` `ep`
         JOIN `entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
         JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
