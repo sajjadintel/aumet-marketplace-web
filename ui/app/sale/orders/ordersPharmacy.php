@@ -276,8 +276,8 @@ function compress_htmlcode($codedata)
                 visible: false,
                 render: function(data, type, row, meta) {
                     output = row.quantity;
-                    if (row.freeQuantity > 0);
-                    output += ' (+' + row.freeQuantity + ')';
+                    if (row.freeQuantity > 0)
+                        output += ' (+' + row.freeQuantity + ')';
                     return output;
                 },
             },
