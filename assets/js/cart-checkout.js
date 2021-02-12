@@ -38,7 +38,7 @@ var CartCheckout = (function () {
 	};
 
 	var _removeItem = function (productId, submitButton, forceCallback, forcePreventUnblur) {
-		WebApp.post('/web/cart/remove', {id: productId}, (webResponse) => _updateQuantityDeleteCallback(webResponse), submitButton, forceCallback, forcePreventUnblur);
+		WebApp.post('/web/cart/remove', { id: productId }, (webResponse) => _updateQuantityDeleteCallback(webResponse), submitButton, forceCallback, forcePreventUnblur);
 	};
 
 	var _removeItemModal = function (itemId) {
@@ -110,7 +110,20 @@ var CartCheckout = (function () {
 		WebApp.redirect('/web/thankyou/' + webResponse.data);
 	};
 
-	var _updateQuantity = function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice = 0, initializeBonusPopover = 0, oldValue = null, shouldShowRemoveModal = true, submitButton = null, forceCallback = false, forcePreventUnblur = false) {
+	var _updateQuantity = function (
+		productId,
+		increment,
+		stock,
+		cartDetailId,
+		sellerId,
+		updateTotalPrice = 0,
+		initializeBonusPopover = 0,
+		oldValue = null,
+		shouldShowRemoveModal = true,
+		submitButton = null,
+		forceCallback = false,
+		forcePreventUnblur = false
+	) {
 		let quantityId = '#quantity-' + productId;
 		let currentValue = 0;
 		if ($(quantityId).val() > 0) currentValue = parseInt($(quantityId).val());
@@ -166,7 +179,7 @@ var CartCheckout = (function () {
 		$(quantityFreeId).html(quantityFree);
 
 		let quantityFreeHolderId = '#quantityFreeHolder-' + productId;
-		$(quantityFreeHolderId).css('display', quantityFree > 0 ? 'block' : 'none');
+		$(quantityFreeHolderId).css('display', 'none');
 
 		// Update product price
 		let productPriceId = '#productPrice-' + productId;
@@ -174,7 +187,7 @@ var CartCheckout = (function () {
 		let currency = $(productPriceId).attr('data-currency');
 		let vat = $(productPriceId).attr('data-vat');
 		let subTotal = parseFloat(quantity) * parseFloat(unitPrice);
-		let total = subTotal * (100.0 + parseFloat(vat)) / 100.0;
+		let total = (subTotal * (100.0 + parseFloat(vat))) / 100.0;
 		let productPrice = WebApp.formatMoney(total);
 
 		$(productPriceId).attr('data-productPrice', subTotal);
@@ -211,8 +224,8 @@ var CartCheckout = (function () {
 			updateTotalPrice();
 		}
 
-		$("#bonusLabel-" + productId).attr("data-activeBonus", JSON.stringify(cartDetail.activeBonus))
-		if(initializeBonusPopover) {
+		$('#bonusLabel-' + productId).attr('data-activeBonus', JSON.stringify(cartDetail.activeBonus));
+		if (initializeBonusPopover) {
 			initializeBonusPopover();
 		}
 		WebApp.reloadDatatable();
@@ -255,8 +268,34 @@ var CartCheckout = (function () {
 		submitOrderSuccess: function (webResponse) {
 			_submitOrderSuccess(webResponse);
 		},
-		updateQuantity: function (productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, initializeBonusPopover, oldValue, shouldShowRemoveModal, submitButton, forceCallback, forcePreventUnblur) {
-			_updateQuantity(productId, increment, stock, cartDetailId, sellerId, updateTotalPrice, initializeBonusPopover, oldValue, shouldShowRemoveModal, submitButton, forceCallback, forcePreventUnblur);
+		updateQuantity: function (
+			productId,
+			increment,
+			stock,
+			cartDetailId,
+			sellerId,
+			updateTotalPrice,
+			initializeBonusPopover,
+			oldValue,
+			shouldShowRemoveModal,
+			submitButton,
+			forceCallback,
+			forcePreventUnblur
+		) {
+			_updateQuantity(
+				productId,
+				increment,
+				stock,
+				cartDetailId,
+				sellerId,
+				updateTotalPrice,
+				initializeBonusPopover,
+				oldValue,
+				shouldShowRemoveModal,
+				submitButton,
+				forceCallback,
+				forcePreventUnblur
+			);
 		},
 		updateNote: function (productId, cardDetailId, sellerId) {
 			_updateNote(productId, cardDetailId, sellerId);

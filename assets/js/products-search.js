@@ -204,7 +204,7 @@ var SearchDataTable = (function () {
 								vBonus = '<span id="bonus-' + row.id + '" class="label label-xl label-rounded label-primary ml-1" style = "width: 50px" > </span>';
 							}
 
-							return '<div>' + vQuantity + '</div>';
+							return '<div>' + vQuantity + vBonus + '</div>';
 						} else {
 							return '';
 						}
