@@ -12,50 +12,48 @@ var ProductsBonusUpload = function () {
             maxFiles: 1,
             maxFilesize: 100,
             addRemoveLinks: false,
-            acceptedFiles: ".xlsx,.xls,.csv",
+            acceptedFiles: ".xlsm",
             createImageThumbnails: false,
-            //previewTemplate: previewTemplate,
-            //previewsContainer: _id + " .dropzone-items",
-            //clickable: "#btnProductsBonusUpload",
             accept: function (file, done) {
-                if (file.name == "justinbieber.jpg") {
-                    done("Naha, you don't.");
-                } else {
-                    done();
-                }
+                done();
             },
             addedfile: function (file) {
                 $("#dropZoneProductsBonusUpload").fadeOut();
-                $("#dropZoneProductsBonusUploadProgressContainer").fadeIn();
-            },
-
-            sending: function (file) {
-
+                $("#dropZoneProductsBonusUploadProgress").fadeIn();
             },
             totaluploadprogress: function (progress) {
                 $("#dropZoneProductsBonusUploadProgress").html('Uploading: '+ progress + " %");
                 $("#dropZoneProductsBonusUploadProgress").css('width', progress + "%");
-                if(progress == 100){
-                }
-
             },
-            complete: function (progress) {
-                $("#dropZoneProductsBonusUploadProgress").html('Upload Completed Successfully');
-                WebApp.post('/web/distributor/product/bonus/upload/process', null, ProductsBonusUpload.processUpload)
+            success: function (file, response) {
+                $("#goBackContainer").show();
+                $("#dropZoneProductsBonusUploadProgress").html(WebAppLocals.getMessage("uploadSuccess"));
+                WebApp.post('/web/distributor/product/bonus/upload/process', null, _uploadProcessSuccessCallback)
+            },
+            error: function (file, error) {
+                // Show error message
+                WebApp.alertError(WebAppLocals.getMessage("bonusUploadError"));
+                
+                // Change upload bar
+                $("#dropZoneProductsBonusUploadProgress").removeClass('bg-primary');
+                $("#dropZoneProductsBonusUploadProgress").addClass('bg-danger');
+                $("#dropZoneProductsBonusUploadProgress").css('width', "100%");
+                $("#dropZoneProductsBonusUploadProgress").html(WebAppLocals.getMessage("uploadError"));
+            
+                // Show go back button
+                $("#goBackContainer").show();
             }
         });
     }
 
-    var _processUpload = function(webReponse){
+    var _uploadProcessSuccessCallback = function(webReponse){
+        $('#productsBonusUploadProcessResultContainer').addClass('mt-20')
         $('#productsBonusUploadProcessResultContainer').html(webReponse.data);
     };
 
     return {
         init: function () {
             _init();
-        },
-        processUpload: function (webReponse) {
-            _processUpload(webReponse);
         }
     };
 }();

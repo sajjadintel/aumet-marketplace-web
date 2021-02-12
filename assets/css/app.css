@@ -881,3 +881,7 @@ input[type='number'] {
 .cart-checkout-bonus-td > .check {
 	color: #0CA962;
 }
+
+.orderdetails-smarttab > .nav > li > a.nav-link.active {
+	background: #FAFAFA;
+}
