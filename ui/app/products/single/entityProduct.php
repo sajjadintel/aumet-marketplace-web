@@ -425,7 +425,7 @@ function compress_htmlcode($codedata)
                                 <span id="quantityFreeHolder-' +
                             row.id +
                             '" class="quantityFreeHolder label label-lg font-weight-bold label-primary label-inline" style="margin-left: 5px;"></span>';
-                        output += vQuantityFree;
+                        // output += vQuantityFree;
                     }
                     return '<div style="display: flex;">' + output + '</div>';
                 },
@@ -435,7 +435,7 @@ function compress_htmlcode($codedata)
                 title: WebAppLocals.getMessage('bonus'),
                 data: 'id',
                 orderable: false,
-                render: function (data, type, row, meta) {
+                render: function(data, type, row, meta) {
                     var output = '<span id="bonusLabel-' + row.id + '" class="bonusLabel cart-checkout-bonus-label py-1 px-6" data-toggle="popover" data-arrBonus="' + row.arrBonus + '" data-activeBonus="' + row.activeBonus + '">Bonuses <span class="bonus"></span> </span>';
                     return output;
                 },
@@ -557,7 +557,7 @@ function compress_htmlcode($codedata)
         initializeBonusPopover('.mainBonusLabel');
 
         PageClass.init();
-        $('#datatable').on('draw.dt', function () {
+        $('#datatable').on('draw.dt', function() {
             initializeBonusPopover('.bonusLabel');
         });
     });
@@ -599,22 +599,22 @@ function compress_htmlcode($codedata)
         $(selector).each(function(index, element) {
             var arrBonusStr = $(element).attr('data-arrBonus') || "[]";
             var arrBonus = JSON.parse(arrBonusStr);
-            if(arrBonus.length > 0) {
+            if (arrBonus.length > 0) {
                 $(element).popover({
                     html: true,
                     sanitize: false,
                     trigger: "manual",
                     placement: "bottom",
                     content: getBonusPopoverContent(element),
-                }).on("mouseenter", function () {
+                }).on("mouseenter", function() {
                     var _this = this;
                     $(this).popover("show");
-                    $(".popover").on("mouseleave", function () {
+                    $(".popover").on("mouseleave", function() {
                         $(_this).popover('hide');
                     });
-                }).on("mouseleave", function () {
+                }).on("mouseleave", function() {
                     var _this = this;
-                    setTimeout(function () {
+                    setTimeout(function() {
                         if (!$(".popover:hover").length) {
                             $(_this).popover("hide");
                         }
@@ -643,13 +643,13 @@ function compress_htmlcode($codedata)
             tableHead,
             ...arrBonus
         ];
-        for(var i = 0; i < allTableData.length; i++) {
+        for (var i = 0; i < allTableData.length; i++) {
             var row = allTableData[i];
 
-            if(i == 0) {
+            if (i == 0) {
                 /* Add table head*/
                 var trElement = document.createElement('tr');
-                for(var j = 0; j < row.length; j++) {
+                for (var j = 0; j < row.length; j++) {
                     var item = row[j];
                     var thElement = document.createElement('th');
                     thElement.className = "cart-checkout-bonus-th text-center p-1 pb-3";
@@ -660,28 +660,28 @@ function compress_htmlcode($codedata)
             } else {
                 var arrMinQty = row.arrMinQty || [];
                 var arrBonuses = row.arrBonuses || [];
-                if(arrMinQty.length > 0 && arrMinQty.length === arrBonuses.length) {
+                if (arrMinQty.length > 0 && arrMinQty.length === arrBonuses.length) {
                     /* Add bonus type column*/
                     var trElement = document.createElement('tr');
 
                     var bonusType = row.bonusType;
                     var tdBonusTypeElement = document.createElement('td');
                     tdBonusTypeElement.className = "cart-checkout-bonus-td text-center p-1";
-                    if(i != allTableData.length - 1) tdBonusTypeElement.className += " border-bottom";
-                    if(arrMinQty.length > 1) tdBonusTypeElement.setAttribute('rowspan', arrMinQty.length);
+                    if (i != allTableData.length - 1) tdBonusTypeElement.className += " border-bottom";
+                    if (arrMinQty.length > 1) tdBonusTypeElement.setAttribute('rowspan', arrMinQty.length);
                     tdBonusTypeElement.innerHTML = bonusType;
                     trElement.append(tdBonusTypeElement);
 
                     /* Add minQty and bonuses columns*/
-                    for(var j = 0; j < arrMinQty.length; j++) {
-                        if(j != 0) {
+                    for (var j = 0; j < arrMinQty.length; j++) {
+                        if (j != 0) {
                             trElement = document.createElement('tr');
                         }
 
                         var minQty = arrMinQty[j];
                         var tdMinQtyElement = document.createElement('td');
                         tdMinQtyElement.className = "cart-checkout-bonus-td text-center p-1 border-left";
-                        if(i != allTableData.length - 1 || j != arrMinQty.length - 1){
+                        if (i != allTableData.length - 1 || j != arrMinQty.length - 1) {
                             tdMinQtyElement.className += " border-bottom";
                         }
                         tdMinQtyElement.innerHTML = minQty;
@@ -696,8 +696,8 @@ function compress_htmlcode($codedata)
                         tdBonusesElement.innerHTML = bonuses;
                         trElement.append(tdBonusesElement);
 
-                        if(activeBonus) {
-                            if(bonusType == activeBonus.bonusType && minQty == activeBonus.minQty && bonuses == activeBonus.bonuses) {
+                        if (activeBonus) {
+                            if (bonusType == activeBonus.bonusType && minQty == activeBonus.minQty && bonuses == activeBonus.bonuses) {
                                 var tdCheckElement = document.createElement('td');
                                 tdCheckElement.className = "cart-checkout-bonus-td text-center p-1";
                                 tdCheckElement.innerHTML = "<i class='las la-check check'></i>";
@@ -710,7 +710,7 @@ function compress_htmlcode($codedata)
                 }
             }
         }
-        if(activeBonus && activeBonus.totalBonus) {
+        if (activeBonus && activeBonus.totalBonus) {
             $(element).find('.bonus').text("(+" + activeBonus.totalBonus + ")");
         } else {
             $(element).find('.bonus').text("");
