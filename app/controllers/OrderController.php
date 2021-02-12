@@ -698,9 +698,9 @@ class OrderController extends Controller
             while (!$dbOrderItems->dry()) {
                 $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
 
-                $dbProduct->stock -= $dbOrderItems->quantity;
+                $dbProduct->stock -= $dbOrderItems->shippedQuantity;
                 $dbProduct->totalOrderCount += 1;
-                $dbProduct->totalOrderQuantity += $dbOrderItems->quantity;
+                $dbProduct->totalOrderQuantity += $dbOrderItems->shippedQuantity;
                 $dbProduct->update();
 
 
@@ -821,7 +821,7 @@ class OrderController extends Controller
             $mapStatusIdName[$orderStatus->id] = $orderStatus->name;
         }
 
-        $orderStatusUpdateTitle = "Order with serial " . $dbOrder->serial . " status has changed to " . $mapStatusIdName[strval($statusId)];
+        $orderStatusUpdateTitle = "Order # " . $dbOrder->id . " status has changed to " . $mapStatusIdName[strval($statusId)];
         $this->f3->set('orderStatusUpdateTitle', $orderStatusUpdateTitle);
 
         $dbCurrency = new BaseModel($this->db, "currency");

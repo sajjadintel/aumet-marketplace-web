@@ -54,7 +54,7 @@ var WebAppModals = (function () {
 			title: WebAppLocals.getMessage('tax'),
 			data: 'tax',
 			render: function (data, type, row, meta) {
-				var output = WebApp.formatMoney(row.tax) + '%';
+				var output = WebApp.formatMoney(row.tax, 2) + '%';
 				return output;
 			},
 		},
@@ -245,7 +245,7 @@ var OrderMissingProductListModals = (function () {
 			title: WebAppLocals.getMessage('tax'),
 			data: 'tax',
 			render: function (data, type, row, meta) {
-				var output = WebApp.formatMoney(row.tax) + '%';
+				var output = WebApp.formatMoney(row.tax, 2) + '%';
 				return output;
 			},
 		},
