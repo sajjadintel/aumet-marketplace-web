@@ -2115,7 +2115,7 @@ class ProductsController extends Controller
                 $mapRelationGroupIdName[$relationGroup['id']] = $relationGroup['name'];
             }
 
-            $sampleFilePath = 'app/files/samples/products-bonus-sample.xlsm';
+            $sampleFilePath = 'app/files/samples/products-bonus-sample.xlsx';
             $spreadsheet = Excel::loadFile($sampleFilePath);
 
             // Change active sheet to variables
@@ -2132,7 +2132,7 @@ class ProductsController extends Controller
             // Set validation and formula
             Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $productNum);
             Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $bonusTypeNum);
-            // Excel::setCellFormulaVLookup($sheet, 'E3', 2505, "'User Input'!E", 'Variables!$G$3:$H$' . $relationGroupNum);
+            Excel::setCellFormulaVLookup($sheet, 'E3', 2505, "'User Input'!E", 'Variables!$G$3:$H$' . $relationGroupNum);
             
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -2149,80 +2149,64 @@ class ProductsController extends Controller
             // Prepare data for initial bonuses
             $arrProductIdStr = implode(",", $arrProductId);
             $dbBonus = new BaseModel($this->db, "vwEntityProductSellBonusDetail");
-            $arrBonus = $dbBonus->findWhere("entityProductId in (" . $arrProductIdStr . ") AND isActive = 1");
+            $arrBonus = $dbBonus->findWhere("entityProductId IN (" . $arrProductIdStr . ") AND isActive = 1");
             
             $arrBonusId = [];
             foreach ($arrBonus as $bonus) {
                 array_push($arrBonusId, $bonus['id']);
             }
 
-            $arrBonusIdStr = implode(",", $arrBonusId);
-            $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
-            $arrBonusRelationGroup = $dbBonusRelationGroup->findWhere("bonusId in (" . $arrBonusIdStr . ")");
-
-            $mapBonusIdRelationGroupId = [];
             $mapBonusIdRelationGroupName = [];
-            foreach($arrBonusRelationGroup as $bonusRelationGroup) {
-                $bonusId = $bonusRelationGroup['bonusId'];
-                
-                $relationGroupId = $bonusRelationGroup['relationGroupId'];
-                if(array_key_exists($bonusId, $mapBonusIdRelationGroupId)) {
-                    $arrRelationGroupId = $mapBonusIdRelationGroupId[$bonusId];
-                    array_push($arrRelationGroupId, $relationGroupId);
-                    $mapBonusIdRelationGroupId[$bonusId] = $arrRelationGroupId;
-                } else {
-                    $mapBonusIdRelationGroupId[$bonusId] = [$relationGroupId];
-                }
-                
-                $relationGroupName = $mapRelationGroupIdName[$relationGroupId];
-                if(array_key_exists($bonusId, $mapBonusIdRelationGroupName)) {
-                    $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonusId]; 
-                    array_push($arrRelationGroupName, $relationGroupName);
-                    $mapBonusIdRelationGroupName[$bonusId] = $arrRelationGroupName; 
-                } else {
-                    $mapBonusIdRelationGroupName[$bonusId] = [$relationGroupName];
+            if(count($arrBonusId) > 0) {
+                $arrBonusIdStr = implode(",", $arrBonusId);
+                $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
+                $arrBonusRelationGroup = $dbBonusRelationGroup->findWhere("bonusId IN (" . $arrBonusIdStr . ")");
+
+                foreach($arrBonusRelationGroup as $bonusRelationGroup) {
+                    $bonusId = $bonusRelationGroup['bonusId'];
+                    
+                    $relationGroupId = $bonusRelationGroup['relationGroupId'];
+                    $relationGroupName = $mapRelationGroupIdName[$relationGroupId];
+                    if(array_key_exists($bonusId, $mapBonusIdRelationGroupName)) {
+                        $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonusId]; 
+                        array_push($arrRelationGroupName, $relationGroupName);
+                        $mapBonusIdRelationGroupName[$bonusId] = $arrRelationGroupName; 
+                    } else {
+                        $mapBonusIdRelationGroupName[$bonusId] = [$relationGroupName];
+                    }
                 }
             }
 
             $arrBonusExcel = [];
-            $arrBonusExcelDb = [];
 
             $fields = [
                 "productName_" . $this->objUser->language,
                 "bonusTypeName_" . $this->objUser->language,
                 "minOrder",
-                "bonus",
-                "arrRelationGroup"
+                "bonus"
             ];
             foreach ($arrBonus as $bonus) {
+                // Fill bonus fields
                 $bonusExcel = [];
                 foreach ($fields as $field) {
-                    if($field == "arrRelationGroup") {
-                        $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonus["id"]];
-                        if(!$arrRelationGroupName) {
-                            $arrRelationGroupName = [];
-                        }
-                        $cellValue = implode(", ", $arrRelationGroupName);
-                    } else {
-                        $cellValue = $bonus[$field];
-                    }
+                    $cellValue = $bonus[$field];
                     array_push($bonusExcel, $cellValue);
                 }
-                array_push($arrBonusExcel, $bonusExcel);
 
-                $arrRelationGroupId = $mapBonusIdRelationGroupId[$bonus["id"]];
-                if(!$arrRelationGroupId) {
-                    $arrRelationGroupId = [];
+                // Fill relation group field
+                $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonus["id"]];
+                if(!$arrRelationGroupName) {
+                    array_push($bonusExcel, "");
+                    array_push($arrBonusExcel, $bonusExcel);
+                } else {
+                    // Duplicate row and add each time a relation group
+                    foreach($arrRelationGroupName as $relationGroupName) {
+                        $bonusExcelCopy = array_merge([], $bonusExcel);
+                        array_push($bonusExcelCopy, $relationGroupName);
+                        array_push($arrBonusExcel, $bonusExcelCopy);
+                    }
                 }
-                $arrRelationGroupIdStr = implode(",", $arrRelationGroupId);
-                array_push($arrBonusExcelDb, [$arrRelationGroupIdStr]);
             }
-
-            // Change active sheet to database input
-            $sheet = $spreadsheet->setActiveSheetIndex(1);
-
-            // Fill relation group ids in database input sheet
-            $sheet->fromArray($arrBonusExcelDb, NULL, 'E3', true);
 
             // Change active sheet to user input
             $sheet = $spreadsheet->setActiveSheetIndex(0);
@@ -2231,7 +2215,7 @@ class ProductsController extends Controller
             $sheet->fromArray($arrBonusExcel, NULL, 'A3', true);
 
             // Create excel sheet
-            $productsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-" . $this->objUser->id . "-" . time() . ".xlsm";
+            $productsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-" . $this->objUser->id . "-" . time() . ".xlsx";
             Excel::saveSpreadsheetToPath($spreadsheet, $productsSheetUrl);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
@@ -2249,7 +2233,7 @@ class ProductsController extends Controller
 
         $targetFile = "files/uploads/reports/products-bonus/" . $this->objUser->id . "-" . $fileName . "-" . time() . ".$ext";
 
-        if ($ext == "xlsm") {
+        if ($ext == "xlsx") {
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
                 $dbStockUpdateUpload = new BaseModel($this->db, "stockUpdateUpload");
                 $dbStockUpdateUpload->userId = $this->objUser->id;
@@ -2305,8 +2289,10 @@ class ProductsController extends Controller
             $dbRelationGroup->name = "name_" . $this->objUser->language;
             $allRelationGroup = $dbRelationGroup->getWhere("entityId IN ($arrEntityId)", "name ASC");
 
+            $arrRelationGroupId = [];
             $mapRelationGroupIdName = [];
             foreach ($allRelationGroup as $relationGroup) {
+                array_push($arrRelationGroupId, $relationGroup['id']);
                 $mapRelationGroupIdName[$relationGroup['id']] = $relationGroup['name'];
             }
 
@@ -2318,7 +2304,7 @@ class ProductsController extends Controller
                 "E" => "arrRelationGroup"
             ];
 
-            $allBonusDb = [];
+            $arrBonus = [];
             $allErrors = [];
 
             $dbBonusUpdateUpload->recordsCount = 0;
@@ -2327,7 +2313,7 @@ class ProductsController extends Controller
             $secondRow = false;
             $finished = false;
             foreach ($sheet->getRowIterator() as $row) {
-                $bonusDb = [];
+                $bonus = [];
                 $bonusTypeId = null;
 
                 if ($firstRow) {
@@ -2353,7 +2339,7 @@ class ProductsController extends Controller
                             if (!in_array($cellValue, $arrProductId)) {
                                 $finished = true;
                             } else {
-                                array_push($bonusDb, $cellValue);
+                                array_push($bonus, $cellValue);
                             }
                             break;
                         case "B":
@@ -2362,13 +2348,13 @@ class ProductsController extends Controller
                             } else {
                                 $bonusTypeId = $cellValue;
                             }
-                            array_push($bonusDb, $cellValue);
+                            array_push($bonus, $cellValue);
                             break;
                         case "C":
                             if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
                                 array_push($errors, "Quantity must be a positive whole number");
                             }
-                            array_push($bonusDb, $cellValue);
+                            array_push($bonus, $cellValue);
                             break;
                         case "D":
                             if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
@@ -2378,10 +2364,15 @@ class ProductsController extends Controller
                                     array_push($errors, "Percentage Bonus must be between 0 and 100");
                                 }
                             }
-                            array_push($bonusDb, $cellValue);
+                            array_push($bonus, $cellValue);
                             break;
                         case "E":
-                            array_push($bonusDb, $cellValue);
+                            if($cellValue != "#N/A") {
+                                if (!in_array($cellValue, $arrRelationGroupId)) {
+                                    array_push($errors, "Customer Group invalid");
+                                }
+                            }
+                            array_push($bonus, $cellValue);
                             break;
                     }
                 }
@@ -2392,7 +2383,7 @@ class ProductsController extends Controller
 
                 $dbBonusUpdateUpload->recordsCount++;
 
-                array_push($allBonusDb, $bonusDb);
+                array_push($arrBonus, $bonus);
                 array_push($allErrors, $errors);
 
                 if (count($errors) > 0) {
@@ -2435,7 +2426,7 @@ class ProductsController extends Controller
                     $arrRelationGroup[] = array($relationGroup['name'], $relationGroup['id']);
                 }
 
-                $sampleFilePath = 'app/files/samples/products-bonus-sample.xlsm';
+                $sampleFilePath = 'app/files/samples/products-bonus-sample.xlsx';
                 $spreadsheet = Excel::loadFile($sampleFilePath);
 
                 // Change active sheet to variables
@@ -2452,7 +2443,7 @@ class ProductsController extends Controller
                 // Set validation and formula
                 Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $productNum);
                 Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $bonusTypeNum);
-                // Excel::setCellFormulaVLookup($sheet, 'E3', 2505, "'User Input'!E", 'Variables!$G$3:$H$' . $relationGroupNum);
+                Excel::setCellFormulaVLookup($sheet, 'E3', 2505, "'User Input'!E", 'Variables!$G$3:$H$' . $relationGroupNum);
                 
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -2471,61 +2462,43 @@ class ProductsController extends Controller
 
                 // Prepare data for returned bonuses
                 $arrBonusExcel = [];
-                $arrBonusExcelDb = [];
 
                 $fields = [
                     "entityProductId",
                     "bonusTypeId",
                     "minOrder",
                     "bonus",
-                    "arrRelationGroupIdStr",
+                    "relationGroupId",
                     "error"
                 ];
                 $i = 0;
-                foreach ($allBonusDb as $bonusDb) {
+                foreach ($arrBonus as $bonus) {
                     $bonusExcel = [];
-                    $arrRelationGroupIdStr = "";
                     
                     $j = 0;
                     foreach ($fields as $field) {
                         switch($field) {
                             case "entityProductId":
-                                $cellValue = $mapProductIdName[$bonusDb[$j]];
+                                $cellValue = $mapProductIdName[$bonus[$j]];
                                 break;
                             case "bonusTypeId":
-                                $cellValue = $mapBonusTypeIdName[$bonusDb[$j]];
+                                $cellValue = $mapBonusTypeIdName[$bonus[$j]];
                                 break;
-                            case "arrRelationGroupIdStr":
-                                $arrRelationGroupIdStr = $bonusDb[$j];
-                                $arrRelationGroupId = explode(", ", $arrRelationGroupIdStr);
-                                
-                                $arrRelationGroupName = [];
-                                foreach($arrRelationGroupId as $relationGroupId) {
-                                    array_push($arrRelationGroupName, $mapRelationGroupIdName[$relationGroupId]);
-                                }
-    
-                                $cellValue = implode(", ", $arrRelationGroupName);
+                            case "relationGroupId":
+                                $cellValue = $mapRelationGroupIdName[$bonus[$j]];
                                 break;
                             case "error":
                                 $cellValue = implode(", ", $allErrors[$i]);
                                 break;
                             default:
-                                $cellValue = $bonusDb[$j];
+                                $cellValue = $bonus[$j];
                         }
                         array_push($bonusExcel, $cellValue);
                         $j++;
                     }
                     array_push($arrBonusExcel, $bonusExcel);
-
-                    array_push($arrBonusExcelDb, [$arrRelationGroupIdStr]);
                     $i++;
                 }
-
-                // Change active sheet to database input
-                $sheet = $spreadsheet->setActiveSheetIndex(1);
-
-                // Fill relation group ids in database input sheet
-                $sheet->fromArray($arrBonusExcelDb, NULL, 'E3', true);
 
                 // Change active sheet to user input
                 $sheet = $spreadsheet->setActiveSheetIndex(0);
@@ -2534,32 +2507,82 @@ class ProductsController extends Controller
                 $sheet->fromArray($arrBonusExcel, NULL, 'A3', true);
 
                 // Create excel sheet
-                $failedProductsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-" . $this->objUser->id . "-" . time() . ".xlsm";
+                $failedProductsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-" . $this->objUser->id . "-" . time() . ".xlsx";
                 Excel::saveSpreadsheetToPath($spreadsheet, $failedProductsSheetUrl);
             } else {
                 $arrProductIdStr = implode(",", $arrProductId);
                 $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
                 $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
-                $dbBonus->getWhere("entityProductId in (" . $arrProductIdStr . ") AND isActive = 1");
+                $dbBonus->getWhere("entityProductId IN (" . $arrProductIdStr . ") AND isActive = 1");
                 while(!$dbBonus->dry()) {
                     $dbBonus->isActive = 0;
                     $dbBonus->update();
                     $dbBonus->next();
                 }
 
-                foreach($allBonusDb as $bonusDb) {
+                $arrBonusDb = [];
+                $arrMergedIndex = [];
+                for($i = 0; $i < count($arrBonus); $i++) {
+                    if(in_array($i, $arrMergedIndex)) {
+                        continue;
+                    }
+                    $bonus = $arrBonus[$i];
+
+                    $entityProductId = $bonus[0];
+                    $bonusTypeId = $bonus[1];
+                    $minOrder = $bonus[2];
+                    $bonusBonus = $bonus[3];
+                    $relationGroupId = $bonus[4];
+                    
+                    $arrRelationGroupId = [];
+                    if($relationGroupId != "#N/A") {
+                        array_push($arrRelationGroupId, $relationGroupId);    
+                        for($j = 0; $j < count($arrBonus); $j++) {
+                            if(in_array($j, $arrMergedIndex)) {
+                                continue;
+                            }
+                            $mergeBonus = $arrBonus[$j];
+                            $mergeEntityProductId = $mergeBonus[0];
+                            $mergeBonusTypeId = $mergeBonus[1];
+                            $mergeMinOrder = $mergeBonus[2];
+                            $mergeBonusBonus = $mergeBonus[3];
+                            $mergeRelationGroupId = $mergeBonus[4];
+    
+                            if($entityProductId == $mergeEntityProductId
+                                && $bonusTypeId == $mergeBonusTypeId
+                                && $minOrder == $mergeMinOrder
+                                && $bonusBonus == $mergeBonusBonus
+                                && $mergeRelationGroupId != "#N/A") {
+                                array_push($arrMergedIndex, $j);
+                                if(!in_array($mergeRelationGroupId, $arrRelationGroupId)) {
+                                    array_push($arrRelationGroupId, $mergeRelationGroupId);
+                                }
+                            }
+                        }
+                    }
+
+                    $bonusDb = [
+                        $entityProductId,
+                        $bonusTypeId,
+                        $minOrder,
+                        $bonusBonus,
+                        $arrRelationGroupId
+                    ];
+                    array_push($arrBonusDb, $bonusDb);
+                }
+
+                foreach($arrBonusDb as $bonusDb) {
                     $dbBonus->entityProductId = $bonusDb[0];
                     $dbBonus->bonusTypeId = $bonusDb[1];
                     $dbBonus->minOrder = $bonusDb[2];
                     $dbBonus->bonus = $bonusDb[3];
                     $dbBonus->addReturnID();
 
-                    $arrRelationGroupStr = $bonusDb[4];
-                    if(strlen($arrRelationGroupStr) > 0) {
-                        $arrRelationGroup = explode(", ", $arrRelationGroupStr);
-                        foreach($arrRelationGroup as $relationGroup) {
+                    $arrRelationGroupId = $bonusDb[4];
+                    if(count($arrRelationGroupId) > 0) {
+                        foreach($arrRelationGroupId as $relationGroupId) {
                             $dbBonusRelationGroup->bonusId = $dbBonus['id'];
-                            $dbBonusRelationGroup->relationGroupId = $relationGroup;
+                            $dbBonusRelationGroup->relationGroupId = $relationGroupId;
                             $dbBonusRelationGroup->add();
                         }
                     }
@@ -2568,9 +2591,9 @@ class ProductsController extends Controller
 
             // Update logs
             if ($failedSheet) {
-                $dbBonusUpdateUpload->failedLog = json_encode($allBonusDb);
+                $dbBonusUpdateUpload->failedLog = json_encode($arrBonus);
             } else {
-                $dbBonusUpdateUpload->successLog = json_encode($allBonusDb);
+                $dbBonusUpdateUpload->successLog = json_encode($arrBonus);
             }
 
             $this->f3->set("objBonusUpdateUpload", $dbBonusUpdateUpload);

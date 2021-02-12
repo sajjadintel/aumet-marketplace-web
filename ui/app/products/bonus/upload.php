@@ -48,7 +48,7 @@ function compress_htmlcode($codedata)
                 <div class="dropzone dropzone-default dropzone-success" id="dropZoneProductsBonusUpload">
                     <div class="dropzone-msg dz-message needsclick">
                         <h3 class="dropzone-msg-title">Drop files here or click to upload.</h3>
-                        <span class="dropzone-msg-desc">Only .xlsm files are allowed for upload</span>
+                        <span class="dropzone-msg-desc">Only .xlsx files are allowed for upload</span>
                     </div>
                 </div>
             </div>
