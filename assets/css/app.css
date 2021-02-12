@@ -636,6 +636,10 @@ input[type='number'] {
 	padding-bottom: 5px;
 }
 
+/* fix bonus popup positioning */
+.table-responsive{
+	overflow: visible;
+}
 /* ==== Cart CSS === */
 
 /* ==== Main CSS === */
