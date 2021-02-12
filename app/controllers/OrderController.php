@@ -821,7 +821,7 @@ class OrderController extends Controller
             $mapStatusIdName[$orderStatus->id] = $orderStatus->name;
         }
 
-        $orderStatusUpdateTitle = "Order with serial " . $dbOrder->serial . " status has changed to " . $mapStatusIdName[strval($statusId)];
+        $orderStatusUpdateTitle = "Order # " . $dbOrder->id . " status has changed to " . $mapStatusIdName[strval($statusId)];
         $this->f3->set('orderStatusUpdateTitle', $orderStatusUpdateTitle);
 
         $dbCurrency = new BaseModel($this->db, "currency");

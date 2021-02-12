@@ -23,7 +23,7 @@ class SearchController extends Controller
     function handleSearchBar()
     {
         $where = "1=1 ";
-        $term = $_GET['query'];
+        $term = addslashes($_GET['query']);
         if (isset($term) && $term != "" && $term != null) {
             $where .= "AND ( scientificName LIKE '%{$term}%'";
             $where .= " OR entityName_ar LIKE '%{$term}%'";
@@ -80,7 +80,7 @@ class SearchController extends Controller
         if ($additionalQuery != null) {
             $where = $additionalQuery;
         }
-        $term = trim($_GET['term']);
+        $term = addslashes(trim($_GET['term']));
         if (isset($term) && $term != "" && $term != null) {
             if ($additionalQuery != null) {
                 $where .= " AND (";
@@ -143,7 +143,7 @@ class SearchController extends Controller
             $nameAsValue = isset($_GET['nameAsValue']);
 
             $where = "1=1";
-            $term = trim($_GET['term']);
+            $term = addslashes(trim($_GET['term']));
             if (isset($term) && $term != "" && $term != null) {
                 $where .= " AND productName_" . $this->objUser->language . " like '%$term%'";
             }
@@ -247,7 +247,7 @@ class SearchController extends Controller
     {
         if ($this->f3->ajax()) {
             $where = "";
-            $term = trim($_GET['term']);
+            $term = addslashes(trim($_GET['term']));
             if (isset($term) && $term != "" && $term != null) {
                 $where = "name_" . $this->objUser->language . " like '%$term%' AND parent_id IS NULL";
             } else {
@@ -297,7 +297,7 @@ class SearchController extends Controller
     {
         if ($this->f3->ajax()) {
             $where = "";
-            $term = trim($_GET['term']);
+            $term = addslashes(trim($_GET['term']));
             if (isset($term) && $term != "" && $term != null) {
                 $where = "name_" . $this->objUser->language . " like '%$term%'";
             }
@@ -366,6 +366,7 @@ class SearchController extends Controller
             if (isset($productName) && is_array($productName)) {
                 $query .= " AND (";
                 foreach ($productName as $key => $value) {
+                    $value = addslashes($value);
                     if ($key !== 0) {
                         $query .= " OR ";
                     }
@@ -378,6 +379,7 @@ class SearchController extends Controller
             if (isset($scientificName) && is_array($scientificName)) {
                 $query .= " AND (";
                 foreach ($scientificName as $key => $value) {
+                    $value = addslashes($value);
                     if ($key !== 0) {
                         $query .= " OR ";
                     }
@@ -421,7 +423,7 @@ class SearchController extends Controller
             $query .= " AND entityId IN ($arrEntityId)";
         }
 
-        $queryParam = $datatable->query['query'];
+        $queryParam = addslashes($datatable->query['query']);
         if ($queryParam != null && $queryParam != 'null' && trim($queryParam) != '') {
             $queryParam = trim($queryParam);
             $query .= " AND ( scientificName LIKE '%{$queryParam}%'";
