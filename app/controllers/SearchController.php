@@ -1,6 +1,7 @@
 <?php
 
-class SearchController extends Controller {
+class SearchController extends Controller
+{
     function getSearchProducts()
     {
         if (!$this->f3->ajax()) {
@@ -437,7 +438,7 @@ class SearchController extends Controller {
 
         $allProductId = [];
         foreach ($data as $product) {
-            array_push($allProductId, $product['id']);
+            array_push($allProductId, $product['productId']);
         }
         $allProductId = implode(",", $allProductId);
 
@@ -481,7 +482,7 @@ class SearchController extends Controller {
         // Get all product ids
         $arrProductId = [];
         foreach ($data as $productItem) {
-            array_push($arrProductId, $productItem['id']);
+            array_push($arrProductId, $productItem['productId']);
         }
 
         // Get all related bonuses
@@ -571,12 +572,12 @@ class SearchController extends Controller {
                     // Check if bonus is possible
                     $productDetail = $data[$i];
                     $availableQuantity = min($productDetail['stock'], $productDetail['maximumOrderQuantity']);
-            
+
                     if (!$productDetail['maximumOrderQuantity'])
                         $availableQuantity = $productDetail['stock'];
                     if (!$productDetail['stock'])
                         $availableQuantity = 0;
-                        
+
                     $totalOrder = 0;
                     if ($bonusTypeId == Constants::BONUS_TYPE_FIXED || $bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
                         $totalOrder = $bonusMinOrder + $bonusBonus;
