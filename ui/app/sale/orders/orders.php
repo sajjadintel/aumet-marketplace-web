@@ -349,7 +349,7 @@ function compress_htmlcode($codedata)
                 render: function(data, type, row, meta) {
                     output = row.quantity;
                     if (row.freeQuantity > 0);
-                    output += ' (' + row.freeQuantity + ')';
+                    output += ' (+' + row.freeQuantity + ')';
                     return output;
                 },
             },
