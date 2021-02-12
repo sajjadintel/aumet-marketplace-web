@@ -730,6 +730,7 @@ class CartController extends Controller
                         $emailHandler->resetTos();
                         $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                         $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                        $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad");
                     }
                 }
 
@@ -790,6 +791,7 @@ class CartController extends Controller
                     $emailHandler->resetTos();
                     $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                     $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                    $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad");
                 }
             }
             $emailHandler->sendEmail(Constants::EMAIL_NEW_ORDER, $subject, $htmlContent);

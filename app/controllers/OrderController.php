@@ -753,7 +753,7 @@ class OrderController extends Controller
                 $averageQuantity = $dbProduct->totalOrderQuantity / $dbProduct->totalOrderCount;
                 $lowStockReasons = [];
                 if ($dbProduct->stock <= 5 * $averageQuantity)
-                    $lowStockReasons[] = 'Average quantity per order is ' . Helper::formatMoney($averageQuantity, 1);
+                    $lowStockReasons[] = 'Average quantity per order is ' . ceil($averageQuantity);
 
                 foreach ($lowStockByBonus as $key => $lowStockByBonusItems) {
                     $bonusName = '';
