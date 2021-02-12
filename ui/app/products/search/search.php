@@ -266,7 +266,7 @@ function compress_htmlcode($codedata)
                         output += vMinusBtn;
 
 
-                        let rowClone = JSON.parse(JSON.stringify(row));
+                        let rowClone = JSON.parse(JSON.stringify(row).replace(/[\/\(\)\']/g, "&apos;"));
                         rowClone.arrBonus = null;
                         rowClone.activeBonus = null;
                         let vQuantity =

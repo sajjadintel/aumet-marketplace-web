@@ -288,6 +288,7 @@ return array(
     'vModule_thankyou_viewOrder' => 'View my orders', // TODO: Translate
 
     'vModule_bonus_bonusTextTemplate' => 'كل %q: %b',
+    'vModule_bonus_title' => 'تحديث المكافأة',
 
     'vModule_order_dateFrom' => 'أدخل تاريخ بدء الطلبات',
     'vModule_order_dateTo' => 'أدخل تاريخ انتهاء الطلبات',
