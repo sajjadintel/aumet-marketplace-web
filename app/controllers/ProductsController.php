@@ -34,7 +34,7 @@ class ProductsController extends Controller
             $dbCartDetail->getWhere("entityProductId=$id and userId=$userId");
 
             $availableQuantity = min($dbEntityProduct['stock'], $dbEntityProduct['maximumOrderQuantity']);
-            
+
             if (!$dbEntityProduct['maximumOrderQuantity'])
                 $availableQuantity = $dbEntityProduct['stock'];
             if (!$dbEntityProduct['stock'])
@@ -50,7 +50,7 @@ class ProductsController extends Controller
                 echo $this->webResponse->jsonResponse();
                 return;
             }
-    
+
             // Get all related bonuses
             $mapBonusIdRelationGroup = [];
             $mapSellerIdRelationGroupId = [];
@@ -85,7 +85,7 @@ class ProductsController extends Controller
             foreach ($arrEntityRelation as $entityRelation) {
                 $mapSellerIdRelationGroupId[$entityRelation['entitySellerId']] = $entityRelation['relationGroupId'];
             }
-    
+
             $arrProductBonus = [];
             $activeBonus = new stdClass();
             $activeBonus->totalBonus = 0;
@@ -179,15 +179,17 @@ class ProductsController extends Controller
             $dbEntityProduct['activeBonus'] = $activeBonus;
 
             $this->f3->set('objEntityProduct', $dbEntityProduct);
+            $arrRelatedEntityProduct = [];
+            if (strlen($dbEntityProduct->scientificNameId) > 0) {
+                $dbEntityProductRelated = new BaseModel($this->db, "vwEntityProductSell");
+                $dbEntityProductRelated->productName = "productName_" . $this->objUser->language;
+                $dbEntityProductRelated->entityName = "entityName_" . $this->objUser->language;
+                $where = "stockStatusId=1 AND scientificNameId =$dbEntityProduct->scientificNameId AND id != $dbEntityProduct->id";
+                if (Helper::isDistributor($roleId))
+                    $where .= " AND entityId=$dbEntityProduct->entityId";
 
-            $dbEntityProductRelated = new BaseModel($this->db, "vwEntityProductSell");
-            $dbEntityProductRelated->productName = "productName_" . $this->objUser->language;
-            $dbEntityProductRelated->entityName = "entityName_" . $this->objUser->language;
-            $where = "stockStatusId=1 AND scientificNameId =$dbEntityProduct->scientificNameId AND id != $dbEntityProduct->id";
-            if (Helper::isDistributor($roleId))
-                $where .= " AND entityId=$dbEntityProduct->entityId";
-
-            $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere($where, 'id', 12);
+                $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere($where, 'id', 12);
+            }
             $this->f3->set('arrRelatedEntityProduct', $arrRelatedEntityProduct);
 
 
@@ -330,7 +332,7 @@ class ProductsController extends Controller
 
         $allProductId = [];
         foreach ($data as $product) {
-            array_push($allProductId, $product['id']);
+            array_push($allProductId, $product['productId']);
         }
         $allProductId = implode(",", $allProductId);
 
@@ -374,7 +376,7 @@ class ProductsController extends Controller
         // Get all product ids
         $arrProductId = [];
         foreach ($data as $productItem) {
-            array_push($arrProductId, $productItem['id']);
+            array_push($arrProductId, $productItem['productId']);
         }
 
         // Get all related bonuses
@@ -464,7 +466,7 @@ class ProductsController extends Controller
                     // Check if bonus is possible
                     $productDetail = $data[$i];
                     $availableQuantity = min($productDetail['stock'], $productDetail['maximumOrderQuantity']);
-            
+
                     if (!$productDetail['maximumOrderQuantity'])
                         $availableQuantity = $productDetail['stock'];
                     if (!$productDetail['stock'])
@@ -960,11 +962,11 @@ class ProductsController extends Controller
                 if ($description_ar) {
                     $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
                 }
-                
+
                 if ($description_en) {
                     $this->checkLength($description_en, 'descriptionEn', 5000, 4);
                 }
-                
+
                 // if ($description_fr) {
                 //     $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
                 // }
@@ -989,7 +991,7 @@ class ProductsController extends Controller
                     $this->checkLength($strength, 'strength', 200, 4);
                 }
 
-                if($scientificNameId) {
+                if ($scientificNameId) {
                     $dbProduct->scientificNameId = $scientificNameId;
                 } else {
                     $dbProduct->scientificNameId = null;
@@ -1052,8 +1054,8 @@ class ProductsController extends Controller
                 $dbEntityProduct->unitPrice = $unitPrice;
                 $dbEntityProduct->vat = $vat;
                 $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
-                
-                if(strlen($maximumOrderQuantity) > 0) {
+
+                if (strlen($maximumOrderQuantity) > 0) {
                     $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
                 } else {
                     $dbEntityProduct->maximumOrderQuantity = null;
@@ -1463,15 +1465,15 @@ class ProductsController extends Controller
             if ($description_ar) {
                 $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
             }
-            
+
             if ($description_en) {
                 $this->checkLength($description_en, 'descriptionEn', 5000, 4);
             }
-            
+
             // if ($description_fr) {
             //     $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
             // }
-            
+
             if ($subtitle_ar) {
                 $this->checkLength($subtitle_ar, 'subtitleAr', 200, 4);
             }
@@ -1494,7 +1496,7 @@ class ProductsController extends Controller
 
 
             $dbProduct = new BaseModel($this->db, "product");
-            if($scientificNameId) {
+            if ($scientificNameId) {
                 $dbProduct->scientificNameId = $scientificNameId;
             } else {
                 $dbProduct->scientificNameId = null;
@@ -1556,8 +1558,8 @@ class ProductsController extends Controller
             $dbEntityProduct->stockStatusId = 1;
             $dbEntityProduct->bonusTypeId = 1;
             $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
-            
-            if(strlen($maximumOrderQuantity) > 0) {
+
+            if (strlen($maximumOrderQuantity) > 0) {
                 $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
             } else {
                 $dbEntityProduct->maximumOrderQuantity = null;
@@ -2084,7 +2086,7 @@ class ProductsController extends Controller
             $dbProduct = new BaseModel($this->db, "vwEntityProductSellSummary");
             $dbProduct->name = "productName_" . $this->objUser->language;
             $allProduct = $dbProduct->findWhere("entityId IN ($arrEntityId)");
-            
+
             $arrProductId = [];
             $productNum = 2;
             foreach ($allProduct as $product) {
@@ -2262,7 +2264,7 @@ class ProductsController extends Controller
 
             // Change active sheet to database input
             $sheet = $spreadsheet->setActiveSheetIndex(1);
-            
+
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
 
             $dbProduct = new BaseModel($this->db, "vwEntityProductSellSummary");
@@ -2360,7 +2362,7 @@ class ProductsController extends Controller
                             if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
                                 array_push($errors, "Bonus must be a positive whole number");
                             } else {
-                                if($cellValue > 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                                if ($cellValue > 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
                                     array_push($errors, "Percentage Bonus must be between 0 and 100");
                                 }
                             }
@@ -2407,7 +2409,7 @@ class ProductsController extends Controller
                 $arrRelationGroup = [
                     ['Name', 'Value']
                 ];
-                
+
                 $productNum = 2;
                 foreach ($allProduct as $product) {
                     $productNum++;
@@ -2477,7 +2479,7 @@ class ProductsController extends Controller
                     
                     $j = 0;
                     foreach ($fields as $field) {
-                        switch($field) {
+                        switch ($field) {
                             case "entityProductId":
                                 $cellValue = $mapProductIdName[$bonus[$j]];
                                 break;
@@ -2984,7 +2986,7 @@ class ProductsController extends Controller
                             }
                             break;
                         case "L":
-                            if(strlen($cellValue) > 0) {
+                            if (strlen($cellValue) > 0) {
                                 if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
                                     array_push($errors, "Maximum Order Quantity must be a positive whole number");
                                 } else {

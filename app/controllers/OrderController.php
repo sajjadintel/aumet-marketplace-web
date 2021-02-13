@@ -284,12 +284,12 @@ class OrderController extends Controller
 
             $startDate = $datatable->query['startDate'];
             if (isset($startDate) && $startDate != "") {
-                $query .= " AND insertDateTime >= '$startDate'";
+                $query .= " AND insertDateTime >= '$startDate 00:00:00'";
             }
 
             $endDate = $datatable->query['endDate'];
             if (isset($endDate) && $endDate != "") {
-                $query .= " AND insertDateTime <= '$endDate'";
+                $query .= " AND insertDateTime <= '$endDate 23:59:59'";
             }
         }
 
@@ -385,12 +385,12 @@ class OrderController extends Controller
 
             $startDate = $datatable->query['startDate'];
             if (isset($startDate) && $startDate != "") {
-                $query .= " AND insertDateTime >= '$startDate'";
+                $query .= " AND insertDateTime >= '$startDate 00:00:00'";
             }
 
             $endDate = $datatable->query['endDate'];
             if (isset($endDate) && $endDate != "") {
-                $query .= " AND insertDateTime <= '$endDate'";
+                $query .= " AND insertDateTime <= '$endDate 23:59:59'";
             }
         }
 
@@ -698,9 +698,9 @@ class OrderController extends Controller
             while (!$dbOrderItems->dry()) {
                 $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
 
-                $dbProduct->stock -= $dbOrderItems->quantity;
+                $dbProduct->stock -= $dbOrderItems->shippedQuantity;
                 $dbProduct->totalOrderCount += 1;
-                $dbProduct->totalOrderQuantity += $dbOrderItems->quantity;
+                $dbProduct->totalOrderQuantity += $dbOrderItems->shippedQuantity;
                 $dbProduct->update();
 
 
@@ -821,7 +821,7 @@ class OrderController extends Controller
             $mapStatusIdName[$orderStatus->id] = $orderStatus->name;
         }
 
-        $orderStatusUpdateTitle = "Order with serial " . $dbOrder->serial . " status has changed to " . $mapStatusIdName[strval($statusId)];
+        $orderStatusUpdateTitle = "Order # " . $dbOrder->id . " status has changed to " . $mapStatusIdName[strval($statusId)];
         $this->f3->set('orderStatusUpdateTitle', $orderStatusUpdateTitle);
 
         $dbCurrency = new BaseModel($this->db, "currency");
@@ -984,14 +984,14 @@ class OrderController extends Controller
 
         $pdf->Ln(20);
 
-        if ($item['tax'] != 0) {
-            $pdf->Cell(0, 0, "Subtotal: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal']), 0, 0, 'R');
+        if ($arrOrder['subtotal'] != $arrOrder['total']) {
+            $pdf->Cell(0, 0, "Subtotal: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal'], 2), 0, 0, 'R');
             $pdf->Ln(10);
-            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal'] * $item['tax'] / 100.0, 2), 0, 0, 'R');
+            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($arrOrder['total'] - $arrOrder['subtotal'], 2), 0, 0, 'R');
         }
 
         $pdf->Ln(10);
-        $pdf->Cell(0, 0, "Total: {$item['currency']} " . Helper::formatMoney($arrOrder['total']), 0, 0, 'R');
+        $pdf->Cell(0, 0, "Total: {$item['currency']} " . Helper::formatMoney($arrOrder['total'], 2), 0, 0, 'R');
 
         $pdf->Output();
     }
@@ -1057,14 +1057,14 @@ class OrderController extends Controller
 
         $pdf->Ln(20);
 
-        if ($item['tax'] != 0) {
-            $pdf->Cell(0, 0, "Subtotal: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal']), 0, 0, 'R');
+        if ($arrOrder['subtotal'] != $arrOrder['total']) {
+            $pdf->Cell(0, 0, "Subtotal: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal'], 2), 0, 0, 'R');
             $pdf->Ln(10);
-            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal'] * $item['tax'] / 100.0, 2), 0, 0, 'R');
+            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($arrOrder['total'] - $arrOrder['subtotal'], 2), 0, 0, 'R');
         }
 
         $pdf->Ln(10);
-        $pdf->Cell(0, 0, "Total: {$item['currency']} " . Helper::formatMoney($arrOrder['total']), 0, 0, 'R');
+        $pdf->Cell(0, 0, "Total: {$item['currency']} " . Helper::formatMoney($arrOrder['total'], 2), 0, 0, 'R');
 
         $pdf->Output();
     }

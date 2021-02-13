@@ -160,7 +160,7 @@ var PharmacyOrdersDataTable = (function () {
 					width: 50,
 					// callback function support for column rendering
 					template: function (row) {
-						var output = WebApp.formatMoney(row.tax) + '%';
+						var output = WebApp.formatMoney(row.tax, 2) + '%';
 						return output;
 					},
 				},
@@ -431,7 +431,7 @@ var PharmacyOrdersDataTable = (function () {
 				template: function (row) {
 					var output = '';
 
-					var output = WebApp.formatMoney(row.tax) + '%';
+					var output = WebApp.formatMoney(row.tax, 2) + '%';
 					return output;
 				},
 			},
