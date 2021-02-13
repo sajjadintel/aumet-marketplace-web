@@ -332,7 +332,7 @@ class ProductsController extends Controller
 
         $allProductId = [];
         foreach ($data as $product) {
-            array_push($allProductId, $product['id']);
+            array_push($allProductId, $product['productId']);
         }
         $allProductId = implode(",", $allProductId);
 
@@ -376,7 +376,7 @@ class ProductsController extends Controller
         // Get all product ids
         $arrProductId = [];
         foreach ($data as $productItem) {
-            array_push($arrProductId, $productItem['id']);
+            array_push($arrProductId, $productItem['productId']);
         }
 
         // Get all related bonuses
