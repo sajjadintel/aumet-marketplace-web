@@ -284,12 +284,12 @@ class OrderController extends Controller
 
             $startDate = $datatable->query['startDate'];
             if (isset($startDate) && $startDate != "") {
-                $query .= " AND insertDateTime >= '$startDate'";
+                $query .= " AND insertDateTime >= '$startDate 00:00:00'";
             }
 
             $endDate = $datatable->query['endDate'];
             if (isset($endDate) && $endDate != "") {
-                $query .= " AND insertDateTime <= '$endDate'";
+                $query .= " AND insertDateTime <= '$endDate 23:59:59'";
             }
         }
 
@@ -385,12 +385,12 @@ class OrderController extends Controller
 
             $startDate = $datatable->query['startDate'];
             if (isset($startDate) && $startDate != "") {
-                $query .= " AND insertDateTime >= '$startDate'";
+                $query .= " AND insertDateTime >= '$startDate 00:00:00'";
             }
 
             $endDate = $datatable->query['endDate'];
             if (isset($endDate) && $endDate != "") {
-                $query .= " AND insertDateTime <= '$endDate'";
+                $query .= " AND insertDateTime <= '$endDate 23:59:59'";
             }
         }
 
