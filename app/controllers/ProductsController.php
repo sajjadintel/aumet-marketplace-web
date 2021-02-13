@@ -34,7 +34,7 @@ class ProductsController extends Controller
             $dbCartDetail->getWhere("entityProductId=$id and userId=$userId");
 
             $availableQuantity = min($dbEntityProduct['stock'], $dbEntityProduct['maximumOrderQuantity']);
-            
+
             if (!$dbEntityProduct['maximumOrderQuantity'])
                 $availableQuantity = $dbEntityProduct['stock'];
             if (!$dbEntityProduct['stock'])
@@ -50,7 +50,7 @@ class ProductsController extends Controller
                 echo $this->webResponse->jsonResponse();
                 return;
             }
-    
+
             // Get all related bonuses
             $mapBonusIdRelationGroup = [];
             $mapSellerIdRelationGroupId = [];
@@ -85,7 +85,7 @@ class ProductsController extends Controller
             foreach ($arrEntityRelation as $entityRelation) {
                 $mapSellerIdRelationGroupId[$entityRelation['entitySellerId']] = $entityRelation['relationGroupId'];
             }
-    
+
             $arrProductBonus = [];
             $activeBonus = new stdClass();
             $activeBonus->totalBonus = 0;
@@ -179,15 +179,17 @@ class ProductsController extends Controller
             $dbEntityProduct['activeBonus'] = $activeBonus;
 
             $this->f3->set('objEntityProduct', $dbEntityProduct);
+            $arrRelatedEntityProduct = [];
+            if (strlen($dbEntityProduct->scientificNameId) > 0) {
+                $dbEntityProductRelated = new BaseModel($this->db, "vwEntityProductSell");
+                $dbEntityProductRelated->productName = "productName_" . $this->objUser->language;
+                $dbEntityProductRelated->entityName = "entityName_" . $this->objUser->language;
+                $where = "stockStatusId=1 AND scientificNameId =$dbEntityProduct->scientificNameId AND id != $dbEntityProduct->id";
+                if (Helper::isDistributor($roleId))
+                    $where .= " AND entityId=$dbEntityProduct->entityId";
 
-            $dbEntityProductRelated = new BaseModel($this->db, "vwEntityProductSell");
-            $dbEntityProductRelated->productName = "productName_" . $this->objUser->language;
-            $dbEntityProductRelated->entityName = "entityName_" . $this->objUser->language;
-            $where = "stockStatusId=1 AND scientificNameId =$dbEntityProduct->scientificNameId AND id != $dbEntityProduct->id";
-            if (Helper::isDistributor($roleId))
-                $where .= " AND entityId=$dbEntityProduct->entityId";
-
-            $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere($where, 'id', 12);
+                $arrRelatedEntityProduct = $dbEntityProductRelated->getWhere($where, 'id', 12);
+            }
             $this->f3->set('arrRelatedEntityProduct', $arrRelatedEntityProduct);
 
 
@@ -464,7 +466,7 @@ class ProductsController extends Controller
                     // Check if bonus is possible
                     $productDetail = $data[$i];
                     $availableQuantity = min($productDetail['stock'], $productDetail['maximumOrderQuantity']);
-            
+
                     if (!$productDetail['maximumOrderQuantity'])
                         $availableQuantity = $productDetail['stock'];
                     if (!$productDetail['stock'])
@@ -960,11 +962,11 @@ class ProductsController extends Controller
                 if ($description_ar) {
                     $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
                 }
-                
+
                 if ($description_en) {
                     $this->checkLength($description_en, 'descriptionEn', 5000, 4);
                 }
-                
+
                 // if ($description_fr) {
                 //     $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
                 // }
@@ -989,7 +991,7 @@ class ProductsController extends Controller
                     $this->checkLength($strength, 'strength', 200, 4);
                 }
 
-                if($scientificNameId) {
+                if ($scientificNameId) {
                     $dbProduct->scientificNameId = $scientificNameId;
                 } else {
                     $dbProduct->scientificNameId = null;
@@ -1052,8 +1054,8 @@ class ProductsController extends Controller
                 $dbEntityProduct->unitPrice = $unitPrice;
                 $dbEntityProduct->vat = $vat;
                 $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
-                
-                if(strlen($maximumOrderQuantity) > 0) {
+
+                if (strlen($maximumOrderQuantity) > 0) {
                     $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
                 } else {
                     $dbEntityProduct->maximumOrderQuantity = null;
@@ -1463,15 +1465,15 @@ class ProductsController extends Controller
             if ($description_ar) {
                 $this->checkLength($description_ar, 'descriptionAr', 5000, 4);
             }
-            
+
             if ($description_en) {
                 $this->checkLength($description_en, 'descriptionEn', 5000, 4);
             }
-            
+
             // if ($description_fr) {
             //     $this->checkLength($description_fr, 'descriptionFr', 5000, 4);
             // }
-            
+
             if ($subtitle_ar) {
                 $this->checkLength($subtitle_ar, 'subtitleAr', 200, 4);
             }
@@ -1494,7 +1496,7 @@ class ProductsController extends Controller
 
 
             $dbProduct = new BaseModel($this->db, "product");
-            if($scientificNameId) {
+            if ($scientificNameId) {
                 $dbProduct->scientificNameId = $scientificNameId;
             } else {
                 $dbProduct->scientificNameId = null;
@@ -1556,8 +1558,8 @@ class ProductsController extends Controller
             $dbEntityProduct->stockStatusId = 1;
             $dbEntityProduct->bonusTypeId = 1;
             $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
-            
-            if(strlen($maximumOrderQuantity) > 0) {
+
+            if (strlen($maximumOrderQuantity) > 0) {
                 $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
             } else {
                 $dbEntityProduct->maximumOrderQuantity = null;
@@ -2084,7 +2086,7 @@ class ProductsController extends Controller
             $dbProduct = new BaseModel($this->db, "vwEntityProductSellSummary");
             $dbProduct->name = "productName_" . $this->objUser->language;
             $allProduct = $dbProduct->findWhere("entityId IN ($arrEntityId)");
-            
+
             $arrProductId = [];
             $productNum = 2;
             foreach ($allProduct as $product) {
@@ -2133,7 +2135,7 @@ class ProductsController extends Controller
             Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $productNum);
             Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $bonusTypeNum);
             // Excel::setCellFormulaVLookup($sheet, 'E3', 2505, "'User Input'!E", 'Variables!$G$3:$H$' . $relationGroupNum);
-            
+
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
             Excel::hideSheetByName($spreadsheet, $sheetnameVariables);
@@ -2150,7 +2152,7 @@ class ProductsController extends Controller
             $arrProductIdStr = implode(",", $arrProductId);
             $dbBonus = new BaseModel($this->db, "vwEntityProductSellBonusDetail");
             $arrBonus = $dbBonus->findWhere("entityProductId in (" . $arrProductIdStr . ") AND isActive = 1");
-            
+
             $arrBonusId = [];
             foreach ($arrBonus as $bonus) {
                 array_push($arrBonusId, $bonus['id']);
@@ -2162,23 +2164,23 @@ class ProductsController extends Controller
 
             $mapBonusIdRelationGroupId = [];
             $mapBonusIdRelationGroupName = [];
-            foreach($arrBonusRelationGroup as $bonusRelationGroup) {
+            foreach ($arrBonusRelationGroup as $bonusRelationGroup) {
                 $bonusId = $bonusRelationGroup['bonusId'];
-                
+
                 $relationGroupId = $bonusRelationGroup['relationGroupId'];
-                if(array_key_exists($bonusId, $mapBonusIdRelationGroupId)) {
+                if (array_key_exists($bonusId, $mapBonusIdRelationGroupId)) {
                     $arrRelationGroupId = $mapBonusIdRelationGroupId[$bonusId];
                     array_push($arrRelationGroupId, $relationGroupId);
                     $mapBonusIdRelationGroupId[$bonusId] = $arrRelationGroupId;
                 } else {
                     $mapBonusIdRelationGroupId[$bonusId] = [$relationGroupId];
                 }
-                
+
                 $relationGroupName = $mapRelationGroupIdName[$relationGroupId];
-                if(array_key_exists($bonusId, $mapBonusIdRelationGroupName)) {
-                    $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonusId]; 
+                if (array_key_exists($bonusId, $mapBonusIdRelationGroupName)) {
+                    $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonusId];
                     array_push($arrRelationGroupName, $relationGroupName);
-                    $mapBonusIdRelationGroupName[$bonusId] = $arrRelationGroupName; 
+                    $mapBonusIdRelationGroupName[$bonusId] = $arrRelationGroupName;
                 } else {
                     $mapBonusIdRelationGroupName[$bonusId] = [$relationGroupName];
                 }
@@ -2197,9 +2199,9 @@ class ProductsController extends Controller
             foreach ($arrBonus as $bonus) {
                 $bonusExcel = [];
                 foreach ($fields as $field) {
-                    if($field == "arrRelationGroup") {
+                    if ($field == "arrRelationGroup") {
                         $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonus["id"]];
-                        if(!$arrRelationGroupName) {
+                        if (!$arrRelationGroupName) {
                             $arrRelationGroupName = [];
                         }
                         $cellValue = implode(", ", $arrRelationGroupName);
@@ -2211,7 +2213,7 @@ class ProductsController extends Controller
                 array_push($arrBonusExcel, $bonusExcel);
 
                 $arrRelationGroupId = $mapBonusIdRelationGroupId[$bonus["id"]];
-                if(!$arrRelationGroupId) {
+                if (!$arrRelationGroupId) {
                     $arrRelationGroupId = [];
                 }
                 $arrRelationGroupIdStr = implode(",", $arrRelationGroupId);
@@ -2278,7 +2280,7 @@ class ProductsController extends Controller
 
             // Change active sheet to database input
             $sheet = $spreadsheet->setActiveSheetIndex(1);
-            
+
             $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
 
             $dbProduct = new BaseModel($this->db, "vwEntityProductSellSummary");
@@ -2374,7 +2376,7 @@ class ProductsController extends Controller
                             if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
                                 array_push($errors, "Bonus must be a positive whole number");
                             } else {
-                                if($cellValue > 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                                if ($cellValue > 100 && $bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
                                     array_push($errors, "Percentage Bonus must be between 0 and 100");
                                 }
                             }
@@ -2416,7 +2418,7 @@ class ProductsController extends Controller
                 $arrRelationGroup = [
                     ['Name', 'Value']
                 ];
-                
+
                 $productNum = 2;
                 foreach ($allProduct as $product) {
                     $productNum++;
@@ -2453,7 +2455,7 @@ class ProductsController extends Controller
                 Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $productNum);
                 Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $bonusTypeNum);
                 // Excel::setCellFormulaVLookup($sheet, 'E3', 2505, "'User Input'!E", 'Variables!$G$3:$H$' . $relationGroupNum);
-                
+
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
                 Excel::hideSheetByName($spreadsheet, $sheetnameVariables);
@@ -2485,10 +2487,10 @@ class ProductsController extends Controller
                 foreach ($allBonusDb as $bonusDb) {
                     $bonusExcel = [];
                     $arrRelationGroupIdStr = "";
-                    
+
                     $j = 0;
                     foreach ($fields as $field) {
-                        switch($field) {
+                        switch ($field) {
                             case "entityProductId":
                                 $cellValue = $mapProductIdName[$bonusDb[$j]];
                                 break;
@@ -2498,12 +2500,12 @@ class ProductsController extends Controller
                             case "arrRelationGroupIdStr":
                                 $arrRelationGroupIdStr = $bonusDb[$j];
                                 $arrRelationGroupId = explode(", ", $arrRelationGroupIdStr);
-                                
+
                                 $arrRelationGroupName = [];
-                                foreach($arrRelationGroupId as $relationGroupId) {
+                                foreach ($arrRelationGroupId as $relationGroupId) {
                                     array_push($arrRelationGroupName, $mapRelationGroupIdName[$relationGroupId]);
                                 }
-    
+
                                 $cellValue = implode(", ", $arrRelationGroupName);
                                 break;
                             case "error":
@@ -2541,13 +2543,13 @@ class ProductsController extends Controller
                 $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
                 $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
                 $dbBonus->getWhere("entityProductId in (" . $arrProductIdStr . ") AND isActive = 1");
-                while(!$dbBonus->dry()) {
+                while (!$dbBonus->dry()) {
                     $dbBonus->isActive = 0;
                     $dbBonus->update();
                     $dbBonus->next();
                 }
 
-                foreach($allBonusDb as $bonusDb) {
+                foreach ($allBonusDb as $bonusDb) {
                     $dbBonus->entityProductId = $bonusDb[0];
                     $dbBonus->bonusTypeId = $bonusDb[1];
                     $dbBonus->minOrder = $bonusDb[2];
@@ -2555,9 +2557,9 @@ class ProductsController extends Controller
                     $dbBonus->addReturnID();
 
                     $arrRelationGroupStr = $bonusDb[4];
-                    if(strlen($arrRelationGroupStr) > 0) {
+                    if (strlen($arrRelationGroupStr) > 0) {
                         $arrRelationGroup = explode(", ", $arrRelationGroupStr);
-                        foreach($arrRelationGroup as $relationGroup) {
+                        foreach ($arrRelationGroup as $relationGroup) {
                             $dbBonusRelationGroup->bonusId = $dbBonus['id'];
                             $dbBonusRelationGroup->relationGroupId = $relationGroup;
                             $dbBonusRelationGroup->add();
@@ -2961,7 +2963,7 @@ class ProductsController extends Controller
                             }
                             break;
                         case "L":
-                            if(strlen($cellValue) > 0) {
+                            if (strlen($cellValue) > 0) {
                                 if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
                                     array_push($errors, "Maximum Order Quantity must be a positive whole number");
                                 } else {
