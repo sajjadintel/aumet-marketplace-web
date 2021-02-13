@@ -12,7 +12,7 @@ var ProductsBonusUpload = function () {
             maxFiles: 1,
             maxFilesize: 100,
             addRemoveLinks: false,
-            acceptedFiles: ".xlsm",
+            acceptedFiles: ".xlsx",
             createImageThumbnails: false,
             accept: function (file, done) {
                 done();
