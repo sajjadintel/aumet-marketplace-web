@@ -396,9 +396,9 @@ function compress_htmlcode($codedata)
                     var vQuantity = '';
                     var output = '';
                     var rowQuantity = (row.cart > 0) ? row.cart : 0;
-                    /*if (row.quantity) {
+                    if (row.quantity) {
                         rowQuantity = row.quantity
-                    }*/
+                    }
                     if (row.stockStatusId == 1) {
 
                         let vMinusBtn = '<a class="btn btn-xs btn-light-success btn-icon mr-2 subQty" onclick="SearchDataTable.subQuantity(this)"> <i class="ki ki-minus icon-xs"></i></a>';
