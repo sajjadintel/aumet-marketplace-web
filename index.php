@@ -55,7 +55,7 @@ if (is_dir($uploadsDir)) {
     }
 }
 
-$f3->set('platformVersionRelease', '?v=1.3');
+$f3->set('platformVersionRelease', '?v=1.01');
 $f3->set('platformVersionDevelopment', '?v=' . date('His'));
 
 $f3->set('platformVersion', $f3->get('platformVersionDevelopment'));
