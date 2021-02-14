@@ -440,7 +440,7 @@ class SearchController extends Controller
 
         $allProductId = [];
         foreach ($data as $product) {
-            array_push($allProductId, $product['productId']);
+            array_push($allProductId, $product['id']);
         }
         $allProductId = implode(",", $allProductId);
 
