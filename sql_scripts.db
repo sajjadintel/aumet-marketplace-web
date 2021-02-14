@@ -48,7 +48,7 @@ FROM `marketplace`.`user` `u`
 
 # Modified vwEntityProductSellSummary
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
-    SELECT 
+    SELECT
         `ep`.`id` AS `id`,
         `ep`.`entityId` AS `entityId`,
         `e`.`name_ar` AS `entityName_ar`,
@@ -65,7 +65,7 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
         JOIN `entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
         JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
         JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
-        
+
 ################################
 
 ## 04/02/2021 -- Sajad Abbasi
@@ -180,11 +180,11 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
 ## 03/02/2021 -- Antoine Abou Cherfane
 
 # Modified orderGrand
-ALTER TABLE `marketplace`.`orderGrand` 
+ALTER TABLE `marketplace`.`orderGrand`
 DROP COLUMN `paymentMethodId`;
 
 # Modified order
-ALTER TABLE `marketplace`.`order` 
+ALTER TABLE `marketplace`.`order`
 CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 
 ################################
@@ -196,12 +196,12 @@ CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 UPDATE `marketplace`.`menuItem` SET `menuId` = '1' WHERE (`id` = '20');
 
 # Created vwEntityProductSellBonusDetail view for the bonuses
-CREATE 
-    ALGORITHM = UNDEFINED 
-    DEFINER = `root`@`%` 
+CREATE
+    ALGORITHM = UNDEFINED
+    DEFINER = `root`@`%`
     SQL SECURITY DEFINER
 VIEW `vwEntityProductSellBonusDetail` AS
-    SELECT 
+    SELECT
         `bonus`.`id` AS `id`,
         `bonus`.`entityProductId` AS `entityProductId`,
         `product`.`name_en` AS `productName_en`,
@@ -220,22 +220,22 @@ VIEW `vwEntityProductSellBonusDetail` AS
         LEFT JOIN `bonusType` ON ((`bonusType`.`id` = `bonus`.`bonusTypeId`)))
 
 # Modified vwEntityProductSellSummary
-CREATE 
-    ALGORITHM = UNDEFINED 
-    DEFINER = `root`@`%` 
+CREATE
+    ALGORITHM = UNDEFINED
+    DEFINER = `root`@`%`
     SQL SECURITY DEFINER
 VIEW `vwEntityProductSellSummary` AS
-    SELECT 
+    SELECT
         `ep`.`id` AS `id`,
         `ep`.`entityId` AS `entityId`,
         `ep`.`productId` AS `productId`,
-        
+
 ## 10/02/2021 -- Patrick Younes
 
 # Modified vwEntityProductSell
 
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
-    SELECT 
+    SELECT
         `ep`.`id` AS `id`,
         `ep`.`entityId` AS `entityId`,
         `e`.`name_ar` AS `entityName_ar`,
@@ -324,90 +324,90 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
         LEFT JOIN `marketplace`.`entityRelationGroup` `cg` ON ((`cg`.`id` = `ep`.`bonusCustomerGroupId`)))
     GROUP BY `ep`.`id`;
 
-    
-## INDEXES 
-ALTER TABLE `marketplace`.`entityProductSellBonusDetail` 
+
+## INDEXES
+ALTER TABLE `marketplace`.`entityProductSellBonusDetail`
 ADD INDEX `idx_entityProductId` (`entityProductId` ASC) VISIBLE;
 
-ALTER TABLE `marketplace`.`account` 
+ALTER TABLE `marketplace`.`account`
 ADD INDEX `idx_entityId` (`entityId` ASC) VISIBLE;
 
-ALTER TABLE `marketplace`.`cartDetail` 
+ALTER TABLE `marketplace`.`cartDetail`
 ADD INDEX `idx_accountId` (`accountId` ASC) VISIBLE;
 
 ## FOREIGN KEYS
 
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD CONSTRAINT `fk_entityProductSell_product`
   FOREIGN KEY (`productId`)
   REFERENCES `marketplace`.`product` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 ADD CONSTRAINT `fk_product_scientificName`
   FOREIGN KEY (`scientificNameId`)
   REFERENCES `marketplace`.`scientificName` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD CONSTRAINT `fk_entityProductSell_entity`
   FOREIGN KEY (`entityId`)
   REFERENCES `marketplace`.`entity` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 ADD CONSTRAINT `fk_product_country`
   FOREIGN KEY (`madeInCountryId`)
   REFERENCES `marketplace`.`country` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`entity` 
+ALTER TABLE `marketplace`.`entity`
 ADD CONSTRAINT `fk_entity_country`
   FOREIGN KEY (`countryId`)
   REFERENCES `marketplace`.`country` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD CONSTRAINT `fk_entityProductSell_stockStatus`
   FOREIGN KEY (`stockStatusId`)
   REFERENCES `marketplace`.`stockStatus` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD CONSTRAINT `fk_entityProductSell_entityProductBonusType`
   FOREIGN KEY (`bonusTypeId`)
   REFERENCES `marketplace`.`entityProductBonusType` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 ADD CONSTRAINT `fk_product_category`
   FOREIGN KEY (`categoryId`)
   REFERENCES `marketplace`.`category` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 ADD CONSTRAINT `fk_product_subcategory`
   FOREIGN KEY (`subcategoryId`)
   REFERENCES `marketplace`.`subcategory` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD CONSTRAINT `fk_entityProductSell_entityProductSellBonusDetail`
   FOREIGN KEY (`entityProductId`)
   REFERENCES `marketplace`.`entityProductSellBonusDetail` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD CONSTRAINT `fk_entityProductSell_entityRelationGroup`
   FOREIGN KEY (`bonusCustomerGroupId`)
   REFERENCES `marketplace`.`entityRelationGroup` (`id`)
@@ -464,7 +464,7 @@ FROM `marketplace`.`user` `u`
 
 # Modified vwEntityProductSellSummary
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
-    SELECT 
+    SELECT
         `ep`.`id` AS `id`,
         `ep`.`entityId` AS `entityId`,
         `e`.`name_ar` AS `entityName_ar`,
@@ -486,7 +486,7 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
         JOIN `entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
         JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
         JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
-        
+
 ################################
 
 ## 04/02/2021 -- Sajad Abbasi
@@ -601,11 +601,11 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
 ## 03/02/2021 -- Antoine Abou Cherfane
 
 # Modified orderGrand
-ALTER TABLE `marketplace`.`orderGrand` 
+ALTER TABLE `marketplace`.`orderGrand`
 DROP COLUMN `paymentMethodId`;
 
 # Modified order
-ALTER TABLE `marketplace`.`order` 
+ALTER TABLE `marketplace`.`order`
 CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 
 ################################
@@ -615,13 +615,13 @@ CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 ## 12/02/2021 -- Antoine Abou Cherfane
 
 # Modified product table
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 DROP FOREIGN KEY `fk_product_scientificName`;
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 DROP INDEX `product_scientificNameId_index`;
 
 # Modified entityProductSell
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 CHANGE COLUMN `maximumOrderQuantity` `maximumOrderQuantity` INT NULL DEFAULT NULL;
 
 # Modified vwEntityProductSell
@@ -759,5 +759,98 @@ FROM `marketplace`.`order`
   JOIN `marketplace`.`product` ON `marketplace`.`product`.`id` = `marketplace`.`entityProductSell`.`productId`
   LEFT JOIN `marketplace`.`scientificName` ON `marketplace`.`scientificName`.`id` = `marketplace`.`product`.`scientificNameId`
   JOIN `marketplace`.`currency` ON `marketplace`.`order`.`currencyId` = `marketplace`.`currency`.`id`;
+
+################################
+
+## 14/02/2021 -- Naveed Javaid
+
+# Changed 'join' to 'left join' on 'scientificName' table (fixes MPW-440)
+
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
+select `ep`.`id`                          AS `id`,
+       `ep`.`entityId`                    AS `entityId`,
+       `e`.`name_ar`                      AS `entityName_ar`,
+       `e`.`name_en`                      AS `entityName_en`,
+       `e`.`name_fr`                      AS `entityName_fr`,
+       `ep`.`productId`                   AS `productId`,
+       `ep`.`totalOrderQuantity`          AS `totalOrderQuantity`,
+       `ep`.`totalOrderCount`             AS `totalOrderCount`,
+       `ep`.`maximumOrderQuantity`        AS `maximumOrderQuantity`,
+       `p`.`scientificNameId`             AS `scientificNameId`,
+       `s`.`name`                         AS `scientificName`,
+       `p`.`insertDateTime`               AS `insertDateTime`,
+       `p`.`name_ar`                      AS `productName_ar`,
+       `p`.`name_en`                      AS `productName_en`,
+       `p`.`name_fr`                      AS `productName_fr`,
+       `p`.`subtitle_ar`                  AS `subtitle_ar`,
+       `p`.`subtitle_en`                  AS `subtitle_en`,
+       `p`.`subtitle_fr`                  AS `subtitle_fr`,
+       `p`.`description_ar`               AS `description_ar`,
+       `p`.`description_en`               AS `description_en`,
+       `p`.`description_fr`               AS `description_fr`,
+       `p`.`strength`                     AS `strength`,
+       `p`.`manufacturerName`             AS `manufacturerName`,
+       `p`.`batchNumber`                  AS `batchNumber`,
+       `p`.`itemCode`                     AS `itemCode`,
+       `p`.`expiryDate`                   AS `productExpiryDate`,
+       `p`.`categoryId`                   AS `productCategoryId`,
+       `productCategory`.`name_en`        AS `productCategoryName_en`,
+       `productCategory`.`name_ar`        AS `productCategoryName_ar`,
+       `productCategory`.`name_fr`        AS `productCategoryName_fr`,
+       `p`.`subcategoryId`                AS `productSubcategoryId`,
+       `productSubcategory`.`name_en`     AS `productSubcategoryName_en`,
+       `productSubcategory`.`name_ar`     AS `productSubcategoryName_ar`,
+       `productSubcategory`.`name_fr`     AS `productSubcategoryName_fr`,
+       `s`.`categoryId`                   AS `categoryId`,
+       `s`.`subCategoryId`                AS `subCategoryId`,
+       `marketplace`.`category`.`name_en` AS `category_name_en`,
+       `marketplace`.`category`.`name_ar` AS `category_name_ar`,
+       `marketplace`.`category`.`name_fr` AS `category_name_fr`,
+       `subCategory`.`name_en`            AS `sub_category_name_en`,
+       `subCategory`.`name_ar`            AS `sub_category_name_ar`,
+       `subCategory`.`name_fr`            AS `sub_category_name_fr`,
+       `ep`.`unitPrice`                   AS `unitPrice`,
+       `ep`.`vat`                         AS `vat`,
+       `e`.`currencyId`                   AS `currencyId`,
+       `ec`.`currency`                    AS `currency`,
+       `ep`.`expiryDate`                  AS `expiryDate`,
+       `ep`.`statusId`                    AS `statusId`,
+       `ep`.`stockStatusId`               AS `stockStatusId`,
+       `ss`.`name_ar`                     AS `stockStatusName_ar`,
+       `ss`.`name_en`                     AS `stockStatusName_en`,
+       `ss`.`name_fr`                     AS `stockStatusName_fr`,
+       `ep`.`stock`                       AS `stock`,
+       `ep`.`stockUpdateDateTime`         AS `stockUpdateDateTime`,
+       `p`.`image`                        AS `image`,
+       `p`.`madeInCountryId`              AS `madeInCountryId`,
+       `c`.`name_ar`                      AS `madeInCountryName_ar`,
+       `c`.`name_en`                      AS `madeInCountryName_en`,
+       `c`.`name_fr`                      AS `madeInCountryName_fr`,
+       `ep`.`bonusCustomerGroupId`        AS `bonusCustomerGroupId`,
+       `cg`.`name_ar`                     AS `bonusCustomerGroupName_ar`,
+       `cg`.`name_en`                     AS `bonusCustomerGroupName_en`,
+       `cg`.`name_fr`                     AS `bonusCustomerGroupName_fr`,
+       `ep`.`bonusTypeId`                 AS `bonusTypeId`,
+       `epbt`.`formula`                   AS `bonusFormula`,
+       `epbt`.`name_ar`                   AS `bonusTypeName_ar`,
+       `epbt`.`name_en`                   AS `bonusTypeName_en`,
+       `epbt`.`name_fr`                   AS `bonusTypeName_fr`,
+       ifnull(min(`epbd`.`minOrder`), 10) AS `defaultQuantity`,
+       if((`ep`.`bonusTypeId` = 2), json_arrayagg(json_object('id', `epbd`.`id`, 'formula', `epbt`.`formula`, 'name',
+                                                              replace(
+                                                                      replace(`epbt`.`name_en`, '%bonus', `epbd`.`bonus`),
+                                                                      '%minOrder', `epbd`.`minOrder`), 'name_ar',
+                                                              replace(
+                                                                      replace(`epbt`.`name_ar`, '%bonus', `epbd`.`bonus`),
+                                                                      '%minOrder', `epbd`.`minOrder`), 'name_fr',
+                                                              replace(
+                                                                      replace(`epbt`.`name_fr`, '%bonus', `epbd`.`bonus`),
+                                                                      '%minOrder', `epbd`.`minOrder`), 'minOrder',
+                                                              `epbd`.`minOrder`, 'bonus', `epbd`.`bonus`)),
+          NULL)                           AS `bonusConfig`,
+       ifnull(`q`.`quantity`, 0)          AS `quantityOrdered`
+from ((((((((((((((`marketplace`.`entityProductSell` `ep` join `marketplace`.`product` `p` on ((`ep`.`productId` = `p`.`id`))) left join `marketplace`.`scientificName` `s` on ((`p`.`scientificNameId` = `s`.`id`))) join `marketplace`.`entity` `e` on ((`ep`.`entityId` = `e`.`id`))) join `marketplace`.`country` `c` on ((`p`.`madeInCountryId` = `c`.`id`))) join `marketplace`.`country` `ec` on ((`e`.`countryId` = `ec`.`id`))) join `marketplace`.`stockStatus` `ss` on ((`ep`.`stockStatusId` = `ss`.`id`))) join `marketplace`.`entityProductBonusType` `epbt` on ((`ep`.`bonusTypeId` = `epbt`.`id`))) left join `marketplace`.`category` on ((`s`.`categoryId` = `marketplace`.`category`.`id`))) left join `marketplace`.`category` `subCategory` on ((`s`.`subCategoryId` = `subCategory`.`id`))) left join `marketplace`.`category` `productCategory` on ((`p`.`categoryId` = `productCategory`.`id`))) left join `marketplace`.`subcategory` `productSubcategory` on ((`p`.`subcategoryId` = `productSubcategory`.`id`))) left join `marketplace`.`vwOrderProductQuantity` `q` on ((`q`.`entityProductId` = `ep`.`id`))) left join `marketplace`.`entityProductSellBonusDetail` `epbd` on ((`epbd`.`entityProductId` = `ep`.`id`)))
+         left join `marketplace`.`entityRelationGroup` `cg` on ((`cg`.`id` = `ep`.`bonusCustomerGroupId`)))
+group by `ep`.`id`;
 
 ################################
