@@ -689,7 +689,7 @@ class CartController extends Controller
             $cartDetail->quantityFree = $cartDetailFull['quantityFree'];
             $cartDetail->entityId = $cartDetailFull['entityId'];
             $cartDetail->cartCount = $cartCount;
-            $cartDetail->activeBonus = $activeBonus;
+            $cartDetail->activeBonus = $bonusDetail->activeBonus;
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
