@@ -175,8 +175,8 @@ class ProductsController extends Controller
                 }
             }
 
-            $dbEntityProduct['arrBonus'] = $arrProductBonus;
-            $dbEntityProduct['activeBonus'] = $activeBonus;
+            $dbEntityProduct->arrBonus = $arrProductBonus;
+            $dbEntityProduct->activeBonus = $activeBonus;
 
             $this->f3->set('objEntityProduct', $dbEntityProduct);
             $arrRelatedEntityProduct = [];
