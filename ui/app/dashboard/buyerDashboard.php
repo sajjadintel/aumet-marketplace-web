@@ -55,7 +55,7 @@
                     <div class="card-header border-0 pt-5">
                         <h3 class="card-title align-items-start flex-column">
                             <span class="card-label font-weight-bolder text-dark">Recent Orders</span>
-                            <span class="text-muted mt-3 font-weight-bold font-size-sm">New Unprocessed Orders</span>
+                            <span class="text-muted mt-3 font-weight-bold font-size-sm d-none">New Unprocessed Orders</span>
                         </h3>
                     </div>
                     <div class="card-body pt-2 pb-2 mt-n3">
@@ -117,7 +117,7 @@
             render: function(data, type, row, meta) {
                 var status = {
                     1: {
-                        title: WebAppLocals.getMessage('orderStatus_New'),
+                        title: WebAppLocals.getMessage('orderStatus_Pending'),
                         class: ' label-primary',
                     },
                     2: {
