@@ -29,7 +29,7 @@ var WebAppModals = (function () {
 			title: WebAppLocals.getMessage('orderShippedQuantity'),
 			data: 'shippedQuantity',
 			render: function (data, type, row, meta) {
-				output = row.quantity;
+				var output = row.quantity;
 				if (row.quantityFree > 0) output += ' (+' + row.quantityFree + ')';
 				return output;
 			},
