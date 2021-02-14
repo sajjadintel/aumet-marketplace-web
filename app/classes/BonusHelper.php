@@ -18,7 +18,7 @@ class BonusHelper {
     {
         $dbEntityProduct = new BaseModel($dbConnection, "vwEntityProductSell");
         $dbEntityProduct->getWhere("id=$entityProductId");
-        $productId = $dbEntityProduct->productId;
+        $productId = $dbEntityProduct->id;
         $sellerId = $dbEntityProduct->entityId;
 
         $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
