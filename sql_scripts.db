@@ -761,3 +761,39 @@ FROM `marketplace`.`order`
   JOIN `marketplace`.`currency` ON `marketplace`.`order`.`currencyId` = `marketplace`.`currency`.`id`;
 
 ################################
+
+
+## 14/02/2021 -- Sajad Abbasi
+
+# Changed vat round to 2 (fixes MPW-427)
+
+
+CREATE OR REPLACE VIEW `marketplace`.`vwOrderDetail` AS
+    SELECT
+        `marketplace`.`order`.`id` AS `id`,
+        `marketplace`.`orderDetail`.`id` AS `orderDetailId`,
+        `marketplace`.`entityProductSell`.`id` AS `productCode`,
+        `marketplace`.`orderDetail`.`quantity` AS `quantity`,
+        `marketplace`.`orderDetail`.`quantityFree` AS `quantityFree`,
+        `marketplace`.`orderDetail`.`freeRatio` AS `freeRatio`,
+        `marketplace`.`orderDetail`.`requestedQuantity` AS `requestedQuantity`,
+        `marketplace`.`orderDetail`.`shippedQuantity` AS `shippedQuantity`,
+        `marketplace`.`orderDetail`.`note` AS `note`,
+        `marketplace`.`orderDetail`.`unitPrice` AS `unitPrice`,
+        ROUND(`marketplace`.`orderDetail`.`tax`, 2) AS `tax`,
+        `marketplace`.`entityProductSell`.`stock` AS `stock`,
+        `marketplace`.`product`.`name_en` AS `productNameEn`,
+        `marketplace`.`product`.`name_ar` AS `productNameAr`,
+        `marketplace`.`product`.`name_fr` AS `productNameFr`,
+        `marketplace`.`scientificName`.`name` AS `scientificName`,
+        `marketplace`.`product`.`image` AS `image`,
+        `marketplace`.`currency`.`symbol` AS `currency`
+    FROM
+        (((((`marketplace`.`order`
+        JOIN `marketplace`.`orderDetail` ON ((`marketplace`.`order`.`id` = `marketplace`.`orderDetail`.`orderId`)))
+        JOIN `marketplace`.`entityProductSell` ON ((`marketplace`.`entityProductSell`.`id` = `marketplace`.`orderDetail`.`entityProductId`)))
+        JOIN `marketplace`.`product` ON ((`marketplace`.`product`.`id` = `marketplace`.`entityProductSell`.`productId`)))
+        LEFT JOIN `marketplace`.`scientificName` ON ((`marketplace`.`scientificName`.`id` = `marketplace`.`product`.`scientificNameId`)))
+        JOIN `marketplace`.`currency` ON ((`marketplace`.`order`.`currencyId` = `marketplace`.`currency`.`id`)))
+
+################################
