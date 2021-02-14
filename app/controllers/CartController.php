@@ -662,7 +662,7 @@ class CartController extends Controller
             if ($total > $maxOrder) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
-                $quantity = BonusHelper::calculateBonusQuantity($this->f3, $this->db, $this->objUser->language, $entityProductId, $quantity, true)->maxOrder;
+                $quantity = BonusHelper::calculateBonusQuantity($this->f3, $this->db, $this->objUser->language, $entityProductId, $total, true)->maxOrder;
                 $this->webResponse->message = "Not allowed (max: $quantity)";
                 echo $this->webResponse->jsonResponse();
                 return;

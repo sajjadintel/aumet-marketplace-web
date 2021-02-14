@@ -28,6 +28,12 @@ class BonusHelper {
         if (!$dbEntityProduct->stock)
             $maxOrder = 0;
 
+        if ($isTotalQuantity) {
+            if ($quantity > $maxOrder) {
+                $quantity = $maxOrder;
+            }
+        }
+
         // Get all related bonuses
         $mapBonusIdRelationGroup = [];
         $mapSellerIdRelationGroupId = [];
