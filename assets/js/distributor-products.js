@@ -449,7 +449,7 @@ var DistributorProductsDataTable = (function () {
 		}
 
 		$('#editStockModalForm').attr('action', '/web/distributor/product/editStock');
-		$('#editStockProductId').val(webResponse.data.product.productId);
+		$('#editStockProductId').val(webResponse.data.product.id);
 
 		var arrBonus = [];
 		var arrSpecialBonus = [];

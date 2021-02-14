@@ -665,7 +665,7 @@ class ProductsController extends Controller
             $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
             $product = $dbProduct->findWhere("id=$id")[0];
             $entityId = $product['entityId'];
-            $productId = $product['productId'];
+            $productId = $product['id'];
 
             $dbBonusType = new BaseModel($this->db, "bonusType");
             $dbBonusType->name = "name_" . $this->objUser->language;
@@ -1196,13 +1196,13 @@ class ProductsController extends Controller
             $this->f3->set("pageURL", "/web/distributor/product");
             echo View::instance()->render('app/layout/layout.php');
         } else {
-            $productId = $this->f3->get('POST.id');
+            $entityProductSellId = $this->f3->get('POST.id');
 
             $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
-            $dbEntityProduct->getWhere("productId=$productId");
+            $dbEntityProduct->getWhere(["id=?", $entityProductSellId]);
 
             $dbProduct = new BaseModel($this->db, "product");
-            $dbProduct->getWhere("id=$productId");
+            $dbProduct->getWhere(["id=?", $dbEntityProduct->productId]);
 
             if ($dbEntityProduct->dry() || $dbProduct->dry()) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
@@ -1318,7 +1318,7 @@ class ProductsController extends Controller
                 $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
                 $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
 
-                $dbBonus->getWhere("isActive = 1 AND entityProductId=$productId");
+                $dbBonus->getWhere(["isActive = 1 AND entityProductId=?", $entityProductSellId]);
                 while (!$dbBonus->dry()) {
                     $bonusId = $dbBonus['id'];
                     if (array_key_exists($bonusId, $mapBonusIdBonus)) {
@@ -1349,7 +1349,7 @@ class ProductsController extends Controller
 
                 foreach ($arrBonus as $bonus) {
                     if (!$bonus['id']) {
-                        $dbBonus->entityProductId = $productId;
+                        $dbBonus->entityProductId = $entityProductSellId;
                         $dbBonus->bonusTypeId = $bonus['bonusTypeId'];
                         $dbBonus->minOrder = $bonus['minOrder'];
                         $dbBonus->bonus = $bonus['bonus'];

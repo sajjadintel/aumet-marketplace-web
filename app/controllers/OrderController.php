@@ -722,18 +722,6 @@ class OrderController extends Controller
                     $bonusMinOrder = $bonus['minOrder'];
                     $bonusBonus = $bonus['bonus'];
 
-                    // Check if bonus is possible
-                    $availableQuantity = min($dbProduct->stock, $dbProduct->maximumOrderQuantity);
-                    $totalOrder = 0;
-                    if ($bonusTypeId == Constants::BONUS_TYPE_FIXED || $bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
-                        $totalOrder = $bonusMinOrder + $bonusBonus;
-                    } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
-                        $totalOrder = $bonusMinOrder + floor($bonusBonus * $bonusMinOrder / 100);
-                    }
-                    if ($totalOrder > $availableQuantity) {
-                        continue;
-                    }
-
                     $totalBonus = 0;
                     if ($bonusTypeId == Constants::BONUS_TYPE_FIXED) {
                         $totalBonus = $bonusMinOrder + $bonusBonus;
