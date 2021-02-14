@@ -473,7 +473,6 @@ class SearchController extends Controller
                         $data[$i]['cartDetailId'] += $objCartItem['id'];
                         $data[$i]['quantity'] = $objCartItem['quantity'];
                         $data[$i]['cart'] += $objCartItem['quantity'];
-                        $data[$i]['cart'] += $objCartItem['quantityFree'];
                         break;
                     }
                 }
