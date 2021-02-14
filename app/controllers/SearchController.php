@@ -484,7 +484,7 @@ class SearchController extends Controller
         // Get all product ids
         $arrProductId = [];
         foreach ($data as $productItem) {
-            array_push($arrProductId, $productItem['productId']);
+            array_push($arrProductId, $productItem['id']);
         }
 
         // Get all related bonuses

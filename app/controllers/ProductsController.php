@@ -27,7 +27,7 @@ class ProductsController extends Controller
             $dbEntityProduct->subtitle = "subtitle_" . $this->objUser->language;
             $dbEntityProduct->description = "description_" . $this->objUser->language;
             $dbEntityProduct->getWhere($query);
-            $productId = $dbEntityProduct['productId'];
+            $productId = $dbEntityProduct['id'];
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
             $userId = $this->objUser->id;
@@ -375,7 +375,7 @@ class ProductsController extends Controller
         // Get all product ids
         $arrProductId = [];
         foreach ($data as $productItem) {
-            array_push($arrProductId, $productItem['productId']);
+            array_push($arrProductId, $productItem['id']);
         }
 
         // Get all related bonuses
