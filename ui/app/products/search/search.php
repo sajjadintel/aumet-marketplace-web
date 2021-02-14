@@ -691,7 +691,7 @@ function compress_htmlcode($codedata)
             updateDatatable();
         };
 
-        var query = <?php echo isset($_GET['query']) ? "'" . $_GET['query'] . "'" : 'null'; ?>;
+        var query = <?php echo isset($_GET['query']) ? "'" . addslashes($_GET['query']) . "'" : 'null'; ?>;
         var distributorId = <?php echo isset($_GET['distributorId']) ? "'" . $_GET['distributorId'] . "'" : 'null'; ?>;
         var scientificName = <?php echo isset($_GET['scientificName']) ? "'" . $_GET['scientificName'] . "'" : 'null'; ?>;
 
