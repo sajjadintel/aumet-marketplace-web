@@ -2975,6 +2975,9 @@ class ProductsController extends Controller
                             if (!is_numeric($cellValue) || (float) $cellValue < 0 || (float) $cellValue > 100) {
                                 array_push($errors, "VAT must be a positive number between 0 and 100");
                             } else {
+                                if (strpos($cell->getFormattedValue(), '%') !== false) {
+                                    $cellValue *= 10;
+                                }
                                 $dbEntityProduct->vat = round((float) $cellValue, 2);
                             }
                             break;
@@ -3037,7 +3040,7 @@ class ProductsController extends Controller
                             break;
                         case "R":
                             if (!is_null($cellValue)) {
-                                if (!is_int($cellValue)) {
+                                if (!is_int($cellValue) && !is_float($cellValue)) {
                                     array_push($errors, "Expiry Date must fit a date format (mm/dd/yyyy)");
                                 } else {
                                     $expiryDate = Excel::excelDateToRegularDate($cellValue, "m/d/Y");
