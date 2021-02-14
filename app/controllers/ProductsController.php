@@ -2091,8 +2091,8 @@ class ProductsController extends Controller
             $productNum = 2;
             foreach ($allProduct as $product) {
                 $productNum++;
-                $arrProduct[] = array($product['name'], $product['productId']);
-                array_push($arrProductId, $product['productId']);
+                $arrProduct[] = array($product['name'], $product['id']);
+                array_push($arrProductId, $product['id']);
             }
 
             $dbBonusType = new BaseModel($this->db, "bonusType");
@@ -2273,8 +2273,8 @@ class ProductsController extends Controller
 
             $arrProductId = [];
             foreach ($allProduct as $product) {
-                array_push($arrProductId, $product['productId']);
-                $mapProductIdName[$product['productId']] = $product['name'];
+                array_push($arrProductId, $product['id']);
+                $mapProductIdName[$product['id']] = $product['name'];
             }
 
             $dbBonusType = new BaseModel($this->db, "bonusType");
@@ -2573,22 +2573,29 @@ class ProductsController extends Controller
                     array_push($arrBonusDb, $bonusDb);
                 }
 
+                $trace = [];
                 foreach($arrBonusDb as $bonusDb) {
+                    $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
                     $dbBonus->entityProductId = $bonusDb[0];
                     $dbBonus->bonusTypeId = $bonusDb[1];
                     $dbBonus->minOrder = $bonusDb[2];
                     $dbBonus->bonus = $bonusDb[3];
                     $dbBonus->addReturnID();
 
+                    $trace[] = $dbBonus->id;
+
                     $arrRelationGroupId = $bonusDb[4];
                     if(count($arrRelationGroupId) > 0) {
                         foreach($arrRelationGroupId as $relationGroupId) {
-                            $dbBonusRelationGroup->bonusId = $dbBonus['id'];
+                            $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
+                            $dbBonusRelationGroup->bonusId = $dbBonus->id; // $dbBonus['id'];
                             $dbBonusRelationGroup->relationGroupId = $relationGroupId;
                             $dbBonusRelationGroup->add();
                         }
                     }
                 }
+
+               // print_r($trace);
             }
 
             // Update logs
