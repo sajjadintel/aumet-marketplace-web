@@ -2974,6 +2974,9 @@ class ProductsController extends Controller
                             if (!is_numeric($cellValue) || (float) $cellValue < 0 || (float) $cellValue > 100) {
                                 array_push($errors, "VAT must be a positive number between 0 and 100");
                             } else {
+                                if (strpos($cell->getFormattedValue(), '%') !== false) {
+                                    $cellValue *= 10;
+                                }
                                 $dbEntityProduct->vat = round((float) $cellValue, 2);
                             }
                             break;
