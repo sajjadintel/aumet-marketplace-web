@@ -764,6 +764,99 @@ FROM `marketplace`.`order`
 
 ## 14/02/2021 -- Naveed Javaid
 
+# Changed 'join' to 'left join' on 'scientificName' table (fixes MPW-440)
+
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
+select `ep`.`id`                          AS `id`,
+       `ep`.`entityId`                    AS `entityId`,
+       `e`.`name_ar`                      AS `entityName_ar`,
+       `e`.`name_en`                      AS `entityName_en`,
+       `e`.`name_fr`                      AS `entityName_fr`,
+       `ep`.`productId`                   AS `productId`,
+       `ep`.`totalOrderQuantity`          AS `totalOrderQuantity`,
+       `ep`.`totalOrderCount`             AS `totalOrderCount`,
+       `ep`.`maximumOrderQuantity`        AS `maximumOrderQuantity`,
+       `p`.`scientificNameId`             AS `scientificNameId`,
+       `s`.`name`                         AS `scientificName`,
+       `p`.`insertDateTime`               AS `insertDateTime`,
+       `p`.`name_ar`                      AS `productName_ar`,
+       `p`.`name_en`                      AS `productName_en`,
+       `p`.`name_fr`                      AS `productName_fr`,
+       `p`.`subtitle_ar`                  AS `subtitle_ar`,
+       `p`.`subtitle_en`                  AS `subtitle_en`,
+       `p`.`subtitle_fr`                  AS `subtitle_fr`,
+       `p`.`description_ar`               AS `description_ar`,
+       `p`.`description_en`               AS `description_en`,
+       `p`.`description_fr`               AS `description_fr`,
+       `p`.`strength`                     AS `strength`,
+       `p`.`manufacturerName`             AS `manufacturerName`,
+       `p`.`batchNumber`                  AS `batchNumber`,
+       `p`.`itemCode`                     AS `itemCode`,
+       `p`.`expiryDate`                   AS `productExpiryDate`,
+       `p`.`categoryId`                   AS `productCategoryId`,
+       `productCategory`.`name_en`        AS `productCategoryName_en`,
+       `productCategory`.`name_ar`        AS `productCategoryName_ar`,
+       `productCategory`.`name_fr`        AS `productCategoryName_fr`,
+       `p`.`subcategoryId`                AS `productSubcategoryId`,
+       `productSubcategory`.`name_en`     AS `productSubcategoryName_en`,
+       `productSubcategory`.`name_ar`     AS `productSubcategoryName_ar`,
+       `productSubcategory`.`name_fr`     AS `productSubcategoryName_fr`,
+       `s`.`categoryId`                   AS `categoryId`,
+       `s`.`subCategoryId`                AS `subCategoryId`,
+       `marketplace`.`category`.`name_en` AS `category_name_en`,
+       `marketplace`.`category`.`name_ar` AS `category_name_ar`,
+       `marketplace`.`category`.`name_fr` AS `category_name_fr`,
+       `subCategory`.`name_en`            AS `sub_category_name_en`,
+       `subCategory`.`name_ar`            AS `sub_category_name_ar`,
+       `subCategory`.`name_fr`            AS `sub_category_name_fr`,
+       `ep`.`unitPrice`                   AS `unitPrice`,
+       `ep`.`vat`                         AS `vat`,
+       `e`.`currencyId`                   AS `currencyId`,
+       `ec`.`currency`                    AS `currency`,
+       `ep`.`expiryDate`                  AS `expiryDate`,
+       `ep`.`statusId`                    AS `statusId`,
+       `ep`.`stockStatusId`               AS `stockStatusId`,
+       `ss`.`name_ar`                     AS `stockStatusName_ar`,
+       `ss`.`name_en`                     AS `stockStatusName_en`,
+       `ss`.`name_fr`                     AS `stockStatusName_fr`,
+       `ep`.`stock`                       AS `stock`,
+       `ep`.`stockUpdateDateTime`         AS `stockUpdateDateTime`,
+       `p`.`image`                        AS `image`,
+       `p`.`madeInCountryId`              AS `madeInCountryId`,
+       `c`.`name_ar`                      AS `madeInCountryName_ar`,
+       `c`.`name_en`                      AS `madeInCountryName_en`,
+       `c`.`name_fr`                      AS `madeInCountryName_fr`,
+       `ep`.`bonusCustomerGroupId`        AS `bonusCustomerGroupId`,
+       `cg`.`name_ar`                     AS `bonusCustomerGroupName_ar`,
+       `cg`.`name_en`                     AS `bonusCustomerGroupName_en`,
+       `cg`.`name_fr`                     AS `bonusCustomerGroupName_fr`,
+       `ep`.`bonusTypeId`                 AS `bonusTypeId`,
+       `epbt`.`formula`                   AS `bonusFormula`,
+       `epbt`.`name_ar`                   AS `bonusTypeName_ar`,
+       `epbt`.`name_en`                   AS `bonusTypeName_en`,
+       `epbt`.`name_fr`                   AS `bonusTypeName_fr`,
+       ifnull(min(`epbd`.`minOrder`), 10) AS `defaultQuantity`,
+       if((`ep`.`bonusTypeId` = 2), json_arrayagg(json_object('id', `epbd`.`id`, 'formula', `epbt`.`formula`, 'name',
+                                                              replace(
+                                                                      replace(`epbt`.`name_en`, '%bonus', `epbd`.`bonus`),
+                                                                      '%minOrder', `epbd`.`minOrder`), 'name_ar',
+                                                              replace(
+                                                                      replace(`epbt`.`name_ar`, '%bonus', `epbd`.`bonus`),
+                                                                      '%minOrder', `epbd`.`minOrder`), 'name_fr',
+                                                              replace(
+                                                                      replace(`epbt`.`name_fr`, '%bonus', `epbd`.`bonus`),
+                                                                      '%minOrder', `epbd`.`minOrder`), 'minOrder',
+                                                              `epbd`.`minOrder`, 'bonus', `epbd`.`bonus`)),
+          NULL)                           AS `bonusConfig`,
+       ifnull(`q`.`quantity`, 0)          AS `quantityOrdered`
+from ((((((((((((((`marketplace`.`entityProductSell` `ep` join `marketplace`.`product` `p` on ((`ep`.`productId` = `p`.`id`))) left join `marketplace`.`scientificName` `s` on ((`p`.`scientificNameId` = `s`.`id`))) join `marketplace`.`entity` `e` on ((`ep`.`entityId` = `e`.`id`))) join `marketplace`.`country` `c` on ((`p`.`madeInCountryId` = `c`.`id`))) join `marketplace`.`country` `ec` on ((`e`.`countryId` = `ec`.`id`))) join `marketplace`.`stockStatus` `ss` on ((`ep`.`stockStatusId` = `ss`.`id`))) join `marketplace`.`entityProductBonusType` `epbt` on ((`ep`.`bonusTypeId` = `epbt`.`id`))) left join `marketplace`.`category` on ((`s`.`categoryId` = `marketplace`.`category`.`id`))) left join `marketplace`.`category` `subCategory` on ((`s`.`subCategoryId` = `subCategory`.`id`))) left join `marketplace`.`category` `productCategory` on ((`p`.`categoryId` = `productCategory`.`id`))) left join `marketplace`.`subcategory` `productSubcategory` on ((`p`.`subcategoryId` = `productSubcategory`.`id`))) left join `marketplace`.`vwOrderProductQuantity` `q` on ((`q`.`entityProductId` = `ep`.`id`))) left join `marketplace`.`entityProductSellBonusDetail` `epbd` on ((`epbd`.`entityProductId` = `ep`.`id`)))
+         left join `marketplace`.`entityRelationGroup` `cg` on ((`cg`.`id` = `ep`.`bonusCustomerGroupId`)))
+group by `ep`.`id`;
+
+################################
+
+## 14/02/2021 -- Naveed Javaid
+
 # Adding missing countries in marketplace.country table
 
 INSERT INTO marketplace.country (name_en, name_ar, name_fr, currency) VALUES ('Afghanistan', 'Afghanistan', 'Afghanistan', 'AED'),
