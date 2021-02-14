@@ -48,7 +48,7 @@ FROM `marketplace`.`user` `u`
 
 # Modified vwEntityProductSellSummary
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
-    SELECT 
+    SELECT
         `ep`.`id` AS `id`,
         `ep`.`entityId` AS `entityId`,
         `e`.`name_ar` AS `entityName_ar`,
@@ -65,7 +65,7 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
         JOIN `entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
         JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
         JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
-        
+
 ################################
 
 ## 04/02/2021 -- Sajad Abbasi
@@ -180,11 +180,11 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
 ## 03/02/2021 -- Antoine Abou Cherfane
 
 # Modified orderGrand
-ALTER TABLE `marketplace`.`orderGrand` 
+ALTER TABLE `marketplace`.`orderGrand`
 DROP COLUMN `paymentMethodId`;
 
 # Modified order
-ALTER TABLE `marketplace`.`order` 
+ALTER TABLE `marketplace`.`order`
 CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 
 ################################
@@ -196,12 +196,12 @@ CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 UPDATE `marketplace`.`menuItem` SET `menuId` = '1' WHERE (`id` = '20');
 
 # Created vwEntityProductSellBonusDetail view for the bonuses
-CREATE 
-    ALGORITHM = UNDEFINED 
-    DEFINER = `root`@`%` 
+CREATE
+    ALGORITHM = UNDEFINED
+    DEFINER = `root`@`%`
     SQL SECURITY DEFINER
 VIEW `vwEntityProductSellBonusDetail` AS
-    SELECT 
+    SELECT
         `bonus`.`id` AS `id`,
         `bonus`.`entityProductId` AS `entityProductId`,
         `product`.`name_en` AS `productName_en`,
@@ -220,22 +220,22 @@ VIEW `vwEntityProductSellBonusDetail` AS
         LEFT JOIN `bonusType` ON ((`bonusType`.`id` = `bonus`.`bonusTypeId`)))
 
 # Modified vwEntityProductSellSummary
-CREATE 
-    ALGORITHM = UNDEFINED 
-    DEFINER = `root`@`%` 
+CREATE
+    ALGORITHM = UNDEFINED
+    DEFINER = `root`@`%`
     SQL SECURITY DEFINER
 VIEW `vwEntityProductSellSummary` AS
-    SELECT 
+    SELECT
         `ep`.`id` AS `id`,
         `ep`.`entityId` AS `entityId`,
         `ep`.`productId` AS `productId`,
-        
+
 ## 10/02/2021 -- Patrick Younes
 
 # Modified vwEntityProductSell
 
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
-    SELECT 
+    SELECT
         `ep`.`id` AS `id`,
         `ep`.`entityId` AS `entityId`,
         `e`.`name_ar` AS `entityName_ar`,
@@ -324,90 +324,90 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
         LEFT JOIN `marketplace`.`entityRelationGroup` `cg` ON ((`cg`.`id` = `ep`.`bonusCustomerGroupId`)))
     GROUP BY `ep`.`id`;
 
-    
-## INDEXES 
-ALTER TABLE `marketplace`.`entityProductSellBonusDetail` 
+
+## INDEXES
+ALTER TABLE `marketplace`.`entityProductSellBonusDetail`
 ADD INDEX `idx_entityProductId` (`entityProductId` ASC) VISIBLE;
 
-ALTER TABLE `marketplace`.`account` 
+ALTER TABLE `marketplace`.`account`
 ADD INDEX `idx_entityId` (`entityId` ASC) VISIBLE;
 
-ALTER TABLE `marketplace`.`cartDetail` 
+ALTER TABLE `marketplace`.`cartDetail`
 ADD INDEX `idx_accountId` (`accountId` ASC) VISIBLE;
 
 ## FOREIGN KEYS
 
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD CONSTRAINT `fk_entityProductSell_product`
   FOREIGN KEY (`productId`)
   REFERENCES `marketplace`.`product` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 ADD CONSTRAINT `fk_product_scientificName`
   FOREIGN KEY (`scientificNameId`)
   REFERENCES `marketplace`.`scientificName` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD CONSTRAINT `fk_entityProductSell_entity`
   FOREIGN KEY (`entityId`)
   REFERENCES `marketplace`.`entity` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 ADD CONSTRAINT `fk_product_country`
   FOREIGN KEY (`madeInCountryId`)
   REFERENCES `marketplace`.`country` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`entity` 
+ALTER TABLE `marketplace`.`entity`
 ADD CONSTRAINT `fk_entity_country`
   FOREIGN KEY (`countryId`)
   REFERENCES `marketplace`.`country` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD CONSTRAINT `fk_entityProductSell_stockStatus`
   FOREIGN KEY (`stockStatusId`)
   REFERENCES `marketplace`.`stockStatus` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD CONSTRAINT `fk_entityProductSell_entityProductBonusType`
   FOREIGN KEY (`bonusTypeId`)
   REFERENCES `marketplace`.`entityProductBonusType` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 ADD CONSTRAINT `fk_product_category`
   FOREIGN KEY (`categoryId`)
   REFERENCES `marketplace`.`category` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 ADD CONSTRAINT `fk_product_subcategory`
   FOREIGN KEY (`subcategoryId`)
   REFERENCES `marketplace`.`subcategory` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD CONSTRAINT `fk_entityProductSell_entityProductSellBonusDetail`
   FOREIGN KEY (`entityProductId`)
   REFERENCES `marketplace`.`entityProductSellBonusDetail` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD CONSTRAINT `fk_entityProductSell_entityRelationGroup`
   FOREIGN KEY (`bonusCustomerGroupId`)
   REFERENCES `marketplace`.`entityRelationGroup` (`id`)
@@ -464,7 +464,7 @@ FROM `marketplace`.`user` `u`
 
 # Modified vwEntityProductSellSummary
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
-    SELECT 
+    SELECT
         `ep`.`id` AS `id`,
         `ep`.`entityId` AS `entityId`,
         `e`.`name_ar` AS `entityName_ar`,
@@ -486,7 +486,7 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
         JOIN `entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
         JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
         JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
-        
+
 ################################
 
 ## 04/02/2021 -- Sajad Abbasi
@@ -601,11 +601,11 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
 ## 03/02/2021 -- Antoine Abou Cherfane
 
 # Modified orderGrand
-ALTER TABLE `marketplace`.`orderGrand` 
+ALTER TABLE `marketplace`.`orderGrand`
 DROP COLUMN `paymentMethodId`;
 
 # Modified order
-ALTER TABLE `marketplace`.`order` 
+ALTER TABLE `marketplace`.`order`
 CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 
 ################################
@@ -615,13 +615,13 @@ CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 ## 12/02/2021 -- Antoine Abou Cherfane
 
 # Modified product table
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 DROP FOREIGN KEY `fk_product_scientificName`;
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 DROP INDEX `product_scientificNameId_index`;
 
 # Modified entityProductSell
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 CHANGE COLUMN `maximumOrderQuantity` `maximumOrderQuantity` INT NULL DEFAULT NULL;
 
 # Modified vwEntityProductSell
@@ -759,5 +759,200 @@ FROM `marketplace`.`order`
   JOIN `marketplace`.`product` ON `marketplace`.`product`.`id` = `marketplace`.`entityProductSell`.`productId`
   LEFT JOIN `marketplace`.`scientificName` ON `marketplace`.`scientificName`.`id` = `marketplace`.`product`.`scientificNameId`
   JOIN `marketplace`.`currency` ON `marketplace`.`order`.`currencyId` = `marketplace`.`currency`.`id`;
+
+################################
+
+## 14/02/2021 -- Naveed Javaid
+
+# Adding missing countries in marketplace.country table
+
+INSERT INTO marketplace.country (name_en, name_ar, name_fr, currency) VALUES ('Afghanistan', 'Afghanistan', 'Afghanistan', 'AED'),
+('Aland Islands', 'Aland Islands', 'Aland Islands', 'AED'),
+('Albania', 'Albania', 'Albania', 'AED'),
+('American Samoa', 'American Samoa', 'American Samoa', 'AED'),
+('Andorra', 'Andorra', 'Andorra', 'AED'),
+('Angola', 'Angola', 'Angola', 'AED'),
+('Anguilla', 'Anguilla', 'Anguilla', 'AED'),
+('Antarctica', 'Antarctica', 'Antarctica', 'AED'),
+('Antigua And Barbuda', 'Antigua And Barbuda', 'Antigua And Barbuda', 'AED'),
+('Armenia', 'Armenia', 'Armenia', 'AED'),
+('Aruba', 'Aruba', 'Aruba', 'AED'),
+('Azerbaijan', 'Azerbaijan', 'Azerbaijan', 'AED'),
+('Bahamas', 'Bahamas', 'Bahamas', 'AED'),
+('Bahrain', 'Bahrain', 'Bahrain', 'AED'),
+('Bangladesh', 'Bangladesh', 'Bangladesh', 'AED'),
+('Barbados', 'Barbados', 'Barbados', 'AED'),
+('Belarus', 'Belarus', 'Belarus', 'AED'),
+('Belize', 'Belize', 'Belize', 'AED'),
+('Benin', 'Benin', 'Benin', 'AED'),
+('Bermuda', 'Bermuda', 'Bermuda', 'AED'),
+('Bhutan', 'Bhutan', 'Bhutan', 'AED'),
+('Bolivia', 'Bolivia', 'Bolivia', 'AED'),
+('Bosnia And Herzegovina', 'Bosnia And Herzegovina', 'Bosnia And Herzegovina', 'AED'),
+('Botswana', 'Botswana', 'Botswana', 'AED'),
+('Bouvet Island', 'Bouvet Island', 'Bouvet Island', 'AED'),
+('British Indian Ocean Territory', 'British Indian Ocean Territory', 'British Indian Ocean Territory', 'AED'),
+('Brunei Darussalam', 'Brunei Darussalam', 'Brunei Darussalam', 'AED'),
+('Bulgaria', 'Bulgaria', 'Bulgaria', 'AED'),
+('Burkina Faso', 'Burkina Faso', 'Burkina Faso', 'AED'),
+('Burundi', 'Burundi', 'Burundi', 'AED'),
+('Cambodia', 'Cambodia', 'Cambodia', 'AED'),
+('Cameroon', 'Cameroon', 'Cameroon', 'AED'),
+('Cape Verde', 'Cape Verde', 'Cape Verde', 'AED'),
+('Cayman Islands', 'Cayman Islands', 'Cayman Islands', 'AED'),
+('Central African Republic', 'Central African Republic', 'Central African Republic', 'AED'),
+('Chad', 'Chad', 'Chad', 'AED'),
+('Christmas Island', 'Christmas Island', 'Christmas Island', 'AED'),
+('Cocos (Keeling) Islands', 'Cocos (Keeling) Islands', 'Cocos (Keeling) Islands', 'AED'),
+('Colombia', 'Colombia', 'Colombia', 'AED'),
+('Comoros', 'Comoros', 'Comoros', 'AED'),
+('Congo', 'Congo', 'Congo', 'AED'),
+('Congo, Democratic Republic', 'Congo, Democratic Republic', 'Congo, Democratic Republic', 'AED'),
+('Cook Islands', 'Cook Islands', 'Cook Islands', 'AED'),
+('Costa Rica', 'Costa Rica', 'Costa Rica', 'AED'),
+('Cote D\'Ivoire', 'Cote D\'Ivoire', 'Cote D\'Ivoire', 'AED'),
+('Croatia', 'Croatia', 'Croatia', 'AED'),
+('Cuba', 'Cuba', 'Cuba', 'AED'),
+('Djibouti', 'Djibouti', 'Djibouti', 'AED'),
+('Dominica', 'Dominica', 'Dominica', 'AED'),
+('Dominican Republic', 'Dominican Republic', 'Dominican Republic', 'AED'),
+('El Salvador', 'El Salvador', 'El Salvador', 'AED'),
+('Equatorial Guinea', 'Equatorial Guinea', 'Equatorial Guinea', 'AED'),
+('Eritrea', 'Eritrea', 'Eritrea', 'AED'),
+('Estonia', 'Estonia', 'Estonia', 'AED'),
+('Ethiopia', 'Ethiopia', 'Ethiopia', 'AED'),
+('Falkland Islands (Malvinas)', 'Falkland Islands (Malvinas)', 'Falkland Islands (Malvinas)', 'AED'),
+('Faroe Islands', 'Faroe Islands', 'Faroe Islands', 'AED'),
+('Fiji', 'Fiji', 'Fiji', 'AED'),
+('French Guiana', 'French Guiana', 'French Guiana', 'AED'),
+('French Polynesia', 'French Polynesia', 'French Polynesia', 'AED'),
+('French Southern Territories', 'French Southern Territories', 'French Southern Territories', 'AED'),
+('Gabon', 'Gabon', 'Gabon', 'AED'),
+('Gambia', 'Gambia', 'Gambia', 'AED'),
+('Georgia', 'Georgia', 'Georgia', 'AED'),
+('Ghana', 'Ghana', 'Ghana', 'AED'),
+('Gibraltar', 'Gibraltar', 'Gibraltar', 'AED'),
+('Greenland', 'Greenland', 'Greenland', 'AED'),
+('Grenada', 'Grenada', 'Grenada', 'AED'),
+('Guadeloupe', 'Guadeloupe', 'Guadeloupe', 'AED'),
+('Guam', 'Guam', 'Guam', 'AED'),
+('Guatemala', 'Guatemala', 'Guatemala', 'AED'),
+('Guernsey', 'Guernsey', 'Guernsey', 'AED'),
+('Guinea', 'Guinea', 'Guinea', 'AED'),
+('Guinea-Bissau', 'Guinea-Bissau', 'Guinea-Bissau', 'AED'),
+('Guyana', 'Guyana', 'Guyana', 'AED'),
+('Haiti', 'Haiti', 'Haiti', 'AED'),
+('Heard Island & Mcdonald Islands', 'Heard Island & Mcdonald Islands', 'Heard Island & Mcdonald Islands', 'AED'),
+('Holy See (Vatican City State)', 'Holy See (Vatican City State)', 'Holy See (Vatican City State)', 'AED'),
+('Honduras', 'Honduras', 'Honduras', 'AED'),
+('Iceland', 'Iceland', 'Iceland', 'AED'),
+('Iran, Islamic Republic Of', 'Iran, Islamic Republic Of', 'Iran, Islamic Republic Of', 'AED'),
+('Iraq', 'Iraq', 'Iraq', 'AED'),
+('Isle Of Man', 'Isle Of Man', 'Isle Of Man', 'AED'),
+('Jamaica', 'Jamaica', 'Jamaica', 'AED'),
+('Jersey', 'Jersey', 'Jersey', 'AED'),
+('Kenya', 'Kenya', 'Kenya', 'AED'),
+('Kiribati', 'Kiribati', 'Kiribati', 'AED'),
+('Korea', 'Korea', 'Korea', 'AED'),
+('Kuwait', 'Kuwait', 'Kuwait', 'AED'),
+('Kyrgyzstan', 'Kyrgyzstan', 'Kyrgyzstan', 'AED'),
+('Lao People\'s Democratic Republic', 'Lao People\'s Democratic Republic', 'Lao People\'s Democratic Republic', 'AED'),
+('Lebanon', 'Lebanon', 'Lebanon', 'AED'),
+('Lesotho', 'Lesotho', 'Lesotho', 'AED'),
+('Liberia', 'Liberia', 'Liberia', 'AED'),
+('Libyan Arab Jamahiriya', 'Libyan Arab Jamahiriya', 'Libyan Arab Jamahiriya', 'AED'),
+('Lithuania', 'Lithuania', 'Lithuania', 'AED'),
+('Macao', 'Macao', 'Macao', 'AED'),
+('Macedonia', 'Macedonia', 'Macedonia', 'AED'),
+('Madagascar', 'Madagascar', 'Madagascar', 'AED'),
+('Malawi', 'Malawi', 'Malawi', 'AED'),
+('Maldives', 'Maldives', 'Maldives', 'AED'),
+('Mali', 'Mali', 'Mali', 'AED'),
+('Marshall Islands', 'Marshall Islands', 'Marshall Islands', 'AED'),
+('Martinique', 'Martinique', 'Martinique', 'AED'),
+('Mauritania', 'Mauritania', 'Mauritania', 'AED'),
+('Mauritius', 'Mauritius', 'Mauritius', 'AED'),
+('Mayotte', 'Mayotte', 'Mayotte', 'AED'),
+('Micronesia, Federated States Of', 'Micronesia, Federated States Of', 'Micronesia, Federated States Of', 'AED'),
+('Moldova', 'Moldova', 'Moldova', 'AED'),
+('Monaco', 'Monaco', 'Monaco', 'AED'),
+('Mongolia', 'Mongolia', 'Mongolia', 'AED'),
+('Montenegro', 'Montenegro', 'Montenegro', 'AED'),
+('Montserrat', 'Montserrat', 'Montserrat', 'AED'),
+('Morocco', 'Morocco', 'Morocco', 'AED'),
+('Mozambique', 'Mozambique', 'Mozambique', 'AED'),
+('Myanmar', 'Myanmar', 'Myanmar', 'AED'),
+('Namibia', 'Namibia', 'Namibia', 'AED'),
+('Nauru', 'Nauru', 'Nauru', 'AED'),
+('Nepal', 'Nepal', 'Nepal', 'AED'),
+('Netherlands Antilles', 'Netherlands Antilles', 'Netherlands Antilles', 'AED'),
+('New Caledonia', 'New Caledonia', 'New Caledonia', 'AED'),
+('Nicaragua', 'Nicaragua', 'Nicaragua', 'AED'),
+('Niger', 'Niger', 'Niger', 'AED'),
+('Nigeria', 'Nigeria', 'Nigeria', 'AED'),
+('Niue', 'Niue', 'Niue', 'AED'),
+('Norfolk Island', 'Norfolk Island', 'Norfolk Island', 'AED'),
+('Northern Mariana Islands', 'Northern Mariana Islands', 'Northern Mariana Islands', 'AED'),
+('Oman', 'Oman', 'Oman', 'AED'),
+('Palau', 'Palau', 'Palau', 'AED'),
+('Palestinian Territory, Occupied', 'Palestinian Territory, Occupied', 'Palestinian Territory, Occupied', 'AED'),
+('Panama', 'Panama', 'Panama', 'AED'),
+('Papua New Guinea', 'Papua New Guinea', 'Papua New Guinea', 'AED'),
+('Paraguay', 'Paraguay', 'Paraguay', 'AED'),
+('Peru', 'Peru', 'Peru', 'AED'),
+('Philippines', 'Philippines', 'Philippines', 'AED'),
+('Pitcairn', 'Pitcairn', 'Pitcairn', 'AED'),
+('Puerto Rico', 'Puerto Rico', 'Puerto Rico', 'AED'),
+('Qatar', 'Qatar', 'Qatar', 'AED'),
+('Reunion', 'Reunion', 'Reunion', 'AED'),
+('Rwanda', 'Rwanda', 'Rwanda', 'AED'),
+('Saint Barthelemy', 'Saint Barthelemy', 'Saint Barthelemy', 'AED'),
+('Saint Helena', 'Saint Helena', 'Saint Helena', 'AED'),
+('Saint Kitts And Nevis', 'Saint Kitts And Nevis', 'Saint Kitts And Nevis', 'AED'),
+('Saint Lucia', 'Saint Lucia', 'Saint Lucia', 'AED'),
+('Saint Martin', 'Saint Martin', 'Saint Martin', 'AED'),
+('Saint Pierre And Miquelon', 'Saint Pierre And Miquelon', 'Saint Pierre And Miquelon', 'AED'),
+('Saint Vincent And Grenadines', 'Saint Vincent And Grenadines', 'Saint Vincent And Grenadines', 'AED'),
+('Samoa', 'Samoa', 'Samoa', 'AED'),
+('San Marino', 'San Marino', 'San Marino', 'AED'),
+('Sao Tome And Principe', 'Sao Tome And Principe', 'Sao Tome And Principe', 'AED'),
+('Senegal', 'Senegal', 'Senegal', 'AED'),
+('Serbia', 'Serbia', 'Serbia', 'AED'),
+('Seychelles', 'Seychelles', 'Seychelles', 'AED'),
+('Sierra Leone', 'Sierra Leone', 'Sierra Leone', 'AED'),
+('Slovakia', 'Slovakia', 'Slovakia', 'AED'),
+('Slovenia', 'Slovenia', 'Slovenia', 'AED'),
+('Solomon Islands', 'Solomon Islands', 'Solomon Islands', 'AED'),
+('Somalia', 'Somalia', 'Somalia', 'AED'),
+('South Georgia And Sandwich Isl.', 'South Georgia And Sandwich Isl.', 'South Georgia And Sandwich Isl.', 'AED'),
+('Sri Lanka', 'Sri Lanka', 'Sri Lanka', 'AED'),
+('Sudan', 'Sudan', 'Sudan', 'AED'),
+('Suriname', 'Suriname', 'Suriname', 'AED'),
+('Svalbard And Jan Mayen', 'Svalbard And Jan Mayen', 'Svalbard And Jan Mayen', 'AED'),
+('Syrian Arab Republic', 'Syrian Arab Republic', 'Syrian Arab Republic', 'AED'),
+('Tajikistan', 'Tajikistan', 'Tajikistan', 'AED'),
+('Tanzania', 'Tanzania', 'Tanzania', 'AED'),
+('Timor-Leste', 'Timor-Leste', 'Timor-Leste', 'AED'),
+('Togo', 'Togo', 'Togo', 'AED'),
+('Tokelau', 'Tokelau', 'Tokelau', 'AED'),
+('Tonga', 'Tonga', 'Tonga', 'AED'),
+('Trinidad And Tobago', 'Trinidad And Tobago', 'Trinidad And Tobago', 'AED'),
+('Turkmenistan', 'Turkmenistan', 'Turkmenistan', 'AED'),
+('Turks And Caicos Islands', 'Turks And Caicos Islands', 'Turks And Caicos Islands', 'AED'),
+('Tuvalu', 'Tuvalu', 'Tuvalu', 'AED'),
+('Uganda', 'Uganda', 'Uganda', 'AED'),
+('United States Outlying Islands', 'United States Outlying Islands', 'United States Outlying Islands', 'AED'),
+('Uruguay', 'Uruguay', 'Uruguay', 'AED'),
+('Uzbekistan', 'Uzbekistan', 'Uzbekistan', 'AED'),
+('Vanuatu', 'Vanuatu', 'Vanuatu', 'AED'),
+('Venezuela', 'Venezuela', 'Venezuela', 'AED'),
+('Viet Nam', 'Viet Nam', 'Viet Nam', 'AED'),
+('Virgin Islands, British', 'Virgin Islands, British', 'Virgin Islands, British', 'AED'),
+('Virgin Islands, U.S.', 'Virgin Islands, U.S.', 'Virgin Islands, U.S.', 'AED'),
+('Wallis And Futuna', 'Wallis And Futuna', 'Wallis And Futuna', 'AED'),
+('Western Sahara', 'Western Sahara', 'Western Sahara', 'AED'),
+('Yemen', 'Yemen', 'Yemen', 'AED'),
+('Zambia', 'Zambia', 'Zambia', 'AED'),
+('Zimbabwe', 'Zimbabwe', 'Zimbabwe', 'AED');
 
 ################################
