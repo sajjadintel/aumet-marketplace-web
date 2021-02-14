@@ -440,7 +440,7 @@ class SearchController extends Controller
 
         $allProductId = [];
         foreach ($data as $product) {
-            array_push($allProductId, $product['productId']);
+            array_push($allProductId, $product['id']);
         }
         $allProductId = implode(",", $allProductId);
 
@@ -473,7 +473,6 @@ class SearchController extends Controller
                         $data[$i]['cartDetailId'] += $objCartItem['id'];
                         $data[$i]['quantity'] = $objCartItem['quantity'];
                         $data[$i]['cart'] += $objCartItem['quantity'];
-                        $data[$i]['cart'] += $objCartItem['quantityFree'];
                         break;
                     }
                 }
@@ -484,7 +483,7 @@ class SearchController extends Controller
         // Get all product ids
         $arrProductId = [];
         foreach ($data as $productItem) {
-            array_push($arrProductId, $productItem['productId']);
+            array_push($arrProductId, $productItem['id']);
         }
 
         // Get all related bonuses

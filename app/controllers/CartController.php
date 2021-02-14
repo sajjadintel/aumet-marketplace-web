@@ -75,7 +75,7 @@ class CartController extends Controller
                 $mapSellerIdRelationGroupId = [];
                 $dbBonus = new BaseModel($this->db, "vwEntityProductSellBonusDetail");
                 $dbBonus->bonusTypeName = "bonusTypeName_" . $this->objUser->language;
-                $arrBonus = $dbBonus->getWhere("entityProductId = $dbEntityProduct->productId AND isActive = 1");
+                $arrBonus = $dbBonus->getWhere("entityProductId = $dbEntityProduct->id AND isActive = 1");
                 $arrBonusId = [];
                 foreach ($arrBonus as $bonus) {
                     array_push($arrBonusId, $bonus['id']);
@@ -357,7 +357,7 @@ class CartController extends Controller
             $arrProductId = [];
             $mapProductIdDetail = [];
             foreach ($arrCartDetail as $cartDetail) {
-                array_push($arrProductId, $cartDetail['productId']);
+                array_push($arrProductId, $cartDetail['entityProductId']);
 
                 $productDetail = new stdClass();
                 $productDetail->quantity = $cartDetail['quantity'];
