@@ -363,7 +363,7 @@ class CartController extends Controller
                 $productDetail->quantity = $cartDetail['quantity'];
                 $productDetail->stock = $cartDetail['stock'];
                 $productDetail->maximumOrderQuantity = $cartDetail['maximumOrderQuantity'];
-                $mapProductIdDetail[$cartDetail['productId']] = $productDetail;
+                $mapProductIdDetail[$cartDetail['entityProductId']] = $productDetail;
             }
 
             // Get all related bonuses
@@ -418,7 +418,7 @@ class CartController extends Controller
             $allSellers = [];
             foreach ($arrCartDetail as $cartDetail) {
                 $sellerId = $cartDetail['entityId'];
-                $productId = $cartDetail['productId'];
+                $productId = $cartDetail['entityProductId'];
 
                 $cartItemsBySeller = [];
                 if (array_key_exists($sellerId, $allCartItems)) {
