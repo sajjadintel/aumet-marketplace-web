@@ -3039,7 +3039,7 @@ class ProductsController extends Controller
                             break;
                         case "R":
                             if (!is_null($cellValue)) {
-                                if (!is_int($cellValue)) {
+                                if (!is_int($cellValue) && !is_float($cellValue)) {
                                     array_push($errors, "Expiry Date must fit a date format (mm/dd/yyyy)");
                                 } else {
                                     $expiryDate = Excel::excelDateToRegularDate($cellValue, "m/d/Y");
