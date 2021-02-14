@@ -536,7 +536,7 @@ class SearchController extends Controller
 
         for ($i = 0; $i < sizeof($data); $i++) {
             $sellerId = $data[$i]['entityId'];
-            $productId = $data[$i]['productId'];
+            $productId = $data[$i]['id'];
 
             $arrProductBonus = [];
             $activeBonus = new stdClass();
