@@ -160,7 +160,7 @@ var PharmacyOrdersDataTable = (function () {
 					width: 50,
 					// callback function support for column rendering
 					template: function (row) {
-						var output = WebApp.formatMoney(row.tax) + '%';
+						var output = WebApp.formatMoney(row.tax, 2) + '%';
 						return output;
 					},
 				},
@@ -396,7 +396,9 @@ var PharmacyOrdersDataTable = (function () {
 				title: WebAppLocals.getMessage('orderShippedQuantity'),
 				data: 'shippedQuantity',
 				render: function (data, type, row, meta) {
-					return row.shippedQuantity;
+					output = row.quantity;
+					if (row.quantityFree > 0) output += ' (+' + row.quantityFree + ')';
+					return output;
 				},
 			},
 			{
@@ -429,7 +431,7 @@ var PharmacyOrdersDataTable = (function () {
 				template: function (row) {
 					var output = '';
 
-					var output = WebApp.formatMoney(row.tax) + '%';
+					var output = WebApp.formatMoney(row.tax, 2) + '%';
 					return output;
 				},
 			},

@@ -284,12 +284,12 @@ class OrderController extends Controller
 
             $startDate = $datatable->query['startDate'];
             if (isset($startDate) && $startDate != "") {
-                $query .= " AND insertDateTime >= '$startDate'";
+                $query .= " AND insertDateTime >= '$startDate 00:00:00'";
             }
 
             $endDate = $datatable->query['endDate'];
             if (isset($endDate) && $endDate != "") {
-                $query .= " AND insertDateTime <= '$endDate'";
+                $query .= " AND insertDateTime <= '$endDate 23:59:59'";
             }
         }
 
@@ -385,12 +385,12 @@ class OrderController extends Controller
 
             $startDate = $datatable->query['startDate'];
             if (isset($startDate) && $startDate != "") {
-                $query .= " AND insertDateTime >= '$startDate'";
+                $query .= " AND insertDateTime >= '$startDate 00:00:00'";
             }
 
             $endDate = $datatable->query['endDate'];
             if (isset($endDate) && $endDate != "") {
-                $query .= " AND insertDateTime <= '$endDate'";
+                $query .= " AND insertDateTime <= '$endDate 23:59:59'";
             }
         }
 
@@ -698,13 +698,65 @@ class OrderController extends Controller
             while (!$dbOrderItems->dry()) {
                 $dbProduct->getWhere("id = $dbOrderItems->entityProductId");
 
-                $dbProduct->stock -= $dbOrderItems->quantity;
+                $dbProduct->stock -= $dbOrderItems->shippedQuantity;
                 $dbProduct->totalOrderCount += 1;
-                $dbProduct->totalOrderQuantity += $dbOrderItems->quantity;
+                $dbProduct->totalOrderQuantity += $dbOrderItems->shippedQuantity;
                 $dbProduct->update();
 
-                if ($dbProduct->stock <= 5 * $dbProduct->totalOrderQuantity / $dbProduct->totalOrderCount)
-                    $lowStockProducts[] = $dbProduct->id;
+
+                $arrProductId = [$dbOrderItems->entityProductId];
+                $dbBonus = new BaseModel($this->db, "vwEntityProductSellBonusDetail");
+                $dbBonus->bonusTypeName = "bonusTypeName_" . $this->objUser->language;
+                $arrBonus = $dbBonus->getWhere("entityProductId IN (" . implode(",", $arrProductId) . ") AND isActive = 1");
+                $arrBonusId = [];
+                foreach ($arrBonus as $bonus) {
+                    array_push($arrBonusId, $bonus['id']);
+                }
+
+
+                $lowStockByBonus = [];
+
+                foreach ($arrBonus as $bonus) {
+                    $bonusType = $bonus['bonusTypeName'];
+                    $bonusTypeId = $bonus['bonusTypeId'];
+                    $bonusMinOrder = $bonus['minOrder'];
+                    $bonusBonus = $bonus['bonus'];
+
+                    $totalBonus = 0;
+                    if ($bonusTypeId == Constants::BONUS_TYPE_FIXED) {
+                        $totalBonus = $bonusMinOrder + $bonusBonus;
+                    } else if ($bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
+                        $totalBonus = $bonusMinOrder + $bonusBonus;
+                    } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                        $totalBonus = $bonusMinOrder + floor($bonusMinOrder * $bonusBonus / 100);
+                    }
+
+                    if ($totalBonus > $dbProduct->stock) {
+                        $lowStockByBonus[$bonusTypeId][] = $bonusMinOrder . ':' . ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE ? '%' . $bonusBonus : $bonusBonus);
+                    }
+                }
+
+
+                $averageQuantity = $dbProduct->totalOrderQuantity / $dbProduct->totalOrderCount;
+                $lowStockReasons = [];
+                if ($dbProduct->stock <= 5 * $averageQuantity)
+                    $lowStockReasons[] = 'Average quantity per order is ' . ceil($averageQuantity);
+
+                foreach ($lowStockByBonus as $key => $lowStockByBonusItems) {
+                    $bonusName = '';
+                    if ($key == Constants::BONUS_TYPE_FIXED) {
+                        $bonusName = 'Fixed';
+                    } else if ($key == Constants::BONUS_TYPE_DYNAMIC) {
+                        $bonusName = 'Dynamic';
+                    } else if ($key == Constants::BONUS_TYPE_PERCENTAGE) {
+                        $bonusName = 'Percentage';
+                    }
+                    $lowStockReasons[] = 'You have a ' . $bonusName . ' bonus (' . implode(', ', $lowStockByBonusItems) . ')';
+                }
+
+                if (sizeof($lowStockReasons) > 0) {
+                    $lowStockProducts[] = ['id' => $dbProduct->id, 'reason' => $lowStockReasons];
+                }
 
                 $dbOrderItems->next();
             }
@@ -757,7 +809,7 @@ class OrderController extends Controller
             $mapStatusIdName[$orderStatus->id] = $orderStatus->name;
         }
 
-        $orderStatusUpdateTitle = "Order with serial " . $dbOrder->serial . " status has changed to " . $mapStatusIdName[strval($statusId)];
+        $orderStatusUpdateTitle = "Order # " . $dbOrder->id . " status has changed to " . $mapStatusIdName[strval($statusId)];
         $this->f3->set('orderStatusUpdateTitle', $orderStatusUpdateTitle);
 
         $dbCurrency = new BaseModel($this->db, "currency");
@@ -856,7 +908,6 @@ class OrderController extends Controller
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
 
         echo $this->webResponse->jsonResponseV2(3, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null);
-        return;
     }
 
     function getPrintOrderInvoice()
@@ -904,10 +955,14 @@ class OrderController extends Controller
 
         $orderDetailData = array();
         foreach ($arrOrderDetail as $item) {
+            $quantity = $item['quantity'];
+            if ($item['quantityFree'] > 0) {
+                $quantity .= " (+" . $item['quantityFree'] . ")";
+            }
             array_push($orderDetailData, array(
                 $item['productCode'],
                 $item['productNameEn'],
-                Helper::formatMoney($item['quantity'] + $item['quantityFree'], 0),
+                $quantity,
                 $item['currency'] . " " . Helper::formatMoney($item['unitPrice'], 2) . ($item['tax'] == 0 ? '' : ' +' . $item['tax'] . "%"),
                 $item['currency'] . " " . Helper::formatMoney($item['unitPrice'] * $item['quantity'] * (1.0 + $item['tax'] / 100.0))
             ));
@@ -917,14 +972,14 @@ class OrderController extends Controller
 
         $pdf->Ln(20);
 
-        if ($item['tax'] != 0) {
-            $pdf->Cell(0, 0, "Subtotal: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal']), 0, 0, 'R');
+        if ($arrOrder['subtotal'] != $arrOrder['total']) {
+            $pdf->Cell(0, 0, "Subtotal: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal'], 2), 0, 0, 'R');
             $pdf->Ln(10);
-            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal'] * $item['tax'] / 100.0, 2), 0, 0, 'R');
+            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($arrOrder['total'] - $arrOrder['subtotal'], 2), 0, 0, 'R');
         }
 
         $pdf->Ln(10);
-        $pdf->Cell(0, 0, "Total: {$item['currency']} " . Helper::formatMoney($arrOrder['total']), 0, 0, 'R');
+        $pdf->Cell(0, 0, "Total: {$item['currency']} " . Helper::formatMoney($arrOrder['total'], 2), 0, 0, 'R');
 
         $pdf->Output();
     }
@@ -973,10 +1028,14 @@ class OrderController extends Controller
 
         $orderDetailData = array();
         foreach ($arrOrderDetail as $item) {
+            $quantity = $item['quantity'];
+            if ($item['quantityFree'] > 0) {
+                $quantity .= " (+" . $item['quantityFree'] . ")";
+            }
             array_push($orderDetailData, array(
                 $item['productCode'],
                 $item['productNameEn'],
-                Helper::formatMoney($item['quantity'] + $item['quantityFree'], 0),
+                $quantity,
                 $item['currency'] . " " . Helper::formatMoney($item['unitPrice']) . ($item['tax'] == 0 ? '' : ' +' . $item['tax'] . "%"),
                 $item['currency'] . " " . Helper::formatMoney($item['unitPrice'] * $item['quantity'] * (1.0 + $item['tax'] / 100.0))
             ));
@@ -986,14 +1045,14 @@ class OrderController extends Controller
 
         $pdf->Ln(20);
 
-        if ($item['tax'] != 0) {
-            $pdf->Cell(0, 0, "Subtotal: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal']), 0, 0, 'R');
+        if ($arrOrder['subtotal'] != $arrOrder['total']) {
+            $pdf->Cell(0, 0, "Subtotal: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal'], 2), 0, 0, 'R');
             $pdf->Ln(10);
-            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($arrOrder['subtotal'] * $item['tax'] / 100.0, 2), 0, 0, 'R');
+            $pdf->Cell(0, 0, "VAT: {$item['currency']} " . Helper::formatMoney($arrOrder['total'] - $arrOrder['subtotal'], 2), 0, 0, 'R');
         }
 
         $pdf->Ln(10);
-        $pdf->Cell(0, 0, "Total: {$item['currency']} " . Helper::formatMoney($arrOrder['total']), 0, 0, 'R');
+        $pdf->Cell(0, 0, "Total: {$item['currency']} " . Helper::formatMoney($arrOrder['total'], 2), 0, 0, 'R');
 
         $pdf->Output();
     }

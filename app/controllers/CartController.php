@@ -61,27 +61,18 @@ class CartController extends Controller
                 $dbCartDetail->accountId = $this->objUser->accountId;
                 $dbCartDetail->entityProductId = $dbEntityProduct->id;
                 $dbCartDetail->userId = $this->objUser->id;
+                $dbCartDetail->quantity += $quantity;
 
+                $bonusDetail = BonusHelper::calculateBonusQuantity($this->f3, $this->db, $this->objUser->language, $productId, $quantity);
+                $quantityFree = $bonusDetail->quantityFree;
+                $maxOrder = $bonusDetail->maxOrder;
+                $total = $bonusDetail->total;
 
-                $newQuantity = $dbCartDetail->quantity + $quantity;
-                $dbCartDetail->quantity = $newQuantity;
-
-                if ($dbEntityProduct->bonusTypeId == 2) {
-                    $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
-                    $arrBonus = $dbBonus->findWhere("entityProductId = '$dbEntityProduct->id' AND isActive = 1", 'minOrder DESC');
-
-                    $entityProductBonusType = new BaseModel($this->db, "entityProductBonusType");
-                    $entityProductBonusType->getWhere("id = '$dbEntityProduct->bonusTypeId'");
-
-                    $quantityFree = $this->calculateBonus($dbCartDetail->quantity, $arrBonus, $entityProductBonusType->formula);
-                }
-
-                $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
-                $total = $quantityFree + $newQuantity;
                 if ($total > $maxOrder) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->title = "";
-                    $this->webResponse->message = "Not allowed (max: $maxOrder)";
+                    $quantity = BonusHelper::calculateBonusQuantity($this->f3, $this->db, $this->objUser->language, $productId, $total, true)->maxOrder;
+                    $this->webResponse->message = "Not allowed (max: $quantity)";
                     echo $this->webResponse->jsonResponse();
                     return;
                 }
@@ -101,9 +92,13 @@ class CartController extends Controller
                 }
                 $this->objUser->cartCount = $cartCount;
 
+                $data = new stdClass();
+                $data->cartCount = $cartCount;
+                $data->activeBonus = $bonusDetail->activeBonus;
+
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = "";
-                $this->webResponse->data = $cartCount;
+                $this->webResponse->data = $data;
                 echo $this->webResponse->jsonResponse();
             }
         }
@@ -257,11 +252,72 @@ class CartController extends Controller
 
             $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
 
-            // Group cart items by seller id
+            // Get all product ids
+            $arrProductId = [];
+            $mapProductIdDetail = [];
+            foreach ($arrCartDetail as $cartDetail) {
+                array_push($arrProductId, $cartDetail['entityProductId']);
+
+                $productDetail = new stdClass();
+                $productDetail->quantity = $cartDetail['quantity'];
+                $productDetail->stock = $cartDetail['stock'];
+                $productDetail->maximumOrderQuantity = $cartDetail['maximumOrderQuantity'];
+                $mapProductIdDetail[$cartDetail['entityProductId']] = $productDetail;
+            }
+
+            // Get all related bonuses
+            $mapProductIdBonus = [];
+            $mapBonusIdRelationGroup = [];
+            $mapSellerIdRelationGroupId = [];
+            if (count($arrProductId) > 0) {
+                $dbBonus = new BaseModel($this->db, "vwEntityProductSellBonusDetail");
+                $dbBonus->bonusTypeName = "bonusTypeName_" . $this->objUser->language;
+                $arrBonus = $dbBonus->getWhere("entityProductId IN (" . implode(",", $arrProductId) . ") AND isActive = 1");
+                $arrBonusId = [];
+                foreach ($arrBonus as $bonus) {
+                    array_push($arrBonusId, $bonus['id']);
+                }
+
+                // Get special bonuses
+                if (count($arrBonusId) > 0) {
+                    $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
+                    $arrBonusRelationGroup = $dbBonusRelationGroup->getWhere("bonusId IN (" . implode(",", $arrBonusId) . ")");
+
+                    foreach ($arrBonusRelationGroup as $bonusRelationGroup) {
+                        $bonusId = $bonusRelationGroup['bonusId'];
+                        $arrRelationGroup = [];
+                        if (array_key_exists($bonusId, $mapBonusIdRelationGroup)) {
+                            $arrRelationGroup = $mapBonusIdRelationGroup[$bonusId];
+                        }
+
+                        array_push($arrRelationGroup, $bonusRelationGroup['relationGroupId']);
+                        $mapBonusIdRelationGroup[$bonusId] = $arrRelationGroup;
+                    }
+                }
+
+                $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+                $dbEntityRelation = new BaseModel($this->db, "entityRelation");
+                $arrEntityRelation = $dbEntityRelation->getWhere("entityBuyerId IN ($arrEntityId)");
+                foreach ($arrEntityRelation as $entityRelation) {
+                    $mapSellerIdRelationGroupId[$entityRelation['entitySellerId']] = $entityRelation['relationGroupId'];
+                }
+
+                foreach ($arrBonus as $bonus) {
+                    $productId = $bonus['entityProductId'];
+                    $arrProductBonus = [];
+                    if (array_key_exists($productId, $mapProductIdBonus)) {
+                        $arrProductBonus = $mapProductIdBonus[$productId];
+                    }
+                    array_push($arrProductBonus, $bonus);
+                    $mapProductIdBonus[$productId] = $arrProductBonus;
+                }
+            }
+            // Group cart items by seller id with their bonuses
             $allCartItems = [];
             $allSellers = [];
             foreach ($arrCartDetail as $cartDetail) {
-                $sellerId = $cartDetail->entityId;
+                $sellerId = $cartDetail['entityId'];
+                $productId = $cartDetail['entityProductId'];
 
                 $cartItemsBySeller = [];
                 if (array_key_exists($sellerId, $allCartItems)) {
@@ -274,6 +330,108 @@ class CartController extends Controller
                     $seller->name = $cartDetail[$nameField];
                     array_push($allSellers, $seller);
                 }
+
+                $arrProductBonus = [];
+                $activeBonus = new stdClass();
+                $activeBonus->totalBonus = 0;
+                if (array_key_exists($productId, $mapProductIdBonus)) {
+                    $arrBonus = $mapProductIdBonus[$productId];
+                    foreach ($arrBonus as $bonus) {
+                        $bonusId = $bonus['id'];
+
+                        // Check if bonus available for buyer
+                        $valid = false;
+                        if (array_key_exists($bonusId, $mapBonusIdRelationGroup)) {
+                            $arrRelationGroup = $mapBonusIdRelationGroup[$bonusId];
+                            if (array_key_exists($sellerId, $mapSellerIdRelationGroupId)) {
+                                $relationGroupId = $mapSellerIdRelationGroupId[$sellerId];
+                                if (in_array($relationGroupId, $arrRelationGroup)) {
+                                    $valid = true;
+                                }
+                            }
+                        } else {
+                            $valid = true;
+                        }
+
+                        if (!$valid) {
+                            continue;
+                        }
+
+                        $bonusType = $bonus['bonusTypeName'];
+                        $bonusTypeId = $bonus['bonusTypeId'];
+                        $bonusMinOrder = $bonus['minOrder'];
+                        $bonusBonus = $bonus['bonus'];
+
+                        // Check if bonus is possible
+                        $productDetail = $mapProductIdDetail[$productId];
+                        $availableQuantity = min($productDetail->stock, $productDetail->maximumOrderQuantity);
+
+                        if (!$productDetail->maximumOrderQuantity)
+                            $availableQuantity = $productDetail->stock;
+                        if (!$productDetail->stock)
+                            $availableQuantity = 0;
+
+                        $totalOrder = 0;
+                        if ($bonusTypeId == Constants::BONUS_TYPE_FIXED || $bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
+                            $totalOrder = $bonusMinOrder + $bonusBonus;
+                        } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                            $totalOrder = $bonusMinOrder + floor($bonusBonus * $bonusMinOrder / 100);
+                        }
+                        if ($totalOrder > $availableQuantity) {
+                            continue;
+                        }
+
+                        $totalBonus = 0;
+                        if ($productDetail->quantity >= $bonusMinOrder) {
+                            if ($bonusTypeId == Constants::BONUS_TYPE_FIXED) {
+                                $totalBonus = $bonusBonus;
+                            } else if ($bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
+                                $totalBonus = floor($productDetail->quantity / $bonusMinOrder) * $bonusBonus;
+                            } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                                $totalBonus = floor($productDetail->quantity * $bonusBonus / 100);
+                            }
+                        }
+
+                        if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                            $bonusBonus .= "%";
+                        }
+
+                        if ($totalBonus > $activeBonus->totalBonus) {
+                            $activeBonus->bonusType = $bonusType;
+                            $activeBonus->minQty = $bonusMinOrder;
+                            $activeBonus->bonuses = $bonusBonus;
+                            $activeBonus->totalBonus = $totalBonus;
+                        }
+
+                        $found = false;
+                        for ($i = 0; $i < count($arrProductBonus); $i++) {
+                            $productBonus = $arrProductBonus[$i];
+                            if ($productBonus->bonusType == $bonusType) {
+                                $arrMinQty = $productBonus->arrMinQty;
+                                array_push($arrMinQty, $bonusMinOrder);
+                                $productBonus->arrMinQty = $arrMinQty;
+
+                                $arrBonuses = $productBonus->arrBonuses;
+                                array_push($arrBonuses, $bonusBonus);
+                                $productBonus->arrBonuses = $arrBonuses;
+
+                                $arrProductBonus[$i] = $productBonus;
+                                $found = true;
+                                break;
+                            }
+                        }
+
+                        if (!$found) {
+                            $productBonus = new stdClass();
+                            $productBonus->bonusType = $bonusType;
+                            $productBonus->arrMinQty = [$bonusMinOrder];
+                            $productBonus->arrBonuses = [$bonusBonus];
+                            array_push($arrProductBonus, $productBonus);
+                        }
+                    }
+                }
+                $cartDetail->arrBonus = $arrProductBonus;
+                $cartDetail->activeBonus = $activeBonus;
 
                 array_push($cartItemsBySeller, $cartDetail);
                 $allCartItems[$sellerId] = $cartItemsBySeller;
@@ -387,47 +545,30 @@ class CartController extends Controller
             $this->f3->set("pageURL", "/web/cart/checkout");
             echo View::instance()->render('app/layout/layout.php');
         } else {
-            $productId = $this->f3->get('POST.productId');
-            $sellerId = $this->f3->get('POST.sellerId');
+            $entityProductId = $this->f3->get('POST.productId');
             $cartDetailId = $this->f3->get('POST.cartDetailId');
             $quantity = $this->f3->get('POST.quantity');
 
-            $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
-            $arrBonus = $dbBonus->findWhere("entityProductId = '$productId' AND isActive = 1");
-
-            $quantityFree = 0;
-            $maxMinOrder = 0;
-            foreach ($arrBonus as $bonus) {
-                if ($bonus['minOrder'] <= $quantity && $maxMinOrder < $bonus['minOrder']) {
-                    $maxMinOrder = $bonus['minOrder'];
-                    $quantityFree = $bonus['bonus'];
-                }
-            }
-
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
             $dbCartDetail->getById($cartDetailId);
-            $dbCartDetail->quantity = $quantity;
-            $dbCartDetail->quantityFree = $quantityFree;
 
-            $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
-            $dbEntityProduct->getWhere("id=$productId");
 
-            $maxOrder = min($dbEntityProduct->stock, $dbEntityProduct->maximumOrderQuantity);
+            $bonusDetail = BonusHelper::calculateBonusQuantity($this->f3, $this->db, $this->objUser->language, $entityProductId, $quantity);
+            $quantityFree = $bonusDetail->quantityFree;
+            $maxOrder = $bonusDetail->maxOrder;
+            $total = $bonusDetail->total;
 
-            if (!$dbEntityProduct->maximumOrderQuantity)
-                $maxOrder = $dbEntityProduct->stock;
-            if (!$dbEntityProduct->stock)
-                $maxOrder = 0;
-
-            $total = $quantityFree + $quantity;
             if ($total > $maxOrder) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
-                $this->webResponse->message = "Not allowed (max: $maxOrder)";
+                $quantity = BonusHelper::calculateBonusQuantity($this->f3, $this->db, $this->objUser->language, $entityProductId, $total, true)->maxOrder;
+                $this->webResponse->message = "Not allowed (max: $quantity)";
                 echo $this->webResponse->jsonResponse();
                 return;
             }
 
+            $dbCartDetail->quantity = $quantity;
+            $dbCartDetail->quantityFree = $quantityFree;
             $dbCartDetail->update();
 
             $dbCartDetailFull = new BaseModel($this->db, "vwCartDetail");
@@ -447,6 +588,7 @@ class CartController extends Controller
             $cartDetail->quantityFree = $cartDetailFull['quantityFree'];
             $cartDetail->entityId = $cartDetailFull['entityId'];
             $cartDetail->cartCount = $cartCount;
+            $cartDetail->activeBonus = $bonusDetail->activeBonus;
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = "";
@@ -730,6 +872,7 @@ class CartController extends Controller
                         $emailHandler->resetTos();
                         $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                         $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                        $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad");
                     }
                 }
 
@@ -790,6 +933,7 @@ class CartController extends Controller
                     $emailHandler->resetTos();
                     $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                     $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
+                    $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad");
                 }
             }
             $emailHandler->sendEmail(Constants::EMAIL_NEW_ORDER, $subject, $htmlContent);
