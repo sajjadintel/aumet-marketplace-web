@@ -2134,7 +2134,7 @@ class ProductsController extends Controller
             Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $productNum);
             Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $bonusTypeNum);
             Excel::setCellFormulaVLookup($sheet, 'E3', 2505, "'User Input'!E", 'Variables!$G$3:$H$' . $relationGroupNum);
-            
+
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
             Excel::hideSheetByName($spreadsheet, $sheetnameVariables);
@@ -2151,7 +2151,7 @@ class ProductsController extends Controller
             $arrProductIdStr = implode(",", $arrProductId);
             $dbBonus = new BaseModel($this->db, "vwEntityProductSellBonusDetail");
             $arrBonus = $dbBonus->findWhere("entityProductId IN (" . $arrProductIdStr . ") AND isActive = 1");
-            
+
             $arrBonusId = [];
             foreach ($arrBonus as $bonus) {
                 array_push($arrBonusId, $bonus['id']);
@@ -2165,13 +2165,13 @@ class ProductsController extends Controller
 
                 foreach($arrBonusRelationGroup as $bonusRelationGroup) {
                     $bonusId = $bonusRelationGroup['bonusId'];
-                    
+
                     $relationGroupId = $bonusRelationGroup['relationGroupId'];
                     $relationGroupName = $mapRelationGroupIdName[$relationGroupId];
                     if(array_key_exists($bonusId, $mapBonusIdRelationGroupName)) {
-                        $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonusId]; 
+                        $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonusId];
                         array_push($arrRelationGroupName, $relationGroupName);
-                        $mapBonusIdRelationGroupName[$bonusId] = $arrRelationGroupName; 
+                        $mapBonusIdRelationGroupName[$bonusId] = $arrRelationGroupName;
                     } else {
                         $mapBonusIdRelationGroupName[$bonusId] = [$relationGroupName];
                     }
@@ -2445,7 +2445,7 @@ class ProductsController extends Controller
                 Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $productNum);
                 Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $bonusTypeNum);
                 Excel::setCellFormulaVLookup($sheet, 'E3', 2505, "'User Input'!E", 'Variables!$G$3:$H$' . $relationGroupNum);
-                
+
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
                 Excel::hideSheetByName($spreadsheet, $sheetnameVariables);
@@ -2475,7 +2475,7 @@ class ProductsController extends Controller
                 $i = 0;
                 foreach ($arrBonus as $bonus) {
                     $bonusExcel = [];
-                    
+
                     $j = 0;
                     foreach ($fields as $field) {
                         switch ($field) {
@@ -2534,10 +2534,10 @@ class ProductsController extends Controller
                     $minOrder = $bonus[2];
                     $bonusBonus = $bonus[3];
                     $relationGroupId = $bonus[4];
-                    
+
                     $arrRelationGroupId = [];
                     if($relationGroupId != "#N/A") {
-                        array_push($arrRelationGroupId, $relationGroupId);    
+                        array_push($arrRelationGroupId, $relationGroupId);
                         for($j = 0; $j < count($arrBonus); $j++) {
                             if(in_array($j, $arrMergedIndex)) {
                                 continue;
@@ -2548,7 +2548,7 @@ class ProductsController extends Controller
                             $mergeMinOrder = $mergeBonus[2];
                             $mergeBonusBonus = $mergeBonus[3];
                             $mergeRelationGroupId = $mergeBonus[4];
-    
+
                             if($entityProductId == $mergeEntityProductId
                                 && $bonusTypeId == $mergeBonusTypeId
                                 && $minOrder == $mergeMinOrder
@@ -2975,7 +2975,7 @@ class ProductsController extends Controller
                                 array_push($errors, "VAT must be a positive number between 0 and 100");
                             } else {
                                 if (strpos($cell->getFormattedValue(), '%') !== false) {
-                                    $cellValue *= 10;
+                                    $cellValue *= 100;
                                 }
                                 $dbEntityProduct->vat = round((float) $cellValue, 2);
                             }
