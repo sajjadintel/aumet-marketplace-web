@@ -376,7 +376,7 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		sellingEntityName: {
-			en: 'Ditributor Name',
+			en: 'Distributor Name',
 			ar: 'اسم الموزع',
 			fr: '',
 		},
