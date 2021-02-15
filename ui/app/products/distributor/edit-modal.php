@@ -96,42 +96,42 @@
                             <select class="select2 form-control" id="editProductCountry" name="madeInCountryId" data-select2-id="editProductCountry" tabindex="-1" aria-hidden="true">
                             </select>
                         </div>
-                        <div class="col-md-4 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="editProductNameAr" class="form-control-label"><?php echo $vModule_product_brandName; ?> AR</label>
                             <input type="text" class="form-control" name="name_ar" id="editProductNameAr">
                         </div>
-                        <div class="col-md-4 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="editProductNameEn" class="form-control-label"><?php echo $vModule_product_brandName; ?> EN</label>
                             <input type="text" class="form-control" name="name_en" id="editProductNameEn">
                         </div>
-                        <div class="col-md-4 form-group">
+                        <!-- <div class="col-md-4 form-group">
                             <label for="editProductNameFr" class="form-control-label"><?php echo $vModule_product_brandName; ?> FR</label>
                             <input type="text" class="form-control" name="name_fr" id="editProductNameFr">
-                        </div>
-                        <div class="col-md-4 form-group">
+                        </div> -->
+                        <div class="col-md-6 form-group">
                             <label for="editProductSubtitleAr" class="form-control-label"><?php echo $vModule_product_subtitle; ?> AR</label>
                             <input type="text" class="form-control" name="subtitle_ar" id="editProductSubtitleAr">
                         </div>
-                        <div class="col-md-4 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="editProductSubtitleEn" class="form-control-label"><?php echo $vModule_product_subtitle; ?> EN</label>
                             <input type="text" class="form-control" name="subtitle_en" id="editProductSubtitleEn">
                         </div>
-                        <div class="col-md-4 form-group">
+                        <!-- <div class="col-md-4 form-group">
                             <label for="editProductSubtitleFr" class="form-control-label"><?php echo $vModule_product_subtitle; ?> FR</label>
                             <input type="text" class="form-control" name="subtitle_fr" id="editProductSubtitleFr">
-                        </div>
-                        <div class="col-md-4 form-group">
+                        </div> -->
+                        <div class="col-md-6 form-group">
                             <label for="editProductDescriptionAr" class="form-control-label"><?php echo $vModule_product_description; ?> AR</label>    
                             <textarea class="form-control" id="editProductDescriptionAr" name="description_ar" rows="4"></textarea>
                         </div>
-                        <div class="col-md-4 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="editProductDescriptionEn" class="form-control-label"><?php echo $vModule_product_description; ?> EN</label>
                             <textarea class="form-control" id="editProductDescriptionEn" name="description_en" rows="4"></textarea>
                         </div>
-                        <div class="col-md-4 form-group">
+                        <!-- <div class="col-md-4 form-group">
                             <label for="editProductDescriptionFr" class="form-control-label"><?php echo $vModule_product_description; ?> FR</label>
                             <textarea class="form-control" id="editProductDescriptionFr" name="description_fr" rows="4"></textarea>
-                        </div>
+                        </div> -->
                         <div class="col-md-4 form-group">
                             <label for="editUnitPrice" class="form-control-label"><?php echo $vModule_product_unitPrice . " (" . $buyerCurrency . ")"; ?></label>
                             <input type="number" class="form-control" name="unitPrice" id="editUnitPrice" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : !this.value? this.value : 0;" onkeypress="return ![43, 45, 101].includes(event.charCode)" autocomplete="off">

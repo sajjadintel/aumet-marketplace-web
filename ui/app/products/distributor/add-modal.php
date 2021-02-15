@@ -96,42 +96,42 @@
                             <select class="select2 form-control" id="addProductCountry" name="madeInCountryId" data-select2-id="addProductCountry" tabindex="-1" aria-hidden="true" autocomplete="off">
                             </select>
                         </div>
-                        <div class="col-md-4 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="addProductNameAr" class="form-control-label"><?php echo $vModule_product_brandName; ?> AR</label>
                             <input type="text" class="form-control" name="name_ar" id="addProductNameAr" autocomplete="off">
                         </div>
-                        <div class="col-md-4 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="addProductNameEn" class="form-control-label"><?php echo $vModule_product_brandName; ?> EN</label>
                             <input type="text" class="form-control" name="name_en" id="addProductNameEn" autocomplete="off">
                         </div>
-                        <div class="col-md-4 form-group">
+                        <!-- <div class="col-md-4 form-group">
                             <label for="addProductNameFr" class="form-control-label"><?php echo $vModule_product_brandName; ?> FR</label>
                             <input type="text" class="form-control" name="name_fr" id="addProductNameFr" autocomplete="off">
-                        </div>
-                        <div class="col-md-4 form-group">
+                        </div> -->
+                        <div class="col-md-6 form-group">
                             <label for="addProductSubtitleAr" class="form-control-label"><?php echo $vModule_product_subtitle; ?> AR</label>
                             <input type="text" class="form-control" name="subtitle_ar" id="addProductSubtitleAr" autocomplete="off">
                         </div>
-                        <div class="col-md-4 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="addProductSubtitleEn" class="form-control-label"><?php echo $vModule_product_subtitle; ?> EN</label>
                             <input type="text" class="form-control" name="subtitle_en" id="addProductSubtitleEn" autocomplete="off">
                         </div>
-                        <div class="col-md-4 form-group">
+                        <!-- <div class="col-md-4 form-group">
                             <label for="addProductSubtitleFr" class="form-control-label"><?php echo $vModule_product_subtitle; ?> FR</label>
                             <input type="text" class="form-control" name="subtitle_fr" id="addProductSubtitleFr" autocomplete="off">
-                        </div>
-                        <div class="col-md-4 form-group">
+                        </div> -->
+                        <div class="col-md-6 form-group">
                             <label for="addProductDescriptionAr" class="form-control-label"><?php echo $vModule_product_description; ?> AR</label>    
                             <textarea class="form-control" id="addProductDescriptionAr" name="description_ar" rows="4" autocomplete="off"></textarea>
                         </div>
-                        <div class="col-md-4 form-group">
+                        <div class="col-md-6 form-group">
                             <label for="addProductDescriptionEn" class="form-control-label"><?php echo $vModule_product_description; ?> EN</label>
                             <textarea class="form-control" id="addProductDescriptionEn" name="description_en" rows="4" autocomplete="off"></textarea>
                         </div>
-                        <div class="col-md-4 form-group">
+                        <!-- <div class="col-md-4 form-group">
                             <label for="addProductDescriptionFr" class="form-control-label"><?php echo $vModule_product_description; ?> FR</label>
                             <textarea class="form-control" id="addProductDescriptionFr" name="description_fr" rows="4" autocomplete="off"></textarea>
-                        </div>
+                        </div> -->
                         <div class="col-md-3 form-group">
                             <label for="addUnitPrice" class="form-control-label"><?php echo $vModule_product_unitPrice . " (" . $buyerCurrency . ")"; ?></label>
                             <input type="number" class="form-control" name="unitPrice" id="addUnitPrice" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : !this.value? this.value : 0;" onkeypress="return ![43, 45, 101].includes(event.charCode)" autocomplete="off">

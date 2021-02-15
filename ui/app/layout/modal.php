@@ -37,35 +37,36 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalCustomerNameLabel"></div>
-                            <div class="col-md-6 form-text" id="modalCustomerNameText"></div>
-                        </div>
+                <div class="p-4 mb-6 border rounded">
+                    <div class="flex-wrap border-0 pb-6 pb-0 mt-n7">
+                        <h6 class="align-items-start flex-column">
+                            <span class="font-weight-bolder font-size-h6 text-primary px-2 bg-white"><?php echo $vModule_orderDetails_orderInformation ?></span>
+                        </h6>
                     </div>
-                    <div class="col-md-6">
-                        <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalStatusLabel"></div>
-                            <div class="col-md-6 form-text" id="modalStatusText"></div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row form-group">
+                                <div class="col-md-6 form-label" id="modalCustomerNameLabel"></div>
+                                <div class="col-md-6 form-text" id="modalCustomerNameText"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalTotalLabel"></div>
-                            <div class="col-md-6 form-text" id="modalTotalText"></div>
+                        <div class="col-md-6">
+                            <div class="row form-group">
+                                <div class="col-md-6 form-label" id="modalStatusLabel"></div>
+                                <div class="col-md-6 form-text" id="modalStatusText"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalDateLabel"></div>
-                            <div class="col-md-6 form-text" id="modalDateText"></div>
+                        <div class="col-md-6">
+                            <div class="row form-group">
+                                <div class="col-md-6 form-label" id="modalTotalLabel"></div>
+                                <div class="col-md-6 form-text" id="modalTotalText"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 display-none">
-                        <div class="row form-group">
-                            <div class="col-md-6 form-label" id="modalBranchLabel"></div>
-                            <div class="col-md-6 form-text" id="modalBranchText"></div>
+                        <div class="col-md-6">
+                            <div class="row form-group">
+                                <div class="col-md-6 form-label" id="modalDateLabel"></div>
+                                <div class="col-md-6 form-text" id="modalDateText"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -80,12 +81,17 @@
                             <div class="col-md-6 form-text" id="modalPaymentMethodText"></div>
                         </div>
                     </div>
+                    <div class="col-md-6 display-none">
+                        <div class="row form-group">
+                            <div class="col-md-6 form-label" id="modalBranchLabel"></div>
+                            <div class="col-md-6 form-text" id="modalBranchText"></div>
+                        </div>
+                    </div>
                 </div>
-
 
                 <div class="row">
                     <div class="col-md-12 form-group">
-                        <div id="smarttab">
+                        <div id="smarttab" class="orderdetails-smarttab">
 
                             <ul class="nav">
                                 <li>
@@ -93,6 +99,7 @@
                                         <?php echo $orderDetails ?>
                                     </a>
                                 </li>
+                                <div class="border-left broder-right"></div>
                                 <li>
                                     <a class="nav-link" href="#tab-2">
                                         <?php echo $orderLogs ?>

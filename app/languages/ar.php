@@ -251,6 +251,7 @@ return array(
     'vModule_cart_continueShopping' => 'إضافة المزيد من المنتجات',
     'vModule_cart_proceedToCheckOut' => 'إرسال قائمة الطلبات',
     'vModule_cart_quantity' => 'الكمية',
+    'vModule_cart_bonusQuantity' => 'مكافأة',
     'vModule_cart_bonus' => 'Bonus', // TODO: Add Translation
     'vModule_cart_note' => 'Note', // TODO: Add Translation
     'vModule_cart_unitPrice' => 'سعر الوحدة',
@@ -287,10 +288,12 @@ return array(
     'vModule_thankyou_viewOrder' => 'View my orders', // TODO: Translate
 
     'vModule_bonus_bonusTextTemplate' => 'كل %q: %b',
+    'vModule_bonus_title' => 'تحديث المكافأة',
 
     'vModule_order_dateFrom' => 'أدخل تاريخ بدء الطلبات',
     'vModule_order_dateTo' => 'أدخل تاريخ انتهاء الطلبات',
     'vModule_order_date' => 'أدخل تاريخ الطلبات',
+    'vModule_orderDetails_orderInformation' => 'معلومات الطلب',
 
     'vModule_customer_relationGroupTitle' => 'مجموعة العملاء',
     'vModule_customer_relationGroup' => 'مجموعة العملاء',

@@ -48,7 +48,7 @@ FROM `marketplace`.`user` `u`
 
 # Modified vwEntityProductSellSummary
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
-    SELECT 
+    SELECT
         `ep`.`id` AS `id`,
         `ep`.`entityId` AS `entityId`,
         `e`.`name_ar` AS `entityName_ar`,
@@ -65,7 +65,428 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
         JOIN `entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
         JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
         JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
-        
+
+################################
+
+## 04/02/2021 -- Sajad Abbasi
+
+INSERT INTO `marketplace`.`paymentMethod` (`name_en`, `name_ar`, `name_fr`) VALUES ('Payment by Credit Facility', 'Payment by Credit Facility', 'Payment by Credit Facility');
+
+ALTER TABLE `marketplace`.`product`
+CHANGE COLUMN `description_en` `description_en` TEXT NULL DEFAULT NULL ,
+CHANGE COLUMN `description_fr` `description_fr` TEXT NULL DEFAULT NULL ,
+CHANGE COLUMN `description_ar` `description_ar` TEXT NULL DEFAULT NULL ;
+
+################################
+
+## 08/02/2021 -- Sajad Abbasi
+
+# add entityImage
+
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
+    SELECT
+        `ep`.`id` AS `id`,
+        `ep`.`entityId` AS `entityId`,
+        `e`.`name_ar` AS `entityName_ar`,
+        `e`.`name_en` AS `entityName_en`,
+        `e`.`name_fr` AS `entityName_fr`,
+        `ep`.`productId` AS `productId`,
+        `ep`.`totalOrderQuantity` AS `totalOrderQuantity`,
+        `ep`.`totalOrderCount` AS `totalOrderCount`,
+        `ep`.`maximumOrderQuantity` AS `maximumOrderQuantity`,
+        `p`.`scientificNameId` AS `scientificNameId`,
+        `s`.`name` AS `scientificName`,
+        `p`.`insertDateTime` AS `insertDateTime`,
+        `p`.`name_ar` AS `productName_ar`,
+        `p`.`name_en` AS `productName_en`,
+        `p`.`name_fr` AS `productName_fr`,
+        `p`.`subtitle_ar` AS `subtitle_ar`,
+        `p`.`subtitle_en` AS `subtitle_en`,
+        `p`.`subtitle_fr` AS `subtitle_fr`,
+        `p`.`description_ar` AS `description_ar`,
+        `p`.`description_en` AS `description_en`,
+        `p`.`description_fr` AS `description_fr`,
+        `p`.`strength` AS `strength`,
+        `p`.`manufacturerName` AS `manufacturerName`,
+        `p`.`batchNumber` AS `batchNumber`,
+        `p`.`itemCode` AS `itemCode`,
+        `p`.`expiryDate` AS `productExpiryDate`,
+        `p`.`categoryId` AS `productCategoryId`,
+        `productCategory`.`name_en` AS `productCategoryName_en`,
+        `productCategory`.`name_ar` AS `productCategoryName_ar`,
+        `productCategory`.`name_fr` AS `productCategoryName_fr`,
+        `p`.`subcategoryId` AS `productSubcategoryId`,
+        `productSubcategory`.`name_en` AS `productSubcategoryName_en`,
+        `productSubcategory`.`name_ar` AS `productSubcategoryName_ar`,
+        `productSubcategory`.`name_fr` AS `productSubcategoryName_fr`,
+        `s`.`categoryId` AS `categoryId`,
+        `s`.`subCategoryId` AS `subCategoryId`,
+        `marketplace`.`category`.`name_en` AS `category_name_en`,
+        `marketplace`.`category`.`name_ar` AS `category_name_ar`,
+        `marketplace`.`category`.`name_fr` AS `category_name_fr`,
+        `subCategory`.`name_en` AS `sub_category_name_en`,
+        `subCategory`.`name_ar` AS `sub_category_name_ar`,
+        `subCategory`.`name_fr` AS `sub_category_name_fr`,
+        `ep`.`unitPrice` AS `unitPrice`,
+        `ep`.`vat` AS `vat`,
+        `e`.`currencyId` AS `currencyId`,
+				`e`.`image` AS `entityImage`,
+        `ec`.`currency` AS `currency`,
+        `ep`.`expiryDate` AS `expiryDate`,
+        `ep`.`statusId` AS `statusId`,
+        `ep`.`stockStatusId` AS `stockStatusId`,
+        `ss`.`name_ar` AS `stockStatusName_ar`,
+        `ss`.`name_en` AS `stockStatusName_en`,
+        `ss`.`name_fr` AS `stockStatusName_fr`,
+        `ep`.`stock` AS `stock`,
+        `ep`.`stockUpdateDateTime` AS `stockUpdateDateTime`,
+        `p`.`image` AS `image`,
+        `p`.`madeInCountryId` AS `madeInCountryId`,
+        `c`.`name_ar` AS `madeInCountryName_ar`,
+        `c`.`name_en` AS `madeInCountryName_en`,
+        `c`.`name_fr` AS `madeInCountryName_fr`,
+        `ep`.`bonusCustomerGroupId` AS `bonusCustomerGroupId`,
+        `cg`.`name_ar` AS `bonusCustomerGroupName_ar`,
+        `cg`.`name_en` AS `bonusCustomerGroupName_en`,
+        `cg`.`name_fr` AS `bonusCustomerGroupName_fr`,
+        `ep`.`bonusTypeId` AS `bonusTypeId`,
+        `epbt`.`formula` AS `bonusFormula`,
+        `epbt`.`name_ar` AS `bonusTypeName_ar`,
+        `epbt`.`name_en` AS `bonusTypeName_en`,
+        `epbt`.`name_fr` AS `bonusTypeName_fr`,
+        IFNULL(MIN(`epbd`.`minOrder`), 10) AS `defaultQuantity`,
+        NULL AS `bonusConfig`,
+        IFNULL(`q`.`quantity`, 0) AS `quantityOrdered`
+    FROM
+        ((((((((((((((`marketplace`.`entityProductSell` `ep`
+        JOIN `marketplace`.`product` `p` ON ((`ep`.`productId` = `p`.`id`)))
+        JOIN `marketplace`.`scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
+        JOIN `marketplace`.`entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
+        JOIN `marketplace`.`country` `c` ON ((`p`.`madeInCountryId` = `c`.`id`)))
+        JOIN `marketplace`.`country` `ec` ON ((`e`.`countryId` = `ec`.`id`)))
+        JOIN `marketplace`.`stockStatus` `ss` ON ((`ep`.`stockStatusId` = `ss`.`id`)))
+        JOIN `marketplace`.`entityProductBonusType` `epbt` ON ((`ep`.`bonusTypeId` = `epbt`.`id`)))
+        LEFT JOIN `marketplace`.`category` ON ((`s`.`categoryId` = `marketplace`.`category`.`id`)))
+        LEFT JOIN `marketplace`.`category` `subCategory` ON ((`s`.`subCategoryId` = `subCategory`.`id`)))
+        LEFT JOIN `marketplace`.`category` `productCategory` ON ((`p`.`categoryId` = `productCategory`.`id`)))
+        LEFT JOIN `marketplace`.`subcategory` `productSubcategory` ON ((`p`.`subcategoryId` = `productSubcategory`.`id`)))
+        LEFT JOIN `marketplace`.`vwOrderProductQuantity` `q` ON ((`q`.`entityProductId` = `ep`.`id`)))
+        LEFT JOIN `marketplace`.`entityProductSellBonusDetail` `epbd` ON ((`epbd`.`entityProductId` = `ep`.`id`)))
+        LEFT JOIN `marketplace`.`entityRelationGroup` `cg` ON ((`cg`.`id` = `ep`.`bonusCustomerGroupId`)))
+    GROUP BY `ep`.`id`;
+
+################################
+
+## 03/02/2021 -- Antoine Abou Cherfane
+
+# Modified orderGrand
+ALTER TABLE `marketplace`.`orderGrand`
+DROP COLUMN `paymentMethodId`;
+
+# Modified order
+ALTER TABLE `marketplace`.`order`
+CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
+
+################################
+
+
+## 03/02/2021 -- Antoine Abou Cherfane
+
+# Activated the menuItem for the Bonus Update
+UPDATE `marketplace`.`menuItem` SET `menuId` = '1' WHERE (`id` = '20');
+
+# Created vwEntityProductSellBonusDetail view for the bonuses
+CREATE
+    ALGORITHM = UNDEFINED
+    DEFINER = `root`@`%`
+    SQL SECURITY DEFINER
+VIEW `vwEntityProductSellBonusDetail` AS
+    SELECT
+        `bonus`.`id` AS `id`,
+        `bonus`.`entityProductId` AS `entityProductId`,
+        `product`.`name_en` AS `productName_en`,
+        `product`.`name_ar` AS `productName_ar`,
+        `product`.`name_fr` AS `productName_fr`,
+        `bonus`.`bonusTypeId` AS `bonusTypeId`,
+        `bonusType`.`name_en` AS `bonusTypeName_en`,
+        `bonusType`.`name_ar` AS `bonusTypeName_ar`,
+        `bonusType`.`name_fr` AS `bonusTypeName_fr`,
+        `bonus`.`isActive` AS `isActive`,
+        `bonus`.`minOrder` AS `minOrder`,
+        `bonus`.`bonus` AS `bonus`
+    FROM
+        ((`entityProductSellBonusDetail` `bonus`
+        LEFT JOIN `product` ON ((`product`.`id` = `bonus`.`entityProductId`)))
+        LEFT JOIN `bonusType` ON ((`bonusType`.`id` = `bonus`.`bonusTypeId`)))
+
+# Modified vwEntityProductSellSummary
+CREATE
+    ALGORITHM = UNDEFINED
+    DEFINER = `root`@`%`
+    SQL SECURITY DEFINER
+VIEW `vwEntityProductSellSummary` AS
+    SELECT
+        `ep`.`id` AS `id`,
+        `ep`.`entityId` AS `entityId`,
+        `ep`.`productId` AS `productId`,
+
+## 10/02/2021 -- Patrick Younes
+
+# Modified vwEntityProductSell
+
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
+    SELECT
+        `ep`.`id` AS `id`,
+        `ep`.`entityId` AS `entityId`,
+        `e`.`name_ar` AS `entityName_ar`,
+        `e`.`name_en` AS `entityName_en`,
+        `e`.`name_fr` AS `entityName_fr`,
+        `ep`.`productId` AS `productId`,
+        `ep`.`totalOrderQuantity` AS `totalOrderQuantity`,
+        `ep`.`totalOrderCount` AS `totalOrderCount`,
+        `ep`.`maximumOrderQuantity` AS `maximumOrderQuantity`,
+        `p`.`scientificNameId` AS `scientificNameId`,
+        `s`.`name` AS `scientificName`,
+        `p`.`insertDateTime` AS `insertDateTime`,
+        `p`.`name_ar` AS `productName_ar`,
+        `p`.`name_en` AS `productName_en`,
+        `p`.`name_fr` AS `productName_fr`,
+        `p`.`subtitle_ar` AS `subtitle_ar`,
+        `p`.`subtitle_en` AS `subtitle_en`,
+        `p`.`subtitle_fr` AS `subtitle_fr`,
+        `p`.`description_ar` AS `description_ar`,
+        `p`.`description_en` AS `description_en`,
+        `p`.`description_fr` AS `description_fr`,
+        `p`.`strength` AS `strength`,
+        `p`.`manufacturerName` AS `manufacturerName`,
+        `p`.`batchNumber` AS `batchNumber`,
+        `p`.`itemCode` AS `itemCode`,
+        `p`.`expiryDate` AS `productExpiryDate`,
+        `p`.`categoryId` AS `productCategoryId`,
+        `productCategory`.`name_en` AS `productCategoryName_en`,
+        `productCategory`.`name_ar` AS `productCategoryName_ar`,
+        `productCategory`.`name_fr` AS `productCategoryName_fr`,
+        `p`.`subcategoryId` AS `productSubcategoryId`,
+        `productSubcategory`.`name_en` AS `productSubcategoryName_en`,
+        `productSubcategory`.`name_ar` AS `productSubcategoryName_ar`,
+        `productSubcategory`.`name_fr` AS `productSubcategoryName_fr`,
+        `s`.`categoryId` AS `categoryId`,
+        `s`.`subCategoryId` AS `subCategoryId`,
+        `marketplace`.`category`.`name_en` AS `category_name_en`,
+        `marketplace`.`category`.`name_ar` AS `category_name_ar`,
+        `marketplace`.`category`.`name_fr` AS `category_name_fr`,
+        `subCategory`.`name_en` AS `sub_category_name_en`,
+        `subCategory`.`name_ar` AS `sub_category_name_ar`,
+        `subCategory`.`name_fr` AS `sub_category_name_fr`,
+        `ep`.`unitPrice` AS `unitPrice`,
+        `ep`.`vat` AS `vat`,
+        `e`.`currencyId` AS `currencyId`,
+        `e`.`image` AS `entityImage`,
+        `ec`.`currency` AS `currency`,
+        `ep`.`expiryDate` AS `expiryDate`,
+        `ep`.`statusId` AS `statusId`,
+        `ep`.`stockStatusId` AS `stockStatusId`,
+        `ss`.`name_ar` AS `stockStatusName_ar`,
+        `ss`.`name_en` AS `stockStatusName_en`,
+        `ss`.`name_fr` AS `stockStatusName_fr`,
+        `ep`.`stock` AS `stock`,
+        `ep`.`stockUpdateDateTime` AS `stockUpdateDateTime`,
+        `p`.`image` AS `image`,
+        `p`.`madeInCountryId` AS `madeInCountryId`,
+        `c`.`name_ar` AS `madeInCountryName_ar`,
+        `c`.`name_en` AS `madeInCountryName_en`,
+        `c`.`name_fr` AS `madeInCountryName_fr`,
+        `ep`.`bonusCustomerGroupId` AS `bonusCustomerGroupId`,
+        `cg`.`name_ar` AS `bonusCustomerGroupName_ar`,
+        `cg`.`name_en` AS `bonusCustomerGroupName_en`,
+        `cg`.`name_fr` AS `bonusCustomerGroupName_fr`,
+        `ep`.`bonusTypeId` AS `bonusTypeId`,
+        `epbt`.`formula` AS `bonusFormula`,
+        `epbt`.`name_ar` AS `bonusTypeName_ar`,
+        `epbt`.`name_en` AS `bonusTypeName_en`,
+        `epbt`.`name_fr` AS `bonusTypeName_fr`,
+        IFNULL(MIN(`epbd`.`minOrder`), 10) AS `defaultQuantity`,
+        NULL AS `bonusConfig`,
+        IFNULL(`q`.`quantity`, 0) AS `quantityOrdered`
+    FROM
+        ((((((((((((`marketplace`.`entityProductSell` `ep`
+        JOIN `marketplace`.`product` `p` ON ((`ep`.`productId` = `p`.`id`)))
+        JOIN `marketplace`.`scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
+        JOIN `marketplace`.`entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
+        JOIN `marketplace`.`country` `c` ON ((`p`.`madeInCountryId` = `c`.`id`)))
+        JOIN `marketplace`.`country` `ec` ON ((`e`.`countryId` = `ec`.`id`)))
+        JOIN `marketplace`.`stockStatus` `ss` ON ((`ep`.`stockStatusId` = `ss`.`id`)))
+        JOIN `marketplace`.`entityProductBonusType` `epbt` ON ((`ep`.`bonusTypeId` = `epbt`.`id`)))
+        LEFT JOIN `marketplace`.`category` `productCategory` ON ((`p`.`categoryId` = `productCategory`.`id`)))
+        LEFT JOIN `marketplace`.`subcategory` `productSubcategory` ON ((`p`.`subcategoryId` = `productSubcategory`.`id`)))
+        LEFT JOIN `marketplace`.`vwOrderProductQuantity` `q` ON ((`q`.`entityProductId` = `ep`.`id`)))
+        LEFT JOIN `marketplace`.`entityProductSellBonusDetail` `epbd` ON ((`epbd`.`entityProductId` = `ep`.`id`)))
+        LEFT JOIN `marketplace`.`entityRelationGroup` `cg` ON ((`cg`.`id` = `ep`.`bonusCustomerGroupId`)))
+    GROUP BY `ep`.`id`;
+
+
+## INDEXES
+ALTER TABLE `marketplace`.`entityProductSellBonusDetail`
+ADD INDEX `idx_entityProductId` (`entityProductId` ASC) VISIBLE;
+
+ALTER TABLE `marketplace`.`account`
+ADD INDEX `idx_entityId` (`entityId` ASC) VISIBLE;
+
+ALTER TABLE `marketplace`.`cartDetail`
+ADD INDEX `idx_accountId` (`accountId` ASC) VISIBLE;
+
+## FOREIGN KEYS
+
+ALTER TABLE `marketplace`.`entityProductSell`
+ADD CONSTRAINT `fk_entityProductSell_product`
+  FOREIGN KEY (`productId`)
+  REFERENCES `marketplace`.`product` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`product`
+ADD CONSTRAINT `fk_product_scientificName`
+  FOREIGN KEY (`scientificNameId`)
+  REFERENCES `marketplace`.`scientificName` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`entityProductSell`
+ADD CONSTRAINT `fk_entityProductSell_entity`
+  FOREIGN KEY (`entityId`)
+  REFERENCES `marketplace`.`entity` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`product`
+ADD CONSTRAINT `fk_product_country`
+  FOREIGN KEY (`madeInCountryId`)
+  REFERENCES `marketplace`.`country` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`entity`
+ADD CONSTRAINT `fk_entity_country`
+  FOREIGN KEY (`countryId`)
+  REFERENCES `marketplace`.`country` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`entityProductSell`
+ADD CONSTRAINT `fk_entityProductSell_stockStatus`
+  FOREIGN KEY (`stockStatusId`)
+  REFERENCES `marketplace`.`stockStatus` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`entityProductSell`
+ADD CONSTRAINT `fk_entityProductSell_entityProductBonusType`
+  FOREIGN KEY (`bonusTypeId`)
+  REFERENCES `marketplace`.`entityProductBonusType` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`product`
+ADD CONSTRAINT `fk_product_category`
+  FOREIGN KEY (`categoryId`)
+  REFERENCES `marketplace`.`category` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`product`
+ADD CONSTRAINT `fk_product_subcategory`
+  FOREIGN KEY (`subcategoryId`)
+  REFERENCES `marketplace`.`subcategory` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`entityProductSell`
+ADD CONSTRAINT `fk_entityProductSell_entityProductSellBonusDetail`
+  FOREIGN KEY (`entityProductId`)
+  REFERENCES `marketplace`.`entityProductSellBonusDetail` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `marketplace`.`entityProductSell`
+ADD CONSTRAINT `fk_entityProductSell_entityRelationGroup`
+  FOREIGN KEY (`bonusCustomerGroupId`)
+  REFERENCES `marketplace`.`entityRelationGroup` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+################################
+
+## 02/02/2021 -- Hamza Rashid
+
+# Added field 'entityImage' to 'vwEntityUserProfile' view
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityUserProfile` AS
+SELECT `ua`.`userId`                     AS `userId`,
+       `u`.`email`                       AS `userEmail`,
+       `u`.`fullname`                    AS `userFullName`,
+       `u`.`mobile`                      AS `userMobile`,
+       `u`.`statusId`                    AS `userStatusId`,
+       `u`.`roleId`                      AS `userRoleId`,
+       `ua`.`accountId`                  AS `accountId`,
+       `a`.`number`                      AS `accountNumber`,
+       `a`.`statusId`                    AS `accountStatusId`,
+       `ua`.`statusId`                   AS `userAccountStatusId`,
+       `a`.`entityId`                    AS `entityId`,
+       `e`.`typeId`                      AS `entityTypeId`,
+       `e`.`name_en`                     AS `entityName_en`,
+       `e`.`name_ar`                     AS `entityName_ar`,
+       `e`.`name_fr`                     AS `entityName_fr`,
+       `e`.`countryId`                   AS `entityCountryId`,
+       `e`.`image`                       AS `entityImage`,
+       `marketplace`.`country`.`name_en` AS `entityCountryName_en`,
+       `marketplace`.`country`.`name_ar` AS `entityCountryName_ar`,
+       `marketplace`.`country`.`name_fr` AS `entityCountryName_fr`,
+       `eb`.`id`                         AS `entityBranchId`,
+       `eb`.`cityId`                     AS `entityBranchCityId`,
+       `marketplace`.`city`.`nameEn`     AS `entityBranchCityName_en`,
+       `marketplace`.`city`.`nameAr`     AS `entityBranchCityName_ar`,
+       `marketplace`.`city`.`nameFr`     AS `entityBranchCityName_fr`,
+       `eb`.`address_en`                 AS `entityBranchAddress_en`,
+       `eb`.`address_ar`                 AS `entityBranchAddress_ar`,
+       `eb`.`address_fr`                 AS `entityBranchAddress_fr`,
+       `eb`.`tradeLicenseNumber`         AS `entityBranchTradeLicenseNumber`,
+       `eb`.`tradeLicenseUrl`            AS `entityBranchTradeLicenseUrl`
+FROM `marketplace`.`user` `u`
+  JOIN `marketplace`.`userAccount` `ua` ON `ua`.`userId` = `u`.`id`
+  JOIN `marketplace`.`account` `a` ON `ua`.`accountId` = `a`.`id`
+  JOIN `marketplace`.`entity` `e` ON `a`.`entityId` = `e`.`id`
+  JOIN `marketplace`.`entityBranch` `eb` ON `a`.`entityId` = `eb`.`entityId`
+  LEFT JOIN `marketplace`.`country` ON `marketplace`.`country`.`id` = `e`.`countryId`
+  LEFT JOIN `marketplace`.`city` ON `marketplace`.`city`.`id` = `eb`.`cityId`;
+
+################################
+
+## 03/02/2021 -- Antoine Abou Cherfane
+
+# Modified vwEntityProductSellSummary
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
+    SELECT
+        `ep`.`id` AS `id`,
+        `ep`.`entityId` AS `entityId`,
+        `e`.`name_ar` AS `entityName_ar`,
+        `e`.`name_en` AS `entityName_en`,
+        `e`.`name_fr` AS `entityName_fr`,
+        `ep`.`productId` AS `productId`,
+        `p`.`scientificNameId` AS `scientificNameId`,
+        `s`.`name` AS `scientificName`,
+        `p`.`name_ar` AS `productName_ar`,
+        `p`.`name_en` AS `productName_en`,
+        `p`.`name_fr` AS `productName_fr`
+    FROM
+        (`entityProductSell` `ep`
+        JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
+
+
+################################
+        (((`entityProductSell` `ep`
+        JOIN `entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
+        JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
+        JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
+
 ################################
 
 ## 04/02/2021 -- Sajad Abbasi
@@ -180,11 +601,11 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
 ## 09/02/2021 -- Antoine Abou Cherfane
 
 # Modified orderGrand
-ALTER TABLE `marketplace`.`orderGrand` 
+ALTER TABLE `marketplace`.`orderGrand`
 DROP COLUMN `paymentMethodId`;
 
 # Modified order
-ALTER TABLE `marketplace`.`order` 
+ALTER TABLE `marketplace`.`order`
 CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 
 ################################
@@ -235,5 +656,478 @@ CREATE OR REPLACE VIEW `marketplace`.`vwOrderEntityUser` AS
         LEFT JOIN `entityBranch` `branch_Buyer` ON ((`order`.`branchBuyerId` = `branch_Buyer`.`id`)))
         LEFT JOIN `entityBranch` `branch_Seller` ON ((`order`.`branchSellerId` = `branch_Seller`.`id`)))
         LEFT JOIN `paymentMethod` ON ((`order`.`paymentMethodId` = `paymentMethod`.`id`)))
+
+################################
+
+## 12/02/2021 -- Antoine Abou Cherfane
+
+# Modified product table
+ALTER TABLE `marketplace`.`product`
+DROP FOREIGN KEY `fk_product_scientificName`;
+ALTER TABLE `marketplace`.`product`
+DROP INDEX `product_scientificNameId_index`;
+
+# Modified entityProductSell
+ALTER TABLE `marketplace`.`entityProductSell`
+CHANGE COLUMN `maximumOrderQuantity` `maximumOrderQuantity` INT NULL DEFAULT NULL;
+
+# Modified vwEntityProductSell
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
+    SELECT
+        `ep`.`id` AS `id`,
+        `ep`.`entityId` AS `entityId`,
+        `e`.`name_ar` AS `entityName_ar`,
+        `e`.`name_en` AS `entityName_en`,
+        `e`.`name_fr` AS `entityName_fr`,
+        `ep`.`productId` AS `productId`,
+        `ep`.`totalOrderQuantity` AS `totalOrderQuantity`,
+        `ep`.`totalOrderCount` AS `totalOrderCount`,
+        `ep`.`maximumOrderQuantity` AS `maximumOrderQuantity`,
+        `p`.`scientificNameId` AS `scientificNameId`,
+        `s`.`name` AS `scientificName`,
+        `p`.`insertDateTime` AS `insertDateTime`,
+        `p`.`name_ar` AS `productName_ar`,
+        `p`.`name_en` AS `productName_en`,
+        `p`.`name_fr` AS `productName_fr`,
+        `p`.`subtitle_ar` AS `subtitle_ar`,
+        `p`.`subtitle_en` AS `subtitle_en`,
+        `p`.`subtitle_fr` AS `subtitle_fr`,
+        `p`.`description_ar` AS `description_ar`,
+        `p`.`description_en` AS `description_en`,
+        `p`.`description_fr` AS `description_fr`,
+        `p`.`strength` AS `strength`,
+        `p`.`manufacturerName` AS `manufacturerName`,
+        `p`.`batchNumber` AS `batchNumber`,
+        `p`.`itemCode` AS `itemCode`,
+        `p`.`expiryDate` AS `productExpiryDate`,
+        `p`.`categoryId` AS `productCategoryId`,
+        `productCategory`.`name_en` AS `productCategoryName_en`,
+        `productCategory`.`name_ar` AS `productCategoryName_ar`,
+        `productCategory`.`name_fr` AS `productCategoryName_fr`,
+        `p`.`subcategoryId` AS `productSubcategoryId`,
+        `productSubcategory`.`name_en` AS `productSubcategoryName_en`,
+        `productSubcategory`.`name_ar` AS `productSubcategoryName_ar`,
+        `productSubcategory`.`name_fr` AS `productSubcategoryName_fr`,
+        `s`.`categoryId` AS `categoryId`,
+        `s`.`subCategoryId` AS `subCategoryId`,
+        `category`.`name_en` AS `category_name_en`,
+        `category`.`name_ar` AS `category_name_ar`,
+        `category`.`name_fr` AS `category_name_fr`,
+        `subCategory`.`name_en` AS `sub_category_name_en`,
+        `subCategory`.`name_ar` AS `sub_category_name_ar`,
+        `subCategory`.`name_fr` AS `sub_category_name_fr`,
+        `ep`.`unitPrice` AS `unitPrice`,
+        `ep`.`vat` AS `vat`,
+        `e`.`currencyId` AS `currencyId`,
+        `e`.`image` AS `entityImage`,
+        `ec`.`currency` AS `currency`,
+        `ep`.`expiryDate` AS `expiryDate`,
+        `ep`.`statusId` AS `statusId`,
+        `ep`.`stockStatusId` AS `stockStatusId`,
+        `ss`.`name_ar` AS `stockStatusName_ar`,
+        `ss`.`name_en` AS `stockStatusName_en`,
+        `ss`.`name_fr` AS `stockStatusName_fr`,
+        `ep`.`stock` AS `stock`,
+        `ep`.`stockUpdateDateTime` AS `stockUpdateDateTime`,
+        `p`.`image` AS `image`,
+        `p`.`madeInCountryId` AS `madeInCountryId`,
+        `c`.`name_ar` AS `madeInCountryName_ar`,
+        `c`.`name_en` AS `madeInCountryName_en`,
+        `c`.`name_fr` AS `madeInCountryName_fr`,
+        `ep`.`bonusCustomerGroupId` AS `bonusCustomerGroupId`,
+        `cg`.`name_ar` AS `bonusCustomerGroupName_ar`,
+        `cg`.`name_en` AS `bonusCustomerGroupName_en`,
+        `cg`.`name_fr` AS `bonusCustomerGroupName_fr`,
+        `ep`.`bonusTypeId` AS `bonusTypeId`,
+        `epbt`.`formula` AS `bonusFormula`,
+        `epbt`.`name_ar` AS `bonusTypeName_ar`,
+        `epbt`.`name_en` AS `bonusTypeName_en`,
+        `epbt`.`name_fr` AS `bonusTypeName_fr`,
+        IFNULL(MIN(`epbd`.`minOrder`), 10) AS `defaultQuantity`,
+        NULL AS `bonusConfig`,
+        IFNULL(`q`.`quantity`, 0) AS `quantityOrdered`
+    FROM
+        ((((((((((((((`entityProductSell` `ep`
+        JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
+        JOIN `entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
+        JOIN `country` `c` ON ((`p`.`madeInCountryId` = `c`.`id`)))
+        JOIN `country` `ec` ON ((`e`.`countryId` = `ec`.`id`)))
+        JOIN `stockStatus` `ss` ON ((`ep`.`stockStatusId` = `ss`.`id`)))
+        JOIN `entityProductBonusType` `epbt` ON ((`ep`.`bonusTypeId` = `epbt`.`id`)))
+        LEFT JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
+        LEFT JOIN `category` ON ((`s`.`categoryId` = `category`.`id`)))
+        LEFT JOIN `category` `subCategory` ON ((`s`.`subCategoryId` = `subCategory`.`id`)))
+        LEFT JOIN `category` `productCategory` ON ((`p`.`categoryId` = `productCategory`.`id`)))
+        LEFT JOIN `subcategory` `productSubcategory` ON ((`p`.`subcategoryId` = `productSubcategory`.`id`)))
+        LEFT JOIN `vwOrderProductQuantity` `q` ON ((`q`.`entityProductId` = `ep`.`id`)))
+        LEFT JOIN `entityProductSellBonusDetail` `epbd` ON ((`epbd`.`entityProductId` = `ep`.`id`)))
+        LEFT JOIN `entityRelationGroup` `cg` ON ((`cg`.`id` = `ep`.`bonusCustomerGroupId`)))
+    GROUP BY `ep`.`id`;
+
+######
+
+## 12/02/2021 -- Antoine Abou Cherfane
+
+# Modified city
+UPDATE `marketplace`.`city` SET `nameEn` = 'Ra’s al-Khaimah', `nameAr` = 'Ra’s al-Khaimah', `nameFr` = 'Ra’s al-Khaimah' WHERE (`id` = '53773');
+UPDATE `marketplace`.`city` SET `nameEn` = 'Umm al-Qaiwain', `nameAr` = 'Umm al-Qaiwain', `nameFr` = 'Umm al-Qaiwain' WHERE (`id` = '53767');
+UPDATE `marketplace`.`city` SET `nameEn` = 'Ajman', `nameAr` = 'Ajman', `nameFr` = 'Ajman' WHERE (`id` = '53768');
+DELETE FROM `marketplace`.`city` WHERE (`id` = '53769');
+DELETE FROM `marketplace`.`city` WHERE (`id` = '53770');
+
+################################
+
+## 14/02/2021 -- Hamza Rashid
+
+# Changed 'join' to 'left join' on 'scientificName' table (fixes MPW-442)
+
+CREATE OR REPLACE VIEW `marketplace`.`vwOrderDetail` AS
+SELECT `marketplace`.`order`.`id`                      AS `id`,
+       `marketplace`.`orderDetail`.`id`                AS `orderDetailId`,
+       `marketplace`.`entityProductSell`.`id`          AS `productCode`,
+       `marketplace`.`orderDetail`.`quantity`          AS `quantity`,
+       `marketplace`.`orderDetail`.`quantityFree`      AS `quantityFree`,
+       `marketplace`.`orderDetail`.`freeRatio`         AS `freeRatio`,
+       `marketplace`.`orderDetail`.`requestedQuantity` AS `requestedQuantity`,
+       `marketplace`.`orderDetail`.`shippedQuantity`   AS `shippedQuantity`,
+       `marketplace`.`orderDetail`.`note`              AS `note`,
+       `marketplace`.`orderDetail`.`unitPrice`         AS `unitPrice`,
+       round(`marketplace`.`orderDetail`.`tax`, 0)     AS `tax`,
+       `marketplace`.`entityProductSell`.`stock`       AS `stock`,
+       `marketplace`.`product`.`name_en`               AS `productNameEn`,
+       `marketplace`.`product`.`name_ar`               AS `productNameAr`,
+       `marketplace`.`product`.`name_fr`               AS `productNameFr`,
+       `marketplace`.`scientificName`.`name`           AS `scientificName`,
+       `marketplace`.`product`.`image`                 AS `image`,
+       `marketplace`.`currency`.`symbol`               AS `currency`
+FROM `marketplace`.`order`
+  JOIN `marketplace`.`orderDetail` ON `marketplace`.`order`.`id` = `marketplace`.`orderDetail`.`orderId`
+  JOIN `marketplace`.`entityProductSell` ON `marketplace`.`entityProductSell`.`id` = `marketplace`.`orderDetail`.`entityProductId`
+  JOIN `marketplace`.`product` ON `marketplace`.`product`.`id` = `marketplace`.`entityProductSell`.`productId`
+  LEFT JOIN `marketplace`.`scientificName` ON `marketplace`.`scientificName`.`id` = `marketplace`.`product`.`scientificNameId`
+  JOIN `marketplace`.`currency` ON `marketplace`.`order`.`currencyId` = `marketplace`.`currency`.`id`;
+
+################################
+
+
+
+## 14/02/2021 -- Sajad Abbasi
+
+# Changed vat round to 2 (fixes MPW-427)
+
+
+CREATE OR REPLACE VIEW `marketplace`.`vwOrderDetail` AS
+    SELECT
+        `marketplace`.`order`.`id` AS `id`,
+        `marketplace`.`orderDetail`.`id` AS `orderDetailId`,
+        `marketplace`.`entityProductSell`.`id` AS `productCode`,
+        `marketplace`.`orderDetail`.`quantity` AS `quantity`,
+        `marketplace`.`orderDetail`.`quantityFree` AS `quantityFree`,
+        `marketplace`.`orderDetail`.`freeRatio` AS `freeRatio`,
+        `marketplace`.`orderDetail`.`requestedQuantity` AS `requestedQuantity`,
+        `marketplace`.`orderDetail`.`shippedQuantity` AS `shippedQuantity`,
+        `marketplace`.`orderDetail`.`note` AS `note`,
+        `marketplace`.`orderDetail`.`unitPrice` AS `unitPrice`,
+        ROUND(`marketplace`.`orderDetail`.`tax`, 2) AS `tax`,
+        `marketplace`.`entityProductSell`.`stock` AS `stock`,
+        `marketplace`.`product`.`name_en` AS `productNameEn`,
+        `marketplace`.`product`.`name_ar` AS `productNameAr`,
+        `marketplace`.`product`.`name_fr` AS `productNameFr`,
+        `marketplace`.`scientificName`.`name` AS `scientificName`,
+        `marketplace`.`product`.`image` AS `image`,
+        `marketplace`.`currency`.`symbol` AS `currency`
+    FROM
+        (((((`marketplace`.`order`
+        JOIN `marketplace`.`orderDetail` ON ((`marketplace`.`order`.`id` = `marketplace`.`orderDetail`.`orderId`)))
+        JOIN `marketplace`.`entityProductSell` ON ((`marketplace`.`entityProductSell`.`id` = `marketplace`.`orderDetail`.`entityProductId`)))
+        JOIN `marketplace`.`product` ON ((`marketplace`.`product`.`id` = `marketplace`.`entityProductSell`.`productId`)))
+        LEFT JOIN `marketplace`.`scientificName` ON ((`marketplace`.`scientificName`.`id` = `marketplace`.`product`.`scientificNameId`)))
+        JOIN `marketplace`.`currency` ON ((`marketplace`.`order`.`currencyId` = `marketplace`.`currency`.`id`)))
+
+## 14/02/2021 -- Naveed Javaid
+
+# Changed 'join' to 'left join' on 'scientificName' table (fixes MPW-440)
+
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
+select `ep`.`id`                          AS `id`,
+       `ep`.`entityId`                    AS `entityId`,
+       `e`.`name_ar`                      AS `entityName_ar`,
+       `e`.`name_en`                      AS `entityName_en`,
+       `e`.`name_fr`                      AS `entityName_fr`,
+       `ep`.`productId`                   AS `productId`,
+       `ep`.`totalOrderQuantity`          AS `totalOrderQuantity`,
+       `ep`.`totalOrderCount`             AS `totalOrderCount`,
+       `ep`.`maximumOrderQuantity`        AS `maximumOrderQuantity`,
+       `p`.`scientificNameId`             AS `scientificNameId`,
+       `s`.`name`                         AS `scientificName`,
+       `p`.`insertDateTime`               AS `insertDateTime`,
+       `p`.`name_ar`                      AS `productName_ar`,
+       `p`.`name_en`                      AS `productName_en`,
+       `p`.`name_fr`                      AS `productName_fr`,
+       `p`.`subtitle_ar`                  AS `subtitle_ar`,
+       `p`.`subtitle_en`                  AS `subtitle_en`,
+       `p`.`subtitle_fr`                  AS `subtitle_fr`,
+       `p`.`description_ar`               AS `description_ar`,
+       `p`.`description_en`               AS `description_en`,
+       `p`.`description_fr`               AS `description_fr`,
+       `p`.`strength`                     AS `strength`,
+       `p`.`manufacturerName`             AS `manufacturerName`,
+       `p`.`batchNumber`                  AS `batchNumber`,
+       `p`.`itemCode`                     AS `itemCode`,
+       `p`.`expiryDate`                   AS `productExpiryDate`,
+       `p`.`categoryId`                   AS `productCategoryId`,
+       `productCategory`.`name_en`        AS `productCategoryName_en`,
+       `productCategory`.`name_ar`        AS `productCategoryName_ar`,
+       `productCategory`.`name_fr`        AS `productCategoryName_fr`,
+       `p`.`subcategoryId`                AS `productSubcategoryId`,
+       `productSubcategory`.`name_en`     AS `productSubcategoryName_en`,
+       `productSubcategory`.`name_ar`     AS `productSubcategoryName_ar`,
+       `productSubcategory`.`name_fr`     AS `productSubcategoryName_fr`,
+       `s`.`categoryId`                   AS `categoryId`,
+       `s`.`subCategoryId`                AS `subCategoryId`,
+       `marketplace`.`category`.`name_en` AS `category_name_en`,
+       `marketplace`.`category`.`name_ar` AS `category_name_ar`,
+       `marketplace`.`category`.`name_fr` AS `category_name_fr`,
+       `subCategory`.`name_en`            AS `sub_category_name_en`,
+       `subCategory`.`name_ar`            AS `sub_category_name_ar`,
+       `subCategory`.`name_fr`            AS `sub_category_name_fr`,
+       `ep`.`unitPrice`                   AS `unitPrice`,
+       `ep`.`vat`                         AS `vat`,
+       `e`.`currencyId`                   AS `currencyId`,
+       `ec`.`currency`                    AS `currency`,
+       `ep`.`expiryDate`                  AS `expiryDate`,
+       `ep`.`statusId`                    AS `statusId`,
+       `ep`.`stockStatusId`               AS `stockStatusId`,
+       `ss`.`name_ar`                     AS `stockStatusName_ar`,
+       `ss`.`name_en`                     AS `stockStatusName_en`,
+       `ss`.`name_fr`                     AS `stockStatusName_fr`,
+       `ep`.`stock`                       AS `stock`,
+       `ep`.`stockUpdateDateTime`         AS `stockUpdateDateTime`,
+       `p`.`image`                        AS `image`,
+       `p`.`madeInCountryId`              AS `madeInCountryId`,
+       `c`.`name_ar`                      AS `madeInCountryName_ar`,
+       `c`.`name_en`                      AS `madeInCountryName_en`,
+       `c`.`name_fr`                      AS `madeInCountryName_fr`,
+       `ep`.`bonusCustomerGroupId`        AS `bonusCustomerGroupId`,
+       `cg`.`name_ar`                     AS `bonusCustomerGroupName_ar`,
+       `cg`.`name_en`                     AS `bonusCustomerGroupName_en`,
+       `cg`.`name_fr`                     AS `bonusCustomerGroupName_fr`,
+       `ep`.`bonusTypeId`                 AS `bonusTypeId`,
+       `epbt`.`formula`                   AS `bonusFormula`,
+       `epbt`.`name_ar`                   AS `bonusTypeName_ar`,
+       `epbt`.`name_en`                   AS `bonusTypeName_en`,
+       `epbt`.`name_fr`                   AS `bonusTypeName_fr`,
+       ifnull(min(`epbd`.`minOrder`), 10) AS `defaultQuantity`,
+       if((`ep`.`bonusTypeId` = 2), json_arrayagg(json_object('id', `epbd`.`id`, 'formula', `epbt`.`formula`, 'name',
+                                                              replace(
+                                                                      replace(`epbt`.`name_en`, '%bonus', `epbd`.`bonus`),
+                                                                      '%minOrder', `epbd`.`minOrder`), 'name_ar',
+                                                              replace(
+                                                                      replace(`epbt`.`name_ar`, '%bonus', `epbd`.`bonus`),
+                                                                      '%minOrder', `epbd`.`minOrder`), 'name_fr',
+                                                              replace(
+                                                                      replace(`epbt`.`name_fr`, '%bonus', `epbd`.`bonus`),
+                                                                      '%minOrder', `epbd`.`minOrder`), 'minOrder',
+                                                              `epbd`.`minOrder`, 'bonus', `epbd`.`bonus`)),
+          NULL)                           AS `bonusConfig`,
+       ifnull(`q`.`quantity`, 0)          AS `quantityOrdered`
+from ((((((((((((((`marketplace`.`entityProductSell` `ep` join `marketplace`.`product` `p` on ((`ep`.`productId` = `p`.`id`))) left join `marketplace`.`scientificName` `s` on ((`p`.`scientificNameId` = `s`.`id`))) join `marketplace`.`entity` `e` on ((`ep`.`entityId` = `e`.`id`))) join `marketplace`.`country` `c` on ((`p`.`madeInCountryId` = `c`.`id`))) join `marketplace`.`country` `ec` on ((`e`.`countryId` = `ec`.`id`))) join `marketplace`.`stockStatus` `ss` on ((`ep`.`stockStatusId` = `ss`.`id`))) join `marketplace`.`entityProductBonusType` `epbt` on ((`ep`.`bonusTypeId` = `epbt`.`id`))) left join `marketplace`.`category` on ((`s`.`categoryId` = `marketplace`.`category`.`id`))) left join `marketplace`.`category` `subCategory` on ((`s`.`subCategoryId` = `subCategory`.`id`))) left join `marketplace`.`category` `productCategory` on ((`p`.`categoryId` = `productCategory`.`id`))) left join `marketplace`.`subcategory` `productSubcategory` on ((`p`.`subcategoryId` = `productSubcategory`.`id`))) left join `marketplace`.`vwOrderProductQuantity` `q` on ((`q`.`entityProductId` = `ep`.`id`))) left join `marketplace`.`entityProductSellBonusDetail` `epbd` on ((`epbd`.`entityProductId` = `ep`.`id`)))
+         left join `marketplace`.`entityRelationGroup` `cg` on ((`cg`.`id` = `ep`.`bonusCustomerGroupId`)))
+group by `ep`.`id`;
+
+################################
+
+## 14/02/2021 -- Naveed Javaid
+
+# Adding missing countries in marketplace.country table
+
+INSERT INTO marketplace.country (name_en, name_ar, name_fr, currency) VALUES ('Afghanistan', 'Afghanistan', 'Afghanistan', 'AED'),
+('Aland Islands', 'Aland Islands', 'Aland Islands', 'AED'),
+('Albania', 'Albania', 'Albania', 'AED'),
+('American Samoa', 'American Samoa', 'American Samoa', 'AED'),
+('Andorra', 'Andorra', 'Andorra', 'AED'),
+('Angola', 'Angola', 'Angola', 'AED'),
+('Anguilla', 'Anguilla', 'Anguilla', 'AED'),
+('Antarctica', 'Antarctica', 'Antarctica', 'AED'),
+('Antigua And Barbuda', 'Antigua And Barbuda', 'Antigua And Barbuda', 'AED'),
+('Armenia', 'Armenia', 'Armenia', 'AED'),
+('Aruba', 'Aruba', 'Aruba', 'AED'),
+('Azerbaijan', 'Azerbaijan', 'Azerbaijan', 'AED'),
+('Bahamas', 'Bahamas', 'Bahamas', 'AED'),
+('Bahrain', 'Bahrain', 'Bahrain', 'AED'),
+('Bangladesh', 'Bangladesh', 'Bangladesh', 'AED'),
+('Barbados', 'Barbados', 'Barbados', 'AED'),
+('Belarus', 'Belarus', 'Belarus', 'AED'),
+('Belize', 'Belize', 'Belize', 'AED'),
+('Benin', 'Benin', 'Benin', 'AED'),
+('Bermuda', 'Bermuda', 'Bermuda', 'AED'),
+('Bhutan', 'Bhutan', 'Bhutan', 'AED'),
+('Bolivia', 'Bolivia', 'Bolivia', 'AED'),
+('Bosnia And Herzegovina', 'Bosnia And Herzegovina', 'Bosnia And Herzegovina', 'AED'),
+('Botswana', 'Botswana', 'Botswana', 'AED'),
+('Bouvet Island', 'Bouvet Island', 'Bouvet Island', 'AED'),
+('British Indian Ocean Territory', 'British Indian Ocean Territory', 'British Indian Ocean Territory', 'AED'),
+('Brunei Darussalam', 'Brunei Darussalam', 'Brunei Darussalam', 'AED'),
+('Bulgaria', 'Bulgaria', 'Bulgaria', 'AED'),
+('Burkina Faso', 'Burkina Faso', 'Burkina Faso', 'AED'),
+('Burundi', 'Burundi', 'Burundi', 'AED'),
+('Cambodia', 'Cambodia', 'Cambodia', 'AED'),
+('Cameroon', 'Cameroon', 'Cameroon', 'AED'),
+('Cape Verde', 'Cape Verde', 'Cape Verde', 'AED'),
+('Cayman Islands', 'Cayman Islands', 'Cayman Islands', 'AED'),
+('Central African Republic', 'Central African Republic', 'Central African Republic', 'AED'),
+('Chad', 'Chad', 'Chad', 'AED'),
+('Christmas Island', 'Christmas Island', 'Christmas Island', 'AED'),
+('Cocos (Keeling) Islands', 'Cocos (Keeling) Islands', 'Cocos (Keeling) Islands', 'AED'),
+('Colombia', 'Colombia', 'Colombia', 'AED'),
+('Comoros', 'Comoros', 'Comoros', 'AED'),
+('Congo', 'Congo', 'Congo', 'AED'),
+('Congo, Democratic Republic', 'Congo, Democratic Republic', 'Congo, Democratic Republic', 'AED'),
+('Cook Islands', 'Cook Islands', 'Cook Islands', 'AED'),
+('Costa Rica', 'Costa Rica', 'Costa Rica', 'AED'),
+('Cote D\'Ivoire', 'Cote D\'Ivoire', 'Cote D\'Ivoire', 'AED'),
+('Croatia', 'Croatia', 'Croatia', 'AED'),
+('Cuba', 'Cuba', 'Cuba', 'AED'),
+('Djibouti', 'Djibouti', 'Djibouti', 'AED'),
+('Dominica', 'Dominica', 'Dominica', 'AED'),
+('Dominican Republic', 'Dominican Republic', 'Dominican Republic', 'AED'),
+('El Salvador', 'El Salvador', 'El Salvador', 'AED'),
+('Equatorial Guinea', 'Equatorial Guinea', 'Equatorial Guinea', 'AED'),
+('Eritrea', 'Eritrea', 'Eritrea', 'AED'),
+('Estonia', 'Estonia', 'Estonia', 'AED'),
+('Ethiopia', 'Ethiopia', 'Ethiopia', 'AED'),
+('Falkland Islands (Malvinas)', 'Falkland Islands (Malvinas)', 'Falkland Islands (Malvinas)', 'AED'),
+('Faroe Islands', 'Faroe Islands', 'Faroe Islands', 'AED'),
+('Fiji', 'Fiji', 'Fiji', 'AED'),
+('French Guiana', 'French Guiana', 'French Guiana', 'AED'),
+('French Polynesia', 'French Polynesia', 'French Polynesia', 'AED'),
+('French Southern Territories', 'French Southern Territories', 'French Southern Territories', 'AED'),
+('Gabon', 'Gabon', 'Gabon', 'AED'),
+('Gambia', 'Gambia', 'Gambia', 'AED'),
+('Georgia', 'Georgia', 'Georgia', 'AED'),
+('Ghana', 'Ghana', 'Ghana', 'AED'),
+('Gibraltar', 'Gibraltar', 'Gibraltar', 'AED'),
+('Greenland', 'Greenland', 'Greenland', 'AED'),
+('Grenada', 'Grenada', 'Grenada', 'AED'),
+('Guadeloupe', 'Guadeloupe', 'Guadeloupe', 'AED'),
+('Guam', 'Guam', 'Guam', 'AED'),
+('Guatemala', 'Guatemala', 'Guatemala', 'AED'),
+('Guernsey', 'Guernsey', 'Guernsey', 'AED'),
+('Guinea', 'Guinea', 'Guinea', 'AED'),
+('Guinea-Bissau', 'Guinea-Bissau', 'Guinea-Bissau', 'AED'),
+('Guyana', 'Guyana', 'Guyana', 'AED'),
+('Haiti', 'Haiti', 'Haiti', 'AED'),
+('Heard Island & Mcdonald Islands', 'Heard Island & Mcdonald Islands', 'Heard Island & Mcdonald Islands', 'AED'),
+('Holy See (Vatican City State)', 'Holy See (Vatican City State)', 'Holy See (Vatican City State)', 'AED'),
+('Honduras', 'Honduras', 'Honduras', 'AED'),
+('Iceland', 'Iceland', 'Iceland', 'AED'),
+('Iran, Islamic Republic Of', 'Iran, Islamic Republic Of', 'Iran, Islamic Republic Of', 'AED'),
+('Iraq', 'Iraq', 'Iraq', 'AED'),
+('Isle Of Man', 'Isle Of Man', 'Isle Of Man', 'AED'),
+('Jamaica', 'Jamaica', 'Jamaica', 'AED'),
+('Jersey', 'Jersey', 'Jersey', 'AED'),
+('Kenya', 'Kenya', 'Kenya', 'AED'),
+('Kiribati', 'Kiribati', 'Kiribati', 'AED'),
+('Korea', 'Korea', 'Korea', 'AED'),
+('Kuwait', 'Kuwait', 'Kuwait', 'AED'),
+('Kyrgyzstan', 'Kyrgyzstan', 'Kyrgyzstan', 'AED'),
+('Lao People\'s Democratic Republic', 'Lao People\'s Democratic Republic', 'Lao People\'s Democratic Republic', 'AED'),
+('Lebanon', 'Lebanon', 'Lebanon', 'AED'),
+('Lesotho', 'Lesotho', 'Lesotho', 'AED'),
+('Liberia', 'Liberia', 'Liberia', 'AED'),
+('Libyan Arab Jamahiriya', 'Libyan Arab Jamahiriya', 'Libyan Arab Jamahiriya', 'AED'),
+('Lithuania', 'Lithuania', 'Lithuania', 'AED'),
+('Macao', 'Macao', 'Macao', 'AED'),
+('Macedonia', 'Macedonia', 'Macedonia', 'AED'),
+('Madagascar', 'Madagascar', 'Madagascar', 'AED'),
+('Malawi', 'Malawi', 'Malawi', 'AED'),
+('Maldives', 'Maldives', 'Maldives', 'AED'),
+('Mali', 'Mali', 'Mali', 'AED'),
+('Marshall Islands', 'Marshall Islands', 'Marshall Islands', 'AED'),
+('Martinique', 'Martinique', 'Martinique', 'AED'),
+('Mauritania', 'Mauritania', 'Mauritania', 'AED'),
+('Mauritius', 'Mauritius', 'Mauritius', 'AED'),
+('Mayotte', 'Mayotte', 'Mayotte', 'AED'),
+('Micronesia, Federated States Of', 'Micronesia, Federated States Of', 'Micronesia, Federated States Of', 'AED'),
+('Moldova', 'Moldova', 'Moldova', 'AED'),
+('Monaco', 'Monaco', 'Monaco', 'AED'),
+('Mongolia', 'Mongolia', 'Mongolia', 'AED'),
+('Montenegro', 'Montenegro', 'Montenegro', 'AED'),
+('Montserrat', 'Montserrat', 'Montserrat', 'AED'),
+('Morocco', 'Morocco', 'Morocco', 'AED'),
+('Mozambique', 'Mozambique', 'Mozambique', 'AED'),
+('Myanmar', 'Myanmar', 'Myanmar', 'AED'),
+('Namibia', 'Namibia', 'Namibia', 'AED'),
+('Nauru', 'Nauru', 'Nauru', 'AED'),
+('Nepal', 'Nepal', 'Nepal', 'AED'),
+('Netherlands Antilles', 'Netherlands Antilles', 'Netherlands Antilles', 'AED'),
+('New Caledonia', 'New Caledonia', 'New Caledonia', 'AED'),
+('Nicaragua', 'Nicaragua', 'Nicaragua', 'AED'),
+('Niger', 'Niger', 'Niger', 'AED'),
+('Nigeria', 'Nigeria', 'Nigeria', 'AED'),
+('Niue', 'Niue', 'Niue', 'AED'),
+('Norfolk Island', 'Norfolk Island', 'Norfolk Island', 'AED'),
+('Northern Mariana Islands', 'Northern Mariana Islands', 'Northern Mariana Islands', 'AED'),
+('Oman', 'Oman', 'Oman', 'AED'),
+('Palau', 'Palau', 'Palau', 'AED'),
+('Palestinian Territory, Occupied', 'Palestinian Territory, Occupied', 'Palestinian Territory, Occupied', 'AED'),
+('Panama', 'Panama', 'Panama', 'AED'),
+('Papua New Guinea', 'Papua New Guinea', 'Papua New Guinea', 'AED'),
+('Paraguay', 'Paraguay', 'Paraguay', 'AED'),
+('Peru', 'Peru', 'Peru', 'AED'),
+('Philippines', 'Philippines', 'Philippines', 'AED'),
+('Pitcairn', 'Pitcairn', 'Pitcairn', 'AED'),
+('Puerto Rico', 'Puerto Rico', 'Puerto Rico', 'AED'),
+('Qatar', 'Qatar', 'Qatar', 'AED'),
+('Reunion', 'Reunion', 'Reunion', 'AED'),
+('Rwanda', 'Rwanda', 'Rwanda', 'AED'),
+('Saint Barthelemy', 'Saint Barthelemy', 'Saint Barthelemy', 'AED'),
+('Saint Helena', 'Saint Helena', 'Saint Helena', 'AED'),
+('Saint Kitts And Nevis', 'Saint Kitts And Nevis', 'Saint Kitts And Nevis', 'AED'),
+('Saint Lucia', 'Saint Lucia', 'Saint Lucia', 'AED'),
+('Saint Martin', 'Saint Martin', 'Saint Martin', 'AED'),
+('Saint Pierre And Miquelon', 'Saint Pierre And Miquelon', 'Saint Pierre And Miquelon', 'AED'),
+('Saint Vincent And Grenadines', 'Saint Vincent And Grenadines', 'Saint Vincent And Grenadines', 'AED'),
+('Samoa', 'Samoa', 'Samoa', 'AED'),
+('San Marino', 'San Marino', 'San Marino', 'AED'),
+('Sao Tome And Principe', 'Sao Tome And Principe', 'Sao Tome And Principe', 'AED'),
+('Senegal', 'Senegal', 'Senegal', 'AED'),
+('Serbia', 'Serbia', 'Serbia', 'AED'),
+('Seychelles', 'Seychelles', 'Seychelles', 'AED'),
+('Sierra Leone', 'Sierra Leone', 'Sierra Leone', 'AED'),
+('Slovakia', 'Slovakia', 'Slovakia', 'AED'),
+('Slovenia', 'Slovenia', 'Slovenia', 'AED'),
+('Solomon Islands', 'Solomon Islands', 'Solomon Islands', 'AED'),
+('Somalia', 'Somalia', 'Somalia', 'AED'),
+('South Georgia And Sandwich Isl.', 'South Georgia And Sandwich Isl.', 'South Georgia And Sandwich Isl.', 'AED'),
+('Sri Lanka', 'Sri Lanka', 'Sri Lanka', 'AED'),
+('Sudan', 'Sudan', 'Sudan', 'AED'),
+('Suriname', 'Suriname', 'Suriname', 'AED'),
+('Svalbard And Jan Mayen', 'Svalbard And Jan Mayen', 'Svalbard And Jan Mayen', 'AED'),
+('Syrian Arab Republic', 'Syrian Arab Republic', 'Syrian Arab Republic', 'AED'),
+('Tajikistan', 'Tajikistan', 'Tajikistan', 'AED'),
+('Tanzania', 'Tanzania', 'Tanzania', 'AED'),
+('Timor-Leste', 'Timor-Leste', 'Timor-Leste', 'AED'),
+('Togo', 'Togo', 'Togo', 'AED'),
+('Tokelau', 'Tokelau', 'Tokelau', 'AED'),
+('Tonga', 'Tonga', 'Tonga', 'AED'),
+('Trinidad And Tobago', 'Trinidad And Tobago', 'Trinidad And Tobago', 'AED'),
+('Turkmenistan', 'Turkmenistan', 'Turkmenistan', 'AED'),
+('Turks And Caicos Islands', 'Turks And Caicos Islands', 'Turks And Caicos Islands', 'AED'),
+('Tuvalu', 'Tuvalu', 'Tuvalu', 'AED'),
+('Uganda', 'Uganda', 'Uganda', 'AED'),
+('United States Outlying Islands', 'United States Outlying Islands', 'United States Outlying Islands', 'AED'),
+('Uruguay', 'Uruguay', 'Uruguay', 'AED'),
+('Uzbekistan', 'Uzbekistan', 'Uzbekistan', 'AED'),
+('Vanuatu', 'Vanuatu', 'Vanuatu', 'AED'),
+('Venezuela', 'Venezuela', 'Venezuela', 'AED'),
+('Viet Nam', 'Viet Nam', 'Viet Nam', 'AED'),
+('Virgin Islands, British', 'Virgin Islands, British', 'Virgin Islands, British', 'AED'),
+('Virgin Islands, U.S.', 'Virgin Islands, U.S.', 'Virgin Islands, U.S.', 'AED'),
+('Wallis And Futuna', 'Wallis And Futuna', 'Wallis And Futuna', 'AED'),
+('Western Sahara', 'Western Sahara', 'Western Sahara', 'AED'),
+('Yemen', 'Yemen', 'Yemen', 'AED'),
+('Zambia', 'Zambia', 'Zambia', 'AED'),
+('Zimbabwe', 'Zimbabwe', 'Zimbabwe', 'AED');
 
 ################################

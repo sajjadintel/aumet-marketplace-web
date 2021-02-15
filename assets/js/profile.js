@@ -188,9 +188,6 @@ var Profile = (function () {
 			$(document)
 				.find(id + ' .dropzone-item')
 				.css('display', '');
-			if(file.size != 0) {
-				
-			}
 		});
 
 		// Update the total progress bar
