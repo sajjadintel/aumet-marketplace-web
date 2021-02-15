@@ -810,13 +810,19 @@ class ProductsController extends Controller
 
         if ($success) {
             $objResult = AumetFileUploader::upload("s3", $_FILES["product_image"], $this->generateRandomString(64));
-            $path = $objResult->fileLink;
+            if (!$objResult->isError) {
+                $path = $objResult->fileLink;
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+                $this->webResponse->title = "Product Image Upload";
+                $this->webResponse->data = $path;
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->title = "Image failed";
+                $this->webResponse->data = "Error: " . $objResult->error;
+                echo $this->webResponse->jsonResponse();
+            }
         }
-
-        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-        $this->webResponse->title = "Product Image Upload";
-        $this->webResponse->data = $path;
-        echo $this->webResponse->jsonResponse();
     }
 
     function postProductSubimage()
@@ -945,14 +951,14 @@ class ProductsController extends Controller
                     return;
                 }
 
-                if(strlen($subcategoryId) > 0) {
+                if (strlen($subcategoryId) > 0) {
                     $valid = true;
-                    if(strlen($categoryId) == 0) {
+                    if (strlen($categoryId) == 0) {
                         $valid = false;
                     } else {
                         $dbSubcategory = new BaseModel($this->db, "subcategory");
                         $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
-                        if($dbSubcategory->dry()) {
+                        if ($dbSubcategory->dry()) {
                             $valid = false;
                         }
                     }
@@ -1464,14 +1470,14 @@ class ProductsController extends Controller
                 return;
             }
 
-            if(strlen($subcategoryId) > 0) {
+            if (strlen($subcategoryId) > 0) {
                 $valid = true;
-                if(strlen($categoryId) == 0) {
+                if (strlen($categoryId) == 0) {
                     $valid = false;
                 } else {
                     $dbSubcategory = new BaseModel($this->db, "subcategory");
                     $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
-                    if($dbSubcategory->dry()) {
+                    if ($dbSubcategory->dry()) {
                         $valid = false;
                     }
                 }
@@ -2193,17 +2199,17 @@ class ProductsController extends Controller
             }
 
             $mapBonusIdRelationGroupName = [];
-            if(count($arrBonusId) > 0) {
+            if (count($arrBonusId) > 0) {
                 $arrBonusIdStr = implode(",", $arrBonusId);
                 $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
                 $arrBonusRelationGroup = $dbBonusRelationGroup->findWhere("bonusId IN (" . $arrBonusIdStr . ")");
 
-                foreach($arrBonusRelationGroup as $bonusRelationGroup) {
+                foreach ($arrBonusRelationGroup as $bonusRelationGroup) {
                     $bonusId = $bonusRelationGroup['bonusId'];
 
                     $relationGroupId = $bonusRelationGroup['relationGroupId'];
                     $relationGroupName = $mapRelationGroupIdName[$relationGroupId];
-                    if(array_key_exists($bonusId, $mapBonusIdRelationGroupName)) {
+                    if (array_key_exists($bonusId, $mapBonusIdRelationGroupName)) {
                         $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonusId];
                         array_push($arrRelationGroupName, $relationGroupName);
                         $mapBonusIdRelationGroupName[$bonusId] = $arrRelationGroupName;
@@ -2231,12 +2237,12 @@ class ProductsController extends Controller
 
                 // Fill relation group field
                 $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonus["id"]];
-                if(!$arrRelationGroupName) {
+                if (!$arrRelationGroupName) {
                     array_push($bonusExcel, "");
                     array_push($arrBonusExcel, $bonusExcel);
                 } else {
                     // Duplicate row and add each time a relation group
-                    foreach($arrRelationGroupName as $relationGroupName) {
+                    foreach ($arrRelationGroupName as $relationGroupName) {
                         $bonusExcelCopy = array_merge([], $bonusExcel);
                         array_push($bonusExcelCopy, $relationGroupName);
                         array_push($arrBonusExcel, $bonusExcelCopy);
@@ -2403,7 +2409,7 @@ class ProductsController extends Controller
                             array_push($bonus, $cellValue);
                             break;
                         case "E":
-                            if($cellValue != "#N/A" && $cellValue != "" && $cellValue != null) {
+                            if ($cellValue != "#N/A" && $cellValue != "" && $cellValue != null) {
                                 if (!in_array($cellValue, $arrRelationGroupId)) {
                                     array_push($errors, "Customer Group invalid");
                                 }
@@ -2550,7 +2556,7 @@ class ProductsController extends Controller
                 $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
                 $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
                 $dbBonus->getWhere("entityProductId IN (" . $arrProductIdStr . ") AND isActive = 1");
-                while(!$dbBonus->dry()) {
+                while (!$dbBonus->dry()) {
                     $dbBonus->isActive = 0;
                     $dbBonus->update();
                     $dbBonus->next();
@@ -2558,8 +2564,8 @@ class ProductsController extends Controller
 
                 $arrBonusDb = [];
                 $arrMergedIndex = [];
-                for($i = 0; $i < count($arrBonus); $i++) {
-                    if(in_array($i, $arrMergedIndex)) {
+                for ($i = 0; $i < count($arrBonus); $i++) {
+                    if (in_array($i, $arrMergedIndex)) {
                         continue;
                     }
                     $bonus = $arrBonus[$i];
@@ -2571,10 +2577,10 @@ class ProductsController extends Controller
                     $relationGroupId = $bonus[4];
 
                     $arrRelationGroupId = [];
-                    if($relationGroupId != "#N/A") {
+                    if ($relationGroupId != "#N/A") {
                         array_push($arrRelationGroupId, $relationGroupId);
-                        for($j = 0; $j < count($arrBonus); $j++) {
-                            if(in_array($j, $arrMergedIndex)) {
+                        for ($j = 0; $j < count($arrBonus); $j++) {
+                            if (in_array($j, $arrMergedIndex)) {
                                 continue;
                             }
                             $mergeBonus = $arrBonus[$j];
@@ -2584,13 +2590,15 @@ class ProductsController extends Controller
                             $mergeBonusBonus = $mergeBonus[3];
                             $mergeRelationGroupId = $mergeBonus[4];
 
-                            if($entityProductId == $mergeEntityProductId
+                            if (
+                                $entityProductId == $mergeEntityProductId
                                 && $bonusTypeId == $mergeBonusTypeId
                                 && $minOrder == $mergeMinOrder
                                 && $bonusBonus == $mergeBonusBonus
-                                && $mergeRelationGroupId != "#N/A") {
+                                && $mergeRelationGroupId != "#N/A"
+                            ) {
                                 array_push($arrMergedIndex, $j);
-                                if(!in_array($mergeRelationGroupId, $arrRelationGroupId)) {
+                                if (!in_array($mergeRelationGroupId, $arrRelationGroupId)) {
                                     array_push($arrRelationGroupId, $mergeRelationGroupId);
                                 }
                             }
@@ -2608,7 +2616,7 @@ class ProductsController extends Controller
                 }
 
                 $trace = [];
-                foreach($arrBonusDb as $bonusDb) {
+                foreach ($arrBonusDb as $bonusDb) {
                     $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
                     $dbBonus->entityProductId = $bonusDb[0];
                     $dbBonus->bonusTypeId = $bonusDb[1];
@@ -2619,8 +2627,8 @@ class ProductsController extends Controller
                     $trace[] = $dbBonus->id;
 
                     $arrRelationGroupId = $bonusDb[4];
-                    if(count($arrRelationGroupId) > 0) {
-                        foreach($arrRelationGroupId as $relationGroupId) {
+                    if (count($arrRelationGroupId) > 0) {
+                        foreach ($arrRelationGroupId as $relationGroupId) {
                             $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
                             $dbBonusRelationGroup->bonusId = $dbBonus->id; // $dbBonus['id'];
                             $dbBonusRelationGroup->relationGroupId = $relationGroupId;
@@ -2629,7 +2637,7 @@ class ProductsController extends Controller
                     }
                 }
 
-               // print_r($trace);
+                // print_r($trace);
             }
 
             // Update logs
@@ -3102,7 +3110,8 @@ class ProductsController extends Controller
                     }
                 }
 
-                if(strlen($dbProduct->scientificNameId) == 0 && strlen($dbProduct->madeInCountryId) == 0
+                if (
+                    strlen($dbProduct->scientificNameId) == 0 && strlen($dbProduct->madeInCountryId) == 0
                     && strlen($dbProduct->name_ar) == 0 && strlen($dbProduct->name_en) == 0
                     && strlen($dbProduct->name_fr) == 0 && strlen($dbProduct->subtitle_ar) == 0
                     && strlen($dbProduct->subtitle_en) == 0 && strlen($dbProduct->subtitle_fr) == 0
@@ -3111,9 +3120,10 @@ class ProductsController extends Controller
                     && strlen($dbEntityProduct->vat) == 0 && strlen($dbEntityProduct->stock) == 0
                     && strlen($dbEntityProduct->maximumOrderQuantity) == 0 && strlen($dbProduct->manufacturerName) == 0
                     && strlen($dbProduct->batchNumber) == 0 && strlen($dbProduct->itemCode) == 0
-                    && strlen($dbProduct->subcategoryId) == 0 && strlen($dbProduct->categoryId) == 0 
+                    && strlen($dbProduct->subcategoryId) == 0 && strlen($dbProduct->categoryId) == 0
                     && strlen($dbProduct->expiryDate) == 0 && strlen($dbProduct->strength) == 0
-                    && strlen($activeIngredients) == 0) {
+                    && strlen($activeIngredients) == 0
+                ) {
                     break;
                 }
 
