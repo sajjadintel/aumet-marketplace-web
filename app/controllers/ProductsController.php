@@ -800,28 +800,28 @@ class ProductsController extends Controller
             "jpg",
             "png",
         ];
-        $success = false;
 
         $ext = pathinfo(basename($_FILES["product_image"]["name"]), PATHINFO_EXTENSION);
-        if (in_array(strtolower($ext), $allValidExtensions)) {
-            $success = true;
+        if (!in_array(strtolower($ext), $allValidExtensions)) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = 'Upload failed. Allowed file types: ' . implode(',', $allValidExtensions);
+            echo $this->webResponse->jsonResponse();
+            return;
         }
         $path = "";
 
-        if ($success) {
-            $objResult = AumetFileUploader::upload("s3", $_FILES["product_image"], $this->generateRandomString(64));
-            if (!$objResult->isError) {
-                $path = $objResult->fileLink;
-                $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-                $this->webResponse->title = "Product Image Upload";
-                $this->webResponse->data = $path;
-                echo $this->webResponse->jsonResponse();
-            } else {
-                $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                $this->webResponse->title = "Image failed";
-                $this->webResponse->data = "Error: " . $objResult->error;
-                echo $this->webResponse->jsonResponse();
-            }
+        $objResult = AumetFileUploader::upload("s3", $_FILES["product_image"], $this->generateRandomString(64));
+        if (!$objResult->isError) {
+            $path = $objResult->fileLink;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            $this->webResponse->title = "Product Image Upload";
+            $this->webResponse->data = $path;
+            echo $this->webResponse->jsonResponse();
+        } else {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->title = "Image failed";
+            $this->webResponse->data = "Error: " . $objResult->error;
+            echo $this->webResponse->jsonResponse();
         }
     }
 
