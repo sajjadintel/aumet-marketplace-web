@@ -598,7 +598,7 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
 
 ################################
 
-## 03/02/2021 -- Antoine Abou Cherfane
+## 09/02/2021 -- Antoine Abou Cherfane
 
 # Modified orderGrand
 ALTER TABLE `marketplace`.`orderGrand`
@@ -609,6 +609,53 @@ ALTER TABLE `marketplace`.`order`
 CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 
 ################################
+
+## 10/02/2021 -- Antoine Abou Cherfane
+
+CREATE OR REPLACE VIEW `marketplace`.`vwOrderEntityUser` AS
+    SELECT 
+        `order`.`id` AS `id`,
+        `order`.`entityBuyerId` AS `entityBuyerId`,
+        `order`.`branchBuyerId` AS `branchBuyerId`,
+        `order`.`feedbackSubmitted` AS `feedbackSubmitted`,
+        `user_Buyer`.`fullname` AS `userBuyer`,
+        `user_Buyer`.`email` AS `userBuyerEmail`,
+        `entity_Buyer`.`name_en` AS `entityBuyer`,
+        `branch_Buyer`.`name_en` AS `branchBuyer`,
+        `branch_Buyer`.`address_en` AS `addressBuyer`,
+        `order`.`entitySellerId` AS `entitySellerId`,
+        `order`.`userSellerId` AS `userSellerId`,
+        `order`.`branchSellerId` AS `branchSellerId`,
+        `user_Seller`.`fullname` AS `userSeller`,
+        `user_Seller`.`email` AS `userSellerEmail`,
+        `entity_Seller`.`name_en` AS `entitySeller`,
+        `branch_Seller`.`name_en` AS `branchSeller`,
+        `branch_Seller`.`address_en` AS `addressSeller`,
+        `order`.`statusId` AS `statusId`,
+        `order_status`.`name_en` AS `status`,
+        `order`.`serial` AS `serial`,
+        `order`.`currencyId` AS `currencyId`,
+        `currency`.`symbol` AS `currency`,
+        `order`.`total` AS `total`,
+        `order`.`subtotal` AS `subtotal`,
+        0 AS `tax`,
+        `order`.`paymentMethodId` AS `orderPaymentMethodId`,
+        `paymentMethod`.`name_en` AS `orderPaymentMethodName_en`,
+        `paymentMethod`.`name_ar` AS `orderPaymentMethodName_ar`,
+        `paymentMethod`.`name_fr` AS `orderPaymentMethodName_fr`,
+        `order`.`insertDateTime` AS `insertDateTime`,
+        `order`.`updateDateTime` AS `updateDateTime`
+    FROM
+        (((((((((`order`
+        JOIN `orderStatus` `order_status` ON ((`order_status`.`id` = `order`.`statusId`)))
+        JOIN `currency` ON ((`currency`.`id` = `order`.`currencyId`)))
+        LEFT JOIN `user` `user_Buyer` ON ((`order`.`userBuyerId` = `user_Buyer`.`id`)))
+        LEFT JOIN `user` `user_Seller` ON ((`order`.`userSellerId` = `user_Seller`.`id`)))
+        LEFT JOIN `entity` `entity_Buyer` ON ((`order`.`entityBuyerId` = `entity_Buyer`.`id`)))
+        LEFT JOIN `entity` `entity_Seller` ON ((`order`.`entitySellerId` = `entity_Seller`.`id`)))
+        LEFT JOIN `entityBranch` `branch_Buyer` ON ((`order`.`branchBuyerId` = `branch_Buyer`.`id`)))
+        LEFT JOIN `entityBranch` `branch_Seller` ON ((`order`.`branchSellerId` = `branch_Seller`.`id`)))
+        LEFT JOIN `paymentMethod` ON ((`order`.`paymentMethodId` = `paymentMethod`.`id`)))
 
 ################################
 
