@@ -803,7 +803,7 @@ class ProductsController extends Controller
         $success = false;
 
         $ext = pathinfo(basename($_FILES["product_image"]["name"]), PATHINFO_EXTENSION);
-        if (in_array($ext, $allValidExtensions)) {
+        if (in_array(strtolower($ext), $allValidExtensions)) {
             $success = true;
         }
         $path = "";
@@ -835,7 +835,7 @@ class ProductsController extends Controller
         $success = false;
 
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
-        if (in_array($ext, $allValidExtensions)) {
+        if (in_array(strtolower($ext), $allValidExtensions)) {
             $success = true;
         }
 
