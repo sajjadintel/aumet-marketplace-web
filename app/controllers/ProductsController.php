@@ -917,7 +917,6 @@ class ProductsController extends Controller
                     || strlen($name_en) == 0 || strlen($name_ar) == 0
                     // || strlen($name_fr) == 0
                     || strlen($unitPrice) == 0 || strlen($vat) == 0
-                    || strlen($categoryId) == 0 || strlen($subcategoryId) == 0
                 ) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get('vModule_product_missingFields');
@@ -946,13 +945,23 @@ class ProductsController extends Controller
                     return;
                 }
 
-                $dbSubcategory = new BaseModel($this->db, "subcategory");
-                $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
-                if ($dbSubcategory->dry()) {
-                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                    $this->webResponse->message = $this->f3->get('vModule_product_subcategoryInvalid');
-                    echo $this->webResponse->jsonResponse();
-                    return;
+                if(strlen($subcategoryId) > 0) {
+                    $valid = true;
+                    if(strlen($categoryId) == 0) {
+                        $valid = false;
+                    } else {
+                        $dbSubcategory = new BaseModel($this->db, "subcategory");
+                        $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
+                        if($dbSubcategory->dry()) {
+                            $valid = false;
+                        }
+                    }
+                    if (!$valid) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_subcategoryInvalid');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
                 }
 
                 $this->checkLength($name_en, 'nameEn', 200, 4);
@@ -1013,8 +1022,16 @@ class ProductsController extends Controller
                 $dbProduct->manufacturerName = $manufacturerName;
                 $dbProduct->batchNumber = $batchNumber;
                 $dbProduct->itemCode = $itemCode;
-                $dbProduct->categoryId = $categoryId;
-                $dbProduct->subcategoryId = $subcategoryId;
+                if ($categoryId) {
+                    $dbProduct->categoryId = $categoryId;
+                } else {
+                    $dbProduct->categoryId = null;
+                }
+                if ($subcategoryId) {
+                    $dbProduct->subcategoryId = $subcategoryId;
+                } else {
+                    $dbProduct->subcategoryId = null;
+                }
                 $dbProduct->expiryDate = $expiryDate;
                 $dbProduct->strength = $strength;
 
@@ -1415,7 +1432,6 @@ class ProductsController extends Controller
                 || strlen($name_en) == 0 || strlen($name_ar) == 0
                 // || strlen($name_fr) == 0
                 || strlen($unitPrice) == 0 || strlen($vat) == 0 || strlen($stock) == 0
-                || strlen($categoryId) == 0 || strlen($subcategoryId) == 0
             ) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->message = $this->f3->get('vModule_product_missingFields');
@@ -1448,13 +1464,23 @@ class ProductsController extends Controller
                 return;
             }
 
-            $dbSubcategory = new BaseModel($this->db, "subcategory");
-            $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
-            if ($dbSubcategory->dry()) {
-                $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                $this->webResponse->message = $this->f3->get('vModule_product_subcategoryInvalid');
-                echo $this->webResponse->jsonResponse();
-                return;
+            if(strlen($subcategoryId) > 0) {
+                $valid = true;
+                if(strlen($categoryId) == 0) {
+                    $valid = false;
+                } else {
+                    $dbSubcategory = new BaseModel($this->db, "subcategory");
+                    $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
+                    if($dbSubcategory->dry()) {
+                        $valid = false;
+                    }
+                }
+                if (!$valid) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get('vModule_product_subcategoryInvalid');
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
             }
 
             $this->checkLength($name_en, 'nameEn', 200, 4);
@@ -1518,8 +1544,16 @@ class ProductsController extends Controller
             $dbProduct->manufacturerName = $manufacturerName;
             $dbProduct->batchNumber = $batchNumber;
             $dbProduct->itemCode = $itemCode;
-            $dbProduct->categoryId = $categoryId;
-            $dbProduct->subcategoryId = $subcategoryId;
+            if ($categoryId) {
+                $dbProduct->categoryId = $categoryId;
+            } else {
+                $dbProduct->categoryId = null;
+            }
+            if ($subcategoryId) {
+                $dbProduct->subcategoryId = $subcategoryId;
+            } else {
+                $dbProduct->subcategoryId = null;
+            }
             $dbProduct->expiryDate = $expiryDate;
             $dbProduct->strength = $strength;
 
@@ -3024,11 +3058,13 @@ class ProductsController extends Controller
                             }
                             break;
                         case "P":
-                            if (!in_array($cellValue, $allSubcategoryId)) {
-                                array_push($errors, "Category - Subcategory invalid");
-                            } else {
-                                $dbProduct->subcategoryId = $cellValue;
-                                $dbProduct->categoryId = $mapSubcategoryIdCategoryId[$cellValue];
+                            if ($cellValue != "#N/A") {
+                                if (!in_array($cellValue, $allSubcategoryId)) {
+                                    array_push($errors, "Category - Subcategory invalid");
+                                } else {
+                                    $dbProduct->subcategoryId = $cellValue;
+                                    $dbProduct->categoryId = $mapSubcategoryIdCategoryId[$cellValue];
+                                }
                             }
                             break;
                         case "Q":
