@@ -2,7 +2,7 @@
 <table width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation">
 	<tbody>
 		<tr>
-			<td class="o_hide" align="center" style="display: none;font-size: 0;max-height: 0;width: 0;line-height: 0;overflow: hidden;mso-hide: all;visibility: hidden;">Email Summary (Hidden)</td>
+			<td class="o_hide" align="center" style="display: none;font-size: 0;max-height: 0;width: 0;line-height: 0;overflow: hidden;mso-hide: all;visibility: hidden;">Welcome at Aumet Marketplace</td>
 		</tr>
 	</tbody>
 </table>
@@ -37,7 +37,7 @@
 											</tr>
 										</tbody>
 									</table>
-									<h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 30px;line-height: 30px;">New Bonuses</h2>
+									<h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 30px;line-height: 30px;">Welcome to Aumet</h2>
 								</div>
 								<!--[if mso]></td></tr></table><![endif]-->
 							</td>
@@ -79,7 +79,15 @@
 							<td class="o_bg-white o_px-md o_py" align="center" style="background-color: #ffffff;padding-left: 24px;padding-right: 24px;padding-top: 16px;padding-bottom: 16px;">
 								<!--[if mso]><table width="584" cellspacing="0" cellpadding="0" border="0" role="presentation"><tbody><tr><td align="center"><![endif]-->
 								<div class="o_col-6s o_sans o_text o_text-secondary o_center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;max-width: 584px;color: #424651;text-align: center;">
-								  <p style="margin-top: 0px;margin-bottom: 0px;"><?php echo $message; ?></p>
+								  <p style="margin-top: 0px;margin-bottom: 0px;">
+                                      Welcome to Aumet, the right marketplace for all your pharmacy needs.<br\>
+                                      We have great pleasure in providing your login and password below for your Aumet account to experience the new world of healthcare digital procurement immediately.<br\>
+                                      Upon your first login, you will be requested to change your password.<br\>
+                                      If you have any questions, please do not hesitate in reaching out directly to me, or our great Customer Services team at marketplace@aumet.com.<br\>
+                                      We are excited to be working with you!<br\>
+                                      Yours,<br\>
+                                      Yahya Aqel, CEO
+                                  </p>
 								</div>
 								<!--[if mso]></td></tr></table><![endif]-->
 						    </td>
@@ -108,4 +116,31 @@
 			</td>
 		</tr>
 	</tbody>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation">
+    <tbody>
+    <tr>
+        <td class="o_bg-light o_px-xs" align="center" style="background-color: #dbe5ea;padding-left: 8px;padding-right: 8px;">
+            <!--[if mso]><table width="800" cellspacing="0" cellpadding="0" border="0" role="presentation"><tbody><tr><td><![endif]-->
+            <table class="o_block-lg" width="100%" cellspacing="0" cellpadding="0" border="0" role="presentation" style="max-width: 800px;margin: 0 auto;">
+                <tbody>
+                <tr>
+                    <td class="o_bg-white o_px-md o_py-xs" align="center" style="background-color: #ffffff;padding-left: 24px;padding-right: 24px;padding-top: 8px;padding-bottom: 8px;">
+                        <table align="center" cellspacing="0" cellpadding="0" border="0" role="presentation">
+                            <tbody>
+                            <tr>
+                                <td width="300" class="o_btn o_bg-success o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #0ec06e;border-radius: 4px;">
+                                    <a class="o_text-white" href="<?php echo $domainUrl . '/web/activate/123'; ?>" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">Explore Aumet</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!--[if mso]></td></tr></table><![endif]-->
+        </td>
+    </tr>
+    </tbody>
 </table>
