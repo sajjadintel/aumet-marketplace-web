@@ -158,19 +158,18 @@ function compress_htmlcode($codedata)
                     <?php else: ?>
                         <div class="col-12 card">
                     <?php endif; ?>
-                        <div class="product-overview">
+                        <div id="productOverviewContainer" class="product-overview">
                             <div class="card-header border-0 py-5 product-item-similar-header" style="margin: 10px 0 0 0;">
-                                <h3>
-                                    <?php echo $vModule_product_productOverview ?>
-                                </h3>
-                            </div>
+                                    <h3>
+                                        <?php echo $vModule_product_productOverview ?>
+                                    </h3>
+                                </div>
+                                <div class="card-body product-description ">
+                                    <?php echo nl2br($objEntityProduct->description); ?>
+                                </div>
 
-                            <div class="card-body product-description ">
-                                <?php echo nl2br($objEntityProduct->description); ?>
                             </div>
-
                         </div>
-                    </div>
 
                 </div>
             <?php endif; ?>
@@ -555,7 +554,8 @@ function compress_htmlcode($codedata)
 <script>
     $(document).ready(function() {
         initAutoplay();
-
+        initExpendable();
+      
         $('.product-overview').expandable({
             height: 350
         });
@@ -602,6 +602,17 @@ function compress_htmlcode($codedata)
         }
     }
 
+    function initExpendable() {
+        $('.product-overview').expandable({
+            height: 350
+        });
+        $('.expand-bar').on('click', function() {
+            if($('#productOverviewContainer').hasClass('pb-8')) {
+                $('#productOverviewContainer').removeClass('pb-8');
+            } else {
+                $('#productOverviewContainer').addClass('pb-8');
+            }
+        })
     function initializeBonusPopover(selector) {
         $(selector).popover('dispose');
         $(selector).each(function(index, element) {
