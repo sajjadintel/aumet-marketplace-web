@@ -44,6 +44,7 @@ class Constants
     const EMAIL_NEW_CUSTOMER_GROUP = 'New Customer Group';
     const EMAIL_CHANGE_PROFILE_APPROVAL = 'Change Profile Approval';
     const EMAIL_CHANGE_PROFILE_APPROVED = 'Change Profile Approved';
+    const EMAIL_WELCOME_PHARMACY = 'Welcome at Aumet';
 
     ### Status Codes
     const STATUS_CODE_REDIRECT_TO_WEB = 0;
