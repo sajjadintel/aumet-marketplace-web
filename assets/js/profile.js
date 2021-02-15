@@ -562,17 +562,7 @@ var Profile = (function () {
 					_validator.destroy();
 					saveFunction();
 				} else {
-					Swal.fire({
-						text: WebAppLocals.getMessage('validationError'),
-						icon: 'error',
-						buttonsStyling: false,
-						confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
-						customClass: {
-							confirmButton: 'btn font-weight-bold btn-light',
-						},
-					}).then(function () {
-						KTUtil.scrollTop();
-					});
+					KTUtil.scrollTop();
 				}
 			});
 		} else {
@@ -685,6 +675,9 @@ var Profile = (function () {
 
 		if (allPaymentMethodId.length === 0) {
 			valid = false;
+			$('#paymentMethodErrorLabel').show();
+		} else {
+			$('#paymentMethodErrorLabel').hide();
 		}
 
 		$('.minimumValueOrderInput').each(function (index, element) {
@@ -751,17 +744,7 @@ var Profile = (function () {
 			};
 			WebApp.post('/web/distributor/profile/paymentSetting', body, _saveDistributorPaymentSettingCallback);
 		} else {
-			Swal.fire({
-				text: errorMessage || WebAppLocals.getMessage('validationError'),
-				icon: 'error',
-				buttonsStyling: false,
-				confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
-				customClass: {
-					confirmButton: 'btn font-weight-bold btn-light',
-				},
-			}).then(function () {
-				KTUtil.scrollTop();
-			});
+			KTUtil.scrollTop();
 		}
 	};
 
