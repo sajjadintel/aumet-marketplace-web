@@ -2861,7 +2861,6 @@ class ProductsController extends Controller
 
             $firstRow = true;
             $secondRow = false;
-            $finished = false;
             foreach ($sheet->getRowIterator() as $row) {
                 if ($firstRow) {
                     $firstRow = false;
@@ -2905,7 +2904,7 @@ class ProductsController extends Controller
                             break;
                         case "B":
                             if (!in_array($cellValue, $allCountryId)) {
-                                $finished = true;
+                                array_push($errors, "Made In is invalid");
                             } else {
                                 $dbProduct->madeInCountryId = $cellValue;
                             }
@@ -3067,7 +3066,18 @@ class ProductsController extends Controller
                     }
                 }
 
-                if ($finished) {
+                if(strlen($dbProduct->scientificNameId) == 0 && strlen($dbProduct->madeInCountryId) == 0
+                    && strlen($dbProduct->name_ar) == 0 && strlen($dbProduct->name_en) == 0
+                    && strlen($dbProduct->name_fr) == 0 && strlen($dbProduct->subtitle_ar) == 0
+                    && strlen($dbProduct->subtitle_en) == 0 && strlen($dbProduct->subtitle_fr) == 0
+                    && strlen($dbProduct->description_ar) == 0 && strlen($dbProduct->description_en) == 0
+                    && strlen($dbProduct->description_fr) == 0 && strlen($dbEntityProduct->unitPrice) == 0
+                    && strlen($dbEntityProduct->vat) == 0 && strlen($dbEntityProduct->stock) == 0
+                    && strlen($dbEntityProduct->maximumOrderQuantity) == 0 && strlen($dbProduct->manufacturerName) == 0
+                    && strlen($dbProduct->batchNumber) == 0 && strlen($dbProduct->itemCode) == 0
+                    && strlen($dbProduct->subcategoryId) == 0 && strlen($dbProduct->categoryId) == 0 
+                    && strlen($dbProduct->expiryDate) == 0 && strlen($dbProduct->strength) == 0
+                    && strlen($activeIngredients) == 0) {
                     break;
                 }
 
