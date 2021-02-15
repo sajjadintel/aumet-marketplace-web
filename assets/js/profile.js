@@ -177,6 +177,8 @@ var Profile = (function () {
 					if (!file.accepted) this.removeFile(file);
 					if (message == "You can not upload any more files.") {
 						message = null;
+					} else if(message.includes("too big")) {
+						message = "File is too big (" + _bytesToSize(file.upload.total) + "). Max file size: 10MB."
 					}
 					$('#errorMessage').html(message);
 				});
@@ -285,6 +287,13 @@ var Profile = (function () {
 			_myDropZone.emit('success', file, initialFile);
 		}
 	};
+
+	var _bytesToSize = function(bytes) {
+		var sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+		if (bytes == 0) return '0B';
+		var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+		return Math.round(bytes / Math.pow(1024, i), 2) + sizes[i];
+	}
 
 	var _getFileSize = function (url) {
 		var fileSize = 0;
