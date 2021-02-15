@@ -191,10 +191,10 @@ class DashboardController extends Controller
                 $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
                 $query = "entitySellerId IN ($arrEntityId)";
 
-                $dbData = new BaseModel($this->db, "vwDashboardSellerToday");
+                $dbData = new BaseModel($this->db, "vwDashboardSellerThisMonthOrders");
                 $dbData->getWhere($query);
 
-                $dbDataNewCustomer = new BaseModel($this->db, "vwNewCustomerToday");
+                $dbDataNewCustomer = new BaseModel($this->db, "vwNewCustomerThisMonth");
                 $dbDataNewCustomer->getWhere($query);
 
                 $dbDataYesterday = new BaseModel($this->db, "vwDashboardSellerYesterday");
