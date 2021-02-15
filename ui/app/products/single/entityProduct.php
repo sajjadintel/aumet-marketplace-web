@@ -150,12 +150,14 @@ function compress_htmlcode($codedata)
 
             <?php if (strlen($objEntityProduct->description) > 0) : ?>
                 <div class="row">
-                    <div class="col-12 col-md-3 col-lg-3">
-
-                        <img class="product-overview-logo" src="<?php echo $objEntityProduct->entityImage ?>" />
-
-                    </div>
-                    <div class="col-12 col-md-9 col-lg-9 card  ">
+                    <?php if(property_exists($objEntityProduct, "entityImage")) : ?>
+                        <div class="col-12 col-md-3 col-lg-3">
+                            <img class="product-overview-logo" src="<?php echo $objEntityProduct->entityImage ?>" />
+                        </div>
+                        <div class="col-12 col-md-9 col-lg-9 card">
+                    <?php else: ?>
+                        <div class="col-12 card">
+                    <?php endif; ?>
                         <div class="product-overview">
                             <div class="card-header border-0 py-5 product-item-similar-header" style="margin: 10px 0 0 0;">
                                 <h3>
