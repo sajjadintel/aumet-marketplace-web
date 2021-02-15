@@ -144,16 +144,13 @@
                   <div style="font-size: 16px; line-height: 16px; height: 16px;">&nbsp; </div>
                   <div class="o_px-xs o_sans o_text o_text-light o_left o_xs-center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #82899a;text-align: left;padding-left: 8px;padding-right: 8px;">
                     <h4 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 18px;line-height: 23px;"><?php echo $product->name ?></h4>
-                    <?php if($product->quantityFree > 0) : ?>
-                      <p class="o_text-secondary o_mb-xs" style="color: #424651;margin-top: 0px;margin-bottom: 8px;">Free <?php echo $product->name ?> x<?php echo $product->quantityFree ?></p>
-                    <?php endif; ?>
                   </div>
                 </div>
                 <!--[if mso]></td><td width="100" align="right" valign="top" style="padding: 0px 8px;"><![endif]-->
                 <div class="o_col o_col-1 o_col-full" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
                   <div class="o_hide-xs" style="font-size: 16px; line-height: 16px; height: 16px;">&nbsp; </div>
                   <div class="o_px-xs o_sans o_text o_text-secondary o_center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;text-align: center;padding-left: 8px;padding-right: 8px;">
-                    <p class="o_mb-xxs" style="margin-top: 0px;margin-bottom: 4px;"><span class="o_hide-lg" style="display: none;font-size: 0;max-height: 0;width: 0;line-height: 0;overflow: hidden;mso-hide: all;visibility: hidden;">Quantity:&nbsp; </span><?php echo $product->quantity ?></p>
+                      <p class="o_mb-xxs" style="margin-top: 0px;margin-bottom: 4px;"><span class="o_hide-lg" style="display: none;font-size: 0;max-height: 0;width: 0;line-height: 0;overflow: hidden;mso-hide: all;visibility: hidden;">Quantity:&nbsp; </span><?php echo $product->quantity ?> <?php echo $product->quantityFree > 0 ? '(+' . $product->quantityFree . ')' : "" ?></p>
                   </div>
                 </div>
                 <!--[if mso]></td><td width="100" align="right" valign="top" style="padding: 0px 8px;"><![endif]-->
@@ -208,7 +205,7 @@
                       </tr>
                       <tr>
                         <td width="50%" class="o_pt-xs" align="left" style="padding-top: 8px;">
-                          <p class="o_sans o_text o_text-secondary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;">Tax</p>
+                          <p class="o_sans o_text o_text-secondary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;">VAT</p>
                         </td>
                         <td width="50%" class="o_pt-xs" align="right" style="padding-top: 8px;">
                           <p class="o_sans o_text o_text-secondary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;"><?php echo $tax . " " . $currencySymbol ?></p>

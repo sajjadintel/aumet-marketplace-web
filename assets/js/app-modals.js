@@ -29,7 +29,9 @@ var WebAppModals = (function () {
 			title: WebAppLocals.getMessage('orderShippedQuantity'),
 			data: 'shippedQuantity',
 			render: function (data, type, row, meta) {
-				return row.shippedQuantity;
+				var output = row.quantity;
+				if (row.quantityFree > 0) output += ' (+' + row.quantityFree + ')';
+				return output;
 			},
 		},
 		{
@@ -52,7 +54,7 @@ var WebAppModals = (function () {
 			title: WebAppLocals.getMessage('tax'),
 			data: 'tax',
 			render: function (data, type, row, meta) {
-				var output = WebApp.formatMoney(row.tax) + '%';
+				var output = WebApp.formatMoney(row.tax, 2) + '%';
 				return output;
 			},
 		},
@@ -144,6 +146,11 @@ var WebAppModals = (function () {
 		}
 		$('#viewModalTitle').html(WebAppLocals.getMessage('orderDetails'));
 		$('#modalBranchLabel').html(WebAppLocals.getMessage('branch'));
+		$('#modalPaymentMethodLabel').html(WebAppLocals.getMessage('paymentOption'));
+		$('#modalPaymentMethodText').html(webResponse.data.order.orderPaymentMethodName);
+		console.log('webResponse.data.order');
+		console.log(webResponse.data.order);
+
 		if (isPharmacy) {
 			$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entitySeller'));
 			$('#modalCustomerNameText').html(webResponse.data.order.entitySeller);
@@ -243,7 +250,7 @@ var OrderMissingProductListModals = (function () {
 			title: WebAppLocals.getMessage('tax'),
 			data: 'tax',
 			render: function (data, type, row, meta) {
-				var output = WebApp.formatMoney(row.tax) + '%';
+				var output = WebApp.formatMoney(row.tax, 2) + '%';
 				return output;
 			},
 		},
@@ -606,10 +613,13 @@ var ModifyQuantityOrderModals = (function () {
 	var userId = welcomeModal.data('user-id');
 	var showWelcomeModal = JSON.parse(sessionStorage.getItem('showWelcomeModal'));
 
-	if (welcomeModal.data('login-counter') && welcomeModal.data('login-counter') === 1
-		&& welcomeModal.data('role-name') === 'distributor'
-		&& (showWelcomeModal === null || showWelcomeModal.userId !== userId)) {
+	if (
+		welcomeModal.data('login-counter') &&
+		welcomeModal.data('login-counter') === 1 &&
+		welcomeModal.data('role-name') === 'distributor' &&
+		(showWelcomeModal === null || showWelcomeModal.userId !== userId)
+	) {
 		welcomeModal.modal('show');
-		sessionStorage.setItem('showWelcomeModal', JSON.stringify({'userId': userId, 'show': false}));
+		sessionStorage.setItem('showWelcomeModal', JSON.stringify({ userId: userId, show: false }));
 	}
 })(jQuery);

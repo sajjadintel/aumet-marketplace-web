@@ -119,7 +119,7 @@ return array(
     'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',
     'vSignup_isVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours.',
     'vSignup_isAlreadyVerifiedTitle' => 'Your Email has already been Verified!',
-    'vSignup_isAlreadyVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours. Has it been longer? <a href="https://aumet.com">Request Assistance</a>',
+    'vSignup_isAlreadyVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours.',
     'vSignup_isVerifiedInvalidTitle' => 'Your verification token is invalid..',
     'vSignup_isVerifiedInvalidSubtitle' => '<a href="https://aumet.com">Request Assistance</a>',
 
@@ -251,6 +251,7 @@ return array(
     'vModule_cart_continueShopping' => 'Add More to Cart',
     'vModule_cart_proceedToCheckOut' => 'Proceed to Checkout',
     'vModule_cart_quantity' => 'Quantity',
+    'vModule_cart_bonusQuantity' => 'Bonus',
     'vModule_cart_bonus' => 'Bonus',
     'vModule_cart_note' => 'Note',
     'vModule_cart_unitPrice' => 'Unit Price',
@@ -288,10 +289,12 @@ return array(
     'vModule_thankyou_viewOrder' => 'View my orders',
 
     'vModule_bonus_bonusTextTemplate' => 'For %q: %b',
+    'vModule_bonus_title' => 'Bonus Update',
 
     'vModule_order_dateFrom' => 'Get Orders Starting Date',
     'vModule_order_dateTo' => 'Get Orders Ending Date',
     'vModule_order_date' => 'Get Orders Date',
+    'vModule_orderDetails_orderInformation' => 'Order Information',
 
     'vModule_customer_relationGroupTitle' => 'Customer Group',
     'vModule_customer_relationGroup' => 'Customer Group',
