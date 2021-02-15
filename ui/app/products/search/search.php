@@ -725,6 +725,14 @@ function compress_htmlcode($codedata)
 
         $('#datatable').on('draw.dt', function() {
             initializeBonusPopover();
+
+            $('.qtyBox').keyup(function (e) {
+                if (e.keyCode === 13) {
+                    if($(this).val() > 0) {
+                        $(this).trigger("change");
+                    }
+                }
+            });
         });
     });
 
