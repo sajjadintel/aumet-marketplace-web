@@ -62,8 +62,8 @@ $f3->route('GET /web/cart/remove/confirm/@itemId', 'CartController->getRemoveIte
 $f3->route('POST /web/cart/checkout/update', 'CartController->postCartCheckoutUpdate');
 $f3->route('POST /web/cart/checkout/note', 'CartController->postNoteCartCheckoutUpdate');
 $f3->route('GET /web/cart/checkout', 'CartController->getCartCheckout');
-$f3->route('POST /web/cart/checkout/submit/@paymentMethodId', 'CartController->postCartCheckoutSubmit');
-$f3->route('GET /web/cart/checkout/submit/confirm/@paymentMethodId', 'CartController->getCartCheckoutSubmitConfirmation');
+$f3->route('POST /web/cart/checkout/submit', 'CartController->postCartCheckoutSubmit');
+$f3->route('POST /web/cart/checkout/submit/confirm', 'CartController->postCartCheckoutSubmitConfirmation');
 $f3->route('GET /web/thankyou/@grandOrderId', 'CartController->getThankyou');
 
 $f3->route('GET /web/demo/editor/scientificnames', 'DemoController->get');

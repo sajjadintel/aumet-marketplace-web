@@ -285,6 +285,21 @@ var WebAppLocals = (function () {
 			ar: 'السعر',
 			fr: '',
 		},
+		review: {
+			en: 'Review',
+			ar: 'Review', // TODO: Add translation
+			fr: '',
+		},
+		ignore: {
+			en: 'Ignore',
+			ar: 'Ignore', // TODO: Add translation
+			fr: '',
+		},
+		newOrderMessage: {
+			en: 'You have received ( {0} ) orders',
+			ar: 'You have received ( {0} ) orders', // TODO: Add translation
+			fr: '',
+		},
 		unitPrice: {
 			en: 'Unit Price',
 			ar: 'سعر الوحدة',
@@ -361,7 +376,7 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		sellingEntityName: {
-			en: 'Ditributor Name',
+			en: 'Distributor Name',
 			ar: 'اسم الموزع',
 			fr: '',
 		},
@@ -581,8 +596,13 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		bulkAddUploadError: {
-			en: 'Error processing the file. Please ensure its format is .xslm, .xsls and matches the structure of the sample file',
-			ar: 'Error processing the file. Please ensure its format is .xslm, .xsls and matches the structure of the sample file', // TODO: translate
+			en: 'Error processing the file. Please ensure its format is .xlsm, .xlsx and matches the structure of the sample file',
+			ar: 'Error processing the file. Please ensure its format is .xlsm, .xlsx and matches the structure of the sample file', // TODO: translate
+			fr: '',
+		},
+		bonusUploadError: {
+			en: 'Error processing the file. Please ensure its format is .xlsx and matches the structure of the sample file',
+			ar: 'Error processing the file. Please ensure its format is .xlsx and matches the structure of the sample file', // TODO: translate
 			fr: '',
 		},
 		goToProfile: {
@@ -680,6 +700,11 @@ var WebAppLocals = (function () {
 			ar: 'Allowed types are jpeg, jpg, png', // TODO: translate
 			fr: '',
 		},
+		cartError: {
+			en: 'Payment methods missing',
+			ar: 'طرق الدفع مفقودة',
+			fr: ''
+		},
 	};
 
 	var _symbolsLocals = {
@@ -692,7 +717,20 @@ var WebAppLocals = (function () {
 
 	// Public Functions
 	return {
-		init: function () {},
+		init: function () {
+			// add support for string format
+			if (!String.prototype.format) {
+				String.prototype.format = function () {
+					var args = arguments;
+					return this.replace(/{(\d+)}/g, function (match, number) {
+						return typeof args[number] != 'undefined'
+							? args[number]
+							: match
+							;
+					});
+				};
+			}
+		},
 		getMessage(key) {
 			return _arrLocals[key][docLang];
 		},

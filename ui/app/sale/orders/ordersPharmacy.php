@@ -275,7 +275,10 @@ function compress_htmlcode($codedata)
                 data: 'shippedQuantity',
                 visible: false,
                 render: function(data, type, row, meta) {
-                    return row.shippedQuantity;
+                    output = row.quantity;
+                    if (row.quantityFree > 0)
+                        output += ' (+' + row.quantityFree + ')';
+                    return output;
                 },
             },
             {

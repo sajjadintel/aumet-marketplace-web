@@ -215,6 +215,7 @@ var Profile = (function () {
 
 			_entityDocument = response;
 
+			console.debug({ ...file });
 			var dropzoneFilesizeElement = $(file.previewTemplate).find('#dropzoneFilesize');
 			if(file.size > 0) {
 				$(dropzoneFilesizeElement).show();

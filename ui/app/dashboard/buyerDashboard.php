@@ -8,7 +8,7 @@
             <div class="col-md-6">
                 <div class="card card-custom bg-NavyBlue card-stretch gutter-b">
                     <div class="card-body my-4">
-                        <a href="/web/distributor/order/new" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Orders</a>
+                        <a href="/web/distributor/order/pending" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Orders</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
                                 <?php /* if ($dashboard_order > $dashboard_orderYesterday) {
@@ -29,7 +29,7 @@
             <div class="col-md-6">
                 <div class="card card-custom bg-Blue card-stretch gutter-b">
                     <div class="card-body my-4">
-                        <a href="web/distributor/order/new" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Invoices</a>
+                        <a href="web/distributor/order/pending" class="card-title font-weight-bolder text-white font-size-h6 mb-4 text-hover-state-dark d-block">Invoices</a>
                         <div class="font-weight-bold text-white font-size-sm">
                             <span class="font-size-h2 mr-2">
                                 <?php /* if ($dashboard_invoice > $dashboard_invoiceYesterday) {
@@ -55,7 +55,7 @@
                     <div class="card-header border-0 pt-5">
                         <h3 class="card-title align-items-start flex-column">
                             <span class="card-label font-weight-bolder text-dark">Recent Orders</span>
-                            <span class="text-muted mt-3 font-weight-bold font-size-sm">New Unprocessed Orders</span>
+                            <span class="text-muted mt-3 font-weight-bold font-size-sm d-none">New Unprocessed Orders</span>
                         </h3>
                     </div>
                     <div class="card-body pt-2 pb-2 mt-n3">
@@ -117,7 +117,7 @@
             render: function(data, type, row, meta) {
                 var status = {
                     1: {
-                        title: WebAppLocals.getMessage('orderStatus_New'),
+                        title: WebAppLocals.getMessage('orderStatus_Pending'),
                         class: ' label-primary',
                     },
                     2: {

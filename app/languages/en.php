@@ -251,6 +251,7 @@ return array(
     'vModule_cart_continueShopping' => 'Add More to Cart',
     'vModule_cart_proceedToCheckOut' => 'Proceed to Checkout',
     'vModule_cart_quantity' => 'Quantity',
+    'vModule_cart_bonusQuantity' => 'Bonus',
     'vModule_cart_bonus' => 'Bonus',
     'vModule_cart_note' => 'Note',
     'vModule_cart_unitPrice' => 'Unit Price',
@@ -260,6 +261,7 @@ return array(
     'vModule_cart_grandTotal' => 'Grand Total',
     'vModule_cart_total' => 'Total',
     'vModule_cart_subTotal' => 'SUB TOTAL',
+    'vModule_cart_paymentOption' => 'PAYMENT OPTION',
     'vModule_cart_grandSubTotal' => 'Grand SubTotal',
     'vModule_cart_formula' => 'Formula',
     'vModule_cart_productOrderPrice' => 'Price',
@@ -287,10 +289,12 @@ return array(
     'vModule_thankyou_viewOrder' => 'View my orders',
 
     'vModule_bonus_bonusTextTemplate' => 'For %q: %b',
+    'vModule_bonus_title' => 'Bonus Update',
 
     'vModule_order_dateFrom' => 'Get Orders Starting Date',
     'vModule_order_dateTo' => 'Get Orders Ending Date',
     'vModule_order_date' => 'Get Orders Date',
+    'vModule_orderDetails_orderInformation' => 'Order Information',
 
     'vModule_customer_relationGroupTitle' => 'Customer Group',
     'vModule_customer_relationGroup' => 'Customer Group',
@@ -371,6 +375,9 @@ return array(
     'vModule_profile_pharmacyTradeLicenseDocument' => 'Pharmacy Trade License Document',
     'vModule_profile_uploadButton' => 'Upload Document',
     'vModule_profile_uploadReplaceButton' => 'Replace Document',
+    'vModule_profile_viewLicenseDocumentButton' => 'View License Document',
+    'vModule_profile_allowedLicenseDocumentFileSize' => 'Allowed max file size is 10MB',
+    'vModule_profile_allowedLicenseDocumentFileType' => 'Allowed file types are .pdf, .ppt, .docx, .jpeg, .jpg, .png',
     'vModule_profile_email' => 'Email Address',
     'vModule_profile_pharmacyMobile' => 'Pharmacy Number',
     'vModule_profile_changePasswordTitle' => 'Change Password',

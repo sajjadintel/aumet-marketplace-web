@@ -251,6 +251,7 @@ return array(
     'vModule_cart_continueShopping' => 'إضافة المزيد من المنتجات',
     'vModule_cart_proceedToCheckOut' => 'إرسال قائمة الطلبات',
     'vModule_cart_quantity' => 'الكمية',
+    'vModule_cart_bonusQuantity' => 'مكافأة',
     'vModule_cart_bonus' => 'Bonus', // TODO: Add Translation
     'vModule_cart_note' => 'Note', // TODO: Add Translation
     'vModule_cart_unitPrice' => 'سعر الوحدة',
@@ -260,6 +261,7 @@ return array(
     'vModule_cart_grandTotal' => 'المجموع الكلي',
     'vModule_cart_total' => 'مجموع',
     'vModule_cart_subTotal' => 'المجموع الفرعي',
+    'vModule_cart_paymentOption' => 'خيار الدفع',
     'vModule_cart_grandSubTotal' => 'المجموع الفرعي',
     'vModule_cart_formula' => 'معادلة',
     'vModule_cart_productOrderPrice' => 'سعر الكمية',
@@ -286,10 +288,12 @@ return array(
     'vModule_thankyou_viewOrder' => 'View my orders', // TODO: Translate
 
     'vModule_bonus_bonusTextTemplate' => 'كل %q: %b',
+    'vModule_bonus_title' => 'تحديث المكافأة',
 
     'vModule_order_dateFrom' => 'أدخل تاريخ بدء الطلبات',
     'vModule_order_dateTo' => 'أدخل تاريخ انتهاء الطلبات',
     'vModule_order_date' => 'أدخل تاريخ الطلبات',
+    'vModule_orderDetails_orderInformation' => 'معلومات الطلب',
 
     'vModule_customer_relationGroupTitle' => 'مجموعة العملاء',
     'vModule_customer_relationGroup' => 'مجموعة العملاء',
@@ -365,8 +369,11 @@ return array(
     'vModule_profile_city' => 'مدينة',
     'vModule_profile_address' => 'عنوان',
     'vModule_profile_pharmacyTradeLicenseDocument' => 'وثيقة الرخصة التجارية الصيدلانية',
-    'vModule_profile_uploadButton' => 'Upload Document',
-    'vModule_profile_uploadReplaceButton' => 'Replace Document',
+    'vModule_profile_uploadButton' => 'Upload Document', // TODO: translate
+    'vModule_profile_uploadReplaceButton' => 'Replace Document', // TODO: translate
+    'vModule_profile_viewLicenseDocumentButton' => 'View License Document', // TODO: translate
+    'vModule_profile_allowedLicenseDocumentFileSize' => 'Allowed max file size is 10MB', // TODO: translate
+    'vModule_profile_allowedLicenseDocumentFileType' => 'Allowed file types are .pdf, .ppt, .docx, .jpeg, .jpg, .png', // TODO: translate
     'vModule_profile_email' => 'عنوان البريد الالكترونى',
     'vModule_profile_pharmacyMobile' => 'رقم الصيدلية',
     'vModule_profile_changePasswordTitle' => 'غير كلمة السر',

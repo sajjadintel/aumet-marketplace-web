@@ -381,6 +381,32 @@ var SearchDataTable = (function () {
 		});*/
 	};
 
+	var _addQuantity = function addQuantity(object) {
+		console.log('test', $(object).prev().val());
+		$(object)
+			.prev()
+			.val(+$(object).prev().val() + 1);
+		$(object).prev().trigger('change');
+	};
+
+	var _subQuantity = function subQuantity(object) {
+		console.log('test', $(object).next().val());
+		if ($(object).next().val() > 0) {
+			$(object)
+				.next()
+				.val(+$(object).next().val() - 1);
+			$(object).next().trigger('change');
+		}
+	};
+
+	var _updateQty = function updateQty(row, oldValue) {
+		if (row.cart == 0 && (oldValue == null || oldValue == 0)) {
+			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id, null, false, true);
+		} else {
+			CartCheckout.updateQuantity(row.id, 0, row.stock, row.cartDetailId, row.entityId, 0, 0, oldValue, false, null, false, true);
+		}
+	};
+
 	return {
 		// public functions
 		init: function (objQuery) {
@@ -390,8 +416,8 @@ var SearchDataTable = (function () {
 			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
 			//WebApp.reloadDatatable();
 		},
-		onClickAddMoreToCart: function (row) {
-			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
+		onClickAddMoreToCart: function (row, fromProductPage = false) {
+			Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id, 0, null, false, true, fromProductPage);
 			WebApp.reloadDatatable();
 		},
 		onBonusOptionCallback: function (row, bonusOption) {
@@ -468,19 +494,20 @@ var SearchDataTable = (function () {
 			_productAddBonus(addButtonName);
 		},
 		updateQty(row, oldValue = null) {
-			if (row.cart == 0) {
-				Cart.addItem(row.entityId, row.id, '#quantity-' + row.id, '#quantityFreeInput-' + row.id);
-			} else {
-				CartCheckout.updateQuantity(row.id, 0, row.stock, row.cartDetailId, row.entityId, 0, oldValue);
-			}
-			WebApp.reloadDatatable();
+			_updateQty(row, oldValue);
 		},
-		// TODO: Check Naveed fix
-		//		updateQty(row, userID) {
-		//			WebApp.post('/web/cart/remove', { entityProductId: row.id, userID: userID }, function () {
-		//				SearchDataTable.onClickAddToCart(row);
-		//				//WebApp.reloadDatatable();
-		//			});
-		//		},
+
+		// updateQty(row, userID) {
+		// 	WebApp.post('/web/cart/remove', {entityProductId: row.id, userID: userID}, function () {
+		// 		SearchDataTable.onClickAddToCart(row);
+		// 		WebApp.reloadDatatable();
+		// 	});
+		// },
+		addQuantity: function (object) {
+			return _addQuantity(object);
+		},
+		subQuantity: function (object) {
+			return _subQuantity(object);
+		},
 	};
 })();
