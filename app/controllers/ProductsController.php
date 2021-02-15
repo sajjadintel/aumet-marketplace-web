@@ -2334,7 +2334,7 @@ class ProductsController extends Controller
 
                 foreach ($cellIterator as $cell) {
                     $cellLetter = $cell->getColumn();
-                    $cellValue = $cell->getCalculatedValue();
+                    $cellValue = trim($cell->getCalculatedValue());
 
                     switch ($cellLetter) {
                         case "A":
@@ -2369,7 +2369,7 @@ class ProductsController extends Controller
                             array_push($bonus, $cellValue);
                             break;
                         case "E":
-                            if($cellValue != "#N/A") {
+                            if($cellValue != "#N/A" && $cellValue != "" && $cellValue != null) {
                                 if (!in_array($cellValue, $arrRelationGroupId)) {
                                     array_push($errors, "Customer Group invalid");
                                 }
