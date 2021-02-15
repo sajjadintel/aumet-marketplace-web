@@ -489,11 +489,11 @@ var Profile = (function () {
 		$('.selectpicker').on('change', function () {
 			var allValues = $(this).val();
 			if (allValues.length > 0) {
-				$(this).parent().parent().find('#cityErrorLabel').hide();
+				$(this).parent().parent().find('#cityErrorLabel').slideUp();
 				$(this).parent().removeClass('is-invalid');
 				$(this).parent().css('border', '');
 			} else {
-				$(this).parent().parent().find('#cityErrorLabel').show();
+				$(this).parent().parent().find('#cityErrorLabel').slideDown();
 				$(this).parent().addClass('is-invalid');
 				$(this).parent().css('border', '1px solid #F64E60');
 			}
@@ -704,11 +704,11 @@ var Profile = (function () {
 			var allValues = $(this).val();
 			allCityId.push(...allValues);
 			if (allValues.length > 0) {
-				$(element).parent().parent().find('#cityErrorLabel').hide();
+				$(element).parent().parent().find('#cityErrorLabel').slideUp();
 				$(element).parent().removeClass('is-invalid');
 				$(element).parent().css('border', '');
 			} else {
-				$(element).parent().parent().find('#cityErrorLabel').show();
+				$(element).parent().parent().find('#cityErrorLabel').slideDown();
 				$(element).parent().addClass('is-invalid');
 				$(element).parent().css('border', '1px solid #F64E60');
 				valid = false;
