@@ -1084,3 +1084,24 @@ INSERT INTO marketplace.country (name_en, name_ar, name_fr, currency) VALUES ('A
 ('Zimbabwe', 'Zimbabwe', 'Zimbabwe', 'AED');
 
 ################################
+
+## 15/02/2021 -- Naveed Javaid
+
+# in "vwEntityProductSellSummary" Changed 'join' to 'left join' on 'scientificName' table (fixes MPW-440)
+
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
+    select `ep`.`id`              AS `id`,
+       `ep`.`entityId`        AS `entityId`,
+       `e`.`name_ar`          AS `entityName_ar`,
+       `e`.`name_en`          AS `entityName_en`,
+       `e`.`name_fr`          AS `entityName_fr`,
+       `ep`.`productId`       AS `productId`,
+       `p`.`scientificNameId` AS `scientificNameId`,
+       `s`.`name`             AS `scientificName`,
+       `p`.`name_ar`          AS `productName_ar`,
+       `p`.`name_en`          AS `productName_en`,
+       `p`.`name_fr`          AS `productName_fr`
+from (((`marketplace`.`entityProductSell` `ep` join `marketplace`.`entity` `e` on ((`ep`.`entityId` = `e`.`id`))) join `marketplace`.`product` `p` on ((`ep`.`productId` = `p`.`id`)))
+         left join `marketplace`.`scientificName` `s` on ((`p`.`scientificNameId` = `s`.`id`)));
+
+################################
