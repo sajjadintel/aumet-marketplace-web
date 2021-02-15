@@ -183,7 +183,7 @@
                       </tr>
                       <tr>
                         <td width="50%" class="o_pt-xs" align="left" style="padding-top: 8px;">
-                          <p class="o_sans o_text o_text-secondary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;">Tax</p>
+                          <p class="o_sans o_text o_text-secondary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;">VAT</p>
                         </td>
                         <td width="50%" class="o_pt-xs" align="right" style="padding-top: 8px;">
                           <p class="o_sans o_text o_text-secondary" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;color: #424651;"><?php echo $tax . " " . $currencySymbol ?></p>
