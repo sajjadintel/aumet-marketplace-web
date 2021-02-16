@@ -757,9 +757,13 @@ class NotificationHelper {
 
         $emailHandler->appendToAddress($userEmail, $userFullname);
 
-        //$emailHandler->appendToBcc('n.sohal@aumet.com', 'Naresh');
-        //$emailHandler->appendToBcc('s.qarem@aumet.com', 'Sahar');
+        $emailHandler->appendToBcc('n.sohal@aumet.com', 'Naresh');
+        $emailHandler->appendToBcc('s.qarem@aumet.com', 'Sahar');
         $emailHandler->appendToBcc('a.atrash@aumet.com', 'Alaa');
+        $emailHandler->appendToBcc('a.abdullah@aumet.com', 'Ahmad');
+        $emailHandler->appendToBcc('s.jaber@aumet.com', 'Shahed');
+        $emailHandler->appendToBcc('m.shaaban@aumet.com', 'Mustafa');
+        $emailHandler->appendToBcc('l.abueisheh@aumet.com', 'Luna');
 
         $htmlContent = View::instance()->render($emailFile);
 
