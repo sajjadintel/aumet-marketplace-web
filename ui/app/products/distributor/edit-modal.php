@@ -30,13 +30,13 @@
                     <div class="row">
                         <div class="col-md-2 form-group">
                             <div class="image-input image-input-empty image-input-outline">
-                                <div class="image-input-wrapper" id="editProductImageHolder"></div>
+                                <div class="image-input-wrapper image-contain" id="editProductImageHolder"></div>
                                 <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
                                        data-action="change" data-toggle="tooltip" title=""
                                        data-original-title="Change avatar">
                                     <i class="fa fa-pen icon-sm text-muted"></i>
                                     <input type="file" name="profile_avatar" accept=".png, .jpg, .jpeg" id="editProductImage"/>
-                                    <input type="hidden" name="image" id="editProductImageInput"/>
+                                    <input type="hidden" name="image" id="eddropzoneImageitProductImageInput"/>
                                 </label>
                                 <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
                                       data-action="cancel" data-toggle="tooltip" title="Cancel avatar">
@@ -71,7 +71,7 @@
                                     <div class="dropzone-items" id="editDropzoneItems" style="display: flex;">
                                         <div class="col-md-2 image-input image-input-empty image-input-outline dropzone-item" style="display: none; background-color: unset;">
                                             <div class="dropzone-error" data-dz-errormessage=""></div>
-                                            <div class="mb-2 image-input-wrapper" id="dropzoneImage" style="width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/assets/img/default-product-image.png'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%);">
+                                            <div class="mb-2 image-input-wrapper image-contain" id="dropzoneImage" style="width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/assets/img/default-product-image.png'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%);">
                                                 <div class="px-2 dropzone-progress" style="width: 100%; position: relative; top: 50%;">
                                                     <div class="progress">
                                                         <div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress=""></div>

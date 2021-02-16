@@ -111,7 +111,7 @@
                             <?php foreach ($arrNewestProducts as $product) : ?>
                                 <div class="col-3">
                                     <div class="img-fill flex-shrink-0 bg-light mb-4 dynamic-image">
-                                        <img class="productImage" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
+                                        <img class="productImage image-contain" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
                                     </div>
                                     <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
                                     <p style="text-align: center;"><?php echo $product->price; ?></p>
@@ -135,7 +135,7 @@
                             <?php foreach ($arrTopSellingProducts as $product) : ?>
                                 <div class="col-3">
                                     <div class="img-fill flex-shrink-0 bg-light mb-4 dynamic-image">
-                                        <img class="productImage" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
+                                        <img class="productImage image-contain" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
                                     </div>
                                     <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
                                     <p style="text-align: center;"><?php echo $product->price; ?></p>
