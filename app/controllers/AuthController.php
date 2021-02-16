@@ -897,4 +897,187 @@ class AuthController extends Controller
 
 
     }
+
+    function getProcessPharmacies()
+    {
+        $dbUpload = new BaseModel($this->db, "uploadpharma_1");
+        $dbUpload->getByField('isProcess', 1);
+
+        $arr = [];
+
+        while (!$dbUpload->dry()) {
+            $password = $this->generateRandomString(10);
+            $cityId = 53765;
+            switch(strtolower(trim($dbUpload->City))) {
+                case "rak":
+                    $cityId = 53773;
+                    break;
+                case "ajman":
+                    $cityId = 53768;
+                    break;
+                case "abu dhabi":
+                    $cityId = 53765;
+                    break;
+                case "uaq":
+                    $cityId = 53767;
+                    break;
+                case "sharjah":
+                    $cityId = 53774;
+                    break;
+                case "fujeirah":
+                    $cityId = 53772;
+                    break;
+                case "dubai":
+                    $cityId = 53771;
+                    break;
+            }
+            $obj = $this->handleProcessPharmacies($dbUpload->name, $dbUpload->mobile, $dbUpload->email, $password, $dbUpload->pharmacyName, $cityId, $dbUpload->Address );
+            if($obj) {
+                $dbUpload->entityId = $obj->entityId;
+                $dbUpload->userId = $obj->userId;
+                $dbUpload->entityBranchId = $obj->entityBranchId;
+                $dbUpload->emailCode = NotificationHelper::sendOnboardingPharmacyNotification($this->f3, $this->db, $obj->userId, $dbUpload->email, $dbUpload->pharmacyName, $obj->entityId, $obj->entityBranchId);
+                $dbUpload->isProcess = 2;
+                $dbUpload->update();
+
+                $obj->emailCode = $dbUpload->emailCode;
+            }
+            else{
+                $obj = new stdClass();
+                $obj->emailCode = -1;
+                $obj->email = $dbUpload->email;
+            }
+
+
+            $arr[] = $obj;
+
+            $dbUpload->next();
+        }
+
+        echo $this->jsonResponseRaw($arr);
+    }
+
+    function handleProcessPharmacies($name, $mobile, $email, $password, $entityName, $cityId, $address)
+    {
+
+        $res = new stdClass();
+
+        $uid = null;
+        $tradeLicenseNumber = '';
+        $countryId = 29;
+        $pharmacyDocument = "";
+        $isDistributor = false;
+
+        if (!$name || !ltrim($mobile, "+") || !$email || !$password || !$entityName || !$countryId || !$cityId || !$address) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = "Some mandatory fields are missing";
+            return false;
+        }
+
+        // Check if email is unique
+        $dbUser = new BaseModel($this->db, "user");
+        $dbUser->getByField("email", $email);
+
+        if (!$dbUser->dry()) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->title = "";
+            $this->webResponse->message = "Email Already Exists";
+            return false;
+        }
+
+        // Check if phone number is unique
+        $dbUser = new BaseModel($this->db, "user");
+        $dbUser->getByField("mobile", $mobile);
+
+        if (!$dbUser->dry()) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->title = "";
+            $this->webResponse->message = "Phone number exists!";
+            return false;
+        }
+
+        // Check if trading license is unique
+        $dbEntityBranch = new BaseModel($this->db, "entityBranch");
+        if ($tradeLicenseNumber != '') {
+            $dbEntityBranch->getByField("tradeLicenseNumber", $tradeLicenseNumber);
+
+            if (!$dbEntityBranch->dry()) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "Trading license exists!";
+                return  $this->webResponse->jsonResponse();
+            }
+        }
+
+        // Get currency symbol
+        $dbCountry = new BaseModel($this->db, "country");
+        $country = $dbCountry->getById($countryId)[0];
+        $currencySymbol = $country['currency'];
+
+        // Get currency id
+        $dbCurrency = new BaseModel($this->db, "currency");
+        $currency = $dbCurrency->getByField("symbol", $currencySymbol)[0];
+        $currencyId = $currency['id'];
+
+        // Add user
+        if ($uid != NULL && trim($uid) != '') {
+            $dbUser->uid = $uid;
+        }
+        $dbUser->email = $email;
+        $dbUser->password = password_hash($password, PASSWORD_DEFAULT);
+        $dbUser->statusId = Constants::USER_STATUS_ACCOUNT_ACTIVE;
+        $dbUser->fullname = $name;
+        $dbUser->mobile = $mobile;
+        $dbUser->roleId = Constants::USER_ROLE_PHARMACY_SYSTEM_ADMINISTRATOR;
+        $dbUser->language = "en";
+        $dbUser->addReturnID();
+
+        $res->userId = $dbUser->id;
+
+        // Add entity
+        $dbEntity = new BaseModel($this->db, "entity");
+        $dbEntity->typeId = Constants::ENTITY_TYPE_PHARMACY;
+        $dbEntity->name_ar = $entityName;
+        $dbEntity->name_en = $entityName;
+        $dbEntity->name_fr = $entityName;
+        $dbEntity->countryId = $countryId;
+        $dbEntity->currencyId = $currencyId;
+        $dbEntity->addReturnID();
+
+        $res->entityId = $dbEntity->id;
+
+        // Add entity branch
+        $dbEntityBranch = new BaseModel($this->db, "entityBranch");
+        $dbEntityBranch->entityId = $dbEntity->id;
+        $dbEntityBranch->name_ar = $entityName;
+        $dbEntityBranch->name_en = $entityName;
+        $dbEntityBranch->name_fr = $entityName;
+        $dbEntityBranch->cityId = $cityId;
+        $dbEntityBranch->address_ar = $address;
+        $dbEntityBranch->address_en = $address;
+        $dbEntityBranch->address_fr = $address;
+        $dbEntityBranch->tradeLicenseNumber = $tradeLicenseNumber;
+        $dbEntityBranch->tradeLicenseUrl = $pharmacyDocument;
+        $dbEntityBranch->addReturnID();
+
+        $res->entityBranchId = $dbEntityBranch->id;
+
+        // Add account
+        $dbAccount = new BaseModel($this->db, "account");
+        $dbAccount->entityId = $dbEntity->id;
+        $dbAccount->number = 100;
+        $dbAccount->statusId = Constants::ACCOUNT_STATUS_ACTIVE;
+        $dbAccount->addReturnID();
+
+        $res->accountId = $dbAccount->id;
+
+        // Add user account
+        $dbUserAccount = new BaseModel($this->db, "userAccount");
+        $dbUserAccount->userId = $dbUser->id;
+        $dbUserAccount->accountId = $dbAccount->id;
+        $dbUserAccount->statusId = Constants::ACCOUNT_STATUS_ACTIVE;
+        $dbUserAccount->addReturnID();
+
+        return $res;
+    }
 }
