@@ -771,7 +771,6 @@ class AuthController extends Controller
         $dbEntityBranch->address = "address_en";
         $dbEntityBranch->getById($entityBranchId);
 
-
         if ($dbUser->dry() || $dbEntity->dry() || $dbEntityBranch->dry()) {
             $this->f3->set('vAuthFile', 'signup-verification-invalid');
         } else if ($dbUser->statusId != Constants::USER_STATUS_WAITING_VERIFICATION) {
@@ -855,5 +854,47 @@ class AuthController extends Controller
             }
         }
         echo View::instance()->render('public/auth/layout.php');
+    }
+
+    function getProcessEmailOnboarding(){
+        $token = $_GET['token'];
+        $isValid = true;
+
+        if (!isset($token) || $token == null || $token == "") {
+            $this->f3->set('vAuthFile', 'signup-approve-invalid');
+        }
+        $token = urldecode($token);
+        try {
+            $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
+            $accessTokenPayload = $jwt->decode($token);
+        } catch (\Exception $e) {
+            $isValid = false;
+            $this->f3->set('vAuthFile', 'signup-approve-invalid');
+        }
+        if (!is_array($accessTokenPayload)) {
+            $isValid = false;
+        }
+
+        if ($isValid) {
+            $userId = $accessTokenPayload["userId"];
+
+            $dbUser = new BaseModel($this->db, "user");
+            $dbUser->getById($userId);
+
+            if ($dbUser->dry()) {
+                $this->rerouteAuth();
+            } else if ($dbUser->statusId != Constants::USER_STATUS_PENDING_APPROVAL) {
+                $this->rerouteAuth();
+            } else {
+                $this->configUser($dbUser);
+
+                $this->f3->reroute('/web');
+            }
+        }
+        else{
+            $this->rerouteAuth();
+        }
+
+
     }
 }

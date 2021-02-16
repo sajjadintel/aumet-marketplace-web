@@ -185,5 +185,7 @@ $f3->route('GET /web/review/distributor/profile/approve', 'ReviewController->get
 
 
 $f3->route('GET /web/test/welcome/email/atrash', 'DemoController->testWelcomeEmail');
+$f3->route('GET /web/auth/onboarding/activate/pharmacy', 'AuthController->getProcessEmailOnboarding');
+
 
 include_once('routes-permission.php');

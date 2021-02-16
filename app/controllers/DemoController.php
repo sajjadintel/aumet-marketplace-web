@@ -9,23 +9,8 @@ class DemoController extends Controller
     }
 
     public function testWelcomeEmail(){
-        $emailHandler = new EmailHandler($this->db);
-        $emailFile = "email/layout.php";
-        $this->f3->set('domainUrl', getenv('DOMAIN_URL'));
-        $this->f3->set('title', Constants::EMAIL_WELCOME_PHARMACY);
-        $this->f3->set('emailType', 'welcomePharmacy');
 
-        $htmlContent = View::instance()->render($emailFile);
-
-        $emailHandler->appendToAddress('n.sohal@aumet.com', 'Naresh');
-        $emailHandler->appendToAddress('s.qarem@aumet.com', 'Sahar');
-        $emailHandler->appendToAddress('a.atrash@aumet.com', 'Alaa');
-
-
-        $subject = Constants::EMAIL_WELCOME_PHARMACY;
-        echo $emailHandler->sendEmail(Constants::EMAIL_NEW_CUSTOMER_GROUP, $subject, $htmlContent);
-
-
+        echo NotificationHelper::sendOnboardingPharmacyNotification($this->f3, $this->db, 190, 's.qarem+05@aumet.com', 'Sahar Pharmacy', 201, 192);
     }
 
     function getGenerateOrder()
