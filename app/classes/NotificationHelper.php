@@ -737,7 +737,7 @@ class NotificationHelper {
      * @param int $entityId entity id
      * @param int $entityBranchId branch id
      */
-    public static function sendOnboardingPharmacyNotification($f3, $dbConnection, $userId, $userEmail, $userFullname, $entityId, $entityBranchId)
+    public static function sendOnboardingPharmacyNotification($f3, $dbConnection, $userId, $userEmail, $userPassword, $userFullname, $entityId, $entityBranchId)
     {
         $emailHandler = new EmailHandler($dbConnection);
         $emailFile = "email/layout.php";
@@ -753,17 +753,18 @@ class NotificationHelper {
         $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
         $token = $jwt->encode($payload);
         $f3->set('token', $token);
+        $f3->set('password', $userPassword);
 
         $emailHandler->appendToAddress($userEmail, $userFullname);
 
-        $emailHandler->appendToBcc('n.sohal@aumet.com', 'Naresh');
-        $emailHandler->appendToBcc('s.qarem@aumet.com', 'Sahar');
+        //$emailHandler->appendToBcc('n.sohal@aumet.com', 'Naresh');
+        //$emailHandler->appendToBcc('s.qarem@aumet.com', 'Sahar');
         $emailHandler->appendToBcc('a.atrash@aumet.com', 'Alaa');
 
         $htmlContent = View::instance()->render($emailFile);
 
         $subject = Constants::EMAIL_WELCOME_PHARMACY;
-        return $emailHandler->sendEmail(Constants::EMAIL_NEW_CUSTOMER_GROUP, $subject, $htmlContent);
+        return $emailHandler->sendEmail(Constants::EMAIL_WELCOME_PHARMACY  , $subject, $htmlContent);
     }
 
 
