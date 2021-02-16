@@ -936,7 +936,7 @@ class AuthController extends Controller
                 $dbUpload->entityId = $obj->entityId;
                 $dbUpload->userId = $obj->userId;
                 $dbUpload->entityBranchId = $obj->entityBranchId;
-                $dbUpload->emailCode = NotificationHelper::sendOnboardingPharmacyNotification($this->f3, $this->db, $obj->userId, $dbUpload->email, $dbUpload->pharmacyName, $obj->entityId, $obj->entityBranchId);
+                $dbUpload->emailCode = NotificationHelper::sendOnboardingPharmacyNotification($this->f3, $this->db, $obj->userId, $dbUpload->email, $password, $dbUpload->pharmacyName, $obj->entityId, $obj->entityBranchId);
                 $dbUpload->isProcess = 2;
                 $dbUpload->update();
 
