@@ -17,6 +17,11 @@ var WebApp = (function () {
 	var _validator;
 	var _supportModalValidator;
 
+	var blurStack = 0;
+	var blockStack = 0;
+	var tempBlurStack = 0;
+	var tempBlockStack = 0;
+
 	var _alertError = function (msg) {
 		Swal.fire({
 			html: msg,
@@ -32,6 +37,15 @@ var WebApp = (function () {
 	};
 
 	var _alertSuccess = function (msg) {
+		while (blurStack > 0) {
+			_unblurPage(44);
+			++tempBlurStack;
+		}
+		while (blockStack > 0) {
+			_unblockPage(48);
+			++tempBlockStack;
+		}
+
 		Swal.fire({
 			text: msg,
 			icon: 'success',
@@ -42,6 +56,19 @@ var WebApp = (function () {
 			},
 		}).then(function () {
 			KTUtil.scrollTop();
+
+			while (tempBlurStack >= 0) {
+				--tempBlurStack;
+				_blurPage(63);
+			}
+			while (tempBlockStack >= 0) {
+				--tempBlockStack;
+				_blockPage(67);
+			}
+			console.debug('blurStack', blurStack);
+			console.debug('blockStack', blockStack);
+			console.debug('tempBlurStack', tempBlurStack);
+			console.debug('tempBlockStack', tempBlockStack);
 		});
 	};
 
@@ -85,13 +112,15 @@ var WebApp = (function () {
 	};
 
 	var _get = function (url, fnCallback = null) {
-		_blurPage();
-		_blockPage();
 		$.ajax({
 			url: url + '?_t=' + Date.now(),
 			type: 'GET',
 			dataType: 'json',
 			async: true,
+			beforeSend: function (jqXHR, settings) {
+				_blurPage(96);
+				_blockPage(97);
+			},
 		})
 			.done(function (webResponse) {
 				if (webResponse && typeof webResponse === 'object') {
@@ -99,37 +128,35 @@ var WebApp = (function () {
 						if (typeof fnCallback === 'function') {
 							fnCallback(webResponse);
 						}
-						_unblurPage();
-						_unblockPage();
 					} else if (webResponse.errorCode == 0) {
 						window.location.href = '/web';
 					} else {
-						_unblurPage();
-						_unblockPage();
 						_alertError(webResponse.message);
 					}
 				} else {
-					_unblurPage();
-					_unblockPage();
 					_alertError(WebAppLocals.getMessage('error'));
 				}
 			})
 			.fail(function (jqXHR, textStatus, errorThrown) {
 				_alertError(WebAppLocals.getMessage('error'));
-				_unblurPage();
-				_unblockPage();
+			})
+			.always(function (jqXHR, textStatus, errorThrown) {
+				_unblurPage(119);
+				_unblockPage(120);
 			});
 	};
 
 	var _post = function (url, data = null, fnCallback = null, submitButton = null, forceCallback = false, forcePreventUnblur = false) {
-		_blurPage();
-		_blockPage();
 		$.ajax({
 			url: url + '?_t=' + Date.now(),
 			type: 'POST',
 			dataType: 'json',
 			data: data,
 			async: true,
+			beforeSend: function (jqXHR, settings) {
+				_blurPage(132);
+				_blockPage(133);
+			},
 		})
 			.done(function (webResponse) {
 				if (webResponse && typeof webResponse === 'object') {
@@ -137,19 +164,11 @@ var WebApp = (function () {
 						if (typeof fnCallback === 'function') {
 							fnCallback(webResponse);
 						}
-						if (!forcePreventUnblur) {
-							_unblurPage();
-							_unblockPage();
-						}
 					} else if (webResponse.errorCode == 0) {
 						window.location.href = '/web';
 					} else if (webResponse.errorCode == 3) {
 						if (typeof fnCallback === 'function') {
 							fnCallback(webResponse);
-						}
-						if (!forcePreventUnblur) {
-							_unblurPage();
-							_unblockPage();
 						}
 						_alertSuccess(webResponse.message);
 					} else {
@@ -158,8 +177,6 @@ var WebApp = (function () {
 								fnCallback(webResponse);
 							}
 						}
-						_unblurPage();
-						_unblockPage();
 						_alertError(webResponse.message);
 					}
 				} else {
@@ -168,8 +185,6 @@ var WebApp = (function () {
 							fnCallback(webResponse);
 						}
 					}
-					_unblurPage();
-					_unblockPage();
 					_alertError(WebAppLocals.getMessage('error'));
 				}
 				if (submitButton) {
@@ -184,18 +199,18 @@ var WebApp = (function () {
 					}
 				}
 				_alertError(WebAppLocals.getMessage('error'));
-				_unblurPage();
-				_unblockPage();
 				if (submitButton) {
 					KTUtil.btnRelease(submitButton);
 					$(submitButton).prop('disabled', false);
 				}
+			})
+			.always(function (jqXHR, textStatus, errorThrown) {
+				_unblurPage(182);
+				_unblockPage(184);
 			});
 	};
 
 	var _loadPage = function (url, isSubPage = false, fnCallback = null) {
-		_blurPage();
-		_blockPage();
 		var fullUrl;
 		if (url.includes('?')) {
 			var allParts = url.split('?');
@@ -212,6 +227,10 @@ var WebApp = (function () {
 			type: 'GET',
 			dataType: 'json',
 			async: true,
+			beforeSend: function (jqXHR, settings) {
+				_blurPage(207);
+				_blockPage(208);
+			},
 		})
 			.done(function (webResponse) {
 				if (webResponse && typeof webResponse === 'object') {
@@ -244,18 +263,12 @@ var WebApp = (function () {
 						if (typeof fnCallback === 'function') {
 							fnCallback();
 						}
-						_unblurPage();
-						_unblockPage();
 					} else if (webResponse.errorCode == 0) {
 						window.location.href = '/web';
 					} else {
-						_unblurPage();
-						_unblockPage();
 						_alertError(webResponse.message);
 					}
 				} else {
-					_unblurPage();
-					_unblockPage();
 					_alertError(WebAppLocals.getMessage('error'));
 				}
 
@@ -263,14 +276,14 @@ var WebApp = (function () {
 			})
 			.fail(function (jqXHR, textStatus, errorThrown) {
 				_alertError(WebAppLocals.getMessage('error'));
-				_unblurPage();
-				_unblockPage();
+			})
+			.always(function (jqXHR, textStatus, errorThrown) {
+				_unblurPage(256);
+				_unblockPage(257);
 			});
 	};
 
 	var _handleBrowserNavigation = function (url, state = null, isSubPage = false, fnCallback = null) {
-		_blurPage();
-		_blockPage();
 		var fullUrl;
 		if (url.includes('?')) {
 			var allParts = url.split('?');
@@ -287,6 +300,10 @@ var WebApp = (function () {
 			type: 'GET',
 			dataType: 'json',
 			async: true,
+			beforeSend: function (jqXHR, settings) {
+				_blurPage(279);
+				_blockPage(280);
+			},
 		})
 			.done(function (webResponse) {
 				if (webResponse && typeof webResponse === 'object') {
@@ -314,18 +331,12 @@ var WebApp = (function () {
 						if (typeof fnCallback === 'function') {
 							fnCallback();
 						}
-						_unblurPage();
-						_unblockPage();
 					} else if (webResponse.errorCode == 0) {
 						window.location.href = '/web';
 					} else {
-						_unblurPage();
-						_unblockPage();
 						_alertError(webResponse.message);
 					}
 				} else {
-					_unblurPage();
-					_unblockPage();
 					_alertError(WebAppLocals.getMessage('error'));
 				}
 
@@ -333,8 +344,10 @@ var WebApp = (function () {
 			})
 			.fail(function (jqXHR, textStatus, errorThrown) {
 				_alertError(WebAppLocals.getMessage('error'));
-				_unblurPage();
-				_unblockPage();
+			})
+			.always(function (jqXHR, textStatus, errorThrown) {
+				_unblurPage(324);
+				_unblockPage(325);
 			});
 	};
 
@@ -357,36 +370,52 @@ var WebApp = (function () {
 			if (typeof fnCallback === 'function') {
 				fnCallback();
 			}
-			_unblurPage();
-			_unblockPage();
+			_unblurPage(348);
+			_unblockPage(349);
 		} else {
 			_loadPage('/web/pharmacy/product/search');
 		}
 	};
 
-	var _blockPage = function (_msgKey = 'loading') {
+	var _blockPage = function (line, _msgKey = 'loading') {
+		++blockStack;
+
 		KTApp.blockPage({
 			overlayColor: 'black',
 			opacity: 0.2,
 			message: WebAppLocals.getMessage(_msgKey),
 			state: 'primary', // a bootstrap color
 		});
+		console.debug('block', line, blockStack);
 	};
 
-	var _unblockPage = function () {
-		KTApp.unblockPage();
+	var _unblockPage = function (line) {
+		--blockStack;
+		if (blockStack <= 0) {
+			blockStack = 0;
+			KTApp.unblockPage();
+		}
+		console.debug('unblock', line, blockStack);
 	};
 
-	var _blurPage = function () {
+	var _blurPage = function (line) {
+		++blurStack;
+
 		$(_pageContainerId).foggy({
 			blurRadius: 3,
 			opacity: 1,
 			cssFilterSupport: true,
 		});
+		console.debug('blur', line, blurStack);
 	};
 
-	var _unblurPage = function () {
-		$(_pageContainerId).foggy(false);
+	var _unblurPage = function (line) {
+		--blurStack;
+		if (blurStack <= 0) {
+			blurStack = 0;
+			$(_pageContainerId).foggy(false);
+		}
+		console.debug('unblur', line, blurStack);
 	};
 
 	var _initModal = function () {
@@ -542,10 +571,10 @@ var WebApp = (function () {
 	};
 
 	var _createDatatableServerside = function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
-		_blurPage();
-		_blockPage();
+		_blurPage(542);
+		_blockPage(543);
 
-		// // delete cached datatable
+		// delete cached datatable
 		if ($.fn.DataTable.isDataTable(vElementId)) {
 			if (datatableVar.length > 0) {
 				datatableVar.pop();
@@ -557,7 +586,7 @@ var WebApp = (function () {
 		var fileName = 'Aumet Marketplace - ' + vTableName;
 
 		var dbOptions = {
-			dom: 'Brt<"float-right"i><"float-right"l><"float-left"p>',
+			dom: 'Blfrtip',
 			responsive: true,
 			scrollX: false,
 			orderCellsTop: true,
@@ -612,7 +641,7 @@ var WebApp = (function () {
 						/* change table header background color */
 						doc.content[1].table.body[0].forEach(function (h) {
 							h.fillColor = '#4ab8a8';
-							alignment: 'center';
+							h.alignment = 'center';
 						});
 
 						/* remove title above table */
@@ -661,6 +690,20 @@ var WebApp = (function () {
 				dataType: 'json',
 				type: 'POST',
 				data: {},
+				beforeSend: function (jqXHR, settings) {
+					_blurPage(662);
+					_blockPage(663);
+					console.debug('here');
+				},
+				complete: function () {
+					while (blurStack > 0) {
+						_unblurPage(667);
+					}
+					while (blockStack > 0) {
+						_unblockPage(668);
+					}
+					console.debug('there');
+				}
 			},
 			columnDefs: vColumnDefs,
 		};
@@ -672,14 +715,14 @@ var WebApp = (function () {
 		var dbOptionsObj = { ...dbOptions };
 
 		if (vAdditionalOptions && vAdditionalOptions.datatableOptions) {
-			var dbOptionsObj = { ...dbOptions, ...vAdditionalOptions.datatableOptions };
+			dbOptionsObj = { ...dbOptions, ...vAdditionalOptions.datatableOptions };
 		}
 
 		datatableVar.push($('' + vElementId).DataTable(dbOptionsObj));
 
 		datatableVar[datatableVar.length - 1].on('draw', function () {
-			_unblurPage();
-			_unblockPage();
+			_unblurPage(688);
+			_unblockPage(689);
 		});
 
 		$.fn.dataTable.ext.errMode = function (settings, helpPage, message) {
@@ -690,10 +733,10 @@ var WebApp = (function () {
 	};
 
 	var _createDatatableLocal = function (vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions = null) {
-		_blurPage();
-		_blockPage();
+		_blurPage(700);
+		_blockPage(701);
 
-		// // delete cached datatable
+		// delete cached datatable
 		// if ($.fn.DataTable.isDataTable(datatableVar)) {
 		// 	datatableVar.clear().destroy();
 		// }
@@ -701,7 +744,7 @@ var WebApp = (function () {
 		var fileName = 'Aumet Marketplace - ' + vTableName;
 
 		var dbOptions = {
-			dom: 'Brt<"float-right"i><"float-right"l><"float-left"p>',
+			dom: 'Blfrtip',
 			responsive: true,
 			scrollX: false,
 			orderCellsTop: true,
@@ -738,14 +781,14 @@ var WebApp = (function () {
 		var dbOptionsObj = { ...dbOptions };
 
 		if (vAdditionalOptions && vAdditionalOptions.datatableOptions) {
-			var dbOptionsObj = { ...dbOptions, ...vAdditionalOptions.datatableOptions };
+			dbOptionsObj = { ...dbOptions, ...vAdditionalOptions.datatableOptions };
 		}
 
 		datatableVar.push($('' + vElementId).DataTable(dbOptionsObj));
 
 		datatableVar[datatableVar.length - 1].on('draw', function () {
-			_unblurPage();
-			_unblockPage();
+			_unblurPage(754);
+			_unblockPage(755);
 		});
 
 		return datatableVar;
@@ -971,16 +1014,16 @@ var WebApp = (function () {
 			return _closeSubPage(fnCallback);
 		},
 		block: function (_msgKey = 'loading') {
-			return _blockPage(_msgKey);
+			return _blockPage(981, _msgKey);
 		},
 		unblock: function () {
-			return _unblockPage();
+			return _unblockPage(984);
 		},
 		blur: function () {
-			return _blurPage();
+			return _blurPage(978);
 		},
 		unblur: function () {
-			return _unblurPage();
+			return _unblurPage(981);
 		},
 		alertSuccess: function (msg) {
 			return _alertSuccess(msg);
@@ -1031,8 +1074,15 @@ var WebApp = (function () {
 			if ($('#popupModal').is(':visible')) {
 				$('#popupModal').modal('hide');
 			}
+
 			datatableVar.forEach(function (vValue) {
-				vValue.ajax.reload(null, false);
+				_blurPage(1071);
+				_blockPage(1072);
+
+				$.when(vValue.ajax.reload(null, false)).then(function () {
+					_unblurPage(1075);
+					_unblockPage(1076);
+				});
 			});
 		},
 	};
