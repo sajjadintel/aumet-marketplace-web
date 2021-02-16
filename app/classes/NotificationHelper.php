@@ -728,5 +728,43 @@ class NotificationHelper {
         $emailHandler->sendEmail(Constants::EMAIL_DISTRIBUTOR_ACCOUNT_VERIFICATION, $subject, $htmlContent);
     }
 
+    /**
+     * sendOnboardingPharmacyNotification
+     *
+     * @param \Base $f3 f3 instance
+     * @param BaseModel $dbConnection db connection instance
+     * @param int $userId User id
+     * @param int $entityId entity id
+     * @param int $entityBranchId branch id
+     */
+    public static function sendOnboardingPharmacyNotification($f3, $dbConnection, $userId, $userEmail, $userFullname, $entityId, $entityBranchId)
+    {
+        $emailHandler = new EmailHandler($dbConnection);
+        $emailFile = "email/layout.php";
+        $f3->set('domainUrl', getenv('DOMAIN_URL'));
+        $f3->set('title', Constants::EMAIL_WELCOME_PHARMACY);
+        $f3->set('emailType', 'welcomePharmacy');
+
+        $payload = [
+            'userId' => $userId,
+            'entityId' => $entityId,
+            'entityBranchId' => $entityBranchId
+        ];
+        $jwt = new JWT(getenv('JWT_SECRET_KEY'), 'HS256', (86400 * 30), 10);
+        $token = $jwt->encode($payload);
+        $f3->set('token', $token);
+
+        $emailHandler->appendToAddress($userEmail, $userFullname);
+
+        $emailHandler->appendToBcc('n.sohal@aumet.com', 'Naresh');
+        $emailHandler->appendToBcc('s.qarem@aumet.com', 'Sahar');
+        $emailHandler->appendToBcc('a.atrash@aumet.com', 'Alaa');
+
+        $htmlContent = View::instance()->render($emailFile);
+
+        $subject = Constants::EMAIL_WELCOME_PHARMACY;
+        return $emailHandler->sendEmail(Constants::EMAIL_NEW_CUSTOMER_GROUP, $subject, $htmlContent);
+    }
+
 
 }
