@@ -50,22 +50,22 @@ var DistributorCustomerGroup = (function () {
 
     var _generateMember = function(member, isGroupMember) {
         var memberContainer = document.createElement("div");
-        var className = "d-flex p-5 justify-content-between align-items-center border-bottom member";
+        var className = "d-flex p-3 justify-content-between align-items-center border-bottom member";
         if(!isGroupMember) className += " nonGroup"
         memberContainer.className = className;
         memberContainer.id = "member-" + member.id; 
 
         var memberNameContainer = document.createElement("div");
-        memberNameContainer.class = "col-10";
+        memberNameContainer.className = "col-8";
         
-        var memberNameElement = document.createElement("h4");
+        var memberNameElement = document.createElement("h5");
         memberNameElement.className = "member-text";
         memberNameElement.textContent = member.name;
         memberNameContainer.append(memberNameElement);
         memberContainer.append(memberNameContainer);
 
         var memberButtonContainer = document.createElement("div");
-        memberButtonContainer.className = "col-2 text-right";
+        memberButtonContainer.className = "col-4 text-right";
         
         var memberButtonElement = document.createElement("a");
         memberButtonElement.className = "btn btn-default btn-hover-primary mr-2 mb-2 border customer-group-modal-button"

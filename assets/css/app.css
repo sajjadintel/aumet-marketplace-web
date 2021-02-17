@@ -896,6 +896,11 @@ input[type='number'] {
 	background-color: #F6F6F6;
 }
 
+.customer-group-modal-member-container {
+	height: 300px;
+	overflow: hidden auto;
+}
+
 #editCustomerGroupNewId + span > span > span.select2-selection.select2-selection--single {
     border-color: #C0C0C0 !important;
 	border-top-left-radius: 0;
