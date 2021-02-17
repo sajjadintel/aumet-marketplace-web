@@ -11,8 +11,6 @@ var DistributorProductsDataTable = (function () {
 		// 'name_fr',
 		'unitPrice',
 		'vat',
-		'categoryId',
-		'subcategoryId',
 	];
 
 	// Structure: field: [minLength, maxLength]

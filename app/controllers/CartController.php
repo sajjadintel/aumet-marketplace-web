@@ -575,11 +575,9 @@ class CartController extends Controller
             $cartDetailFull = $dbCartDetailFull->getById($cartDetailId)[0];
 
             // Get cart count
-            $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-            $cartCount = 0;
-            foreach ($arrCartDetail as $cartDetail) {
-                $cartCount += $cartDetail->quantity;
-                $cartCount += $cartDetail->quantityFree;
+            $dbCartDetail = $this->db->exec("CALL spGetCartCount({$this->objUser->accountId})");
+            if (count($dbCartDetail) > 0) {
+                $this->objUser->cartCount = intval($dbCartDetail[0]['cartCount']);
             }
 
             $cartDetail = new stdClass();
@@ -587,7 +585,7 @@ class CartController extends Controller
             $cartDetail->quantity = $cartDetailFull['quantity'];
             $cartDetail->quantityFree = $cartDetailFull['quantityFree'];
             $cartDetail->entityId = $cartDetailFull['entityId'];
-            $cartDetail->cartCount = $cartCount;
+            $cartDetail->cartCount = $this->objUser->cartCount;
             $cartDetail->activeBonus = $bonusDetail->activeBonus;
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;

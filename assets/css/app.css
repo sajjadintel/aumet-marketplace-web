@@ -886,6 +886,12 @@ input[type='number'] {
 	background: #FAFAFA;
 }
 
+.image-contain {
+	background-size: contain !important;
+	background-position: center center !important;
+	object-fit: contain !important;
+}
+
 .customer-group-modal-bg {
 	background-color: #F6F6F6;
 }

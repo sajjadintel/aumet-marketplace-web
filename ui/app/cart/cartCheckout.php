@@ -177,7 +177,7 @@ function compress_htmlcode($codedata)
                                                                 <?php echo Helper::formatMoney($item->quantity * $item->unitPrice * (1 + $item->vat / 100)) . " " . $currencySymbol ?>
                                                             </td>
                                                             <td class="text-right align-middle cart-item-separator">
-                                                                <a href="javascript:;" onclick="CartCheckout.removeItemModal(<?php echo $item->id ?>)" class="btn btn-sm btn-light btn-text-danger btn-hover-primary btn-icon  mr-2" title="">
+                                                                <a href="javascript:;" onclick="CartCheckout.removeItemModal(<?php echo $item->id ?>)" class="btn btn-sm btn-light btn-text-danger btn-hover-danger btn-icon  mr-2" title="">
                                                                     <span class="svg-icon svg-icon-md">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                                             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
