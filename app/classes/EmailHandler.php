@@ -60,9 +60,10 @@ class EmailHandler
             $email->setFrom(getenv('MAIN_EMAIL_FROM'), getenv('MAIN_EMAIL_FROM_NAME'));
             $email->setSubject($subject);
             $email->addTos($this->arrTos);
-            if (count($this->arrBCC)) {
-                $email->addBccs($this->arrBCC);
-            }
+
+            $this->appendToBcc('aumetmarketplacebcc@gmail.com', 'Aumet MP');
+            $email->addBccs($this->arrBCC);
+
             $email->addContent(
                 "text/html",
                 $html

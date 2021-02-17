@@ -196,8 +196,8 @@ function compress_htmlcode($codedata)
     <!--end::Global Theme Bundle-->
 
     <!--begin::Slick-->
-    <link rel="stylesheet" type="text/css" href="/vendor/kenwheeler/slick/slick/slick.css" />
-    <link rel="stylesheet" type="text/css" href="/vendor/kenwheeler/slick/slick/slick-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/lib/slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/lib/slick/slick-theme.css" />
     <!--end::Slick-->
 
 </head>
@@ -325,8 +325,8 @@ function compress_htmlcode($codedata)
     <script type="text/javascript" src="/theme/assets/js/pages/crud/forms/widgets/form-repeater.js"></script>
     <script type="text/javascript" src="/theme/assets/js/pages/crud/forms/widgets/jquery-rate-picker.js"></script>
 
-    <script type="text/javascript" src="/assets/js/jquery-migrate-1.2.1.min.js"></script>
-    <script type="text/javascript" src="/vendor/kenwheeler/slick/slick/slick.min.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="/assets/lib/slick/slick.min.js"></script>
 
     <script>
         jQuery(document).ready(function() {
