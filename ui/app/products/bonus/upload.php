@@ -28,44 +28,42 @@ function compress_htmlcode($codedata)
     <div class="d-flex align-items-stretch flex-column">
 
         <div class="d-flex flex-column-fluid">
-            <a id="export-to-excel" class="btn btn-lg btn-primary mr-2 btn-lg-radius" title="Export To Excel">
+            <a id="export-to-excel" class="d-flex btn btn-lg btn-primary mr-2 btn-lg-radius" title="Export To Excel">
                 <i class="la la-file-excel-o"></i> Download Sample Bonus Excel File
             </a>
         </div>
     </div>
 
 
-    <div class="card card-custom gutter-b mt-5">
+    <div class="card card-custom gutter-t gutter-b">
         <div class="card-body">
 
-            <div class="d-flex align-items-center flex-column" id="dropZoneProductsBonusUploadProgressContainer">
+            <div class="d-none align-items-center flex-column" id="dropZoneProductsBonusUploadProgressContainer">
                 <div class="progress w-100" style="height: 40px;">
-                    <div class="progress-bar progress-bar-striped bg-primary font-size-h3" id="dropZoneProductsBonusUploadProgress" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">Uploading: 0 %</div>
+                    <div class="progress-bar progress-bar-striped bg-primary font-size-h3" id="dropZoneProductsBonusUploadProgress" role="progressbar" style="width: 0;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">Uploading: 0 %</div>
                 </div>
             </div>
 
-            <div class="d-flex align-items-center flex-column mt-10">
-                <div class="dropzone dropzone-default dropzone-success" id="dropZoneProductsBonusUpload">
-                    <div class="dropzone-msg dz-message needsclick">
+            <div class="d-flex align-items-center flex-column" id="dropZoneProductsBonusUpload">
+                <div class="dropzone dropzone-default dropzone-success p-0">
+                    <div class="dropzone-msg dz-message needsclick m-0 p-12">
                         <h3 class="dropzone-msg-title">Drop files here or click to upload.</h3>
                         <span class="dropzone-msg-desc">Only .xlsx files are allowed for upload</span>
                     </div>
                 </div>
             </div>
 
-
         </div>
     </div>
 
-    <div class="d-flex align-items-stretch flex-column" id="productsBonusUploadProcessResultContainer">
-
+    <div class="d-flex align-items-stretch flex-column gutter-t gutter-b" id="productsBonusUploadProcessResultContainer">
 
     </div>
 
     <div id="goBackContainer" class="row" style="display: none;">
-        <div class="col-4">
+        <div class="col">
             <div class="d-flex flex-column-fluid">
-                <a class="btn btn-lg btn-primary mr-2 btn-lg-radius" title="Go back" onclick="location.reload()">
+                <a class="btn btn-lg btn-primary mr-2 btn-lg-radius" title="Go back" onclick="history.back()">
                     Go back
                 </a>
             </div>

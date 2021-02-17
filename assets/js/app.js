@@ -575,9 +575,6 @@ var WebApp = (function () {
 	};
 
 	var _createDatatableServerside = function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
-		_blurPage(542);
-		_blockPage(543);
-
 		// delete cached datatable
 		if ($.fn.DataTable.isDataTable(vElementId)) {
 			if (datatableVar.length > 0) {
@@ -725,8 +722,7 @@ var WebApp = (function () {
 		datatableVar.push($('' + vElementId).DataTable(dbOptionsObj));
 
 		datatableVar[datatableVar.length - 1].on('draw', function () {
-			_unblurPage(688);
-			_unblockPage(689);
+
 		});
 
 		$.fn.dataTable.ext.errMode = function (settings, helpPage, message) {
@@ -737,9 +733,6 @@ var WebApp = (function () {
 	};
 
 	var _createDatatableLocal = function (vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions = null) {
-		_blurPage(700);
-		_blockPage(701);
-
 		// delete cached datatable
 		// if ($.fn.DataTable.isDataTable(datatableVar)) {
 		// 	datatableVar.clear().destroy();
@@ -791,8 +784,7 @@ var WebApp = (function () {
 		datatableVar.push($('' + vElementId).DataTable(dbOptionsObj));
 
 		datatableVar[datatableVar.length - 1].on('draw', function () {
-			_unblurPage(754);
-			_unblockPage(755);
+
 		});
 
 		return datatableVar;
@@ -1053,10 +1045,18 @@ var WebApp = (function () {
 			_openModal(webResponse);
 		},
 		CreateDatatableServerside: function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
+			_blurPage(1040);
+			_blockPage(1041);
 			_createDatatableServerside(vTableName, vElementId, vUrl, vColumnDefs, vParams, vAdditionalOptions);
+			_unblurPage(1050);
+			_unblockPage(1051);
 		},
 		CreateDatatableLocal: function (vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions = null) {
+			_blurPage(1060);
+			_blockPage(1061);
 			_createDatatableLocal(vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions);
+			_unblurPage(1070);
+			_unblockPage(1071);
 		},
 		DestroyDatatable: function (vElementId) {
 			_destroyDatatable(vElementId);

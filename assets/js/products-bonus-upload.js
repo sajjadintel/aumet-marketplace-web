@@ -18,12 +18,17 @@ var ProductsBonusUpload = function () {
                 done();
             },
             addedfile: function (file) {
-                $("#dropZoneProductsBonusUpload").fadeOut();
-                $("#dropZoneProductsBonusUploadProgress").fadeIn();
+                $("#dropZoneProductsBonusUpload")
+                    .removeClass('d-flex')
+                    .addClass('d-none');
+                $("#dropZoneProductsBonusUploadProgressContainer")
+                    .removeClass('d-none')
+                    .addClass('d-flex');
             },
             totaluploadprogress: function (progress) {
-                $("#dropZoneProductsBonusUploadProgress").html('Uploading: '+ progress + " %");
-                $("#dropZoneProductsBonusUploadProgress").css('width', progress + "%");
+                $("#dropZoneProductsBonusUploadProgress")
+                    .css('width', progress + "%")
+                    .html('Uploading: '+ progress + " %");
             },
             success: function (file, response) {
                 $("#goBackContainer").show();
@@ -35,20 +40,20 @@ var ProductsBonusUpload = function () {
                 WebApp.alertError(WebAppLocals.getMessage("bonusUploadError"));
                 
                 // Change upload bar
-                $("#dropZoneProductsBonusUploadProgress").removeClass('bg-primary');
-                $("#dropZoneProductsBonusUploadProgress").addClass('bg-danger');
-                $("#dropZoneProductsBonusUploadProgress").css('width', "100%");
-                $("#dropZoneProductsBonusUploadProgress").html(WebAppLocals.getMessage("uploadError"));
+                $("#dropZoneProductsBonusUploadProgress")
+                    .removeClass('bg-primary')
+                    .addClass('bg-danger')
+                    .css('width', "100%")
+                    .html(WebAppLocals.getMessage("uploadError"));
             
                 // Show go back button
-                $("#goBackContainer").show();
+                $("#goBackContainer").slideDown();
             }
         });
     }
 
-    var _uploadProcessSuccessCallback = function(webReponse){
-        $('#productsBonusUploadProcessResultContainer').addClass('mt-20')
-        $('#productsBonusUploadProcessResultContainer').html(webReponse.data);
+    var _uploadProcessSuccessCallback = function(webResponse){
+        $('#productsBonusUploadProcessResultContainer').html(webResponse.data);
     };
 
     return {

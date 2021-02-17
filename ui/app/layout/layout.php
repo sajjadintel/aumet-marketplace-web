@@ -48,7 +48,7 @@ function compress_htmlcode($codedata)
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-NM5G929');</script>
+        })(window,document,'script','dataLayer','GTM-W5PTNF7');</script>
     <!-- End Google Tag Manager -->
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
@@ -142,7 +142,7 @@ function compress_htmlcode($codedata)
     <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="/favicons/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
-    <link rel="manifest" href="/favicons/manifest.json">
+    <link rel="manifest" href="/favicons/manifest.json" crossorigin="use-credentials">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/favicons/ms-icon-144x144.png">
 
