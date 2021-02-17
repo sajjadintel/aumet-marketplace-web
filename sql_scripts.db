@@ -1152,3 +1152,14 @@ from (((`marketplace`.`entityProductSell` `ep` join `marketplace`.`entity` `e` o
          left join `marketplace`.`scientificName` `s` on ((`p`.`scientificNameId` = `s`.`id`)));
 
 ################################
+
+## 17/02/2021 -- Hamza Rashid
+
+# added stored procedure to count quantity of items in user shopping cart
+
+CREATE PROCEDURE spGetCartCount(IN account_id int)
+BEGIN
+    SELECT (SUM(`quantity`) + SUM(`quantityFree`)) AS 'cartCount' FROM `cartDetail` WHERE `accountId` = account_id GROUP BY `accountId`;
+END;
+
+################################

@@ -218,14 +218,11 @@ class AuthController extends Controller
         $objUser->accountId = $dbUserAccount->accountId;
 
         // Get cart count
-        $dbCartDetail = new BaseModel($this->db, "cartDetail");
-        $arrCartDetail = $dbCartDetail->getByField("accountId", $objUser->accountId);
-        $cartCount = 0;
-        foreach ($arrCartDetail as $cartDetail) {
-            $cartCount += $cartDetail->quantity;
-            $cartCount += $cartDetail->quantityFree;
+        $objUser->cartCount = 0;
+        $dbCartDetail = $this->db->exec("CALL spGetCartCount($objUser->accountId)");
+        if (count($dbCartDetail) > 0) {
+            $objUser->cartCount = intval($dbCartDetail[0]['cartCount']);
         }
-        $objUser->cartCount = $cartCount;
 
         $this->isAuth = true;
 
