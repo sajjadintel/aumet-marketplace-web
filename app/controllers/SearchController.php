@@ -653,7 +653,8 @@ class SearchController extends Controller
             "draw" => intval($datatable->draw),
             "recordsTotal" => $totalRecords,
             "recordsFiltered" => $totalFiltered,
-            "data" => $data
+            "data" => $data,
+            "query" => $query
         );
 
         $this->jsonResponseAPI($response);
