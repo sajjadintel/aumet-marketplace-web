@@ -885,3 +885,9 @@ input[type='number'] {
 .orderdetails-smarttab > .nav > li > a.nav-link.active {
 	background: #FAFAFA;
 }
+
+.image-contain {
+	background-size: contain !important;
+	background-position: center center !important;
+	object-fit: contain !important;
+}

@@ -177,6 +177,8 @@ var Profile = (function () {
 					if (!file.accepted) this.removeFile(file);
 					if (message == "You can not upload any more files.") {
 						message = null;
+					} else if(message.includes("too big")) {
+						message = "File is too big (" + _bytesToSize(file.upload.total) + "). Max file size: 10MB."
 					}
 					$('#errorMessage').html(message);
 				});
@@ -188,9 +190,6 @@ var Profile = (function () {
 			$(document)
 				.find(id + ' .dropzone-item')
 				.css('display', '');
-			if(file.size != 0) {
-				
-			}
 		});
 
 		// Update the total progress bar
@@ -288,6 +287,13 @@ var Profile = (function () {
 			_myDropZone.emit('success', file, initialFile);
 		}
 	};
+
+	var _bytesToSize = function(bytes) {
+		var sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+		if (bytes == 0) return '0B';
+		var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+		return Math.round(bytes / Math.pow(1024, i), 2) + sizes[i];
+	}
 
 	var _getFileSize = function (url) {
 		var fileSize = 0;
@@ -483,11 +489,11 @@ var Profile = (function () {
 		$('.selectpicker').on('change', function () {
 			var allValues = $(this).val();
 			if (allValues.length > 0) {
-				$(this).parent().parent().find('#cityErrorLabel').hide();
+				$(this).parent().parent().find('#cityErrorLabel').slideUp();
 				$(this).parent().removeClass('is-invalid');
 				$(this).parent().css('border', '');
 			} else {
-				$(this).parent().parent().find('#cityErrorLabel').show();
+				$(this).parent().parent().find('#cityErrorLabel').slideDown();
 				$(this).parent().addClass('is-invalid');
 				$(this).parent().css('border', '1px solid #F64E60');
 			}
@@ -556,17 +562,7 @@ var Profile = (function () {
 					_validator.destroy();
 					saveFunction();
 				} else {
-					Swal.fire({
-						text: WebAppLocals.getMessage('validationError'),
-						icon: 'error',
-						buttonsStyling: false,
-						confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
-						customClass: {
-							confirmButton: 'btn font-weight-bold btn-light',
-						},
-					}).then(function () {
-						KTUtil.scrollTop();
-					});
+					KTUtil.scrollTop();
 				}
 			});
 		} else {
@@ -679,6 +675,9 @@ var Profile = (function () {
 
 		if (allPaymentMethodId.length === 0) {
 			valid = false;
+			$('#paymentMethodErrorLabel').show();
+		} else {
+			$('#paymentMethodErrorLabel').hide();
 		}
 
 		$('.minimumValueOrderInput').each(function (index, element) {
@@ -698,11 +697,11 @@ var Profile = (function () {
 			var allValues = $(this).val();
 			allCityId.push(...allValues);
 			if (allValues.length > 0) {
-				$(element).parent().parent().find('#cityErrorLabel').hide();
+				$(element).parent().parent().find('#cityErrorLabel').slideUp();
 				$(element).parent().removeClass('is-invalid');
 				$(element).parent().css('border', '');
 			} else {
-				$(element).parent().parent().find('#cityErrorLabel').show();
+				$(element).parent().parent().find('#cityErrorLabel').slideDown();
 				$(element).parent().addClass('is-invalid');
 				$(element).parent().css('border', '1px solid #F64E60');
 				valid = false;
@@ -745,17 +744,7 @@ var Profile = (function () {
 			};
 			WebApp.post('/web/distributor/profile/paymentSetting', body, _saveDistributorPaymentSettingCallback);
 		} else {
-			Swal.fire({
-				text: errorMessage || WebAppLocals.getMessage('validationError'),
-				icon: 'error',
-				buttonsStyling: false,
-				confirmButtonText: WebAppLocals.getMessage('validationErrorOk'),
-				customClass: {
-					confirmButton: 'btn font-weight-bold btn-light',
-				},
-			}).then(function () {
-				KTUtil.scrollTop();
-			});
+			KTUtil.scrollTop();
 		}
 	};
 

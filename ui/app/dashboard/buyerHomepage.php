@@ -105,10 +105,22 @@
                         <div class="col-3">
                             <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_newProducts ?></span>
                         </div>
-                        <div class="col-3" style="display: flex; justify-content: flex-end;">
+                        <!-- Review fixes by Alaa here: div class="col-3" style="display: flex; justify-content: flex-end;">
                             <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/product/search?sort=newest')">
                                 <?php echo $vButton_view_all; ?>
-                            </a>
+                            </a-->
+                      <!-- from here -->
+                        <div class="row">
+                            <?php foreach ($arrNewestProducts as $product) : ?>
+                                <div class="col-3">
+                                    <div class="img-fill flex-shrink-0 bg-light mb-4 dynamic-image">
+                                        <img class="productImage image-contain" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
+                                    </div>
+                                    <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
+                                    <p style="text-align: center;"><?php echo $product->price; ?></p>
+                                </div>
+                            <?php endforeach; ?>
+                      <!-- to here -->
                         </div>
                     </div>
                     <div class="row mb-10">
@@ -141,7 +153,7 @@
                             <?php foreach ($arrTopSellingProducts as $product) : ?>
                                 <div class="col-3">
                                     <div class="img-fill flex-shrink-0 bg-light mb-4 dynamic-image">
-                                        <img class="productImage" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
+                                        <img class="productImage image-contain" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
                                     </div>
                                     <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
                                     <p style="text-align: center;"><?php echo $product->price; ?></p>
