@@ -10,6 +10,7 @@ var DistributorCustomerGroup = (function () {
         var customerGroupId = webResponse.data.customerGroup.id;
         $('#editModalForm').attr('action', '/web/distributor/customer/group/edit');
         $('#editCustomerGroupId').val(customerGroupId);
+        $("#editCustomerGroupSearch").val('');
 
         $("#editCustomerGroupNewId").empty();
         
@@ -49,7 +50,9 @@ var DistributorCustomerGroup = (function () {
 
     var _generateMember = function(member, isGroupMember) {
         var memberContainer = document.createElement("div");
-        memberContainer.className = "d-flex p-5 justify-content-between align-items-center border-bottom member";
+        var className = "d-flex p-5 justify-content-between align-items-center border-bottom member";
+        if(!isGroupMember) className += " nonGroup"
+        memberContainer.className = className;
         memberContainer.id = "member-" + member.id; 
 
         var memberNameContainer = document.createElement("div");
@@ -146,16 +149,20 @@ var DistributorCustomerGroup = (function () {
     
     var _filterMembers = function () {
         var searchText = $("#editCustomerGroupSearch").val().toLowerCase();
+        var nonGroupMemberCount = 0;
         $(".member").each(function(index, elem) {
             var memberTextElement = $(elem).find(".member-text");
             var memberText = memberTextElement.text().toLowerCase();
             if(memberText.includes(searchText)) {
                 $(elem).attr("style", "");
+                if($(elem).hasClass("nonGroup")) {
+                    nonGroupMemberCount += 1;
+                }
             } else {
                 $(elem).attr("style", "display: none !important");
             }
         })
-        if($("#nonGroupMembersContainer").children().length == 1) {
+        if(nonGroupMemberCount == 0) {
             $("#nonGroupMembersLabelContainer").attr("style", "display: none !important");
         } else {
             $("#nonGroupMembersLabelContainer").attr("style", "");
