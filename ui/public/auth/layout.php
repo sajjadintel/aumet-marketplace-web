@@ -3,6 +3,29 @@
 <!--begin::Head-->
 
 <head>
+    <script>
+        dataLayer = [{
+            'environment': '<?php echo getenv('ENV') == Constants::ENV_PROD ? 'production' : 'staging' ?>',
+            'environmentVersion': '1.0',
+            'page': {
+                'pageName': 'home',
+                'category': {
+                    'primaryCategory': 'blog',
+                },
+                'attributes': {
+                    'country': 'AE',
+                    'language': 'ae-EN',
+                    'currency': 'AED'
+                }
+            },
+            'user': {
+                'id': '',
+                'status': 'anonymous',
+                'type': '',
+                'level': ''
+            }
+        }];
+    </script>
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -176,29 +199,7 @@
         <i class="la la-headset la-2x text-white"></i>
     </div>
 
-<script>
-    dataLayer = [{
-        'environment': '<?php echo getenv('ENV') == Constants::ENV_PROD ? 'production' : 'staging' ?>',
-        'environmentVersion': '1.0',
-        'page': {
-            'pageName': 'home',
-            'category': {
-                'primaryCategory': 'blog',
-            },
-            'attributes': {
-                'country': 'AE',
-                'language': 'ae-EN',
-                'currency': 'AED'
-            }
-        },
-        'user': {
-            'id': '',
-            'status': 'anonymous',
-            'type': '',
-            'level': ''
-        }
-    }];
-</script>
+
 
     <?php include_once "$vAuthFile.php" ?>
 </body>
