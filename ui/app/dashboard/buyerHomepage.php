@@ -75,7 +75,7 @@
                                                     <?php if ((($objUser->language == "ar") && ($banner->styleEn == 'ltr') || ($objUser->language !== "ar") && ($banner->styleEn == 'rtl'))) : ?>
                                                         <div class="col-md-5 offset-md-2 text-right h-100">
                                                             <h1 class="slick-hero-title"><?php echo $banner->title; ?></h1>
-                                                            <h1 class="slick-hero-title"><?php echo $banner->subtitle; ?></h1>
+                                                            <h1 class="slick-hero-subtitle"><?php echo $banner->subtitle; ?></h1>
                                                             <?php if (!is_null($banner->buttonText)) : ?>
                                                                 <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>');"><?php echo $banner->buttonText; ?></button>
                                                             <?php endif; ?>
@@ -83,7 +83,7 @@
                                                     <?php else : ?>
                                                         <div class="col-md-5 offset-md-2 text-left h-100">
                                                             <h1 class="slick-hero-title"><?php echo $banner->title; ?></h1>
-                                                            <h1 class="slick-hero-title"><?php echo $banner->subtitle; ?></h1>
+                                                            <h1 class="slick-hero-subtitle"><?php echo $banner->subtitle; ?></h1>
                                                             <?php if (!is_null($banner->buttonText)) : ?>
                                                                 <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>');"><?php echo $banner->buttonText; ?></button>
                                                             <?php endif; ?>
