@@ -146,7 +146,7 @@ $f3->route('POST /web/distributor/product/bestselling', 'ProductsController->pos
 $f3->route('POST /web/pharmacy/order/recent', 'OrderController->postPharmacyOrdersRecent');
 // END dashboard
 
-$f3->route('GET /web/notification/order/new', 'OrderController->getNotifcationsDistributorOrdersNew');
+$f3->route('GET /web/notification/order/new', 'OrderController->getNotificationsDistributorOrdersNew');
 
 
 $f3->route('GET /web/pharmacy/order/pending', 'OrderController->getPharmacyOrdersPending');
