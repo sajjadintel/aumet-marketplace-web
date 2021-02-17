@@ -97,7 +97,7 @@ function compress_htmlcode($codedata)
                             </span>
                         </span>
                     </div>
-                    <input id="searchStockStatus" data-switch="true" type="checkbox" checked="checked" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="50" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
+                    <input id="searchStockStatus" data-switch="true" type="checkbox" data-on-text="<?php echo $vModule_search_stockStatus_Available ?>" data-handle-width="50" data-off-text="<?php echo $vModule_search_stockStatus_others ?>" data-on-color="primary" />
                 </div>
             </div>
 
@@ -425,7 +425,7 @@ function compress_htmlcode($codedata)
             productName: [],
             scientificName: [],
             entityId: [],
-            stockOption: 1,
+            stockOption: $('#searchStockStatus').val(),
             categoryId: null,
             query: null,
         };

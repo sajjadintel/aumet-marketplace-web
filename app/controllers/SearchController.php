@@ -161,6 +161,9 @@ class SearchController extends Controller
                 $where .= " AND entityId IN ($arrEntityId)";
             }
 
+            /*$where .= " AND stockStatusId = 1 ";
+
+            $where .= " AND statusId = 1";*/
 
             $select2Result = new stdClass();
             $select2Result->results = [];
