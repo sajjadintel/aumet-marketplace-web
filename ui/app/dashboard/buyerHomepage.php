@@ -61,15 +61,16 @@
 
             <!--begin::Main-->
             <div class="col-9">
-                <div class="card card-custom card-body card-stretch gutter-b">
-                    <!--begin::Banner-->
-                    <?php if (count($arrBanner) > 0) : ?>
-                        <div class="mb-10">
-                            <div class="slick-carousel" data-adaptive-height="true">
+                <?php if (count($arrBanner) > 0) : ?>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-custom card-body card-stretch gutter-b">
+                            <!--begin::Banner-->
+                            <div class="slick-carousel m-0" >
                                 <?php foreach ($arrBanner as $banner) : ?>
                                     <div class="item">
-                                        <div class="img-fill">
-                                            <img src="<?php echo $banner->image; ?>" alt="">
+                                        <div class="img-fill" >
+                                            <img src="<?php echo $banner->image; ?>" alt="" style="max-height: 400px; width: auto; max-width: 100%">
                                             <div class="info">
                                                 <?php if ((($objUser->language == "ar") && ($banner->styleEn == 'ltr') || ($objUser->language !== "ar") && ($banner->styleEn == 'rtl'))) : ?>
                                                     <div class="col-md-5 offset-md-2 text-right h-100">
@@ -94,33 +95,38 @@
                                 <?php endforeach; ?>
                             </div>
                         </div>
-                    <?php endif; ?>
-                    <!--begin::New Products-->
-                    <div class="mb-10">
-                        <div class="row pb-6" style="justify-content: space-between; align-items: center;">
-                            <div class="col-3">
-                                <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_newProducts ?></span>
-                            </div>
-                            <div class="col-3" style="display: flex; justify-content: flex-end;">
-                                <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/product/search?sort=newest')">
-                                    <?php echo $vButton_view_all; ?>
-                                </a>
-                            </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+                <!--begin::New Products-->
+                <div class="mb-10">
+                    <div class="card card-custom card-body card-stretch gutter-b">
+                    <div class="row pb-6" style="justify-content: space-between; align-items: center;">
+                        <div class="col-3">
+                            <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_newProducts ?></span>
                         </div>
-                        <div class="row">
-                            <?php foreach ($arrNewestProducts as $product) : ?>
-                                <div class="col-3">
-                                    <div class="img-fill flex-shrink-0 bg-light mb-4 dynamic-image">
-                                        <img class="productImage" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
-                                    </div>
-                                    <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
-                                    <p style="text-align: center;"><?php echo $product->price; ?></p>
-                                </div>
-                            <?php endforeach; ?>
+                        <div class="col-3" style="display: flex; justify-content: flex-end;">
+                            <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/product/search?sort=newest')">
+                                <?php echo $vButton_view_all; ?>
+                            </a>
                         </div>
                     </div>
-                    <!--begin::Top Selling-->
-                    <div>
+                    <div class="row mb-10">
+                        <?php foreach ($arrNewestProducts as $product) : ?>
+                            <div class="col-3">
+                                <div class="img-fill flex-shrink-0 bg-light mb-4 dynamic-image">
+                                    <img class="productImage" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
+                                </div>
+                                <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
+                                <p style="text-align: center;"><?php echo $product->price; ?></p>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    </div>
+                </div>
+                <!--begin::Top Selling-->
+                <div>
+                    <div class="card card-custom card-body card-stretch gutter-b">
                         <div class="row pb-6" style="justify-content: space-between; align-items: center;">
                             <div class="col-3">
                                 <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_topSelling ?></span>
@@ -144,6 +150,8 @@
                         </div>
                     </div>
                 </div>
+
+
             </div>
             <!--begin::Right Side-->
             <div class="col-3">
