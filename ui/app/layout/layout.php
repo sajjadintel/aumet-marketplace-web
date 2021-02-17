@@ -19,6 +19,30 @@ function compress_htmlcode($codedata)
 
 <head>
 
+    <script>
+        dataLayer = [{
+            'environment': '<?php echo getenv('ENV') == Constants::ENV_PROD ? 'production' : 'staging' ?>',
+            'environmentVersion': '1.0',
+            'page': {
+                'pageName': 'home',
+                'category': {
+                    'primaryCategory': 'blog',
+                },
+                'attributes': {
+                    'country': 'AE',
+                    'language': 'ae-EN',
+                    'currency': 'AED'
+                }
+            },
+            'user': {
+                'id': '<?php echo $objUser->id ?>',
+                'status': 'logged',
+                'type': '<?php echo $objUser->menuId == Constants::MENU_DISTRIBUTOR ? 'distributor' : 'pharmacy' ?>',
+                'level': '<?php echo $objUser->menuId == Constants::MENU_DISTRIBUTOR ? 'freemium' : 'premium' ?>'
+            }
+        }];
+    </script>
+
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -417,30 +441,6 @@ function compress_htmlcode($codedata)
         </script>
     <?php } ?>
 
-
-<script>
-    dataLayer = [{
-        'environment': '<?php echo getenv('ENV') == Constants::ENV_PROD ? 'production' : 'staging' ?>',
-        'environmentVersion': '1.0',
-        'page': {
-            'pageName': 'home',
-            'category': {
-                'primaryCategory': 'blog',
-            },
-            'attributes': {
-                'country': 'AE',
-                'language': 'ae-EN',
-                'currency': 'AED'
-            }
-        },
-        'user': {
-            'id': '<?php echo $objUser->id ?>',
-            'status': 'logged',
-            'type': '<?php echo $objUser->menuId == Constants::MENU_DISTRIBUTOR ? 'distributor' : 'pharmacy' ?>',
-            'level': '<?php echo $objUser->menuId == Constants::MENU_DISTRIBUTOR ? 'freemium' : 'premium' ?>'
-        }
-    }];
-</script>
 
 </body>
 <!--end::Body-->
