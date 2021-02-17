@@ -10,7 +10,7 @@
             'page': {
                 'pageName': 'home',
                 'category': {
-                    'primaryCategory': 'blog',
+                    'primaryCategory': 'marketplace',
                 },
                 'attributes': {
                     'country': 'AE',
