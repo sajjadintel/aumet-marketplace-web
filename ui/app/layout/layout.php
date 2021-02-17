@@ -26,7 +26,7 @@ function compress_htmlcode($codedata)
             'page': {
                 'pageName': 'home',
                 'category': {
-                    'primaryCategory': 'blog',
+                    'primaryCategory': 'marketplace',
                 },
                 'attributes': {
                     'country': 'AE',
