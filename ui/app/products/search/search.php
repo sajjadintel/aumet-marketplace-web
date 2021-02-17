@@ -261,7 +261,7 @@ function compress_htmlcode($codedata)
 
                     if (row.stockStatusId == 1) {
 
-                        let vMinusBtn = '<a class="btn btn-xs btn-light-success btn-icon mr-2 subQty" onclick="SearchDataTable.subQuantity(this)"> <i class="ki ki-minus icon-xs"></i></a>';
+                        let vMinusBtn = '<a class="btn btn-xs btn-light-success btn-icon subQty" onclick="SearchDataTable.subQuantity(this)"> <i class="ki ki-minus icon-xs"></i></a>';
 
                         output += vMinusBtn;
 
@@ -270,18 +270,18 @@ function compress_htmlcode($codedata)
                         rowClone.arrBonus = null;
                         rowClone.activeBonus = null;
                         let vQuantity =
-                            '<input class="qtyBox" id="quantity-' + row.id + '" type="number" min="0" style="width: 65px; direction: ltr; margin-right: 5px;" ' +
+                            '<input class="form-control form-control-sm mx-2 qtyBox" id="quantity-' + row.id + '" type="number" min="0" style="width: 65px; direction: ltr;" ' +
                             'value="' + rowQuantity + '" onfocus="this.oldvalue = this.value;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" ' +
                             'onchange=\'SearchDataTable.updateQty(' + JSON.stringify(rowClone) + ', this.oldvalue)\' />';
 
                         output += vQuantity;
 
-                        let vPlusBtn = '<a class="btn btn-xs btn-light-success btn-icon mr-2 addQty" onclick="SearchDataTable.addQuantity(this)"> <i class="ki ki-plus icon-xs"></i></a>';
+                        let vPlusBtn = '<a class="btn btn-xs btn-light-success btn-icon addQty" onclick="SearchDataTable.addQuantity(this)"> <i class="ki ki-plus icon-xs"></i></a>';
 
                         output += vPlusBtn;
 
                         let vQuantityFree =
-                            '<input class="quantityFreeInput" id="quantityFreeInput-' +
+                            '<input class="form-control form-control-sm mx-2 quantityFreeInput" id="quantityFreeInput-' +
                             row.id +
                             '" required style="display: none;">\
                             <span id="quantityFreeHolder-' +
@@ -290,7 +290,7 @@ function compress_htmlcode($codedata)
                         /* output += vQuantityFree; */
                     }
 
-                    return '<div style="display: flex;">' + output + '</div>';
+                    return '<div class="d-flex align-items-center">' + output + '</div>';
                 },
             },
             {
