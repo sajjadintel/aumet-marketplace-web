@@ -55,11 +55,7 @@ class SearchController extends Controller
 
         $queryDisplay = 'productName_' . $this->objUser->language;
 
-        $where .= " AND stockStatusId = 1 ";
-
-        $where .= " AND statusId = 1";
-
-        $dbNames = new BaseModel($this->db, 'vwEntityProductSell');
+        $dbNames = new BaseModel($this->db, 'vwEntityProductSellSummary');
         $dbNames->load(array($where), array('order' => $queryDisplay, 'limit' => $pageSize, 'offset' => $page * $pageSize, 'group' => $queryDisplay));
         $resultsCount = 0;
         while (!$dbNames->dry()) {
@@ -165,9 +161,9 @@ class SearchController extends Controller
                 $where .= " AND entityId IN ($arrEntityId)";
             }
 
-            $where .= " AND stockStatusId = 1 ";
+            /*$where .= " AND stockStatusId = 1 ";
 
-            $where .= " AND statusId = 1";
+            $where .= " AND statusId = 1";*/
 
             $select2Result = new stdClass();
             $select2Result->results = [];
