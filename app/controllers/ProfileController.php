@@ -607,7 +607,7 @@ class ProfileController extends Controller
 
 
                 $ext = pathinfo(basename($_FILES["profile_image"]["name"]), PATHINFO_EXTENSION);
-                if (in_array($ext, $allValidExtensions)) {
+                if (in_array(strtolower($ext), $allValidExtensions)) {
                     $success = true;
                 }
 

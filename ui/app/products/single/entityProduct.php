@@ -606,13 +606,14 @@ function compress_htmlcode($codedata)
         $('.product-overview').expandable({
             height: 350
         });
-        $('.expand-bar').on('click', function() {
-            if($('#productOverviewContainer').hasClass('pb-8')) {
+        $('.expand-bar').on('click', function () {
+            if ($('#productOverviewContainer').hasClass('pb-8')) {
                 $('#productOverviewContainer').removeClass('pb-8');
             } else {
                 $('#productOverviewContainer').addClass('pb-8');
             }
         })
+    }
     function initializeBonusPopover(selector) {
         $(selector).popover('dispose');
         $(selector).each(function(index, element) {
