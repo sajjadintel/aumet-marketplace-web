@@ -1084,3 +1084,57 @@ INSERT INTO marketplace.country (name_en, name_ar, name_fr, currency) VALUES ('A
 ('Zimbabwe', 'Zimbabwe', 'Zimbabwe', 'AED');
 
 ################################
+
+## 16/02/2021 -- Antoine Abou Cherfane
+
+# Added Customer Group in 'menuItem' table
+INSERT INTO `marketplace`.`menuItem` (`menuId`, `parentId`, `order`, `iconId`, `url`, `method`, `type`, `name_ar`, `name_en`, `insertDateTime`) VALUES ('1', '0', '42', '51', '/web/distributor/customer/group', 'ajax', 'link', 'مجموعة الزبائن', 'Customer Group', '2020-10-12 05:11:11');
+
+# Added relationGroupId in 'order' table
+ALTER TABLE `marketplace`.`order` 
+ADD COLUMN `relationGroupId` INT NULL DEFAULT NULL AFTER `feedbackSubmitted`;
+
+# Created 'vwEntityRelationGroup' view
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityRelationGroup` AS
+  SELECT 
+      `relationGroup`.`id` AS `id`,
+      `relationGroup`.`entityId` AS `entityId`,
+      `relationGroup`.`name_en` AS `relationGroupName_en`,
+      `relationGroup`.`name_ar` AS `relationGroupName_ar`,
+      `relationGroup`.`name_fr` AS `relationGroupName_fr`,
+      `currency`.`symbol` AS `currencySymbol`,
+      IFNULL(`entityRelation`.`groupMembers`, 0) AS `groupMembers`,
+      IFNULL(`order`.`totalOrders`, 0) AS `totalOrders`,
+      IFNULL(`order`.`revenue`, 0) AS `revenue`,
+      IFNULL(`order`.`recentOrdersWeekly`, 0) AS `recentOrdersWeekly`,
+      IFNULL(`order`.`recentOrdersMonthly`, 0) AS `recentOrdersMonthly`
+  FROM
+      ((((`entityRelationGroup` `relationGroup`
+      JOIN `entity` ON ((`entity`.`id` = `relationGroup`.`entityId`)))
+      LEFT JOIN (SELECT 
+          `entityRelation`.`relationGroupId` AS `relationGroupId`,
+              COUNT(`entityRelation`.`id`) AS `groupMembers`
+      FROM
+          `entityRelation`
+      GROUP BY `entityRelation`.`relationGroupId`) `entityRelation` ON ((`entityRelation`.`relationGroupId` = `relationGroup`.`id`)))
+      LEFT JOIN (SELECT 
+          `order`.`relationGroupId` AS `relationGroupId`,
+              COUNT(`order`.`id`) AS `totalOrders`,
+              SUM((CASE
+                  WHEN (`order`.`statusId` = '7') THEN `order`.`total`
+                  ELSE 0
+              END)) AS `revenue`,
+              SUM((CASE
+                  WHEN (CAST(`order`.`insertDateTime` AS DATE) >= CAST((NOW() - INTERVAL 7 DAY) AS DATE)) THEN 1
+                  ELSE 0
+              END)) AS `recentOrdersWeekly`,
+              SUM((CASE
+                  WHEN (CAST(`order`.`insertDateTime` AS DATE) >= CAST((NOW() - INTERVAL 1 MONTH) AS DATE)) THEN 1
+                  ELSE 0
+              END)) AS `recentOrdersMonthly`
+      FROM
+          `order`
+      GROUP BY `order`.`relationGroupId`) `order` ON ((`order`.`relationGroupId` = `relationGroup`.`id`)))
+      LEFT JOIN `currency` ON ((`entity`.`currencyId` = `currency`.`id`)))
+
+################################

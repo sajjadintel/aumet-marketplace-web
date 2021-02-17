@@ -438,4 +438,10 @@ return array(
     'vModal_welcome_step3_title' => 'Step 3',
     'vModal_welcome_step3_message' => 'Add minimum value order by location.',
     'vModal_welcome_callToAction' => 'Complete Profile',
+
+    'vModule_customerGroup_title' => 'Customer Group',
+    'vModule_customerGroup_editModalTitle' => 'Customer Group',
+    'vModule_customerGroup_editModalNonGrouped' => 'NON-GROUPED',
+    'vModule_customerGroup_noCustomerGroup' => 'No Customer Group',
+    'vModule_customerGroup_saved' => 'Customer Group saved successfully',
 );

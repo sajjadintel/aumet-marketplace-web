@@ -433,4 +433,10 @@ return array(
     'vModal_welcome_step3_title' => 'Add minimum value order by location.', // TODO: translate
     'vModal_welcome_step3_message' => 'Add minimum value order by location.', // TODO: translate
     'vModal_welcome_callToAction' => 'Complete Profile', // TODO: translate
+    
+    'vModule_customerGroup_title' => 'مجموعة الزبائن',
+    'vModule_customerGroup_editModalTitle' => 'مجموعة الزبائن',
+    'vModule_customerGroup_editModalNonGrouped' => 'غير مجمعة',
+    'vModule_customerGroup_noCustomerGroup' => 'لا مجموعة العملاء',
+    'vModule_customerGroup_saved' => 'تم حفظ مجموعة العملاء بنجاح',
 );

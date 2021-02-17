@@ -705,6 +705,71 @@ var WebAppLocals = (function () {
 			ar: 'طرق الدفع مفقودة',
 			fr: ''
 		},
+		groupMembers: {
+			en: 'Group Members',
+			ar: 'عدد أعضاء المجموعة',
+			fr: ''
+		},
+		revenue: {
+			en: 'Revenue',
+			ar: 'ربح',
+			fr: ''
+		},
+		totalOrders: {
+			en: 'Total Orders',
+			ar: 'إجمالي الطلبات',
+			fr: ''
+		},
+		recentOrdersWeekly: {
+			en: 'Recent Orders (Week)',
+			ar: 'الطلبات الأخيرة (أسبوع)',
+			fr: ''
+		},
+		recentOrdersMonthly: {
+			en: 'Recent Orders (Month)',
+			ar: 'الطلبات الأخيرة (شهر)',
+			fr: ''
+		},
+		addToGroup: {
+			en: 'Add to group',
+			ar: 'إضافة إلى المجموعة',
+			fr: ''
+		},
+		cancel: {
+			en: 'Cancel',
+			ar: 'إلغاء',
+			fr: ''
+		},
+		remove: {
+			en: 'Remove',
+			ar: 'يزيل',
+			fr: ''
+		},
+		assign: {
+			en: 'Assign',
+			ar: 'تعيين',
+			fr: ''
+		},
+		assignMemberConfirmationFirstPart: {
+			en: 'Are you sure you want to assign',
+			ar: 'هل أنت متأكد أنك تريد التخصيص',
+			fr: ''
+		},
+		assignMemberConfirmationSecondPart: {
+			en: 'to this group?',
+			ar: 'لهذه المجموعة؟',
+			fr: ''
+		},
+		removeMemberConfirmationFirstPart: {
+			en: 'Are you sure you want to remove',
+			ar: 'هل أنت متأكد من أنك تريد إزالة',
+			fr: ''
+		},
+		removeMemberConfirmationSecondPart: {
+			en: 'from the group?',
+			ar: 'من المجموعة؟',
+			fr: ''
+		},
 	};
 
 	var _symbolsLocals = {
