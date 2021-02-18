@@ -2501,7 +2501,6 @@ class ProductsController extends Controller
                         continue;
                     }
                     $bonus = $arrBonus[$i];
-
                     $entityProductId = $bonus[0];
                     $bonusTypeId = $bonus[1];
                     $minOrder = $bonus[2];

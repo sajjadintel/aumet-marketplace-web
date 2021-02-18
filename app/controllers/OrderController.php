@@ -34,7 +34,7 @@ class OrderController extends Controller
         $this->handleGetPharmacyOrders('history');
     }
 
-    function getNotifcationsDistributorOrdersNew()
+    function getNotificationsDistributorOrdersNew()
     {
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));

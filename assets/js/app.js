@@ -590,7 +590,7 @@ var WebApp = (function () {
 		var fileName = 'Aumet Marketplace - ' + vTableName;
 
 		var dbOptions = {
-			dom: 'Blfrtip',
+			dom: 'Brt<"float-right"i><"float-right"l><"float-left"p>',
 			responsive: true,
 			scrollX: false,
 			orderCellsTop: true,
@@ -707,7 +707,7 @@ var WebApp = (function () {
 						_unblockPage(668);
 					}
 					console.debug('there');
-				}
+				},
 			},
 			columnDefs: vColumnDefs,
 		};
@@ -748,7 +748,7 @@ var WebApp = (function () {
 		var fileName = 'Aumet Marketplace - ' + vTableName;
 
 		var dbOptions = {
-			dom: 'Blfrtip',
+			dom: 'Brt<"float-right"i><"float-right"l><"float-left"p>',
 			responsive: true,
 			scrollX: false,
 			orderCellsTop: true,
@@ -822,7 +822,7 @@ var WebApp = (function () {
 	var _initNotificationTimer = function () {
 		setInterval(function () {
 			if (_notificationInProgress) {
-				console.debug('Notification is taking longer than usual...')
+				console.debug('Notification is taking longer than usual...');
 			} else {
 				_notificationInProgress = true;
 				WebApp.getAsync('/web/notification/order/new', _handleNotificationTimer);

@@ -28,7 +28,7 @@ function compress_htmlcode($codedata)
     <div class="d-flex align-items-stretch flex-column">
 
         <div class="d-flex flex-column-fluid">
-            <a id="export-to-excel" class="btn btn-lg btn-primary mr-2 btn-lg-radius" title="Export To Excel">
+            <a id="export-to-excel" class="d-flex btn btn-lg btn-primary mr-2 btn-lg-radius" title="Export To Excel">
                 <i class="la la-file-excel-o"></i> Download Sample Stock Excel File
             </a>
         </div>
