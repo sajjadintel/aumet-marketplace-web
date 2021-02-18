@@ -988,6 +988,7 @@ class AuthController extends Controller
             return false;
         }
 
+        /*
         if($mobile != '' && $mobile != null){
             // Check if phone number is unique
             $dbUser = new BaseModel($this->db, "user");
@@ -999,7 +1000,7 @@ class AuthController extends Controller
                 $this->webResponse->message = "Phone number exists!";
                 return false;
             }
-        }
+        }*/
 
 
 
