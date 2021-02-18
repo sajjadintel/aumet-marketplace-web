@@ -988,16 +988,20 @@ class AuthController extends Controller
             return false;
         }
 
-        // Check if phone number is unique
-        $dbUser = new BaseModel($this->db, "user");
-        $dbUser->getByField("mobile", $mobile);
+        if($mobile != '' && $mobile != null){
+            // Check if phone number is unique
+            $dbUser = new BaseModel($this->db, "user");
+            $dbUser->getByField("mobile", $mobile);
 
-        if (!$dbUser->dry()) {
-            $this->webResponse->errorCode = Constants::STATUS_ERROR;
-            $this->webResponse->title = "";
-            $this->webResponse->message = "Phone number exists!";
-            return false;
+            if (!$dbUser->dry()) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "Phone number exists!";
+                return false;
+            }
         }
+
+
 
         // Check if trading license is unique
         $dbEntityBranch = new BaseModel($this->db, "entityBranch");
