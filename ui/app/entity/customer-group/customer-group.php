@@ -90,7 +90,7 @@ function compress_htmlcode($codedata)
                     render: function (data, type, row, meta) {
                         var output = '';
                         if(row.arrEntity.length > 0) {                            
-                            output += '<a href="javascript:;" data-arrEntity="' + encodeURIComponent(JSON.stringify(row.arrEntity)) + '" class="btn btn-primary mr-2 mb-2 expand-button">+</a>';
+                            output += '<a href="javascript:;" onclick=\'DistributorCustomerGroup.collapseRow(this, "' + encodeURIComponent(JSON.stringify(row.arrEntity)) + '")\' class="btn btn-primary mr-2 mb-2 expand-button">+</a>';
                         }
                         
                         output +=
@@ -101,52 +101,12 @@ function compress_htmlcode($codedata)
                     },
                 }
             ];
-
+            
             var dbAdditionalOptions = { 
                 datatableOptions: {
                     createdRow: function (row, data, index) {
                         $(row).addClass('customer-group-datatable-header');
                     },
-                    drawCallback: function(settings) {
-                        var api = this.api();
-                        var rows = api.rows({
-                            page: 'current'
-                        }).nodes();
-
-                        var allArrEntity = [];
-                        for(var i = 0; i < rows.length; i++) {
-                            var elem = $(rows).eq(i);
-                            var arrEntity = [];
-                            var arrEntityStr = $(elem).find('.expand-button').attr("data-arrEntity");
-                            if(arrEntityStr) arrEntity = JSON.parse(decodeURIComponent(arrEntityStr));
-                            allArrEntity.push(arrEntity);
-                        }
-                        
-                        var last = null;
-                        api.column(0, {
-                            page: 'current'
-                        }).data().each(function(group, i) {
-                            if (last !== group) {
-                                var arrEntity = allArrEntity[i];
-                                if(arrEntity.length > 0) {
-                                    for(var entity of arrEntity) {
-                                        var trElement = document.createElement('tr');
-                                        trElement.style = "display: none;";
-        
-                                        var tdElement = document.createElement('td');
-                                        tdElement.setAttribute('colspan', '8');
-                                        tdElement.textContent = entity.name;
-                                        trElement.append(tdElement);
-                                        
-                                        $(rows).eq(i).after(trElement);
-                                    }
-                                }
-
-                                last = group;
-                            }
-                        });
-                        
-                    }
                 }
             };
 
@@ -162,18 +122,6 @@ function compress_htmlcode($codedata)
         }();
 
         PageClass.init();
-        
-        $('#datatable').on('draw.dt', function() {
-            $('.expand-button').click(function () {
-                var trElement = $(this).parent().parent().parent();
-                var $this = $(this);
-                $(trElement).nextUntil('tr.customer-group-datatable-header').slideToggle(50).promise().done(function () {
-                    $this.text(function (_, value) {
-                        return value == '-' ? '+' : '-'
-                    });
-                });;
-            });
-        });
 
     </script>
 <?php ob_end_flush(); ?>

@@ -187,6 +187,50 @@ var DistributorCustomerGroup = (function () {
 		$('#editCustomerGroupModal').modal('hide');
     }
 
+    var _collapseRow = function (element, arrEntityStr) {
+        var arrEntity = JSON.parse(decodeURIComponent(arrEntityStr));
+        var rowElement = $(element).closest('tr');
+
+        // Populate expanded row
+        if($(rowElement).hasClass('expanded')) {
+            $(rowElement).nextUntil('tr.customer-group-datatable-header').remove();
+            $(rowElement).removeClass('expanded')
+        } else {
+            $(rowElement).addClass('expanded')
+            var arrFields = [
+                "",
+                "name",
+                "isInGroup",
+                "revenue",
+                "totalOrders",
+                "recentOrdersWeekly",
+                "recentOrdersMonthly"
+            ];
+            for(var entity of arrEntity) {
+                var trElement = document.createElement('tr');
+                for(var field of arrFields) {
+                    var tdElement = document.createElement('td');
+                    if(!field) tdElement.textContent = '';
+                    else if(field == "isInGroup") {
+                        var value = entity[field];
+                        tdElement.innerHTML = '';
+                        if(value) {
+                            tdElement.innerHTML = '<i class="la la-check text-primary"></i>';  
+                        }
+                    }
+                    else tdElement.textContent = entity[field];
+                    trElement.append(tdElement); 
+                }
+                $(rowElement).after(trElement);
+            }
+        }
+
+        // Change sign of button
+        $(element).text(function (_, value) {
+            return value == '-' ? '+' : '-'
+        });
+    }
+
     var _init = function () {
         $("#editCustomerGroupNewId").select2();
     }
@@ -213,6 +257,9 @@ var DistributorCustomerGroup = (function () {
         },
         saveCustomerGroup: function() {
             _saveCustomerGroup();
+        },
+        collapseRow: function (element, arrEntityStr) {
+            _collapseRow(element, arrEntityStr);
         }
     };
 })();

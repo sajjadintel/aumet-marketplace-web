@@ -210,47 +210,14 @@ class EntityController extends Controller
     {
         ## Read values from Datatables
         $datatable = new Datatable($_POST);
-        $query = "";
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
-        $query = "entityId IN ($arrEntityId)";
 
-        $fullQuery = $query;
+        $dbData = new EntityRelationGroup($this->db, $this->objUser->language);
+        $data = $dbData->getDetailedData($arrEntityId, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
 
-        $dbData = new BaseModel($this->db, "vwEntityRelationGroup");
-        $dbData->relationGroupName = "relationGroupName_" . $this->objUser->language;
-        $data = [];
-
-        $totalRecords = $dbData->count($fullQuery);
-        $totalFiltered = $dbData->count($query);
-        $data = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
-
-        // Get all entities in each group
-        foreach($data as $row) {
-            $mapCustomerGroupIdArrEntity[$row['id']] = [];
-        }
-
-        $dbEntityRelation = new BaseModel($this->db, "vwEntityRelation");
-        $arrEntityRelation = $dbEntityRelation->getWhere("entitySellerId IN ($arrEntityId)");
-
-        foreach($arrEntityRelation as $entityRelation) {
-            $relationGroupId = $entityRelation['relationGroupId'];
-                
-            $entity = new stdClass();
-            $entity->id = $entityRelation['entityBuyerId'];
-            $nameField = "buyerName_" . $this->objUser->language;
-            $entity->name = $entityRelation[$nameField];
-
-            if(strlen($relationGroupId) != 0) {
-                $arrEntity = $mapCustomerGroupIdArrEntity[$relationGroupId];
-                array_push($arrEntity, $entity);
-                $mapCustomerGroupIdArrEntity[$relationGroupId] = $arrEntity;
-            }
-        }
-
-        for ($i = 0; $i < count($data); $i++) {
-            $data[$i]['arrEntity'] = $mapCustomerGroupIdArrEntity[$data[$i]['id']];
-        }
+        $totalRecords = count($data);
+        $totalFiltered = count($data);
 
         ## Response
         $response = array(
