@@ -928,6 +928,7 @@ class AuthController extends Controller
                     $cityId = 53771;
                     break;
             }
+            $this->webResponse = new WebResponse();
             $obj = $this->handleProcessPharmacies($dbUpload->name, $dbUpload->mobile, $dbUpload->email, $password, $dbUpload->pharmacyName, $cityId, $dbUpload->Address );
             if($obj) {
                 $dbUpload->entityId = $obj->entityId;
@@ -938,12 +939,14 @@ class AuthController extends Controller
                 $dbUpload->update();
 
                 $obj->emailCode = $dbUpload->emailCode;
+
             }
             else{
                 $obj = new stdClass();
                 $obj->emailCode = -1;
                 $obj->email = $dbUpload->email;
             }
+            $obj->response = $this->webResponse;
 
 
             $arr[] = $obj;
