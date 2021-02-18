@@ -1163,3 +1163,34 @@ BEGIN
 END;
 
 ################################
+
+## 18/02/2021 -- Antoine Abou Cherfane
+
+# Created 'vwEntityAvailableSeller' view
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityAvailableSeller` AS
+    SELECT 
+        `e`.`id` AS `id`,
+        `e`.`name_en` AS `name_en`,
+        `e`.`name_fr` AS `name_fr`,
+        `e`.`name_ar` AS `name_ar`,
+        IFNULL(`ep`.`available_products`, 0) AS `available_products`
+    FROM
+        (`entity` `e`
+        LEFT JOIN (SELECT 
+            `ep`.`entityId` AS `entityId`,
+                SUM((CASE
+                    WHEN
+                        ((`ep`.`stock` > 0)
+                            AND (`ep`.`stockStatusId` = 1))
+                    THEN
+                        1
+                    ELSE 0
+                END)) AS `available_products`
+        FROM
+            `entityProductSell` `ep`
+        GROUP BY `ep`.`entityId`) `ep` ON ((`ep`.`entityId` = `e`.`id`)))
+    WHERE
+        ((`e`.`typeId` = 10)
+            AND (`ep`.`available_products` > 0))
+
+################################

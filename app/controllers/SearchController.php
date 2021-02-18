@@ -240,6 +240,11 @@ class SearchController extends Controller
         $this->handleGetListFilters("entity", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'typeId=10');
     }
 
+    function getAvailableSellerList()
+    {
+        $this->handleGetListFilters("vwEntityAvailableSeller", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id');
+    }
+
     function getRelationGroupByEnitityList()
     {
         $entityId = $this->f3->get("PARAMS.entityId");

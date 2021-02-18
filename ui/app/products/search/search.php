@@ -638,7 +638,7 @@ function compress_htmlcode($codedata)
         var _selectDistributor = $('#searchProductsDistributorNameInput').select2({
             placeholder: "<?php echo $vModule_search_distributorNamePlaceholder ?>",
             ajax: {
-                url: '/web/order/Distributor/listAll',
+                url: '/web/order/Distributor/listAvailable',
                 dataType: 'json',
                 processResults: function(response) {
                     return {
