@@ -146,6 +146,8 @@ return array(
     'vModule_search_stockStatus_Available' => 'Available Only',
     'vModule_search_stockStatus_others' => 'All',
     'vModule_search_unavailableHeader' => 'Click here to inform of a lack of availability for the product and we\'ll work on resolving it as soon as possible',
+    'vModule_search_countryPlaceholder' => 'Country',
+    'vModule_search_customerNamePlaceholder' => 'Customer Name',
 
     'vModule_product_title' => 'Product List',
     'vModule_product_detail' => 'Product',
