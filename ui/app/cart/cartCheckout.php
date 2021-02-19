@@ -69,7 +69,7 @@ function compress_htmlcode($codedata)
                                 <div class="card-body">
 
                                     <div class="table-responsive">
-                                        <table class="table" style="width: 100%;padding: 10px;min-width: 830px;">
+                                        <table class="table" style="width: 100%;padding: 10px;">
 
                                             <thead>
                                                 <tr>
@@ -99,7 +99,7 @@ function compress_htmlcode($codedata)
                                             }
                                             $arrPaymentMethod = $mapSellerIdArrPaymentMethod[$seller->sellerId];
                                             ?>
-                                            <table style="border-radius: 5px; border-color: #e7e7e7; border-width: 1px 1px 1px 1px; border-style: solid; border-collapse: separate !important; border-spacing: 0; width: 100%; margin-bottom: 20px; padding: 10px; min-width: 830px;">
+                                            <table style="border-radius: 5px; border-color: #e7e7e7; border-width: 1px 1px 1px 1px; border-style: solid; border-collapse: separate !important; border-spacing: 0; width: 100%; margin-bottom: 20px; padding: 10px;">
                                             <thead>
                                                     <tr>
                                                         <th width="28%" class="cart-table-header-body"></th>
