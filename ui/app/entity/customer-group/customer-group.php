@@ -39,11 +39,8 @@ function compress_htmlcode($codedata)
                 },
                 {
                     targets: 0,
-                    title: '#',
-                    data: 'id',
-                    render: function (data, type, row, meta) {
-                        return meta.row + 1;
-                    },
+                    title: '',
+                    orderable: false
                 },
                 {
                     targets: 1,
@@ -88,12 +85,7 @@ function compress_htmlcode($codedata)
                     data: 'id',
                     orderable: false,
                     render: function (data, type, row, meta) {
-                        var output = '';
-                        if(row.arrEntity.length > 0) {                            
-                            output += '<a href="javascript:;" onclick=\'DistributorCustomerGroup.collapseRow(this, "' + encodeURIComponent(JSON.stringify(row.arrEntity)) + '")\' class="btn btn-primary mr-2 mb-2 expand-button">+</a>';
-                        }
-                        
-                        output +=
+                        var output =
                             '<a href="javascript:;" onclick=\'DistributorCustomerGroup.customerGroupEditModal(' + row.id + ')\'\
                         class="btn btn-primary px-8 mr-2 mb-2" title="' + WebAppLocals.getMessage('edit') + '">' + WebAppLocals.getMessage('edit') + '</a>';
 
@@ -106,6 +98,13 @@ function compress_htmlcode($codedata)
                 datatableOptions: {
                     createdRow: function (row, data, index) {
                         $(row).addClass('customer-group-datatable-header');
+                        if(data.arrEntity.length > 0) {
+                            var firstElement = $(row).children().first();
+                            $(firstElement).addClass('customer-group-details-control');
+                            $(firstElement).click(function() {
+                                DistributorCustomerGroup.collapseRow(firstElement, encodeURIComponent(JSON.stringify(data.arrEntity)), data.currencySymbol);
+                            })
+                        }
                     },
                 }
             };

@@ -920,3 +920,13 @@ input[type='number'] {
 #nonGroupMembersLabelContainer {
 	color: #65687B !important;
 }
+
+.customer-group-details-control {
+    background: url('/assets/img/details-open.png') no-repeat center center;
+    cursor: pointer;
+}
+
+.customer-group-details-control.expanded {
+    background: url('/assets/img/details-close.png') no-repeat center center;
+    cursor: pointer;
+}

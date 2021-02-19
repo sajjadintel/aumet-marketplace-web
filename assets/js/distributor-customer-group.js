@@ -187,16 +187,16 @@ var DistributorCustomerGroup = (function () {
 		$('#editCustomerGroupModal').modal('hide');
     }
 
-    var _collapseRow = function (element, arrEntityStr) {
+    var _collapseRow = function (element, arrEntityStr, currency) {
         var arrEntity = JSON.parse(decodeURIComponent(arrEntityStr));
         var rowElement = $(element).closest('tr');
 
         // Populate expanded row
-        if($(rowElement).hasClass('expanded')) {
+        if($(element).hasClass('expanded')) {
             $(rowElement).nextUntil('tr.customer-group-datatable-header').remove();
-            $(rowElement).removeClass('expanded')
+            $(element).removeClass('expanded')
         } else {
-            $(rowElement).addClass('expanded')
+            $(element).addClass('expanded')
             var arrFields = [
                 "",
                 "name",
@@ -213,22 +213,19 @@ var DistributorCustomerGroup = (function () {
                     if(!field) tdElement.textContent = '';
                     else if(field == "isInGroup") {
                         var value = entity[field];
-                        tdElement.innerHTML = '';
                         if(value) {
                             tdElement.innerHTML = '<i class="la la-check text-primary"></i>';  
+                        } else {
+                            tdElement.innerHTML = '<i class="la la-close"></i>';  
                         }
                     }
+                    else if(field == "revenue") tdElement.textContent = entity[field] + " " + currency;
                     else tdElement.textContent = entity[field];
                     trElement.append(tdElement); 
                 }
                 $(rowElement).after(trElement);
             }
         }
-
-        // Change sign of button
-        $(element).text(function (_, value) {
-            return value == '-' ? '+' : '-'
-        });
     }
 
     var _init = function () {
@@ -258,8 +255,8 @@ var DistributorCustomerGroup = (function () {
         saveCustomerGroup: function() {
             _saveCustomerGroup();
         },
-        collapseRow: function (element, arrEntityStr) {
-            _collapseRow(element, arrEntityStr);
+        collapseRow: function (element, arrEntityStr, currency) {
+            _collapseRow(element, arrEntityStr, currency);
         }
     };
 })();
