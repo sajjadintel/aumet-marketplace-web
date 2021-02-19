@@ -930,3 +930,7 @@ input[type='number'] {
     background: url('/assets/img/details-close.png') no-repeat center center;
     cursor: pointer;
 }
+
+.home-page-title {
+	margin-left: 5px !important;
+}
