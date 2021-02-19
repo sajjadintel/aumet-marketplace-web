@@ -892,6 +892,45 @@ input[type='number'] {
 	object-fit: contain !important;
 }
 
+.customer-group-modal-bg {
+	background-color: #F6F6F6;
+}
+
+.customer-group-modal-member-container {
+	height: 300px;
+	overflow: hidden auto;
+}
+
+#editCustomerGroupNewId + span > span > span.select2-selection.select2-selection--single {
+    border-color: #C0C0C0 !important;
+	border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+	background: #F1F5F8;
+}
+
+.customer-group-modal-search {
+    border-right: 0px;
+	border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    height: unset;
+}
+
+.customer-group-modal-button,
+.customer-group-modal-button > i,
+#nonGroupMembersLabelContainer {
+	color: #65687B !important;
+}
+
+.customer-group-details-control {
+    background: url('/assets/img/details-open.png') no-repeat center center;
+    cursor: pointer;
+}
+
+.customer-group-details-control.expanded {
+    background: url('/assets/img/details-close.png') no-repeat center center;
+    cursor: pointer;
+}
+
 .home-page-title {
 	margin-left: 5px !important;
 }

@@ -1153,6 +1153,46 @@ from (((`marketplace`.`entityProductSell` `ep` join `marketplace`.`entity` `e` o
 
 ################################
 
+## 16/02/2021 -- Antoine Abou Cherfane
+
+# Added Customer Group in 'menuItem' table
+INSERT INTO `marketplace`.`menuItem` (`menuId`, `parentId`, `order`, `iconId`, `url`, `method`, `type`, `name_ar`, `name_en`, `insertDateTime`) VALUES ('1', '0', '42', '51', '/web/distributor/customer/group', 'ajax', 'link', 'مجموعة الزبائن', 'Customer Group', '2020-10-12 05:11:11');
+
+# Added relationGroupId in 'order' table
+ALTER TABLE `marketplace`.`order` 
+ADD COLUMN `relationGroupId` INT NULL DEFAULT NULL AFTER `feedbackSubmitted`;
+
+# Created 'vwEntityRelationGroup' view
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityRelationGroup` AS
+  SELECT
+    SELECT 
+        `relation`.`id` AS `id`,
+        `relation`.`entityBuyerId` AS `entityBuyerId`,
+        `relation`.`entitySellerId` AS `entitySellerId`,
+        `entityBuyer`.`name_en` AS `buyerName_en`,
+        `entityBuyer`.`name_fr` AS `buyerName_fr`,
+        `entityBuyer`.`name_ar` AS `buyerName_ar`,
+        `relation`.`relationGroupId` AS `relationGroupId`,
+        `entityRelationGroup`.`name_ar` AS `relationGroupName_ar`,
+        `entityRelationGroup`.`name_en` AS `relationGroupName_en`,
+        `entityRelationGroup`.`name_fr` AS `relationGroupName_fr`,
+        `order`.`relationGroupId` AS `orderRelationGroupId`,
+        `order`.`id` AS `orderId`,
+        `order`.`total` AS `orderTotal`,
+        `order`.`statusId` AS `orderStatusId`,
+        `order`.`insertDateTime` AS `orderInsertDateTime`,
+        `currency`.`symbol` AS `currencySymbol`
+    FROM
+        (((((`entityRelation` `relation`
+        JOIN `entity` `entityBuyer` ON ((`entityBuyer`.`id` = `relation`.`entityBuyerId`)))
+        JOIN `entity` `entitySeller` ON ((`entitySeller`.`id` = `relation`.`entitySellerId`)))
+        JOIN `currency` ON ((`entitySeller`.`currencyId` = `currency`.`id`)))
+        LEFT JOIN `entityRelationGroup` ON ((`entityRelationGroup`.`id` = `relation`.`relationGroupId`)))
+        LEFT JOIN `order` ON (((`order`.`entityBuyerId` = `relation`.`entityBuyerId`)
+            AND (`order`.`entitySellerId` = `relation`.`entitySellerId`))))
+
+################################
+
 ## 17/02/2021 -- Hamza Rashid
 
 # added stored procedure to count quantity of items in user shopping cart

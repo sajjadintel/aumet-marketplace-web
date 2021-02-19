@@ -826,7 +826,6 @@ class CartController extends Controller
                 $dbOrder->subtotal = $subTotal;
                 $dbOrder->vat = $tax;
                 $dbOrder->total = $total;
-                $dbOrder->addReturnID();
 
                 // Add the relation
                 $dbRelation = new BaseModel($this->db, "entityRelation");
@@ -845,6 +844,9 @@ class CartController extends Controller
                     $dbRelation->updatedAt = date('Y-m-d H:i:s');
                     $dbRelation->update();
                 }
+                
+                $dbOrder->relationGroupId = $dbRelation->relationGroupId;
+                $dbOrder->addReturnID();
 
                 $mapSellerIdOrderId[$sellerId] = $dbOrder->id;
                 $this->f3->set('products', $cartItemsBySeller);
