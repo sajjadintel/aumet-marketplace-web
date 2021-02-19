@@ -12,6 +12,9 @@ class EntityController extends Controller
             $arrStockStatus = $dbStockStatus->all("id asc");
             $this->f3->set('arrStockStatus', $arrStockStatus);
 
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $this->f3->set('arrEntityId', $arrEntityId);
+
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_customer_title');
             $this->webResponse->data = View::instance()->render('app/entity/customers/customers.php');
@@ -78,6 +81,26 @@ class EntityController extends Controller
         $query = "entitySellerId IN ($arrEntityId)";
 
         $fullQuery = $query;
+
+        if (is_array($datatable->query)) {
+            $buyerName = $datatable->query['buyerName'];
+            if (isset($buyerName) && is_array($buyerName)) {
+                $query .= " AND (";
+                foreach ($buyerName as $key => $value) {
+                    $value = addslashes($value);
+                    if ($key !== 0) {
+                        $query .= " OR ";
+                    }
+                    $query .= "buyerName_en LIKE '%{$value}%' OR buyerName_ar LIKE '%{$value}%' OR buyerName_fr LIKE '%{$value}%'";
+                }
+                $query .= ")";
+            }
+
+            $countryId = $datatable->query['countryId'];
+            if (isset($countryId) && is_array($countryId)) {
+                $query .= " AND ( buyerCountryId in (" . implode(",", $countryId) . ") OR buyerCityId in (" . implode(",", $countryId) . ") )";
+            }
+        }
 
         $dbData = new BaseModel($this->db, "vwEntityRelation");
         $dbData->buyerName = "buyerName_" . $this->objUser->language;
