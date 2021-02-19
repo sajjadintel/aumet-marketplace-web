@@ -44,7 +44,7 @@ function compress_htmlcode($codedata)
                 },
                 {
                     targets: 1,
-                    title: WebAppLocals.getMessage('entityBuyer'),
+                    title: WebAppLocals.getMessage('customerName'),
                     data: 'buyerName',
                     render: $.fn.dataTable.render.ellipsis( 100 )
                 },
@@ -56,7 +56,7 @@ function compress_htmlcode($codedata)
                 },
                 {
                     targets: 3,
-                    title: WebAppLocals.getMessage('orderCount'),
+                    title: WebAppLocals.getMessage('ordersCount'),
                     data: 'orderCount',
                     render: function (data, type, row, meta) {
                         var output = null;
@@ -68,17 +68,6 @@ function compress_htmlcode($codedata)
                 {
                     targets: 4,
                     title: WebAppLocals.getMessage('orderTotal'),
-                    data: 'orderTotal',
-                    render: function (data, type, row, meta) {
-                        var output = null;
-
-                        output = row.currencySymbol + ' ' + row.orderTotal;
-                        return output;
-                    }
-                },
-                {
-                    targets: 5,
-                    title: WebAppLocals.getMessage('orderTotalPaid'),
                     data: 'orderTotalPaid',
                     render: function (data, type, row, meta) {
                         var output = null;
@@ -88,40 +77,19 @@ function compress_htmlcode($codedata)
                     }
                 },
                 {
+                    targets: 5,
+                    title: WebAppLocals.getMessage('ordersCompleted'),
+                    data: 'orderCountPaid',
+                },
+                {
                     targets: 6,
-                    title: WebAppLocals.getMessage('orderTotalUnPaid'),
-                    data: 'orderTotalUnPaid',
-                    orderable: false,
-                    render: function (data, type, row, meta) {
-                        var output = null;
-
-                        output = row.currencySymbol + ' ' + row.orderTotalUnPaid;
-
-                        return output;
-                    }
+                    title: WebAppLocals.getMessage('country'),
+                    data: 'buyerCountryName',
                 },
                 {
                     targets: 7,
-                    title: WebAppLocals.getMessage('customerStatus'),
-                    data: 'statusId',
-                    render: function (data, type, row, meta) {
-                        var status = {
-                            1: {
-                                title: WebAppLocals.getMessage('relationAvailable'),
-                                class: ' label-success',
-                            },
-                            2: {
-                                title: WebAppLocals.getMessage('relationBlacklisted'),
-                                class: ' label-danger',
-                            },
-                        };
-
-                        var output = '';
-
-                        output += '<div><span class="label label-lg font-weight-bold ' + status[row.statusId].class + ' label-inline">' + status[row.statusId].title + '</span></div>';
-
-                        return output;
-                    },
+                    title: WebAppLocals.getMessage('city'),
+                    data: 'buyerCityName',
                 },
                 {
                     targets: 8,
@@ -131,8 +99,13 @@ function compress_htmlcode($codedata)
                     render: function (data, type, row, meta) {
                         var output =
                             '<a href="javascript:;" onclick=\'DistributorCustomersDataTable.customerEditGroupModal(false, ' + row.id + ')\'\
-                        class="btn btn-default btn-text-primary btn-hover-primary mr-2 mb-2" title="' + WebAppLocals.getMessage('relationGroup') + '">\
-                        <i class="nav-icon la la-ellipsis-h p-0 text-primary"></i></a>';
+                        class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="' + WebAppLocals.getMessage('addToGroup') + '">\
+                        <i class="nav-icon la la-group p-0"></i></a>';
+
+                        output +=
+                            '<a href="javascript:;" onclick=\'window.location.href = "/web/distributor/order/history?customer=' + row.entityBuyerId + '"\'\
+                        class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="' + WebAppLocals.getMessage('viewOrders') + '">\
+                        <i class="nav-icon la la-eye p-0"></i></a>';
 
                         return '<div style="display: flex;">' + output + '</div>';
                     },

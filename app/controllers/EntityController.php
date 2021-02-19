@@ -83,6 +83,8 @@ class EntityController extends Controller
         $dbData->buyerName = "buyerName_" . $this->objUser->language;
         $dbData->sellerName = "sellerName_" . $this->objUser->language;
         $dbData->relationGroupName = "relationGroupName_" . $this->objUser->language;
+        $dbData->buyerCountryName = "buyerCountryName_" . $this->objUser->language;
+        $dbData->buyerCityName = "buyerCityName_" . $this->objUser->language;
         $data = [];
 
         $totalRecords = $dbData->count($fullQuery);

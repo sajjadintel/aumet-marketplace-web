@@ -449,6 +449,18 @@ function compress_htmlcode($codedata)
         $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
         var initiate = function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var customerId = urlParams.get('customer');
+            if(customerId) {
+                if ($('#searchOrdersBuyerInput').find("option[value='" + customerId + "']").length > 0) {
+                    $('#searchOrdersBuyerInput').val(customerId).trigger('change');
+                } else {
+                    var customerName = "<?php echo $customerName; ?>";
+                    var newOption = new Option(customerName, customerId, false, true);
+                    $('#searchOrdersBuyerInput').append(newOption).trigger('change');
+                }
+                searchQuery.entityBuyerId = [customerId];
+            }
             WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
         };
         return {
