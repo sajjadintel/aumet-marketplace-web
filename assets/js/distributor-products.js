@@ -322,6 +322,8 @@ var DistributorProductsDataTable = (function () {
 		let formData = new FormData();
 		formData.append('product_image', ev.target.files[0]);
 
+		$('#productImageErr').html('');
+
 		$.ajax({
 			url: '/web/distributor/product/image',
 			data: formData,
@@ -329,7 +331,13 @@ var DistributorProductsDataTable = (function () {
 			contentType: false,
 			processData: false,
 		}).done(function (webResponse) {
-			_productImageUpload(webResponse, mode);
+
+			if(webResponse.errorCode == 2){
+				$('#productImageErr').html(webResponse.message);
+			}
+			else {
+				_productImageUpload(webResponse, mode);
+			}
 		});
 	};
 

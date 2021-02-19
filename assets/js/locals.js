@@ -70,6 +70,11 @@ var WebAppLocals = (function () {
 			ar: 'عرض الطلب',
 			fr: '',
 		},
+		viewOrders: {
+			en: 'View Orders',
+			ar: 'عرض الطلبات',
+			fr: '',
+		},
 		actions: {
 			en: 'Actions',
 			ar: 'خيارات',
@@ -729,6 +734,36 @@ var WebAppLocals = (function () {
 			en: 'Payment Option',
 			ar: 'خيار الدفع',
 			fr: ''	
+		},
+		customerName: {
+			en: 'Customer Name',
+			ar: 'اسم الزبون',
+			fr: ''	
+		},
+		ordersCount: {
+			en: 'Orders Count',
+			ar: 'عدد الطلبات',
+			fr: ''	
+		},
+		ordersCompleted: {
+			en: 'Orders Completed',
+			ar: 'الطلبات المنجزة',
+			fr: ''	
+		},
+		country: {
+			en: 'Country',
+			ar: 'دولة',
+			fr: ''	
+		},
+		city: {
+			en: 'City',
+			ar: 'مدينة',
+			fr: ''	
+		},
+		addToGroup: {
+			en: 'Add to group',
+			ar: 'إضافة إلى المجموعة',
+			fr: ''
 		},
 	};
 
