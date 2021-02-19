@@ -892,6 +892,11 @@ input[type='number'] {
 	object-fit: contain !important;
 }
 
+.home-page-title {
+	margin-left: 5px !important;
+}
+
+
 .nowrap {
 	white-space: nowrap;
 }

@@ -77,6 +77,15 @@ class OrderController extends Controller
                     $this->f3->set('vModule_order_header', 'Unknown List');
                     break;
             }
+
+            $customerId = $_GET['customer'];
+            if($customerId) {
+                $dbEntity = new BaseModel($this->db, "entity");
+                $dbEntity->name = "name_" . $this->objUser->language;
+                $dbEntity->getWhere("id=$customerId");
+                $this->f3->set('customerName', $dbEntity['name']);
+            }
+
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $title;
             $this->webResponse->data = View::instance()->render($renderFile);

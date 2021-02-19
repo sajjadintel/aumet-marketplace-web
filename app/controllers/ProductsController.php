@@ -2331,6 +2331,7 @@ class ProductsController extends Controller
                             array_push($bonus, $cellValue);
                             break;
                         case "D":
+                            $cellValue = $cell->getOldCalculatedValue();
                             if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
                                 array_push($errors, "Bonus must be a positive whole number");
                             } else {
