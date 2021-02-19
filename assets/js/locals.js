@@ -70,6 +70,11 @@ var WebAppLocals = (function () {
 			ar: 'عرض الطلب',
 			fr: '',
 		},
+		viewOrders: {
+			en: 'View Orders',
+			ar: 'عرض الطلبات',
+			fr: '',
+		},
 		actions: {
 			en: 'Actions',
 			ar: 'خيارات',
@@ -183,6 +188,11 @@ var WebAppLocals = (function () {
 		orderStatus: {
 			en: 'Order Status',
 			ar: 'حالة الطلب',
+			fr: '',
+		},
+		status: {
+			en: 'Status',
+			ar: 'حالة',
 			fr: '',
 		},
 		orderStatusMove: {
@@ -353,6 +363,21 @@ var WebAppLocals = (function () {
 		insertDate: {
 			en: 'Insert Date',
 			ar: 'تاريخ الإدخال',
+			fr: '',
+		},
+		orderDate: {
+			en: 'Order Date',
+			ar: 'Order Date', // TODO: add translation
+			fr: '',
+		},
+		productsOrdered: {
+			en: 'Products Ordered',
+			ar: 'Products Ordered', // TODO: add translation
+			fr: '',
+		},
+		orderQuantity: {
+			en: 'Order Quantity',
+			ar: 'Order Quantity', // TODO: add translation
 			fr: '',
 		},
 		bonus: {
@@ -709,6 +734,36 @@ var WebAppLocals = (function () {
 			en: 'Payment Option',
 			ar: 'خيار الدفع',
 			fr: ''	
+		},
+		customerName: {
+			en: 'Customer Name',
+			ar: 'اسم الزبون',
+			fr: ''	
+		},
+		ordersCount: {
+			en: 'Orders Count',
+			ar: 'عدد الطلبات',
+			fr: ''	
+		},
+		ordersCompleted: {
+			en: 'Orders Completed',
+			ar: 'الطلبات المنجزة',
+			fr: ''	
+		},
+		country: {
+			en: 'Country',
+			ar: 'دولة',
+			fr: ''	
+		},
+		city: {
+			en: 'City',
+			ar: 'مدينة',
+			fr: ''	
+		},
+		addToGroup: {
+			en: 'Add to group',
+			ar: 'إضافة إلى المجموعة',
+			fr: ''
 		},
 	};
 

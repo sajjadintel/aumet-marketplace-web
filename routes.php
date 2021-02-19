@@ -49,6 +49,8 @@ $f3->route('GET /web/order/Distributor/listAll', 'SearchController->getAllSeller
 $f3->route('GET /web/order/Distributor/listAvailable', 'SearchController->getAvailableSellerList');
 $f3->route('GET /web/customer/group/list/@entityId', 'SearchController->getRelationGroupByEnitityList');
 $f3->route('GET /web/city/list/@countryId', 'SearchController->getCityByCountryList');
+$f3->route('GET /web/country/list/@entityId', 'SearchController->getCountryByEntityList');
+$f3->route('GET /web/customername/list/@entityId', 'SearchController->getCustomerNameByEntityList');
 
 $f3->route('GET /web/searchbar', 'SearchController->handleSearchBar');
 
