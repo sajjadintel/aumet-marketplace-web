@@ -113,7 +113,7 @@ function compress_htmlcode($codedata)
                 render: function(data, type, row, meta) {
                     var output = '';
                     if (row.insertDateTime) {
-                        output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.insertDateTime).format('DD/MM/YYYY') + '</span>';
+                        output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.insertDateTime).format('DD/MM/YYYY HH:mm:ss') + '</span>';
                     }
                     return output
                 }
@@ -225,7 +225,6 @@ function compress_htmlcode($codedata)
                         row.id +
                         '" target="_blank" class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="Download PDF">\
                                 <i class="nav-icon la la-print p-0"></i> &nbsp&nbsp' +
-                        WebAppLocals.getMessage('print') +
                         '</a>';
                     var btnView =
                         '<a href="javascript:;" onclick=\'WebAppModals.orderViewModal(' +
@@ -233,7 +232,6 @@ function compress_htmlcode($codedata)
                         ')\' \
                                 class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
                                 <i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
-                        WebAppLocals.getMessage('view') +
                         '</a>';
 
                     var btnOrderProcess =
@@ -308,7 +306,7 @@ function compress_htmlcode($codedata)
                         '</span></a>';
 
 
-                    var outActions = '';
+                    var outActions = '<div class="nowrap">';
 
                     outActions += btnView;
                     outActions += btnPrint;
@@ -342,6 +340,7 @@ function compress_htmlcode($codedata)
                     }
                     outActions += dropdownItemStart + btnChangeRelationGroup + dropdownItemEnd;
                     outActions += dropdownEnd;
+                    outActions += "</div>";
 
                     return outActions;
                 },
