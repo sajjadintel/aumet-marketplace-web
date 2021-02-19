@@ -317,14 +317,27 @@ class OrderController extends Controller
 
             if (sizeof($arrOrderDetail) == 0) {
                 $order['isVisible'] = true;
+                $order['productCount'] = 0;
+                $order['orderCount'] = 0;
                 $ordersWithOrderDetail[] = $order;
                 continue;
             }
+
+            $productsCount = 0;
+            for ($i = 0; $i < count($arrOrderDetail); $i++) {
+                $productsCount += $arrOrderDetail[$i]['shippedQuantity'];
+            }
+
             for ($i = 0; $i < count($arrOrderDetail); $i++) {
                 $orderDetail = array_merge($order, $arrOrderDetail[$i]);
+                if ($i === 0) {
+                    $orderDetail['productCount'] = count($arrOrderDetail);
+                    $orderDetail['orderCount'] = $productsCount;
+                }
                 $orderDetail['isVisible'] = $i === 0;
-                $ordersWithOrderDetail[] = array_merge($order, $orderDetail);
+                $ordersWithOrderDetail[] = $orderDetail;
             }
+
         }
 
         ## Response

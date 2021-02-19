@@ -190,6 +190,11 @@ var WebAppLocals = (function () {
 			ar: 'حالة الطلب',
 			fr: '',
 		},
+		status: {
+			en: 'Status',
+			ar: 'حالة',
+			fr: '',
+		},
 		orderStatusMove: {
 			en: 'Set ',
 			ar: '',
@@ -358,6 +363,21 @@ var WebAppLocals = (function () {
 		insertDate: {
 			en: 'Insert Date',
 			ar: 'تاريخ الإدخال',
+			fr: '',
+		},
+		orderDate: {
+			en: 'Order Date',
+			ar: 'Order Date', // TODO: add translation
+			fr: '',
+		},
+		productsOrdered: {
+			en: 'Products Ordered',
+			ar: 'Products Ordered', // TODO: add translation
+			fr: '',
+		},
+		orderQuantity: {
+			en: 'Order Quantity',
+			ar: 'Order Quantity', // TODO: add translation
 			fr: '',
 		},
 		bonus: {
