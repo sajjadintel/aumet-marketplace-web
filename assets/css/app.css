@@ -891,3 +891,7 @@ input[type='number'] {
 	background-position: center center !important;
 	object-fit: contain !important;
 }
+
+.home-page-title {
+	margin-left: 5px !important;
+}

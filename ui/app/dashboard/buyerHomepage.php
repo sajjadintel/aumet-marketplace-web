@@ -30,25 +30,29 @@
 
     @media only screen and (max-width: 992px) {
         .dynamic-image {
-            width: 100px;
+	        width: 100%;
             height: 100px;
-            margin: auto;
+	        background-color: #f3f3f3 !important;
+            /*margin: auto;*/
         }
     }
 
     @media only screen and (min-width: 992px) {
         .dynamic-image {
-            width: 150px;
+	        width: 100%;
             height: 150px;
-            margin: auto;
+	        background-color: #f3f3f3 !important;
+	        /*margin: auto;*/
         }
     }
 
     @media only screen and (min-width: 1440px) {
         .dynamic-image {
-            width: 200px;
+            width: 100%;
             height: 200px;
-            margin: auto;
+	        background-color: #f3f3f3 !important;
+          padding: 5px;
+	        /*margin: auto;*/
         }
     }
 </style>
@@ -103,7 +107,7 @@
                     <div class="card card-custom card-body card-stretch gutter-b">
                         <div class="row pb-6" style="justify-content: space-between; align-items: center;">
                             <div class="col-3">
-                                <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_newProducts ?></span>
+                                <span class="card-label font-weight-bolder font-size-h3 home-page-title"><?php echo $vModule_homepageBuyer_newProducts ?></span>
                             </div>
                             <div class="col-3" style="display: flex; justify-content: flex-end;">
                                 <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/product/search?sort=newest')">
@@ -129,7 +133,7 @@
                     <div class="card card-custom card-body card-stretch gutter-b">
                         <div class="row pb-6" style="justify-content: space-between; align-items: center;">
                             <div class="col-3">
-                                <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_topSelling ?></span>
+                                <span class="card-label font-weight-bolder font-size-h3 home-page-title"><?php echo $vModule_homepageBuyer_topSelling ?></span>
                             </div>
                             <div class="col-3" style="display: flex; justify-content: flex-end;">
                                 <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/product/search?sort=top-selling')">
