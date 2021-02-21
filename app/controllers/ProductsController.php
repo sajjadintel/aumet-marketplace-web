@@ -2187,6 +2187,74 @@ class ProductsController extends Controller
             Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $productNum);
             Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $bonusTypeNum);
             Excel::setDataValidation($sheet, 'E3', 'E2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $relationGroupNum);
+
+            // Prepare data for initial bonuses
+            $arrProductIdStr = implode(",", $arrProductId);
+            $dbBonus = new BaseModel($this->db, "vwEntityProductSellBonusDetail");
+            $arrBonus = $dbBonus->findWhere("entityProductId IN (" . $arrProductIdStr . ") AND isActive = 1");
+
+            $arrBonusId = [];
+            foreach ($arrBonus as $bonus) {
+                array_push($arrBonusId, $bonus['id']);
+            }
+
+            $mapBonusIdRelationGroupName = [];
+            if (count($arrBonusId) > 0) {
+                $arrBonusIdStr = implode(",", $arrBonusId);
+                $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
+                $arrBonusRelationGroup = $dbBonusRelationGroup->findWhere("bonusId IN (" . $arrBonusIdStr . ")");
+
+                foreach ($arrBonusRelationGroup as $bonusRelationGroup) {
+                    $bonusId = $bonusRelationGroup['bonusId'];
+
+                    $relationGroupId = $bonusRelationGroup['relationGroupId'];
+                    $relationGroupName = $mapRelationGroupIdName[$relationGroupId];
+                    if (array_key_exists($bonusId, $mapBonusIdRelationGroupName)) {
+                        $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonusId];
+                        array_push($arrRelationGroupName, $relationGroupName);
+                        $mapBonusIdRelationGroupName[$bonusId] = $arrRelationGroupName;
+                    } else {
+                        $mapBonusIdRelationGroupName[$bonusId] = [$relationGroupName];
+                    }
+                }
+            }
+
+            $arrBonusExcel = [];
+
+            $fields = [
+                "productName_" . $this->objUser->language,
+                "bonusTypeName_" . $this->objUser->language,
+                "minOrder",
+                "bonus"
+            ];
+            foreach ($arrBonus as $bonus) {
+                // Fill bonus fields
+                $bonusExcel = [];
+                foreach ($fields as $field) {
+                    $cellValue = $bonus[$field];
+                    array_push($bonusExcel, $cellValue);
+                }
+
+                // Fill relation group field
+                $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonus["id"]];
+                if (!$arrRelationGroupName) {
+                    array_push($bonusExcel, "");
+                    array_push($arrBonusExcel, $bonusExcel);
+                } else {
+                    // Duplicate row and add each time a relation group
+                    foreach ($arrRelationGroupName as $relationGroupName) {
+                        $bonusExcelCopy = array_merge([], $bonusExcel);
+                        array_push($bonusExcelCopy, $relationGroupName);
+                        array_push($arrBonusExcel, $bonusExcelCopy);
+                    }
+                }
+            }
+
+            // Change active sheet to user input
+            $sheet = $spreadsheet->setActiveSheetIndex(0);
+
+            // Fill bonuses in user input sheet
+            $sheet->fromArray($arrBonusExcel, NULL, 'A3', true);
             
             // Create excel sheet
             $productsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-" . $this->objUser->id . "-" . time() . ".xlsx";
