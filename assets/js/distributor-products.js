@@ -139,14 +139,14 @@ var DistributorProductsDataTable = (function () {
 		$('#editProductCountry').append(new Option(webResponse.data.product['madeInCountryName_' + docLang], webResponse.data.product.madeInCountryId));
 		$('#editProductCountry').val(webResponse.data.product.madeInCountryId);
 
-		$('#editProductCategory').empty();
-		$('#editProductCategory').append(new Option(webResponse.data.product['productCategoryName_' + docLang], webResponse.data.product.productCategoryId));
-		$('#editProductCategory').val(webResponse.data.product.productCategoryId);
-		$('#editProductCategory').on('change', () => _updateSubcategorySelect('edit'));
+		// $('#editProductCategory').empty();
+		// $('#editProductCategory').append(new Option(webResponse.data.product['productCategoryName_' + docLang], webResponse.data.product.productCategoryId));
+		// $('#editProductCategory').val(webResponse.data.product.productCategoryId);
+		// $('#editProductCategory').on('change', () => _updateSubcategorySelect('edit'));
 
-		$('#editProductSubcategory').empty();
-		$('#editProductSubcategory').append(new Option(webResponse.data.product['productSubcategoryName_' + docLang], webResponse.data.product.productSubcategoryId));
-		$('#editProductSubcategory').val(webResponse.data.product.productSubcategoryId);
+		// $('#editProductSubcategory').empty();
+		// $('#editProductSubcategory').append(new Option(webResponse.data.product['productSubcategoryName_' + docLang], webResponse.data.product.productSubcategoryId));
+		// $('#editProductSubcategory').val(webResponse.data.product.productSubcategoryId);
 
 		var allActiveIngredients = webResponse.data.activeIngredients || [];
 		var allActiveIngredientsId = [];
@@ -260,8 +260,8 @@ var DistributorProductsDataTable = (function () {
 			_validator.destroy();
 		}
 
-		$('#addModalForm').attr('action', '/web/distributor/product/add');
-		$('#addProductCategory').on('change', () => _updateSubcategorySelect('add'));
+		// $('#addModalForm').attr('action', '/web/distributor/product/add');
+		// $('#addProductCategory').on('change', () => _updateSubcategorySelect('add'));
 
 		_changeImageHolder('', 'add');
 		$('#addProductImage').on('change', (ev) => _changeProductImage(ev, 'add'));
@@ -298,11 +298,11 @@ var DistributorProductsDataTable = (function () {
 		$('#addProductManufacturerName').val('');
 		$('#addProductBatchNumber').val('');
 		$('#addProductItemCode').val('');
-		$('#addProductCategory').val('').change();
+		// $('#addProductCategory').val('').change();
 		$('#addActiveIngredients').val('').change();
 		$('#addProductExpiryDate').val('');
 		$('#addProductStrength').val('');
-		$('#addProductSubcategory').val('').change();
+		// $('#addProductSubcategory').val('').change();
 		$('#addProductImageHolder').val('');
 		$('#editProductExpiryDate').val('');
 	};
@@ -869,8 +869,8 @@ var DistributorProductsDataTable = (function () {
 					manufacturerName: 'input',
 					batchNumber: 'input',
 					itemCode: 'input',
-					categoryId: 'select',
-					subcategoryId: 'select',
+					// categoryId: 'select',
+					// subcategoryId: 'select',
 					activeIngredientsId: 'input',
 					expiryDate: 'input',
 					strength: 'input',
@@ -938,8 +938,8 @@ var DistributorProductsDataTable = (function () {
 					manufacturerName: 'input',
 					batchNumber: 'input',
 					itemCode: 'input',
-					categoryId: 'select',
-					subcategoryId: 'select',
+					// categoryId: 'select',
+					// subcategoryId: 'select',
 					activeIngredientsId: 'input',
 					expiryDate: 'input',
 					strength: 'input',

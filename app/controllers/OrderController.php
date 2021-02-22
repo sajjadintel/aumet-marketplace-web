@@ -795,22 +795,16 @@ class OrderController extends Controller
                 $dbRelation->entitySellerId = $dbOrder->entitySellerId;
                 $dbRelation->currencyId = $dbOrder->currencyId;
                 $dbRelation->orderCount = 1;
+                $dbRelation->orderCountPaid = 1;
                 $dbRelation->orderTotal = $dbOrder->total;
+                $dbRelation->orderTotalPaid = $dbOrder->total;
                 $dbRelation->add();
             } else {
-                $dbRelation->orderCount++;
-                $dbRelation->orderTotal += $dbOrder->total;
+                $dbRelation->orderCountPaid++;
+                $dbRelation->orderTotalPaid += $dbOrder->total;
                 $dbRelation->updatedAt = date('Y-m-d H:i:s');
                 $dbRelation->update();
             }
-        } elseif ($statusId == Constants::ORDER_STATUS_PAID) {
-            $dbRelation = new BaseModel($this->db, "entityRelation");
-            $dbRelation->getWhere("entityBuyerId = $dbOrder->entityBuyerId AND entitySellerId = $dbOrder->entitySellerId");
-
-            $dbRelation->orderCountPaid++;
-            $dbRelation->orderTotalPaid += $dbOrder->total;
-            $dbRelation->updatedAt = date('Y-m-d H:i:s');
-            $dbRelation->update();
         }
 
         // Send mails to notify about order status update

@@ -163,7 +163,7 @@
                             <label for="editProductItemCode" class="form-control-label"><?php echo $vModule_product_itemCode; ?></label>
                             <input type="text" class="form-control" name="itemCode" id="editProductItemCode">
                         </div>
-                        <div class="col-md-6 form-group">
+                        <!-- <div class="col-md-6 form-group">
                             <label for="editProductCategory" class="form-control-label"><?php echo $vModule_product_category; ?></label>
                             <select class="select2 form-control" id="editProductCategory" name="categoryId" data-select2-id="editProductCategory" tabindex="-1" aria-hidden="true">
                             </select>
@@ -172,7 +172,7 @@
                             <label for="editProductSubcategory" class="form-control-label"><?php echo $vModule_product_subcategory; ?></label>
                             <select class="select2 form-control" id="editProductSubcategory" name="subcategoryId" data-select2-id="editProductSubcategory" tabindex="-1" aria-hidden="true">
                             </select>
-                        </div>
+                        </div> -->
                         <div class="col-md-4 form-group">
                             <label for="editActiveIngredients" class="form-control-label"><?php echo $vModule_product_activeIngredients; ?></label>
                             <select class="select2 form-control" id="editActiveIngredients" name="activeIngredients" data-select2-id="editActiveIngredients" tabindex="-1" aria-hidden="true" multiple>

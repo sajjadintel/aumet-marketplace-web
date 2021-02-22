@@ -38,7 +38,7 @@ function compress_htmlcode($codedata)
                 </div>
             </div>
 
-            <div class="d-flex flex-column-fluid">
+            <div class="d-none flex-column-fluid">
                 <div class="input-group input-group-lg mr-5">
                     <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
@@ -638,7 +638,7 @@ function compress_htmlcode($codedata)
         var _selectDistributor = $('#searchProductsDistributorNameInput').select2({
             placeholder: "<?php echo $vModule_search_distributorNamePlaceholder ?>",
             ajax: {
-                url: '/web/order/Distributor/listAll',
+                url: '/web/order/Distributor/listAvailable',
                 dataType: 'json',
                 processResults: function(response) {
                     return {

@@ -154,7 +154,7 @@ class BonusHelper {
         if ($isTotalQuantity) {
             switch ($bonusDetail->activeBonus->bonusTypeId) {
                 case Constants::BONUS_TYPE_FIXED:
-                    $bonusDetail->maxOrder = $bonusDetail->activeBonus->maxOrder - $bonusDetail->activeBonus->bonuses;
+                    $bonusDetail->maxOrder = $bonusDetail->maxOrder - $bonusDetail->activeBonus->bonuses;
                     break;
                 case Constants::BONUS_TYPE_DYNAMIC:
                     $max = 0;

@@ -1203,7 +1203,8 @@ BEGIN
 END;
 
 ################################
-## 19/02/2021 -- Sajad Abbasi
+
+## 19/02/2021 -- Hamza Rashid
 # add logo for buyer and seller
 
 CREATE OR REPLACE VIEW `marketplace`.`vwOrderEntityUser` AS
@@ -1326,3 +1327,28 @@ CREATE OR REPLACE VIEW `marketplace`.`vwCountry` AS
     ORDER BY `c1`.`countryId`;
 
 ################################
+
+## 22/02/2021 -- Hamza Rashid
+
+# updated view, added left join on `entityProductSell`
+
+CREATE OR REPLACE VIEW `vwEntityProductSellBonusDetail` AS
+SELECT `ePSBD`.`id`                        AS `id`,
+       `ePSBD`.`entityProductId`           AS `entityProductId`,
+       `marketplace`.`product`.`name_en`   AS `productName_en`,
+       `marketplace`.`product`.`name_ar`   AS `productName_ar`,
+       `marketplace`.`product`.`name_fr`   AS `productName_fr`,
+       `ePSBD`.`bonusTypeId`               AS `bonusTypeId`,
+       `marketplace`.`bonusType`.`name_en` AS `bonusTypeName_en`,
+       `marketplace`.`bonusType`.`name_ar` AS `bonusTypeName_ar`,
+       `marketplace`.`bonusType`.`name_fr` AS `bonusTypeName_fr`,
+       `ePSBD`.`isActive`                  AS `isActive`,
+       `ePSBD`.`minOrder`                  AS `minOrder`,
+       `ePSBD`.`bonus`                     AS `bonus`
+FROM `marketplace`.`entityProductSellBonusDetail` `ePSBD`
+         LEFT JOIN `marketplace`.`entityProductSell` `ePS` ON `ePSBD`.`entityProductId` = `ePS`.`id`
+         LEFT JOIN `marketplace`.`product` ON `marketplace`.`product`.`id` = `ePS`.`productId`
+         LEFT JOIN `marketplace`.`bonusType` ON `marketplace`.`bonusType`.`id` = `ePSBD`.`bonusTypeId`;
+
+################################
+
