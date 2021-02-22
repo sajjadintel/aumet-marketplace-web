@@ -169,7 +169,7 @@
                             <label for="addProductItemCode" class="form-control-label"><?php echo $vModule_product_itemCode; ?></label>
                             <input type="text" class="form-control" name="itemCode" id="addProductItemCode" autocomplete="off">
                         </div>
-                        <div class="col-md-6 form-group">
+                        <!-- <div class="col-md-6 form-group">
                             <label for="addProductCategory" class="form-control-label"><?php echo $vModule_product_category; ?></label>
                             <select class="select2 form-control" id="addProductCategory" name="categoryId" data-select2-id="addProductCategory" tabindex="-1" aria-hidden="true" autocomplete="off">
                             </select>
@@ -178,7 +178,7 @@
                             <label for="addProductSubcategory" class="form-control-label"><?php echo $vModule_product_subcategory; ?></label>
                             <select disabled class="select2 form-control" id="addProductSubcategory" name="subcategoryId" data-select2-id="addProductSubcategory" tabindex="-1" aria-hidden="true" autocomplete="off">
                             </select>
-                        </div>
+                        </div> -->
                         <div class="col-md-4 form-group">
                             <label for="addActiveIngredients" class="form-control-label"><?php echo $vModule_product_activeIngredients; ?></label>
                             <select class="select2 form-control" id="addActiveIngredients" name="activeIngredients" data-select2-id="addActiveIngredients" tabindex="-1" aria-hidden="true" multiple autocomplete="off">
