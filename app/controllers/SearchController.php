@@ -91,11 +91,11 @@ class SearchController extends Controller
                     if ($i != 0) {
                         $where .= ' OR ';
                     }
-                    $where .= "$queryTerm LIKE '%$term%'";
+                    $where .= "LOWER($queryTerm) LIKE '%$term%'";
                     $i++;
                 }
             } else {
-                $where .= "$queryTerms LIKE '%$term%'";
+                $where .= "LOWER($queryTerms) LIKE '%$term%'";
             }
             if ($additionalQuery != null) {
                 $where .= ")";
@@ -242,7 +242,7 @@ class SearchController extends Controller
 
     function getAvailableSellerList()
     {
-        $this->handleGetListFilters("vwEntityProductSell", ['entityName_en', 'entityName_fr', 'entityName_ar'], 'entityName_' . $this->objUser->language, 'entityId', 'stockStatusId=1 AND stock>0');
+        $this->handleGetListFilters("vwEntityProductSell", ['entityName_en', 'entityName_fr', 'entityName_ar'], 'entityName_' . $this->objUser->language, 'entityId');
     }
 
     function getRelationGroupByEnitityList()
