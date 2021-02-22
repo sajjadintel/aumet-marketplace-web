@@ -95,13 +95,6 @@ class AuthController extends Controller
 
         $dbUser = new BaseModel($this->db, "user");
         $dbUser->getByField("email", $email);
-        if ($dbUser->statusId == 1) {
-            echo $this->jsonResponse(false, null, $this->f3->get("vMessage_verifyAccount"));
-            return;
-        } else if ($dbUser->statusId == 2) {
-            echo $this->jsonResponse(false, null, $this->f3->get("vMessage_waitForVerify"));
-            return;
-        }
 
         if ($dbUser->dry()) {
             echo $this->jsonResponse(false, null, $this->f3->get("vMessage_invalidLogin"));
