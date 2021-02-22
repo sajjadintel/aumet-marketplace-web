@@ -27,6 +27,7 @@
                 <div class="modal-body">
                     <input type="hidden" class="form-control" name="id" id="addProductId">
                     <input type="hidden" name="fnCallback" class="modalValueCallback" id="addProductCallback" value="DistributorProductsDataTable.reloadDatatable" />
+
                     <div class="row">
                         <div class="col-md-2 form-group">
                             <div class="image-input image-input-empty image-input-outline">
@@ -38,6 +39,7 @@
                                     <input type="file" name="profile_avatar" accept=".png, .jpg, .jpeg" id="addProductImage" autocomplete="off"/>
                                     <input type="hidden" name="image" id="addProductImageInput"/>
                                 </label>
+
                                 <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
                                       data-action="cancel" data-toggle="tooltip" title="Cancel avatar">
                                     <i class="ki ki-bold-close icon-xs text-muted"></i>
@@ -86,6 +88,13 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="font-size-h6 font-weight-bolder text-muted mb-3 productImageErr" style="color:#e53935 !important;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6 form-group">
                             <label for="addProductScientificName" class="form-control-label"><?php echo $vModule_product_scientificName; ?></label>
                             <select class="select2 form-control" id="addProductScientificName" name="scientificNameId" data-select2-id="addProductScientificName" tabindex="-1" aria-hidden="true" autocomplete="off">
@@ -121,7 +130,7 @@
                             <input type="text" class="form-control" name="subtitle_fr" id="addProductSubtitleFr" autocomplete="off">
                         </div> -->
                         <div class="col-md-6 form-group">
-                            <label for="addProductDescriptionAr" class="form-control-label"><?php echo $vModule_product_description; ?> AR</label>    
+                            <label for="addProductDescriptionAr" class="form-control-label"><?php echo $vModule_product_description; ?> AR</label>
                             <textarea class="form-control" id="addProductDescriptionAr" name="description_ar" rows="4" autocomplete="off"></textarea>
                         </div>
                         <div class="col-md-6 form-group">

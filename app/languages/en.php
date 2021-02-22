@@ -146,6 +146,8 @@ return array(
     'vModule_search_stockStatus_Available' => 'Available Only',
     'vModule_search_stockStatus_others' => 'All',
     'vModule_search_unavailableHeader' => 'Click here to inform of a lack of availability for the product and we\'ll work on resolving it as soon as possible',
+    'vModule_search_countryPlaceholder' => 'Country',
+    'vModule_search_customerNamePlaceholder' => 'Customer Name',
 
     'vModule_product_title' => 'Product List',
     'vModule_product_detail' => 'Product',
@@ -438,4 +440,10 @@ return array(
     'vModal_welcome_step3_title' => 'Step 3',
     'vModal_welcome_step3_message' => 'Add minimum value order by location.',
     'vModal_welcome_callToAction' => 'Complete Profile',
+
+    'vModule_customerGroup_title' => 'Customer Group',
+    'vModule_customerGroup_editModalTitle' => 'Customer Group',
+    'vModule_customerGroup_editModalNonGrouped' => 'NON-GROUPED',
+    'vModule_customerGroup_noCustomerGroup' => 'No Customer Group',
+    'vModule_customerGroup_saved' => 'Customer Group saved successfully',
 );

@@ -22,6 +22,8 @@ var WebApp = (function () {
 	var tempBlurStack = 0;
 	var tempBlockStack = 0;
 
+	var _notificationInProgress = false;
+
 	var _alertError = function (msg) {
 		Swal.fire({
 			html: msg,
@@ -88,6 +90,8 @@ var WebApp = (function () {
 			KTUtil.scrollTop();
 			if (result.value) {
 				WebApp.loadPage('/web/distributor/order/pending');
+			} else {
+				_notificationInProgress = false;
 			}
 		});
 	};
@@ -586,7 +590,7 @@ var WebApp = (function () {
 		var fileName = 'Aumet Marketplace - ' + vTableName;
 
 		var dbOptions = {
-			dom: 'Blfrtip',
+			dom: 'Brt<"float-right"i><"float-right"l><"float-left"p>',
 			responsive: true,
 			scrollX: false,
 			orderCellsTop: true,
@@ -703,7 +707,7 @@ var WebApp = (function () {
 						_unblockPage(668);
 					}
 					console.debug('there');
-				}
+				},
 			},
 			columnDefs: vColumnDefs,
 		};
@@ -744,7 +748,7 @@ var WebApp = (function () {
 		var fileName = 'Aumet Marketplace - ' + vTableName;
 
 		var dbOptions = {
-			dom: 'Blfrtip',
+			dom: 'Brt<"float-right"i><"float-right"l><"float-left"p>',
 			responsive: true,
 			scrollX: false,
 			orderCellsTop: true,
@@ -808,16 +812,21 @@ var WebApp = (function () {
 	};
 
 	var _handleNotificationTimer = function (webResponse) {
-		if (webResponse && typeof webResponse === 'object') {
-			if (webResponse.data > 0) {
-				_alertNewOrders(webResponse.data);
-			}
+		if (webResponse && typeof webResponse === 'object' && webResponse.hasOwnProperty('data') && webResponse.data > 0) {
+			_alertNewOrders(webResponse.data);
+		} else {
+			_notificationInProgress = false;
 		}
 	};
 
 	var _initNotificationTimer = function () {
 		setInterval(function () {
-			WebApp.getAsync('/web/notification/order/new', _handleNotificationTimer);
+			if (_notificationInProgress) {
+				console.debug('Notification is taking longer than usual...');
+			} else {
+				_notificationInProgress = true;
+				WebApp.getAsync('/web/notification/order/new', _handleNotificationTimer);
+			}
 		}, 5000);
 	};
 

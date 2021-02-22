@@ -161,6 +161,9 @@ class SearchController extends Controller
                 $where .= " AND entityId IN ($arrEntityId)";
             }
 
+            /*$where .= " AND stockStatusId = 1 ";
+
+            $where .= " AND statusId = 1";*/
 
             $select2Result = new stdClass();
             $select2Result->results = [];
@@ -329,6 +332,121 @@ class SearchController extends Controller
             //                $select2Result->results[] = $dbProducts;
             //                $dbProducts->next();
             //            }
+
+            if ($resultsCount >= $pageSize) {
+                $select2Result->pagination = true;
+            }
+
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            $this->webResponse->title = "";
+            $this->webResponse->data = $select2Result;
+        } else {
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+        }
+        echo $this->webResponse->jsonResponse();
+    }
+
+    function getCountryByEntityList()
+    {
+        if ($this->f3->ajax()) {
+            $arrEntityId = $this->f3->get("PARAMS.entityId");
+            $dbEntityRelation = new BaseModel($this->db, "vwEntityRelation");
+            $arrEntityRelation = $dbEntityRelation->findWhere("entitySellerId IN ($arrEntityId)");
+
+            $arrCityId = [];
+            foreach($arrEntityRelation as $entityRelation) {
+                $buyerCityId = $entityRelation['buyerCityId'];
+                if(!in_array($buyerCityId, $arrCityId)) {
+                    array_push($arrCityId, $buyerCityId);
+                }
+            }
+            
+            $arrCityIdStr = "-1";
+            if(count($arrCityId) > 0) {
+                $arrCityIdStr = implode(",", $arrCityId);
+            }
+
+            $where = "id IN ($arrCityIdStr)";
+            $term = addslashes(trim($_GET['term']));
+            if (isset($term) && $term != "" && $term != null) {
+                $where .= " name_" . $this->objUser->language . " like '%$term%'";
+            }
+
+            $page = $_GET['page'];
+            if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
+                $page = $page - 1;
+            } else {
+                $page = 0;
+            }
+
+            $pageSize = 10;
+
+            $select2Result = new stdClass();
+            $select2Result->results = [];
+            $select2Result->pagination = false;
+
+            $dbCountry = new BaseModel($this->db, "vwCountry");
+            $dbCountry->name = "name_" . $this->objUser->language;
+            $dbCountry->parent_name = "parent_name_" . $this->objUser->language;
+            $select2Result->results = $dbCountry->findWhere($where, "parent_id ASC, name_{$this->objUser->language} ASC", $pageSize, $page * $pageSize);
+            $resultsCount = count($select2Result->results);
+            //            while (!$dbProducts->dry()) {
+            //                $resultsCount++;
+            //                $select2ResultItem = new stdClass();
+            //                $select2ResultItem->id = $dbProducts->id;
+            //                $select2ResultItem->text = $dbProducts->name;
+            //                $select2Result->results[] = $select2ResultItem;
+            //                $select2Result->results[] = $dbProducts;
+            //                $dbProducts->next();
+            //            }
+
+            if ($resultsCount >= $pageSize) {
+                $select2Result->pagination = true;
+            }
+
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            $this->webResponse->title = "";
+            $this->webResponse->data = $select2Result;
+        } else {
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+        }
+        echo $this->webResponse->jsonResponse();
+    }
+
+    function getCustomerNameByEntityList()
+    {
+        if ($this->f3->ajax()) {
+            $arrEntityId = $this->f3->get("PARAMS.entityId");
+
+            $where = "entitySellerId IN ($arrEntityId)";
+            $term = addslashes(trim($_GET['term']));
+            if (isset($term) && $term != "" && $term != null) {
+                $where .= " AND buyerName_" . $this->objUser->language . " like '%$term%'";
+            }
+            $page = $_GET['page'];
+            if (isset($page) && $page != "" && $page != null && is_numeric($page)) {
+                $page = $page - 1;
+            } else {
+                $page = 0;
+            }
+            $pageSize = 10;
+
+            $select2Result = new stdClass();
+            $select2Result->results = [];
+            $select2Result->pagination = false;
+
+            $dbEntity = new BaseModel($this->db, "vwEntityRelation");
+            $dbEntity->entityName = "buyerName_" . $this->objUser->language;
+            $arrResult = $dbEntity->findWhere($where, "buyerName_{$this->objUser->language} ASC", $pageSize, $page * $pageSize);
+
+            $resultsCount = 0;
+            foreach($arrResult as $result) {
+                $resultsCount++;
+                $select2ResultItem = new stdClass();
+                $select2ResultItem->id = trim($result['entityName']);
+                $select2ResultItem->text = trim($result['entityName']);
+                $select2Result->results[] = $select2ResultItem;
+            }
 
             if ($resultsCount >= $pageSize) {
                 $select2Result->pagination = true;
@@ -650,7 +768,8 @@ class SearchController extends Controller
             "draw" => intval($datatable->draw),
             "recordsTotal" => $totalRecords,
             "recordsFiltered" => $totalFiltered,
-            "data" => $data
+            "data" => $data,
+            "query" => $query
         );
 
         $this->jsonResponseAPI($response);

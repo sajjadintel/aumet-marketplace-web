@@ -1152,3 +1152,177 @@ from (((`marketplace`.`entityProductSell` `ep` join `marketplace`.`entity` `e` o
          left join `marketplace`.`scientificName` `s` on ((`p`.`scientificNameId` = `s`.`id`)));
 
 ################################
+
+## 16/02/2021 -- Antoine Abou Cherfane
+
+# Added Customer Group in 'menuItem' table
+INSERT INTO `marketplace`.`menuItem` (`menuId`, `parentId`, `order`, `iconId`, `url`, `method`, `type`, `name_ar`, `name_en`, `insertDateTime`) VALUES ('1', '0', '42', '51', '/web/distributor/customer/group', 'ajax', 'link', 'مجموعة الزبائن', 'Customer Group', '2020-10-12 05:11:11');
+
+# Added relationGroupId in 'order' table
+ALTER TABLE `marketplace`.`order` 
+ADD COLUMN `relationGroupId` INT NULL DEFAULT NULL AFTER `feedbackSubmitted`;
+
+# Created 'vwEntityRelationGroup' view
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityRelationGroup` AS
+  SELECT
+    SELECT 
+        `relation`.`id` AS `id`,
+        `relation`.`entityBuyerId` AS `entityBuyerId`,
+        `relation`.`entitySellerId` AS `entitySellerId`,
+        `entityBuyer`.`name_en` AS `buyerName_en`,
+        `entityBuyer`.`name_fr` AS `buyerName_fr`,
+        `entityBuyer`.`name_ar` AS `buyerName_ar`,
+        `relation`.`relationGroupId` AS `relationGroupId`,
+        `entityRelationGroup`.`name_ar` AS `relationGroupName_ar`,
+        `entityRelationGroup`.`name_en` AS `relationGroupName_en`,
+        `entityRelationGroup`.`name_fr` AS `relationGroupName_fr`,
+        `order`.`relationGroupId` AS `orderRelationGroupId`,
+        `order`.`id` AS `orderId`,
+        `order`.`total` AS `orderTotal`,
+        `order`.`statusId` AS `orderStatusId`,
+        `order`.`insertDateTime` AS `orderInsertDateTime`,
+        `currency`.`symbol` AS `currencySymbol`
+    FROM
+        (((((`entityRelation` `relation`
+        JOIN `entity` `entityBuyer` ON ((`entityBuyer`.`id` = `relation`.`entityBuyerId`)))
+        JOIN `entity` `entitySeller` ON ((`entitySeller`.`id` = `relation`.`entitySellerId`)))
+        JOIN `currency` ON ((`entitySeller`.`currencyId` = `currency`.`id`)))
+        LEFT JOIN `entityRelationGroup` ON ((`entityRelationGroup`.`id` = `relation`.`relationGroupId`)))
+        LEFT JOIN `order` ON (((`order`.`entityBuyerId` = `relation`.`entityBuyerId`)
+            AND (`order`.`entitySellerId` = `relation`.`entitySellerId`))))
+
+################################
+
+## 17/02/2021 -- Hamza Rashid
+
+# added stored procedure to count quantity of items in user shopping cart
+
+CREATE PROCEDURE spGetCartCount(IN account_id int)
+BEGIN
+    SELECT (SUM(`quantity`) + SUM(`quantityFree`)) AS 'cartCount' FROM `cartDetail` WHERE `accountId` = account_id GROUP BY `accountId`;
+END;
+
+################################
+## 19/02/2021 -- Hamza Rashid
+# add logo for buyer and seller
+
+CREATE OR REPLACE VIEW `marketplace`.`vwOrderEntityUser` AS
+    SELECT
+        `marketplace`.`order`.`id` AS `id`,
+        `marketplace`.`order`.`entityBuyerId` AS `entityBuyerId`,
+        `marketplace`.`order`.`branchBuyerId` AS `branchBuyerId`,
+        `marketplace`.`order`.`feedbackSubmitted` AS `feedbackSubmitted`,
+        `user_Buyer`.`fullname` AS `userBuyer`,
+        `user_Buyer`.`email` AS `userBuyerEmail`,
+        `entity_Buyer`.`name_en` AS `entityBuyer`,
+        `entity_Buyer`.`image` AS `entityBuyerImage`,
+        `branch_Buyer`.`name_en` AS `branchBuyer`,
+        `branch_Buyer`.`address_en` AS `addressBuyer`,
+        `marketplace`.`order`.`entitySellerId` AS `entitySellerId`,
+        `marketplace`.`order`.`userSellerId` AS `userSellerId`,
+        `marketplace`.`order`.`branchSellerId` AS `branchSellerId`,
+        `user_Seller`.`fullname` AS `userSeller`,
+        `user_Seller`.`email` AS `userSellerEmail`,
+        `entity_Seller`.`name_en` AS `entitySeller`,
+        `entity_Seller`.`image` AS `entitySellerImage`,
+        `branch_Seller`.`name_en` AS `branchSeller`,
+        `branch_Seller`.`address_en` AS `addressSeller`,
+        `marketplace`.`order`.`statusId` AS `statusId`,
+        `order_status`.`name_en` AS `status`,
+        `marketplace`.`order`.`serial` AS `serial`,
+        `marketplace`.`order`.`currencyId` AS `currencyId`,
+        `marketplace`.`currency`.`symbol` AS `currency`,
+        `marketplace`.`order`.`total` AS `total`,
+        `marketplace`.`order`.`subtotal` AS `subtotal`,
+        0 AS `tax`,
+        `marketplace`.`order`.`paymentMethodId` AS `orderPaymentMethodId`,
+        `marketplace`.`paymentMethod`.`name_en` AS `orderPaymentMethodName_en`,
+        `marketplace`.`paymentMethod`.`name_ar` AS `orderPaymentMethodName_ar`,
+        `marketplace`.`paymentMethod`.`name_fr` AS `orderPaymentMethodName_fr`,
+        `marketplace`.`order`.`insertDateTime` AS `insertDateTime`,
+        `marketplace`.`order`.`updateDateTime` AS `updateDateTime`
+    FROM
+        (((((((((`marketplace`.`order`
+        JOIN `marketplace`.`orderStatus` `order_status` ON ((`order_status`.`id` = `marketplace`.`order`.`statusId`)))
+        JOIN `marketplace`.`currency` ON ((`marketplace`.`currency`.`id` = `marketplace`.`order`.`currencyId`)))
+        LEFT JOIN `marketplace`.`user` `user_Buyer` ON ((`marketplace`.`order`.`userBuyerId` = `user_Buyer`.`id`)))
+        LEFT JOIN `marketplace`.`user` `user_Seller` ON ((`marketplace`.`order`.`userSellerId` = `user_Seller`.`id`)))
+        LEFT JOIN `marketplace`.`entity` `entity_Buyer` ON ((`marketplace`.`order`.`entityBuyerId` = `entity_Buyer`.`id`)))
+        LEFT JOIN `marketplace`.`entity` `entity_Seller` ON ((`marketplace`.`order`.`entitySellerId` = `entity_Seller`.`id`)))
+        LEFT JOIN `marketplace`.`entityBranch` `branch_Buyer` ON ((`marketplace`.`order`.`branchBuyerId` = `branch_Buyer`.`id`)))
+        LEFT JOIN `marketplace`.`entityBranch` `branch_Seller` ON ((`marketplace`.`order`.`branchSellerId` = `branch_Seller`.`id`)))
+        LEFT JOIN `marketplace`.`paymentMethod` ON ((`marketplace`.`order`.`paymentMethodId` = `marketplace`.`paymentMethod`.`id`)));
+
+################################
+## 19/02/2021 -- Hamza Rashid
+# add vat
+
+CREATE OR REPLACE VIEW `marketplace`.`vwOrderEntityUser` AS
+    SELECT
+        `marketplace`.`order`.`id` AS `id`,
+        `marketplace`.`order`.`entityBuyerId` AS `entityBuyerId`,
+        `marketplace`.`order`.`branchBuyerId` AS `branchBuyerId`,
+        `marketplace`.`order`.`feedbackSubmitted` AS `feedbackSubmitted`,
+        `user_Buyer`.`fullname` AS `userBuyer`,
+        `user_Buyer`.`email` AS `userBuyerEmail`,
+        `entity_Buyer`.`name_en` AS `entityBuyer`,
+        `entity_Buyer`.`image` AS `entityBuyerImage`,
+        `branch_Buyer`.`name_en` AS `branchBuyer`,
+        `branch_Buyer`.`address_en` AS `addressBuyer`,
+        `marketplace`.`order`.`entitySellerId` AS `entitySellerId`,
+        `marketplace`.`order`.`userSellerId` AS `userSellerId`,
+        `marketplace`.`order`.`branchSellerId` AS `branchSellerId`,
+        `user_Seller`.`fullname` AS `userSeller`,
+        `user_Seller`.`email` AS `userSellerEmail`,
+        `entity_Seller`.`name_en` AS `entitySeller`,
+        `entity_Seller`.`image` AS `entitySellerImage`,
+        `branch_Seller`.`name_en` AS `branchSeller`,
+        `branch_Seller`.`address_en` AS `addressSeller`,
+        `marketplace`.`order`.`statusId` AS `statusId`,
+        `order_status`.`name_en` AS `status`,
+        `marketplace`.`order`.`serial` AS `serial`,
+        `marketplace`.`order`.`currencyId` AS `currencyId`,
+        `marketplace`.`currency`.`symbol` AS `currency`,
+        `marketplace`.`order`.`total` AS `total`,
+        `marketplace`.`order`.`subtotal` AS `subtotal`,
+		`order`.`vat` AS `vat`,
+        0 AS `tax`,
+        `marketplace`.`order`.`paymentMethodId` AS `orderPaymentMethodId`,
+        `marketplace`.`paymentMethod`.`name_en` AS `orderPaymentMethodName_en`,
+        `marketplace`.`paymentMethod`.`name_ar` AS `orderPaymentMethodName_ar`,
+        `marketplace`.`paymentMethod`.`name_fr` AS `orderPaymentMethodName_fr`,
+        `marketplace`.`order`.`insertDateTime` AS `insertDateTime`,
+        `marketplace`.`order`.`updateDateTime` AS `updateDateTime`
+    FROM
+        (((((((((`marketplace`.`order`
+        JOIN `marketplace`.`orderStatus` `order_status` ON ((`order_status`.`id` = `marketplace`.`order`.`statusId`)))
+        JOIN `marketplace`.`currency` ON ((`marketplace`.`currency`.`id` = `marketplace`.`order`.`currencyId`)))
+        LEFT JOIN `marketplace`.`user` `user_Buyer` ON ((`marketplace`.`order`.`userBuyerId` = `user_Buyer`.`id`)))
+        LEFT JOIN `marketplace`.`user` `user_Seller` ON ((`marketplace`.`order`.`userSellerId` = `user_Seller`.`id`)))
+        LEFT JOIN `marketplace`.`entity` `entity_Buyer` ON ((`marketplace`.`order`.`entityBuyerId` = `entity_Buyer`.`id`)))
+        LEFT JOIN `marketplace`.`entity` `entity_Seller` ON ((`marketplace`.`order`.`entitySellerId` = `entity_Seller`.`id`)))
+        LEFT JOIN `marketplace`.`entityBranch` `branch_Buyer` ON ((`marketplace`.`order`.`branchBuyerId` = `branch_Buyer`.`id`)))
+        LEFT JOIN `marketplace`.`entityBranch` `branch_Seller` ON ((`marketplace`.`order`.`branchSellerId` = `branch_Seller`.`id`)))
+        LEFT JOIN `marketplace`.`paymentMethod` ON ((`marketplace`.`order`.`paymentMethodId` = `marketplace`.`paymentMethod`.`id`)));
+
+## 19/02/2021 -- Antoine Abou Cherfane
+
+# Created `vwCountry` view
+CREATE OR REPLACE VIEW `marketplace`.`vwCountry` AS
+    SELECT 
+        `c1`.`id` AS `id`,
+        `c1`.`nameEn` AS `name_en`,
+        `c1`.`nameAr` AS `name_ar`,
+        `c1`.`nameFr` AS `name_fr`,
+        `c1`.`countryId` AS `parent_id`,
+        `c2`.`name_en` AS `parent_name_en`,
+        `c2`.`name_ar` AS `parent_name_ar`,
+        `c2`.`name_fr` AS `parent_name_fr`
+    FROM
+        (`city` `c1`
+        LEFT JOIN `country` `c2` ON ((`c2`.`id` = `c1`.`countryId`)))
+    WHERE
+        (`c1`.`countryId` IS NOT NULL)
+    ORDER BY `c1`.`countryId`;
+
+################################
