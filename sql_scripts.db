@@ -1203,7 +1203,7 @@ BEGIN
 END;
 
 ################################
-## 19/02/2021 -- Hamza Rashid
+## 19/02/2021 -- Sajad Abbasi
 # add logo for buyer and seller
 
 CREATE OR REPLACE VIEW `marketplace`.`vwOrderEntityUser` AS
@@ -1254,7 +1254,7 @@ CREATE OR REPLACE VIEW `marketplace`.`vwOrderEntityUser` AS
         LEFT JOIN `marketplace`.`paymentMethod` ON ((`marketplace`.`order`.`paymentMethodId` = `marketplace`.`paymentMethod`.`id`)));
 
 ################################
-## 19/02/2021 -- Hamza Rashid
+## 19/02/2021 -- Sajad Abbasi
 # add vat
 
 CREATE OR REPLACE VIEW `marketplace`.`vwOrderEntityUser` AS
@@ -1285,7 +1285,7 @@ CREATE OR REPLACE VIEW `marketplace`.`vwOrderEntityUser` AS
         `marketplace`.`currency`.`symbol` AS `currency`,
         `marketplace`.`order`.`total` AS `total`,
         `marketplace`.`order`.`subtotal` AS `subtotal`,
-		`order`.`vat` AS `vat`,
+				`order`.`vat` AS `orderVat`,
         0 AS `tax`,
         `marketplace`.`order`.`paymentMethodId` AS `orderPaymentMethodId`,
         `marketplace`.`paymentMethod`.`name_en` AS `orderPaymentMethodName_en`,
