@@ -22,6 +22,8 @@ var WebApp = (function () {
 	var tempBlurStack = 0;
 	var tempBlockStack = 0;
 
+	var _notificationInProgress = false;
+
 	var _alertError = function (msg) {
 		Swal.fire({
 			html: msg,
@@ -88,6 +90,8 @@ var WebApp = (function () {
 			KTUtil.scrollTop();
 			if (result.value) {
 				WebApp.loadPage('/web/distributor/order/pending');
+			} else {
+				_notificationInProgress = false;
 			}
 		});
 	};
@@ -571,9 +575,6 @@ var WebApp = (function () {
 	};
 
 	var _createDatatableServerside = function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
-		_blurPage(542);
-		_blockPage(543);
-
 		// delete cached datatable
 		if ($.fn.DataTable.isDataTable(vElementId)) {
 			if (datatableVar.length > 0) {
@@ -586,7 +587,7 @@ var WebApp = (function () {
 		var fileName = 'Aumet Marketplace - ' + vTableName;
 
 		var dbOptions = {
-			dom: 'Blfrtip',
+			dom: 'Brt<"float-right"i><"float-right"l><"float-left"p>',
 			responsive: true,
 			scrollX: false,
 			orderCellsTop: true,
@@ -657,7 +658,7 @@ var WebApp = (function () {
 						objLayout['hLineWidth'] = function (i) {
 							return 0.5;
 						};
-						/* Vertikal line thickness */
+						/* Vertical line thickness */
 						objLayout['vLineWidth'] = function (i) {
 							return 0.5;
 						};
@@ -703,7 +704,7 @@ var WebApp = (function () {
 						_unblockPage(668);
 					}
 					console.debug('there');
-				}
+				},
 			},
 			columnDefs: vColumnDefs,
 		};
@@ -721,8 +722,7 @@ var WebApp = (function () {
 		datatableVar.push($('' + vElementId).DataTable(dbOptionsObj));
 
 		datatableVar[datatableVar.length - 1].on('draw', function () {
-			_unblurPage(688);
-			_unblockPage(689);
+
 		});
 
 		$.fn.dataTable.ext.errMode = function (settings, helpPage, message) {
@@ -733,9 +733,6 @@ var WebApp = (function () {
 	};
 
 	var _createDatatableLocal = function (vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions = null) {
-		_blurPage(700);
-		_blockPage(701);
-
 		// delete cached datatable
 		// if ($.fn.DataTable.isDataTable(datatableVar)) {
 		// 	datatableVar.clear().destroy();
@@ -744,7 +741,7 @@ var WebApp = (function () {
 		var fileName = 'Aumet Marketplace - ' + vTableName;
 
 		var dbOptions = {
-			dom: 'Blfrtip',
+			dom: 'Brt<"float-right"i><"float-right"l><"float-left"p>',
 			responsive: true,
 			scrollX: false,
 			orderCellsTop: true,
@@ -787,8 +784,7 @@ var WebApp = (function () {
 		datatableVar.push($('' + vElementId).DataTable(dbOptionsObj));
 
 		datatableVar[datatableVar.length - 1].on('draw', function () {
-			_unblurPage(754);
-			_unblockPage(755);
+
 		});
 
 		return datatableVar;
@@ -808,16 +804,21 @@ var WebApp = (function () {
 	};
 
 	var _handleNotificationTimer = function (webResponse) {
-		if (webResponse && typeof webResponse === 'object') {
-			if (webResponse.data > 0) {
-				_alertNewOrders(webResponse.data);
-			}
+		if (webResponse && typeof webResponse === 'object' && webResponse.hasOwnProperty('data') && webResponse.data > 0) {
+			_alertNewOrders(webResponse.data);
+		} else {
+			_notificationInProgress = false;
 		}
 	};
 
 	var _initNotificationTimer = function () {
 		setInterval(function () {
-			WebApp.getAsync('/web/notification/order/new', _handleNotificationTimer);
+			if (_notificationInProgress) {
+				console.debug('Notification is taking longer than usual...');
+			} else {
+				_notificationInProgress = true;
+				WebApp.getAsync('/web/notification/order/new', _handleNotificationTimer);
+			}
 		}, 5000);
 	};
 
@@ -1044,10 +1045,18 @@ var WebApp = (function () {
 			_openModal(webResponse);
 		},
 		CreateDatatableServerside: function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
+			_blurPage(1040);
+			_blockPage(1041);
 			_createDatatableServerside(vTableName, vElementId, vUrl, vColumnDefs, vParams, vAdditionalOptions);
+			_unblurPage(1050);
+			_unblockPage(1051);
 		},
 		CreateDatatableLocal: function (vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions = null) {
+			_blurPage(1060);
+			_blockPage(1061);
 			_createDatatableLocal(vTableName, vElementId, vData, vColumnDefs, vAdditionalOptions);
+			_unblurPage(1070);
+			_unblockPage(1071);
 		},
 		DestroyDatatable: function (vElementId) {
 			_destroyDatatable(vElementId);

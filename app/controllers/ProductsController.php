@@ -2255,7 +2255,7 @@ class ProductsController extends Controller
 
             // Fill bonuses in user input sheet
             $sheet->fromArray($arrBonusExcel, NULL, 'A3', true);
-            
+
             // Create excel sheet
             $productsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-" . $this->objUser->id . "-" . time() . ".xlsx";
             Excel::saveSpreadsheetToPath($spreadsheet, $productsSheetUrl);
@@ -2399,6 +2399,7 @@ class ProductsController extends Controller
                             array_push($bonus, $cellValue);
                             break;
                         case "D":
+                            $cellValue = $cell->getOldCalculatedValue();
                             if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
                                 array_push($errors, "Bonus must be a positive whole number");
                             } else {
@@ -2569,7 +2570,6 @@ class ProductsController extends Controller
                         continue;
                     }
                     $bonus = $arrBonus[$i];
-
                     $entityProductId = $bonus[0];
                     $bonusTypeId = $bonus[1];
                     $minOrder = $bonus[2];
@@ -2704,6 +2704,8 @@ class ProductsController extends Controller
                 $scientificNum++;
                 $arrScientificName[] = array($scientificName['name'], $scientificName['id']);
             }
+
+            $arrScientificName = [];
 
             $dbCountry = new BaseModel($this->db, "country");
             $dbCountry->name = "name_" . $this->objUser->language;

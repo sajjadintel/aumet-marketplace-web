@@ -30,25 +30,29 @@
 
     @media only screen and (max-width: 992px) {
         .dynamic-image {
-            width: 100px;
+	        width: 100%;
             height: 100px;
-            margin: auto;
+	        background-color: #f3f3f3 !important;
+            /*margin: auto;*/
         }
     }
 
     @media only screen and (min-width: 992px) {
         .dynamic-image {
-            width: 150px;
+	        width: 100%;
             height: 150px;
-            margin: auto;
+	        background-color: #f3f3f3 !important;
+	        /*margin: auto;*/
         }
     }
 
     @media only screen and (min-width: 1440px) {
         .dynamic-image {
-            width: 200px;
+            width: 100%;
             height: 200px;
-            margin: auto;
+	        background-color: #f3f3f3 !important;
+          padding: 5px;
+	        /*margin: auto;*/
         }
     }
 </style>
@@ -61,45 +65,49 @@
 
             <!--begin::Main-->
             <div class="col-9">
-                <div class="card card-custom card-body card-stretch gutter-b">
-                    <!--begin::Banner-->
-                    <?php if (count($arrBanner) > 0) : ?>
-                        <div class="mb-10">
-                            <div class="slick-carousel" data-adaptive-height="true">
-                                <?php foreach ($arrBanner as $banner) : ?>
-                                    <div class="item">
-                                        <div class="img-fill">
-                                            <img src="<?php echo $banner->image; ?>" alt="">
-                                            <div class="info">
-                                                <?php if ((($objUser->language == "ar") && ($banner->styleEn == 'ltr') || ($objUser->language !== "ar") && ($banner->styleEn == 'rtl'))) : ?>
-                                                    <div class="col-md-5 offset-md-2 text-right h-100">
-                                                        <h1 class="slick-hero-title"><?php echo $banner->title; ?></h1>
-                                                        <h1 class="slick-hero-title"><?php echo $banner->subtitle; ?></h1>
-                                                        <?php if (!is_null($banner->buttonText)) : ?>
-                                                            <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>');"><?php echo $banner->buttonText; ?></button>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                <?php else : ?>
-                                                    <div class="col-md-5 offset-md-2 text-left h-100">
-                                                        <h1 class="slick-hero-title"><?php echo $banner->title; ?></h1>
-                                                        <h1 class="slick-hero-title"><?php echo $banner->subtitle; ?></h1>
-                                                        <?php if (!is_null($banner->buttonText)) : ?>
-                                                            <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>');"><?php echo $banner->buttonText; ?></button>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                <?php endif; ?>
+                <?php if (count($arrBanner) > 0) : ?>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card card-custom card-body card-stretch gutter-b">
+                                <!--begin::Banner-->
+                                <div class="slick-carousel m-0">
+                                    <?php foreach ($arrBanner as $banner) : ?>
+                                        <div class="item">
+                                            <div class="img-fill">
+                                                <img src="<?php echo $banner->image; ?>" alt="" style="max-height: 400px; width: auto; max-width: 100%">
+                                                <div class="info">
+                                                    <?php if ((($objUser->language == "ar") && ($banner->styleEn == 'ltr') || ($objUser->language !== "ar") && ($banner->styleEn == 'rtl'))) : ?>
+                                                        <div class="col-md-5 offset-md-2 text-right h-100">
+                                                            <h1 class="slick-hero-title"><?php echo $banner->title; ?></h1>
+                                                            <h1 class="slick-hero-subtitle"><?php echo $banner->subtitle; ?></h1>
+                                                            <?php if (!is_null($banner->buttonText)) : ?>
+                                                                <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>');"><?php echo $banner->buttonText; ?></button>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    <?php else : ?>
+                                                        <div class="col-md-5 offset-md-2 text-left h-100">
+                                                            <h1 class="slick-hero-title"><?php echo $banner->title; ?></h1>
+                                                            <h1 class="slick-hero-subtitle"><?php echo $banner->subtitle; ?></h1>
+                                                            <?php if (!is_null($banner->buttonText)) : ?>
+                                                                <button type="button" class="btn btn-primary btn-md mt-5 slick-hero-button" onclick="WebApp.loadSubPage('<?php echo $banner->buttonUrl; ?>');"><?php echo $banner->buttonText; ?></button>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
                         </div>
-                    <?php endif; ?>
-                    <!--begin::New Products-->
-                    <div class="mb-10">
+                    </div>
+                <?php endif; ?>
+                <!--begin::New Products-->
+                <div class="mb-10">
+                    <div class="card card-custom card-body card-stretch gutter-b">
                         <div class="row pb-6" style="justify-content: space-between; align-items: center;">
                             <div class="col-3">
-                                <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_newProducts ?></span>
+                                <span class="card-label font-weight-bolder font-size-h3 home-page-title"><?php echo $vModule_homepageBuyer_newProducts ?></span>
                             </div>
                             <div class="col-3" style="display: flex; justify-content: flex-end;">
                                 <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/product/search?sort=newest')">
@@ -107,7 +115,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row mb-10">
                             <?php foreach ($arrNewestProducts as $product) : ?>
                                 <div class="col-3">
                                     <div class="img-fill flex-shrink-0 bg-light mb-4 dynamic-image">
@@ -119,11 +127,13 @@
                             <?php endforeach; ?>
                         </div>
                     </div>
-                    <!--begin::Top Selling-->
-                    <div>
+                </div>
+                <!--begin::Top Selling-->
+                <div>
+                    <div class="card card-custom card-body card-stretch gutter-b">
                         <div class="row pb-6" style="justify-content: space-between; align-items: center;">
                             <div class="col-3">
-                                <span class="card-label font-weight-bolder font-size-h3"><?php echo $vModule_homepageBuyer_topSelling ?></span>
+                                <span class="card-label font-weight-bolder font-size-h3 home-page-title"><?php echo $vModule_homepageBuyer_topSelling ?></span>
                             </div>
                             <div class="col-3" style="display: flex; justify-content: flex-end;">
                                 <a class="btn btn-light-primary font-weight-bold" onclick="WebApp.loadPage('/web/pharmacy/product/search?sort=top-selling')">
@@ -144,6 +154,8 @@
                         </div>
                     </div>
                 </div>
+
+
             </div>
             <!--begin::Right Side-->
             <div class="col-3">

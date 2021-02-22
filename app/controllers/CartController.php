@@ -575,11 +575,9 @@ class CartController extends Controller
             $cartDetailFull = $dbCartDetailFull->getById($cartDetailId)[0];
 
             // Get cart count
-            $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
-            $cartCount = 0;
-            foreach ($arrCartDetail as $cartDetail) {
-                $cartCount += $cartDetail->quantity;
-                $cartCount += $cartDetail->quantityFree;
+            $dbCartDetail = $this->db->exec("CALL spGetCartCount({$this->objUser->accountId})");
+            if (count($dbCartDetail) > 0) {
+                $this->objUser->cartCount = intval($dbCartDetail[0]['cartCount']);
             }
 
             $cartDetail = new stdClass();
@@ -587,7 +585,7 @@ class CartController extends Controller
             $cartDetail->quantity = $cartDetailFull['quantity'];
             $cartDetail->quantityFree = $cartDetailFull['quantityFree'];
             $cartDetail->entityId = $cartDetailFull['entityId'];
-            $cartDetail->cartCount = $cartCount;
+            $cartDetail->cartCount = $this->objUser->cartCount;
             $cartDetail->activeBonus = $bonusDetail->activeBonus;
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
@@ -828,7 +826,6 @@ class CartController extends Controller
                 $dbOrder->subtotal = $subTotal;
                 $dbOrder->vat = $tax;
                 $dbOrder->total = $total;
-                $dbOrder->addReturnID();
 
                 // Add the relation
                 $dbRelation = new BaseModel($this->db, "entityRelation");
@@ -847,6 +844,9 @@ class CartController extends Controller
                     $dbRelation->updatedAt = date('Y-m-d H:i:s');
                     $dbRelation->update();
                 }
+                
+                $dbOrder->relationGroupId = $dbRelation->relationGroupId;
+                $dbOrder->addReturnID();
 
                 $mapSellerIdOrderId[$sellerId] = $dbOrder->id;
                 $this->f3->set('products', $cartItemsBySeller);
@@ -864,7 +864,7 @@ class CartController extends Controller
                 }
                 $htmlContent = View::instance()->render($emailFile);
 
-                $subject = "Aumet - New Order Confirmation (" . $dbOrder->id . ")";
+                $subject = "Aumet - you've got a new order! (" . $dbOrder->id . ")";
                 if (getenv('ENV') != Constants::ENV_PROD) {
                     $subject .= " - (Test: " . getenv('ENV') . ")";
 
@@ -926,7 +926,11 @@ class CartController extends Controller
             }
             $htmlContent = View::instance()->render($emailFile);
 
-            $subject = "Aumet - you've got a new order! (" . implode(", ", $allOrderId) . ")";
+            if (count($allOrderId) > 1) {
+                $subject = "Aumet - New Orders Confirmation (" . implode(", ", $allOrderId) . ")";
+            } else {
+                $subject = "Aumet - New Order Confirmation (" . implode(", ", $allOrderId) . ")";
+            }
             if (getenv('ENV') != Constants::ENV_PROD) {
                 $subject .= " - (Test: " . getenv('ENV') . ")";
                 if (getenv('ENV') == Constants::ENV_LOC) {

@@ -75,6 +75,7 @@ var DistributorProductsDataTable = (function () {
 			if (webResponse.data.length > 0) {
 				_errorDistributorMissingAccountSetting(webResponse);
 			} else {
+				$('.productImageErr').html('');
 				_productAddModalOpen();
 			}
 		});
@@ -102,6 +103,7 @@ var DistributorProductsDataTable = (function () {
 			_validator.destroy();
 		}
 
+		$('.productImageErr').html('');
 		$('#editModalForm').attr('action', '/web/distributor/product/edit');
 
 		$('#editProductId').val(webResponse.data.product.productId);
@@ -329,7 +331,13 @@ var DistributorProductsDataTable = (function () {
 			contentType: false,
 			processData: false,
 		}).done(function (webResponse) {
-			_productImageUpload(webResponse, mode);
+
+			if(webResponse.errorCode == 2){
+				$('.productImageErr').html(webResponse.message);
+			}
+			else {
+				_productImageUpload(webResponse, mode);
+			}
 		});
 	};
 

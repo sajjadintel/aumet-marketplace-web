@@ -52,7 +52,7 @@
                         <!--begin::Action-->
                         <div class="pb-lg-0 pb-5">
                             <button type="submit" id="kt_login_singin_form_submit_button" class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3"><?php echo $vLogin_signin ?></button>
-                            <button type="button" id="kt_login_singin_google_submit_button" onclick="WebAuth.googleSignIn()" class="btn btn-outline-primary font-weight-bolder px-8 py-4 my-3 mr-3 font-size-lg">
+                            <!--<button type="button" id="kt_login_singin_google_submit_button" onclick="WebAuth.googleSignIn()" class="btn btn-outline-primary font-weight-bolder px-8 py-4 my-3 mr-3 font-size-lg">
                                 <span class="svg-icon svg-icon-md">
 
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -61,7 +61,7 @@
                                         <path d="M4.39748 11.9366C4.18219 11.3166 4.05759 10.6521 4.05759 9.96565C4.05759 9.27909 4.18219 8.61473 4.38615 7.99466L4.38045 7.8626L1.19304 5.44366L1.08875 5.49214C0.397576 6.84305 0.000976562 8.36008 0.000976562 9.96565C0.000976562 11.5712 0.397576 13.0882 1.08875 14.4391L4.39748 11.9366Z" fill="#FBBC05" />
                                         <path d="M10.1993 3.85336C12.1142 3.85336 13.406 4.66168 14.1425 5.33717L17.0207 2.59107C15.253 0.985496 12.9527 0 10.1993 0C6.2106 0 2.76588 2.23672 1.08887 5.49214L4.38626 7.99466C5.21352 5.59183 7.50242 3.85336 10.1993 3.85336Z" fill="#EB4335" />
                                     </svg>
-                                </span><?php echo $vLogin_signinWithGoogle ?></button>
+                                </span><?php //echo $vLogin_signinWithGoogle ?></button> -->
                             <!--                            <button type="button" id="kt_login_singin_phone_submit_button" onclick="WebAuth.googleSignIn()" class="btn btn-outline-primary font-weight-bolder px-8 py-4 my-3 font-size-lg">-->
                             <!--                                <span class="svg-icon svg-icon-lg">-->
                             <!---->

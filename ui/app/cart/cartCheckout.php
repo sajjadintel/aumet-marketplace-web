@@ -69,7 +69,7 @@ function compress_htmlcode($codedata)
                                 <div class="card-body">
 
                                     <div class="table-responsive">
-                                        <table class="table" style="width: 100%;padding: 10px;min-width: 830px;">
+                                        <table class="table" style="width: 100%;padding: 10px;">
 
                                             <thead>
                                                 <tr>
@@ -99,7 +99,7 @@ function compress_htmlcode($codedata)
                                             }
                                             $arrPaymentMethod = $mapSellerIdArrPaymentMethod[$seller->sellerId];
                                             ?>
-                                            <table style="border-radius: 5px; border-color: #e7e7e7; border-width: 1px 1px 1px 1px; border-style: solid; border-collapse: separate !important; border-spacing: 0; width: 100%; margin-bottom: 20px; padding: 10px; min-width: 830px;">
+                                            <table style="border-radius: 5px; border-color: #e7e7e7; border-width: 1px 1px 1px 1px; border-style: solid; border-collapse: separate !important; border-spacing: 0; width: 100%; margin-bottom: 20px; padding: 10px;">
                                             <thead>
                                                     <tr>
                                                         <th width="28%" class="cart-table-header-body"></th>
@@ -177,7 +177,7 @@ function compress_htmlcode($codedata)
                                                                 <?php echo Helper::formatMoney($item->quantity * $item->unitPrice * (1 + $item->vat / 100)) . " " . $currencySymbol ?>
                                                             </td>
                                                             <td class="text-right align-middle cart-item-separator">
-                                                                <a href="javascript:;" onclick="CartCheckout.removeItemModal(<?php echo $item->id ?>)" class="btn btn-sm btn-light btn-text-danger btn-hover-primary btn-icon  mr-2" title="">
+                                                                <a href="javascript:;" onclick="CartCheckout.removeItemModal(<?php echo $item->id ?>)" class="btn btn-sm btn-light btn-text-danger btn-hover-danger btn-icon  mr-2" title="">
                                                                     <span class="svg-icon svg-icon-md">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                                             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">

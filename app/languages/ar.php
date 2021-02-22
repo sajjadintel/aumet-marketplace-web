@@ -145,6 +145,8 @@ return array(
     'vModule_search_stockStatus_Available' => 'المتوفر فقط',
     'vModule_search_stockStatus_others' => 'الجميع',
     'vModule_search_unavailableHeader' => 'اضغط هنا للابلاغ عن عدم توفر المنتج المطلوب وسيتم العمل على مساعدتك بأسرع وقت ممكن',
+    'vModule_search_countryPlaceholder' => 'دولة',
+    'vModule_search_customerNamePlaceholder' => 'اسم الزبون',
 
     'vModule_product_title' => 'المنتجات',
     'vModule_product_detail' => 'Product', // TODO: add translation
@@ -433,4 +435,10 @@ return array(
     'vModal_welcome_step3_title' => 'Add minimum value order by location.', // TODO: translate
     'vModal_welcome_step3_message' => 'Add minimum value order by location.', // TODO: translate
     'vModal_welcome_callToAction' => 'Complete Profile', // TODO: translate
+    
+    'vModule_customerGroup_title' => 'مجموعة الزبائن',
+    'vModule_customerGroup_editModalTitle' => 'مجموعة الزبائن',
+    'vModule_customerGroup_editModalNonGrouped' => 'غير مجمعة',
+    'vModule_customerGroup_noCustomerGroup' => 'لا مجموعة العملاء',
+    'vModule_customerGroup_saved' => 'تم حفظ مجموعة العملاء بنجاح',
 );

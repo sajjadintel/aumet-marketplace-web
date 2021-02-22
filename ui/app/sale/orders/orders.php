@@ -67,7 +67,7 @@ function compress_htmlcode($codedata)
 
         var columnDefs = [{
                 className: "export_datatable",
-                targets: [1, 2, 3, 4, 8, 9, 10, 11, 12, 13, 14]
+                targets: [1, 2, 3, 6, 10, 11, 12, 13, 14, 15, 16]
             },
             {
                 targets: 0,
@@ -91,23 +91,52 @@ function compress_htmlcode($codedata)
                 targets: 2,
                 title: WebAppLocals.getMessage('entityBuyer'),
                 data: 'entityBuyer',
-                render: $.fn.dataTable.render.ellipsis(100)
+                render: function(data, type, row, meta) {
+                    if (!row.image) row.image = "/assets/img/profile.png";
+                    var output = '<div style="display:flex;flex-direction:row;align-items: center"><div>' +
+                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light">' +
+                        '<img class="productImage image-contain" style="width: 60px;" src="' + row.entityBuyerImage + '">' +
+                        '</div></div>';
+                    output += '<div><span href="javascript:;" ' +
+                        'title="' +
+                        row.entityBuyer +
+                        '"> ' +
+                        WebApp.truncateText(row.entityBuyer, 100) +
+                        '</span></div></div>';
+                    return output;
+                },
             },
             {
                 targets: 3,
-                title: WebAppLocals.getMessage('insertDate'),
+                title: WebAppLocals.getMessage('orderDate'),
                 data: 'insertDateTime',
                 render: function(data, type, row, meta) {
                     var output = '';
                     if (row.insertDateTime) {
-                        output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.insertDateTime).format('DD/MM/YYYY') + '</span>';
+                        output = '<span class="label label-lg font-weight-bold label-inline" style="direction: ltr">' + moment(row.insertDateTime).format('DD/MM/YYYY HH:mm:ss') + '</span>';
                     }
                     return output
                 }
             },
             {
                 targets: 4,
-                title: WebAppLocals.getMessage('orderStatus'),
+                title: WebAppLocals.getMessage('productsOrdered'),
+                data: 'insertDateTime',
+                render: function(data, type, row, meta) {
+                    return row.productCount ?? 0;
+                }
+            },
+            {
+                targets: 5,
+                title: WebAppLocals.getMessage('orderQuantity'),
+                data: 'insertDateTime',
+                render: function(data, type, row, meta) {
+                    return row.orderCount ?? 0;
+                }
+            },
+            {
+                targets: 6,
+                title: WebAppLocals.getMessage('status'),
                 data: 'statusId',
                 render: function(data, type, row, meta) {
                     var status = {
@@ -154,16 +183,16 @@ function compress_htmlcode($codedata)
                 },
             },
             {
-                targets: 5,
-                title: WebAppLocals.getMessage('orderSubtotal'),
+                targets: 7,
+                title: WebAppLocals.getMessage('tax'),
                 data: 'total',
                 render: function(data, type, row, meta) {
-                    var output = row.currency + ' <strong>' + WebApp.formatMoney(row.subtotal) + ' </strong>';
+                    var output = row.currency + ' <strong>' + WebApp.formatMoney(row.orderVat) + ' </strong>';
                     return output;
                 },
             },
             {
-                targets: 6,
+                targets: 8,
                 title: WebAppLocals.getMessage('orderTotal'),
                 data: 'total',
                 render: function(data, type, row, meta) {
@@ -172,7 +201,7 @@ function compress_htmlcode($codedata)
                 },
             },
             {
-                targets: 7,
+                targets: 9,
                 title: '',
                 data: 'id',
                 orderable: false,
@@ -196,7 +225,6 @@ function compress_htmlcode($codedata)
                         row.id +
                         '" target="_blank" class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="Download PDF">\
                                 <i class="nav-icon la la-print p-0"></i> &nbsp&nbsp' +
-                        WebAppLocals.getMessage('print') +
                         '</a>';
                     var btnView =
                         '<a href="javascript:;" onclick=\'WebAppModals.orderViewModal(' +
@@ -204,7 +232,6 @@ function compress_htmlcode($codedata)
                         ')\' \
                                 class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="View">\
                                 <i class="nav-icon la la-eye p-0"></i> &nbsp&nbsp' +
-                        WebAppLocals.getMessage('view') +
                         '</a>';
 
                     var btnOrderProcess =
@@ -279,7 +306,7 @@ function compress_htmlcode($codedata)
                         '</span></a>';
 
 
-                    var outActions = '';
+                    var outActions = '<div class="nowrap">';
 
                     outActions += btnView;
                     outActions += btnPrint;
@@ -313,12 +340,13 @@ function compress_htmlcode($codedata)
                     }
                     outActions += dropdownItemStart + btnChangeRelationGroup + dropdownItemEnd;
                     outActions += dropdownEnd;
+                    outActions += "</div>";
 
                     return outActions;
                 },
             },
             {
-                targets: 8,
+                targets: 10,
                 title: WebAppLocals.getMessage('productId'),
                 data: 'productCode',
                 visible: false,
@@ -327,13 +355,13 @@ function compress_htmlcode($codedata)
                 },
             },
             {
-                targets: 9,
+                targets: 11,
                 title: WebAppLocals.getMessage('productName'),
                 data: 'productName',
                 visible: false,
             },
             {
-                targets: 10,
+                targets: 12,
                 title: WebAppLocals.getMessage('unit'),
                 data: 'unitPrice',
                 visible: false,
@@ -342,7 +370,7 @@ function compress_htmlcode($codedata)
                 },
             },
             {
-                targets: 11,
+                targets: 13,
                 title: WebAppLocals.getMessage('orderShippedQuantity'),
                 data: 'shippedQuantity',
                 visible: false,
@@ -354,13 +382,13 @@ function compress_htmlcode($codedata)
                 },
             },
             {
-                targets: 12,
+                targets: 14,
                 title: WebAppLocals.getMessage('orderOrderedQuantity'),
                 data: 'requestedQuantity',
                 visible: false,
             },
             {
-                targets: 13,
+                targets: 15,
                 title: WebAppLocals.getMessage('tax'),
                 data: 'tax',
                 visible: false,
@@ -369,7 +397,7 @@ function compress_htmlcode($codedata)
                 },
             },
             {
-                targets: 14,
+                targets: 16,
                 title: WebAppLocals.getMessage('orderTotalWithVAT'),
                 data: 'total',
                 visible: false,
@@ -449,6 +477,18 @@ function compress_htmlcode($codedata)
         $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
         var initiate = function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var customerId = urlParams.get('customer');
+            if(customerId) {
+                if ($('#searchOrdersBuyerInput').find("option[value='" + customerId + "']").length > 0) {
+                    $('#searchOrdersBuyerInput').val(customerId).trigger('change');
+                } else {
+                    var customerName = "<?php echo $customerName; ?>";
+                    var newOption = new Option(customerName, customerId, false, true);
+                    $('#searchOrdersBuyerInput').append(newOption).trigger('change');
+                }
+                searchQuery.entityBuyerId = [customerId];
+            }
             WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
         };
         return {
