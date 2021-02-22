@@ -86,6 +86,13 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="font-size-h6 font-weight-bolder text-muted mb-3 productImageErr" style="color:#e53935 !important;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6 form-group">
                             <label for="editProductScientificName" class="form-control-label"><?php echo $vModule_product_scientificName; ?></label>
                             <select class="select2 form-control" id="editProductScientificName" name="scientificNameId" data-select2-id="editProductScientificName" tabindex="-1" aria-hidden="true">
@@ -121,7 +128,7 @@
                             <input type="text" class="form-control" name="subtitle_fr" id="editProductSubtitleFr">
                         </div> -->
                         <div class="col-md-6 form-group">
-                            <label for="editProductDescriptionAr" class="form-control-label"><?php echo $vModule_product_description; ?> AR</label>    
+                            <label for="editProductDescriptionAr" class="form-control-label"><?php echo $vModule_product_description; ?> AR</label>
                             <textarea class="form-control" id="editProductDescriptionAr" name="description_ar" rows="4"></textarea>
                         </div>
                         <div class="col-md-6 form-group">
