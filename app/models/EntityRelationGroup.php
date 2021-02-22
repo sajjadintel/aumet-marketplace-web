@@ -97,7 +97,9 @@ class EntityRelationGroup extends BaseModel
                 $entity = $detailedData->mapEntityIdEntity[$entityId];
             }
 
-            if($entityRelationGroupDetailed['orderStatusId'] == Constants::ORDER_STATUS_PAID) {
+            if($entityRelationGroupDetailed['orderStatusId'] == Constants::ORDER_STATUS_COMPLETED
+                || $entityRelationGroupDetailed['orderStatusId'] == Constants::ORDER_STATUS_RECEIVED
+                || $entityRelationGroupDetailed['orderStatusId'] == Constants::ORDER_STATUS_PAID) {
                 $entity->revenue += $entityRelationGroupDetailed['orderTotal'];
                 $entity->totalOrders += 1;
                 
