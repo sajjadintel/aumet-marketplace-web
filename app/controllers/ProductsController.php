@@ -2255,7 +2255,7 @@ class ProductsController extends Controller
 
             // Fill bonuses in user input sheet
             $sheet->fromArray($arrBonusExcel, NULL, 'A3', true);
-            
+
             // Create excel sheet
             $productsSheetUrl = "files/downloads/reports/products-bonus/products-bonus-" . $this->objUser->id . "-" . time() . ".xlsx";
             Excel::saveSpreadsheetToPath($spreadsheet, $productsSheetUrl);
@@ -2704,6 +2704,8 @@ class ProductsController extends Controller
                 $scientificNum++;
                 $arrScientificName[] = array($scientificName['name'], $scientificName['id']);
             }
+
+            $arrScientificName = [];
 
             $dbCountry = new BaseModel($this->db, "country");
             $dbCountry->name = "name_" . $this->objUser->language;
