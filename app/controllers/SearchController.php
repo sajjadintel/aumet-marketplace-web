@@ -91,11 +91,11 @@ class SearchController extends Controller
                     if ($i != 0) {
                         $where .= ' OR ';
                     }
-                    $where .= "$queryTerm LIKE '%$term%'";
+                    $where .= "LOWER($queryTerm) LIKE '%$term%'";
                     $i++;
                 }
             } else {
-                $where .= "$queryTerms LIKE '%$term%'";
+                $where .= "LOWER($queryTerms) LIKE '%$term%'";
             }
             if ($additionalQuery != null) {
                 $where .= ")";
@@ -238,6 +238,11 @@ class SearchController extends Controller
     function getAllSellerList()
     {
         $this->handleGetListFilters("entity", ['name_en', 'name_fr', 'name_ar'], 'name_' . $this->objUser->language, 'id', 'typeId=10');
+    }
+
+    function getAvailableSellerList()
+    {
+        $this->handleGetListFilters("vwEntityProductSell", ['entityName_en', 'entityName_fr', 'entityName_ar'], 'entityName_' . $this->objUser->language, 'entityId');
     }
 
     function getRelationGroupByEnitityList()
