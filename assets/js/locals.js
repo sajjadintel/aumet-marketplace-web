@@ -366,18 +366,18 @@ var WebAppLocals = (function () {
 			fr: '',
 		},
 		orderDate: {
-			en: 'Order Date',
-			ar: 'Order Date', // TODO: add translation
+			en: 'Ordered at',
+			ar: 'Ordered at', // TODO: add translation
 			fr: '',
 		},
 		productsOrdered: {
-			en: 'Products Ordered',
-			ar: 'Products Ordered', // TODO: add translation
+			en: 'Products',
+			ar: 'Products', // TODO: add translation
 			fr: '',
 		},
 		orderQuantity: {
-			en: 'Order Quantity',
-			ar: 'Order Quantity', // TODO: add translation
+			en: 'Quantity',
+			ar: 'Quantity', // TODO: add translation
 			fr: '',
 		},
 		bonus: {
