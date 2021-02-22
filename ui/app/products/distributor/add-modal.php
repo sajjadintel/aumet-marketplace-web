@@ -91,7 +91,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="font-size-h6 font-weight-bolder text-muted mb-3" style="color:#e53935 !important;"  id="productImageErr"></div>
+                            <div class="font-size-h6 font-weight-bolder text-muted mb-3 productImageErr" style="color:#e53935 !important;"></div>
                         </div>
                     </div>
                     <div class="row">
