@@ -36,7 +36,7 @@
                                        data-original-title="Change avatar">
                                     <i class="fa fa-pen icon-sm text-muted"></i>
                                     <input type="file" name="profile_avatar" accept=".png, .jpg, .jpeg" id="editProductImage"/>
-                                    <input type="hidden" name="image" id="eddropzoneImageitProductImageInput"/>
+                                    <input type="hidden" name="image" id="editProductImageInput"/>
                                 </label>
                                 <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
                                       data-action="cancel" data-toggle="tooltip" title="Cancel avatar">
