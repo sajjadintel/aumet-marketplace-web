@@ -782,6 +782,211 @@ class ProductsController extends Controller
         $totalFiltered = $dbData->count($query);
         $data = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
 
+        $allProductId = [];
+        foreach ($data as $product) {
+            array_push($allProductId, $product['id']);
+        }
+        $allProductId = implode(",", $allProductId);
+
+        $dbCartDetail = new BaseModel($this->db, "cartDetail");
+        $arrCartDetail = $dbCartDetail->getByField("accountId", $this->objUser->accountId);
+
+        if ($allProductId != null) {
+            $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
+            $arrBonus = $dbBonus->findWhere("entityProductId IN ($allProductId) AND isActive = 1");
+
+            $mapProductIdBonuses = [];
+
+            foreach ($arrBonus as $bonus) {
+                $productId = $bonus['entityProductId'];
+                $allBonuses = [];
+                if (array_key_exists($productId, $mapProductIdBonuses)) {
+                    $allBonuses = $mapProductIdBonuses[$productId];
+                }
+                array_push($allBonuses, $bonus);
+                $mapProductIdBonuses[$productId] = $allBonuses;
+            }
+        }
+
+        for ($i = 0; $i < count($data); $i++) {
+            $data[$i]['cart'] = 0;
+            if (is_array($arrCartDetail) || is_object($arrCartDetail)) {
+                foreach ($arrCartDetail as $objCartItem) {
+                    if ($objCartItem['entityProductId'] == $data[$i]['id']) {
+                        $data[$i]['cartDetailId'] += $objCartItem['id'];
+                        $data[$i]['quantity'] = $objCartItem['quantity'];
+                        $data[$i]['cart'] += $objCartItem['quantity'];
+                        $data[$i]['cart'] += $objCartItem['quantityFree'];
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        // Get all product ids
+        $arrProductId = [];
+        foreach ($data as $productItem) {
+            array_push($arrProductId, $productItem['id']);
+        }
+
+        // Get all related bonuses
+        $mapProductIdBonus = [];
+        $mapBonusIdRelationGroup = [];
+        $mapSellerIdRelationGroupId = [];
+        if (count($arrProductId) > 0) {
+            $dbBonus = new BaseModel($this->db, "vwEntityProductSellBonusDetail");
+            $dbBonus->bonusTypeName = "bonusTypeName_" . $this->objUser->language;
+            $arrBonus = $dbBonus->getWhere("entityProductId IN (" . implode(",", $arrProductId) . ") AND isActive = 1");
+            $arrBonusId = [];
+            foreach ($arrBonus as $bonus) {
+                array_push($arrBonusId, $bonus['id']);
+            }
+
+            // Get special bonuses
+            if (count($arrBonusId) > 0) {
+                $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
+                $arrBonusRelationGroup = $dbBonusRelationGroup->getWhere("bonusId IN (" . implode(",", $arrBonusId) . ")");
+
+                foreach ($arrBonusRelationGroup as $bonusRelationGroup) {
+                    $bonusId = $bonusRelationGroup['bonusId'];
+                    $arrRelationGroup = [];
+                    if (array_key_exists($bonusId, $mapBonusIdRelationGroup)) {
+                        $arrRelationGroup = $mapBonusIdRelationGroup[$bonusId];
+                    }
+
+                    array_push($arrRelationGroup, $bonusRelationGroup['relationGroupId']);
+                    $mapBonusIdRelationGroup[$bonusId] = $arrRelationGroup;
+                }
+            }
+
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $dbEntityRelation = new BaseModel($this->db, "entityRelation");
+            $arrEntityRelation = $dbEntityRelation->getWhere("entityBuyerId IN ($arrEntityId)");
+            foreach ($arrEntityRelation as $entityRelation) {
+                $mapSellerIdRelationGroupId[$entityRelation['entitySellerId']] = $entityRelation['relationGroupId'];
+            }
+
+            foreach ($arrBonus as $bonus) {
+                $productId = $bonus['entityProductId'];
+                $arrProductBonus = [];
+                if (array_key_exists($productId, $mapProductIdBonus)) {
+                    $arrProductBonus = $mapProductIdBonus[$productId];
+                }
+                array_push($arrProductBonus, $bonus);
+                $mapProductIdBonus[$productId] = $arrProductBonus;
+            }
+        }
+
+        for ($i = 0; $i < sizeof($data); $i++) {
+            $sellerId = $data[$i]['entityId'];
+            $productId = $data[$i]['id'];
+
+            $arrProductBonus = [];
+            $activeBonus = new stdClass();
+            $activeBonus->totalBonus = 0;
+            if (array_key_exists($productId, $mapProductIdBonus)) {
+
+                $arrBonus = $mapProductIdBonus[$productId];
+                foreach ($arrBonus as $bonus) {
+                    $bonusId = $bonus['id'];
+
+                    // Check if bonus available for buyer
+                    $valid = false;
+                    if (array_key_exists($bonusId, $mapBonusIdRelationGroup)) {
+                        $arrRelationGroup = $mapBonusIdRelationGroup[$bonusId];
+                        if (array_key_exists($sellerId, $mapSellerIdRelationGroupId)) {
+                            $relationGroupId = $mapSellerIdRelationGroupId[$sellerId];
+                            if (in_array($relationGroupId, $arrRelationGroup)) {
+                                $valid = true;
+                            }
+                        }
+                    } else {
+                        $valid = true;
+                    }
+
+                    if (!$valid) {
+                        continue;
+                    }
+
+                    $bonusType = $bonus['bonusTypeName'];
+                    $bonusTypeId = $bonus['bonusTypeId'];
+                    $bonusMinOrder = $bonus['minOrder'];
+                    $bonusBonus = $bonus['bonus'];
+
+                    // Check if bonus is possible
+                    $productDetail = $data[$i];
+                    $availableQuantity = min($productDetail['stock'], $productDetail['maximumOrderQuantity']);
+
+                    if (!$productDetail['maximumOrderQuantity'])
+                        $availableQuantity = $productDetail['stock'];
+                    if (!$productDetail['stock'])
+                        $availableQuantity = 0;
+
+                    $totalOrder = 0;
+                    if ($bonusTypeId == Constants::BONUS_TYPE_FIXED || $bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
+                        $totalOrder = $bonusMinOrder + $bonusBonus;
+                    } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                        $totalOrder = $bonusMinOrder + floor($bonusBonus * $bonusMinOrder / 100);
+                    }
+                    if ($totalOrder > $availableQuantity) {
+                        continue;
+                    }
+
+                    $totalBonus = 0;
+                    if ($productDetail['quantity'] >= $bonusMinOrder) {
+                        if ($bonusTypeId == Constants::BONUS_TYPE_FIXED) {
+                            $totalBonus = $bonusBonus;
+                        } else if ($bonusTypeId == Constants::BONUS_TYPE_DYNAMIC) {
+                            $totalBonus = floor($productDetail['quantity'] / $bonusMinOrder) * $bonusBonus;
+                        } else if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                            $totalBonus = floor($productDetail['quantity'] * $bonusBonus / 100);
+                        }
+                    }
+
+                    if ($bonusTypeId == Constants::BONUS_TYPE_PERCENTAGE) {
+                        $bonusBonus .= "%";
+                    }
+
+                    if ($totalBonus > $activeBonus->totalBonus) {
+                        $activeBonus->bonusType = $bonusType;
+                        $activeBonus->minQty = $bonusMinOrder;
+                        $activeBonus->bonuses = $bonusBonus;
+                        $activeBonus->totalBonus = $totalBonus;
+                    }
+
+                    $found = false;
+                    for ($j = 0; $j < count($arrProductBonus); $j++) {
+                        $productBonus = $arrProductBonus[$j];
+                        if ($productBonus->bonusType == $bonusType) {
+                            $arrMinQty = $productBonus->arrMinQty;
+                            array_push($arrMinQty, $bonusMinOrder);
+                            $productBonus->arrMinQty = $arrMinQty;
+
+                            $arrBonuses = $productBonus->arrBonuses;
+                            array_push($arrBonuses, $bonusBonus);
+                            $productBonus->arrBonuses = $arrBonuses;
+
+                            $arrProductBonus[$j] = $productBonus;
+                            $found = true;
+                            break;
+                        }
+                    }
+
+                    if (!$found) {
+                        $productBonus = new stdClass();
+                        $productBonus->bonusType = $bonusType;
+                        $productBonus->arrMinQty = [$bonusMinOrder];
+                        $productBonus->arrBonuses = [$bonusBonus];
+                        array_push($arrProductBonus, $productBonus);
+                    }
+                }
+            }
+
+            $data[$i]['arrBonus'] = htmlspecialchars(json_encode($arrProductBonus), ENT_QUOTES, 'UTF-8');
+            $data[$i]['activeBonus'] = htmlspecialchars(json_encode($activeBonus), ENT_QUOTES, 'UTF-8');
+        }
+
         ## Response
         $response = array(
             "draw" => intval($datatable->draw),
