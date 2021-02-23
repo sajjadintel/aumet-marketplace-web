@@ -2374,7 +2374,11 @@ class ProductsController extends Controller
 
                 foreach ($cellIterator as $cell) {
                     $cellLetter = $cell->getColumn();
-                    $cellValue = trim($cell->getCalculatedValue());
+                    try {
+                        $cellValue = trim($cell->getCalculatedValue());
+                    } catch (Exception $e) {
+                        continue;
+                    }
 
                     switch ($cellLetter) {
                         case "A":
