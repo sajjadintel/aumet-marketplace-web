@@ -145,12 +145,7 @@ function compress_htmlcode($codedata)
                         '</span></div></div>';
                     return output;
                 },
-            },/* {
-                targets: 2,
-                title: WebAppLocals.getMessage('productScientificName'),
-                data: 'scientificName',
-                render: $.fn.dataTable.render.ellipsis(100)
-            },*/ {
+            }, {
                 targets: 2,
                 title: WebAppLocals.getMessage('stockQuantity'),
                 data: 'stock',
