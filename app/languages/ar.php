@@ -195,6 +195,15 @@ return array(
     'vModule_product_quantityTooBig' => 'الكمية كبيرة جدًا!',
     'vModule_product_bonusTooBig' => 'المكافأة كبيرة جدًا!',
     'vModule_product_productOverview' => 'Product Overview', // TODO: add translation
+    'vModule_product_addProduct' => 'إضافة منتج',
+    'vModule_product_editProduct' => 'تحرير المنتج',
+    'vModule_product_editing' => 'التحرير',
+    'vModule_product_editingInfo' => 'لن يتم تطبيق التغييرات إلا عند الضغط على "حفظ التغييرات"',
+    'vModule_product_general' => 'عام',
+    'vModule_product_images' => 'الصور',
+    'vModule_product_prices' => 'الأسعار',
+    'vModule_product_stockSettings' => 'إعدادات المخزون',
+    'vModule_product_saveChanges' => 'حفظ التغييرات',
 
 
     'stockAvailability_available' => 'متوفر',

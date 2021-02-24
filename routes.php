@@ -109,6 +109,14 @@ $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->po
 $f3->route('POST /web/distributor/product/editStock', 'ProductsController->postEditStockDistributorProduct');
 $f3->route('GET /web/distributor/product/canAdd', 'ProductsController->getDistributorCanAddProduct');
 
+// Product Add-Edit pages
+$f3->route('GET /web/distributor/product/add', 'ProductsController->getAddDistributorProduct');
+$f3->route('GET /web/distributor/product/edit/@productId', 'ProductsController->getEditDistributorProduct');
+$f3->route('POST /web/distributor/product/general', 'ProductsController->postDistributorProductGeneral');
+$f3->route('POST /web/distributor/product/images', 'ProductsController->postDistributorProductImages');
+$f3->route('POST /web/distributor/product/prices', 'ProductsController->postDistributorProductPrices');
+$f3->route('POST /web/distributor/product/stockSettings', 'ProductsController->postDistributorProductStockSettings');
+
 // Bulk add
 $f3->route('GET /web/distributor/product/bulk/add/download', 'ProductsController->getBulkAddDownload');
 $f3->route('GET /web/distributor/product/bulk/add/upload', 'ProductsController->getBulkAddUpload');

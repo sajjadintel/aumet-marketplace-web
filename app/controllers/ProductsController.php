@@ -3409,4 +3409,171 @@ class ProductsController extends Controller
             echo $this->webResponse->jsonResponseV2(1, "Success", $this->f3->get('vResponse_imagesAdded'));
         }
     }
+
+    function getAddDistributorProduct()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            $this->webResponse->title = $this->f3->get('vModule_product_addProduct');
+            $this->webResponse->data = View::instance()->render('app/products/distributor/single/add.php');
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function getEditDistributorProduct()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $productId = $this->f3->get('PARAMS.productId');
+
+            // Check if product belongs to distributor
+            $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
+            $dbEntityProduct->name = "productName_" . $this->objUser->language;
+            $dbEntityProduct->getWhere("productId=$productId");
+
+            if (!array_key_exists((string) $dbEntityProduct['entityId'], $this->f3->get('SESSION.arrEntities'))) {
+                $this->webResponse->errorCode = Constants::STATUS_CODE_REDIRECT_TO_WEB;
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
+
+            $this->f3->set('product', $dbEntityProduct);
+
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            $this->webResponse->title = $this->f3->get('vModule_product_editProduct');
+            $this->webResponse->data = View::instance()->render('app/products/distributor/single/edit.php');
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function postDistributorProductGeneral()
+    {
+        
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/product");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $productId = $this->f3->get('POST.productId');
+
+            $dbProduct = new BaseModel($this->db, "product");
+            $dbProduct->getWhere("id=$productId");
+
+            if ($dbProduct->dry()) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->message = $this->f3->get('vModule_product_notFound');
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $nameAr = $this->f3->get('POST.nameAr');
+                $nameEn = $this->f3->get('POST.nameEn');
+                $subtitleAr = $this->f3->get('POST.subtitleAr');
+                $subtitleEn = $this->f3->get('POST.subtitleEn');
+                $descriptionAr = $this->f3->get('POST.descriptionAr');
+                $descriptionEn = $this->f3->get('POST.descriptionEn');
+                $scientificNameId = $this->f3->get('POST.scientificNameId');
+                $countryId = $this->f3->get('POST.countryId');
+                $itemCode = $this->f3->get('POST.itemCode');
+                $batchNumber = $this->f3->get('POST.batchNumber');
+                $manufacturerName = $this->f3->get('POST.manufacturerName');
+                $strength = $this->f3->get('POST.strength');
+                $activeIngredientsId = $this->f3->get('POST.activeIngredientsId');
+
+                if (strlen($countryId) == 0 || strlen($nameAr) == 0 || strlen($nameEn) == 0) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get('vModule_product_missingFields');
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+
+                $this->checkLength($nameEn, 'nameEn', 200, 4);
+                $this->checkLength($nameAr, 'nameAr', 200, 4);
+
+                if ($descriptionAr) {
+                    $this->checkLength($descriptionAr, 'descriptionAr', 5000, 4);
+                }
+
+                if ($descriptionEn) {
+                    $this->checkLength($descriptionEn, 'descriptionEn', 5000, 4);
+                }
+
+                if ($subtitleAr) {
+                    $this->checkLength($subtitleAr, 'subtitleAr', 200, 4);
+                }
+
+                if ($subtitleEn) {
+                    $this->checkLength($subtitleEn, 'subtitleEn', 200, 4);
+                }
+
+                if ($manufacturerName) {
+                    $this->checkLength($manufacturerName, 'manufacturerName', 200, 4);
+                }
+
+                if ($strength) {
+                    $this->checkLength($strength, 'strength', 200, 4);
+                }
+
+                if ($scientificNameId) {
+                    $dbProduct->scientificNameId = $scientificNameId;
+                } else {
+                    $dbProduct->scientificNameId = null;
+                }
+
+                $dbProduct->madeInCountryId = $countryId;
+                $dbProduct->name_en = $nameEn;
+                $dbProduct->name_fr = $nameEn;
+                $dbProduct->name_ar = $nameAr;
+                $dbProduct->subtitle_en = $subtitleEn;
+                $dbProduct->subtitle_fr = $subtitleEn;
+                $dbProduct->subtitle_ar = $subtitleAr;
+                $dbProduct->description_en = $descriptionEn;
+                $dbProduct->description_fr = $descriptionEn;
+                $dbProduct->description_ar = $descriptionAr;
+                $dbProduct->manufacturerName = $manufacturerName;
+                $dbProduct->batchNumber = $batchNumber;
+                $dbProduct->itemCode = $itemCode;
+                $dbProduct->strength = $strength;
+
+                $dbProduct->update();
+
+                $dbProductIngredient = new BaseModel($this->db, "productIngredient");
+                $dbProductIngredient->getWhere("productId=$productId");
+                while (!$dbProductIngredient->dry()) {
+                    $dbProductIngredient->delete();
+                    $dbProductIngredient->next();
+                }
+
+                if ($activeIngredientsId) {
+                    $arrIngredientId = explode(",", $activeIngredientsId);
+                    foreach ($arrIngredientId as $ingredientId) {
+                        $dbProductIngredient->productId = $dbProduct->id;
+                        $dbProductIngredient->ingredientId = $ingredientId;
+                        $dbProductIngredient->add();
+                    }
+                }
+
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
+                $this->webResponse->message = $this->f3->get('vModule_productEdited');
+                echo $this->webResponse->jsonResponse();
+            }
+        }
+    }
+
+    function postDistributorProductImages()
+    {
+
+    }
+
+    function postDistributorProductPrices()
+    {
+
+    }
+
+    function postDistributorProductStockSettings()
+    {
+
+    }
 }

@@ -830,6 +830,11 @@ var WebAppLocals = (function () {
 			ar: 'إضافة إلى المجموعة',
 			fr: ''
 		},
+		activeIngredients: {
+			en: 'Active Ingredients',
+			ar: 'مكونات نشطة',
+			fr: ''
+		},
 	};
 
 	var _symbolsLocals = {
