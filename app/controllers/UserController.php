@@ -15,4 +15,15 @@ class UserController extends Controller
 
       $this->f3->reroute("/web");
   }
+
+  function updateToken()
+  {
+      $user = (new BaseModel($this->db, 'user'))->findone([
+          'id' => $this->objUser->id,
+      ]);
+      $user->web_fcm_token = $this->f3->get('POST.fcm_token');
+      $user->save();
+
+      $this->jsonResponseAPI([]);
+  }
 }
