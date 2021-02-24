@@ -252,6 +252,11 @@ return array(
     'vModule_product_stockSettings' => 'Stock Settings',
     'vModule_product_saveChanges' => 'Save Changes',
 
+    'vModule_product_bonus_download_file_button' => 'Download Sample Bonus Excel File',
+    'vModule_product_bonus_download_file_info_message' => 'Use Microsoft Excel (desktop version) to update file',
+    'vModule_product_bonus_upload_file_info_message' => 'Drop files here or click to upload.',
+    'vModule_product_bonus_upload_file_constraint_message' => 'Only .xlsx files are allowed for upload',
+
     'vModule_product_stockStatus_NotAvailable' => 'Not Available',
     'vModule_product_stockStatus_ComingSoon' => 'Coming Soon',
 

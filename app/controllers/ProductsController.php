@@ -2706,8 +2706,6 @@ class ProductsController extends Controller
                 $arrScientificName[] = array($scientificName['name'], $scientificName['id']);
             }
 
-            $arrScientificName = [];
-
             $dbCountry = new BaseModel($this->db, "country");
             $dbCountry->name = "name_" . $this->objUser->language;
             $allCountry = $dbCountry->findAll("name asc");
