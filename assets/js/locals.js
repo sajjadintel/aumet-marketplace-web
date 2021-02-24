@@ -835,6 +835,11 @@ var WebAppLocals = (function () {
 			ar: 'مكونات نشطة',
 			fr: ''
 		},
+		pleaseWait: {
+			en: 'Please wait',
+			ar: 'انتظر من فضلك',
+			fr: ''
+		},
 	};
 
 	var _symbolsLocals = {

@@ -3432,6 +3432,7 @@ class ProductsController extends Controller
             // Check if product belongs to distributor
             $dbEntityProduct = new BaseModel($this->db, "vwEntityProductSell");
             $dbEntityProduct->name = "productName_" . $this->objUser->language;
+            $dbEntityProduct->madeInCountryName = "madeInCountryName_" . $this->objUser->language;
             $dbEntityProduct->getWhere("productId=$productId");
 
             if (!array_key_exists((string) $dbEntityProduct['entityId'], $this->f3->get('SESSION.arrEntities'))) {
@@ -3441,6 +3442,27 @@ class ProductsController extends Controller
             }
 
             $this->f3->set('product', $dbEntityProduct);
+            
+            $dbProductIngredient = new BaseModel($this->db, "vwProductIngredient");
+            $dbProductIngredient->name = "ingredientName_" . $this->objUser->language;
+            $arrActiveIngredientsDb = $dbProductIngredient->findWhere("productId=$productId");
+            $arrActiveIngredients = [];
+            foreach($arrActiveIngredientsDb as $activeIngredientsDb) {
+                $activeIngredients = new stdClass();
+                $activeIngredients->id = $activeIngredientsDb['ingredientId'];
+                $activeIngredients->name = $activeIngredientsDb['name'];
+
+                array_push($arrActiveIngredients, $activeIngredients);
+            }
+            $this->f3->set('arrActiveIngredients', $arrActiveIngredients);
+            
+            $dbProductSubimage = new BaseModel($this->db, "productSubimage");
+            $arrSubimagesDb = $dbProductSubimage->findWhere("productId=$productId");
+            $arrSubimages = [];
+            foreach($arrSubimagesDb as $subimageDb) {
+                array_push($arrSubimages, $subimageDb['subimage']);
+            }
+            $this->f3->set('arrSubimages', $arrSubimages);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_product_editProduct');
@@ -3451,7 +3473,6 @@ class ProductsController extends Controller
 
     function postDistributorProductGeneral()
     {
-        
         if (!$this->f3->ajax()) {
             $this->f3->set("pageURL", "/web/distributor/product");
             echo View::instance()->render('app/layout/layout.php');
@@ -3475,7 +3496,6 @@ class ProductsController extends Controller
                 $scientificNameId = $this->f3->get('POST.scientificNameId');
                 $countryId = $this->f3->get('POST.countryId');
                 $itemCode = $this->f3->get('POST.itemCode');
-                $batchNumber = $this->f3->get('POST.batchNumber');
                 $manufacturerName = $this->f3->get('POST.manufacturerName');
                 $strength = $this->f3->get('POST.strength');
                 $activeIngredientsId = $this->f3->get('POST.activeIngredientsId');
@@ -3531,7 +3551,6 @@ class ProductsController extends Controller
                 $dbProduct->description_fr = $descriptionEn;
                 $dbProduct->description_ar = $descriptionAr;
                 $dbProduct->manufacturerName = $manufacturerName;
-                $dbProduct->batchNumber = $batchNumber;
                 $dbProduct->itemCode = $itemCode;
                 $dbProduct->strength = $strength;
 
@@ -3562,7 +3581,50 @@ class ProductsController extends Controller
 
     function postDistributorProductImages()
     {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/product");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $productId = $this->f3->get('POST.productId');
 
+            $dbProduct = new BaseModel($this->db, "product");
+            $dbProduct->getWhere("id=$productId");
+
+            if ($dbProduct->dry()) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->message = $this->f3->get('vModule_product_notFound');
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $image = $this->f3->get('POST.image');
+                $imageAlt = $this->f3->get('POST.imageAlt');
+                $subimages = $this->f3->get('POST.subimages');
+
+                $dbProduct->image = $image;
+                $dbProduct->imageAlt = $imageAlt;
+
+                $dbProduct->update();
+
+                $dbProductSubimage = new BaseModel($this->db, "productSubimage");
+                $dbProductSubimage->getWhere("productId=$productId");
+                while (!$dbProductSubimage->dry()) {
+                    $dbProductSubimage->delete();
+                    $dbProductSubimage->next();
+                }
+
+                if (strlen($subimages) > 0) {
+                    $arrSubimages = explode(",", $subimages);
+                    foreach ($arrSubimages as $subimage) {
+                        $dbProductSubimage->productId = $dbProduct->id;
+                        $dbProductSubimage->subimage = $subimage;
+                        $dbProductSubimage->add();
+                    }
+                }
+
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
+                $this->webResponse->message = $this->f3->get('vModule_productEdited');
+                echo $this->webResponse->jsonResponse();
+            }
+        }
     }
 
     function postDistributorProductPrices()

@@ -204,6 +204,11 @@ return array(
     'vModule_product_prices' => 'الأسعار',
     'vModule_product_stockSettings' => 'إعدادات المخزون',
     'vModule_product_saveChanges' => 'حفظ التغييرات',
+    'vModule_product_mainImage' => 'الصورة الرئيسية',
+    'vModule_product_subImages' => 'الصورة الفرعية',
+    'vModule_product_mainImageAlt' => 'النص الرئيسي البديل للصورة',
+    'vModule_product_imageAltPlaceholder' => 'صف الصورة',
+    'vModule_product_removePhoto' => 'إزالة الصورة',
 
     'vModule_product_bonus_download_file_button' => 'Download Sample Bonus Excel File',  // TODO: add translation
     'vModule_product_bonus_download_file_info_message' => 'Use Microsoft Excel (desktop version) to update file',  // TODO: add translation

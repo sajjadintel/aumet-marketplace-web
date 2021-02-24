@@ -951,3 +951,12 @@ input[type='number'] {
     align-items: center;
     justify-content: center;
 }
+
+.single-product-image {
+	width: 200px !important;
+	height: 200px !important;
+}
+
+.single-product-removePhotoBtn {
+	width: fit-content;
+}

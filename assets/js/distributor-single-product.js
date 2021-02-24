@@ -2,19 +2,20 @@
 // Class definition
 var DistributorSingleProduct = (function () {
 
+	// Classes
+	var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
+	
 	// All validators
 	var _generalTabValidator;
 	var _imagesTabValidator;
 	var _pricesTabValidator;
 	var _stockSettingsTabValidator;
 
-	// Classes
-	var _buttonSpinnerClasses = 'spinner spinner-right spinner-white pr-15';
-
+	var _mapUuidSubimage = {};
 	
 	var _init = function () {
 		_initGeneral();
-		// _initImages();
+		_initImages();
 		// _initPrices();
 		// _initStockSettings();
 	}
@@ -36,7 +37,10 @@ var DistributorSingleProduct = (function () {
                 }
             }
         });
-		
+		$('#scientificName').empty();
+		$('#scientificName').append(new Option($('#scientificName').attr("data-scientificName"), $('#scientificName').attr("data-scientificNameId")));
+		$('#scientificName').val($('#scientificName').attr("data-scientificNameId"));
+
 		$('#country').select2({
             placeholder: WebAppLocals.getMessage("madeInCountry"),
 
@@ -53,6 +57,9 @@ var DistributorSingleProduct = (function () {
                 }
             }
         });
+		$('#country').empty();
+		$('#country').append(new Option($('#country').attr("data-countryName"), $('#country').attr("data-countryId")));
+		$('#country').val($('#country').attr("data-countryId"));
 
 		$('#activeIngredients').select2({
             multiple: true,
@@ -71,29 +78,89 @@ var DistributorSingleProduct = (function () {
                 }
             }
         });
+		var arrActiveIngredients = JSON.parse($('#activeIngredientsId').attr("data-arrActiveIngredients"));
+		var arrActiveIngredientsId = [];
+		$('#activeIngredients').empty();
+		arrActiveIngredients.forEach((activeIngredient) => {
+			$('#activeIngredients').append(new Option(activeIngredient.name, activeIngredient.id));
+			arrActiveIngredientsId.push(activeIngredient.id);
+		});
+		$('#activeIngredients').val(arrActiveIngredientsId);
+		$('#activeIngredientsId').val(arrActiveIngredientsId);
 
-		$('#activeIngredients').on('change', (ev) => function() {
-			$('#activeIngredientsVal').val($('#activeIngredients').val());
+		$('#activeIngredients').on('change', function() {
+			$('#activeIngredientsId').val($('#activeIngredients').val());
 		});
 
 		var form = KTUtil.getById('generalForm');
 		var formSubmitUrl = KTUtil.attr(form, 'action');
 		var formSubmitButton = KTUtil.getById('generalSubmitButton');
 
-		// $('#generalForm select[name=supportReasonId]').on('change', function (ev) {
-		// 	var field = $(this).attr('name');
-		// 	_generalTabValidator.revalidateField(field);
-		// });
+		$('#generalForm select[name=countryId]').on('change', function (ev) {
+			var field = $(this).attr('name');
+			_generalTabValidator.revalidateField(field);
+		});
 
 		if (_generalTabValidator) {
 			_generalTabValidator.resetForm();
 			_generalTabValidator.destroy();
 		}
 
-		_generalTabValidator = FormValidation.formValidation(form, {
-			fields: {
+		var mandatoryFields = [
+			"countryId",
+			"nameAr",
+			"nameEn"
+		]
 
-			},
+		// Structure: field: [minLength, maxLength]
+		var mapFieldStrRangeLength = {
+			nameAr: [4, 200],
+			nameEn: [4, 200],
+			descriptionAr: [4, 5000],
+			descriptionEn: [4, 5000],
+			subtitleAr: [4, 200],
+			subtitleEn: [4, 200],
+			manufacturerName: [4, 200],
+			strength: [4, 200]
+		}
+
+		var allFields = new Set([...mandatoryFields, ...Object.keys(mapFieldStrRangeLength)]);
+		var validatorFields = {};
+		allFields.forEach((field) => {
+			var fieldValidators = {};
+
+			if (mandatoryFields.includes(field)) {
+				fieldValidators.notEmpty = {
+					message: WebAppLocals.getMessage('required'),
+				};
+			}
+
+			if (field in mapFieldStrRangeLength) {
+				var strRangeLength = mapFieldStrRangeLength[field];
+				var message =
+					WebAppLocals.getMessage('lengthError') +
+					' ' +
+					strRangeLength[0] +
+					' ' +
+					WebAppLocals.getMessage('and') +
+					' ' +
+					strRangeLength[1] +
+					' ' +
+					WebAppLocals.getMessage('characters');
+				fieldValidators.stringLength = {
+					min: strRangeLength[0],
+					max: strRangeLength[1],
+					message: message,
+				};
+			}
+
+			validatorFields[field] = {
+				validators: fieldValidators,
+			};
+		});
+
+		_generalTabValidator = FormValidation.formValidation(form, {
+			fields: validatorFields,
 			plugins: {
 				trigger: new FormValidation.plugins.Trigger(),
 				submitButton: new FormValidation.plugins.SubmitButton(),
@@ -106,18 +173,60 @@ var DistributorSingleProduct = (function () {
 			var data = $(form).serializeJSON();
 
 			// Show loading state on button
-			KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
+			KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, WebAppLocals.getMessage('pleaseWait'));
 			$(formSubmitButton).prop('disabled', true);
 
 			WebApp.post(formSubmitUrl, data, null, formSubmitButton);
 		});
+
+		_generalTabValidator.on('core.form.invalid', function () {
+			KTUtil.scrollTop();
+		});
 	}
 
 	var _initImages = function () {
-		_changeImageHolder('');
+		_changeImageHolder($('#image').attr("data-value"));
 		$('#image').on('change', (ev) => _changeProductImage(ev));
 
-		_initializeSubimagesDropzone();
+		var initialSubimages = JSON.parse($('#subimages').attr("data-arrSubimages"));
+		_initializeSubimagesDropzone(initialSubimages);
+		
+		var form = KTUtil.getById('imagesForm');
+		var formSubmitUrl = KTUtil.attr(form, 'action');
+		var formSubmitButton = KTUtil.getById('imagesSubmitButton');
+
+		if (_imagesTabValidator) {
+			_imagesTabValidator.resetForm();
+			_imagesTabValidator.destroy();
+		}
+
+		_imagesTabValidator = FormValidation.formValidation(form, {
+			fields: {},
+			plugins: {
+				trigger: new FormValidation.plugins.Trigger(),
+				submitButton: new FormValidation.plugins.SubmitButton(),
+				// Bootstrap Framework Integration
+				bootstrap: new FormValidation.plugins.Bootstrap({ eleValidClass: '' }),
+			},
+		});
+
+		_imagesTabValidator.on('core.form.valid', function () {
+			var data = $(form).serializeJSON();
+
+			// Show loading state on button
+			KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, WebAppLocals.getMessage('pleaseWait'));
+			$(formSubmitButton).prop('disabled', true);
+
+			WebApp.post(formSubmitUrl, data, null, formSubmitButton);
+		});
+
+		_imagesTabValidator.on('core.form.invalid', function () {
+			KTUtil.scrollTop();
+		});
+	}
+
+	var _removeMainPhoto = function () {
+		_changeImageHolder('');
 	}
 
 	var _initPrices = function () {
@@ -160,6 +269,7 @@ var DistributorSingleProduct = (function () {
 		let formData = new FormData();
 		formData.append('product_image', ev.target.files[0]);
 
+		$('#imageError').html('');
 		$.ajax({
 			url: '/web/distributor/product/image',
 			data: formData,
@@ -168,7 +278,7 @@ var DistributorSingleProduct = (function () {
 			processData: false,
 		}).done(function (webResponse) {
 			if(webResponse.errorCode == 2) {
-				$('.imageErr').html(webResponse.message);
+				$('#imageError').html(webResponse.message);
 			} else {
 				_changeImageHolder(webResponse.data);
 			}
@@ -230,19 +340,43 @@ var DistributorSingleProduct = (function () {
 		myDropZone.on('success', function (file, response) {
 			var imageUrl = response;
 
-			mapUuidSubimage[file.upload.uuid] = imageUrl;
+			_mapUuidSubimage[file.upload.uuid] = imageUrl;
+
+			var arrSubimages = Object.keys(_mapUuidSubimage).map(key => _mapUuidSubimage[key]);
+			$("#subimages").val(arrSubimages.join(","));
+			$('.gallery').each(function() {
+				$(this).magnificPopup({
+					delegate: 'a[href]',
+					type: 'image',
+					gallery: {
+						enabled: true
+					}
+				});
+			});
+			
+			var dropzoneFilenameContainerElement = $(file.previewTemplate).find('#dropzoneImageContainer');
+			$(dropzoneFilenameContainerElement).attr('href', imageUrl);
 
 			var dropzoneFilenameElement = $(file.previewTemplate).find('#dropzoneImage');
 			$(dropzoneFilenameElement).css('background-image', 'url("' + imageUrl + '")');
 			$(dropzoneFilenameElement).css('cursor', 'pointer');
-			$(dropzoneFilenameElement).click(function () {
-				_openImageModal(imageUrl);
-			});
 		});
 
 		// Remove file from the list
 		myDropZone.on('removedfile', function (file) {
-			delete mapUuidSubimage[file.upload.uuid];
+			delete _mapUuidSubimage[file.upload.uuid];
+
+			var arrSubimages = Object.keys(_mapUuidSubimage).map(key => _mapUuidSubimage[key]);
+			$("#subimages").val(arrSubimages.join(","));
+			$('.gallery').each(function() {
+				$(this).magnificPopup({
+					delegate: 'a[href]',
+					type: 'image',
+					gallery: {
+						enabled: true
+					}
+				});
+			});
 		});
 
 		myDropZone.on('maxfilesexceeded', function (file) {
@@ -270,16 +404,11 @@ var DistributorSingleProduct = (function () {
 		});
 
 		if (initialSubimages.length > 0) {
-			initialSubimages.forEach((subimageObj) => {
-				var subimage = subimageObj.subimage;
-				var fileUrl = _getFullUrl(subimage);
-				var fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
-				var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
-				var fileNameWithoutTimestamp = fileName.substring(0, fileName.lastIndexOf('-')) + '.' + fileExtension;
+			initialSubimages.forEach((subimage) => {
+				var fileUrl = subimage;
 				var file = {
 					status: 'success',
 					accepted: true,
-					name: fileNameWithoutTimestamp,
 					url: fileUrl,
 					upload: {
 						uuid: Math.random().toString(36).substring(2, 8),
@@ -310,6 +439,9 @@ var DistributorSingleProduct = (function () {
 		},
 		changeTab: function (element) {
 			_changeTab(element);
+		},
+		removeMainPhoto: function () {
+			_removeMainPhoto();
 		}
 	};
 })();
