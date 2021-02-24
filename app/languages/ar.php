@@ -196,6 +196,10 @@ return array(
     'vModule_product_bonusTooBig' => 'المكافأة كبيرة جدًا!',
     'vModule_product_productOverview' => 'Product Overview', // TODO: add translation
 
+    'vModule_product_bonus_download_file_button' => 'Download Sample Bonus Excel File',  // TODO: add translation
+    'vModule_product_bonus_download_file_info_message' => 'Use Microsoft Excel (desktop version) to update file',  // TODO: add translation
+    'vModule_product_bonus_upload_file_info_message' => 'Drop files here or click to upload.',  // TODO: add translation
+    'vModule_product_bonus_upload_file_constraint_message' => 'Only .xlsx files are allowed for upload',  // TODO: add translation
 
     'stockAvailability_available' => 'متوفر',
     'stockAvailability_notAvailable' => 'غير متوفر',
