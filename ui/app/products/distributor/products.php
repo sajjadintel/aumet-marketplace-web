@@ -166,7 +166,7 @@ function compress_htmlcode($codedata)
                 }
             }, {
                 targets: 4,
-                title: 'Product Creation Date',
+                title: 'Created At',
                 data: 'insertDateTime',
                 render: (data, type, row, meta) => {
                     return moment.utc(row.insertDateTime).format('D/M/Y');
