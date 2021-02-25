@@ -256,6 +256,11 @@ return array(
     'vModule_product_mainImageAlt' => 'Main Image ALT text',
     'vModule_product_imageAltPlaceholder' => 'Describe the picture',
     'vModule_product_removePhoto' => 'Remove Photo',
+    'vModule_product_addUnitPrices' => 'Add Unit Prices',
+    'vModule_product_paymentMethod' => 'Payment Method',
+    'vModule_product_vatTooHigh' => 'Vat should be between 0 and 100',
+    'vModule_product_unitPricesDuplicatePaymentMethod' => 'Multiple Unit Prices can\'t have the same Payment Method',
+    'vModule_product_unitPricesInvalid' => 'Unit Prices Invalid',
 
     'vModule_product_bonus_download_file_button' => 'Download Sample Bonus Excel File',
     'vModule_product_bonus_download_file_info_message' => 'Use Microsoft Excel (desktop version) to update file',

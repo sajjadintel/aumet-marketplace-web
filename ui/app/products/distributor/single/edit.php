@@ -1,8 +1,3 @@
-<style>
-	textarea {
-		resize: none;
-	}
-</style>
 <div class="px-5">
     <div class="card card-custom gutter-b">
         <div class="card-body">
@@ -48,11 +43,11 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="descriptionAr" class="form-control-label"><?php echo $vModule_product_description; ?> AR</label>
-                            <textarea class="form-control" name="descriptionAr" id="descriptionAr" rows="4" autocomplete="off"><?php echo $product->description_ar; ?></textarea>
+                            <textarea class="form-control single-product-textarea" name="descriptionAr" id="descriptionAr" rows="4" autocomplete="off"><?php echo $product->description_ar; ?></textarea>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="descriptionEn" class="form-control-label"><?php echo $vModule_product_description; ?> EN</label>
-                            <textarea class="form-control" name="descriptionEn" id="descriptionEn" rows="4" autocomplete="off"><?php echo $product->description_en; ?></textarea>
+                            <textarea class="form-control single-product-textarea" name="descriptionEn" id="descriptionEn" rows="4" autocomplete="off"><?php echo $product->description_en; ?></textarea>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="scientificName" class="form-control-label"><?php echo $vModule_product_scientificName; ?></label>
@@ -178,7 +173,59 @@
                 </form>
             </div>
             <div id="prices-body" class="tab-body d-none">
-                Prices
+                <form method="POST" action="/web/distributor/product/prices" id="pricesForm">
+                    <input type="hidden" name="productId" value="<?php echo $product->productId; ?>">
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <label for="vat" class="form-control-label"><?php echo $vModule_product_vat; ?></label>
+                            <input type="text" class="form-control" name="vat" id="vat" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onkeypress="return ![43, 45, 101].includes(event.charCode)" autocomplete="off" value="<?php echo $product->vat . "%"; ?>">
+                        </div>
+                    </div>
+                    <div class="mb-10">
+                        <div class="row form-group">
+                            <span class="col-1 single-product-unitPrices switch switch-success">
+                                <label>
+                                    <input id="unitPricesCheckbox" type="checkbox" name="select"/>
+                                    <span></span>
+                                </label>
+                            </span>
+                            <label class="col-3 col-form-label"><?php echo $vModule_product_addUnitPrices; ?></label>
+                        </div>
+                        <div id="unitPricesRepeater">
+                            <div class="row">
+                                <div id="unitPricesList" data-repeater-list="unitPricesList" class="col-lg-12 single-product-unitPricesList" data-arrPaymentMethod="<?php echo htmlspecialchars(json_encode($arrPaymentMethod), ENT_QUOTES, 'UTF-8'); ?>" data-arrProductUnitPrice="<?php echo htmlspecialchars(json_encode($arrProductUnitPrice), ENT_QUOTES, 'UTF-8'); ?>">
+                                    <div data-repeater-item="" class="form-group row mb-0 align-items-center">
+                                        <input type="hidden" id="unitPricesId" name="id" class="form-control">
+                                        <div class="col-md-2 form-group">
+                                            <label for="paymentMethodId" class="form-control-label"><?php echo $vModule_product_paymentMethod; ?></label>
+                                            <select id="paymentMethodId" name="paymentMethodId" class="form-control selectpicker paymentMethodSelect" data-live-search="true">
+                                            </select>
+                                            <div class="d-md-none mb-2"></div>
+                                        </div>
+                                        <div class="col-md-2 form-group">
+                                            <label for="unitPrice" class="form-control-label"><?php echo $vModule_product_unitPrice ?></label>
+                                            <input type="number" class="form-control unitPriceInput" name="unitPrice" id="unitPrice" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : !this.value? this.value : 0;" onkeypress="return ![43, 45, 101].includes(event.charCode)" autocomplete="off">
+                                            <div class="d-md-none mb-2"></div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a href="javascript:;" id="unitPricesDelete" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger">
+                                                <i class="la la-trash-o"></i><?php echo $vButton_delete; ?></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <a href="javascript:;" id="unitPricesAdd" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
+                                        <i class="la la-plus"></i><?php echo $vButton_add; ?></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button id="pricesSubmitButton" type="submit" class="btn btn-primary px-10 font-weight-bold"><?php echo $vModule_product_saveChanges; ?></button>
+                    </div>
+                </form>
             </div>
             <div id="stockSettings-body" class="tab-body d-none">
                 Stock Settings

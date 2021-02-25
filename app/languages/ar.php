@@ -209,6 +209,11 @@ return array(
     'vModule_product_mainImageAlt' => 'النص الرئيسي البديل للصورة',
     'vModule_product_imageAltPlaceholder' => 'صف الصورة',
     'vModule_product_removePhoto' => 'إزالة الصورة',
+    'vModule_product_addUnitPrices' => 'أضف أسعار الوحدات',
+    'vModule_product_paymentMethod' => 'طريقة الدفع',
+    'vModule_product_vatTooHigh' => 'يجب أن تتراوح ضريبة القيمة المضافة بين ٠ و ١٠٠',
+    'vModule_product_unitPricesDuplicatePaymentMethod' => 'لا يمكن أن يكون لأسعار الوحدات المتعددة نفس طريقة الدفع',
+    'vModule_product_unitPricesInvalid' => 'أسعار الوحدات غير صالحة',
 
     'vModule_product_bonus_download_file_button' => 'Download Sample Bonus Excel File',  // TODO: add translation
     'vModule_product_bonus_download_file_info_message' => 'Use Microsoft Excel (desktop version) to update file',  // TODO: add translation

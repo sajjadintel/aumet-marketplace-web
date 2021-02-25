@@ -1353,13 +1353,17 @@ FROM `marketplace`.`entityProductSellBonusDetail` `ePSBD`
 ################################
 
 
-## 24/02/2021 -- Antoine Abou Cherfane
+## 25/02/2021 -- Antoine Abou Cherfane
 
 # Added imageAlt column to 'product' table
 ALTER TABLE `marketplace`.`product` 
 ADD COLUMN `imageAlt` TEXT NULL DEFAULT NULL AFTER `image`;
 
-# Added imageAlt field to 'vwEntityProductSell' view
+# Added minOrderQuantity column to 'entityProductSell' table
+ALTER TABLE `marketplace`.`entityProductSell` 
+ADD COLUMN `minOrderQuantity` INT NULL DEFAULT NULL AFTER `maximumOrderQuantity`;
+
+# Added imageAlt and minOrderQuantity fields to 'vwEntityProductSell' view
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
     SELECT 
         `ep`.`id` AS `id`,
@@ -1372,6 +1376,7 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
         `ep`.`totalOrderQuantity` AS `totalOrderQuantity`,
         `ep`.`totalOrderCount` AS `totalOrderCount`,
         `ep`.`maximumOrderQuantity` AS `maximumOrderQuantity`,
+        `ep`.`minOrderQuantity` AS `minOrderQuantity`,
         `p`.`scientificNameId` AS `scientificNameId`,
         `s`.`name` AS `scientificName`,
         `p`.`insertDateTime` AS `insertDateTime`,
@@ -1479,5 +1484,13 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
         LEFT JOIN `entityProductSellBonusDetail` `epbd` ON ((`epbd`.`entityProductId` = `ep`.`id`)))
         LEFT JOIN `entityRelationGroup` `cg` ON ((`cg`.`id` = `ep`.`bonusCustomerGroupId`)))
     GROUP BY `ep`.`id`
+
+# Created 'productUnitPrice' table
+CREATE TABLE `marketplace`.`productUnitPrice` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `productId` INT NOT NULL,
+  `paymentMethodId` INT NOT NULL,
+  `unitPrice` DECIMAL(13,2) NOT NULL,
+  PRIMARY KEY (`id`));
 
 ################################

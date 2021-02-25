@@ -960,3 +960,19 @@ input[type='number'] {
 .single-product-removePhotoBtn {
 	width: fit-content;
 }
+
+.single-product-textarea {
+	resize: none;
+}
+
+.single-product-unitPrices.switch.switch-success:not(.switch-outline) input:empty:not(:checked) ~ span:before {
+	background-color: #EBEDF3;
+}
+
+.single-product-unitPricesList > div:not(:nth-child(1)) > div > label {
+	display: none;
+}
+
+.single-product-unitPricesList > div:not(:nth-child(1)) {
+	align-items: start !important;
+}

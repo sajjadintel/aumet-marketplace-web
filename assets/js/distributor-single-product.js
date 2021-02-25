@@ -16,7 +16,7 @@ var DistributorSingleProduct = (function () {
 	var _init = function () {
 		_initGeneral();
 		_initImages();
-		// _initPrices();
+		_initPrices();
 		// _initStockSettings();
 	}
 
@@ -233,12 +233,193 @@ var DistributorSingleProduct = (function () {
 		$('#vat').on('change', function () {
 			_handlePercentageField(this, true);
 		});
-	}
+
+
+		$('#unitPricesCheckbox').unbind();
+		$('#unitPricesCheckbox').change(function () {
+			if ($('#unitPricesCheckbox').is(':checked')) {
+				$('#unitPricesRepeater').show();
+			} else {
+				$('#unitPricesRepeater').hide();
+			}
+		});
+
+		var unitPricesRepeaterElementTemplate = null;
+		$('#unitPricesList > div').each(function (index, element) {
+			unitPricesRepeaterElementTemplate = $(element).clone();
+		});
+
+		var arrPaymentMethod = JSON.parse($('#unitPricesList').attr("data-arrPaymentMethod"));
+		$('#unitPricesRepeater').repeater({
+			initEmpty: true,
+			show: function () {
+				_initializeRepeaterElements(arrPaymentMethod);
+				$(this).slideDown();
+			},
+			hide: function (deleteElement) {
+				$(this).slideUp(deleteElement);
+			},
+		});
+
+		var arrProductUnitPrice = JSON.parse($('#unitPricesList').attr("data-arrProductUnitPrice"));
+		if (arrProductUnitPrice.length > 0) {
+			$('#unitPricesCheckbox').prop('checked', true);
+			arrProductUnitPrice.forEach((repeaterData) => {
+				var repeaterRow = $(unitPricesRepeaterElementTemplate).clone();
+				$(repeaterRow).find('#unitPricesId').val(repeaterData.id);
+				$(repeaterRow).find('#paymentMethodId').attr('data-value', repeaterData.paymentMethodId);
+				$(repeaterRow).find('#unitPrice').val(repeaterData.unitPrice);
+				$('#unitPricesList').append(repeaterRow);
+			});
+			$('#unitPricesRepeater').show();
+		} else {
+			$('#unitPricesCheckbox').prop('checked', false);
+			$('#unitPricesRepeater').hide();
+		}
+
+		_initializeRepeaterElements(arrPaymentMethod);
+		
+		var form = KTUtil.getById('pricesForm');
+		var formSubmitUrl = KTUtil.attr(form, 'action');
+		var formSubmitButton = KTUtil.getById('pricesSubmitButton');
+
+		if (_pricesTabValidator) {
+			_pricesTabValidator.resetForm();
+			_pricesTabValidator.destroy();
+		}
+
+		var mandatoryFields = [
+			"vat",
+			"paymentMethodId",
+			"unitPrice",
+		]
+
+		var validatorFields = {};
+		mandatoryFields.forEach((field) => {
+			validatorFields[field] = {
+				validators: {
+					notEmpty: {
+						message: WebAppLocals.getMessage('required'),
+					}
+				}
+			};
+		});
+
+		_pricesTabValidator = FormValidation.formValidation(form, {
+			fields: validatorFields,
+			plugins: {
+				trigger: new FormValidation.plugins.Trigger(),
+				submitButton: new FormValidation.plugins.SubmitButton(),
+				// Bootstrap Framework Integration
+				bootstrap: new FormValidation.plugins.Bootstrap({ eleValidClass: '' }),
+			},
+		});
+
+		_pricesTabValidator.on('core.form.valid', function () {
+			var valid = true;
+			if ($('#unitPricesCheckbox').is(':checked')) {
+				$('#unitPricesList > div').each(function (index, element) {
+					var paymentMethodElement = $(element).find('#paymentMethodId');
+					var paymentMethodId = $(paymentMethodElement).val();
+					if (!paymentMethodId) {
+						if (!$(paymentMethodElement).parent().hasClass('is-invalid')) {
+							$(paymentMethodElement).parent().addClass('is-invalid');
+							$(paymentMethodElement).parent().css('border', '1px solid #F64E60');
+						}
+					} else {
+						$(paymentMethodElement).parent().removeClass('is-invalid');
+						$(paymentMethodElement).parent().css('border', '');
+					}
+
+					var unitPriceElement = $(element).find('#unitPrice');
+					var unitPrice = $(unitPriceElement).val();
+					if (!unitPrice) {
+						if (!$(unitPriceElement).hasClass('is-invalid')) {
+							$(unitPriceElement).addClass('is-invalid');
+						}
+					} else {
+						$(unitPriceElement).removeClass('is-invalid');
+					}
+
+					valid = paymentMethodId && unitPrice;
+				});
+			}
+
+			$('.selectpicker.paymentMethodSelect').on('change', function () {
+				var value = $(this).val();
+				if (value) {
+					$(this).parent().removeClass('is-invalid');
+					$(this).parent().css('border', '');
+				} else {
+					$(this).parent().addClass('is-invalid');
+					$(this).parent().css('border', '1px solid #F64E60');
+				}
+			});
+
+			$('.unitPriceInput').on('change', function () {
+				var value = $(this).val();
+				if (value) {
+					$(this).removeClass('is-invalid');
+				} else {
+					$(this).addClass('is-invalid');
+				}
+			});
+
+			if (valid) {
+				var data = $(form).serializeJSON();
+	
+				var arrProductUnitPrice = [];
+				if ($('#unitPricesCheckbox').is(':checked')) {
+					$('#unitPricesList > div').each(function (index, element) {
+						var paymentMethodId = $(element).find('#paymentMethodId').val();
+						var unitPrice = $(element).find('#unitPrice').val();
+						arrProductUnitPrice.push({
+							paymentMethodId,
+							unitPrice,
+						});
+					});
+				}
+
+				data = {
+					...data,
+					arrProductUnitPrice
+				};
+
+				// Show loading state on button
+				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, WebAppLocals.getMessage('pleaseWait'));
+				$(formSubmitButton).prop('disabled', true);
+
+				WebApp.post(formSubmitUrl, data, null, formSubmitButton);
+			} else {
+				KTUtil.scrollTop();
+			}
+		});
+
+		_pricesTabValidator.on('core.form.invalid', function () {
+			KTUtil.scrollTop();
+		});
+	};
+
+	var _initializeRepeaterElements = function (arrPaymentMethod) {
+		$('.selectpicker.paymentMethodSelect').each(function (index, element) {
+			if (!$(element).parent().is('.dropdown.bootstrap-select.form-control.paymentMethodSelect')) {
+				var value = $(element).attr('data-value');
+				if (element.options.length === 0) {
+					arrPaymentMethod.forEach((paymentMethod) => {
+						var selected = paymentMethod.id == value;
+						$(element).append(new Option(paymentMethod.name, paymentMethod.id, false, selected));
+					});
+					$(element).selectpicker();
+				}
+				$(element).selectpicker('val', value ? value : null);
+				$(element).selectpicker('refresh');
+			}
+		});
+	};
 
 	var _initStockSettings = function () {
 
 	}
-
 
 	var _handlePercentageField = function (inputElement, float = false) {
 		var newValue = $(inputElement).val().toString().replace('%', '');

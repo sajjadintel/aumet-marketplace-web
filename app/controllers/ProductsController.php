@@ -3440,9 +3440,12 @@ class ProductsController extends Controller
                 echo $this->webResponse->jsonResponse();
                 return;
             }
+            
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
 
             $this->f3->set('product', $dbEntityProduct);
             
+            // Get active ingredients
             $dbProductIngredient = new BaseModel($this->db, "vwProductIngredient");
             $dbProductIngredient->name = "ingredientName_" . $this->objUser->language;
             $arrActiveIngredientsDb = $dbProductIngredient->findWhere("productId=$productId");
@@ -3455,7 +3458,8 @@ class ProductsController extends Controller
                 array_push($arrActiveIngredients, $activeIngredients);
             }
             $this->f3->set('arrActiveIngredients', $arrActiveIngredients);
-            
+
+            // Get subimages
             $dbProductSubimage = new BaseModel($this->db, "productSubimage");
             $arrSubimagesDb = $dbProductSubimage->findWhere("productId=$productId");
             $arrSubimages = [];
@@ -3463,6 +3467,46 @@ class ProductsController extends Controller
                 array_push($arrSubimages, $subimageDb['subimage']);
             }
             $this->f3->set('arrSubimages', $arrSubimages);
+
+            // Get available payment methods
+            $dbPaymentMethod = new BaseModel($this->db, "paymentMethod");
+            $dbPaymentMethod->name = "name_" . $this->objUser->language;
+            $arrPaymentMethod = $dbPaymentMethod->findAll();
+            $mapPaymentMethodIdName = [];
+            foreach($arrPaymentMethod as $paymentMethod) {
+                $mapPaymentMethodIdName[$paymentMethod['id']] = $paymentMethod['name'];
+            }
+
+            $dbEntityPaymentMethod = new BaseModel($this->db, "entityPaymentMethod");
+            $arrPaymentMethodAvailableDb = $dbEntityPaymentMethod->findWhere("entityId IN ($arrEntityId)");
+            $arrPaymentMethodAvailableId = [];
+            $arrPaymentMethodAvailable = [];
+            foreach($arrPaymentMethodAvailableDb as $paymentMethodAvailableDb) {
+                $paymentMethodId = $paymentMethodAvailableDb['paymentMethodId'];
+                if(!in_array($paymentMethodId, $arrPaymentMethodAvailableId)) {
+                    $paymentMethod = new stdClass();
+                    $paymentMethod->id = $paymentMethodId;
+                    $paymentMethod->name = $mapPaymentMethodIdName[$paymentMethodId];
+                    
+                    array_push($arrPaymentMethodAvailable, $paymentMethod);
+                    array_push($arrPaymentMethodAvailableId, $paymentMethodId);
+                }
+            }
+            $this->f3->set('arrPaymentMethod', $arrPaymentMethodAvailable);
+
+            // Get unit prices
+            $dbProductUnitPrice = new BaseModel($this->db, "productUnitPrice");
+            $arrProductUnitPriceDb = $dbProductUnitPrice->findWhere("productId=$productId");
+            $arrProductUnitPrice = [];
+            foreach($arrProductUnitPriceDb as $productUnitPriceDb) {
+                $productUnitPrice = new stdClass();
+                $productUnitPrice->id = $productUnitPriceDb['id'];
+                $productUnitPrice->paymentMethodId = $productUnitPriceDb['paymentMethodId'];
+                $productUnitPrice->unitPrice = $productUnitPriceDb['unitPrice'];
+
+                array_push($arrProductUnitPrice, $productUnitPrice);
+            }
+            $this->f3->set('arrProductUnitPrice', $arrProductUnitPrice);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_product_editProduct');
@@ -3629,7 +3673,77 @@ class ProductsController extends Controller
 
     function postDistributorProductPrices()
     {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/product");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $productId = $this->f3->get('POST.productId');
 
+            $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
+            $dbEntityProduct->getWhere("productId=$productId");
+
+            if ($dbEntityProduct->dry()) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->message = $this->f3->get('vModule_product_notFound');
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $vat = str_replace("%", "", $this->f3->get('POST.vat'));
+
+                if($vat > 100) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get('vModule_product_vatTooHigh');
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+
+                $arrProductUnitPrice = $this->f3->get('POST.arrProductUnitPrice');
+                if (!$arrProductUnitPrice) {
+                    $arrProductUnitPrice = [];
+                }
+
+                $arrPaymentMethodId = [];
+                foreach($arrProductUnitPrice as $productUnitPrice) {
+                    $paymentMethodId = $productUnitPrice['paymentMethodId'];
+                    $unitPrice = $productUnitPrice['unitPrice'];
+                    if(strlen($paymentMethodId) > 0 && strlen($unitPrice) > 0) {
+                        if(in_array($paymentMethodId, $arrPaymentMethodId)) {
+                            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                            $this->webResponse->message = $this->f3->get('vModule_product_unitPricesDuplicatePaymentMethod');
+                            echo $this->webResponse->jsonResponse();
+                            return;
+                        } else {
+                            array_push($arrPaymentMethodId, $paymentMethodId);
+                        }
+                    } else {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_unitPricesInvalid');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
+                }
+
+                $dbEntityProduct->vat = $vat;
+                $dbEntityProduct->update();
+
+                $dbProductUnitPrice = new BaseModel($this->db, "productUnitPrice");
+                $dbProductUnitPrice->getWhere("productId=$productId");
+                while (!$dbProductUnitPrice->dry()) {
+                    $dbProductUnitPrice->delete();
+                    $dbProductUnitPrice->next();
+                }
+                
+                foreach($arrProductUnitPrice as $productUnitPrice) {
+                    $dbProductUnitPrice->productId = $productId;
+                    $dbProductUnitPrice->paymentMethodId = $productUnitPrice['paymentMethodId'];
+                    $dbProductUnitPrice->unitPrice = $productUnitPrice['unitPrice'];
+                    $dbProductUnitPrice->add();
+                }
+
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
+                $this->webResponse->message = $this->f3->get('vModule_productEdited');
+                echo $this->webResponse->jsonResponse();
+            }
+        }
     }
 
     function postDistributorProductStockSettings()
