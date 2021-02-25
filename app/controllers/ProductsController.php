@@ -2584,9 +2584,9 @@ class ProductsController extends Controller
                     $bonusBonus = $bonus[3];
                     $relationGroupId = $bonus[4];
 
-                    $arrRelationGroupId = [];
+                    $arrRelationGroupIdDb = [];
                     if ($relationGroupId != "#N/A" && count($arrRelationGroupId) > 0) {
-                        array_push($arrRelationGroupId, $relationGroupId);
+                        array_push($arrRelationGroupIdDb, $relationGroupId);
                         for ($j = 0; $j < count($arrBonus); $j++) {
                             if (in_array($j, $arrMergedIndex)) {
                                 continue;
@@ -2606,8 +2606,8 @@ class ProductsController extends Controller
                                 && $mergeRelationGroupId != "#N/A"
                             ) {
                                 array_push($arrMergedIndex, $j);
-                                if (!in_array($mergeRelationGroupId, $arrRelationGroupId)) {
-                                    array_push($arrRelationGroupId, $mergeRelationGroupId);
+                                if (!in_array($mergeRelationGroupId, $arrRelationGroupIdDb)) {
+                                    array_push($arrRelationGroupIdDb, $mergeRelationGroupId);
                                 }
                             }
                         }
@@ -2618,7 +2618,7 @@ class ProductsController extends Controller
                         $bonusTypeId,
                         $minOrder,
                         $bonusBonus,
-                        $arrRelationGroupId
+                        $arrRelationGroupIdDb
                     ];
                     array_push($arrBonusDb, $bonusDb);
                 }
