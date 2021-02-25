@@ -730,64 +730,25 @@ class ProductsController extends Controller
     {
         ## Read values from Datatables
         $datatable = new Datatable($_POST);
-        $query = "1=1 ";
+        $entityProductSell = new EntityProductSell;
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityId IN ($arrEntityId)";
 
         if (is_array($datatable->query)) {
-            $productName = $datatable->query['productName'];
-            if (isset($productName) && is_array($productName)) {
-                $query .= " AND (";
-                foreach ($productName as $key => $value) {
-                    if ($key !== 0) {
-                        $query .= " OR ";
-                    }
-                    $query .= "productName_en LIKE '%{$value}%' OR productName_ar LIKE '%{$value}%' OR productName_fr LIKE '%{$value}%'";
-                }
-                $query .= ")";
-            }
-
-            $scientificName = $datatable->query['scientificName'];
-            if (isset($scientificName) && is_array($scientificName)) {
-                $query .= " AND (";
-                foreach ($scientificName as $key => $value) {
-                    if ($key !== 0) {
-                        $query .= " OR ";
-                    }
-                    $query .= "scientificName LIKE '%{$value}%'";
-                }
-                $query .= ")";
-            }
-
-            $stockOption = $datatable->query['stockOption'];
-            if (isset($stockOption) && $stockOption == 1) {
-                $query .= " AND stockStatusId = 1 ";
-            }
-
-            $categoryId = $datatable->query['categoryId'];
-            if (isset($categoryId) && is_array($categoryId)) {
-                $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
-            }
+            $query = $entityProductSell->buildDataTableQuery($datatable->query, $query);
         }
 
         $query .= " AND statusId = 1";
 
         $fullQuery = $query;
 
-        $dbData = new BaseModel($this->db, "vwEntityProductSell");
-        $data = [];
-
-        $totalRecords = $dbData->count($fullQuery);
-        $totalFiltered = $dbData->count($query);
-        $data = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
-
         ## Response
         $response = array(
             "draw" => intval($datatable->draw),
-            "recordsTotal" => $totalRecords,
-            "recordsFiltered" => $totalFiltered,
-            "data" => $data
+            "recordsTotal" => $entityProductSell->count($fullQuery),
+            "recordsFiltered" => $entityProductSell->count($query),
+            "data" => $entityProductSell->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset),
         );
 
         $this->jsonResponseAPI($response);

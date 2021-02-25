@@ -16,7 +16,7 @@ function compress_htmlcode($codedata)
 <div class="container-fluid">
     <div class="d-flex align-items-stretch flex-column">
 
-        <form class="d-flex position-relative w-100 m-auto">
+        <form class="d-flex position-relative w-100 m-auto flex-wrap">
 
             <div class="d-flex flex-column-fluid">
                 <div class="input-group input-group-lg mr-5">
@@ -36,8 +36,19 @@ function compress_htmlcode($codedata)
                 </div>
             </div>
 
+            <div class="d-flex flex-column-fluid mb-md-0 mb-4">
+                <div class="input-group input-group-lg">
+                    <div class="input-daterange input-group" id="searchOrdersDatePicker">
+                        <span class="la-icon">
+                            <i class="text-primary la la-calendar"></i>
+                        </span>
+                        <input class="form-control py-1 px-1 font-size-h6 standard-radius pl-4" type="text" id="productUpdatedAtDateInput" name="dateRange" />
+                    </div>
+                </div>
+            </div>
+
             <div class="d-none flex-column-fluid">
-                <div class="input-group input-group-lg mr-5">
+                <div class="input-group input-group-lg">
                     <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -57,7 +68,7 @@ function compress_htmlcode($codedata)
             </div>
 
             <div class="d-flex flex-column-fluid">
-                <div class="input-group input-group-lg">
+                <div class="input-group input-group-lg justify-content-end">
                     <div class="input-group-prepend ">
 
                         <label class="myLabel">
@@ -94,6 +105,7 @@ function compress_htmlcode($codedata)
     </div>
 </div>
 <!--end::Container-->
+<script src="/assets/js/datepicker-helpers.js"></script>
 <script>
     var PageClass = function() {
         var elementId = "#datatableProducts";
@@ -497,6 +509,8 @@ function compress_htmlcode($codedata)
             orientation: "top left",
             templates: arrows
         });
+
+        searchQuery = initializeDatePicker('#productUpdatedAtDateInput', searchQuery, elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
 
         $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
