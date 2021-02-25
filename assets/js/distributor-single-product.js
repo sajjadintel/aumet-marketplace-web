@@ -486,11 +486,11 @@ var DistributorSingleProduct = (function () {
 				var data = $(form).serializeJSON();
 				var stock = $("#stock").val();
 				var arrMsg = [];
-				if(data.minimumOrderQuantity == data.maximumOrderQuantity) {
+				if(data.minimumOrderQuantity && data.minimumOrderQuantity == data.maximumOrderQuantity) {
 					arrMsg.push(WebAppLocals.getMessage("minOrderEqMaxOrderPt1") + data.minimumOrderQuantity + WebAppLocals.getMessage("minOrderEqMaxOrderPt2"));
 				}
 				
-				if(data.minimumOrderQuantity == stock) {
+				if(data.minimumOrderQuantity && data.minimumOrderQuantity == stock) {
 					arrMsg.push(WebAppLocals.getMessage("minOrderEqStockPt1") + data.minimumOrderQuantity + WebAppLocals.getMessage("minOrderEqStockPt2"));
 				}
 	
@@ -614,6 +614,11 @@ var DistributorSingleProduct = (function () {
 			},
 		});
 
+		$('#addForm select[name=countryId]').on('change', function (ev) {
+			var field = $(this).attr('name');
+			_fullValidator.revalidateField(field);
+		});
+
 		_fullValidator.on('core.form.valid', function () {
 			var valid = true;
 			if ($('#unitPricesCheckbox').is(':checked')) {
@@ -685,11 +690,11 @@ var DistributorSingleProduct = (function () {
 				};
 
 				var arrMsg = [];
-				if(data.minimumOrderQuantity == data.maximumOrderQuantity) {
+				if(data.minimumOrderQuantity && data.minimumOrderQuantity == data.maximumOrderQuantity) {
 					arrMsg.push(WebAppLocals.getMessage("minOrderEqMaxOrderPt1") + data.minimumOrderQuantity + WebAppLocals.getMessage("minOrderEqMaxOrderPt2"));
 				}
 				
-				if(data.minimumOrderQuantity == data.stock) {
+				if(data.minimumOrderQuantity && data.minimumOrderQuantity == data.stock) {
 					arrMsg.push(WebAppLocals.getMessage("minOrderEqStockPt1") + data.minimumOrderQuantity + WebAppLocals.getMessage("minOrderEqStockPt2"));
 				}
 	

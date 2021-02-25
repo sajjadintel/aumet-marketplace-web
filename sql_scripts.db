@@ -1493,4 +1493,8 @@ CREATE TABLE `marketplace`.`productUnitPrice` (
   `unitPrice` DECIMAL(13,2) NOT NULL,
   PRIMARY KEY (`id`));
 
+# Added paymentMethodId column to 'entityProductSellBonusDetail' table
+ALTER TABLE `marketplace`.`entityProductSellBonusDetail` 
+ADD COLUMN `paymentMethodId` INT NULL DEFAULT NULL AFTER `bonusTypeId`;
+
 ################################

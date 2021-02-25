@@ -662,6 +662,8 @@ class ProductsController extends Controller
         } else {
             $id = $this->f3->get('PARAMS.productId');
 
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+
             $dbProduct = new BaseModel($this->db, "vwEntityProductSell");
             $product = $dbProduct->findWhere("id=$id")[0];
             $entityId = $product['entityId'];
@@ -709,6 +711,7 @@ class ProductsController extends Controller
                     $bonusGrouped = new stdClass();
                     $bonusGrouped->bonusId = $bonusId;
                     $bonusGrouped->bonusTypeId = $bonus['bonusTypeId'];
+                    $bonusGrouped->paymentMethodId = $bonus['paymentMethodId'];
                     $bonusGrouped->minOrder = $bonus['minOrder'];
                     $bonusGrouped->bonus = $bonus['bonus'];
                     $bonusGrouped->arrRelationGroup = $mapBonusIdRelationGroupId[$bonusId];
@@ -716,10 +719,36 @@ class ProductsController extends Controller
                 }
             }
 
+            // Get available payment methods
+            $dbPaymentMethod = new BaseModel($this->db, "paymentMethod");
+            $dbPaymentMethod->name = "name_" . $this->objUser->language;
+            $arrPaymentMethod = $dbPaymentMethod->findAll();
+            $mapPaymentMethodIdName = [];
+            foreach($arrPaymentMethod as $paymentMethod) {
+                $mapPaymentMethodIdName[$paymentMethod['id']] = $paymentMethod['name'];
+            }
+
+            $dbEntityPaymentMethod = new BaseModel($this->db, "entityPaymentMethod");
+            $arrPaymentMethodAvailableDb = $dbEntityPaymentMethod->findWhere("entityId IN ($arrEntityId)");
+            $arrPaymentMethodAvailableId = [];
+            $arrPaymentMethodAvailable = [];
+            foreach($arrPaymentMethodAvailableDb as $paymentMethodAvailableDb) {
+                $paymentMethodId = $paymentMethodAvailableDb['paymentMethodId'];
+                if(!in_array($paymentMethodId, $arrPaymentMethodAvailableId)) {
+                    $paymentMethod = new stdClass();
+                    $paymentMethod->id = $paymentMethodId;
+                    $paymentMethod->name = $mapPaymentMethodIdName[$paymentMethodId];
+                    
+                    array_push($arrPaymentMethodAvailable, $paymentMethod);
+                    array_push($arrPaymentMethodAvailableId, $paymentMethodId);
+                }
+            }
+
             $data['product'] = $product;
             $data['arrBonusType'] = $arrBonusType;
             $data['arrBonus'] = $arrBonusGrouped;
             $data['arrRelationGroup'] = $arrRelationGroup;
+            $data['arrPaymentMethod'] = $arrPaymentMethodAvailable;
 
             echo $this->webResponse->jsonResponseV2(1, "", "", $data);
             return;
@@ -1253,12 +1282,14 @@ class ProductsController extends Controller
 
                 foreach ($arrDefaultBonus as $bonus) {
                     $bonusTypeId = $bonus['bonusTypeId'];
+                    $paymentMethodId = $bonus['paymentMethodId'];
                     $minOrder = $bonus['minOrder'];
                     $bonusQty = $bonus['bonus'];
 
                     $valid = false;
                     if (
                         strlen($bonusTypeId) != 0
+                        && strlen($paymentMethodId) != 0
                         && strlen($minOrder) != 0
                         && strlen($bonusQty) != 0
                     ) {
@@ -1291,6 +1322,7 @@ class ProductsController extends Controller
 
                 foreach ($arrSpecialBonus as $bonus) {
                     $bonusTypeId = $bonus['bonusTypeId'];
+                    $paymentMethodId = $bonus['paymentMethodId'];
                     $minOrder = $bonus['minOrder'];
                     $bonusQty = $bonus['bonus'];
                     $arrRelationGroup = $bonus['arrRelationGroup'];
@@ -1298,6 +1330,7 @@ class ProductsController extends Controller
                     $valid = false;
                     if (
                         strlen($bonusTypeId) != 0
+                        && strlen($paymentMethodId) != 0
                         && strlen($minOrder) != 0
                         && strlen($bonusQty) != 0
                         && $arrRelationGroup && count($arrRelationGroup) > 0
@@ -1347,6 +1380,7 @@ class ProductsController extends Controller
                     if (array_key_exists($bonusId, $mapBonusIdBonus)) {
                         $newBonus = $mapBonusIdBonus[$bonusId];
                         $dbBonus->bonusTypeId = $newBonus['bonusTypeId'];
+                        $dbBonus->paymentMethodId = $newBonus['paymentMethodId'];
                         $dbBonus->minOrder = $newBonus['minOrder'];
                         $dbBonus->bonus = $newBonus['bonus'];
                         $dbBonus->update();
@@ -1374,6 +1408,7 @@ class ProductsController extends Controller
                     if (!$bonus['id']) {
                         $dbBonus->entityProductId = $entityProductSellId;
                         $dbBonus->bonusTypeId = $bonus['bonusTypeId'];
+                        $dbBonus->paymentMethodId = $bonus['paymentMethodId'];
                         $dbBonus->minOrder = $bonus['minOrder'];
                         $dbBonus->bonus = $bonus['bonus'];
                         $dbBonus->isActive = 1;

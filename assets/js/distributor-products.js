@@ -491,14 +491,14 @@ var DistributorProductsDataTable = (function () {
 			$('.editStockModal').slice(1).remove();
 		}
 
-		_initializeBonusSection(arrBonus, webResponse.data.arrBonusType);
-		_initializeSpecialBonusSection(arrSpecialBonus, webResponse.data.arrBonusType, webResponse.data.arrRelationGroup);
+		_initializeBonusSection(arrBonus, webResponse.data.arrBonusType, webResponse.data.arrPaymentMethod);
+		_initializeSpecialBonusSection(arrSpecialBonus, webResponse.data.arrBonusType, webResponse.data.arrRelationGroup, webResponse.data.arrPaymentMethod);
 
 		$('#editStockStock').val(webResponse.data.product.stock);
 		$('#editStockModal').appendTo('body').modal('show');
 	};
 
-	var _initializeBonusSection = function (arrBonus, arrBonusType) {
+	var _initializeBonusSection = function (arrBonus, arrBonusType, arrPaymentMethod) {
 		if (!_bonusRepeaterElementTemplate) {
 			$('#editStockBonusList > div').each(function (index, element) {
 				_bonusRepeaterElementTemplate = $(element).clone();
@@ -509,7 +509,7 @@ var DistributorProductsDataTable = (function () {
 			_bonusRepeater = $('#editStockBonusRepeater').repeater({
 				initEmpty: true,
 				show: function () {
-					_initializeBonusRepeaterElements(arrBonusType);
+					_initializeBonusRepeaterElements(arrBonusType, arrPaymentMethod);
 					$(this).slideDown();
 				},
 				hide: function (deleteElement) {
@@ -525,6 +525,7 @@ var DistributorProductsDataTable = (function () {
 				var repeaterRow = $(_bonusRepeaterElementTemplate).clone();
 				$(repeaterRow).find('#editStockBonusId').val(repeaterData.bonusId);
 				$(repeaterRow).find('#editStockBonusTypeId').attr('data-value', repeaterData.bonusTypeId);
+				$(repeaterRow).find('#editStockPaymentMethodId').attr('data-value', repeaterData.paymentMethodId);
 				$(repeaterRow).find('#editStockBonusQuantity').val(repeaterData.minOrder);
 				$(repeaterRow).find('#editStockBonus').val(repeaterData.bonus);
 				$('#editStockBonusList').append(repeaterRow);
@@ -535,10 +536,10 @@ var DistributorProductsDataTable = (function () {
 			$('#editStockBonusRepeater').hide();
 		}
 
-		_initializeBonusRepeaterElements(arrBonusType);
+		_initializeBonusRepeaterElements(arrBonusType, arrPaymentMethod);
 	};
 
-	var _initializeBonusRepeaterElements = function (arrBonusType) {
+	var _initializeBonusRepeaterElements = function (arrBonusType, arrPaymentMethod) {
 		$('.selectpicker.bonusTypeSelect').each(function (index, element) {
 			if (!$(element).parent().is('.dropdown.bootstrap-select.form-control.bonusTypeSelect')) {
 				var value = $(element).attr('data-value');
@@ -554,6 +555,20 @@ var DistributorProductsDataTable = (function () {
 			}
 			_handlePercentageElement(element, '#editStockBonus');
 		});
+		$('.selectpicker.paymentMethodSelect').each(function (index, element) {
+			if (!$(element).parent().is('.dropdown.bootstrap-select.form-control.paymentMethodSelect')) {
+				var value = $(element).attr('data-value');
+				if (element.options.length === 0) {
+					arrPaymentMethod.forEach((paymentMethod) => {
+						var selected = paymentMethod.id == value;
+						$(element).append(new Option(paymentMethod.name, paymentMethod.id, false, selected));
+					});
+					$(element).selectpicker();
+				}
+				$(element).selectpicker('val', value ? value : null);
+				$(element).selectpicker('refresh');
+			}
+		});
 
 		$('.selectpicker.bonusTypeSelect').on('change', function () {
 			_handlePercentageElement(this, '#editStockBonus');
@@ -564,7 +579,7 @@ var DistributorProductsDataTable = (function () {
 		});
 	};
 
-	var _initializeSpecialBonusSection = function (arrSpecialBonus, arrBonusType, arrRelationGroup) {
+	var _initializeSpecialBonusSection = function (arrSpecialBonus, arrBonusType, arrRelationGroup, arrPaymentMethod) {
 		if (!_specialBonusRepeaterElementTemplate) {
 			$('#editStockSpecialBonusList > div').each(function (index, element) {
 				_specialBonusRepeaterElementTemplate = $(element).clone();
@@ -575,7 +590,7 @@ var DistributorProductsDataTable = (function () {
 			_specialBonusRepeater = $('#editStockSpecialBonusRepeater').repeater({
 				initEmpty: true,
 				show: function () {
-					_initializeSpecialBonusRepeaterElements(arrBonusType, arrRelationGroup);
+					_initializeSpecialBonusRepeaterElements(arrBonusType, arrRelationGroup, arrPaymentMethod);
 					$(this).slideDown();
 				},
 				hide: function (deleteElement) {
@@ -591,6 +606,7 @@ var DistributorProductsDataTable = (function () {
 				var repeaterRow = $(_specialBonusRepeaterElementTemplate).clone();
 				$(repeaterRow).find('#editStockSpecialBonusId').val(repeaterData.bonusId);
 				$(repeaterRow).find('#editStockSpecialBonusTypeId').attr('data-value', repeaterData.bonusTypeId);
+				$(repeaterRow).find('#editStockSpecialPaymentMethodId').attr('data-value', repeaterData.paymentMethodId);
 				$(repeaterRow).find('#editStockSpecialBonusQuantity').val(repeaterData.minOrder);
 				$(repeaterRow).find('#editStockSpecialBonus').val(repeaterData.bonus);
 				$(repeaterRow).find('#editStockSpecialRelationGroupId').attr('data-values', repeaterData.arrRelationGroup);
@@ -602,10 +618,10 @@ var DistributorProductsDataTable = (function () {
 			$('#editStockSpecialBonusRepeater').hide();
 		}
 
-		_initializeSpecialBonusRepeaterElements(arrBonusType, arrRelationGroup);
+		_initializeSpecialBonusRepeaterElements(arrBonusType, arrRelationGroup, arrPaymentMethod);
 	};
 
-	var _initializeSpecialBonusRepeaterElements = function (arrBonusType, arrRelationGroup) {
+	var _initializeSpecialBonusRepeaterElements = function (arrBonusType, arrRelationGroup, arrPaymentMethod) {
 		$('.selectpicker.specialBonusTypeSelect').each(function (index, element) {
 			if (!$(element).parent().is('.dropdown.bootstrap-select.form-control.specialBonusTypeSelect')) {
 				var value = $(element).attr('data-value');
@@ -620,6 +636,20 @@ var DistributorProductsDataTable = (function () {
 				$(element).selectpicker('refresh');
 			}
 			_handlePercentageElement(element, '#editStockSpecialBonus');
+		});
+		$('.selectpicker.specialPaymentMethodSelect').each(function (index, element) {
+			if (!$(element).parent().is('.dropdown.bootstrap-select.form-control.specialPaymentMethodSelect')) {
+				var value = $(element).attr('data-value');
+				if (element.options.length === 0) {
+					arrPaymentMethod.forEach((paymentMethod) => {
+						var selected = paymentMethod.id == value;
+						$(element).append(new Option(paymentMethod.name, paymentMethod.id, false, selected));
+					});
+					$(element).selectpicker();
+				}
+				$(element).selectpicker('val', value ? value : null);
+				$(element).selectpicker('refresh');
+			}
 		});
 
 		$('.selectpicker.specialRelationGroupSelect').each(function (index, element) {
@@ -998,6 +1028,18 @@ var DistributorProductsDataTable = (function () {
 						$(bonusTypeElement).parent().removeClass('is-invalid');
 						$(bonusTypeElement).parent().css('border', '');
 					}
+					
+					var paymentMethodElement = $(element).find('#editStockPaymentMethodId');
+					var paymentMethodId = $(paymentMethodElement).val();
+					if (!paymentMethodId) {
+						if (!$(paymentMethodElement).parent().hasClass('is-invalid')) {
+							$(paymentMethodElement).parent().addClass('is-invalid');
+							$(paymentMethodElement).parent().css('border', '1px solid #F64E60');
+						}
+					} else {
+						$(paymentMethodElement).parent().removeClass('is-invalid');
+						$(paymentMethodElement).parent().css('border', '');
+					}
 
 					var minOrderElement = $(element).find('#editStockBonusQuantity');
 					var minOrder = $(minOrderElement).val();
@@ -1019,11 +1061,22 @@ var DistributorProductsDataTable = (function () {
 						$(bonusElement).removeClass('is-invalid');
 					}
 
-					valid = valid && bonusTypeId && minOrder && bonus && (bonusTypeId != BONUS_TYPE_PERCENTAGE || (bonus <= 100 && bonusTypeId == BONUS_TYPE_PERCENTAGE));
+					valid = valid && bonusTypeId && paymentMethodId && minOrder && bonus && (bonusTypeId != BONUS_TYPE_PERCENTAGE || (bonus <= 100 && bonusTypeId == BONUS_TYPE_PERCENTAGE));
 				});
 			}
 
 			$('.selectpicker.bonusTypeSelect').on('change', function () {
+				var value = $(this).val();
+				if (value) {
+					$(this).parent().removeClass('is-invalid');
+					$(this).parent().css('border', '');
+				} else {
+					$(this).parent().addClass('is-invalid');
+					$(this).parent().css('border', '1px solid #F64E60');
+				}
+			});
+
+			$('.selectpicker.paymentMethodSelect').on('change', function () {
 				var value = $(this).val();
 				if (value) {
 					$(this).parent().removeClass('is-invalid');
@@ -1065,6 +1118,18 @@ var DistributorProductsDataTable = (function () {
 						$(bonusTypeElement).parent().removeClass('is-invalid');
 						$(bonusTypeElement).parent().css('border', '');
 					}
+					
+					var paymentMethodElement = $(element).find('#editStockSpecialPaymentMethodId');
+					var paymentMethodId = $(paymentMethodElement).val();
+					if (!paymentMethodId) {
+						if (!$(paymentMethodElement).parent().hasClass('is-invalid')) {
+							$(paymentMethodElement).parent().addClass('is-invalid');
+							$(paymentMethodElement).parent().css('border', '1px solid #F64E60');
+						}
+					} else {
+						$(paymentMethodElement).parent().removeClass('is-invalid');
+						$(paymentMethodElement).parent().css('border', '');
+					}
 
 					var minOrderElement = $(element).find('#editStockSpecialBonusQuantity');
 					var minOrder = $(minOrderElement).val();
@@ -1101,6 +1166,7 @@ var DistributorProductsDataTable = (function () {
 					valid =
 						valid &&
 						bonusTypeId &&
+						paymentMethodId && 
 						minOrder &&
 						bonus &&
 						(bonusTypeId != BONUS_TYPE_PERCENTAGE || (bonus <= 100 && bonusTypeId == BONUS_TYPE_PERCENTAGE)) &&
@@ -1110,6 +1176,17 @@ var DistributorProductsDataTable = (function () {
 			}
 
 			$('.selectpicker.specialBonusTypeSelect').on('change', function () {
+				var value = $(this).val();
+				if (value) {
+					$(this).parent().removeClass('is-invalid');
+					$(this).parent().css('border', '');
+				} else {
+					$(this).parent().addClass('is-invalid');
+					$(this).parent().css('border', '1px solid #F64E60');
+				}
+			});
+			
+			$('.selectpicker.specialPaymentMethodSelect').on('change', function () {
 				var value = $(this).val();
 				if (value) {
 					$(this).parent().removeClass('is-invalid');
@@ -1155,11 +1232,13 @@ var DistributorProductsDataTable = (function () {
 					$('#editStockBonusList > div').each(function (index, element) {
 						var id = $(element).find('#editStockBonusId').val();
 						var bonusTypeId = $(element).find('#editStockBonusTypeId').val();
+						var paymentMethodId = $(element).find('#editStockPaymentMethodId').val();
 						var minOrder = $(element).find('#editStockBonusQuantity').val();
 						var bonus = $(element).find('#editStockBonus').val().toString().replace('%', '');
 						arrDefaultBonus.push({
 							id,
 							bonusTypeId,
+							paymentMethodId,
 							minOrder,
 							bonus,
 						});
@@ -1171,12 +1250,14 @@ var DistributorProductsDataTable = (function () {
 					$('#editStockSpecialBonusList > div').each(function (index, element) {
 						var id = $(element).find('#editStockSpecialBonusId').val();
 						var bonusTypeId = $(element).find('#editStockSpecialBonusTypeId').val();
+						var paymentMethodId = $(element).find('#editStockSpecialPaymentMethodId').val();
 						var minOrder = $(element).find('#editStockSpecialBonusQuantity').val();
 						var bonus = $(element).find('#editStockSpecialBonus').val().toString().replace('%', '');
 						var arrRelationGroup = $(element).find('#editStockSpecialRelationGroupId').val();
 						arrSpecialBonus.push({
 							id,
 							bonusTypeId,
+							paymentMethodId,
 							minOrder,
 							bonus,
 							arrRelationGroup,
