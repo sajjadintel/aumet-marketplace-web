@@ -2174,7 +2174,9 @@ class ProductsController extends Controller
             // Set validation and formula
             Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $productNum);
             Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $bonusTypeNum);
-            Excel::setCellFormulaVLookup($sheet, 'E3', 2505, "'User Input'!E", 'Variables!$G$3:$H$' . $relationGroupNum);
+            if($relationGroupNum > 2) {
+                Excel::setCellFormulaVLookup($sheet, 'E3', 2505, "'User Input'!E", 'Variables!$G$3:$H$' . $relationGroupNum);
+            }
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -2186,7 +2188,9 @@ class ProductsController extends Controller
             // Set data validation for dropdowns
             Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $productNum);
             Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $bonusTypeNum);
-            Excel::setDataValidation($sheet, 'E3', 'E2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $relationGroupNum);
+            if($relationGroupNum > 2) {
+                Excel::setDataValidation($sheet, 'E3', 'E2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $relationGroupNum);
+            }
 
             // Prepare data for initial bonuses
             $arrProductIdStr = implode(",", $arrProductId);
@@ -2581,7 +2585,7 @@ class ProductsController extends Controller
                     $relationGroupId = $bonus[4];
 
                     $arrRelationGroupId = [];
-                    if ($relationGroupId != "#N/A") {
+                    if ($relationGroupId != "#N/A" && count($arrRelationGroupId) > 0) {
                         array_push($arrRelationGroupId, $relationGroupId);
                         for ($j = 0; $j < count($arrBonus); $j++) {
                             if (in_array($j, $arrMergedIndex)) {
