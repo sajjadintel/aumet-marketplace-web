@@ -214,6 +214,12 @@ return array(
     'vModule_product_vatTooHigh' => 'يجب أن تتراوح ضريبة القيمة المضافة بين ٠ و ١٠٠',
     'vModule_product_unitPricesDuplicatePaymentMethod' => 'لا يمكن أن يكون لأسعار الوحدات المتعددة نفس طريقة الدفع',
     'vModule_product_unitPricesInvalid' => 'أسعار الوحدات غير صالحة',
+    'vModule_product_minimumOrderQuantity' => 'أقل كمية ممكن طلبها',
+    'vModule_product_minHigherThanMaxOrderQuantity' => 'الحد الأدنى لكمية الطلب أكبر من الحد الأقصى لكمية الطلب',
+    'vModule_product_minOrderQtyHigherThanStock' => 'الحد الأدنى لكمية الطلب أكبر من المخزون',
+    'vModule_product_minOrderQtyNegative' => 'يجب أن يكون الحد الأدنى لكمية الطلب عددًا موجبًا',
+    'vModule_product_maxOrderQtyHigherThanStock' => 'الحد الأقصى لكمية الطلب أكبر من المخزون',
+    'vModule_product_maxOrderQtyNegative' => 'يجب أن يكون الحد الأقصى لكمية الطلب عددًا موجبًا',
 
     'vModule_product_bonus_download_file_button' => 'Download Sample Bonus Excel File',  // TODO: add translation
     'vModule_product_bonus_download_file_info_message' => 'Use Microsoft Excel (desktop version) to update file',  // TODO: add translation

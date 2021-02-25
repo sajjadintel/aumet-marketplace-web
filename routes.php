@@ -101,7 +101,7 @@ $f3->route('GET /web/distributor/product/stock/@productId', 'ProductsController-
 
 $f3->route('POST /web/distributor/product', 'ProductsController->postDistributorProducts');
 $f3->route('GET /web/distributor/product/list', 'ProductsController->getProductList');
-$f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDistributorProduct');
+$f3->route('POST /web/distributor/product/add/modal', 'ProductsController->postAddDistributorProductModal');
 $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDistributorProduct');
 $f3->route('POST /web/distributor/product/image', 'ProductsController->postProductImage');
 $f3->route('POST /web/distributor/product/subimage', 'ProductsController->postProductSubimage');
@@ -111,6 +111,7 @@ $f3->route('GET /web/distributor/product/canAdd', 'ProductsController->getDistri
 
 // Product Add-Edit pages
 $f3->route('GET /web/distributor/product/add', 'ProductsController->getAddDistributorProduct');
+$f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDistributorProduct');
 $f3->route('GET /web/distributor/product/edit/@productId', 'ProductsController->getEditDistributorProduct');
 $f3->route('POST /web/distributor/product/general', 'ProductsController->postDistributorProductGeneral');
 $f3->route('POST /web/distributor/product/images', 'ProductsController->postDistributorProductImages');

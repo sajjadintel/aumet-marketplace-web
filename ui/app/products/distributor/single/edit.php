@@ -228,13 +228,37 @@
                 </form>
             </div>
             <div id="stockSettings-body" class="tab-body d-none">
-                Stock Settings
+                <form method="POST" action="/web/distributor/product/stockSettings" id="stockSettingsForm">
+                    <input type="hidden" name="productId" value="<?php echo $product->productId; ?>">
+                    <input id="stock" type="hidden" name="stock" value="<?php echo $product->stock; ?>">
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label for="batchNumber" class="form-control-label"><?php echo $vModule_product_batchNumber; ?></label>
+                            <input type="text" class="form-control" name="batchNumber" id="batchNumber" value="<?php echo $product->batchNumber; ?>">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="expiryDate" class="form-control-label"><?php echo $vModule_product_expiryDate; ?></label>
+                            <input type="text" class="form-control" readonly name="expiryDate" id="expiryDate" value="<?php echo $product->productExpiryDate; ?>">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="minimumOrderQuantity" class="form-control-label"><?php echo $vModule_product_minimumOrderQuantity; ?></label>
+                            <input type="number" class="form-control" name="minimumOrderQuantity" id="minimumOrderQuantity" min="0" step="1" onchange="this.value = this.value > 0? this.value : !this.value? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" autocomplete="off" value="<?php echo $product->minimumOrderQuantity; ?>">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="maximumOrderQuantity" class="form-control-label"><?php echo $vModule_product_maximumOrderQuantity; ?></label>
+                            <input type="number" class="form-control" name="maximumOrderQuantity" id="maximumOrderQuantity" min="0" step="1" onchange="this.value = this.value > 0? this.value : !this.value? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" autocomplete="off" value="<?php echo $product->maximumOrderQuantity; ?>">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button id="stockSettingsSubmitButton" type="submit" class="btn btn-primary px-10 font-weight-bold"><?php echo $vModule_product_saveChanges; ?></button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 <script>
     $(document).ready(function() {
-        DistributorSingleProduct.init();
+        DistributorSingleProduct.init('edit');
     })
 </script>

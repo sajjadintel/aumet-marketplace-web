@@ -1400,7 +1400,7 @@ class ProductsController extends Controller
         }
     }
 
-    function postAddDistributorProduct()
+    function postAddDistributorProductModal()
     {
         if (!$this->f3->ajax()) {
             $this->f3->set("pageURL", "/web/distributor/product");
@@ -3414,6 +3414,34 @@ class ProductsController extends Controller
             $this->f3->set("pageURL", $this->f3->get('SERVER.REQUEST_URI'));
             echo View::instance()->render('app/layout/layout.php');
         } else {
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+
+            // Get available payment methods
+            $dbPaymentMethod = new BaseModel($this->db, "paymentMethod");
+            $dbPaymentMethod->name = "name_" . $this->objUser->language;
+            $arrPaymentMethod = $dbPaymentMethod->findAll();
+            $mapPaymentMethodIdName = [];
+            foreach($arrPaymentMethod as $paymentMethod) {
+                $mapPaymentMethodIdName[$paymentMethod['id']] = $paymentMethod['name'];
+            }
+
+            $dbEntityPaymentMethod = new BaseModel($this->db, "entityPaymentMethod");
+            $arrPaymentMethodAvailableDb = $dbEntityPaymentMethod->findWhere("entityId IN ($arrEntityId)");
+            $arrPaymentMethodAvailableId = [];
+            $arrPaymentMethodAvailable = [];
+            foreach($arrPaymentMethodAvailableDb as $paymentMethodAvailableDb) {
+                $paymentMethodId = $paymentMethodAvailableDb['paymentMethodId'];
+                if(!in_array($paymentMethodId, $arrPaymentMethodAvailableId)) {
+                    $paymentMethod = new stdClass();
+                    $paymentMethod->id = $paymentMethodId;
+                    $paymentMethod->name = $mapPaymentMethodIdName[$paymentMethodId];
+                    
+                    array_push($arrPaymentMethodAvailable, $paymentMethod);
+                    array_push($arrPaymentMethodAvailableId, $paymentMethodId);
+                }
+            }
+            $this->f3->set('arrPaymentMethod', $arrPaymentMethodAvailable);
+
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_product_addProduct');
             $this->webResponse->data = View::instance()->render('app/products/distributor/single/add.php');
@@ -3511,6 +3539,219 @@ class ProductsController extends Controller
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_product_editProduct');
             $this->webResponse->data = View::instance()->render('app/products/distributor/single/edit.php');
+            echo $this->webResponse->jsonResponse();
+        }
+    }
+
+    function postAddDistributorProduct()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/product");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $nameAr = $this->f3->get('POST.nameAr');
+            $nameEn = $this->f3->get('POST.nameEn');
+            $subtitleAr = $this->f3->get('POST.subtitleAr');
+            $subtitleEn = $this->f3->get('POST.subtitleEn');
+            $descriptionAr = $this->f3->get('POST.descriptionAr');
+            $descriptionEn = $this->f3->get('POST.descriptionEn');
+            $scientificNameId = $this->f3->get('POST.scientificNameId');
+            $countryId = $this->f3->get('POST.countryId');
+            $itemCode = $this->f3->get('POST.itemCode');
+            $manufacturerName = $this->f3->get('POST.manufacturerName');
+            $strength = $this->f3->get('POST.strength');
+            $activeIngredientsId = $this->f3->get('POST.activeIngredientsId');
+            $image = $this->f3->get('POST.image');
+            $imageAlt = $this->f3->get('POST.imageAlt');
+            $subimages = $this->f3->get('POST.subimages');
+            $vat = str_replace("%", "", $this->f3->get('POST.vat'));
+            $arrProductUnitPrice = $this->f3->get('POST.arrProductUnitPrice');
+            $batchNumber = $this->f3->get('POST.batchNumber');
+            $expiryDate = $this->f3->get('POST.expiryDate');
+            $minimumOrderQuantity = $this->f3->get('POST.minimumOrderQuantity');
+            $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
+            $stock = $this->f3->get('POST.stock');
+
+            if (strlen($countryId) == 0 || strlen($nameAr) == 0 || strlen($nameEn) == 0 || strlen($stock) == 0) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->message = $this->f3->get('vModule_product_missingFields');
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
+
+            $this->checkLength($nameEn, 'nameEn', 200, 4);
+            $this->checkLength($nameAr, 'nameAr', 200, 4);
+
+            if ($descriptionAr) {
+                $this->checkLength($descriptionAr, 'descriptionAr', 5000, 4);
+            }
+
+            if ($descriptionEn) {
+                $this->checkLength($descriptionEn, 'descriptionEn', 5000, 4);
+            }
+
+            if ($subtitleAr) {
+                $this->checkLength($subtitleAr, 'subtitleAr', 200, 4);
+            }
+
+            if ($subtitleEn) {
+                $this->checkLength($subtitleEn, 'subtitleEn', 200, 4);
+            }
+
+            if ($manufacturerName) {
+                $this->checkLength($manufacturerName, 'manufacturerName', 200, 4);
+            }
+
+            if ($strength) {
+                $this->checkLength($strength, 'strength', 200, 4);
+            }
+
+            if($vat > 100) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->message = $this->f3->get('vModule_product_vatTooHigh');
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
+
+            if (!$arrProductUnitPrice) {
+                $arrProductUnitPrice = [];
+            }
+
+            $arrErrors = [];
+            if(strlen($minimumOrderQuantity) > 0 && strlen($maximumOrderQuantity) > 0 && $minimumOrderQuantity > $maximumOrderQuantity) {
+                array_push($arrErrors, $this->f3->get('vModule_product_minHigherThanMaxOrderQuantity'));
+            }
+
+            if(strlen($minimumOrderQuantity) > 0 && $minimumOrderQuantity > $stock) {
+                array_push($arrErrors, $this->f3->get('vModule_product_minOrderQtyHigherThanStock') . " (max: $stock)");
+            }
+
+            if(strlen($minimumOrderQuantity) > 0 && $minimumOrderQuantity < 0) {
+                array_push($arrErrors, $this->f3->get('vModule_product_minOrderQtyNegative'));
+            }
+
+            if(strlen($maximumOrderQuantity) > 0 && $maximumOrderQuantity > $stock) {
+                array_push($arrErrors, $this->f3->get('vModule_product_maxOrderQtyHigherThanStock') . " (max: $stock)");
+            }
+
+            if(strlen($maximumOrderQuantity) > 0 && $maximumOrderQuantity < 0) {
+                array_push($arrErrors, $this->f3->get('vModule_product_maxOrderQtyNegative'));
+            }
+
+            if(count($arrErrors) > 0) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->message = implode("<br>", $arrErrors);
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
+
+            if(strlen($minimumOrderQuantity) > 0) {
+                $maximumOrderQuantity = $stock;
+            }
+
+            $arrPaymentMethodId = [];
+            foreach($arrProductUnitPrice as $productUnitPrice) {
+                $paymentMethodId = $productUnitPrice['paymentMethodId'];
+                $unitPrice = $productUnitPrice['unitPrice'];
+                if(strlen($paymentMethodId) > 0 && strlen($unitPrice) > 0) {
+                    if(in_array($paymentMethodId, $arrPaymentMethodId)) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_unitPricesDuplicatePaymentMethod');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    } else {
+                        array_push($arrPaymentMethodId, $paymentMethodId);
+                    }
+                } else {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = $this->f3->get('vModule_product_unitPricesInvalid');
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+            }
+
+            $dbProduct = new BaseModel($this->db, "product");
+            if ($scientificNameId) {
+                $dbProduct->scientificNameId = $scientificNameId;
+            } else {
+                $dbProduct->scientificNameId = null;
+            }
+            $dbProduct->madeInCountryId = $countryId;
+            $dbProduct->name_en = $nameEn;
+            $dbProduct->name_fr = $nameEn;
+            $dbProduct->name_ar = $nameAr;
+            $dbProduct->subtitle_en = $subtitleEn;
+            $dbProduct->subtitle_fr = $subtitleEn;
+            $dbProduct->subtitle_ar = $subtitleAr;
+            $dbProduct->description_en = $descriptionEn;
+            $dbProduct->description_fr = $descriptionEn;
+            $dbProduct->description_ar = $descriptionAr;
+            $dbProduct->manufacturerName = $manufacturerName;
+            $dbProduct->itemCode = $itemCode;
+            $dbProduct->strength = $strength;
+            $dbProduct->image = $image;
+            $dbProduct->imageAlt = $imageAlt;
+            $dbProduct->batchNumber = $batchNumber;
+            $dbProduct->expiryDate = $expiryDate;
+
+            $dbProduct->addReturnID();
+
+            if ($activeIngredientsId) {
+                $dbProductIngredient = new BaseModel($this->db, "productIngredient");
+                $arrIngredientId = explode(",", $activeIngredientsId);
+                foreach ($arrIngredientId as $ingredientId) {
+                    $dbProductIngredient->productId = $dbProduct->id;
+                    $dbProductIngredient->ingredientId = $ingredientId;
+                    $dbProductIngredient->add();
+                }
+            }
+
+            if (strlen($subimages) > 0) {
+                $dbProductSubimage = new BaseModel($this->db, "productSubimage");
+                $arrSubimages = explode(",", $subimages);
+                foreach ($arrSubimages as $subimage) {
+                    $dbProductSubimage->productId = $dbProduct->id;
+                    $dbProductSubimage->subimage = $subimage;
+                    $dbProductSubimage->add();
+                }
+            }
+
+            $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+            $entityId = $arrEntityId;
+
+            $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
+            $dbEntityProduct->productId = $dbProduct->id;
+            $dbEntityProduct->entityId = $entityId;
+            $dbEntityProduct->vat = $vat;
+            $dbEntityProduct->stock = $stock;
+            $dbEntityProduct->statusId = 1;
+            $dbEntityProduct->stockStatusId = 1;
+            $dbEntityProduct->bonusTypeId = 1;
+            $dbEntityProduct->stockUpdateDateTime = $dbEntityProduct->getCurrentDateTime();
+
+            if (strlen($maximumOrderQuantity) > 0) {
+                $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
+            } else {
+                $dbEntityProduct->maximumOrderQuantity = null;
+            }
+            if (strlen($minimumOrderQuantity) > 0) {
+                $dbEntityProduct->minimumOrderQuantity = $minimumOrderQuantity;
+            } else {
+                $dbEntityProduct->minimumOrderQuantity = null;
+            }
+            
+            $dbEntityProduct->add();
+
+            $dbProductUnitPrice = new BaseModel($this->db, "productUnitPrice");
+            foreach($arrProductUnitPrice as $productUnitPrice) {
+                $dbProductUnitPrice->productId = $dbProduct->id;
+                $dbProductUnitPrice->paymentMethodId = $productUnitPrice['paymentMethodId'];
+                $dbProductUnitPrice->unitPrice = $productUnitPrice['unitPrice'];
+                $dbProductUnitPrice->add();
+            }
+
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
+            $this->webResponse->message = $this->f3->get('vModule_productAdded');
             echo $this->webResponse->jsonResponse();
         }
     }
@@ -3748,6 +3989,73 @@ class ProductsController extends Controller
 
     function postDistributorProductStockSettings()
     {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/product");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $productId = $this->f3->get('POST.productId');
 
+            $dbProduct = new BaseModel($this->db, "product");
+            $dbProduct->getWhere("id=$productId");
+
+            $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
+            $dbEntityProduct->getWhere("productId=$productId");
+
+            if ($dbProduct->dry() || $dbEntityProduct->dry()) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->message = $this->f3->get('vModule_product_notFound');
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $batchNumber = $this->f3->get('POST.batchNumber');
+                $expiryDate = $this->f3->get('POST.expiryDate');
+                $minimumOrderQuantity = $this->f3->get('POST.minimumOrderQuantity');
+                $maximumOrderQuantity = $this->f3->get('POST.maximumOrderQuantity');
+
+                $stock = $dbEntityProduct->stock;
+                $arrErrors = [];
+                if(strlen($minimumOrderQuantity) > 0 && strlen($maximumOrderQuantity) > 0 && $minimumOrderQuantity > $maximumOrderQuantity) {
+                    array_push($arrErrors, $this->f3->get('vModule_product_minHigherThanMaxOrderQuantity'));
+                }
+
+                if(strlen($minimumOrderQuantity) > 0 && $minimumOrderQuantity > $stock) {
+                    array_push($arrErrors, $this->f3->get('vModule_product_minOrderQtyHigherThanStock') . " (max: $stock)");
+                }
+
+                if(strlen($minimumOrderQuantity) > 0 && $minimumOrderQuantity < 0) {
+                    array_push($arrErrors, $this->f3->get('vModule_product_minOrderQtyNegative'));
+                }
+
+                if(strlen($maximumOrderQuantity) > 0 && $maximumOrderQuantity > $stock) {
+                    array_push($arrErrors, $this->f3->get('vModule_product_maxOrderQtyHigherThanStock') . " (max: $stock)");
+                }
+
+                if(strlen($maximumOrderQuantity) > 0 && $maximumOrderQuantity < 0) {
+                    array_push($arrErrors, $this->f3->get('vModule_product_maxOrderQtyNegative'));
+                }
+
+                if(count($arrErrors) > 0) {
+                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->message = implode("<br>", $arrErrors);
+                    echo $this->webResponse->jsonResponse();
+                    return;
+                }
+
+                $dbProduct->batchNumber = $batchNumber;
+                $dbProduct->expiryDate = $expiryDate;
+                $dbProduct->update();
+
+                if(strlen($minimumOrderQuantity) > 0) {
+                    $maximumOrderQuantity = $stock;
+                }
+                
+                $dbEntityProduct->minimumOrderQuantity = $minimumOrderQuantity;
+                $dbEntityProduct->maximumOrderQuantity = $maximumOrderQuantity;
+                $dbEntityProduct->update();
+
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
+                $this->webResponse->message = $this->f3->get('vModule_productEdited');
+                echo $this->webResponse->jsonResponse();
+            }
+        }
     }
 }

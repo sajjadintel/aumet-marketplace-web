@@ -1359,11 +1359,11 @@ FROM `marketplace`.`entityProductSellBonusDetail` `ePSBD`
 ALTER TABLE `marketplace`.`product` 
 ADD COLUMN `imageAlt` TEXT NULL DEFAULT NULL AFTER `image`;
 
-# Added minOrderQuantity column to 'entityProductSell' table
+# Added minimumOrderQuantity column to 'entityProductSell' table
 ALTER TABLE `marketplace`.`entityProductSell` 
-ADD COLUMN `minOrderQuantity` INT NULL DEFAULT NULL AFTER `maximumOrderQuantity`;
+ADD COLUMN `minimumOrderQuantity` INT NULL DEFAULT NULL AFTER `maximumOrderQuantity`;
 
-# Added imageAlt and minOrderQuantity fields to 'vwEntityProductSell' view
+# Added imageAlt and minimumOrderQuantity fields to 'vwEntityProductSell' view
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
     SELECT 
         `ep`.`id` AS `id`,
@@ -1376,7 +1376,7 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
         `ep`.`totalOrderQuantity` AS `totalOrderQuantity`,
         `ep`.`totalOrderCount` AS `totalOrderCount`,
         `ep`.`maximumOrderQuantity` AS `maximumOrderQuantity`,
-        `ep`.`minOrderQuantity` AS `minOrderQuantity`,
+        `ep`.`minimumOrderQuantity` AS `minimumOrderQuantity`,
         `p`.`scientificNameId` AS `scientificNameId`,
         `s`.`name` AS `scientificName`,
         `p`.`insertDateTime` AS `insertDateTime`,

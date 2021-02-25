@@ -261,6 +261,12 @@ return array(
     'vModule_product_vatTooHigh' => 'Vat should be between 0 and 100',
     'vModule_product_unitPricesDuplicatePaymentMethod' => 'Multiple Unit Prices can\'t have the same Payment Method',
     'vModule_product_unitPricesInvalid' => 'Unit Prices Invalid',
+    'vModule_product_minimumOrderQuantity' => 'Minimum Order Quantity',
+    'vModule_product_minHigherThanMaxOrderQuantity' => 'Minimum Order Quantity higher than Maximum Order Quantity',
+    'vModule_product_minOrderQtyHigherThanStock' => 'Minimum Order Quantity higher than stock',
+    'vModule_product_minOrderQtyNegative' => 'Minimum Order Quantity should be a positive number',
+    'vModule_product_maxOrderQtyHigherThanStock' => 'Maximum Order Quantity higher than stock',
+    'vModule_product_maxOrderQtyNegative' => 'Maximum Order Quantity should be a positive number',
 
     'vModule_product_bonus_download_file_button' => 'Download Sample Bonus Excel File',
     'vModule_product_bonus_download_file_info_message' => 'Use Microsoft Excel (desktop version) to update file',

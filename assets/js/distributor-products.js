@@ -260,7 +260,7 @@ var DistributorProductsDataTable = (function () {
 			_validator.destroy();
 		}
 
-		// $('#addModalForm').attr('action', '/web/distributor/product/add');
+		// $('#addModalForm').attr('action', '/web/distributor/product/add/modal');
 		// $('#addProductCategory').on('change', () => _updateSubcategorySelect('add'));
 
 		_changeImageHolder('', 'add');
@@ -887,7 +887,7 @@ var DistributorProductsDataTable = (function () {
 					}
 				});
 
-				WebApp.post('/web/distributor/product/add', body, _productAddSuccessCallback);
+				WebApp.post('/web/distributor/product/add/modal', body, _productAddSuccessCallback);
 			} else {
 				Swal.fire({
 					text: WebAppLocals.getMessage('validationError'),
