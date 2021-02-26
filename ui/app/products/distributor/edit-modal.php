@@ -30,7 +30,7 @@
                     <div class="row">
                         <div class="col-md-2 form-group">
                             <div class="image-input image-input-empty image-input-outline">
-                                <div class="image-input-wrapper" id="editProductImageHolder"></div>
+                                <div class="image-input-wrapper image-contain" id="editProductImageHolder"></div>
                                 <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow"
                                        data-action="change" data-toggle="tooltip" title=""
                                        data-original-title="Change avatar">
@@ -71,7 +71,7 @@
                                     <div class="dropzone-items" id="editDropzoneItems" style="display: flex;">
                                         <div class="col-md-2 image-input image-input-empty image-input-outline dropzone-item" style="display: none; background-color: unset;">
                                             <div class="dropzone-error" data-dz-errormessage=""></div>
-                                            <div class="mb-2 image-input-wrapper" id="dropzoneImage" style="width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/assets/img/default-product-image.png'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%);">
+                                            <div class="mb-2 image-input-wrapper image-contain" id="dropzoneImage" style="width: 100%; height: 100px; background-size: 100% 100%; background-image: url('/assets/img/default-product-image.png'); box-shadow: 0 0.25rem 0.75rem 0.25rem rgb(0 0 0 / 8%);">
                                                 <div class="px-2 dropzone-progress" style="width: 100%; position: relative; top: 50%;">
                                                     <div class="progress">
                                                         <div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress=""></div>
@@ -86,6 +86,13 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="font-size-h6 font-weight-bolder text-muted mb-3 productImageErr" style="color:#e53935 !important;"></div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6 form-group">
                             <label for="editProductScientificName" class="form-control-label"><?php echo $vModule_product_scientificName; ?></label>
                             <select class="select2 form-control" id="editProductScientificName" name="scientificNameId" data-select2-id="editProductScientificName" tabindex="-1" aria-hidden="true">
@@ -121,7 +128,7 @@
                             <input type="text" class="form-control" name="subtitle_fr" id="editProductSubtitleFr">
                         </div> -->
                         <div class="col-md-6 form-group">
-                            <label for="editProductDescriptionAr" class="form-control-label"><?php echo $vModule_product_description; ?> AR</label>    
+                            <label for="editProductDescriptionAr" class="form-control-label"><?php echo $vModule_product_description; ?> AR</label>
                             <textarea class="form-control" id="editProductDescriptionAr" name="description_ar" rows="4"></textarea>
                         </div>
                         <div class="col-md-6 form-group">
@@ -156,7 +163,7 @@
                             <label for="editProductItemCode" class="form-control-label"><?php echo $vModule_product_itemCode; ?></label>
                             <input type="text" class="form-control" name="itemCode" id="editProductItemCode">
                         </div>
-                        <div class="col-md-6 form-group">
+                        <!-- <div class="col-md-6 form-group">
                             <label for="editProductCategory" class="form-control-label"><?php echo $vModule_product_category; ?></label>
                             <select class="select2 form-control" id="editProductCategory" name="categoryId" data-select2-id="editProductCategory" tabindex="-1" aria-hidden="true">
                             </select>
@@ -165,7 +172,7 @@
                             <label for="editProductSubcategory" class="form-control-label"><?php echo $vModule_product_subcategory; ?></label>
                             <select class="select2 form-control" id="editProductSubcategory" name="subcategoryId" data-select2-id="editProductSubcategory" tabindex="-1" aria-hidden="true">
                             </select>
-                        </div>
+                        </div> -->
                         <div class="col-md-4 form-group">
                             <label for="editActiveIngredients" class="form-control-label"><?php echo $vModule_product_activeIngredients; ?></label>
                             <select class="select2 form-control" id="editActiveIngredients" name="activeIngredients" data-select2-id="editActiveIngredients" tabindex="-1" aria-hidden="true" multiple>

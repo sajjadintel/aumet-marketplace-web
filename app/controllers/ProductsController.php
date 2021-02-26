@@ -800,23 +800,29 @@ class ProductsController extends Controller
             "jpg",
             "png",
         ];
-        $success = false;
 
         $ext = pathinfo(basename($_FILES["product_image"]["name"]), PATHINFO_EXTENSION);
-        if (in_array($ext, $allValidExtensions)) {
-            $success = true;
+        if (!in_array(strtolower($ext), $allValidExtensions)) {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->message = 'Upload failed. Allowed file types: ' . implode(',', $allValidExtensions);
+            echo $this->webResponse->jsonResponse();
+            return;
         }
         $path = "";
 
-        if ($success) {
-            $objResult = AumetFileUploader::upload("s3", $_FILES["product_image"], $this->generateRandomString(64));
+        $objResult = AumetFileUploader::upload("s3", $_FILES["product_image"], $this->generateRandomString(64));
+        if (!$objResult->isError) {
             $path = $objResult->fileLink;
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+            $this->webResponse->title = "Product Image Upload";
+            $this->webResponse->data = $path;
+            echo $this->webResponse->jsonResponse();
+        } else {
+            $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->title = "Image failed";
+            $this->webResponse->data = "Error: " . $objResult->error;
+            echo $this->webResponse->jsonResponse();
         }
-
-        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-        $this->webResponse->title = "Product Image Upload";
-        $this->webResponse->data = $path;
-        echo $this->webResponse->jsonResponse();
     }
 
     function postProductSubimage()
@@ -829,7 +835,7 @@ class ProductsController extends Controller
         $success = false;
 
         $ext = pathinfo(basename($_FILES["file"]["name"]), PATHINFO_EXTENSION);
-        if (in_array($ext, $allValidExtensions)) {
+        if (in_array(strtolower($ext), $allValidExtensions)) {
             $success = true;
         }
 
@@ -917,7 +923,6 @@ class ProductsController extends Controller
                     || strlen($name_en) == 0 || strlen($name_ar) == 0
                     // || strlen($name_fr) == 0
                     || strlen($unitPrice) == 0 || strlen($vat) == 0
-                    || strlen($categoryId) == 0 || strlen($subcategoryId) == 0
                 ) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
                     $this->webResponse->message = $this->f3->get('vModule_product_missingFields');
@@ -946,13 +951,23 @@ class ProductsController extends Controller
                     return;
                 }
 
-                $dbSubcategory = new BaseModel($this->db, "subcategory");
-                $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
-                if ($dbSubcategory->dry()) {
-                    $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                    $this->webResponse->message = $this->f3->get('vModule_product_subcategoryInvalid');
-                    echo $this->webResponse->jsonResponse();
-                    return;
+                if (strlen($subcategoryId) > 0) {
+                    $valid = true;
+                    if (strlen($categoryId) == 0) {
+                        $valid = false;
+                    } else {
+                        $dbSubcategory = new BaseModel($this->db, "subcategory");
+                        $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
+                        if ($dbSubcategory->dry()) {
+                            $valid = false;
+                        }
+                    }
+                    if (!$valid) {
+                        $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                        $this->webResponse->message = $this->f3->get('vModule_product_subcategoryInvalid');
+                        echo $this->webResponse->jsonResponse();
+                        return;
+                    }
                 }
 
                 $this->checkLength($name_en, 'nameEn', 200, 4);
@@ -1013,8 +1028,16 @@ class ProductsController extends Controller
                 $dbProduct->manufacturerName = $manufacturerName;
                 $dbProduct->batchNumber = $batchNumber;
                 $dbProduct->itemCode = $itemCode;
-                $dbProduct->categoryId = $categoryId;
-                $dbProduct->subcategoryId = $subcategoryId;
+                if ($categoryId) {
+                    $dbProduct->categoryId = $categoryId;
+                } else {
+                    $dbProduct->categoryId = null;
+                }
+                if ($subcategoryId) {
+                    $dbProduct->subcategoryId = $subcategoryId;
+                } else {
+                    $dbProduct->subcategoryId = null;
+                }
                 $dbProduct->expiryDate = $expiryDate;
                 $dbProduct->strength = $strength;
 
@@ -1403,8 +1426,8 @@ class ProductsController extends Controller
             $manufacturerName = $this->f3->clean($this->f3->get('POST.manufacturerName'));
             $batchNumber = $this->f3->clean($this->f3->get('POST.batchNumber'));
             $itemCode = $this->f3->clean($this->f3->get('POST.itemCode'));
-            $categoryId = $this->f3->get('POST.categoryId');
-            $subcategoryId = $this->f3->get('POST.subcategoryId');
+            // $categoryId = $this->f3->get('POST.categoryId');
+            // $subcategoryId = $this->f3->get('POST.subcategoryId');
             $activeIngredientsId = $this->f3->get('POST.activeIngredientsId');
             $expiryDate = $this->f3->get('POST.expiryDate');;
             $strength = $this->f3->clean($this->f3->get('POST.strength'));
@@ -1415,7 +1438,6 @@ class ProductsController extends Controller
                 || strlen($name_en) == 0 || strlen($name_ar) == 0
                 // || strlen($name_fr) == 0
                 || strlen($unitPrice) == 0 || strlen($vat) == 0 || strlen($stock) == 0
-                || strlen($categoryId) == 0 || strlen($subcategoryId) == 0
             ) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->message = $this->f3->get('vModule_product_missingFields');
@@ -1448,14 +1470,24 @@ class ProductsController extends Controller
                 return;
             }
 
-            $dbSubcategory = new BaseModel($this->db, "subcategory");
-            $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
-            if ($dbSubcategory->dry()) {
-                $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                $this->webResponse->message = $this->f3->get('vModule_product_subcategoryInvalid');
-                echo $this->webResponse->jsonResponse();
-                return;
-            }
+            // if (strlen($subcategoryId) > 0) {
+            //     $valid = true;
+            //     if (strlen($categoryId) == 0) {
+            //         $valid = false;
+            //     } else {
+            //         $dbSubcategory = new BaseModel($this->db, "subcategory");
+            //         $dbSubcategory->getWhere("id = $subcategoryId AND categoryId = $categoryId");
+            //         if ($dbSubcategory->dry()) {
+            //             $valid = false;
+            //         }
+            //     }
+            //     if (!$valid) {
+            //         $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            //         $this->webResponse->message = $this->f3->get('vModule_product_subcategoryInvalid');
+            //         echo $this->webResponse->jsonResponse();
+            //         return;
+            //     }
+            // }
 
             $this->checkLength($name_en, 'nameEn', 200, 4);
             $this->checkLength($name_ar, 'nameAr', 200, 4);
@@ -1518,8 +1550,16 @@ class ProductsController extends Controller
             $dbProduct->manufacturerName = $manufacturerName;
             $dbProduct->batchNumber = $batchNumber;
             $dbProduct->itemCode = $itemCode;
-            $dbProduct->categoryId = $categoryId;
-            $dbProduct->subcategoryId = $subcategoryId;
+            // if ($categoryId) {
+            //     $dbProduct->categoryId = $categoryId;
+            // } else {
+            //     $dbProduct->categoryId = null;
+            // }
+            // if ($subcategoryId) {
+            //     $dbProduct->subcategoryId = $subcategoryId;
+            // } else {
+            //     $dbProduct->subcategoryId = null;
+            // }
             $dbProduct->expiryDate = $expiryDate;
             $dbProduct->strength = $strength;
 
@@ -2134,7 +2174,9 @@ class ProductsController extends Controller
             // Set validation and formula
             Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $productNum);
             Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $bonusTypeNum);
-            Excel::setCellFormulaVLookup($sheet, 'E3', 2505, "'User Input'!E", 'Variables!$G$3:$H$' . $relationGroupNum);
+            if($relationGroupNum > 2) {
+                Excel::setCellFormulaVLookup($sheet, 'E3', 2505, "'User Input'!E", 'Variables!$G$3:$H$' . $relationGroupNum);
+            }
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -2146,7 +2188,9 @@ class ProductsController extends Controller
             // Set data validation for dropdowns
             Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $productNum);
             Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $bonusTypeNum);
-            Excel::setDataValidation($sheet, 'E3', 'E2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $relationGroupNum);
+            if($relationGroupNum > 2) {
+                Excel::setDataValidation($sheet, 'E3', 'E2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $relationGroupNum);
+            }
 
             // Prepare data for initial bonuses
             $arrProductIdStr = implode(",", $arrProductId);
@@ -2159,17 +2203,17 @@ class ProductsController extends Controller
             }
 
             $mapBonusIdRelationGroupName = [];
-            if(count($arrBonusId) > 0) {
+            if (count($arrBonusId) > 0) {
                 $arrBonusIdStr = implode(",", $arrBonusId);
                 $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
                 $arrBonusRelationGroup = $dbBonusRelationGroup->findWhere("bonusId IN (" . $arrBonusIdStr . ")");
 
-                foreach($arrBonusRelationGroup as $bonusRelationGroup) {
+                foreach ($arrBonusRelationGroup as $bonusRelationGroup) {
                     $bonusId = $bonusRelationGroup['bonusId'];
 
                     $relationGroupId = $bonusRelationGroup['relationGroupId'];
                     $relationGroupName = $mapRelationGroupIdName[$relationGroupId];
-                    if(array_key_exists($bonusId, $mapBonusIdRelationGroupName)) {
+                    if (array_key_exists($bonusId, $mapBonusIdRelationGroupName)) {
                         $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonusId];
                         array_push($arrRelationGroupName, $relationGroupName);
                         $mapBonusIdRelationGroupName[$bonusId] = $arrRelationGroupName;
@@ -2197,12 +2241,12 @@ class ProductsController extends Controller
 
                 // Fill relation group field
                 $arrRelationGroupName = $mapBonusIdRelationGroupName[$bonus["id"]];
-                if(!$arrRelationGroupName) {
+                if (!$arrRelationGroupName) {
                     array_push($bonusExcel, "");
                     array_push($arrBonusExcel, $bonusExcel);
                 } else {
                     // Duplicate row and add each time a relation group
-                    foreach($arrRelationGroupName as $relationGroupName) {
+                    foreach ($arrRelationGroupName as $relationGroupName) {
                         $bonusExcelCopy = array_merge([], $bonusExcel);
                         array_push($bonusExcelCopy, $relationGroupName);
                         array_push($arrBonusExcel, $bonusExcelCopy);
@@ -2334,7 +2378,11 @@ class ProductsController extends Controller
 
                 foreach ($cellIterator as $cell) {
                     $cellLetter = $cell->getColumn();
-                    $cellValue = trim($cell->getCalculatedValue());
+                    try {
+                        $cellValue = trim($cell->getCalculatedValue());
+                    } catch (Exception $e) {
+                        continue;
+                    }
 
                     switch ($cellLetter) {
                         case "A":
@@ -2359,6 +2407,7 @@ class ProductsController extends Controller
                             array_push($bonus, $cellValue);
                             break;
                         case "D":
+                            $cellValue = $cell->getOldCalculatedValue();
                             if (!(is_numeric($cellValue) && (int) $cellValue == $cellValue) || $cellValue < 0) {
                                 array_push($errors, "Bonus must be a positive whole number");
                             } else {
@@ -2369,7 +2418,7 @@ class ProductsController extends Controller
                             array_push($bonus, $cellValue);
                             break;
                         case "E":
-                            if($cellValue != "#N/A" && $cellValue != "" && $cellValue != null) {
+                            if ($cellValue != "#N/A" && $cellValue != "" && $cellValue != null) {
                                 if (!in_array($cellValue, $arrRelationGroupId)) {
                                     array_push($errors, "Customer Group invalid");
                                 }
@@ -2516,7 +2565,7 @@ class ProductsController extends Controller
                 $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
                 $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
                 $dbBonus->getWhere("entityProductId IN (" . $arrProductIdStr . ") AND isActive = 1");
-                while(!$dbBonus->dry()) {
+                while (!$dbBonus->dry()) {
                     $dbBonus->isActive = 0;
                     $dbBonus->update();
                     $dbBonus->next();
@@ -2524,23 +2573,22 @@ class ProductsController extends Controller
 
                 $arrBonusDb = [];
                 $arrMergedIndex = [];
-                for($i = 0; $i < count($arrBonus); $i++) {
-                    if(in_array($i, $arrMergedIndex)) {
+                for ($i = 0; $i < count($arrBonus); $i++) {
+                    if (in_array($i, $arrMergedIndex)) {
                         continue;
                     }
                     $bonus = $arrBonus[$i];
-
                     $entityProductId = $bonus[0];
                     $bonusTypeId = $bonus[1];
                     $minOrder = $bonus[2];
                     $bonusBonus = $bonus[3];
                     $relationGroupId = $bonus[4];
 
-                    $arrRelationGroupId = [];
-                    if($relationGroupId != "#N/A") {
-                        array_push($arrRelationGroupId, $relationGroupId);
-                        for($j = 0; $j < count($arrBonus); $j++) {
-                            if(in_array($j, $arrMergedIndex)) {
+                    $arrRelationGroupIdDb = [];
+                    if ($relationGroupId != "#N/A" && count($arrRelationGroupId) > 0) {
+                        array_push($arrRelationGroupIdDb, $relationGroupId);
+                        for ($j = 0; $j < count($arrBonus); $j++) {
+                            if (in_array($j, $arrMergedIndex)) {
                                 continue;
                             }
                             $mergeBonus = $arrBonus[$j];
@@ -2550,14 +2598,16 @@ class ProductsController extends Controller
                             $mergeBonusBonus = $mergeBonus[3];
                             $mergeRelationGroupId = $mergeBonus[4];
 
-                            if($entityProductId == $mergeEntityProductId
+                            if (
+                                $entityProductId == $mergeEntityProductId
                                 && $bonusTypeId == $mergeBonusTypeId
                                 && $minOrder == $mergeMinOrder
                                 && $bonusBonus == $mergeBonusBonus
-                                && $mergeRelationGroupId != "#N/A") {
+                                && $mergeRelationGroupId != "#N/A"
+                            ) {
                                 array_push($arrMergedIndex, $j);
-                                if(!in_array($mergeRelationGroupId, $arrRelationGroupId)) {
-                                    array_push($arrRelationGroupId, $mergeRelationGroupId);
+                                if (!in_array($mergeRelationGroupId, $arrRelationGroupIdDb)) {
+                                    array_push($arrRelationGroupIdDb, $mergeRelationGroupId);
                                 }
                             }
                         }
@@ -2568,13 +2618,13 @@ class ProductsController extends Controller
                         $bonusTypeId,
                         $minOrder,
                         $bonusBonus,
-                        $arrRelationGroupId
+                        $arrRelationGroupIdDb
                     ];
                     array_push($arrBonusDb, $bonusDb);
                 }
 
                 $trace = [];
-                foreach($arrBonusDb as $bonusDb) {
+                foreach ($arrBonusDb as $bonusDb) {
                     $dbBonus = new BaseModel($this->db, "entityProductSellBonusDetail");
                     $dbBonus->entityProductId = $bonusDb[0];
                     $dbBonus->bonusTypeId = $bonusDb[1];
@@ -2585,8 +2635,8 @@ class ProductsController extends Controller
                     $trace[] = $dbBonus->id;
 
                     $arrRelationGroupId = $bonusDb[4];
-                    if(count($arrRelationGroupId) > 0) {
-                        foreach($arrRelationGroupId as $relationGroupId) {
+                    if (count($arrRelationGroupId) > 0) {
+                        foreach ($arrRelationGroupId as $relationGroupId) {
                             $dbBonusRelationGroup = new BaseModel($this->db, "entityProductSellBonusDetailRelationGroup");
                             $dbBonusRelationGroup->bonusId = $dbBonus->id; // $dbBonus['id'];
                             $dbBonusRelationGroup->relationGroupId = $relationGroupId;
@@ -2595,7 +2645,7 @@ class ProductsController extends Controller
                     }
                 }
 
-               // print_r($trace);
+                // print_r($trace);
             }
 
             // Update logs
@@ -2647,9 +2697,6 @@ class ProductsController extends Controller
             $arrCountry = [
                 ['Name', 'Value']
             ];
-            $arrSubcategory = [
-                ['Name', 'Value']
-            ];
             $arrIngredient = [
                 ['Name', 'Value']
             ];
@@ -2673,16 +2720,6 @@ class ProductsController extends Controller
                 $arrCountry[] = array($country['name'], $country['id']);
             }
 
-            $dbSubcategory = new BaseModel($this->db, "subcategory");
-            $dbSubcategory->name = "name_" . $this->objUser->language;
-            $allSubcategory = $dbSubcategory->findAll("name asc");
-
-            $subcategoryNum = 2;
-            foreach ($allSubcategory as $subcategory) {
-                $subcategoryNum++;
-                $arrSubcategory[] = array($subcategory['name'], $subcategory['id']);
-            }
-
             $dbIngredient = new BaseModel($this->db, "ingredient");
             $dbIngredient->name = "name_" . $this->objUser->language;
             $allIngredient = $dbIngredient->findAll("name asc");
@@ -2702,8 +2739,7 @@ class ProductsController extends Controller
             // Set dropdown variables in excel
             $sheet->fromArray($arrScientificName, NULL, 'A2', true);
             $sheet->fromArray($arrCountry, NULL, 'D2', true);
-            $sheet->fromArray($arrSubcategory, NULL, 'G2', true);
-            $sheet->fromArray($arrIngredient, NULL, 'J2', true);
+            $sheet->fromArray($arrIngredient, NULL, 'G2', true);
 
             // Change active sheet to database input
             $sheet = $spreadsheet->setActiveSheetIndex(1);
@@ -2711,8 +2747,7 @@ class ProductsController extends Controller
             // Set validation and formula
             Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
             Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
-            Excel::setCellFormulaVLookup($sheet, 'P3', 2505, "'User Input'!P", 'Variables!$G$3:$H$' . $subcategoryNum);
-            // Excel::setCellFormulaVLookup($sheet, 'Q3', 2505, "'User Input'!Q", 'Variables!$J$3:$K$' . $ingredientNum);
+            // Excel::setCellFormulaVLookup($sheet, 'P3', 2505, "'User Input'!P", 'Variables!$G$3:$H$' . $ingredientNum);
 
             // Hide database and variables sheet
             Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -2724,8 +2759,7 @@ class ProductsController extends Controller
             // Set data validation for dropdowns
             Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
             Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
-            Excel::setDataValidation($sheet, 'P3', 'P2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
-            Excel::setDataValidation($sheet, 'Q3', 'Q2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
+            Excel::setDataValidation($sheet, 'P3', 'P2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $ingredientNum);
 
             // Create excel sheet
             $productsSheetUrl = "files/downloads/reports/products-add/products-add-" . $this->objUser->id . "-" . time() . ".xlsm";
@@ -2800,20 +2834,6 @@ class ProductsController extends Controller
                 $mapCountryIdName[$country['id']] = $country['name'];
             }
 
-            // Get all subcategories
-            $dbSubcategory = new BaseModel($this->db, "subcategory");
-            $dbSubcategory->name = "name_" . $this->objUser->language;
-            $allSubcategory = $dbSubcategory->findAll("name asc");
-
-            $allSubcategoryId = [];
-            $mapSubcategoryIdName = [];
-            $mapSubcategoryIdCategoryId = [];
-            foreach ($allSubcategory as $subcategory) {
-                array_push($allSubcategoryId, $subcategory['id']);
-                $mapSubcategoryIdCategoryId[$subcategory['id']] = $subcategory['categoryId'];
-                $mapSubcategoryIdName[$subcategory['id']] = $subcategory['name'];
-            }
-
             // Get all ingredients
             $dbIngredient = new BaseModel($this->db, "ingredient");
             $dbIngredient->name = "name_" . $this->objUser->language;
@@ -2842,10 +2862,9 @@ class ProductsController extends Controller
                 "M" => "manufacturerName",
                 "N" => "batchNumber",
                 "O" => "itemCode",
-                "P" => "subcategoryId",
-                "Q" => "activeIngredientsId",
-                "R" => "expiryDate",
-                "S" => "strength"
+                "P" => "activeIngredientsId",
+                "Q" => "expiryDate",
+                "R" => "strength"
             ];
 
             $successProducts = [];
@@ -2861,7 +2880,6 @@ class ProductsController extends Controller
 
             $firstRow = true;
             $secondRow = false;
-            $finished = false;
             foreach ($sheet->getRowIterator() as $row) {
                 if ($firstRow) {
                     $firstRow = false;
@@ -2905,7 +2923,7 @@ class ProductsController extends Controller
                             break;
                         case "B":
                             if (!in_array($cellValue, $allCountryId)) {
-                                $finished = true;
+                                array_push($errors, "Made In is invalid");
                             } else {
                                 $dbProduct->madeInCountryId = $cellValue;
                             }
@@ -3024,14 +3042,6 @@ class ProductsController extends Controller
                             }
                             break;
                         case "P":
-                            if (!in_array($cellValue, $allSubcategoryId)) {
-                                array_push($errors, "Category - Subcategory invalid");
-                            } else {
-                                $dbProduct->subcategoryId = $cellValue;
-                                $dbProduct->categoryId = $mapSubcategoryIdCategoryId[$cellValue];
-                            }
-                            break;
-                        case "Q":
                             $valid = true;
                             if (strlen($cellValue) > 0) {
                                 $activeIngredientsTemp = explode(", ", $cellValue);
@@ -3045,7 +3055,7 @@ class ProductsController extends Controller
                             }
                             $activeIngredients = $cellValue;
                             break;
-                        case "R":
+                        case "Q":
                             if (!is_null($cellValue)) {
                                 if (!is_int($cellValue) && !is_float($cellValue)) {
                                     array_push($errors, "Expiry Date must fit a date format (mm/dd/yyyy)");
@@ -3055,7 +3065,7 @@ class ProductsController extends Controller
                                 }
                             }
                             break;
-                        case "S":
+                        case "R":
                             if (strlen($cellValue) != 0) {
                                 if (strlen($cellValue) < 4 || strlen($cellValue) > 200) {
                                     array_push($errors, "Strength should be between 4 and 200 characters");
@@ -3067,7 +3077,19 @@ class ProductsController extends Controller
                     }
                 }
 
-                if ($finished) {
+                if (
+                    strlen($dbProduct->scientificNameId) == 0 && strlen($dbProduct->madeInCountryId) == 0
+                    && strlen($dbProduct->name_ar) == 0 && strlen($dbProduct->name_en) == 0
+                    && strlen($dbProduct->name_fr) == 0 && strlen($dbProduct->subtitle_ar) == 0
+                    && strlen($dbProduct->subtitle_en) == 0 && strlen($dbProduct->subtitle_fr) == 0
+                    && strlen($dbProduct->description_ar) == 0 && strlen($dbProduct->description_en) == 0
+                    && strlen($dbProduct->description_fr) == 0 && strlen($dbEntityProduct->unitPrice) == 0
+                    && strlen($dbEntityProduct->vat) == 0 && strlen($dbEntityProduct->stock) == 0
+                    && strlen($dbEntityProduct->maximumOrderQuantity) == 0 && strlen($dbProduct->manufacturerName) == 0
+                    && strlen($dbProduct->batchNumber) == 0 && strlen($dbProduct->itemCode) == 0
+                    && strlen($dbProduct->expiryDate) == 0 && strlen($dbProduct->strength) == 0
+                    && strlen($activeIngredients) == 0
+                ) {
                     break;
                 }
 
@@ -3115,9 +3137,6 @@ class ProductsController extends Controller
                 $arrCountry = [
                     ['Name', 'Value']
                 ];
-                $arrSubcategory = [
-                    ['Name', 'Value']
-                ];
                 $arrIngredient = [
                     ['Name', 'Value']
                 ];
@@ -3132,12 +3151,6 @@ class ProductsController extends Controller
                 foreach ($allCountry as $country) {
                     $countryNum++;
                     $arrCountry[] = array($country['name'], $country['id']);
-                }
-
-                $subcategoryNum = 2;
-                foreach ($allSubcategory as $subcategory) {
-                    $subcategoryNum++;
-                    $arrSubcategory[] = array($subcategory['name'], $subcategory['id']);
                 }
 
                 $ingredientNum = 2;
@@ -3155,8 +3168,7 @@ class ProductsController extends Controller
                 // Set dropdown variables in excel
                 $sheet->fromArray($arrScientificName, NULL, 'A2', true);
                 $sheet->fromArray($arrCountry, NULL, 'D2', true);
-                $sheet->fromArray($arrSubcategory, NULL, 'G2', true);
-                $sheet->fromArray($arrIngredient, NULL, 'J2', true);
+                $sheet->fromArray($arrIngredient, NULL, 'G2', true);
 
                 // Change active sheet to database input
                 $sheet = $spreadsheet->setActiveSheetIndex(1);
@@ -3164,8 +3176,7 @@ class ProductsController extends Controller
                 // Set validation and formula
                 Excel::setCellFormulaVLookup($sheet, 'A3', 2505, "'User Input'!A", 'Variables!$A$3:$B$' . $scientificNum);
                 Excel::setCellFormulaVLookup($sheet, 'B3', 2505, "'User Input'!B", 'Variables!$D$3:$E$' . $countryNum);
-                Excel::setCellFormulaVLookup($sheet, 'P3', 2505, "'User Input'!P", 'Variables!$G$3:$H$' . $subcategoryNum);
-                // Excel::setCellFormulaVLookup($sheet, 'Q3', 2505, "'User Input'!Q", 'Variables!$J$3:$K$' . $ingredientNum);
+                // Excel::setCellFormulaVLookup($sheet, 'P3', 2505, "'User Input'!P", 'Variables!$G$3:$H$' . $ingredientNum);
 
                 // Hide database and variables sheet
                 Excel::hideSheetByName($spreadsheet, $sheetnameDatabaseInput);
@@ -3177,11 +3188,10 @@ class ProductsController extends Controller
                 // Set data validation for dropdowns
                 Excel::setDataValidation($sheet, 'A3', 'A2505', 'TYPE_LIST', 'Variables!$A$3:$A$' . $scientificNum);
                 Excel::setDataValidation($sheet, 'B3', 'B2505', 'TYPE_LIST', 'Variables!$D$3:$D$' . $countryNum);
-                Excel::setDataValidation($sheet, 'P3', 'P2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $subcategoryNum);
-                Excel::setDataValidation($sheet, 'Q3', 'Q2505', 'TYPE_LIST', 'Variables!$J$3:$J$' . $ingredientNum);
+                Excel::setDataValidation($sheet, 'P3', 'P2505', 'TYPE_LIST', 'Variables!$G$3:$G$' . $ingredientNum);
 
-                $sheet->setCellValue('T2', 'Error');
-                $sheet->getStyle('T2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
+                $sheet->setCellValue('S2', 'Error');
+                $sheet->getStyle('S2')->applyFromArray(Excel::STYlE_CENTER_BOLD_BORDER_THICK);
 
                 // Add all products to multidimensional array
                 $multiProducts = [];
@@ -3201,7 +3211,6 @@ class ProductsController extends Controller
                     "manufacturerName",
                     "batchNumber",
                     "itemCode",
-                    "subcategoryId",
                     "activeIngredientsId",
                     "expiryDate",
                     "strength"
@@ -3217,8 +3226,6 @@ class ProductsController extends Controller
                             $cellValue = $mapScientificIdName[$product[$j]];
                         } else if ($field == "madeInCountryId") {
                             $cellValue = $mapCountryIdName[$product[$j]];
-                        } else if ($field == "subcategoryId") {
-                            $cellValue = $mapSubcategoryIdName[$product[$j]];
                         } else if ($field == "activeIngredientsId") {
                             if (strlen($product[$j]) > 0) {
                                 $activeIngredientsId = explode(", ", $product[$j]);

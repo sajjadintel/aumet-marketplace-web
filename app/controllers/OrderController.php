@@ -34,7 +34,7 @@ class OrderController extends Controller
         $this->handleGetPharmacyOrders('history');
     }
 
-    function getNotifcationsDistributorOrdersNew()
+    function getNotificationsDistributorOrdersNew()
     {
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
@@ -77,6 +77,15 @@ class OrderController extends Controller
                     $this->f3->set('vModule_order_header', 'Unknown List');
                     break;
             }
+
+            $customerId = $_GET['customer'];
+            if($customerId) {
+                $dbEntity = new BaseModel($this->db, "entity");
+                $dbEntity->name = "name_" . $this->objUser->language;
+                $dbEntity->getWhere("id=$customerId");
+                $this->f3->set('customerName', $dbEntity['name']);
+            }
+
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $title;
             $this->webResponse->data = View::instance()->render($renderFile);
@@ -184,6 +193,7 @@ class OrderController extends Controller
             $orderId = $this->f3->get('PARAMS.orderId');
 
             $dbOrder = new BaseModel($this->db, "vwOrderEntityUser");
+            $dbOrder->orderPaymentMethodName = "orderPaymentMethodName_" . $this->objUser->language;
             $arrOrder = $dbOrder->findWhere("id = '$orderId'");
 
             $dbOrderDetail = new BaseModel($this->db, "vwOrderDetail");
@@ -307,14 +317,27 @@ class OrderController extends Controller
 
             if (sizeof($arrOrderDetail) == 0) {
                 $order['isVisible'] = true;
+                $order['productCount'] = 0;
+                $order['orderCount'] = 0;
                 $ordersWithOrderDetail[] = $order;
                 continue;
             }
+
+            $productsCount = 0;
+            for ($i = 0; $i < count($arrOrderDetail); $i++) {
+                $productsCount += $arrOrderDetail[$i]['shippedQuantity'];
+            }
+
             for ($i = 0; $i < count($arrOrderDetail); $i++) {
                 $orderDetail = array_merge($order, $arrOrderDetail[$i]);
+                if ($i === 0) {
+                    $orderDetail['productCount'] = count($arrOrderDetail);
+                    $orderDetail['orderCount'] = $productsCount;
+                }
                 $orderDetail['isVisible'] = $i === 0;
-                $ordersWithOrderDetail[] = array_merge($order, $orderDetail);
+                $ordersWithOrderDetail[] = $orderDetail;
             }
+
         }
 
         ## Response
@@ -772,22 +795,16 @@ class OrderController extends Controller
                 $dbRelation->entitySellerId = $dbOrder->entitySellerId;
                 $dbRelation->currencyId = $dbOrder->currencyId;
                 $dbRelation->orderCount = 1;
+                $dbRelation->orderCountPaid = 1;
                 $dbRelation->orderTotal = $dbOrder->total;
+                $dbRelation->orderTotalPaid = $dbOrder->total;
                 $dbRelation->add();
             } else {
-                $dbRelation->orderCount++;
-                $dbRelation->orderTotal += $dbOrder->total;
+                $dbRelation->orderCountPaid++;
+                $dbRelation->orderTotalPaid += $dbOrder->total;
                 $dbRelation->updatedAt = date('Y-m-d H:i:s');
                 $dbRelation->update();
             }
-        } elseif ($statusId == Constants::ORDER_STATUS_PAID) {
-            $dbRelation = new BaseModel($this->db, "entityRelation");
-            $dbRelation->getWhere("entityBuyerId = $dbOrder->entityBuyerId AND entitySellerId = $dbOrder->entitySellerId");
-
-            $dbRelation->orderCountPaid++;
-            $dbRelation->orderTotalPaid += $dbOrder->total;
-            $dbRelation->updatedAt = date('Y-m-d H:i:s');
-            $dbRelation->update();
         }
 
         // Send mails to notify about order status update

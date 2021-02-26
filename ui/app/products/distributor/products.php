@@ -36,7 +36,7 @@ function compress_htmlcode($codedata)
                 </div>
             </div>
 
-            <div class="d-flex flex-column-fluid">
+            <div class="d-none flex-column-fluid">
                 <div class="input-group input-group-lg mr-5">
                     <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
@@ -131,7 +131,7 @@ function compress_htmlcode($codedata)
                         '/product/' +
                         row.id +
                         '\')"> ' +
-                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <img class="productImage" src="' + row.image + '" ></div>' +
+                        '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <img class="productImage image-contain" style="min-width:60px;" src="' + row.image + '" ></div>' +
                         '</a></div>';
                     output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +

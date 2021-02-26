@@ -136,6 +136,7 @@ class BonusHelper {
                 $activeBonus->minQty = $bonusMinOrder;
                 $activeBonus->bonuses = $bonusBonus;
                 $activeBonus->totalBonus = $totalBonus;
+                $activeBonus->bonusTypeId = $bonusTypeId;
                 $quantityFree = $totalBonus;
             }
         }
@@ -151,7 +152,26 @@ class BonusHelper {
 
         // if it's total quantity change max order with right value and consider bonus
         if ($isTotalQuantity) {
-            $bonusDetail->maxOrder = $quantity - $quantityFree;
+            switch ($bonusDetail->activeBonus->bonusTypeId) {
+                case Constants::BONUS_TYPE_FIXED:
+                    $bonusDetail->maxOrder = $bonusDetail->maxOrder - $bonusDetail->activeBonus->bonuses;
+                    break;
+                case Constants::BONUS_TYPE_DYNAMIC:
+                    $max = 0;
+                    for ($quantity = $maxOrder; $quantity > 0; $quantity--) {
+                        $res = $quantity + floor($quantity / $bonusDetail->activeBonus->minQty) * $bonusDetail->activeBonus->bonuses;
+                        if ($res <= $maxOrder) {
+                            $max = $quantity;
+                            break;
+                        }
+                    }
+                    $bonusDetail->maxOrder = $max;
+                    break;
+                case Constants::BONUS_TYPE_PERCENTAGE:
+                    $bonuses = str_replace('%', '', $bonusDetail->activeBonus->bonuses);
+                    $bonusDetail->maxOrder = floor($bonusDetail->maxOrder * 100 / ((float)$bonuses + 100));
+                    break;
+            }
         }
 
         return $bonusDetail;

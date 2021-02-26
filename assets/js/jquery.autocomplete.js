@@ -589,15 +589,22 @@
 
                 $.extend(ajaxSettings, options.ajaxSettings);
 
-                that.currentRequest = $.ajax(ajaxSettings).done(function (data) {
-                    var result;
-                    that.currentRequest = null;
-                    result = options.transformResult(data, q);
-                    that.processResponse(result, q, cacheKey);
-                    options.onSearchComplete.call(that.element, q, result.suggestions);
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    options.onSearchError.call(that.element, q, jqXHR, textStatus, errorThrown);
-                });
+                clearTimeout($(this).data('timer'));
+
+                var timer = setTimeout(function () {
+                    that.currentRequest = $.ajax(ajaxSettings).done(function (data) {
+                        var result;
+                        that.currentRequest = null;
+                        result = options.transformResult(data, q);
+                        that.processResponse(result, q, cacheKey);
+                        options.onSearchComplete.call(that.element, q, result.suggestions);
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        options.onSearchError.call(that.element, q, jqXHR, textStatus, errorThrown);
+                    });
+                }, 500);
+
+                $(this).data('timer', timer);
+
             } else {
                 options.onSearchComplete.call(that.element, q, []);
             }

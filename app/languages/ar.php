@@ -55,8 +55,8 @@ return array(
     'vForgot_emailSent' => 'Please check out your email and use reset password link.', // TODO: add translation
     'vForgot_havingIssues' => 'Having issues?', // TODO: add translation
     'vForgot_getHelp' => 'Get Help', // TODO: add translation
-    'vForgot_enterPassword' => 'Enter your email to reset your password', // TODO: add translation
-    'vForgot_enterPasswords' => 'Enter your password to reset your password', // TODO: add translation
+    'vForgot_enterPassword' => 'Enter email to reset your password', // TODO: add translation
+    'vForgot_enterPasswords' => 'Enter current password to reset your password', // TODO: add translation
     'vForgot_submit' => 'Submit', // TODO: add translation
     'vForgot_cancel' => 'Cancel', // TODO: add translation
     'vForgot_resetPassword' => 'Reset Password', // TODO: add translation
@@ -118,7 +118,7 @@ return array(
     'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',
     'vSignup_isVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours.',
     'vSignup_isAlreadyVerifiedTitle' => 'Your Email has already been Verified!',
-    'vSignup_isAlreadyVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours. Has it been longer? <a href="https://aumet.com">Request Assistance</a>',
+    'vSignup_isAlreadyVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours.',
     'vSignup_isVerifiedInvalidTitle' => 'Your verification token is invalid..',
     'vSignup_isVerifiedInvalidSubtitle' => '<a href="https://aumet.com">Request Assistance</a>',
 
@@ -145,6 +145,8 @@ return array(
     'vModule_search_stockStatus_Available' => 'المتوفر فقط',
     'vModule_search_stockStatus_others' => 'الجميع',
     'vModule_search_unavailableHeader' => 'اضغط هنا للابلاغ عن عدم توفر المنتج المطلوب وسيتم العمل على مساعدتك بأسرع وقت ممكن',
+    'vModule_search_countryPlaceholder' => 'دولة',
+    'vModule_search_customerNamePlaceholder' => 'اسم الزبون',
 
     'vModule_product_title' => 'المنتجات',
     'vModule_product_detail' => 'Product', // TODO: add translation
@@ -194,6 +196,10 @@ return array(
     'vModule_product_bonusTooBig' => 'المكافأة كبيرة جدًا!',
     'vModule_product_productOverview' => 'Product Overview', // TODO: add translation
 
+    'vModule_product_bonus_download_file_button' => 'Download Sample Bonus Excel File',  // TODO: add translation
+    'vModule_product_bonus_download_file_info_message' => 'Use Microsoft Excel (desktop version) to update file',  // TODO: add translation
+    'vModule_product_bonus_upload_file_info_message' => 'Drop files here or click to upload.',  // TODO: add translation
+    'vModule_product_bonus_upload_file_constraint_message' => 'Only .xlsx files are allowed for upload',  // TODO: add translation
 
     'stockAvailability_available' => 'متوفر',
     'stockAvailability_notAvailable' => 'غير متوفر',
@@ -433,4 +439,10 @@ return array(
     'vModal_welcome_step3_title' => 'Add minimum value order by location.', // TODO: translate
     'vModal_welcome_step3_message' => 'Add minimum value order by location.', // TODO: translate
     'vModal_welcome_callToAction' => 'Complete Profile', // TODO: translate
+    
+    'vModule_customerGroup_title' => 'مجموعة الزبائن',
+    'vModule_customerGroup_editModalTitle' => 'مجموعة الزبائن',
+    'vModule_customerGroup_editModalNonGrouped' => 'غير مجمعة',
+    'vModule_customerGroup_noCustomerGroup' => 'لا مجموعة العملاء',
+    'vModule_customerGroup_saved' => 'تم حفظ مجموعة العملاء بنجاح',
 );

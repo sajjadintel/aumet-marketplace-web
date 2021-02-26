@@ -44,11 +44,22 @@ function compress_htmlcode($codedata)
     </script>
 
     <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-W5PTNF7');</script>
+    <script>
+        (function(w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start': new Date().getTime(),
+                event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-W5PTNF7');
+    </script>
     <!-- End Google Tag Manager -->
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
@@ -142,7 +153,7 @@ function compress_htmlcode($codedata)
     <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="/favicons/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
-    <link rel="manifest" href="/favicons/manifest.json">
+    <link rel="manifest" href="/favicons/manifest.json" crossorigin="use-credentials">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/favicons/ms-icon-144x144.png">
 
@@ -240,10 +251,9 @@ function compress_htmlcode($codedata)
 <body id="kt_body" class="header-fixed header-mobile-fixed  aside-enabled aside-fixed aside-minimize-hoverable aside-minimize page-loading ">
 
 
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NM5G929"
-                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NM5G929" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
 
     <!--begin::Main-->
     <!--begin::Header Mobile-->
@@ -352,6 +362,7 @@ function compress_htmlcode($codedata)
     <script type="text/javascript" src="/assets/js/products-search.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/distributor-products.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/distributor-customers.js<?php echo $platformVersion ?>"></script>
+    <script type="text/javascript" src="/assets/js/distributor-customer-group.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/profile.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/jquery.smartTab.min.js"></script>
 
@@ -375,7 +386,7 @@ function compress_htmlcode($codedata)
             serviceUrl: '/web/searchbar',
             onSelect: function(suggestion) {
                 console.log('selected', suggestion);
-                WebApp.loadPage('/web/pharmacy/product/search?query=' + suggestion.value);
+                WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent(suggestion.value));
             },
             onSearchComplete: function(a, b, c) {
                 $('#searchBarInputDesktop').addClass('search-wrapper-open');
@@ -391,7 +402,7 @@ function compress_htmlcode($codedata)
             serviceUrl: '/web/searchbar',
             onSelect: function(suggestion) {
                 console.log('selected', suggestion);
-                WebApp.loadPage('/web/pharmacy/product/search?query=' + suggestion.value);
+                WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent(suggestion.value));
             },
             onSearchComplete: function(a, b, c) {
                 $('#searchBarInputMobile').addClass('search-wrapper-open');
@@ -405,22 +416,22 @@ function compress_htmlcode($codedata)
 
         $('#searchBarInputDesktop').keyup(function(e) {
             if (e.keyCode == 13) {
-                WebApp.loadPage('/web/pharmacy/product/search?query=' + $('#searchBarInputDesktop').val());
+                WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent($('#searchBarInputDesktop').val()));
             }
         });
 
         $('#searchBarInputMobile').keyup(function(e) {
             if (e.keyCode == 13) {
-                WebApp.loadPage('/web/pharmacy/product/search?query=' + $('#searchBarInputMobile').val());
+                WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent($('#searchBarInputMobile').val()));
             }
         });
 
         $("#searchBarInputDesktopIcon").click(function() {
-            WebApp.loadPage('/web/pharmacy/product/search?query=' + $('#searchBarInputDesktop').val());
+            WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent($('#searchBarInputDesktop').val()));
         });
 
         $("#searchBarInputMobileIcon").click(function() {
-            WebApp.loadPage('/web/pharmacy/product/search?query=' + $('#searchBarInputMobile').val());
+            WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent($('#searchBarInputMobile').val()));
         });
     </script>
 

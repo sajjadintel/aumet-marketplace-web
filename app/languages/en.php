@@ -52,8 +52,8 @@ return array(
     'vForgot_emailSent' => 'Please check out your email and use reset password link.',
     'vForgot_havingIssues' => 'Having issues?',
     'vForgot_getHelp' => 'Get Help',
-    'vForgot_enterPassword' => 'Enter your email to reset your password',
-    'vForgot_enterPasswords' => 'Enter your password to reset your password',
+    'vForgot_enterPassword' => 'Enter email to reset your password',
+    'vForgot_enterPasswords' => 'Enter current password to reset your password',
     'vForgot_submit' => 'Submit',
     'vForgot_cancel' => 'Cancel',
     'vForgot_resetPassword' => 'Reset Password',
@@ -119,7 +119,7 @@ return array(
     'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',
     'vSignup_isVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours.',
     'vSignup_isAlreadyVerifiedTitle' => 'Your Email has already been Verified!',
-    'vSignup_isAlreadyVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours. Has it been longer? <a href="https://aumet.com">Request Assistance</a>',
+    'vSignup_isAlreadyVerifiedSubtitle' => 'Please await till our team authenticates your account details from 24 to 48 hours.',
     'vSignup_isVerifiedInvalidTitle' => 'Your verification token is invalid..',
     'vSignup_isVerifiedInvalidSubtitle' => '<a href="https://aumet.com">Request Assistance</a>',
 
@@ -146,6 +146,8 @@ return array(
     'vModule_search_stockStatus_Available' => 'Available Only',
     'vModule_search_stockStatus_others' => 'All',
     'vModule_search_unavailableHeader' => 'Click here to inform of a lack of availability for the product and we\'ll work on resolving it as soon as possible',
+    'vModule_search_countryPlaceholder' => 'Country',
+    'vModule_search_customerNamePlaceholder' => 'Customer Name',
 
     'vModule_product_title' => 'Product List',
     'vModule_product_detail' => 'Product',
@@ -240,6 +242,11 @@ return array(
     'vModule_product_quantityTooBig' => 'Quantity too big !',
     'vModule_product_bonusTooBig' => 'Bonus too big !',
     'vModule_product_productOverview' => 'Product Overview',
+
+    'vModule_product_bonus_download_file_button' => 'Download Sample Bonus Excel File',
+    'vModule_product_bonus_download_file_info_message' => 'Use Microsoft Excel (desktop version) to update file',
+    'vModule_product_bonus_upload_file_info_message' => 'Drop files here or click to upload.',
+    'vModule_product_bonus_upload_file_constraint_message' => 'Only .xlsx files are allowed for upload',
 
     'vModule_product_stockStatus_NotAvailable' => 'Not Available',
     'vModule_product_stockStatus_ComingSoon' => 'Coming Soon',
@@ -438,4 +445,10 @@ return array(
     'vModal_welcome_step3_title' => 'Step 3',
     'vModal_welcome_step3_message' => 'Add minimum value order by location.',
     'vModal_welcome_callToAction' => 'Complete Profile',
+
+    'vModule_customerGroup_title' => 'Customer Group',
+    'vModule_customerGroup_editModalTitle' => 'Customer Group',
+    'vModule_customerGroup_editModalNonGrouped' => 'NON-GROUPED',
+    'vModule_customerGroup_noCustomerGroup' => 'No Customer Group',
+    'vModule_customerGroup_saved' => 'Customer Group saved successfully',
 );

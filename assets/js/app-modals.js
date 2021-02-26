@@ -146,6 +146,11 @@ var WebAppModals = (function () {
 		}
 		$('#viewModalTitle').html(WebAppLocals.getMessage('orderDetails'));
 		$('#modalBranchLabel').html(WebAppLocals.getMessage('branch'));
+		$('#modalPaymentMethodLabel').html(WebAppLocals.getMessage('paymentOption'));
+		$('#modalPaymentMethodText').html(webResponse.data.order.orderPaymentMethodName);
+		console.log('webResponse.data.order');
+		console.log(webResponse.data.order);
+
 		if (isPharmacy) {
 			$('#modalCustomerNameLabel').html(WebAppLocals.getMessage('entitySeller'));
 			$('#modalCustomerNameText').html(webResponse.data.order.entitySeller);

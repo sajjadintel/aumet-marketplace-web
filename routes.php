@@ -46,8 +46,11 @@ $f3->route('GET /web/product/ingredient/list', 'SearchController->getProductIngr
 $f3->route('GET /web/order/customer/list', 'SearchController->getOrderBuyerList');
 $f3->route('GET /web/order/Distributor/list', 'SearchController->getOrderSellerList');
 $f3->route('GET /web/order/Distributor/listAll', 'SearchController->getAllSellerList');
+$f3->route('GET /web/order/Distributor/listAvailable', 'SearchController->getAvailableSellerList');
 $f3->route('GET /web/customer/group/list/@entityId', 'SearchController->getRelationGroupByEnitityList');
 $f3->route('GET /web/city/list/@countryId', 'SearchController->getCityByCountryList');
+$f3->route('GET /web/country/list/@entityId', 'SearchController->getCountryByEntityList');
+$f3->route('GET /web/customername/list/@entityId', 'SearchController->getCustomerNameByEntityList');
 
 $f3->route('GET /web/searchbar', 'SearchController->handleSearchBar');
 
@@ -136,6 +139,12 @@ $f3->route('GET /web/distributor/customer/relation/@entityBuyerId/@entitySellerI
 $f3->route('POST /web/distributor/customer', 'EntityController->postEntityCustomers');
 $f3->route('POST /web/distributor/customer/edit/group', 'EntityController->postEntityCustomersEditGroup');
 
+// Customer Group
+$f3->route('GET /web/distributor/customer/group', 'EntityController->getEntityCustomerGroup');
+$f3->route('POST /web/distributor/customer/group', 'EntityController->postEntityCustomerGroup');
+$f3->route('GET /web/distributor/customer/group/@customerGroupId', 'EntityController->getEntityCustomerGroupDetails');
+$f3->route('POST /web/distributor/customer/group/edit', 'EntityController->postEntityCustomerGroupEdit');
+
 $f3->route('GET /web/distributor/customer/feedback', 'CustomersController->getOrderCustomersFeedback');
 $f3->route('POST /web/distributor/customer/feedback', 'CustomersController->postOrderCustomersFeedback');
 
@@ -146,7 +155,7 @@ $f3->route('POST /web/distributor/product/bestselling', 'ProductsController->pos
 $f3->route('POST /web/pharmacy/order/recent', 'OrderController->postPharmacyOrdersRecent');
 // END dashboard
 
-$f3->route('GET /web/notification/order/new', 'OrderController->getNotifcationsDistributorOrdersNew');
+$f3->route('GET /web/notification/order/new', 'OrderController->getNotificationsDistributorOrdersNew');
 
 
 $f3->route('GET /web/pharmacy/order/pending', 'OrderController->getPharmacyOrdersPending');
