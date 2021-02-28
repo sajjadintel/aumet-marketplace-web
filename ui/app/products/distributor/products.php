@@ -154,8 +154,7 @@ function compress_htmlcode($codedata)
                 title: WebAppLocals.getMessage('stockQuantity'),
                 data: 'stock',
                 render: function(data, type, row, meta) {
-                    var output = row.stock;
-                    return output;
+                    return '<span class="d-flex justify-content-between align-items-center product-stock-container" data-id="' + row.id + '" data-stock="' + row.stock + '">' + _renderStock(row.stock) + '</span>';
                 }
             }, {
                 targets: 4,
@@ -231,6 +230,14 @@ function compress_htmlcode($codedata)
                 processing: false,
                 order: [
                     [0, 'desc']
+                ],
+                columns: [
+                    null,
+                    null,
+                    { 'width': '150px' },
+                    null,
+                    null,
+                    null
                 ],
             }
         };
@@ -501,15 +508,79 @@ function compress_htmlcode($codedata)
         $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
         var initiate = function() {
-            updateDatatable();
+            $.when(updateDatatable()).then(function () {
+                _editStockHandler();
+                _updateStock();
+                _cancelEditingStock();
+            });
         };
 
         var scientificName = <?php echo isset($_GET['scientificName']) ? "'" . $_GET['scientificName'] . "'" : 'null'; ?>;
 
         function updateDatatable() {
-            if (scientificName != null && !searchQuery.scientificName.includes(scientificName))
+            if (scientificName != null && !searchQuery.scientificName.includes(scientificName)) {
                 searchQuery.scientificName.push(scientificName);
+            }
             WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
+        }
+
+        function _editStockHandler() {
+            $('#datatableProducts').on('click', 'tbody .product-stock-container .btn-edit-stock', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const product_stock_container = $(this).closest('.product-stock-container');
+                const id = product_stock_container.data('id');
+                const stock = product_stock_container.data('stock');
+
+                const htmlStockInputElement = '' +
+                    '<div class="input-group input-group-sm flex-nowrap">' +
+                    '  <input type="number" class="form-control stock-value" name="stock" value="' + stock + '" placeholder="Enter stock quantity" min="0" step="1" onchange="this.value = this.value > 0? this.value : !this.value? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" autocomplete="off" aria-label="Stock" aria-describedby="btn-update-stock">' +
+                    '  <div class="input-group-append">' +
+                    '    <button class="btn btn-light-primary btn-update-stock" type="button" title="Update"><i class="fa fa-check"></i></button>' +
+                    '    <button class="btn btn-light-danger btn-cancel-stock" type="button" title="Cancel"><i class="fa fa-times"></i></button>' +
+                    '  </div>' +
+                    '</div>';
+
+                product_stock_container.html(htmlStockInputElement);
+            });
+        }
+
+        function _renderStock(stock) {
+            return '<span class="stock-quantity">' + stock + '</span> <i class="la la-edit la-2x ml-5 text-hover-dark-50 cursor-pointer btn-edit-stock" title="Edit"></i>';
+        }
+
+        function _updateStock() {
+            $('#datatableProducts').on('click', 'tbody .product-stock-container .btn-update-stock', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const product_stock_container = $(this).closest('.product-stock-container');
+                const id = product_stock_container.data('id');
+                const oldStock = product_stock_container.data('stock');
+                const newStock = product_stock_container.find('.stock-value').val();
+
+                WebApp.post('/web/distributor/product/editStockQuantity', {id: id, stock: newStock}, function (e) {
+                    const htmlStockInputElement = _renderStock(newStock);
+
+                    product_stock_container.html(htmlStockInputElement)
+                        .data('stock', newStock)
+                        .attr('data-stock', newStock);
+                });
+            });
+        }
+
+        function _cancelEditingStock() {
+            $('#datatableProducts').on('click', 'tbody .product-stock-container .btn-cancel-stock', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const product_stock_container = $(this).closest('.product-stock-container');
+                const stock = product_stock_container.data('stock');
+                const htmlStockInputElement = _renderStock(stock);
+
+                product_stock_container.html(htmlStockInputElement);
+            });
         }
 
         return {

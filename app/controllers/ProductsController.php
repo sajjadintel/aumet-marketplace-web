@@ -1213,6 +1213,34 @@ class ProductsController extends Controller
         }
     }
 
+    function postEditStockQuantityDistributorProduct()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/product");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $entityProductSellId = $this->f3->get('POST.id');
+
+            $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
+            $dbEntityProduct->getWhere(["id=?", $entityProductSellId]);
+
+            if ($dbEntityProduct->dry()) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->message = $this->f3->get('vModule_product_notFound');
+                echo $this->webResponse->jsonResponse();
+            } else {
+                $stock = $this->f3->get('POST.stock');
+
+                $dbEntityProduct->stock = $stock;
+                $dbEntityProduct->update();
+
+                $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
+                $this->webResponse->message = $this->f3->get('vModule_productStockEdited');
+                echo $this->webResponse->jsonResponse();
+            }
+        }
+    }
+
     function postEditStockDistributorProduct()
     {
         if (!$this->f3->ajax()) {
