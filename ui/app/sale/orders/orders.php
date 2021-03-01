@@ -60,6 +60,7 @@ function compress_htmlcode($codedata)
     </div>
 </div>
 <!--end::Container-->
+<script src="/assets/js/datepicker-helpers.js"></script>
 <script>
     var PageClass = function() {
         var elementId = "#datatable";
@@ -461,19 +462,7 @@ function compress_htmlcode($codedata)
             WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
         });
 
-        $('#searchOrdersDateInput').daterangepicker({
-            opens: 'left',
-            startDate: moment().subtract(29, 'days'),
-            endDate: moment(),
-            maxDate: new Date(),
-            locale: {
-                format: 'DD/MM/YYYY',
-            }
-        }, function(start, end, label) {
-            searchQuery.startDate = start.format('YYYY-MM-DD');
-            searchQuery.endDate = end.format('YYYY-MM-DD');
-            WebApp.CreateDatatableServerside("Orders List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
-        });
+        searchQuery = initializeDatePicker('#searchOrdersDateInput', searchQuery, elementId, url, columnDefs, searchQuery, dbAdditionalOptions, "Orders List");
 
         $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
