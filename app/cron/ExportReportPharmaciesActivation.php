@@ -20,7 +20,12 @@ class ExportReportPharmaciesActivation implements Command
             fputcsv($csv, $values);
         }
 
-        $this->sendMail($path, $fileName);
+        try {
+            $this->sendMail($path, $fileName);
+        } catch (InvalidArgumentException $argumentException) {
+            unlink($path);
+            throw $argumentException;
+        }
 
         unlink($path);
     }
