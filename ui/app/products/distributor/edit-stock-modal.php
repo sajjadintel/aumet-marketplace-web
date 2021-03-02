@@ -62,6 +62,12 @@
                                             <div class="d-md-none mb-2"></div>
                                         </div>
                                         <div class="col-md-2 form-group">
+                                            <label for="editStockPaymentMethodId" class="form-control-label"><?php echo $vModule_product_paymentMethod; ?></label>
+                                            <select id="editStockPaymentMethodId" name="paymentMethod" class="form-control selectpicker paymentMethodSelect" data-live-search="true">
+                                            </select>
+                                            <div class="d-md-none mb-2"></div>
+                                        </div>
+                                        <div class="col-md-2 form-group">
                                             <label for="editStockBonusQuantity" class="form-control-label"><?php echo $vModule_product_quantity ?></label>
                                             <input type="number" id="editStockBonusQuantity" name="minOrder" class="form-control editStockBonusQuantityInput" min="0" step="1" onchange="this.value = this.value > 0? this.value : !this.value? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" autocomplete="off">
                                             <div class="d-md-none mb-2"></div>
@@ -108,6 +114,12 @@
                                             <div class="d-md-none mb-2"></div>
                                         </div>
                                         <div class="col-md-2 form-group">
+                                            <label for="editStockSpecialPaymentMethodId" class="form-control-label"><?php echo $vModule_product_paymentMethod; ?></label>
+                                            <select id="editStockSpecialPaymentMethodId" name="paymentMethod" class="form-control selectpicker specialPaymentMethodSelect" data-live-search="true">
+                                            </select>
+                                            <div class="d-md-none mb-2"></div>
+                                        </div>
+                                        <div class="col-md-2 form-group">
                                             <label for="editStockBonusQuantity" class="form-control-label"><?php echo $vModule_product_quantity ?></label>
                                             <input type="number" id="editStockSpecialBonusQuantity" name="minOrder" class="form-control editStockSpecialBonusQuantityInput" min="0" step="1" onchange="this.value = this.value > 0? this.value : !this.value? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" autocomplete="off">
                                             <div class="d-md-none mb-2"></div>
@@ -117,7 +129,7 @@
                                             <input type="number" id="editStockSpecialBonus" name="bonus" class="form-control editStockSpecialBonusInput" min="0" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" autocomplete="off">
                                             <div class="d-md-none mb-2"></div>
                                         </div>
-                                        <div class="col-md-4 form-group">
+                                        <div class="col-md-2 form-group">
                                             <label for="editStockSpecialRelationGroupId" class="form-control-label"><?php echo $vModule_product_relationGroup; ?></label>
                                             <select id="editStockSpecialRelationGroupId" name="relationGroup" class="form-control selectpicker specialRelationGroupSelect" data-live-search="true" multiple>
                                             </select>
