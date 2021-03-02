@@ -29,6 +29,7 @@ $f3->route('POST /web/notification/support', 'NotificationController->support');
 
 $f3->route('GET /web/me/menu', 'UserController->getMenu');
 $f3->route('GET /web/me/switchLanguage/@lang', 'UserController->switchLanguage');
+$f3->route('POST /web/me/update-token', 'UserController->updateToken');
 
 $f3->route('GET /web/pharmacy/product/search', 'SearchController->getSearchProducts');
 $f3->route('POST /web/pharmacy/product/search', 'SearchController->postSearchProducts');

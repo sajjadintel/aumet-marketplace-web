@@ -82,6 +82,7 @@ class NotificationHelper {
         $f3->set('emailType', 'missingProducts');
         $f3->set('products', $dbMissingProduct);
 
+        $notificationHandler = new WebNotificationHandler($title);
 
         $dbEntityUserProfile = new BaseModel($dbConnection, "vwEntityUserProfile");
         $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $dbMissingProduct->entityId);
@@ -90,6 +91,7 @@ class NotificationHelper {
 
         foreach ($arrEntityUserProfile as $entityUserProfile) {
             $emailHandler->appendToAddress($entityUserProfile->userEmail, $entityUserProfile->userFullName);
+            $notificationHandler->appendToken($entityUserProfile->userWebFcmToken);
         }
 
         $htmlContent = View::instance()->render($emailFile);
@@ -108,6 +110,7 @@ class NotificationHelper {
 
         $emailHandler->sendEmail(Constants::EMAIL_MISSING_PRODUCTS, $subject, $htmlContent);
         $emailHandler->resetTos();
+        $notificationHandler->send();
     }
 
     /**

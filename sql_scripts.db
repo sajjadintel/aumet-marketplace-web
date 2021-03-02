@@ -1356,16 +1356,16 @@ FROM `marketplace`.`entityProductSellBonusDetail` `ePSBD`
 ## 25/02/2021 -- Antoine Abou Cherfane
 
 # Added imageAlt column to 'product' table
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 ADD COLUMN `imageAlt` TEXT NULL DEFAULT NULL AFTER `image`;
 
 # Added minimumOrderQuantity column to 'entityProductSell' table
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD COLUMN `minimumOrderQuantity` INT NULL DEFAULT NULL AFTER `maximumOrderQuantity`;
 
 # Added imageAlt and minimumOrderQuantity fields to 'vwEntityProductSell' view
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
-    SELECT 
+    SELECT
         `ep`.`id` AS `id`,
         `ep`.`entityId` AS `entityId`,
         `e`.`name_ar` AS `entityName_ar`,
@@ -1494,7 +1494,18 @@ CREATE TABLE `marketplace`.`productUnitPrice` (
   PRIMARY KEY (`id`));
 
 # Added paymentMethodId column to 'entityProductSellBonusDetail' table
-ALTER TABLE `marketplace`.`entityProductSellBonusDetail` 
+ALTER TABLE `marketplace`.`entityProductSellBonusDetail`
 ADD COLUMN `paymentMethodId` INT NULL DEFAULT NULL AFTER `bonusTypeId`;
+
+################################
+
+# 02/03/2021 - Abdul-fattah Tayih
+# Create user_fcm_tokens table
+CREATE TABLE user_fcm_tokens (
+	fcm_token varchar(512) NOT NULL,
+    `type` varchar(10) NOT NULL,
+    user_id int NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id)
+);
 
 ################################
