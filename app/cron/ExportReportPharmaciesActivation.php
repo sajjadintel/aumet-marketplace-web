@@ -8,7 +8,8 @@ class ExportReportPharmaciesActivation implements Command
         $this->createTmpDirectory();
 
         $fileName = 'export_report_pharmacies_activation_' . (new DateTime)->getTimestamp() . '.csv';
-        $csv = fopen("./tmp/{$fileName}", 'w+');
+        $path = "./tmp/{$fileName}";
+        $csv = fopen($path, 'w+');
         $columns = $data[0]->fields();
         fputcsv($csv, $columns);
         foreach ($data as $datum) {
@@ -19,9 +20,9 @@ class ExportReportPharmaciesActivation implements Command
             fputcsv($csv, $values);
         }
 
-        // Send Email
+        $this->sendMail($path, $fileName);
 
-        unlink("./tmp/{$fileName}");
+        unlink($path);
     }
 
     private function createTmpDirectory()
@@ -29,5 +30,27 @@ class ExportReportPharmaciesActivation implements Command
         if (!is_dir('tmp')) {
             mkdir('tmp');
         }
+    }
+
+    private function sendMail($filePath, $fileName)
+    {
+        $attachment = file_get_contents($filePath);
+        $attachment = new \SendGrid\Mail\Attachment($attachment, 'text/csv', $fileName);
+        $email = new \SendGrid\Mail\Mail();
+        $email->setFrom(getenv('MAIN_EMAIL_FROM'), getenv('MAIN_EMAIL_FROM_NAME'));
+        $email->setSubject('Pharmacies Activation Report ' . (new DateTime)->format('D/M/Y H:i:s'));
+        $email->addContent('text/plain', 'Attached is the report of pharmacy activations.');
+        $emails = explode(',', getenv('CRON_EXPORT_PHARMACIES_ACTIVATION_REPORT_EMAILS'));
+        $emails = array_map(function ($email) {
+            return new \SendGrid\Mail\To($email);
+        }, $emails);
+        $email->addTos($emails);
+        $email->addAttachment($attachment);
+
+        $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
+        $response = $sendgrid->send($email);
+        $statusCode = $response->statusCode();
+
+        return $statusCode;
     }
 }
