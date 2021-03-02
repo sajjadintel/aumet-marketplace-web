@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @link https://github.com/xfra35/f3-cron
+ * Class Cron
+ */
 class Cron extends \Prefab {
 
     //@{ Error messages

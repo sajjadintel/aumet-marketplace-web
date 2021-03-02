@@ -9,7 +9,7 @@ class BaseModel extends DB\SQL\Mapper
 
     public function __construct(?DB\SQL $db = null, $table_name = null)
     {
-        $this->table_name ??= $table_name;
+        $this->table_name = $table_name ?? $this->table_name;
         $this->db = $db ?? $GLOBALS['dbConnection'];
         parent::__construct($this->db, $this->table_name);
     }
