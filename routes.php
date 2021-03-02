@@ -149,6 +149,9 @@ $f3->route('POST /web/distributor/customer/group/edit', 'EntityController->postE
 $f3->route('GET /web/distributor/customer/feedback', 'CustomersController->getOrderCustomersFeedback');
 $f3->route('POST /web/distributor/customer/feedback', 'CustomersController->postOrderCustomersFeedback');
 
+// Marketing
+$f3->route('GET /web/distributor/marketing/announcements', 'MarketingController->getMarketingAnnouncements');
+
 // START dashboard
 $f3->route('POST /web/distributor/order/recent', 'OrderController->postDistributorOrdersRecent');
 $f3->route('POST /web/distributor/product/bestselling', 'ProductsController->postDistributorProductsBestSelling');

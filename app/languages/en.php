@@ -451,4 +451,6 @@ return array(
     'vModule_customerGroup_editModalNonGrouped' => 'NON-GROUPED',
     'vModule_customerGroup_noCustomerGroup' => 'No Customer Group',
     'vModule_customerGroup_saved' => 'Customer Group saved successfully',
+
+    'vModule_announcements_title' => 'Announcements & Promotions',
 );

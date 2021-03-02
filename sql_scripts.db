@@ -1352,3 +1352,10 @@ FROM `marketplace`.`entityProductSellBonusDetail` `ePSBD`
 
 ################################
 
+## 02/03/2021 -- Antoine Abou Cherfane
+
+# Added 'Marketing Tools' section with 'Announcements & Promotions'
+INSERT INTO `marketplace`.`menuItem` (`menuId`, `parentId`, `order`, `type`, `name_ar`, `name_en`, `insertDateTime`) VALUES ('1', '0', '60', 'section', 'أدوات التسويق', 'Marketing Tools', '2020-10-12 05:11:11');
+INSERT INTO `marketplace`.`menuItem` (`menuId`, `parentId`, `order`, `iconId`, `url`, `method`, `type`, `name_ar`, `name_en`, `insertDateTime`) VALUES ('1', '0', '61', '557', '/web/distributor/marketing/announcements', 'ajax', 'link', 'الإعلانات والترقيات', 'Announcements & Promotions', '2020-10-12 05:11:11');
+
+################################

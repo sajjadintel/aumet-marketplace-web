@@ -445,4 +445,6 @@ return array(
     'vModule_customerGroup_editModalNonGrouped' => 'غير مجمعة',
     'vModule_customerGroup_noCustomerGroup' => 'لا مجموعة العملاء',
     'vModule_customerGroup_saved' => 'تم حفظ مجموعة العملاء بنجاح',
+    
+    'vModule_announcements_title' => 'الإعلانات والترقيات',
 );
