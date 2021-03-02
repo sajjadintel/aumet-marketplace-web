@@ -17,7 +17,7 @@
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
-            <form method="POST" action="/web/distributor/product/add" class="modalForm" id="addModalForm">
+            <form method="POST" action="/web/distributor/product/add/modal" class="modalForm" id="addModalForm">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalTitle"><?php echo $vModule_product_add; ?></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">

@@ -72,7 +72,7 @@ function compress_htmlcode($codedata)
                     <div class="input-group-prepend ">
 
                         <label class="myLabel">
-                            <button type="button" class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="DistributorProductsDataTable.productAddModal()">
+                            <button type="button" class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="WebApp.loadPage('/web/distributor/product/add')">
                                 <i class="nav-icon la la-plus p-0"></i> <?php echo $vButton_add; ?>
                             </button>
                         </label>
@@ -198,9 +198,7 @@ function compress_htmlcode($codedata)
                     var endWrapper = '</div>';
 
                     var btnEdit =
-                        '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditModal(' +
-                        row.id +
-                        ')\' \
+                        '<a href="javascript:;" onclick=\'WebApp.loadPage("/web/distributor/product/edit/' + row.productId + '")\' \
                     class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
                     <i class="nav-icon la la-edit p-0"></i> ' +
                         WebAppLocals.getMessage('edit') +
