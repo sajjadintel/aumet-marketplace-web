@@ -2,6 +2,9 @@
 
 class ReportPharmaciesActivation extends BaseModel
 {
-    // somehow this breaks every single naming convention...
-    protected $table_name = 'vwReport_PharmaciesActivation';
+    public function __construct()
+    {
+        global $dbConnection;
+        parent::__construct($dbConnection, 'vwReport_PharmaciesActivation');
+    }
 }
