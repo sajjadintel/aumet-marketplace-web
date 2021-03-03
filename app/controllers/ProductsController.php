@@ -730,25 +730,64 @@ class ProductsController extends Controller
     {
         ## Read values from Datatables
         $datatable = new Datatable($_POST);
-        $entityProductSell = new EntityProductSell;
+        $query = "1=1 ";
 
         $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
         $query = "entityId IN ($arrEntityId)";
 
         if (is_array($datatable->query)) {
-            $query = $entityProductSell->buildDataTableQuery($datatable->query, $query);
+            $productName = $datatable->query['productName'];
+            if (isset($productName) && is_array($productName)) {
+                $query .= " AND (";
+                foreach ($productName as $key => $value) {
+                    if ($key !== 0) {
+                        $query .= " OR ";
+                    }
+                    $query .= "productName_en LIKE '%{$value}%' OR productName_ar LIKE '%{$value}%' OR productName_fr LIKE '%{$value}%'";
+                }
+                $query .= ")";
+            }
+
+            $scientificName = $datatable->query['scientificName'];
+            if (isset($scientificName) && is_array($scientificName)) {
+                $query .= " AND (";
+                foreach ($scientificName as $key => $value) {
+                    if ($key !== 0) {
+                        $query .= " OR ";
+                    }
+                    $query .= "scientificName LIKE '%{$value}%'";
+                }
+                $query .= ")";
+            }
+
+            $stockOption = $datatable->query['stockOption'];
+            if (isset($stockOption) && $stockOption == 1) {
+                $query .= " AND stockStatusId = 1 ";
+            }
+
+            $categoryId = $datatable->query['categoryId'];
+            if (isset($categoryId) && is_array($categoryId)) {
+                $query .= " AND ( categoryId in (" . implode(",", $categoryId) . ") OR subCategoryId in (" . implode(",", $categoryId) . ") )";
+            }
         }
 
         $query .= " AND statusId = 1";
 
         $fullQuery = $query;
 
+        $dbData = new BaseModel($this->db, "vwEntityProductSell");
+        $data = [];
+
+        $totalRecords = $dbData->count($fullQuery);
+        $totalFiltered = $dbData->count($query);
+        $data = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
+
         ## Response
         $response = array(
             "draw" => intval($datatable->draw),
-            "recordsTotal" => $entityProductSell->count($fullQuery),
-            "recordsFiltered" => $entityProductSell->count($query),
-            "data" => $entityProductSell->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset),
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $totalFiltered,
+            "data" => $data
         );
 
         $this->jsonResponseAPI($response);
@@ -1169,34 +1208,6 @@ class ProductsController extends Controller
                 $this->webResponse->title = "";
                 $this->webResponse->message = $this->f3->get('vModule_quantityEdited');
                 $this->webResponse->data = $bonusRepeater;
-                echo $this->webResponse->jsonResponse();
-            }
-        }
-    }
-
-    function postEditStockQuantityDistributorProduct()
-    {
-        if (!$this->f3->ajax()) {
-            $this->f3->set("pageURL", "/web/distributor/product");
-            echo View::instance()->render('app/layout/layout.php');
-        } else {
-            $entityProductSellId = $this->f3->get('POST.id');
-
-            $dbEntityProduct = new BaseModel($this->db, "entityProductSell");
-            $dbEntityProduct->getWhere(["id=?", $entityProductSellId]);
-
-            if ($dbEntityProduct->dry()) {
-                $this->webResponse->errorCode = Constants::STATUS_ERROR;
-                $this->webResponse->message = $this->f3->get('vModule_product_notFound');
-                echo $this->webResponse->jsonResponse();
-            } else {
-                $stock = $this->f3->get('POST.stock');
-
-                $dbEntityProduct->stock = $stock;
-                $dbEntityProduct->update();
-
-                $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
-                $this->webResponse->message = $this->f3->get('vModule_productStockEdited');
                 echo $this->webResponse->jsonResponse();
             }
         }

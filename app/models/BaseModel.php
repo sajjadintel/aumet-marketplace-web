@@ -3,15 +3,13 @@
 class BaseModel extends DB\SQL\Mapper
 {
 
-    protected $table_name;
-    protected $db;
+    private $table_name;
     private $exception;
 
-    public function __construct(?DB\SQL $db = null, $table_name = null)
+    public function __construct(DB\SQL $db, $table_name)
     {
-        $this->table_name = $table_name ?? $this->table_name;
-        $this->db = $db ?? $GLOBALS['dbConnection'];
-        parent::__construct($this->db, $this->table_name);
+        $this->table_name = $table_name;
+        parent::__construct($db, $table_name);
     }
 
     public static function getTableNames(DB\SQL $db)

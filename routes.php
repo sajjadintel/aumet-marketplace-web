@@ -107,7 +107,6 @@ $f3->route('POST /web/distributor/product/image', 'ProductsController->postProdu
 $f3->route('POST /web/distributor/product/subimage', 'ProductsController->postProductSubimage');
 $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->postEditQuantityDistributorProduct');
 $f3->route('POST /web/distributor/product/editStock', 'ProductsController->postEditStockDistributorProduct');
-$f3->route('POST /web/distributor/product/editStockQuantity', 'ProductsController->postEditStockQuantityDistributorProduct');
 $f3->route('GET /web/distributor/product/canAdd', 'ProductsController->getDistributorCanAddProduct');
 
 // Bulk add
