@@ -1503,9 +1503,19 @@ ADD COLUMN `paymentMethodId` INT NULL DEFAULT NULL AFTER `bonusTypeId`;
 # Create user_fcm_tokens table
 CREATE TABLE user_fcm_tokens (
 	fcm_token varchar(512) NOT NULL,
-    `type` varchar(10) NOT NULL,
+    platform varchar(10) NOT NULL,
     user_id int NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user(id)
+);
+
+# Create notifications table
+CREATE TABLE notifications (
+    id int NOT NULL AUTO_INCREMENT,
+    title varchar(256) NOT NULL,
+    body text NOT NULL,
+    user_id int NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    PRIMARY KEY (id)
 );
 
 ################################

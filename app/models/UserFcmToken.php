@@ -3,8 +3,8 @@
 class UserFcmToken extends BaseModel
 {
     protected $table_name = 'user_fcm_tokens';
-    const TOKEN_TYPE_WEB = 'web';
-    const TOKEN_TYPE_MOBILE = 'mobile';
+    const TOKEN_PLATFORM_WEB = 'web';
+    const TOKEN_PLATFORM_MOBILE = 'mobile';
 
     /**
      * @param int $userId
@@ -12,7 +12,7 @@ class UserFcmToken extends BaseModel
      */
     public static function getWebTokenForUser($userId)
     {
-        return (new self)->find(['type' => self::TOKEN_TYPE_WEB, 'user_id' => $userId])[0];
+        return (new self)->find(['platform' => self::TOKEN_PLATFORM_WEB, 'user_id' => $userId])[0];
     }
 
     /**
@@ -30,7 +30,7 @@ class UserFcmToken extends BaseModel
         $object = new self;
         $object->user_id = $userId;
         $object->fcm_token = $token;
-        $object->type = self::TOKEN_TYPE_WEB;
+        $object->type = self::TOKEN_PLATFORM_WEB;
         return $object->save();
     }
 }
