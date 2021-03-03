@@ -16,7 +16,7 @@ function compress_htmlcode($codedata)
 <div class="container-fluid">
     <div class="d-flex align-items-stretch flex-column">
 
-        <form class="d-flex position-relative w-100 m-auto">
+        <form class="d-flex position-relative w-100 m-auto flex-wrap">
 
             <div class="d-flex flex-column-fluid">
                 <div class="input-group input-group-lg mr-5">
@@ -36,8 +36,19 @@ function compress_htmlcode($codedata)
                 </div>
             </div>
 
+            <div class="d-flex flex-column-fluid mb-md-0 mb-4">
+                <div class="input-group input-group-lg">
+                    <div class="input-daterange input-group" id="searchOrdersDatePicker">
+                        <span class="la-icon">
+                            <i class="text-primary la la-calendar"></i>
+                        </span>
+                        <input class="form-control py-1 px-1 font-size-h6 standard-radius pl-4" type="text" id="productUpdatedAtDateInput" name="dateRange" />
+                    </div>
+                </div>
+            </div>
+
             <div class="d-none flex-column-fluid">
-                <div class="input-group input-group-lg mr-5">
+                <div class="input-group input-group-lg">
                     <div class="input-group-prepend pt-3 pl-1 pr-1">
                         <span class="svg-icon svg-icon-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -57,11 +68,11 @@ function compress_htmlcode($codedata)
             </div>
 
             <div class="d-flex flex-column-fluid">
-                <div class="input-group input-group-lg">
+                <div class="input-group input-group-lg justify-content-end">
                     <div class="input-group-prepend ">
 
                         <label class="myLabel">
-                            <button type="button" class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="DistributorProductsDataTable.productAddModal()">
+                            <button type="button" class="btn btn-lg btn-primary btn-hover-primary mr-2 btn-lg-radius" title="Add Product" onclick="WebApp.loadPage('/web/distributor/product/add')">
                                 <i class="nav-icon la la-plus p-0"></i> <?php echo $vButton_add; ?>
                             </button>
                         </label>
@@ -95,6 +106,7 @@ function compress_htmlcode($codedata)
 </div>
 <!--end::Container-->
 <script src="/assets/js/bonus-popovers.js"></script>
+<script src="/assets/js/datepicker-helpers.js"></script>
 <script>
     var PageClass = function() {
         var elementId = "#datatableProducts";
@@ -150,8 +162,7 @@ function compress_htmlcode($codedata)
                 title: WebAppLocals.getMessage('stockQuantity'),
                 data: 'stock',
                 render: function(data, type, row, meta) {
-                    var output = row.stock;
-                    return output;
+                    return '<span class="d-flex justify-content-between align-items-center product-stock-container" data-id="' + row.id + '" data-stock="' + row.stock + '">' + _renderStock(row.stock) + '</span>';
                 }
             }, {
                 targets: 3,
@@ -199,9 +210,7 @@ function compress_htmlcode($codedata)
                     var endWrapper = '</div>';
 
                     var btnEdit =
-                        '<a href="javascript:;" onclick=\'DistributorProductsDataTable.productEditModal(' +
-                        row.id +
-                        ')\' \
+                        '<a href="javascript:;" onclick=\'WebApp.loadPage("/web/distributor/product/edit/' + row.productId + '")\' \
                     class="btn btn-sm btn-primary btn-hover-primary mr-2" title="Edit">\
                     <i class="nav-icon la la-edit p-0"></i> ' +
                         WebAppLocals.getMessage('edit') +
@@ -243,6 +252,14 @@ function compress_htmlcode($codedata)
                 processing: false,
                 order: [
                     [0, 'desc']
+                ],
+                columns: [
+                    null,
+                    null,
+                    { 'width': '150px' },
+                    null,
+                    null,
+                    null
                 ],
             }
         };
@@ -510,18 +527,84 @@ function compress_htmlcode($codedata)
             templates: arrows
         });
 
+        searchQuery = initializeDatePicker('#productUpdatedAtDateInput', searchQuery, elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
+
         $('.select2-search__field').addClass(" h-auto py-1 px-1 font-size-h6");
 
         var initiate = function() {
-            updateDatatable();
+            $.when(updateDatatable()).then(function () {
+                _editStockHandler();
+                _updateStock();
+                _cancelEditingStock();
+            });
         };
 
         var scientificName = <?php echo isset($_GET['scientificName']) ? "'" . $_GET['scientificName'] . "'" : 'null'; ?>;
 
         function updateDatatable() {
-            if (scientificName != null && !searchQuery.scientificName.includes(scientificName))
+            if (scientificName != null && !searchQuery.scientificName.includes(scientificName)) {
                 searchQuery.scientificName.push(scientificName);
+            }
             WebApp.CreateDatatableServerside("Products List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
+        }
+
+        function _editStockHandler() {
+            $('#datatableProducts').on('click', 'tbody .product-stock-container .btn-edit-stock', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const product_stock_container = $(this).closest('.product-stock-container');
+                const id = product_stock_container.data('id');
+                const stock = product_stock_container.data('stock');
+
+                const htmlStockInputElement = '' +
+                    '<div class="input-group input-group-sm flex-nowrap">' +
+                    '  <input type="number" class="form-control stock-value" name="stock" value="' + stock + '" placeholder="Enter stock quantity" min="0" step="1" onchange="this.value = this.value > 0? this.value : !this.value? this.value : 0;" onkeypress="return event.charCode >= 48 && event.charCode <= 57" autocomplete="off" aria-label="Stock" aria-describedby="btn-update-stock">' +
+                    '  <div class="input-group-append">' +
+                    '    <button class="btn btn-light-primary btn-update-stock" type="button" title="Update"><i class="fa fa-check"></i></button>' +
+                    '    <button class="btn btn-light-danger btn-cancel-stock" type="button" title="Cancel"><i class="fa fa-times"></i></button>' +
+                    '  </div>' +
+                    '</div>';
+
+                product_stock_container.html(htmlStockInputElement);
+            });
+        }
+
+        function _renderStock(stock) {
+            return '<span class="stock-quantity">' + stock + '</span> <i class="la la-edit la-2x ml-5 text-hover-dark-50 cursor-pointer btn-edit-stock" title="Edit"></i>';
+        }
+
+        function _updateStock() {
+            $('#datatableProducts').on('click', 'tbody .product-stock-container .btn-update-stock', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const product_stock_container = $(this).closest('.product-stock-container');
+                const id = product_stock_container.data('id');
+                const oldStock = product_stock_container.data('stock');
+                const newStock = product_stock_container.find('.stock-value').val();
+
+                WebApp.post('/web/distributor/product/editStockQuantity', {id: id, stock: newStock}, function (e) {
+                    const htmlStockInputElement = _renderStock(newStock);
+
+                    product_stock_container.html(htmlStockInputElement)
+                        .data('stock', newStock)
+                        .attr('data-stock', newStock);
+                });
+            });
+        }
+
+        function _cancelEditingStock() {
+            $('#datatableProducts').on('click', 'tbody .product-stock-container .btn-cancel-stock', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const product_stock_container = $(this).closest('.product-stock-container');
+                const stock = product_stock_container.data('stock');
+                const htmlStockInputElement = _renderStock(stock);
+
+                product_stock_container.html(htmlStockInputElement);
+            });
         }
 
         return {

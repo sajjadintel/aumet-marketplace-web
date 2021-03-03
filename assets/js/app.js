@@ -61,11 +61,11 @@ var WebApp = (function () {
 
 			while (tempBlurStack >= 0) {
 				--tempBlurStack;
-				_blurPage(63);
+				_unblurPage(63);
 			}
 			while (tempBlockStack >= 0) {
 				--tempBlockStack;
-				_blockPage(67);
+				_unblockPage(67);
 			}
 			console.debug('blurStack', blurStack);
 			console.debug('blockStack', blockStack);

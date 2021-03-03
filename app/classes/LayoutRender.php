@@ -287,7 +287,7 @@ class LayoutRender
             return [];
         }
 
-        $arrData = $db->exec("SELECT * FROM vwMenuItems WHERE `menuId` = ? OR `menuId` = 0 ORDER BY `order` ASC, `name_ar` ASC", $menuId);
+        $arrData = $db->exec("SELECT * FROM vwMenuItems WHERE (`menuId` = ? OR `menuId` = 0) AND `id` <> 50 ORDER BY `order` ASC, `name_ar` ASC", $menuId);
         $newData = LayoutRender::arrangeMenuItems($arrData);
 
         return $newData;

@@ -29,8 +29,9 @@ function compress_htmlcode($codedata)
 
         <div class="d-flex flex-column-fluid">
             <a id="export-to-excel" class="d-flex btn btn-lg btn-primary mr-2 btn-lg-radius" title="Export To Excel">
-                <i class="la la-file-excel-o"></i> Download Sample Bonus Excel File
+                <i class="la la-file-excel-o"></i> <?php echo $vModule_product_bonus_download_file_button; ?>
             </a>
+            <span class="align-self-center text-primary font-size-h5"><?php echo $vModule_product_bonus_download_file_info_message; ?></span>
         </div>
     </div>
 
@@ -47,8 +48,8 @@ function compress_htmlcode($codedata)
             <div class="d-flex align-items-center flex-column" id="dropZoneProductsBonusUpload">
                 <div class="dropzone dropzone-default dropzone-success p-0">
                     <div class="dropzone-msg dz-message needsclick m-0 p-12">
-                        <h3 class="dropzone-msg-title">Drop files here or click to upload.</h3>
-                        <span class="dropzone-msg-desc">Only .xlsx files are allowed for upload</span>
+                        <h3 class="dropzone-msg-title"><?php echo $vModule_product_bonus_upload_file_info_message; ?></h3>
+                        <span class="dropzone-msg-desc"><?php echo $vModule_product_bonus_upload_file_constraint_message; ?></span>
                     </div>
                 </div>
             </div>
@@ -64,7 +65,7 @@ function compress_htmlcode($codedata)
         <div class="col">
             <div class="d-flex flex-column-fluid">
                 <a class="btn btn-lg btn-primary mr-2 btn-lg-radius" title="Go back" onclick="history.back()">
-                    Go back
+                    <?php echo $vBack; ?>
                 </a>
             </div>
         </div>
