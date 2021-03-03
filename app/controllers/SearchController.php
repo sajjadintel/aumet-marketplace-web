@@ -560,6 +560,7 @@ class SearchController extends Controller
         $totalRecords = $dbProducts->count($fullQuery);
         $totalFiltered = $dbProducts->count($query);
         $data = $dbProducts->findWhere($query, $order, $datatable->limit, $datatable->offset);
+        $data = $dbProducts->mapWithCartDetails($data, $this->objUser);
         $data = $dbProducts->getRelatedBonuses($data, $this->objUser);
 
         ## Response
