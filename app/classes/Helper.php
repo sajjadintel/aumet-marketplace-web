@@ -4,7 +4,14 @@ class Helper {
 
     public static function idListFromArray($array)
     {
-        return implode(', ', array_keys($array));
+        $ids = '';
+        foreach ($array as $key => $value) {
+            if ($ids != '') {
+                $ids .= ', ';
+            }
+            $ids .= $key;
+        }
+        return $ids;
     }
 
     // formats money to a whole number or with 2 decimals
