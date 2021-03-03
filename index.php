@@ -18,7 +18,7 @@ $dotenv->load();
 
 $f3 = \Base::instance();
 
-$f3->set('AUTOLOAD', "app/controllers/ | app/classes/ | app/models/");
+$f3->set('AUTOLOAD', "app/controllers/ | app/classes/ | app/models/ | app/models/views/ | lib/ | app/cron/ ");
 
 /* Config */
 $f3->set('DEBUG', '9');
@@ -32,6 +32,8 @@ $f3->set('ENCODING', 'UTF-8');
 $f3->set('rootDIR', dirname(__FILE__));
 
 $f3->set('tempDIR', dirname(__FILE__) . '/tmp/');
+$f3->config('cron.ini');
+Cron::instance();
 
 $tempDIR = dirname(__FILE__) . '/files/tmp/';
 if (is_dir($tempDIR)) {
