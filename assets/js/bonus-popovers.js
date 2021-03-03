@@ -1,7 +1,7 @@
 function initializeBonusPopover() {
     $('.bonusLabel').popover('dispose');
     $('.bonusLabel').each(function(index, element) {
-        var arrBonusStr = $(element).data('data-arrBonus') || "[]";
+        var arrBonusStr = $(element).attr('data-arrBonus') || "[]";
         var arrBonus = JSON.parse(arrBonusStr);
         if (arrBonus.length > 0) {
             $(element).popover({

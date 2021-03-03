@@ -759,25 +759,26 @@ class ProductsController extends Controller
     {
         ## Read values from Datatables
         $datatable = new Datatable($_POST);
-        $entityProductSell = new EntityProductSell;
-
-        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
-        $query = "entityId IN ($arrEntityId)";
-
-        if (is_array($datatable->query)) {
-            $query = $entityProductSell->buildDataTableQuery($datatable->query, $query);
-        }
-
-        $query .= " AND statusId = 1";
-
+        $dbData = new EntityProductSell;
+        $query = $dbData->getFilterQuery($datatable->query);
         $fullQuery = $query;
+
+        $data = $dbData->findWhere(
+            $query,
+            "{$datatable->sortBy} {$datatable->sortByOrder}",
+            $datatable->limit,
+            $datatable->offset
+        );
+
+        $data = $dbData->mapWithCartDetails($data, $this->objUser);
+        $data = $dbData->getRelatedBonuses($data, $this->objUser);
 
         ## Response
         $response = array(
             "draw" => intval($datatable->draw),
-            "recordsTotal" => $entityProductSell->count($fullQuery),
-            "recordsFiltered" => $entityProductSell->count($query),
-            "data" => $entityProductSell->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset),
+            "recordsTotal" => $dbData->count($fullQuery),
+            "recordsFiltered" => $dbData->count($query),
+            "data" => $data
         );
 
         $this->jsonResponseAPI($response);
