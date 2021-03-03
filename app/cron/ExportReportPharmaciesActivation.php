@@ -20,7 +20,12 @@ class ExportReportPharmaciesActivation implements Command
             fputcsv($csv, $values);
         }
 
-        $this->sendMail($path, $fileName);
+        try {
+            $this->sendMail($path, $fileName);
+        } catch (InvalidArgumentException $argumentException) {
+            unlink($path);
+            throw $argumentException;
+        }
 
         unlink($path);
     }
@@ -40,7 +45,13 @@ class ExportReportPharmaciesActivation implements Command
         $email->setFrom(getenv('MAIN_EMAIL_FROM'), getenv('MAIN_EMAIL_FROM_NAME'));
         $email->setSubject('Pharmacies Activation Report ' . (new DateTime)->format('D/M/Y H:i:s'));
         $email->addContent('text/plain', 'Attached is the report of pharmacy activations.');
-        $emails = explode(',', getenv('CRON_EXPORT_PHARMACIES_ACTIVATION_REPORT_EMAILS'));
+
+        $emails = getenv('CRON_EXPORT_PHARMACIES_ACTIVATION_REPORT_EMAILS');
+        if (empty($emails)) {
+            throw new InvalidArgumentException('env variable CRON_EXPORT_PHARMACIES_ACTIVATION_REPORT_EMAILS is empty, terminating export');
+        }
+
+        $emails = explode(',', $emails);
         $emails = array_map(function ($email) {
             return new \SendGrid\Mail\To($email);
         }, $emails);
