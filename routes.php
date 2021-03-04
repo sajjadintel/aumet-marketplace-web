@@ -158,6 +158,16 @@ $f3->route('POST /web/distributor/customer/group/edit', 'EntityController->postE
 $f3->route('GET /web/distributor/customer/feedback', 'CustomersController->getOrderCustomersFeedback');
 $f3->route('POST /web/distributor/customer/feedback', 'CustomersController->postOrderCustomersFeedback');
 
+// Marketing
+$f3->route('GET /web/distributor/marketing/promotion', 'MarketingController->getMarketingPromotions');
+$f3->route('POST /web/distributor/marketing/promotion', 'MarketingController->postMarketingPromotions');
+$f3->route('GET /web/distributor/marketing/promotion/add', 'MarketingController->getMarketingAddPromotions');
+$f3->route('POST /web/distributor/marketing/promotion/add', 'MarketingController->postMarketingAddPromotions');
+$f3->route('GET /web/distributor/marketing/promotion/edit/@promotionId', 'MarketingController->getMarketingEditPromotions');
+$f3->route('POST /web/distributor/marketing/promotion/edit', 'MarketingController->postMarketingEditPromotions');
+$f3->route('POST /web/distributor/marketing/promotion/banner/upload', 'MarketingController->postMarketingBannerUploadPromotion');
+$f3->route('GET /web/distributor/marketing/promotion/delete/@promotionId', 'MarketingController->getMarketingDeletePromotions');
+
 // START dashboard
 $f3->route('POST /web/distributor/order/recent', 'OrderController->postDistributorOrdersRecent');
 $f3->route('POST /web/distributor/product/bestselling', 'ProductsController->postDistributorProductsBestSelling');

@@ -1498,3 +1498,66 @@ ALTER TABLE `marketplace`.`entityProductSellBonusDetail`
 ADD COLUMN `paymentMethodId` INT NULL DEFAULT NULL AFTER `bonusTypeId`;
 
 ################################
+
+## 02/03/2021 -- Antoine Abou Cherfane
+
+# Added 'Marketing Tools' section with 'Announcements & Promotions'
+INSERT INTO `marketplace`.`menuItem` (`menuId`, `parentId`, `order`, `type`, `name_ar`, `name_en`, `insertDateTime`) VALUES ('1', '0', '60', 'section', 'أدوات التسويق', 'Marketing Tools', '2020-10-12 05:11:11');
+INSERT INTO `marketplace`.`menuItem` (`menuId`, `parentId`, `order`, `iconId`, `url`, `method`, `type`, `name_ar`, `name_en`, `insertDateTime`) VALUES ('1', '0', '61', '557', '/web/distributor/marketing/promotion', 'ajax', 'link', 'الإعلانات والترقيات', 'Announcements & Promotions', '2020-10-12 05:11:11');
+
+# Created 'entityPromotion' table
+CREATE TABLE `entityPromotion` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `entityId` int NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `message` varchar(5000) NOT NULL,
+  `image` text,
+  `startDate` text NOT NULL,
+  `endDate` text NOT NULL,
+  `active` smallint NOT NULL,
+  `isActive` smallint NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+# Created 'entityPromotionProduct' table
+CREATE TABLE `marketplace`.`entityPromotionProduct` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `entityPromotionId` INT NOT NULL,
+  `productId` INT NOT NULL,
+  PRIMARY KEY (`id`));
+
+# Created 'vwEntityPromotionProduct' view
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityPromotionProduct` AS
+    SELECT 
+        `epp`.`id` AS `id`,
+        `epp`.`entityPromotionId` AS `entityPromotionId`,
+        `epp`.`productId` AS `productId`,
+        `p`.`name_ar` AS `productName_ar`,
+        `p`.`name_en` AS `productName_en`,
+        `p`.`name_fr` AS `productName_fr`
+    FROM
+        (`entityPromotionProduct` `epp`
+        JOIN `product` `p` ON ((`epp`.`productId` = `p`.`id`)))
+
+# Added 'productImage' field to 'vwEntityProductSellSummary' view
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
+    SELECT
+        `ep`.`id` AS `id`,
+        `ep`.`entityId` AS `entityId`,
+        `e`.`name_ar` AS `entityName_ar`,
+        `e`.`name_en` AS `entityName_en`,
+        `e`.`name_fr` AS `entityName_fr`,
+        `ep`.`productId` AS `productId`,
+        `p`.`scientificNameId` AS `scientificNameId`,
+        `s`.`name` AS `scientificName`,
+        `p`.`name_ar` AS `productName_ar`,
+        `p`.`name_en` AS `productName_en`,
+        `p`.`name_fr` AS `productName_fr`,
+        `p`.`image` AS `productImage`
+    FROM
+        (((`entityProductSell` `ep`
+        JOIN `entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
+        JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
+        LEFT JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
+
+################################
