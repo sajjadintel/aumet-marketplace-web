@@ -98,13 +98,14 @@ function compress_htmlcode($codedata)
     <div class="card card-custom gutter-b mt-10">
         <div class="card-body">
             <!--begin: Datatable-->
-            <table id="datatableProducts" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
+            <table id="datatableProducts" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom dt-responsive">
             </table>
             <!--end: Datatable-->
         </div>
     </div>
 </div>
 <!--end::Container-->
+<script src="/assets/js/bonus-popovers.js"></script>
 <script src="/assets/js/datepicker-helpers.js"></script>
 <script>
     var PageClass = function() {
@@ -158,18 +159,13 @@ function compress_htmlcode($codedata)
                 },
             }, {
                 targets: 2,
-                title: WebAppLocals.getMessage('productScientificName'),
-                data: 'scientificName',
-                render: $.fn.dataTable.render.ellipsis(100)
-            }, {
-                targets: 3,
                 title: WebAppLocals.getMessage('stockQuantity'),
                 data: 'stock',
                 render: function(data, type, row, meta) {
                     return '<span class="d-flex justify-content-between align-items-center product-stock-container" data-id="' + row.id + '" data-stock="' + row.stock + '">' + _renderStock(row.stock) + '</span>';
                 }
             }, {
-                targets: 4,
+                targets: 3,
                 title: WebAppLocals.getMessage('stockUpdateDateTime'),
                 data: 'stockUpdateDateTime',
                 render: function(data, type, row, meta) {
@@ -180,6 +176,13 @@ function compress_htmlcode($codedata)
                     }
                 }
             }, {
+                targets: 4,
+                title: 'Created At',
+                data: 'insertDateTime',
+                render: (data, type, row, meta) => {
+                    return moment.utc(row.insertDateTime).format('D/M/Y');
+                }
+            }, {
                 targets: 5,
                 title: WebAppLocals.getMessage('unitPrice'),
                 data: 'unitPrice',
@@ -188,6 +191,15 @@ function compress_htmlcode($codedata)
                 }
             }, {
                 targets: 6,
+                title: WebAppLocals.getMessage('bonus'),
+                data: 'id',
+                orderable: false,
+                render: function(data, type, row, meta) {
+                    var output = `<span id="bonusLabel-${row.id}" class="bonusLabel cart-checkout-bonus-label py-1 px-6" data-toggle="popover" data-arrBonus="${row.arrBonus}" data-activeBonus="${row.activeBonus}">Bonuses <span class="bonus"></span> </span>`;
+                    return output;
+                },
+            }, {
+                targets: 7,
                 title: '',
                 data: 'id',
                 orderable: false,
@@ -602,7 +614,21 @@ function compress_htmlcode($codedata)
         };
     }();
 
-    PageClass.init();
+    $(document).ready(function() {
+        PageClass.init();
+
+        $('#datatableProducts').on('draw.dt', function() {
+            initializeBonusPopover();
+
+            $('.qtyBox').keyup(function (e) {
+                if (e.keyCode === 13) {
+                    if($(this).val() > 0) {
+                        $(this).trigger("change");
+                    }
+                }
+            });
+        });
+    });
 </script>
 <?php ob_end_flush(); ?>
 <?php include_once 'edit-modal.php';
