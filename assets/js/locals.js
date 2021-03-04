@@ -930,6 +930,26 @@ var WebAppLocals = (function () {
 			ar: 'Prices Tab Invalid', // TODO: translate
 			fr: ''
 		},
+		active: {
+			en: 'Active',
+			ar: 'متوفرة',
+			fr: ''
+		},
+		start: {
+			en: 'Start',
+			ar: 'بداية',
+			fr: ''
+		},
+		end: {
+			en: 'End',
+			ar: 'نهاية',
+			fr: ''
+		},
+		deletePromotion: {
+			en: 'Are you sure you want to delete this promotion?',
+			ar: 'هل أنت متأكد أنك تريد حذف هذا الترويج؟',
+			fr: ''
+		},
 	};
 
 	var _symbolsLocals = {
