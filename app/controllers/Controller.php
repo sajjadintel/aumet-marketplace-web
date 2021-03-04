@@ -124,6 +124,8 @@ class Controller
             $this->objUser->contentDir = "rtl";
             $this->objUser->cssRTL = ".rtl";
         }
+
+        $this->objUser->unreadNotificationCount = (new Notification)->count(['user_id' => $this->objUser->id, 'read' => false]);
     }
 
     function rerouteAuth()

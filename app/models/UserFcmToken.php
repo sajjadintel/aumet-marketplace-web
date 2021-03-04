@@ -22,7 +22,7 @@ class UserFcmToken extends BaseModel
      */
     public static function setWebTokenForUser($userId, $token)
     {
-        $object = (new self)->find(['user_id' => $userId, 'type' => self::TOKEN_TYPE_WEB])[0];
+        $object = (new self)->find(['user_id' => $userId, 'platform' => self::TOKEN_PLATFORM_WEB])[0];
         if (!empty($object)) {
             $object->fcm_token = $token;
             return $object->save();
@@ -30,7 +30,7 @@ class UserFcmToken extends BaseModel
         $object = new self;
         $object->user_id = $userId;
         $object->fcm_token = $token;
-        $object->type = self::TOKEN_PLATFORM_WEB;
+        $object->platform = self::TOKEN_PLATFORM_WEB;
         return $object->save();
     }
 }

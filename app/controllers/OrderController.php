@@ -923,8 +923,21 @@ class OrderController extends Controller
             }
         }
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
+        $this->sendPushNotification($dbOrder, $statusId);
 
         echo $this->webResponse->jsonResponseV2(3, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null);
+    }
+
+    private function sendPushNotification($order, $status)
+    {
+        if (!array_key_exists($status, FcmNotification::AVAILABLE_NOTIFICATIONS)) {
+            return;
+        }
+
+        $notificationClassName = FcmNotification::AVAILABLE_NOTIFICATIONS[$status];
+        $notificationInstance = new $notificationClassName();
+        $handler = new FcmHandler(...$notificationInstance->serialize([$order->entitySellerId]));
+        $handler->send();
     }
 
     function getPrintOrderInvoice()

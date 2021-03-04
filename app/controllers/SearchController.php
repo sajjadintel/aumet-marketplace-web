@@ -16,7 +16,7 @@ class SearchController extends Controller
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $this->f3->get('vModule_search_title');
             $this->webResponse->data = View::instance()->render('app/products/search/search.php');
-            echo $this->webResponse->jsonResponse();
+            echo $this->webResponse->data;
         }
     }
 
