@@ -1416,6 +1416,7 @@ class ProductsController extends Controller
                 }
 
                 $dbEntityProduct->stock = $stock;
+                $dbEntityProduct->stockUpdateDateTime = (new DateTime)->format('Y-m-d H:i:s');
                 $dbEntityProduct->update();
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
