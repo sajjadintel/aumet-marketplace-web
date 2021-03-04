@@ -2,7 +2,7 @@
 
 class UserFcmToken extends BaseModel
 {
-    protected $table_name = 'user_fcm_tokens';
+    protected $table_name = 'userFcmTokens';
     const TOKEN_PLATFORM_WEB = 'web';
     const TOKEN_PLATFORM_MOBILE = 'mobile';
 
@@ -22,11 +22,12 @@ class UserFcmToken extends BaseModel
      */
     public static function setWebTokenForUser($userId, $token)
     {
-        $object = (new self)->find(['user_id' => $userId, 'platform' => self::TOKEN_PLATFORM_WEB])[0];
-        if (!empty($object)) {
+        $object = (new self)->findone(['user_id = ? AND platform = ?', $userId, self::TOKEN_PLATFORM_WEB]);
+        if ($object) {
             $object->fcm_token = $token;
             return $object->save();
         }
+
         $object = new self;
         $object->user_id = $userId;
         $object->fcm_token = $token;

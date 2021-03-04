@@ -207,5 +207,6 @@ $f3->route('GET /web/review/distributor/profile/approve', 'ReviewController->get
 $f3->route('GET /web/test/welcome/email/atrash', 'AuthController->getProcessPharmacies');
 $f3->route('GET /web/auth/onboarding/activate/pharmacy', 'AuthController->getProcessEmailOnboarding');
 
-$f3->route('GET /web/notifications', 'NotificationController->index');
+$f3->route('GET /web/distributor/notification', 'NotificationController->index');
+$f3->route('POST /web/distributor/notification/@notificationId/read', 'NotificationController->markAsRead');
 include_once('routes-permission.php');

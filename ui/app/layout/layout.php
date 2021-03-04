@@ -344,7 +344,7 @@ function compress_htmlcode($codedata)
     <script>
         jQuery(document).ready(function() {
             WebApp.init();
-            credentials = '<?php echo json_encode(['apiKey' => getenv('FCM_API_KEY'), 'authDomain' => getenv('FCM_AUTH_DOMAIN'), 'projectId' => getenv('FCM_PROJECT_ID'), 'storageBucket' => getenv('FCM_STORAGE_BUCKET'), 'messagingSenderId' => getenv('FCM_MESSAGING_SENDER_ID'), 'appId' => getenv('FCM_APP_ID')]); ?>';
+            let credentials = '<?php echo json_encode(['apiKey' => getenv('FCM_API_KEY'), 'authDomain' => getenv('FCM_AUTH_DOMAIN'), 'projectId' => getenv('FCM_PROJECT_ID'), 'storageBucket' => getenv('FCM_STORAGE_BUCKET'), 'messagingSenderId' => getenv('FCM_MESSAGING_SENDER_ID'), 'appId' => getenv('FCM_APP_ID')]); ?>';
             activateFirebase(JSON.parse(credentials));
         });
 

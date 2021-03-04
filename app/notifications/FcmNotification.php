@@ -12,5 +12,5 @@ abstract class FcmNotification
         Constants::ORDER_STATUS_PENDING => NewOrderNotification::class,
     ];
 
-    public abstract function serialize($users);
+    public abstract function serialize($users, $bonusData = null);
 }

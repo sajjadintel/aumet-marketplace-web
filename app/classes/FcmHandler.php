@@ -37,14 +37,23 @@ class FcmHandler
     public function send()
     {
         $messaging = (new Factory)->createMessaging();
-        $cloudMessageArray = ['title' => $this->title, 'body' => $this->body];
-        $message = CloudMessage::fromArray(array_merge($cloudMessageArray, $this->options));
-
+        $cloudMessageArray = [
+            'notification' => [
+                'title' => $this->title,
+                'body' => $this->body
+            ]
+        ];
+        $message = CloudMessage::fromArray($cloudMessageArray)->withWebPushConfig($this->options);
         for ($i = 0; $i <= count($this->users) / 500; $i++) {
             $chunk = array_slice($this->users, $i * 500, 500);
-            $tokens = (new UserFcmToken)->find([
+            $tokens = (new UserFcmToken)->select('fcm_token', [
                 'user_id IN (?)', implode(',', array_column($chunk, 'id'))
             ]);
+            $tokens = array_column($tokens, 'fcm_token');
+            if (empty($tokens)) {
+                continue;
+            }
+
             $messaging->sendMulticast($message, $tokens);
             $this->storeNotification($chunk);
         }

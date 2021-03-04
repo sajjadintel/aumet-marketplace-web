@@ -9,16 +9,14 @@ class NewOrderNotification extends FcmNotification
 
     public function __construct()
     {
-        $this->options = [
-            'webpush' => [
-                'fcm_options' => [
-                    'link' => getenv('DOMAIN_URL') . 'web/distributor/order/pending',
-                ]
+        $this->options = \Kreait\Firebase\Messaging\WebPushConfig::fromArray([
+            'fcm_options' => [
+                'link' => getenv('DOMAIN_URL') . 'web/distributor/order/pending'
             ]
-        ];
+        ]);
     }
 
-    public function serialize($users)
+    public function serialize($users, $bonusData = null)
     {
         return [
             'title' => $this->title,
