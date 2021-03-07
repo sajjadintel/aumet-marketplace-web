@@ -950,6 +950,11 @@ var WebAppLocals = (function () {
 			ar: 'هل أنت متأكد أنك تريد حذف هذا الترويج؟',
 			fr: ''
 		},
+		addCustomerId: {
+			en: 'Add Customer Id',
+			ar: ' إضافة معرف للزبون',
+			fr: ''
+		}
 	};
 
 	var _symbolsLocals = {

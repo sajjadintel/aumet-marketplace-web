@@ -330,6 +330,7 @@ return array(
 
     'vModule_customer_relationGroupTitle' => 'Customer Group',
     'vModule_customer_relationGroup' => 'Customer Group',
+    'vModule_customer_editIdTitle' => 'Customer Title',
 
     'vResponse_notFound' => '{0} not found',
     'vResponse_notUpdated' => '{0} could not be updated',

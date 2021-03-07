@@ -46,6 +46,10 @@ var DistributorCustomersDataTable = (function () {
 		$('#editGroupModal').appendTo('body').modal('show');
     };
 
+    var _customerEditIdModal = (function () {
+
+    });
+
     return {
         // public functions
         reloadDatatable: function () {
@@ -54,5 +58,8 @@ var DistributorCustomersDataTable = (function () {
         customerEditGroupModal: function (fromOrders, firstId, secondId) {
             _customerEditGroupModal(fromOrders, firstId, secondId);
         },
+        customerEditIdModal: function () {
+            _customerEditIdModal();
+        }
     };
 })();

@@ -137,8 +137,8 @@ function compress_htmlcode($codedata)
                     <i class="nav-icon la la-eye p-0"></i></a>';
 
                     output +=
-                        '<a href="javascript:;" onclick=\'DistributorCustomersDataTable.customerEditGroupModal(false, ' + row.id + ')\'\
-                    class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="' + WebAppLocals.getMessage('viewOrders') + '">\
+                        '<a href="javascript:;" onclick=\'DistributorCustomersDataTable.customerEditIdModal(' + row.id + ')\'\
+                    class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="' + WebAppLocals.getMessage('addCustomerId') + '">\
                     <i class="nav-icon las la-id-card p-0"></i></a>';
 
                     return '<div style="display: flex;">' + output + '</div>';
@@ -348,3 +348,4 @@ function compress_htmlcode($codedata)
 </script>
 <?php ob_end_flush(); ?>
 <?php include_once 'edit-group-modal.php'; ?>
+<?php include_once 'edit-customer-id-modal.php'; ?>
