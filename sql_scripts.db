@@ -1561,3 +1561,21 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
         LEFT JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
 
 ################################
+
+# Abdul-fattah Tayih 07/03/2021
+# Create userInvites Table
+
+CREATE TABLE `marketplace`.`userInvites` (
+    id int NOT NULL AUTO_INCREMENT,
+    email varchar(100) NOT NULL,
+    entityId int NOT NULL,
+    token varchar(32) NOT NULL,
+    used boolean DEFAULT false,
+    createdAt timestamp,
+    PRIMARY KEY (id),
+    FOREIGN KEY (entityId) REFERENCES entity(id)
+);
+
+ALTER TABLE `marketplace`.`user`
+    ADD parentId int AFTER roleId,
+    ADD FOREIGN KEY (parentId) REFERENCES user(id);

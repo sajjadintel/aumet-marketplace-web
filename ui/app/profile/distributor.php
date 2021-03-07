@@ -61,6 +61,9 @@
                     <div id="paymentSettingButton" class="py-3 pl-20" onclick="Profile.handleMenuChange('paymentSetting')">
                         <h4><?php echo $vModule_profile_paymentSettingButton; ?></h4>
                     </div>
+                    <div id="manageUsersButton" class="py-3 pl-20" onclick="Profile.handleMenuChange('manageUsersSetting')">
+                        <h4><?php echo $vModule_profile_manageUsersButton; ?></h4>
+                    </div>
                 </div>
             </div>
             <!--begin::Main-->
@@ -237,6 +240,67 @@
                 <div id="paymentSettingSection" style="display: none;">
                     <div class="card-label font-weight-bolder font-size-h1"><?php echo $vModule_profile_paymentSettingTitle ?></div>
                     <form class="form pt-5" novalidate="novalidate" id="paymentSettingForm">
+                        <input type="hidden" name="userId" value="<?php echo $user->userId; ?>" />
+                        <input type="hidden" name="countryId" value="<?php echo $user->entityCountryId; ?>" />
+                        <div class="row">
+                            <div class="col-12 form-group">
+                                <p class="card-label font-size-h4"><?php echo $vModule_profile_paymentOptionTitle ?></p>
+                                <div id="paymentMethodContainer" class="row checkbox-inline my-5">
+                                    <?php foreach ($arrPaymentMethod as $paymentMethod) : ?>
+                                        <label class="col-6 col-sm-6 col-md-3 col-lg-3 col-xl-3 checkbox checkbox-outline checkbox-dark">
+
+                                            <input type="checkbox" name="paymentMethodCheckbox" value="<?php echo $paymentMethod['id']; ?>" <?php echo in_array($paymentMethod['id'], $arrEntityPaymentMethodId) ? 'checked' : '' ?> />
+                                            <span style="background-color: white; border: unset;"></span>
+                                            <?php echo $paymentMethod['name']; ?>
+                                        </label>
+                                    <?php endforeach; ?>
+                                </div>
+                                <div style="border-bottom: 1px solid #333333;"></div>
+                            </div>
+                        </div>
+                        <div class="py-5">
+                            <p class="card-label font-size-h4"><?php echo $vModule_profile_minimumValueOrderTitle ?></p>
+                            <div id="minimumValueOrderRepeater">
+                                <div class="row">
+                                    <div id="minimumValueOrderList" data-repeater-list="minimumValueOrderList" data-repeaterdata='<?php echo json_encode($arrEntityMinimumValueOrderGrouped); ?>' class="col-lg-12">
+                                        <div data-repeater-item="" class="form-group row align-items-start">
+                                            <input type="hidden" id="minimumValueOrderId" name="id" class="form-control">
+                                            <div class="col-md-4">
+                                                <input type="number" id="minimumValueOrder" name="minimumValueOrder" class="form-control minimumValueOrderInput" placeholder="<?php echo $vModule_profile_minimumValueOrder ?>" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : !this.value? this.value : 0;">
+                                                <div class="d-md-none mb-2"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <select id="minimumValueOrderCityId" name="city" class="form-control selectpicker" title="<?php echo $vModule_profile_city; ?>" data-live-search="true" multiple>
+                                                </select>
+                                                <div class="d-md-none mb-2"></div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <a href="javascript:;" id="minimumValueOrderDelete" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger">
+                                                    <i class="la la-trash-o"></i><?php echo $vButton_delete; ?></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <a href="javascript:;" id="minimumValueOrderAdd" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
+                                            <i class="la la-plus"></i><?php echo $vButton_add; ?></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--begin::Save Button-->
+                        <div>
+                            <a class="btn btn-primary font-weight-bolder font-size-h5 pl-12 pr-12 py-4 my-3 mr-3" onclick="Profile.saveDistributorPaymentSetting();">
+                                <?php echo $vModule_profile_saveButton; ?>
+                            </a>
+                        </div>
+                        <!--end::Save Button-->
+                    </form>
+                </div>
+                <div id="manageUsersSection" style="display: none;">
+                    <div class="card-label font-weight-bolder font-size-h1"><?php echo $vModule_profile_paymentSettingTitle ?></div>
+                    <form class="form pt-5" novalidate="novalidate" id="manageUsersForm">
                         <input type="hidden" name="userId" value="<?php echo $user->userId; ?>" />
                         <input type="hidden" name="countryId" value="<?php echo $user->entityCountryId; ?>" />
                         <div class="row">

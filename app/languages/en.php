@@ -399,6 +399,7 @@ return array(
     'vModule_profile_paymentSettingButton' => 'Payment Setting',
     'vModule_profile_paymentSettingTitle' => 'Payment Setting',
     'vModule_profile_paymentSettingSaved' => 'Payment Setting saved successfully',
+    'vModule_profile_manageUsersButton' => 'Manage Users',
     'vModule_profile_pharmacyName' => 'Pharmacy Name',
     'vModule_profile_tradeLicenseNumber' => 'Trade License Number',
     'vModule_profile_country' => 'Country',
