@@ -216,5 +216,7 @@ $f3->route('GET /web/review/distributor/profile/approve', 'ReviewController->get
 $f3->route('GET /web/test/welcome/email/atrash', 'AuthController->getProcessPharmacies');
 $f3->route('GET /web/auth/onboarding/activate/pharmacy', 'AuthController->getProcessEmailOnboarding');
 
+$f3->route('GET /web/distributors/invite', 'InvitesController->index');
+$f3->route('POST /web/distributors/invite', 'InvitesController->create');
 
 include_once('routes-permission.php');

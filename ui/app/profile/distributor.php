@@ -61,7 +61,7 @@
                     <div id="paymentSettingButton" class="py-3 pl-20" onclick="Profile.handleMenuChange('paymentSetting')">
                         <h4><?php echo $vModule_profile_paymentSettingButton; ?></h4>
                     </div>
-                    <div id="manageUsersButton" class="py-3 pl-20" onclick="Profile.handleMenuChange('manageUsersSetting')">
+                    <div id="manageUsersButton" class="py-3 pl-20" onclick="Profile.handleMenuChange('manageUsers')">
                         <h4><?php echo $vModule_profile_manageUsersButton; ?></h4>
                     </div>
                 </div>
@@ -299,62 +299,38 @@
                     </form>
                 </div>
                 <div id="manageUsersSection" style="display: none;">
-                    <div class="card-label font-weight-bolder font-size-h1"><?php echo $vModule_profile_paymentSettingTitle ?></div>
+                    <div class="card-label font-weight-bolder font-size-h1"><?php echo $vModule_profile_manageUsersTitle ?></div>
                     <form class="form pt-5" novalidate="novalidate" id="manageUsersForm">
                         <input type="hidden" name="userId" value="<?php echo $user->userId; ?>" />
                         <input type="hidden" name="countryId" value="<?php echo $user->entityCountryId; ?>" />
                         <div class="row">
                             <div class="col-12 form-group">
-                                <p class="card-label font-size-h4"><?php echo $vModule_profile_paymentOptionTitle ?></p>
-                                <div id="paymentMethodContainer" class="row checkbox-inline my-5">
-                                    <?php foreach ($arrPaymentMethod as $paymentMethod) : ?>
-                                        <label class="col-6 col-sm-6 col-md-3 col-lg-3 col-xl-3 checkbox checkbox-outline checkbox-dark">
-
-                                            <input type="checkbox" name="paymentMethodCheckbox" value="<?php echo $paymentMethod['id']; ?>" <?php echo in_array($paymentMethod['id'], $arrEntityPaymentMethodId) ? 'checked' : '' ?> />
-                                            <span style="background-color: white; border: unset;"></span>
-                                            <?php echo $paymentMethod['name']; ?>
-                                        </label>
-                                    <?php endforeach; ?>
-                                </div>
-                                <div style="border-bottom: 1px solid #333333;"></div>
+                                <p class="card-label font-size-h4"><?php echo $vModule_profile_manageUsersSubtitle ?></p>
+                                <button class="btn btn-primary mb-2" onclick="WebApp.loadPage('/web/distributor/user/invite')">Invite new user</button>
                             </div>
                         </div>
                         <div class="py-5">
-                            <p class="card-label font-size-h4"><?php echo $vModule_profile_minimumValueOrderTitle ?></p>
+                            <div class="row">
+                                <table
+                                        id="datatable"
+                                        class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
+                                </table>
+                            </div>
                             <div id="minimumValueOrderRepeater">
-                                <div class="row">
-                                    <div id="minimumValueOrderList" data-repeater-list="minimumValueOrderList" data-repeaterdata='<?php echo json_encode($arrEntityMinimumValueOrderGrouped); ?>' class="col-lg-12">
-                                        <div data-repeater-item="" class="form-group row align-items-start">
-                                            <input type="hidden" id="minimumValueOrderId" name="id" class="form-control">
-                                            <div class="col-md-4">
-                                                <input type="number" id="minimumValueOrder" name="minimumValueOrder" class="form-control minimumValueOrderInput" placeholder="<?php echo $vModule_profile_minimumValueOrder ?>" min="0" pattern="^\d*(\.\d{0,2})?$" step="0.01" onchange="this.value = this.value > 0? parseFloat(this.value).toFixed(2) : !this.value? this.value : 0;">
-                                                <div class="d-md-none mb-2"></div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <select id="minimumValueOrderCityId" name="city" class="form-control selectpicker" title="<?php echo $vModule_profile_city; ?>" data-live-search="true" multiple>
-                                                </select>
-                                                <div class="d-md-none mb-2"></div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <a href="javascript:;" id="minimumValueOrderDelete" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger">
-                                                    <i class="la la-trash-o"></i><?php echo $vButton_delete; ?></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
+
+                                <!--<div class="row">
                                     <div class="col-lg-4">
                                         <a href="javascript:;" id="minimumValueOrderAdd" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
-                                            <i class="la la-plus"></i><?php echo $vButton_add; ?></a>
+                                            <i class="la la-plus"></i><?php /*echo $vButton_add; */?></a>
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                         <!--begin::Save Button-->
                         <div>
-                            <a class="btn btn-primary font-weight-bolder font-size-h5 pl-12 pr-12 py-4 my-3 mr-3" onclick="Profile.saveDistributorPaymentSetting();">
-                                <?php echo $vModule_profile_saveButton; ?>
-                            </a>
+                            <!--<a class="btn btn-primary font-weight-bolder font-size-h5 pl-12 pr-12 py-4 my-3 mr-3" onclick="Profile.saveDistributorPaymentSetting();">
+                                <?php /*echo $vModule_profile_saveButton; */?>
+                            </a>-->
                         </div>
                         <!--end::Save Button-->
                     </form>
@@ -364,7 +340,84 @@
     </div>
 </div>
 <script>
+    var PageClass = function () {
+        var elementId = "#datatable";
+        var url = '/web/distributor/invite';
+
+        var columnDefs = [
+            {
+                className: "export_datatable",
+                targets: [0, 1, 2, 3, 4, 5, 6]
+            },
+            {
+                targets: 0,
+                title: '#',
+                data: 'id',
+            },
+            {
+                targets: 1,
+                title: WebAppLocals.getMessage('email'),
+                data: 'email',
+                render: $.fn.dataTable.render.ellipsis( 100 )
+            },
+            {
+                targets: 2,
+                title: WebAppLocals.getMessage('entityId'),
+                data: 'entityId',
+                render: $.fn.dataTable.render.ellipsis( 100 )
+            },
+            {
+                targets: 3,
+                title: WebAppLocals.getMessage('token'),
+                data: 'token',
+            },
+            {
+                targets: 4,
+                title: WebAppLocals.getMessage('used'),
+                data: 'used',
+            },
+            {
+                targets: 5,
+                title: WebAppLocals.getMessage('createdAt'),
+                data: 'createdAt',
+            },
+            {
+                targets: 6,
+                title: '',
+                data: 'id',
+                orderable: false,
+                render: function (data, type, row, meta) {
+                    var output =
+                        '<a href="javascript:;" onclick=\'DistributorCustomersDataTable.customerEditGroupModal(false, ' + row.id + ')\'\
+                    class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="' + WebAppLocals.getMessage('addToGroup') + '">\
+                    <i class="nav-icon la la-group p-0"></i></a>';
+
+                    output +=
+                        '<a href="javascript:;" onclick=\'window.location.href = "/web/distributor/order/history?customer=' + row.entityBuyerId + '"\'\
+                    class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="' + WebAppLocals.getMessage('viewOrders') + '">\
+                    <i class="nav-icon la la-eye p-0"></i></a>';
+
+                    return '<div style="display: flex;">' + output + '</div>';
+                },
+            }
+        ];
+
+        function updateDatatable() {
+            WebApp.CreateDatatableServerside("Customers List", elementId, url, columnDefs, searchQuery);
+        }
+
+        var initiate = function () {
+            updateDatatable();
+        };
+        return {
+            init: function () {
+                initiate();
+            },
+        };
+    }();
+
     $(document).ready(function() {
         Profile.init();
+        PageClass.init();
     })
 </script>
