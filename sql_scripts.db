@@ -1561,3 +1561,15 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
         LEFT JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
 
 ################################
+
+# 05/03/2021 - Abdul-fattah Tayih
+
+# Add entityRelationIdentifiers
+CREATE TABLE `marketplace`.`entityRelationIdentifiers` (
+    userId int NOT NULL,
+    entityRelationId int NOT NULL,
+    identifier varchar(150) NOT NULL UNIQUE,
+    PRIMARY KEY (userId, entityRelationId),
+    FOREIGN KEY (userId) REFERENCES user(id),
+    FOREIGN KEY (entityRelationId) REFERENCES entityRelation(Id)
+);
