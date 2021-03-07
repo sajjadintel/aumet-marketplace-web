@@ -332,6 +332,8 @@ return array(
     'vModule_customer_relationGroup' => 'Customer Group',
     'vModule_customer_editIdTitle' => 'Customer Title',
 
+    'vModule_customer_id' => 'Customer Id',
+
     'vResponse_notFound' => '{0} not found',
     'vResponse_notUpdated' => '{0} could not be updated',
     'vResponse_notAdded' => '{0} could not be added',

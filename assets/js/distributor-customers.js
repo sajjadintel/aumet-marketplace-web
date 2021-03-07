@@ -46,8 +46,10 @@ var DistributorCustomersDataTable = (function () {
 		$('#editGroupModal').appendTo('body').modal('show');
     };
 
-    var _customerEditIdModal = (function () {
-
+    var _customerEditIdentifierModal = (function (customerId, customerIdentifier) {
+        $('#customerIdentifier').val(customerIdentifier == 'null' ? '' : customerIdentifier);
+        $('#customerId').val(customerId);
+        $('#editCustomerIdentifierModal').appendTo('body').modal('show');
     });
 
     return {
@@ -58,8 +60,8 @@ var DistributorCustomersDataTable = (function () {
         customerEditGroupModal: function (fromOrders, firstId, secondId) {
             _customerEditGroupModal(fromOrders, firstId, secondId);
         },
-        customerEditIdModal: function () {
-            _customerEditIdModal();
+        customerEditIdentifierModal: function (customerId, customerIdentifier) {
+            _customerEditIdentifierModal(customerId, customerIdentifier);
         }
     };
 })();

@@ -1566,10 +1566,10 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
 
 # Add entityRelationIdentifiers
 CREATE TABLE `marketplace`.`entityRelationIdentifiers` (
-    userId int NOT NULL,
+    entityId int NOT NULL,
     entityRelationId int NOT NULL,
     identifier varchar(150) NOT NULL UNIQUE,
-    PRIMARY KEY (userId, entityRelationId),
-    FOREIGN KEY (userId) REFERENCES user(id),
+    PRIMARY KEY (entityId, entityRelationId),
+    FOREIGN KEY (entityId) REFERENCES entity(id),
     FOREIGN KEY (entityRelationId) REFERENCES entityRelation(Id)
 );

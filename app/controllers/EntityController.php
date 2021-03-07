@@ -102,7 +102,7 @@ class EntityController extends Controller
             }
         }
 
-        $dbData = new BaseModel($this->db, "vwEntityRelation");
+        $dbData = new EntityRelationView;
         $dbData->buyerName = "buyerName_" . $this->objUser->language;
         $dbData->sellerName = "sellerName_" . $this->objUser->language;
         $dbData->relationGroupName = "relationGroupName_" . $this->objUser->language;
@@ -113,7 +113,7 @@ class EntityController extends Controller
         $totalRecords = $dbData->count($fullQuery);
         $totalFiltered = $dbData->count($query);
         $data = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
-
+        $data = $dbData->withIdentifiers($data);
         ## Response
         $response = array(
             "draw" => intval($datatable->draw),
@@ -216,6 +216,43 @@ class EntityController extends Controller
                 $this->webResponse->message = $this->f3->get('vModule_customerEdited');
                 echo $this->webResponse->jsonResponse();
             }
+        }
+    }
+
+    public function postEntityCustomersIdentifier()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/customer");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $entityRelationId = $this->f3->get('POST.id');
+
+            $dbEntityRelation = new BaseModel($this->db, "entityRelation");
+            $data = $dbEntityRelation->getWhere("id=$entityRelationId")[0];
+
+            if ($dbEntityRelation->dry()) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "No Customer";
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
+
+            $identifier = new EntityRelationIdentifier;
+            $identifier->updateOrCreate([
+                'entityId = ? AND entityRelationId = ?',
+                $data['entitySellerId'],
+                $entityRelationId
+            ], [
+                'identifier' => $this->f3->get('POST.customerIdentifier'),
+                'entityId' => $data['entitySellerId'],
+                'entityRelationId' => $entityRelationId,
+            ]);
+
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
+            $this->webResponse->title = "";
+            $this->webResponse->message = $this->f3->get('vModule_customerEdited');
+            echo $this->webResponse->jsonResponse();
         }
     }
 

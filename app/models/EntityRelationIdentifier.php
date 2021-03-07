@@ -2,5 +2,5 @@
 
 class EntityRelationIdentifier extends BaseModel
 {
-    protected $table_name = 'entityRelationIdentifier';
+    protected $table_name = 'entityRelationIdentifiers';
 }
