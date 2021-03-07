@@ -42,7 +42,7 @@ function compress_htmlcode($codedata)
             url: `/web/distributor/notification/${notificationId}/read`,
             method: 'POST',
 
-        })
+        });
         WebApp.loadPage(redirectUrl);
     }
 </script>

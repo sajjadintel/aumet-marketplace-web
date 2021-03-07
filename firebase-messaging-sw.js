@@ -8,12 +8,12 @@ importScripts('https://www.gstatic.com/firebasejs/8.2.9/firebase-messaging.js');
 // your app's Firebase config object.
 // https://firebase.google.com/docs/web/setup#config-object
 firebase.initializeApp({
-  apiKey: 'AIzaSyBvHrrg5DEsM_evTfPiabFBx',
-  authDomain: 'aumet-marketplace-dev.firebaseapp.com',
-  projectId: 'aumet-marketplace-dev',
-  storageBucket: 'aumet-marketplace-dev.appspot.com',
-  messagingSenderId: '1014458021475',
-  appId: '1:1014458021475:web:53d2672ca6296c3503ea5',
+  apiKey: '',
+  authDomain: '',
+  projectId: '',
+  storageBucket: '',
+  messagingSenderId: '',
+  appId: '',
 });
 
 // Retrieve an instance of Firebase Messaging so that it can handle background

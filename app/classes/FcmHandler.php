@@ -43,7 +43,13 @@ class FcmHandler
                 'body' => $this->body
             ]
         ];
-        $message = CloudMessage::fromArray($cloudMessageArray)->withWebPushConfig($this->options);
+
+        $reports = [];
+
+        $message = CloudMessage::fromArray($cloudMessageArray);
+        if (!empty($this->options)) {
+            $message = $message->withWebPushConfig($this->options);
+        }
         for ($i = 0; $i <= count($this->users) / 500; $i++) {
             $chunk = array_slice($this->users, $i * 500, 500);
             $tokens = (new UserFcmToken)->select('fcm_token', [
@@ -54,9 +60,11 @@ class FcmHandler
                 continue;
             }
 
-            $messaging->sendMulticast($message, $tokens);
+            $reports[] = $messaging->sendMulticast($message, $tokens);
             $this->storeNotification($chunk);
         }
+
+        return $reports;
     }
 
     public function storeNotification($users)

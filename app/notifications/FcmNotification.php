@@ -7,10 +7,14 @@ abstract class FcmNotification
     protected $body;
     protected $type;
     protected $options;
+    /**
+     * @var FcmHandler
+     */
+    protected $handler;
 
     const AVAILABLE_NOTIFICATIONS = [
         Constants::ORDER_STATUS_PENDING => NewOrderNotification::class,
     ];
 
-    public abstract function serialize($users, $bonusData = null);
+    public abstract function send($users, $options = null, $additionalData = null);
 }

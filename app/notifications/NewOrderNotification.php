@@ -16,14 +16,20 @@ class NewOrderNotification extends FcmNotification
         ]);
     }
 
-    public function serialize($users, $bonusData = null)
+    protected function fillBody($additionalData)
     {
-        return [
-            'title' => $this->title,
-            'body' => $this->body,
-            'type' => $this->type,
-            'users' => $users,
-            'options' => $this->options,
-        ];
+        $this->body = 'You have received a new order for ';
+        foreach ($additionalData as $datum) {
+            $this->body .= "Product {$datum->productName_en} quantity {$datum->quantity} ";
+        }
+
+        $this->body .= '. Click here to view all pending orders';
+    }
+
+    public function send($users, $additionalData = null, $options = null)
+    {
+        $this->fillBody($additionalData);
+        $this->handler = new FcmHandler($this->title, $this->body, $this->type, $users, $options);
+        return $this->handler->send();
     }
 }
