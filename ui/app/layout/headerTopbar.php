@@ -33,7 +33,7 @@
 		<div class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1" id="kt_quick_cart_toggle" onclick="WebApp.loadPage('/web/distributor/notification')">
 			<span class="svg-icon svg-icon-xl svg-icon-primary" style="display: flex; align-items: center;">
 				<!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Cart3.svg-->
-				<img src="/assets/img/notifications.png" height="24" width="24">
+				<i class="las la-bell text-primary" style="height: 24px; width: 24px;"></i>
 				<!--end::Svg Icon-->
 				<span class="label label-danger ml-2" id="notificationCount"
 					style="<?php if($objUser->unreadNotificationCount > 0) : ?>display: flex;<?php else : ?>display: none;<?php endif; ?>"
