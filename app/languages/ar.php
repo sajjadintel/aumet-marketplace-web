@@ -36,6 +36,9 @@ return array(
     'vSupport_emailMissing' => 'Email is required', // TODO: Translate
     'vSupport_phoneMissing' => 'Phone is required', // TODO: Translate
     'vSupport_reasonMissing' => 'Reason is required', // TODO: Translate
+    'vSupport_message' => 'Message:', // TODO: Translate
+    'vSupport_customer' => 'Customer:', // TODO: Translate
+    'vSupport_order' => 'Order #:', // TODO: Translate
 
     'vLogin_signin' => 'تسجيل الدخول',
     'vLogin_signinWithGoole' => 'سجل من خلال جوجل',
@@ -466,7 +469,7 @@ return array(
     'vModal_welcome_step3_title' => 'Add minimum value order by location.', // TODO: translate
     'vModal_welcome_step3_message' => 'Add minimum value order by location.', // TODO: translate
     'vModal_welcome_callToAction' => 'Complete Profile', // TODO: translate
-    
+
     'vModule_customerGroup_title' => 'مجموعة الزبائن',
     'vModule_customerGroup_editModalTitle' => 'مجموعة الزبائن',
     'vModule_customerGroup_editModalNonGrouped' => 'غير مجمعة',

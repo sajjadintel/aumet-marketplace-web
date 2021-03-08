@@ -945,11 +945,18 @@ var WebApp = (function () {
 					supportEmail: 'input',
 					supportPhone: 'input',
 					supportReasonId: 'select',
+					supportOrder: 'select',
+					supportCustomer: 'select',
+					message: 'textarea'
 				};
 
 				Object.keys(mapKeyElement).forEach((key) => {
 					body[key] = $('#supportModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
 				});
+
+				if($('#requestCall').is(":checked")){
+					body['requestCall'] = 1;
+				}
 
 				// Show loading state on button
 				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
@@ -974,6 +981,10 @@ var WebApp = (function () {
 		}
 
 		$('#supportModalForm select[name=supportReasonId]').val('').trigger('change');
+		$('#supportModalForm select[name=supportCustomer]').val('').trigger('change');
+		$('#supportModalForm select[name=supportOrder]').val('').trigger('change');
+		$('#supportModalForm textarea[name=message]').html('');
+		$('#requestCall').prop('checked', false);
 		$('#support_modal').modal('hide');
 	};
 
