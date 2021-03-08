@@ -935,6 +935,17 @@ class OrderController extends Controller
         $dbOrder = new BaseModel($this->db, 'vwOrderEntityUser');
         $arrOrder = $dbOrder->findWhere("id = $orderId");
         $arrOrder = $arrOrder[0];
+
+        $dbEntityBranch = new BaseModel($this->db, "entityBranch");
+        $entityBranch = $dbEntityBranch->getByField("id", $arrOrder['branchBuyerId'])[0];
+
+        $dbCity = new BaseModel($this->db, "city");
+        $city = $dbCity->getByField("id", $dbEntityBranch['cityId'])[0];
+
+        $dbCountry = new BaseModel($this->db, "country");
+        $country = $dbCountry->getByField("id", $city['countryId'])[0];
+        $buyerAddress = $country['name_en'].' - '.$city['nameEn'].' - '.$entityBranch['address_en'];
+
         $pdf = new PDF();
         // create new PDF document
         $pdf = new PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -959,9 +970,9 @@ class OrderController extends Controller
 
         $pharmacyTableHeader = array('Buyer Info');
         if ($arrOrder['userBuyerEmail'] != null) {
-            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']), array($arrOrder['addressBuyer']) , array($arrOrder['userBuyerEmail']));
+            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']), array($buyerAddress) , array($arrOrder['userBuyerEmail']));
         } else {
-            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']), array($arrOrder['addressBuyer']));
+            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']), array($buyerAddress));
         }
         $pdf->FancyOneTitleHeader($pharmacyTableHeader, $pharmacyTableData);
         $pdf->Ln(20);
