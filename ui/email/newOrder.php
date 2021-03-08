@@ -62,6 +62,7 @@
                 <!--[if mso]><table width="584" cellspacing="0" cellpadding="0" border="0" role="presentation"><tbody><tr><td align="center"><![endif]-->
                 <div class="o_col-6s o_center o_sans o_text-md o_text-light" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 19px;line-height: 28px;max-width: 584px;color: #82899a;text-align: center;">
                   <h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 16px;line-height: 39px;"><?php echo $name; ?></h2>
+                    <h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 16px;line-height: 39px;"><?php echo $buyerAddress; ?></h2>
                   <h2 class="o_heading o_text-dark o_mb-xxs" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 4px;color: #242b3d;font-size: 16px;line-height: 39px;">Order Submitted At: <?php echo $orderSubmittedAt; ?></h2>
                 </div>
                 <!--[if mso]></td></tr></table><![endif]-->
