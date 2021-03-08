@@ -664,6 +664,13 @@ class CartController extends Controller
             $dbEntityBranch = new BaseModel($this->db, "entityBranch");
             $entityBranch = $dbEntityBranch->getByField("entityId", $account->entityId)[0];
 
+            $dbCity = new BaseModel($this->db, "city");
+            $city = $dbCity->getByField("id", $dbEntityBranch['cityId'])[0];
+
+            $dbCountry = new BaseModel($this->db, "country");
+            $country = $dbCountry->getByField("id", $city['countryId'])[0];
+            $buyerAddress = $country['name_en'].' - '.$city['nameEn'].' - '.$entityBranch['address_en'];
+
             // TODO: Adjust buyerBranchId logic
             $dbSellerUser = new BaseModel($this->db, "user");
 
@@ -844,7 +851,7 @@ class CartController extends Controller
                     $dbRelation->updatedAt = date('Y-m-d H:i:s');
                     $dbRelation->update();
                 }
-                
+
                 $dbOrder->relationGroupId = $dbRelation->relationGroupId;
                 $dbOrder->addReturnID();
 
@@ -856,6 +863,7 @@ class CartController extends Controller
                 $this->f3->set('total', round($total, 2));
                 $this->f3->set('ordersUrl', "web/distributor/order/pending");
                 $this->f3->set('name', "Buyer name: " . $buyerName);
+                $this->f3->set('buyerAddress', "Address: " . $buyerAddress);
                 $this->f3->set('paymentMethod', $mapPaymentMethodIdName[$paymentMethodId]);
 
                 $arrEntityUserProfile = $dbEntityUserProfile->getByField("entityId", $sellerId);
@@ -873,6 +881,7 @@ class CartController extends Controller
                         $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
                         $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
                         $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajad");
+                        $emailHandler->appendToAddress("n.javaid@aumet.com", "Naveed Javaid");
                     }
                 }
 
