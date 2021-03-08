@@ -85,6 +85,10 @@ var WebAuth = (function () {
 					console.log('No Form');
 					return;
 				}
+				dataLayer.push({
+					'event': 'login',
+					'method': 'email'
+				});
 				WebApp.post(
 					url,
 					data,
@@ -191,6 +195,9 @@ var WebAuth = (function () {
 					return;
 				}
 				console.log('test');
+				dataLayer.push({
+					'event': 'password_reset_email_sent'
+				});
 				WebApp.post(url, data, function () {
 					KTUtil.btnRelease(formSubmitButton);
 				});
@@ -260,6 +267,9 @@ var WebAuth = (function () {
 					console.log('No Form');
 					return;
 				}
+				dataLayer.push({
+					'event': 'password_reset_success'
+				});
 				WebApp.post(url, data, function () {
 					KTUtil.btnRelease(formSubmitButton);
 					Swal.fire({
@@ -459,6 +469,11 @@ var WebAuth = (function () {
 									$('.pharmacy').hide();
 									$('.distributor').show();
 								}
+								dataLayer.push({
+									'event': 'sign_up_form_contact_information',
+									'method': 'email',
+									'user_type': companyType
+								});
 							});
 						} else {
 							wizard.goTo(wizard.getNewStep());
@@ -497,6 +512,12 @@ var WebAuth = (function () {
 			if (validator) {
 				validator.validate().then(function (status) {
 					if (status == 'Valid') {
+						let companyType = $('#kt_login_signup_form input[name=companyType]:checked').val();
+						dataLayer.push({
+							'event': 'sign_up_form_contact_information',
+							'method': 'email',
+							'user_type': companyType
+						});
 						Swal.fire({
 							text: 'All is good! Please confirm the form submission.',
 							icon: 'success',
@@ -793,6 +814,7 @@ var WebAuth = (function () {
 		console.log(allValues);
 
 		var unitName = allValues.roleId == 40 ? 'Pharmacy Name' : 'Distributor Name';
+		var companyType = (allValues.roleId == 40 || allValues.roleId == 41) ? 'pharmacy' : 'distributor';
 		var arrFields = {
 			Name: allValues.name,
 			Mobile: allValues.mobile,
@@ -857,6 +879,12 @@ var WebAuth = (function () {
 		$('#signupDetailData').html(output);
 
 		$('#thankyouContainer').css('display', 'block');
+		dataLayer.push({
+			'event': 'sign_up_email_validation',
+			'method': 'email',
+			'user_type': companyType
+		});
+
 	};
 
 	// Public Functions

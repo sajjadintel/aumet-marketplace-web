@@ -7,6 +7,16 @@
 		resize: none;
 	}
 </style>
+<script type="text/javascript">
+    $( document ).ready(function() {
+        dataLayer.push({
+            'event': 'sign_up',
+            'method': 'email',
+            'user_type': "<?= $companyType ?>"
+        });
+    });
+
+</script>
 <div class="d-flex flex-column flex-root">
 	<!--begin::Login-->
 	<div class="login login-3 wizard d-flex flex-column flex-lg-row flex-column-fluid wizard" id="kt_login">
