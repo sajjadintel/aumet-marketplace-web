@@ -8,7 +8,7 @@ class EntityUserProfileView extends BaseModel
     public static function getEntityIdFromUser($userId)
     {
         $object = new self;
-        $object->findone(['userId = ?', $userId]);
+        $object = $object->findone(['userId = ?', $userId]);
 
         return $object ? $object->entityId : null;
     }

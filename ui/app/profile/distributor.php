@@ -306,7 +306,7 @@
                         <div class="row">
                             <div class="col-12 form-group">
                                 <p class="card-label font-size-h4"><?php echo $vModule_profile_manageUsersSubtitle ?></p>
-                                <button class="btn btn-primary mb-2" onclick="WebApp.loadPage('/web/distributor/user/invite')">Invite new user</button>
+                                <button type="button" class="btn btn-primary mb-2" onclick="DistributorUserInvitesDataTable.createUserInviteModal()">Invite new user</button>
                             </div>
                         </div>
                         <div class="py-5">
@@ -339,6 +339,8 @@
         </div>
     </div>
 </div>
+<?php include_once 'modals/new-user-invite-modal.php'; ?>
+<script src="/assets/js/distributor-user-invites.js"></script>
 <script>
     var PageClass = function () {
         var elementId = "#datatable";
@@ -347,7 +349,7 @@
         var columnDefs = [
             {
                 className: "export_datatable",
-                targets: [0, 1, 2, 3, 4, 5, 6]
+                targets: [0, 1, 2, 3, 4]
             },
             {
                 targets: 0,
@@ -356,39 +358,28 @@
             },
             {
                 targets: 1,
-                title: WebAppLocals.getMessage('email'),
+                title: 'email',
                 data: 'email',
                 render: $.fn.dataTable.render.ellipsis( 100 )
             },
             {
                 targets: 2,
-                title: WebAppLocals.getMessage('entityId'),
-                data: 'entityId',
-                render: $.fn.dataTable.render.ellipsis( 100 )
-            },
-            {
-                targets: 3,
-                title: WebAppLocals.getMessage('token'),
-                data: 'token',
-            },
-            {
-                targets: 4,
-                title: WebAppLocals.getMessage('used'),
+                title: 'used',
                 data: 'used',
             },
             {
-                targets: 5,
-                title: WebAppLocals.getMessage('createdAt'),
+                targets: 3,
+                title: 'Created At',
                 data: 'createdAt',
             },
             {
-                targets: 6,
+                targets: 4,
                 title: '',
                 data: 'id',
                 orderable: false,
                 render: function (data, type, row, meta) {
                     var output =
-                        '<a href="javascript:;" onclick=\'DistributorCustomersDataTable.customerEditGroupModal(false, ' + row.id + ')\'\
+                        '<a href="javascript:;" onclick=\'DistributorUserInvitesDataTable.customerEditGroupModal(false, ' + row.id + ')\'\
                     class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="' + WebAppLocals.getMessage('addToGroup') + '">\
                     <i class="nav-icon la la-group p-0"></i></a>';
 
@@ -403,7 +394,7 @@
         ];
 
         function updateDatatable() {
-            WebApp.CreateDatatableServerside("Customers List", elementId, url, columnDefs, searchQuery);
+            WebApp.CreateDatatableServerside("User Invites List", elementId, url, columnDefs, '');
         }
 
         var initiate = function () {

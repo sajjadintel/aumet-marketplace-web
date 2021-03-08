@@ -9,11 +9,21 @@ class UserInvitesController extends Controller
             return;
         }
 
-        $invite = new UserInvite;
+        $datatable = new Datatable($_POST);
 
-        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
-        $this->webResponse->data = $invite->find(['entityId = ?', $entityId]);
-        echo $this->jsonResponse(Constants::STATUS_SUCCESS, $invite->find(['entityId = ?', $entityId]));
+        $invite = new UserInvite;
+        $order = "$datatable->sortBy $datatable->sortByOrder";
+        $query = "entityId = {$entityId}";
+        $data = $invite->getWhere($query, $order, $datatable->limit, $datatable->offset);
+
+        $response = [
+            "draw" => intval($datatable->draw),
+            "recordsTotal" => $invite->count($query),
+            "recordsFiltered" => $invite->count($query),
+            "data" => $data,
+            "query" => $query
+        ];
+        $this->jsonResponseAPI($response);
     }
 
     public function create()
