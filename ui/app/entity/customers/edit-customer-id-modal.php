@@ -11,6 +11,7 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" class="form-control" name="id" id="customerId">
+                    <input type="hidden" name="fnCallback" class="modalValueCallback" id="editGroupCallback" value="DistributorCustomersDataTable.reloadDatatable" />
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <label for="customerIdentifier" class="form-control-label"><?php echo $vModule_customer_id; ?></label>
