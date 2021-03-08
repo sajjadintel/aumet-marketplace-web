@@ -45,7 +45,7 @@
                             <span class="navi-text text-muted text-hover-primary"><?php echo $objUser->email ?></span>
                         </span>
                     </a>
-                    <a href="/web/auth/signout" class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5"><?php echo $vLogin_signout ?></a>
+                    <a href="/web/auth/signout"  class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5" onclick="dataLayer.push({'event': 'logout','method': 'email'});"><?php echo $vLogin_signout ?></a>
                 </div>
             </div>
         </div>
