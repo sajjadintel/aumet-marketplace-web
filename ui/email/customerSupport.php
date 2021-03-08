@@ -62,7 +62,7 @@
                             </div>
                         </div>
                         <!--[if mso]></td>
-                        <td width="100" valign="top" style="padding: 0px 8px;"><![endif]-->
+                        <td valign="top" style="padding: 0px 8px;"><![endif]-->
                         <div class="o_col o_col-1" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
                             <div class="o_px-xs o_sans o_text-xs " style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;text-align: left;line-height: 21px;padding-left: 8px;padding-right: 8px;">
                                 <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;"><?php echo $email ?></p>
@@ -87,7 +87,7 @@
                             </div>
                         </div>
                         <!--[if mso]></td>
-                        <td width="100" valign="top" style="padding: 0px 8px;"><![endif]-->
+                        <td valign="top" style="padding: 0px 8px;"><![endif]-->
                         <div class="o_col o_col-1" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
                             <div class="o_px-xs o_sans o_text-xs " style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;text-align: left;line-height: 21px;padding-left: 8px;padding-right: 8px;">
                                 <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;"><?php echo $phone ?></p>
@@ -112,7 +112,7 @@
                             </div>
                         </div>
                         <!--[if mso]></td>
-                        <td width="100" valign="top" style="padding: 0px 8px;"><![endif]-->
+                        <td  valign="top" style="padding: 0px 8px;"><![endif]-->
                         <div class="o_col o_col-1" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
                             <div class="o_px-xs o_sans o_text-xs " style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;text-align: left;line-height: 21px;padding-left: 8px;padding-right: 8px;">
                                 <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;"><?php echo $reason ?></p>
@@ -123,6 +123,111 @@
                         </table><![endif]-->
                     </td>
                 </tr>
+
+
+                <?PHP if(isset($supportCustomer)){?>
+                <tr>
+                    <td class="o_re o_bg-white o_px o_pt-xs o_hide-xs" align="center" style="font-size: 0;vertical-align: top;background-color: #ffffff;padding-left: 16px;padding-right: 16px;padding-top: 8px;">
+                        <!--[if mso]>
+                        <table cellspacing="0" cellpadding="0" border="0" role="presentation">
+                            <tr>
+                                <td width="400" align="left" valign="top" style="padding: 0px 8px;"><![endif]-->
+                        <div class="o_col o_col-4" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
+                            <div class="o_px-xs o_sans o_text-xs o_left" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;text-align: left;padding-left: 8px;padding-right: 8px;">
+                                <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;">Customer:</p>
+                            </div>
+                        </div>
+                        <!--[if mso]></td>
+                        <td valign="top" style="padding: 0px 8px;"><![endif]-->
+                        <div class="o_col o_col-1" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
+                            <div class="o_px-xs o_sans o_text-xs " style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;text-align: left;line-height: 21px;padding-left: 8px;padding-right: 8px;">
+                                <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;"><?php echo $supportCustomer ?></p>
+                            </div>
+                        </div>
+                        <!--[if mso]></td>
+                        </tr>
+                        </table><![endif]-->
+                    </td>
+                </tr>
+                <?PHP }?>
+
+                <?PHP if(isset($supportOrder)){?>
+                    <tr>
+                        <td class="o_re o_bg-white o_px o_pt-xs o_hide-xs" align="center" style="font-size: 0;vertical-align: top;background-color: #ffffff;padding-left: 16px;padding-right: 16px;padding-top: 8px;">
+                            <!--[if mso]>
+                            <table cellspacing="0" cellpadding="0" border="0" role="presentation">
+                                <tr>
+                                    <td width="400" align="left" valign="top" style="padding: 0px 8px;"><![endif]-->
+                            <div class="o_col o_col-4" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
+                                <div class="o_px-xs o_sans o_text-xs o_left" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;text-align: left;padding-left: 8px;padding-right: 8px;">
+                                    <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;">Order #:</p>
+                                </div>
+                            </div>
+                            <!--[if mso]></td>
+                            <td valign="top" style="padding: 0px 8px;"><![endif]-->
+                            <div class="o_col o_col-1" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
+                                <div class="o_px-xs o_sans o_text-xs " style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;text-align: left;line-height: 21px;padding-left: 8px;padding-right: 8px;">
+                                    <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;"><?php echo $supportOrder ?></p>
+                                </div>
+                            </div>
+                            <!--[if mso]></td>
+                            </tr>
+                            </table><![endif]-->
+                        </td>
+                    </tr>
+                <?PHP }?>
+
+                <?PHP if(isset($requestCall)){?>
+                    <tr>
+                        <td class="o_re o_bg-white o_px o_pt-xs o_hide-xs" align="center" style="font-size: 0;vertical-align: top;background-color: #ffffff;padding-left: 16px;padding-right: 16px;padding-top: 8px;">
+                            <!--[if mso]>
+                            <table cellspacing="0" cellpadding="0" border="0" role="presentation">
+                                <tr>
+                                    <td width="400" align="left" valign="top" style="padding: 0px 8px;"><![endif]-->
+                            <div class="o_col o_col-4" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
+                                <div class="o_px-xs o_sans o_text-xs o_left" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;text-align: left;padding-left: 8px;padding-right: 8px;">
+                                    <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;">Request Call:</p>
+                                </div>
+                            </div>
+                            <!--[if mso]></td>
+                            <td valign="top" style="padding: 0px 8px;"><![endif]-->
+                            <div class="o_col o_col-1" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
+                                <div class="o_px-xs o_sans o_text-xs " style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;text-align: left;line-height: 21px;padding-left: 8px;padding-right: 8px;">
+                                    <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;"><?php echo $requestCall ?></p>
+                                </div>
+                            </div>
+                            <!--[if mso]></td>
+                            </tr>
+                            </table><![endif]-->
+                        </td>
+                    </tr>
+                <?PHP }?>
+
+                <?PHP if(isset($message)){?>
+                    <tr>
+                        <td class="o_re o_bg-white o_px o_pt-xs o_hide-xs" align="center" style="font-size: 0;vertical-align: top;background-color: #ffffff;padding-left: 16px;padding-right: 16px;padding-top: 8px;">
+                            <!--[if mso]>
+                            <table cellspacing="0" cellpadding="0" border="0" role="presentation">
+                                <tr>
+                                    <td width="400" align="left" valign="top" style="padding: 0px 8px;"><![endif]-->
+                            <div class="o_col o_col-4" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
+                                <div class="o_px-xs o_sans o_text-xs o_left" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;line-height: 21px;text-align: left;padding-left: 8px;padding-right: 8px;">
+                                    <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;">Message:</p>
+                                </div>
+                            </div>
+                            <!--[if mso]></td>
+                            <td valign="top" style="padding: 0px 8px;"><![endif]-->
+                            <div class="o_col o_col-1" style="display: inline-block;vertical-align: top;width: 100%;max-width: 100px;">
+                                <div class="o_px-xs o_sans o_text-xs " style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 14px;text-align: left;line-height: 21px;padding-left: 8px;padding-right: 8px;">
+                                    <p class="o_text-light" style="color: #82899a;margin-top: 0px;margin-bottom: 0px;"><?php echo $message ?></p>
+                                </div>
+                            </div>
+                            <!--[if mso]></td>
+                            </tr>
+                            </table><![endif]-->
+                        </td>
+                    </tr>
+                <?PHP }?>
 
 
                 </tbody>

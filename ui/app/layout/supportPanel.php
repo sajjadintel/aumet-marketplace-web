@@ -25,16 +25,20 @@
 
                         <div class="form-group">
                             <label class="support-modal-text"><?php echo $vSupport_telephone ?></label>
-                            <input name="supportPhone" type="number" class="form-control" placeholder="eg 00977442424242" />
+                            <input name="supportPhone" type="number" value="<?php echo $isAuth ? $_SESSION['objUser']->mobile : '' ?>" class="form-control" placeholder="eg 00977442424242" />
                         </div>
 
-<!--                        <div>-->
-<!--                            <label class="checkbox checkbox-disabled">-->
-<!--                                <input type="checkbox" disabled="disabled" checked="checked" name="typeId" required />-->
-<!--                                <span class="support-modal-request-call-icon"></span>-->
-<!--                                --><?php //echo $vSupport_request_call ?>
-<!--                            </label>-->
-<!--                        </div>-->
+                        <div class="form-group row" style="margin-bottom: 0px;">
+                            <label class="col-5 col-form-label support-modal-text"> <?php echo $vSupport_request_call ?>: </label>
+                            <div class="col-3">
+                                    <span class="switch switch-icon">
+                                        <label>
+                                            <input type="checkbox"  name="requestCall" id="requestCall" />
+                                            <span></span>
+                                        </label>
+                                    </span>
+                            </div>
+                        </div>
 
                         <div class="form-group support-modal-select">
                             <label class="col-form-label text-right support-modal-text"><?php echo $vSupport_reason ?></label>
@@ -46,6 +50,40 @@
                                     <?php } ?>
                                 </select>
                             </div>
+                        </div>
+
+                        <?PHP if(isset($supportCustomers) && sizeof($supportCustomers) > 0){?>
+                        <div class="form-group support-modal-select">
+                            <label class="col-form-label text-right support-modal-text"><?php echo $vSupport_customer ?></label>
+                            <div class="">
+                                <select class="form-control select2" id="supportCustomer" name="supportCustomer">
+                                    <option selected></option>
+                                    <?php foreach ($supportCustomers as $supportCustomer) { ?>
+                                        <option value="<?php echo $supportCustomer['entityBuyerId']; ?>"><?php echo $supportCustomer['buyerName']; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <?PHP }?>
+                        <?PHP if(isset($supportOrders) && sizeof($supportOrders) > 0){?>
+                        <div class="form-group support-modal-select">
+                            <label class="col-form-label text-right support-modal-text"><?php echo $vSupport_order ?></label>
+                            <div class="">
+                                <select class="form-control select2" id="supportOrder" name="supportOrder">
+                                    <option selected></option>
+                                    <?php foreach ($supportOrders as $supportOrder) {
+                                        $user_name = (Helper::isPharmacy($objUser->roleId)) ? $supportOrder['entitySeller'] : $supportOrder['userBuyer'];
+                                        ?>
+                                        <option value="<?php echo $supportOrder['id'];?>"><?php echo $supportOrder['id'] ." : ". $user_name; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <?PHP }?>
+
+                        <div class="form-group">
+                            <label class="col-form-label text-right support-modal-text"><?php echo $vSupport_message ?></label>
+                            <textarea class="form-control h-auto py-7 px-6 rounded-lg" name="message" placeholder="<?php echo $vSupport_message ?>" value="" style="direction: ltr;" rows="3"></textarea>
                         </div>
                     </div>
                     <!--end::Body-->
@@ -68,6 +106,16 @@
 <script>
     $(document).ready(function () {
         $('#supportReason').select2({
+            placeholder: 'Please Select',
+            minimumResultsForSearch: -1,
+        });
+
+        $('#supportCustomer').select2({
+            placeholder: 'Please Select',
+            minimumResultsForSearch: -1,
+        });
+
+        $('#supportOrder').select2({
             placeholder: 'Please Select',
             minimumResultsForSearch: -1,
         });
