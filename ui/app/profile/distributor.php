@@ -340,6 +340,7 @@
     </div>
 </div>
 <?php include_once 'modals/new-user-invite-modal.php'; ?>
+<?php include_once 'modals/destroy-user-invite-modal.php'; ?>
 <script src="/assets/js/distributor-user-invites.js"></script>
 <script>
     var PageClass = function () {
@@ -366,6 +367,7 @@
                 targets: 2,
                 title: 'used',
                 data: 'used',
+                render: data => Boolean(data)
             },
             {
                 targets: 3,
@@ -378,15 +380,9 @@
                 data: 'id',
                 orderable: false,
                 render: function (data, type, row, meta) {
-                    var output =
-                        '<a href="javascript:;" onclick=\'DistributorUserInvitesDataTable.customerEditGroupModal(false, ' + row.id + ')\'\
-                    class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="' + WebAppLocals.getMessage('addToGroup') + '">\
-                    <i class="nav-icon la la-group p-0"></i></a>';
-
-                    output +=
-                        '<a href="javascript:;" onclick=\'window.location.href = "/web/distributor/order/history?customer=' + row.entityBuyerId + '"\'\
-                    class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="' + WebAppLocals.getMessage('viewOrders') + '">\
-                    <i class="nav-icon la la-eye p-0"></i></a>';
+                    output =
+                        `<btn type='button' class='btn btn-link btn-sm navi-link btn-outline-primary btn-hover-primary mr-2'
+                            onclick='DistributorUserInvitesDataTable.destroyUserInviteModal(${data}, "${row.email}")'><i class="nav-icon las la-trash p-0"></i></btn>`;
 
                     return '<div style="display: flex;">' + output + '</div>';
                 },

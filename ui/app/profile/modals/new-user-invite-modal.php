@@ -15,7 +15,7 @@
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <label for="addUserInvite" class="form-control-label"><?php echo $vModule_profile_email; ?></label>
-                            <input type="email" class="form-control" id="addUserInvite" name="userInviteEmail">
+                            <input type="email" class="form-control" id="addUserInviteEmail" name="email">
                         </div>
                     </div>
                 </div>

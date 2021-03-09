@@ -218,5 +218,6 @@ $f3->route('GET /web/auth/onboarding/activate/pharmacy', 'AuthController->getPro
 
 $f3->route('POST /web/distributor/invite', 'UserInvitesController->index');
 $f3->route('POST /web/distributor/invite/create', 'UserInvitesController->create');
+$f3->route('POST /web/distributor/invite/@id/destroy', 'UserInvitesController->destroy');
 
 include_once('routes-permission.php');
