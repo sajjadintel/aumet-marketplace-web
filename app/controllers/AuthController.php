@@ -88,6 +88,44 @@ class AuthController extends Controller
         }
     }
 
+    public function getSignUpInvite()
+    {
+        if ($this->isAuth) {
+            $this->f3->reroute('/web');
+            return;
+
+        }
+        $this->f3->set('companyType', ($this->f3->get('SESSION.companyType')));
+
+        $this->f3->set('vAuthFile', 'signup-invite');
+        $token = $_GET['token'];
+        $invite = UserInvite::findByToken($token);
+        if ($invite == false) {
+            $this->f3->set('SESSION.error', 'Invalid Invite');
+            $this->f3->reroute('/web/auth/signup');
+            return;
+        }
+
+        $this->f3->set('invite', $invite);
+        $dbCountry = new BaseModel($this->db, "country");
+        $dbCountry->name = "name_en";
+        $arrCountry = $dbCountry->findAll("name_en ASC");
+        $this->f3->set('arrCountry', $arrCountry);
+
+        echo View::instance()->render('public/auth/layout.php');
+    }
+
+    public function postSignUpInvite()
+    {
+        $uid = $this->f3->get("POST.uid");
+        $name = $this->f3->get("POST.name");
+        $mobile = $this->f3->get("POST.mobile");
+        $email = trim($this->f3->get("POST.email"));
+        $password = trim($this->f3->get("POST.password"));
+        $user = new User;
+        $user->check($this->f3->get('POST'));
+    }
+
     function postSignIn_NoFirebase()
     {
         $email = trim($this->f3->get("POST.email"));

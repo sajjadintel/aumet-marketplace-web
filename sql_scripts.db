@@ -1573,6 +1573,8 @@ CREATE TABLE `marketplace`.`userInvites` (
     used boolean DEFAULT false,
     createdAt timestamp,
     PRIMARY KEY (id),
+    UNIQUE (email),
+    UNIQUE (token),
     FOREIGN KEY (entityId) REFERENCES entity(id)
 );
 

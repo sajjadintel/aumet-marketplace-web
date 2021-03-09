@@ -34,20 +34,13 @@ class UserInvitesController extends Controller
         }
 
         $invite = new UserInvite;
-        $validation = $invite->check($this->f3->get('POST'));
+        $validation = $invite->create($this->f3->get('POST.email'), $entityId);
         if (is_array($validation)) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = implode("\n", array_values($validation));
             echo $this->webResponse->jsonResponse();
             return;
         }
-
-        $invite->entityId = $entityId;
-        $invite->email = $this->f3->get('POST.email');
-        $invite->token = bin2hex(random_bytes(16));
-        $invite->createdAt = (new DateTime)->format('Y-m-d H:i:s');
-        $invite->save();
-        UserInviteEmail::send($this->f3->get('POST.email'), $this->db);
 
         $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
         $this->webResponse->message = $this->f3->get('vModule_productAdded');

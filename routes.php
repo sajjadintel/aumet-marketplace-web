@@ -20,6 +20,8 @@ $f3->route('GET /web/auth/reset', 'AuthController->getResetPassword');
 $f3->route('POST /web/auth/reset', 'AuthController->postResetPassword');
 $f3->route('GET /web/auth/verify/account', 'AuthController->getVerifyAccount');
 $f3->route('GET /web/auth/approve/account', 'AuthController->getApproveAccount');
+$f3->route('GET /web/auth/signup/invite', 'AuthController->getSignUpInvite');
+$f3->route('POST /web/auth/signup/invite', 'AuthController->postSignUpInvite');
 
 $f3->route('GET /web/auth/signout', 'AuthController->getSignOut');
 
