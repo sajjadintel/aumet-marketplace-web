@@ -32,6 +32,9 @@ return array(
     'vSupport_emailMissing' => 'Email is required',
     'vSupport_phoneMissing' => 'Phone is required',
     'vSupport_reasonMissing' => 'Reason is required',
+    'vSupport_message' => 'Message:',
+    'vSupport_customer' => 'Customer:',
+    'vSupport_order' => 'Order #:',
 
     'vLogin_signin' => 'Sign In',
     'vLogin_signinWithGoogle' => 'Sign in with Google',

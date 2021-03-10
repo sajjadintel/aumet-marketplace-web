@@ -850,8 +850,10 @@ class AuthController extends Controller
             $allValues->tradeLicenseUrl = $dbEntityBranch->tradeLicenseUrl;
             if (Helper::isPharmacy($dbUser->roleId)) {
                 NotificationHelper::sendApprovalPharmacyNotification($this->f3, $this->db, $allValues, $dbUser);
+                $this->f3->set('companyType', 'pharmacy');
             } else {
                 NotificationHelper::sendApprovalDistributorNotification($this->f3, $this->db, $allValues, $dbUser);
+                $this->f3->set('companyType', 'distributor');
             }
 
             $this->f3->set('vAuthFile', 'signup-verification-verified');

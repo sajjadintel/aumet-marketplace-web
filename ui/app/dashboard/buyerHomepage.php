@@ -56,6 +56,9 @@
         }
     }
 </style>
+<script>
+    var productItemListGTM =[];
+</script>
 <!--begin::Entry-->
 <div class="d-flex flex-column-fluid">
     <!--begin::Container-->
@@ -124,7 +127,10 @@
                                     <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
                                     <p style="text-align: center;"><?php echo $product->price; ?></p>
                                 </div>
+                                <?php $productListName="LNNEWPRODUCTS";//This is added for Google Datalayer segregation ?>
+                                <?php include "productData.php"; ?>
                             <?php endforeach; ?>
+
                         </div>
                     </div>
                 </div>
@@ -150,6 +156,8 @@
                                     <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
                                     <p style="text-align: center;"><?php echo $product->price; ?></p>
                                 </div>
+                                <?php $productListName="LNTOPSELLING";//This is added for Google Datalayer segregation ?>
+                                <?php include "productData.php"; ?>
                             <?php endforeach; ?>
                         </div>
                     </div>
@@ -236,7 +244,20 @@
     $(document).ready(function() {
         initAutoplay();
         fillStatusLabel();
-    })
+    });
+
+    $( document ).ready(function() {
+        console.log(productItemListGTM);
+        dataLayer.push({
+            'event': 'view_item_list',
+            'ecommerce': {
+                'currency':'AED',
+                'items': [
+                   productItemListGTM
+                ]
+            }
+        });
+    });
 
     function initAutoplay() {
         $('.slick-carousel').slick({
