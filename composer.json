@@ -26,5 +26,11 @@
 			"name": "Alaa Al Atrash",
 			"email": "a.atrash@aumet.me"
 		}
-	]
+	],
+	"autoload": {
+		"psr-4": {
+			"App\\Validators\\": "app\\Validators",
+			"App\\Mailers\\": "app\\Mailers"
+		}
+	}
 }

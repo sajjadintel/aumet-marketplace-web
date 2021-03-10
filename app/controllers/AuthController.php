@@ -93,12 +93,11 @@ class AuthController extends Controller
         if ($this->isAuth) {
             $this->f3->reroute('/web');
             return;
-
         }
         $this->f3->set('companyType', ($this->f3->get('SESSION.companyType')));
-
         $this->f3->set('vAuthFile', 'signup-invite');
-        $token = $_GET['token'];
+
+        $token = array_key_exists('token', $_GET) ? $_GET['token'] : null;
         $invite = UserInvite::findByToken($token);
         if ($invite == false) {
             $this->f3->set('SESSION.error', 'Invalid Invite');
@@ -107,23 +106,46 @@ class AuthController extends Controller
         }
 
         $this->f3->set('invite', $invite);
-        $dbCountry = new BaseModel($this->db, "country");
-        $dbCountry->name = "name_en";
-        $arrCountry = $dbCountry->findAll("name_en ASC");
-        $this->f3->set('arrCountry', $arrCountry);
-
         echo View::instance()->render('public/auth/layout.php');
     }
 
     public function postSignUpInvite()
     {
-        $uid = $this->f3->get("POST.uid");
-        $name = $this->f3->get("POST.name");
-        $mobile = $this->f3->get("POST.mobile");
-        $email = trim($this->f3->get("POST.email"));
-        $password = trim($this->f3->get("POST.password"));
+        $invite = UserInvite::findByToken($this->f3->get('POST.token'));
+        $invite !== false ?: $this->renderError(Constants::STATUS_ERROR, implode("\n", array_values($invite)));
+        $invite->used = true;
+        $invite->save();
+
         $user = new User;
-        $user->check($this->f3->get('POST'));
+        $user = $user->create($this->f3->get('POST'), true, true);
+        !is_array($user) ?: $this->renderError(Constants::STATUS_ERROR, implode("\n", array_values($user)));
+        $account = new Account;
+        $account = $account->create(['entityId' => $invite->entityId, 'number' => 100, 'statusId' => Constants::ACCOUNT_STATUS_ACTIVE]);
+        !is_array($account) ?: $this->renderError(Constants::STATUS_ERROR, implode("\n", array_values($account)));
+        $userAccount = new UserAccount;
+        $userAccount = $userAccount->create(['userId' => $user->id, 'accountId' => $account->id, 'statusId' => Constants::ACCOUNT_STATUS_ACTIVE]);
+        !is_array($userAccount) ?: $this->renderError(Constants::STATUS_ERROR, implode("\n", array_values($userAccount)));
+        $entity = (new EntityUserProfileView)->findone(['entityId = ?', $invite->entityId]);
+
+        $allValues = new stdClass();
+        $allValues->name = $user->fullname;
+        $allValues->mobile = $user->mobile;
+        $allValues->email = $user->email;
+        $allValues->entityName = $entity->entityName_en;
+        $allValues->tradeLicenseNumber = $entity->entityBranchTradeLicenseNumber;
+        $allValues->countryId = $entity->entityCountryId;
+        $allValues->countryName = $entity->entityCountryName_en;
+        $allValues->cityId = $entity->entityBranchCityId;
+        $allValues->cityName = $entity->entityBranchCityName_en;
+        $allValues->address = $entity->entityBranchAddress_en;
+        $allValues->tradeLicenseUrl = $entity->entityBranchTradeLicenseUrl;
+        $allValues->roleId = $user->roleId;
+        $allValues->invite = $invite;
+
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+        $this->webResponse->message = $this->f3->get("vMessage_signupSuccessful");
+        $this->webResponse->data = $allValues;
+        echo $this->webResponse->jsonResponse();
     }
 
     function postSignIn_NoFirebase()
@@ -1115,5 +1137,14 @@ class AuthController extends Controller
         $dbUserAccount->addReturnID();
 
         return $res;
+    }
+
+    protected function renderError($statusCode, $message, $data = [])
+    {
+        $this->webResponse->errorCode = $statusCode;
+        $this->webResponse->message = $message;
+        $this->webResponse->data = $data;
+        echo $this->webResponse->jsonResponse();
+        die();
     }
 }

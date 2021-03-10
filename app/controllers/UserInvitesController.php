@@ -34,8 +34,8 @@ class UserInvitesController extends Controller
         }
 
         $invite = new UserInvite;
-        $validation = $invite->create($this->f3->get('POST.email'), $entityId);
-        if (is_array($validation)) {
+        $invite = $invite->create($this->f3->get('POST.email'), $entityId);
+        if (is_array($invite)) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->message = implode("\n", array_values($validation));
             echo $this->webResponse->jsonResponse();

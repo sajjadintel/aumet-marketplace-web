@@ -113,6 +113,7 @@ return array(
 
     'vSignup_thankyouTitle' => 'شكرا على التسجيل!',
     'vSignup_thankyouSubtitle' => 'تم إرسال بريد إلكتروني إليك للتحقق من حسابك.',
+    'vSignup_thankyouInviteSubtitle' => 'تم تفعيل حسابك, قم بتسجيل الدخول الان.',
     'vSignup_thankyouHome' => 'العودة إلى الصفحة الرئيسية',
 
     'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',

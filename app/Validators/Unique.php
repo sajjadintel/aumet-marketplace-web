@@ -1,5 +1,6 @@
 <?php
 
+namespace App\Validators;
 
 class Unique extends Validator
 {
@@ -12,7 +13,7 @@ class Unique extends Validator
             'field_name' => $ruleConfigs[0],
             'table_name' => $ruleConfigs[1],
         ];
-        $model = new BaseModel($GLOBALS['dbConnection'], $ruleConfigs['table_name']);
+        $model = new \BaseModel($GLOBALS['dbConnection'], $ruleConfigs['table_name']);
         $exists = $model->findone(["{$ruleConfigs['field_name']} = ?", $value]);
         return $exists === false;
     }

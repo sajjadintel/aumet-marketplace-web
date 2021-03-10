@@ -34,7 +34,7 @@ class UserInvite extends BaseModel
         }
 
         $this->save();
-        UserInviteEmail::send($email, $this->db);
+        App\Mailers\UserInviteEmail::send($email, $this->db, $this);
         return $this;
     }
 
@@ -50,6 +50,10 @@ class UserInvite extends BaseModel
 
     public static function findByToken($token)
     {
+        if (empty($token)) {
+            return false;
+        }
+
         $model = new static();
         return $model->findone(['token = ? AND used = ?', $token, false]);
     }

@@ -117,7 +117,7 @@
 				<div id="thankyouContainer" class="login-form login-form-signup pb-5" style="display: none;">
 					<div class="pb-10 pb-lg-15">
 						<h3 class="font-weight-bolder text-dark display5"><?php echo $vSignup_thankyouTitle ?></h3>
-						<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_thankyouSubtitle ?></div>
+						<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_thankyouInviteSubtitle ?></div>
 
 						<a href="/web/auth/signin">
 							<button class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3"><?php echo $vSignup_thankyouHome ?></button>

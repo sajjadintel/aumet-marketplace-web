@@ -114,6 +114,7 @@ return array(
 
     'vSignup_thankyouTitle' => 'Thanks for Registering!',
     'vSignup_thankyouSubtitle' => 'An email has been sent to you to verify your account.',
+    'vSignup_thankyouInviteSubtitle' => 'Your account was created, click below to login.',
     'vSignup_thankyouHome' => 'Go back to home',
 
     'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',
