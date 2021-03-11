@@ -132,7 +132,7 @@ function compress_htmlcode($codedata)
                                                     <?php $tax = 0; ?>
 
                                                     <?php foreach ($allCartItems[$seller->sellerId] as $item) : ?>
-                                                        <tr>
+                                                        <tr class="tbl-data-<?php echo $item->id ?>">
                                                             <td class="d-flex align-items-center font-weight-bolder font-size-h5 cart-item-separator">
                                                                 <div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light">
                                                                     <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->entityProductId ?>')" class="text-dark text-hover-primary">
@@ -326,26 +326,31 @@ function compress_htmlcode($codedata)
                 }
             });
 
-        $(document).on('click','.remove-data-push',function (){
-            var productid = $(this).closest("tr").find('.name-of-product').data("productid");
-            var productName = $(this).closest("tr").find('.name-of-product').text();
-            var productQuantity = $(this).closest("tr").find('.quantity-value').val();
-            var UnitPrice = $(this).closest("tr").find('.unit-price-val').data("unitprice");
-            dataLayer.push({
-                'event': 'remove_from_cart',
-                'ecommerce': {
-                    'currency':'AED',
-                    'items': [
-                        {
-                            'item_name': ""+productName+"",
-                            'item_id': productid,
-                            'price': UnitPrice,
-                            'quantity': productQuantity,
-                            'currency': 'AED',
-                            'availability': 'Available',
-                        }]
-                }
-            });
+        $(document).on('click','.modalAction',function (){
+            var action = $(this).closest("form").attr("action");
+            if (action=="/web/cart/remove"){
+                var popupremove = $(this).closest("form").find(".modal-body #popupModalValueId").val();
+                var productid = $(".tbl-data-"+popupremove).find('.name-of-product').data("productid");
+                var productName = $(".tbl-data-"+popupremove).find('.name-of-product').text();
+                var productQuantity = $(".tbl-data-"+popupremove).find('.quantity-value').val();
+                var UnitPrice = $(".tbl-data-"+popupremove).find('.unit-price-val').data("unitprice");
+                dataLayer.push({
+                    'event': 'remove_from_cart',
+                    'ecommerce': {
+                        'currency':'AED',
+                        'items': [
+                            {
+                                'item_name': ""+productName+"",
+                                'item_id': productid,
+                                'price': UnitPrice,
+                                'quantity': productQuantity,
+                                'currency': 'AED',
+                                'availability': 'Available',
+                            }]
+                    }
+                });
+            }
+
         });
     })
 </script>
