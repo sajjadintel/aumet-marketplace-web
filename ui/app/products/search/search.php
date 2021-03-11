@@ -449,6 +449,11 @@ function compress_htmlcode($codedata)
 
         _selectBrand.on("select2:select", function(e) {
             searchQuery.productName = $("#searchProductsBrandNameInput").val();
+            dataLayer.push({
+                'event': 'product_filter',
+                'filter_type': 'Brand name'
+
+            });
             updateDatatable();
         });
 
@@ -601,6 +606,11 @@ function compress_htmlcode($codedata)
             _category.val(filteredData).trigger('change');
 
             searchQuery.categoryId = $("#searchProductsCategoryInput").val();
+            dataLayer.push({
+                'event': 'product_filter',
+                'filter_type': 'Category'
+
+            });
             updateDatatable();
         });
 
@@ -628,6 +638,11 @@ function compress_htmlcode($codedata)
 
         _selectScientific.on("select2:select", function(e) {
             searchQuery.scientificName = $("#searchProductsScieceNameInput").val();
+            dataLayer.push({
+                'event': 'product_filter',
+                'filter_type': 'Scientific name list'
+
+            });
             updateDatatable();
         });
 
@@ -654,6 +669,11 @@ function compress_htmlcode($codedata)
 
         _selectDistributor.on("select2:select", function(e) {
             searchQuery.entityId = $("#searchProductsDistributorNameInput").val();
+            dataLayer.push({
+                'event': 'product_filter',
+                'filter_type': 'Distributor list'
+
+            });
             updateDatatable();
         });
 
@@ -664,6 +684,11 @@ function compress_htmlcode($codedata)
 
         $('#searchStockStatus').bootstrapSwitch().on("switchChange.bootstrapSwitch", function(event, state) {
             searchQuery.stockOption = state ? 1 : 0;
+            dataLayer.push({
+                'event': 'product_filter',
+                'filter_type': 'Availability'
+
+            });
             updateDatatable();
             <?php /*
             if (state) {
