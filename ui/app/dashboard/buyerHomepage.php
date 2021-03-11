@@ -247,7 +247,6 @@
     });
 
     $( document ).ready(function() {
-        console.log(productItemListGTM);
         dataLayer.push({
             'event': 'view_item_list',
             'ecommerce': {

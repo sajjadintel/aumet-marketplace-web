@@ -309,6 +309,31 @@ function compress_htmlcode($codedata)
         });
     });
 </script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        dataLayer.push({
+            'event': 'view_item',
+            'ecommerce': {
+                'currency':'AED',
+                'items': [
+                    {
+                        'item_name': "<?php echo $objEntityProduct->productName ?>",
+                        'item_id': "<?php echo $objEntityProduct->productId ?>",
+                        'price': "<?php echo $objEntityProduct->unitPrice ?>",
+                        'item_brand': "<?php echo $objEntityProduct->entityName ?>",
+                        'item_category': "<?php echo $objEntityProduct->scientificName ?>",
+                        'quantity': '1',
+                        'currency': "<?php echo $objEntityProduct->currency ?>",
+                        'availability': "<?php echo $objEntityProduct->stockStatusName_en ?>",
+                        'made_in': "<?php echo $objEntityProduct->madeInCountryName ?>",
+                        'manufacturer_id': "<?php echo $objEntityProduct->entityName ?>"
+                    }]
+            },
+        })
+
+
+    })
+</script>
 <script>
     var PageClass = function() {
         var elementId = "#datatable";
@@ -740,6 +765,24 @@ function compress_htmlcode($codedata)
 
     function addToCart() {
         SearchDataTable.onClickAddMoreToCart(row);
+        dataLayer.push({
+            'event': 'add_to_cart',
+            'ecommerce': {
+                'currency':'AED',
+                'items': [
+                    {
+                        'item_name': "<?php echo $objEntityProduct->productName ?>",
+                        'item_id': "<?php echo $objEntityProduct->productId ?>",
+                        'price': "<?php echo $objEntityProduct->unitPrice ?>",
+                        'item_brand': "<?php echo $objEntityProduct->entityName ?>",
+                        'item_category': "<?php echo $objEntityProduct->scientificName ?>",
+                        'quantity': '1',
+                        'currency': "<?php echo $objEntityProduct->currency ?>",
+                        'availability': "<?php echo $objEntityProduct->stockStatusName_en ?>",
+                        'made_in': "<?php echo $objEntityProduct->madeInCountryName ?>",
+                    }]
+            },
+        })
     }
 
     $('.productImage').on("error", function() {
