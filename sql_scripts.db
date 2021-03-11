@@ -1607,8 +1607,4 @@ CREATE TABLE `marketplace`.`userInvites` (
     FOREIGN KEY (entityId) REFERENCES entity(id)
 );
 
-ALTER TABLE `marketplace`.`user`
-    ADD parentId int AFTER roleId,
-    ADD FOREIGN KEY (parentId) REFERENCES user(id);
-
 ################################
