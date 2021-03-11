@@ -961,7 +961,9 @@ var WebApp = (function () {
 				// Show loading state on button
 				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
 				$(formSubmitButton).prop('disabled', true);
-
+				dataLayer.push({
+					'event': 'support_form_success'
+				});
 				_post(formSubmitUrl, body, _supportModalSuccessCallback, formSubmitButton);
 			});
 		});
