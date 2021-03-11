@@ -95,7 +95,7 @@ class DashboardController extends Controller
                     $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];
                     $price = $priceUSD / $buyerCurrency['conversionToUSD'];
                     $product->price = Helper::formatMoney($price, 2) . " " . $buyerCurrency['symbol'];
-
+                    $product->priceInt = Helper::formatMoney($price, 2);
                     array_push($arrNewestProducts, $product);
                 }
                 $this->f3->set('arrNewestProducts', $arrNewestProducts);
@@ -121,6 +121,7 @@ class DashboardController extends Controller
                     $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];
                     $price = $priceUSD / $buyerCurrency['conversionToUSD'];
                     $product->price = Helper::formatMoney($price, 2) . " " . $buyerCurrency['symbol'];
+                    $product->priceInt = Helper::formatMoney($price, 2);
 
                     array_push($arrTopSellingProducts, $product);
                 }
