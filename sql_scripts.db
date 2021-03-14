@@ -613,7 +613,7 @@ CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 ## 10/02/2021 -- Antoine Abou Cherfane
 
 CREATE OR REPLACE VIEW `marketplace`.`vwOrderEntityUser` AS
-    SELECT 
+    SELECT
         `order`.`id` AS `id`,
         `order`.`entityBuyerId` AS `entityBuyerId`,
         `order`.`branchBuyerId` AS `branchBuyerId`,
@@ -1159,13 +1159,13 @@ from (((`marketplace`.`entityProductSell` `ep` join `marketplace`.`entity` `e` o
 INSERT INTO `marketplace`.`menuItem` (`menuId`, `parentId`, `order`, `iconId`, `url`, `method`, `type`, `name_ar`, `name_en`, `insertDateTime`) VALUES ('1', '0', '42', '51', '/web/distributor/customer/group', 'ajax', 'link', 'مجموعة الزبائن', 'Customer Group', '2020-10-12 05:11:11');
 
 # Added relationGroupId in 'order' table
-ALTER TABLE `marketplace`.`order` 
+ALTER TABLE `marketplace`.`order`
 ADD COLUMN `relationGroupId` INT NULL DEFAULT NULL AFTER `feedbackSubmitted`;
 
 # Created 'vwEntityRelationGroup' view
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityRelationGroup` AS
   SELECT
-    SELECT 
+    SELECT
         `relation`.`id` AS `id`,
         `relation`.`entityBuyerId` AS `entityBuyerId`,
         `relation`.`entitySellerId` AS `entitySellerId`,
@@ -1310,7 +1310,7 @@ CREATE OR REPLACE VIEW `marketplace`.`vwOrderEntityUser` AS
 
 # Created `vwCountry` view
 CREATE OR REPLACE VIEW `marketplace`.`vwCountry` AS
-    SELECT 
+    SELECT
         `c1`.`id` AS `id`,
         `c1`.`nameEn` AS `name_en`,
         `c1`.`nameAr` AS `name_ar`,
@@ -1356,16 +1356,16 @@ FROM `marketplace`.`entityProductSellBonusDetail` `ePSBD`
 ## 25/02/2021 -- Antoine Abou Cherfane
 
 # Added imageAlt column to 'product' table
-ALTER TABLE `marketplace`.`product` 
+ALTER TABLE `marketplace`.`product`
 ADD COLUMN `imageAlt` TEXT NULL DEFAULT NULL AFTER `image`;
 
 # Added minimumOrderQuantity column to 'entityProductSell' table
-ALTER TABLE `marketplace`.`entityProductSell` 
+ALTER TABLE `marketplace`.`entityProductSell`
 ADD COLUMN `minimumOrderQuantity` INT NULL DEFAULT NULL AFTER `maximumOrderQuantity`;
 
 # Added imageAlt and minimumOrderQuantity fields to 'vwEntityProductSell' view
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
-    SELECT 
+    SELECT
         `ep`.`id` AS `id`,
         `ep`.`entityId` AS `entityId`,
         `e`.`name_ar` AS `entityName_ar`,
@@ -1494,7 +1494,7 @@ CREATE TABLE `marketplace`.`productUnitPrice` (
   PRIMARY KEY (`id`));
 
 # Added paymentMethodId column to 'entityProductSellBonusDetail' table
-ALTER TABLE `marketplace`.`entityProductSellBonusDetail` 
+ALTER TABLE `marketplace`.`entityProductSellBonusDetail`
 ADD COLUMN `paymentMethodId` INT NULL DEFAULT NULL AFTER `bonusTypeId`;
 
 ################################
@@ -1528,7 +1528,7 @@ CREATE TABLE `marketplace`.`entityPromotionProduct` (
 
 # Created 'vwEntityPromotionProduct' view
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityPromotionProduct` AS
-    SELECT 
+    SELECT
         `epp`.`id` AS `id`,
         `epp`.`entityPromotionId` AS `entityPromotionId`,
         `epp`.`productId` AS `productId`,
@@ -1562,6 +1562,35 @@ CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
 
 ################################
 
+## 08/03/2021 -- Naveed Javaid
+
+# Modify tables supportReason and supportLog, inserted new rows in supportReason table.
+
+alter table supportReason add entityTypeId int default 0 null;
+
+UPDATE marketplace.supportReason t SET t.entityTypeId = 10 WHERE t.id = 2;
+
+INSERT INTO marketplace.supportReason (name_en, name_ar, name_fr, isAuth, entityTypeId) VALUES ('Delivery Related', 'Delivery Related', 'Delivery Related', 1, 40);
+
+INSERT INTO marketplace.supportReason (name_en, name_ar, name_fr, isAuth, entityTypeId) VALUES ('Request to Cancel Related', 'Request to Cancel Related', 'Request to Cancel Related', 1, 40);
+
+INSERT INTO marketplace.supportReason (name_en, name_ar, name_fr, isAuth, entityTypeId) VALUES ('Request to Return Related', 'Request to Return Related', 'Request to Return Related', 1, 40);
+
+INSERT INTO marketplace.supportReason (name_en, name_ar, name_fr, isAuth, entityTypeId) VALUES ('Pharmacy Related', 'Pharmacy Related', 'Pharmacy Related', 1, 10);
+
+INSERT INTO marketplace.supportReason (name_en, name_ar, name_fr, isAuth, entityTypeId) VALUES ('Support with Marketplace', 'Support with Marketplace', 'Support with Marketplace', 1, DEFAULT);
+
+alter table supportLog add orderId int default 0 null after phone;
+
+alter table supportLog add entityBuyerId int default 0 null after orderId;
+
+alter table supportLog add requestCall int default 0 null after entityBuyerId;
+
+alter table supportLog add message text null after requestCall;
+
+################################
+
+
 # 05/03/2021 - Abdul-fattah Tayih
 
 # Add entityRelationIdentifiers
@@ -1573,3 +1602,5 @@ CREATE TABLE `marketplace`.`entityRelationIdentifiers` (
     FOREIGN KEY (entityId) REFERENCES entity(id),
     FOREIGN KEY (entityRelationId) REFERENCES entityRelation(Id)
 );
+
+################################
