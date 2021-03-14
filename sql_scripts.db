@@ -1597,14 +1597,16 @@ alter table supportLog add message text null after requestCall;
 CREATE TABLE `marketplace`.`userInvites` (
     id int NOT NULL AUTO_INCREMENT,
     email varchar(100) NOT NULL,
+    createdBy int NOT NULL,
     entityId int NOT NULL,
     token varchar(32) NOT NULL,
-    used boolean DEFAULT false,
+    status int NOT NULL,
     createdAt timestamp,
     PRIMARY KEY (id),
     UNIQUE (email),
     UNIQUE (token),
-    FOREIGN KEY (entityId) REFERENCES entity(id)
+    FOREIGN KEY (entityId) REFERENCES entity(id),
+    FOREIGN KEY (createdBy) REFERENCES user(id)
 );
 
 ################################

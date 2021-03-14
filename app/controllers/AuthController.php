@@ -100,6 +100,9 @@ class AuthController extends Controller
         $token = array_key_exists('token', $_GET) ? $_GET['token'] : null;
         $invite = UserInvite::findByToken($token);
         if ($invite == false) {
+            $this->f3->reroute('/web/auth/signup');
+            return;
+        } else if (!$invite->statusIsPending()) {
             $this->f3->set('SESSION.error', 'Invalid Invite');
             $this->f3->reroute('/web/auth/signup');
             return;
@@ -111,20 +114,16 @@ class AuthController extends Controller
 
     public function postSignUpInvite()
     {
-        $invite = UserInvite::findByToken($this->f3->get('POST.token'));
-        $invite !== false ?: $this->renderError(Constants::STATUS_ERROR, implode("\n", array_values($invite)));
-        $invite->used = true;
-        $invite->save();
+        $invite = UserInvite::findByTokenAndStatus($this->f3->get('POST.token'), UserInvite::STATUS_PENDING);
+        $invite !== false ?: $this->renderError(Constants::STATUS_ERROR, implode("\n", $this->f3->get('user_invite_not_found')));
+        $invite = $invite->process();
 
-        $user = new User;
-        $user = $user->create($this->f3->get('POST'), true, true);
-        !is_array($user) ?: $this->renderError(Constants::STATUS_ERROR, implode("\n", array_values($user)));
-        $account = new Account;
-        $account = $account->create(['entityId' => $invite->entityId, 'number' => 100, 'statusId' => Constants::ACCOUNT_STATUS_ACTIVE]);
-        !is_array($account) ?: $this->renderError(Constants::STATUS_ERROR, implode("\n", array_values($account)));
-        $userAccount = new UserAccount;
-        $userAccount = $userAccount->create(['userId' => $user->id, 'accountId' => $account->id, 'statusId' => Constants::ACCOUNT_STATUS_ACTIVE]);
-        !is_array($userAccount) ?: $this->renderError(Constants::STATUS_ERROR, implode("\n", array_values($userAccount)));
+        $user = (new User)->create($this->f3->get('POST'), true, true);
+        $this->renderErrorIfValidationFails($user, Constants::STATUS_ERROR, implode("\n", array_values($user->errors)));
+        $account = (new Account)->create(['entityId' => $invite->entityId, 'number' => 100, 'statusId' => Constants::ACCOUNT_STATUS_ACTIVE]);
+        $this->renderErrorIfValidationFails($account, Constants::STATUS_ERROR, implode("\n", array_values($account->errors)));
+        $userAccount = (new UserAccount)->create(['userId' => $user->id, 'accountId' => $account->id, 'statusId' => Constants::ACCOUNT_STATUS_ACTIVE]);
+        $this->renderErrorIfValidationFails($userAccount, Constants::STATUS_ERROR, implode("\n", array_values($userAccount->errors)));
         $entity = (new EntityUserProfileView)->findone(['entityId = ?', $invite->entityId]);
 
         $allValues = new stdClass();
@@ -1141,12 +1140,14 @@ class AuthController extends Controller
         return $res;
     }
 
-    protected function renderError($statusCode, $message, $data = [])
+    protected function renderErrorIfValidationFails(BaseModel $model, $statusCode, $message, $data = [])
     {
-        $this->webResponse->errorCode = $statusCode;
-        $this->webResponse->message = $message;
-        $this->webResponse->data = $data;
-        echo $this->webResponse->jsonResponse();
-        die();
+        if ($model->hasErrors) {
+            $this->webResponse->errorCode = $statusCode;
+            $this->webResponse->message = $message;
+            $this->webResponse->data = $data;
+            echo $this->webResponse->jsonResponse();
+            die();
+        }
     }
 }

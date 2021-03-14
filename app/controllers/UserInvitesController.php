@@ -14,12 +14,13 @@ class UserInvitesController extends Controller
         $invite = new UserInvite;
         $order = "$datatable->sortBy $datatable->sortByOrder";
         $query = "entityId = {$entityId}";
-        $data = $invite->findWhere($query, $order, $datatable->limit, $datatable->offset);
+        $data = $invite->findWheryWith($query, $order, $datatable->limit, $datatable->offset);
+        $resultCount = $invite->count($query);
 
         $response = [
             "draw" => intval($datatable->draw),
-            "recordsTotal" => $invite->count($query),
-            "recordsFiltered" => $invite->count($query),
+            "recordsTotal" => $resultCount,
+            "recordsFiltered" => $resultCount,
             "data" => $data,
             "query" => $query
         ];
@@ -34,10 +35,10 @@ class UserInvitesController extends Controller
         }
 
         $invite = new UserInvite;
-        $invite = $invite->create($this->f3->get('POST.email'), $entityId);
-        if (is_array($invite)) {
+        $invite = $invite->create($this->f3->get('POST.email'), $entityId, $this->objUser->id);
+        if ($invite->hasErrors) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
-            $this->webResponse->message = implode("\n", array_values($validation));
+            $this->webResponse->message = implode("\n", array_values($invite->errors));
             echo $this->webResponse->jsonResponse();
             return;
         }
@@ -61,17 +62,5 @@ class UserInvitesController extends Controller
         $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
         $this->webResponse->message = 'Deleted successfully';
         echo $this->webResponse->jsonResponse();
-    }
-
-    public function process()
-    {
-        $invite = new UserInvite;
-        $invite = $invite->findone(['email = ? AND token = ? AND used = ?', $this->f3->get('POST.email'), $this->f3->get('POST.token'), false]);
-        if (!$invite) {
-            return;
-        }
-
-        $invite->used = true;
-        $invite->save();
     }
 }

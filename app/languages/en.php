@@ -513,4 +513,7 @@ return array(
     'vModule_promotion_useImage' => 'Use Image',
     'vModule_promotion_addLimit' => 'Promotion limit reached (max: {0})',
     'vModule_promotion_endDateInvalid' => 'End date should be after the start date',
+
+    'user_invite_not_found' => 'The invite doesn\'t exist',
+
 );

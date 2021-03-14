@@ -4,6 +4,8 @@
 class User extends BaseModel
 {
     use Validate;
+
+    public $hasErrors = false;
     protected $table_name = 'user';
 
     public function getRules()
@@ -18,9 +20,9 @@ class User extends BaseModel
 
     public function create($data, $isDistributor = false, $invited = false)
     {
-        $validation = $this->check($data);
-        if ($validation !== true) {
-            return $validation;
+        if ($this->check($data) !== true) {
+            $this->hasErrors = true;
+            return $this;
         }
 
         if ($data['uid'] != NULL && trim($data['uid']) != '') {
@@ -32,7 +34,7 @@ class User extends BaseModel
         $this->fullname = $data['name'];
         $this->mobile = $data['mobile'];
         $this->roleId = $isDistributor ? Constants::USER_ROLE_DISTRIBUTOR_SYSTEM_ADMINISTRATOR : Constants::USER_ROLE_PHARMACY_SYSTEM_ADMINISTRATOR;
-        $this->language = "en";
+        $this->language = 'en';
         $this->save();
         return $this;
     }

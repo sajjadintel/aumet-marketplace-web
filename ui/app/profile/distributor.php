@@ -350,7 +350,7 @@
         var columnDefs = [
             {
                 className: "export_datatable",
-                targets: [0, 1, 2, 3, 4]
+                targets: [0, 1, 2, 3, 4, 5]
             },
             {
                 targets: 0,
@@ -358,24 +358,28 @@
                 data: 'id',
             },
             {
-                targets: 1,
+              targets: 1,
+              title: 'Created By',
+              data: 'createdBy',
+            },
+            {
+                targets: 2,
                 title: 'email',
                 data: 'email',
                 render: $.fn.dataTable.render.ellipsis( 100 )
             },
             {
-                targets: 2,
-                title: 'used',
-                data: 'used',
-                render: data => Boolean(data)
+                targets: 3,
+                title: 'status',
+                data: 'status'
             },
             {
-                targets: 3,
+                targets: 4,
                 title: 'Created At',
                 data: 'createdAt',
             },
             {
-                targets: 4,
+                targets: 5,
                 title: '',
                 data: 'id',
                 orderable: false,

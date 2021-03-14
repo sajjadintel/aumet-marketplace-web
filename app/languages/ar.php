@@ -502,4 +502,6 @@ return array(
     'vModule_promotion_useImage' => 'استخدم الصورة',
     'vModule_promotion_addLimit' => 'Promotion limit reached (max: {0})', // TODO: translate
     'vModule_promotion_endDateInvalid' => 'يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء',
+
+    'user_invite_not_found' => 'الدعوة غير موجودة',
 );

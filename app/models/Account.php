@@ -4,6 +4,7 @@ class Account extends BaseModel
 {
     use Validate;
 
+    public $hasErrors = false;
     protected $table_name = 'account';
 
     public function getRules()
@@ -17,9 +18,9 @@ class Account extends BaseModel
 
     public function create($data)
     {
-        $validation = $this->check($data);
-        if ($validation !== true) {
-            return $validation;
+        if ($this->check($data) !== true) {
+            $this->hasErrors = true;
+            return $this;
         }
 
         $this->entityId = $data['entityId'];

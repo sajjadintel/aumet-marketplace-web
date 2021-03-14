@@ -5,6 +5,7 @@ class UserAccount extends BaseModel
     use Validate;
 
     protected $table_name = 'userAccount';
+    public $hasErrors = false;
 
     public function getRules()
     {
@@ -17,9 +18,9 @@ class UserAccount extends BaseModel
 
     public function create($data)
     {
-        $validation = $this->check($data);
-        if ($validation !== true) {
-            return $validation;
+        if ($this->check($data) !== true) {
+            $this->hasErrors = true;
+            return $this;
         }
 
         $this->userId = $data['userId'];
