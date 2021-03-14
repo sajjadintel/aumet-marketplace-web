@@ -11,6 +11,10 @@ class NotificationController extends Controller {
         $supportReasonId = $this->f3->get("POST.supportReasonId");
         $email = $this->f3->get("POST.supportEmail");
         $phone = $this->f3->get("POST.supportPhone");
+        $orderId = $this->f3->get("POST.supportOrder");
+        $entityBuyerId = $this->f3->get("POST.supportCustomer");
+        $requestCall = $this->f3->get("POST.requestCall");
+        $message = $this->f3->get("POST.message");
 
         if(strlen($email) == 0
             || strlen($phone) == 0
@@ -42,6 +46,10 @@ class NotificationController extends Controller {
         $supportLog->supportReasonId = $supportReasonId;
         $supportLog->email = $this->isAuth ? $this->f3->get('SESSION.objUser')->email : $email;
         $supportLog->phone = $phone;
+        $supportLog->orderId = $orderId;
+        $supportLog->entityBuyerId = $entityBuyerId;
+        $supportLog->requestCall = $requestCall;
+        $supportLog->message = $message;
         $supportLog->typeId = 1;
         $supportLog->add();
 

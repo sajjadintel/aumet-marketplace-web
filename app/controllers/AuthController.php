@@ -111,6 +111,7 @@ class AuthController extends Controller
                 }
             } else {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->errortype = "login";
                 $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
                 $this->webResponse->data = $dbUser;
                 echo $this->webResponse->jsonResponse();
@@ -139,6 +140,7 @@ class AuthController extends Controller
                 $dbUser->getWhere("email = '$user->email'");
                 if ($dbUser->dry()) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->errortype = "login";
                     $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
                     $this->webResponse->data = $user;
                 } else {
@@ -164,9 +166,11 @@ class AuthController extends Controller
             }
         } catch (\InvalidArgumentException $e) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->errortype = "login";
             $this->webResponse->message = $e->getMessage();
         } catch (InvalidToken $e) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->errortype = "login";
             $this->webResponse->message = $e->getMessage();
         }
 
@@ -276,6 +280,7 @@ class AuthController extends Controller
 
         if ($dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->errortype = "password reset";
             $this->webResponse->title = "";
             $this->webResponse->message = "Email doesn't exist!";
             echo $this->webResponse->jsonResponse();
@@ -336,6 +341,7 @@ class AuthController extends Controller
 
         if (!$name || !ltrim($mobile, "+") || !$email || !$password || !$entityName || !$countryId || !$cityId || !$address) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Some mandatory fields are missing";
             echo $this->webResponse->jsonResponse();
             return;
@@ -348,6 +354,7 @@ class AuthController extends Controller
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Email Already Exists";
             echo $this->webResponse->jsonResponse();
             return;
@@ -360,6 +367,7 @@ class AuthController extends Controller
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Phone number exists!";
             echo $this->webResponse->jsonResponse();
             return;
@@ -372,6 +380,7 @@ class AuthController extends Controller
 
             if (!$dbEntityBranch->dry()) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->errortype = "registration";
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Trading license exists!";
                 echo $this->webResponse->jsonResponse();
@@ -686,6 +695,7 @@ class AuthController extends Controller
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Email already exists.";
             echo $this->webResponse->jsonResponse();
             return;
@@ -696,6 +706,7 @@ class AuthController extends Controller
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Mobile already exists.";
             echo $this->webResponse->jsonResponse();
             return;
@@ -790,8 +801,10 @@ class AuthController extends Controller
             $allValues->tradeLicenseUrl = $dbEntityBranch->tradeLicenseUrl;
             if (Helper::isPharmacy($dbUser->roleId)) {
                 NotificationHelper::sendApprovalPharmacyNotification($this->f3, $this->db, $allValues, $dbUser);
+                $this->f3->set('companyType', 'pharmacy');
             } else {
                 NotificationHelper::sendApprovalDistributorNotification($this->f3, $this->db, $allValues, $dbUser);
+                $this->f3->set('companyType', 'distributor');
             }
 
             $this->f3->set('vAuthFile', 'signup-verification-verified');
@@ -963,6 +976,7 @@ class AuthController extends Controller
 
         if (!$name || !ltrim($mobile, "+") || !$email || !$password || !$entityName || !$countryId || !$cityId || !$address) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Some mandatory fields are missing";
             return false;
         }
@@ -974,6 +988,7 @@ class AuthController extends Controller
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Email Already Exists";
             return false;
         }
@@ -1002,6 +1017,7 @@ class AuthController extends Controller
             if (!$dbEntityBranch->dry()) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
+                $this->webResponse->errortype = "registration";
                 $this->webResponse->message = "Trading license exists!";
                 return  $this->webResponse->jsonResponse();
             }
