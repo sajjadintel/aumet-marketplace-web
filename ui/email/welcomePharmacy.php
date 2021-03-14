@@ -81,7 +81,7 @@
 								<div class="o_col-6s o_sans o_text o_text-secondary o_center" style="font-family: Helvetica, Arial, sans-serif;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;max-width: 584px;color: #424651;text-align: center;">
                                     <h4 style="margin-top: 10px;margin-bottom: 20px;">The right marketplace for all your pharmacy needs!</h4>
                                     <p style="margin-top: 5px;margin-bottom: 10px;">We have great pleasure in providing you with the access for <strong>Aumet Marketplace</strong>.</p>
-                                    <p style="margin-top: 0px;margin-bottom: 10px;">Your password is <strong><?php echo $password; ?></strong>.</p>
+                                    <p style="margin-top: 0px;margin-bottom: 10px;">Your password is <strong><?php echo $password; ?></strong></p>
                                     <p style="margin-top: 15px;margin-bottom: 10px;">Login to experience the new world of healthcare digital procurement immediately.</p>
                                     <p style="margin-top: 5px;margin-bottom: 10px;">Upon your first login you can update to your new password through <strong>My Profile > Account Setting</strong></p>
                                     <p style="margin-top: 15px;margin-bottom: 10px;">If you have any questions, please do not hesitate in reaching out directly to me, or our great Customer Services team at <a href="mailto:marketplace@aumet.com">marketplace@aumet.com</a>.</p>

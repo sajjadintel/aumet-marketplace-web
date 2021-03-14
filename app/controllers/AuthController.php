@@ -891,12 +891,12 @@ class AuthController extends Controller
     function getProcessPharmacies()
     {
         $dbUpload = new BaseModel($this->db, "uploadpharma_1");
-        $dbUpload->getByField('isProcess', 1);
+        $dbUpload->getByField('isProcess', 6);
 
         $arr = [];
 
         while (!$dbUpload->dry()) {
-            $password = $this->generateRandomString(10);
+            $password = $this->generateRandomNumber(6);
             $cityId = 53765;
             switch(strtolower(trim($dbUpload->City))) {
                 case "rak":
@@ -909,9 +909,11 @@ class AuthController extends Controller
                     $cityId = 53765;
                     break;
                 case "uaq":
+                case "umm al quwaim":
                     $cityId = 53767;
                     break;
                 case "sharjah":
+                    case "Khorfakkan":
                     $cityId = 53774;
                     break;
                 case "fujeirah":
