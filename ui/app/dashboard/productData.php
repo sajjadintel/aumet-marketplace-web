@@ -14,3 +14,11 @@
     item ["manufacturer_id"] = "<?php echo $product->manufacturerName; ?>";
     productItemListGTM.push(item);
 </script>
+<input type="hidden" class="hidden_item_name" value="<?php echo $product->name; ?>">
+<input type="hidden" class="hidden_item_id" value="<?php echo $product->id; ?>">
+<input type="hidden" class="hidden_price" value="<?php echo $product->priceInt; ?>">
+<input type="hidden" class="hidden_item_category" value="<?php echo $product->category; ?>">
+<input type="hidden" class="hidden_item_list_id" value="<?php echo $productListName; ?>">
+<input type="hidden" class="hidden_availability" value="<?php echo $product->inStock; ?>">
+<input type="hidden" class="hidden_made_in" value="<?php echo $product->madeInCountry; ?>">
+<input type="hidden" class="hidden_manufacturer_id" value="<?php echo $product->manufacturerName; ?>">
