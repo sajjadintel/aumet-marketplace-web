@@ -94,6 +94,7 @@ $f3->route('POST /web/distributor/order/onhold', 'OrderController->postOnHoldOrd
 // END  APM-10 APM-11 APM-35
 
 // Message Center
+$f3->route('GET /web/pharmacy/order/pendingLog', 'OrderController->getPharmacyPendingOrderLog');
 $f3->route('GET /web/distributor/order/pendingLog', 'OrderController->getDistributorPendingOrderLog');
 
 // START APM-37
