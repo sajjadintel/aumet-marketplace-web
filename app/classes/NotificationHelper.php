@@ -174,6 +174,24 @@ class NotificationHelper {
 
         $emailHandler = new EmailHandler($dbConnection);
         $emailFile = "email/layout.php";
+        if($supportLog->entityBuyerId > 0){
+            $dbData = new BaseModel($dbConnection, 'entity');
+            $dbData->getWhere('id = '.$supportLog->entityBuyerId.'');
+            $f3->set('supportCustomer', $dbData->name_ar);
+        }
+
+        if($supportLog->orderId > 0){
+            $f3->set('supportOrder', $supportLog->orderId);
+        }
+
+        if($supportLog->requestCall > 0) {
+            $f3->set('requestCall', 'Yes');
+        }
+
+        if(!empty($supportLog->message)) {
+            $f3->set('message', $supportLog->message);
+        }
+
         $f3->set('domainUrl', getenv('DOMAIN_URL'));
         $f3->set('title', 'Customer Support Request');
         $f3->set('emailType', 'customerSupport');
@@ -249,6 +267,7 @@ class NotificationHelper {
                 $emailHandler->appendToAddress("sajjadintel@gmail.com", "Sajjad intel");
                 $emailHandler->appendToAddress("patrick.younes.1.py@gmail.com", "Patrick");
                 $emailHandler->appendToAddress("carl8smith94@gmail.com", "Antoine Abou Cherfane");
+                $emailHandler->appendToAddress("n.javaid@aumet.com", "Naveed Javaid");
             }
         }
 

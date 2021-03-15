@@ -364,7 +364,7 @@ var DistributorSingleProduct = (function () {
 							$(unitPriceElement).removeClass('is-invalid');
 						}
 
-						valid = paymentMethodId && unitPrice;
+						valid = valid && paymentMethodId && unitPrice;
 					});
 				}
 
@@ -645,7 +645,7 @@ var DistributorSingleProduct = (function () {
 						$(unitPriceElement).removeClass('is-invalid');
 					}
 
-					valid = paymentMethodId && unitPrice;
+					valid = valid && paymentMethodId && unitPrice;
 				});
 			}
 

@@ -324,6 +324,7 @@ function compress_htmlcode($codedata)
     <script type="text/javascript" src="/assets/js/distributor-single-product.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/distributor-customers.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/distributor-customer-group.js<?php echo $platformVersion ?>"></script>
+    <script type="text/javascript" src="/assets/js/distributor-promotions.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/profile.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/jquery.smartTab.min.js"></script>
 
@@ -378,21 +379,41 @@ function compress_htmlcode($codedata)
         $('#searchBarInputDesktop').keyup(function(e) {
             if (e.keyCode == 13) {
                 WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent($('#searchBarInputDesktop').val()));
+                dataLayer.push({
+                    'event': 'search',
+                    'search_term': $('#searchBarInputDesktop').val(),
+                    'search_source': 'logged in marketplace'
+                });
             }
         });
 
         $('#searchBarInputMobile').keyup(function(e) {
             if (e.keyCode == 13) {
                 WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent($('#searchBarInputMobile').val()));
+                dataLayer.push({
+                    'event': 'search',
+                    'search_term': $('#searchBarInputMobile').val(),
+                    'search_source': 'logged in marketplace'
+                });
             }
         });
 
         $("#searchBarInputDesktopIcon").click(function() {
             WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent($('#searchBarInputDesktop').val()));
+            dataLayer.push({
+                'event': 'search',
+                'search_term': $('#searchBarInputDesktop').val(),
+                'search_source': 'logged in marketplace'
+            });
         });
 
         $("#searchBarInputMobileIcon").click(function() {
             WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent($('#searchBarInputMobile').val()));
+            dataLayer.push({
+                'event': 'search',
+                'search_term': $('#searchBarInputMobile').val(),
+                'search_source': 'logged in marketplace'
+            });
         });
     </script>
 
