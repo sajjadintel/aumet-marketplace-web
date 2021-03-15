@@ -40,6 +40,7 @@ class AuthController extends Controller
                 $this->f3->set('LANGUAGE', $lang);
 
                 $this->f3->set('vAuthFile', 'signin');
+                $this->f3->set('pageSeoTitle', 'Aumet Marketplace - Sign In');
 
                 echo View::instance()->render('public/auth/layout.php');
             }
@@ -83,7 +84,7 @@ class AuthController extends Controller
             $dbCountry->name = "name_en";
             $arrCountry = $dbCountry->findAll("name_en ASC");
             $this->f3->set('arrCountry', $arrCountry);
-
+            $this->f3->set('pageSeoTitle', 'Aumet Marketplace - Register');
             echo View::instance()->render('public/auth/layout.php');
         }
     }
@@ -266,6 +267,7 @@ class AuthController extends Controller
         if ($this->isAuth) {
             $this->f3->reroute('/web');
         } else {
+            $this->f3->set('pageSeoTitle', 'Aumet Marketplace - Forgot Password');
             $this->f3->set('vAuthFile', 'forgot');
             echo View::instance()->render('public/auth/layout.php');
         }
