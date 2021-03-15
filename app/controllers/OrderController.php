@@ -968,12 +968,18 @@ class OrderController extends Controller
         }
     }
 
+    function getPharmacyPendingOrderLog()
+    {
+        echo $this->webResponse->jsonResponseV2(Constants::STATUS_SUCCESS, $this->f3->get('vOrderPending_logTitle'), '', []);
+    }
+
     function getDistributorPendingOrderLog()
     {
         $this->setLocale();
         $timezone = $this->f3->get('PARAMS.timezone');
         $html_content = '';
         $reasons = $this->f3->get('vOrderPending_reasons');
+        $userRoleName = in_array($this->objUser->roleId, [Constants::USER_ROLE_DISTRIBUTOR_SYSTEM_ADMINISTRATOR, Constants::USER_ROLE_DISTRIBUTOR_ENTITY_MANAGER, Constants::USER_ROLE_DISTRIBUTOR_SYSTEM_MANAGER]) ? 'distributor' : 'pharmacy';
 
         $pendingOrderLogs = $this->db->exec("CALL spGetDistributorPendingOrdersLog({$this->objUser->id})");
 
@@ -1012,7 +1018,7 @@ class OrderController extends Controller
                     <!--end::Symbol-->
                     <!--begin::Text-->
                     <div class="d-flex flex-column flex-fill font-weight-bold">
-                        <a href="/web/distributor/order/history" class="text-dark text-hover-primary mb-1 font-size-lg">Order ' . $pendingOrderLog['orderId'] . ': ' . $pendingOrderLog['entityBuyer'] . '</a>
+                        <a href="/web/' . $userRoleName . '/order/history" class="text-dark text-hover-primary mb-1 font-size-lg">Order ' . $pendingOrderLog['orderId'] . ': ' . $pendingOrderLog['entityBuyer'] . '</a>
                         <div class="text-muted">' . $pendingOrderLog['name_' . $this->objUser->language] . (empty($reasons[$pendingOrderLog['reasonId']]) ? '' : ': ' . $reasons[$pendingOrderLog['reasonId']]) . '</div>
                         <div class="d-flex align-self-end text-muted font-size-sm my-2">' . (new \Moment\Moment(str_replace(' ', 'T', $pendingOrderLog['updatedAt']), $timezone))->calendar() . '</div>
                     </div>

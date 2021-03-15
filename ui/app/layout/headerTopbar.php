@@ -49,7 +49,7 @@
                     <!--end::Scroll-->
                     <!--begin::Action-->
                     <div class="d-flex flex-center pt-7">
-                        <a href="/web/distributor/order/history" class="btn btn-light-primary font-weight-bold text-center">See All</a>
+                        <a href="#" class="btn btn-light-primary font-weight-bold text-center" id="messageCenterSeeAllLink">See All</a>
                     </div>
                     <!--end::Action-->
                 </div>

@@ -24,6 +24,18 @@ var WebApp = (function () {
 
 	var _notificationInProgress = false;
 
+	var _getUserRoleName = function () {
+		var userRoleName = '';
+
+		if (location.href.includes('distributor')) {
+			userRoleName = 'distributor';
+		} else if (location.href.includes('pharmacy'))  {
+			userRoleName = 'pharmacy';
+		}
+
+		return userRoleName;
+	};
+
 	var _alertError = function (msg) {
 		Swal.fire({
 			html: msg,
@@ -569,19 +581,29 @@ var WebApp = (function () {
 		}
 	};
 
-	var _updateMessageCenter = function () {
+	var _renderEmptyMessageCenter = function () {
+		$('#messageCenterContainer #topbar_notifications_logs').html('<!--begin::Nav-->' +
+			'<div class="d-flex flex-center text-center text-muted min-h-200px">All caught up!' +
+			'<br />No new notifications.</div>' +
+			'<!--end::Nav-->').removeClass('p-8');
+	};
+
+	var _updateMessageCenter = function (userRoleName) {
+		if (userRoleName === '') {
+			_renderEmptyMessageCenter();
+			return;
+		}
+
 		var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-		_get('/web/distributor/order/pendingLog?timezone=' + timezone, function (webResponse) {
+		_get('/web/' + userRoleName + '/order/pendingLog?timezone=' + timezone, function (webResponse) {
 			$('#messageCenterContainer #messageCenterCount').html(webResponse.data.length);
 			$('#messageCenterContainer #messageCenterTitle').html(webResponse.title);
 			$('#messageCenterContainer #messageCenterBody').html(webResponse.message);
+			$('#messageCenterContainer #messageCenterSeeAllLink').html('/web/' + userRoleName + '/order/history');
 
 			if (webResponse.data.length === 0) {
-				$('#messageCenterContainer #topbar_notifications_logs').html('<!--begin::Nav-->' +
-					'<div class="d-flex flex-center text-center text-muted min-h-200px">All caught up!' +
-					'<br />No new notifications.</div>' +
-					'<!--end::Nav-->').removeClass('p-8');
+				_renderEmptyMessageCenter();
 			}
 		});
 	};
@@ -1107,8 +1129,7 @@ var WebApp = (function () {
 			//$("#webGuidedTourModal").modal();
 
 			_initNotificationTimer();
-
-      _updateMessageCenter();
+      		_updateMessageCenter(_getUserRoleName());
 			_getDatalayerProduct();
 
 			// handle browser navigation
