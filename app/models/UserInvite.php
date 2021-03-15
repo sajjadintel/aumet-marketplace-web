@@ -72,9 +72,23 @@ class UserInvite extends BaseModel
 
     public function destroy($inviteId, $entityId)
     {
-        $invite = $this->findone(['id = ? AND entityId = ?', $inviteId, $entityId]);
+        $invite = $this->findone(['id = ?', $inviteId]);
         if ($invite === false) {
-            return false;
+            $this->hasErrors = true;
+            $this->errors[] = Base::instance()->get('user_invite_not_found');
+            return $this;
+        }
+
+        if ($invite->entityId !== $entityId) {
+            $this->hasErrors = true;
+            $this->errors[] = Base::instance()->get('unauthorized_to_delete_user_invite');
+            return $this;
+        }
+
+        if (!$invite->statusIsPending()) {
+            $this->hasErrors = true;
+            $this->errors[] = Base::instance()->get('user_invite_is_processed');
+            return $this;
         }
 
         return $invite->delete();
@@ -100,10 +114,14 @@ class UserInvite extends BaseModel
         return $model->findone(['token = ? AND status = ?', $token, $status]);
     }
 
-    public function findWheryWith($query, $order, $limit, $offset)
+    public function findWhereWith($query, $order, $limit, $offset)
     {
         $data = $this->findWhere($query, $order, $limit, $offset);
         $ids = array_filter(array_column($data, 'createdBy'));
+        if (empty($ids)) {
+            return $data;
+        }
+        
         $users = (new User)->findWhere('id IN (' . implode(',', $ids) . ')');
         foreach ($data as &$datum) {
             foreach ($users as $index => $user) {

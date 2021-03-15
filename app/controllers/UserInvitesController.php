@@ -14,7 +14,7 @@ class UserInvitesController extends Controller
         $invite = new UserInvite;
         $order = "$datatable->sortBy $datatable->sortByOrder";
         $query = "entityId = {$entityId}";
-        $data = $invite->findWheryWith($query, $order, $datatable->limit, $datatable->offset);
+        $data = $invite->findWhereWith($query, $order, $datatable->limit, $datatable->offset);
         $resultCount = $invite->count($query);
 
         $response = [
@@ -52,9 +52,10 @@ class UserInvitesController extends Controller
     {
         $entityId = EntityUserProfileView::getEntityIdFromUser($this->objUser->id);
         $invite = new UserInvite;
-        if(!$invite->destroy($this->f3->get('PARAMS.id'), $entityId)) {
+        $invite = $invite->destroy($this->f3->get('PARAMS.id'), $entityId);
+        if($invite instanceof UserInvite && $invite->hasErrors) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
-            $this->webResponse->message = 'You cant delete this invite';
+            $this->webResponse->message = implode("\n", $invite->errors);
             echo $this->webResponse->jsonResponse();
             return;
         }

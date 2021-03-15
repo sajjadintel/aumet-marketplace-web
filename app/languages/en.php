@@ -515,5 +515,6 @@ return array(
     'vModule_promotion_endDateInvalid' => 'End date should be after the start date',
 
     'user_invite_not_found' => 'The invite doesn\'t exist',
-
+    'unauthorized_to_delete_user_invite' => 'You are not authorized to delete this user invite.',
+    'user_invite_is_processed' => 'Can\'t delete user invite because it\'s already processed',
 );
