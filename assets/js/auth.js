@@ -549,7 +549,7 @@ var WebAuth = (function () {
 						.empty()
 						.append('<option value="">' + WebAppLocals.getMessage('city') + '</option>');
 					var allCities = webResponse.data;
-					allCities.forEach((city) => {
+					allCities.forEach(function (city) {
 						$('#kt_login_signup_form select[name=city]').append(new Option(city.name, city.id));
 					});
 					$('#kt_login_signup_form select[name=city]').prop('disabled', false);
@@ -778,7 +778,7 @@ var WebAuth = (function () {
 			address: 'textarea',
 		};
 
-		Object.keys(mapKeyElement).forEach((key) => {
+		Object.keys(mapKeyElement).forEach(function (key) {
 			body[key] = $('#kt_login_signup_form ' + mapKeyElement[key] + '[name=' + key + ']').val();
 		});
 

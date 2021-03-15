@@ -93,6 +93,9 @@ $f3->route('POST /web/distributor/order/process', 'OrderController->postProcessO
 $f3->route('POST /web/distributor/order/onhold', 'OrderController->postOnHoldOrder');
 // END  APM-10 APM-11 APM-35
 
+// Message Center
+$f3->route('GET /web/distributor/order/pendingLog', 'OrderController->getDistributorPendingOrderLog');
+
 // START APM-37
 $f3->route('GET /web/distributor/product', 'ProductsController->getDistributorProducts');
 $f3->route('GET /web/distributor/product/@productId', 'ProductsController->getProductDetails');
