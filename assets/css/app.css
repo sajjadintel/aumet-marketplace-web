@@ -976,3 +976,33 @@ input[type='number'] {
 .single-product-unitPricesList > div:not(:nth-child(1)) {
 	align-items: start !important;
 }
+
+.single-promotion.switch.switch-success:not(.switch-outline) input:empty:not(:checked) ~ span:before {
+	background-color: #D5DBEC;
+}
+
+.single-promotion-textarea {
+	resize: none;
+}
+
+.single-promotion-form {
+	width: 40%;
+}
+
+.single-promotion-form .fv-plugins-message-container {
+	display: none;
+}
+
+.promotion-banner-dropzone .dz-details {
+	display: none;
+}
+
+.promotion-banner-dropzone .dz-preview:hover .dz-image img {
+	-webkit-transform: scale(1.05, 1.05);
+	-moz-transform: scale(1.05, 1.05);
+	-ms-transform: scale(1.05, 1.05);
+	-o-transform: scale(1.05, 1.05);
+	transform: scale(1.05, 1.05);
+	-webkit-filter: none;
+	filter: none;
+}

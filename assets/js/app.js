@@ -191,6 +191,20 @@ var WebApp = (function () {
 							}
 						}
 						_alertError(webResponse.message);
+						if (webResponse.errortype){
+							dataLayer.push({
+								'event': 'errors',
+								'error_type': webResponse.errortype,
+								'error_message': webResponse.message
+							});
+						}else {
+							dataLayer.push({
+								'event': 'errors',
+								'error_type': "unknown",
+								'error_message': webResponse.message
+							});
+						}
+
 					}
 				} else {
 					if (forceCallback) {
@@ -198,6 +212,13 @@ var WebApp = (function () {
 							fnCallback(webResponse);
 						}
 					}
+
+					dataLayer.push({
+						'event': 'errors',
+						'error_type': "unknown",
+						'error_message': WebAppLocals.getMessage('error')
+					});
+
 					_alertError(WebAppLocals.getMessage('error'));
 				}
 				if (submitButton) {
@@ -867,6 +888,41 @@ var WebApp = (function () {
 		}, 5000);
 	};
 
+	var _getDatalayerProduct = function (){
+		//This function is added for datalayer fetch. It will be used accorss marketplace in future. That is why its added in app.js
+		$( document ).on("click",".datalayer-image-click,.datalayer-text-click",function (){
+			var $selector = $(this).closest(".product-container");
+			var itemName = $selector.find(".hidden_item_name").val();
+			var itemId = $selector.find(".hidden_item_id").val();
+			var itemPrice = $selector.find(".hidden_price").val();
+			var itemCategory = $selector.find(".hidden_item_category").val();
+			var itemListId = $selector.find(".hidden_item_list_id").val();
+			var itemAvailablity = $selector.find(".hidden_availability").val();
+			var itemMadeIn = $selector.find(".hidden_made_in").val();
+			var itemManufactureId = $selector.find(".hidden_manufacturer_id").val();
+			dataLayer.push({
+				'event': 'select_item',
+				'ecommerce': {
+					'currency':'AED',
+					'items': [
+						{
+							'item_name': itemName,
+							'item_id': itemId,
+							'price': itemPrice,
+							'item_brand': itemManufactureId,
+							'item_category': itemCategory,
+							'item_list_name': 'Product list',
+							'item_list_id': itemListId,
+							'index': 1,
+							'currency': 'AED',
+							'availability': itemAvailablity,
+							'made_in': itemMadeIn,
+						}]
+				}
+			});
+		});
+	}
+
 	var _redirect = function (url) {
 		$(location).attr('href', url);
 	};
@@ -990,16 +1046,25 @@ var WebApp = (function () {
 					supportEmail: 'input',
 					supportPhone: 'input',
 					supportReasonId: 'select',
+					supportOrder: 'select',
+					supportCustomer: 'select',
+					message: 'textarea'
 				};
 
 				Object.keys(mapKeyElement).forEach(function (key) {
 					body[key] = $('#supportModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
 				});
 
+				if($('#requestCall').is(":checked")){
+					body['requestCall'] = 1;
+				}
+
 				// Show loading state on button
 				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
 				$(formSubmitButton).prop('disabled', true);
-
+				dataLayer.push({
+					'event': 'support_form_success'
+				});
 				_post(formSubmitUrl, body, _supportModalSuccessCallback, formSubmitButton);
 			});
 		});
@@ -1019,6 +1084,10 @@ var WebApp = (function () {
 		}
 
 		$('#supportModalForm select[name=supportReasonId]').val('').trigger('change');
+		$('#supportModalForm select[name=supportCustomer]').val('').trigger('change');
+		$('#supportModalForm select[name=supportOrder]').val('').trigger('change');
+		$('#supportModalForm textarea[name=message]').html('');
+		$('#requestCall').prop('checked', false);
 		$('#support_modal').modal('hide');
 	};
 
@@ -1039,7 +1108,8 @@ var WebApp = (function () {
 
 			_initNotificationTimer();
 
-			_updateMessageCenter();
+      _updateMessageCenter();
+			_getDatalayerProduct();
 
 			// handle browser navigation
 			$(window).on('popstate', function () {

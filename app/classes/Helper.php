@@ -4,7 +4,6 @@ class Helper {
 
     public static function idListFromArray($array)
     {
-
         $ids = '';
         foreach ($array as $key => $value) {
             if ($ids != '') {

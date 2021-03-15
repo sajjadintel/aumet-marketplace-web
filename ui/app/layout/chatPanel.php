@@ -235,7 +235,7 @@
 				<!--begin::Footer-->
 				<div class="card-footer align-items-center">
 					<!--begin::Compose-->
-					<textarea class="form-control border-0 p-0" rows="2" placeholder="Type a message"></textarea>
+					<textarea class="form-control border-0 p-0 chat-message-area" rows="2" placeholder="Type a message"></textarea>
 					<div class="d-flex align-items-center justify-content-between mt-5">
 						<div class="mr-3">
 							<a href="#" class="btn btn-clean btn-icon btn-md mr-1">
@@ -246,7 +246,7 @@
 							</a>
 						</div>
 						<div>
-							<button type="button" class="btn btn-primary btn-md text-uppercase font-weight-bold chat-send py-2 px-6">Send</button>
+							<button id="chatsend" type="button" class="btn btn-primary btn-md text-uppercase font-weight-bold chat-send py-2 px-6 send-message-popup" >Send</button>
 						</div>
 					</div>
 					<!--begin::Compose-->
@@ -257,3 +257,20 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(document).on('keyup','.chat-message-area',function (){
+            if ($("textarea.chat-message-area").val()){
+               $(".send-message-popup").addClass("datalayer-message-send");
+            }else{
+               $(".send-message-popup").removeClass("datalayer-message-send");
+            }
+        });
+        $(document).on('click','.datalayer-message-send',function (){
+            dataLayer.push({
+                'event': 'chat_message_sent'
+            });
+        });
+
+    });
+</script>
