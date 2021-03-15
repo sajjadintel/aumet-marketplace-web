@@ -191,6 +191,21 @@ return array(
     'vOrderStatus_Received' => 'Received',
     'vOrderStatus_Paid' => 'Paid',
 
+    'vMessageCenter_heading' => 'Message Center',
+    'vMessageCenter_seeAll' => 'See All',
+    'vOrderPending_logTitle' => 'Pending Orders Log',
+    'vOrderPending_reasons' => [
+        'Please open an account with the distributor',
+        'Order not printed so account is closed',
+        'Please follow up with the representative',
+        'Cheque returned',
+        'Cash payment',
+        'Account suspended, please follow up with the representative',
+        'Order limit reached',
+        'Follow up with accounting required',
+        'Other',
+    ],
+
     'vModule_customer_title' => 'Customer List',
     'vModule_customer_header' => 'You can view list of customers',
 

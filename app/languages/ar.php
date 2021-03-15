@@ -262,6 +262,21 @@ return array(
     'vOrderStatus_Received' => 'تم الاستلام',
     'vOrderStatus_Paid' => 'دفع',
 
+    'vMessageCenter_heading' => 'Message Center', // TODO: add translation
+    'vMessageCenter_seeAll' => 'See All', // TODO: add translation
+    'vOrderPending_logTitle' => 'Pending Orders Log', // TODO: add translation
+    'vOrderPending_reasons' => [
+        'لا يوجد حساب الرجاء فتح حساب',
+        'لم يتم طباعة الطلبية فالحساب مغلق',
+        'الرجاء مراجعة المندوب',
+        'شيك راجع',
+        'سيكون الدفع نقدا',
+        'حساب موقوف الرجاء مراجعة المندوب',
+        'لم يتم طباعة الطلبية فقد وصلت حد السقف',
+        'الرجاء المتابعة مع قسم المحاسبة',
+        'أخرى',
+    ],
+
     'vModule_customer_title' => 'الزبائن',
     'vModule_customer_header' => 'يمكنك البحث عن الزبائن',
 

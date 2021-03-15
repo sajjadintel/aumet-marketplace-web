@@ -79,7 +79,7 @@ class OrderController extends Controller
             }
 
             $customerId = $_GET['customer'];
-            if($customerId) {
+            if ($customerId) {
                 $dbEntity = new BaseModel($this->db, "entity");
                 $dbEntity->name = "name_" . $this->objUser->language;
                 $dbEntity->getWhere("id=$customerId");
@@ -142,15 +142,34 @@ class OrderController extends Controller
             $modalCallback = 'WebApp.reloadDatatable';
             $modalButton = $this->f3->get('vButton_update');
 
+            $pendingOrderReason = '';
+            if (in_array($statusId, [Constants::ORDER_STATUS_ONHOLD, Constants::ORDER_STATUS_PROCESSING, Constants::ORDER_STATUS_CANCELED])) {
+                $pendingOrderReason =
+                    '<div class="form-group row mb-0">' .
+                    '  <label for="reasonId" class="col-sm-2 col-form-label col-form-label-sm">Reason</label>' .
+                    '  <div class="col-sm-10">' .
+                    '    <select class="custom-select" name="reasonId" id="reasonId" ' . ($this->objUser->language === 'ar' ? 'lang="ar" dir="rtl"' : '') . ' required>' .
+                    '      <option value="-1" selected disabled>Select...</option>';
+
+                foreach ($this->f3->get('vOrderPending_reasons') as $index => $reason) {
+                    $pendingOrderReason .= '<option value="' . $index . '">' . $reason . '</option>';
+                }
+
+                $pendingOrderReason .=
+                    '    </select>' .
+                    '  </div>' .
+                    '</div>';
+            }
+
             switch ($statusId) {
                 case Constants::ORDER_STATUS_ONHOLD:
                     $modalTitle = $this->f3->get('vOrderStatus_OnHold');
-                    $modalText = $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_OnHold'));
+                    $modalText = '<p>' . $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_OnHold')) . '</p>' . $pendingOrderReason;
                     $modalRoute = '/web/distributor/order/onhold';
                     break;
                 case Constants::ORDER_STATUS_PROCESSING:
                     $modalTitle = $this->f3->get('vOrderStatus_Processing');
-                    $modalText = $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_Processing'));
+                    $modalText = '<p>' . $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_Processing')) . '</p>' . $pendingOrderReason;
                     $modalRoute = '/web/distributor/order/process';
                     break;
                 case Constants::ORDER_STATUS_COMPLETED:
@@ -160,7 +179,7 @@ class OrderController extends Controller
                     break;
                 case Constants::ORDER_STATUS_CANCELED:
                     $modalTitle = $this->f3->get('vOrderStatus_Canceled');
-                    $modalText = $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_Canceled'));
+                    $modalText = '<p>' . $this->f3->get('vOrderStatusConfirmation', $this->f3->get('vOrderStatus_Canceled')) . '</p>' . $pendingOrderReason;
                     $modalRoute = '/web/distributor/order/cancel';
                     break;
                 case Constants::ORDER_STATUS_PAID:
@@ -611,21 +630,24 @@ class OrderController extends Controller
     {
         $orderId = $this->f3->get("POST.id");
         $statusId = Constants::ORDER_STATUS_ONHOLD;
-        $this->handleUpdateOrderStatus($orderId, $statusId);
+        $reasonId = $this->f3->get('POST.reasonId');
+        $this->handleUpdateOrderStatus($orderId, $statusId, $reasonId);
     }
 
     function postProcessOrder()
     {
         $orderId = $this->f3->get("POST.id");
         $statusId = Constants::ORDER_STATUS_PROCESSING;
-        $this->handleUpdateOrderStatus($orderId, $statusId);
+        $reasonId = $this->f3->get('POST.reasonId');
+        $this->handleUpdateOrderStatus($orderId, $statusId, $reasonId);
     }
 
     function postCancelOrder()
     {
         $orderId = $this->f3->get("POST.id");
         $statusId = Constants::ORDER_STATUS_CANCELED;
-        $this->handleUpdateOrderStatus($orderId, $statusId);
+        $reasonId = $this->f3->get('POST.reasonId');
+        $this->handleUpdateOrderStatus($orderId, $statusId, $reasonId);
     }
 
     function postCompleteOrder()
@@ -649,7 +671,7 @@ class OrderController extends Controller
         $this->handleUpdateOrderStatus($orderId, $statusId);
     }
 
-    function handleUpdateOrderStatus($orderId, $statusId)
+    function handleUpdateOrderStatus($orderId, $statusId, $reasonId = null)
     {
         $dbOrder = new BaseModel($this->db, "order");
         $dbOrder->getById($orderId);
@@ -703,6 +725,9 @@ class OrderController extends Controller
         $dbOrderLog->orderId = $orderId;
         $dbOrderLog->userId = $this->objUser->id;
         $dbOrderLog->statusId = $statusId;
+        if (!is_null($reasonId)) {
+            $dbOrderLog->reasonId = $reasonId;
+        }
 
 
         if (!$dbOrderLog->add()) {
@@ -925,6 +950,79 @@ class OrderController extends Controller
         $emailHandler->sendEmail(Constants::EMAIL_ORDER_STATUS_UPDATE, $subject, $htmlContent);
 
         echo $this->webResponse->jsonResponseV2(3, $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), $this->f3->get('vResponse_updated', $this->f3->get('vEntity_order')), null);
+    }
+
+    function setLocale()
+    {
+        switch ($this->f3->get('LANGUAGE')) {
+            case 'ar':
+                \Moment\Moment::setLocale('ar_TN');
+                break;
+            case 'fr':
+                \Moment\Moment::setLocale('fr_FR');
+                break;
+            case 'en':
+            default:
+                \Moment\Moment::setLocale('en_US');
+                break;
+        }
+    }
+
+    function getDistributorPendingOrderLog()
+    {
+        $this->setLocale();
+        $timezone = $this->f3->get('PARAMS.timezone');
+        $html_content = '';
+        $reasons = $this->f3->get('vOrderPending_reasons');
+
+        $pendingOrderLogs = $this->db->exec("CALL spGetDistributorPendingOrdersLog({$this->objUser->id})");
+
+        foreach ($pendingOrderLogs as $index => $pendingOrderLog) {
+            $html_content .=
+                '<!--begin::Item-->
+                <div class="d-flex align-items-start border-bottom mb-4">
+                    <!--begin::Symbol-->
+                    <div class="symbol symbol-40 symbol-light-primary mr-5">
+                        <span class="symbol-label">';
+
+            // show entityBuyerImage if present, otherwise show default svg icon
+            if (!is_null($pendingOrderLog['entityBuyerImage'])) {
+                $html_content .=
+                    '<!-- begin::Image -->
+                    <img src="' . $pendingOrderLog['entityBuyerImage'] . '" alt="msg-' . ($index + 1) . '" width="40px" height="40px" style="border-radius: 0.42rem;">
+                    <!-- end::Image -->';
+            } else {
+                $html_content .=
+                    '<span class="svg-icon svg-icon-lg svg-icon-primary">
+                        <!--begin::Svg Icon | path:assets/media/svg/icons/Home/Library.svg-->
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <rect x="0" y="0" width="24" height="24" />
+                                <path d="M5,3 L6,3 C6.55228475,3 7,3.44771525 7,4 L7,20 C7,20.5522847 6.55228475,21 6,21 L5,21 C4.44771525,21 4,20.5522847 4,20 L4,4 C4,3.44771525 4.44771525,3 5,3 Z M10,3 L11,3 C11.5522847,3 12,3.44771525 12,4 L12,20 C12,20.5522847 11.5522847,21 11,21 L10,21 C9.44771525,21 9,20.5522847 9,20 L9,4 C9,3.44771525 9.44771525,3 10,3 Z" fill="#000000" />
+                                <rect fill="#000000" opacity="0.3" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519)" x="16.3255682" y="2.94551858" width="3" height="18" rx="1" />
+                            </g>
+                        </svg>
+                        <!--end::Svg Icon-->
+                    </span>';
+            }
+
+            $html_content .=
+                '       </span>
+                    </div>
+                    <!--end::Symbol-->
+                    <!--begin::Text-->
+                    <div class="d-flex flex-column flex-fill font-weight-bold">
+                        <a href="/web/distributor/order/history" class="text-dark text-hover-primary mb-1 font-size-lg">' . $pendingOrderLog['entityBuyer'] . '</a>
+                        <div class="text-muted">' . $pendingOrderLog['name_' . $this->objUser->language] . (empty($reasons[$pendingOrderLog['reasonId']]) ? '' : ': ' . $reasons[$pendingOrderLog['reasonId']]) . '</div>
+                        <div class="d-flex align-self-end text-muted font-size-sm my-2">' . (new \Moment\Moment(str_replace(' ', 'T', $pendingOrderLog['updatedAt']), $timezone))->calendar() . '</div>
+                    </div>
+                    <!--end::Text-->
+                    
+                </div>
+                <!--end::Item-->';
+        }
+
+        echo $this->webResponse->jsonResponseV2(Constants::STATUS_SUCCESS, $this->f3->get('vOrderPending_logTitle'), $html_content, $pendingOrderLogs);
     }
 
     function getPrintOrderInvoice()

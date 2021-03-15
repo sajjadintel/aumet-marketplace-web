@@ -1589,3 +1589,36 @@ alter table supportLog add requestCall int default 0 null after entityBuyerId;
 alter table supportLog add message text null after requestCall;
 
 ################################
+
+## 15/03/2021 -- Hamza Rashid
+
+# updated `orderLog` table to include `reasonId` field which gets its values from index of array available in PHP languages file with key: vOrderPending_reasons
+
+ALTER TABLE orderLog ADD COLUMN `reasonId` int null COMMENT 'Index from array available in PHP languages file with key: vOrderPending_reasons' AFTER `statusId`;
+
+# add routine to fetch pending orders log for distributor
+
+CREATE PROCEDURE spGetDistributorPendingOrdersLog(IN user_id int)
+BEGIN
+    SELECT `oL`.`id`,
+           `oL`.`orderId` AS `orderId`,
+           `oL`.`statusId`   AS `statusId`,
+           `oL`.`reasonId` AS `reasonId`,
+           `oL`.`updatedAt`  AS `updatedAt`,
+           `marketplace`.`orderStatus`.`name_en` AS `name_en`,
+           `marketplace`.`orderStatus`.`name_ar` AS `name_ar`,
+           `marketplace`.`orderStatus`.`name_fr` AS `name_fr`,
+           `entityBuyer`.`name_en`              AS `entityBuyer`,
+           `entityBuyer`.`image`                AS `entityBuyerImage`
+    FROM (
+        SELECT t1.* FROM `orderLog` t1
+            LEFT JOIN `orderLog` t2 ON (t1.`orderId` = t2.`orderId` AND t1.`id` < t2.`id`)
+        WHERE t1.`userId` = user_id AND t2.`id` IS NULL
+    ) oL
+        JOIN `marketplace`.`order` ON `oL`.`orderId` = `marketplace`.`order`.`id`
+        JOIN `marketplace`.`orderStatus` ON `oL`.`statusId` = `marketplace`.`orderStatus`.`id`
+        LEFT JOIN `marketplace`.`entity` `entityBuyer` on `marketplace`.`order`.`entityBuyerId` = `entityBuyer`.`id`
+    ORDER BY oL.`id` DESC;
+END;
+
+################################

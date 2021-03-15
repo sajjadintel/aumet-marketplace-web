@@ -86,7 +86,7 @@ var WebApp = (function () {
 				confirmButton: 'btn font-weight-bold btn-primary',
 				cancelButton: 'btn font-weight-bold btn-outline-primary',
 			},
-		}).then((result) => {
+		}).then(function (result) {
 			KTUtil.scrollTop();
 			if (result.value) {
 				WebApp.loadPage('/web/distributor/order/pending');
@@ -116,14 +116,23 @@ var WebApp = (function () {
 	};
 
 	var _get = function (url, fnCallback = null) {
+		var fullUrl = url + '?_t=' + Date.now();
+		if (url && url.includes('?')) {
+			var allParts = url.split('?');
+			var mainUrl = allParts.shift();
+			var queryParams = allParts.join('?');
+
+			fullUrl = mainUrl + '?' + queryParams + '&_t=' + Date.now();
+		}
+
 		$.ajax({
-			url: url + '?_t=' + Date.now(),
+			url: fullUrl,
 			type: 'GET',
 			dataType: 'json',
 			async: true,
 			beforeSend: function (jqXHR, settings) {
-				_blurPage(96);
-				_blockPage(97);
+				_blurPage(120);
+				_blockPage(121);
 			},
 		})
 			.done(function (webResponse) {
@@ -145,8 +154,8 @@ var WebApp = (function () {
 				_alertError(WebAppLocals.getMessage('error'));
 			})
 			.always(function (jqXHR, textStatus, errorThrown) {
-				_unblurPage(119);
-				_unblockPage(120);
+				_unblurPage(130);
+				_unblockPage(131);
 			});
 	};
 
@@ -158,8 +167,8 @@ var WebApp = (function () {
 			data: data,
 			async: true,
 			beforeSend: function (jqXHR, settings) {
-				_blurPage(132);
-				_blockPage(133);
+				_blurPage(140);
+				_blockPage(141);
 			},
 		})
 			.done(function (webResponse) {
@@ -230,8 +239,8 @@ var WebApp = (function () {
 				}
 			})
 			.always(function (jqXHR, textStatus, errorThrown) {
-				_unblurPage(182);
-				_unblockPage(184);
+				_unblurPage(150);
+				_unblockPage(151);
 			});
 	};
 
@@ -457,6 +466,7 @@ var WebApp = (function () {
 				}
 				var callback = null;
 				if ($(form).find('.modalValueCallback').val() != '') {
+					// TODO: fix eval() function
 					callback = eval($(form).find('.modalValueCallback').val());
 				}
 
@@ -486,7 +496,9 @@ var WebApp = (function () {
 
 					_validator.validate().then(function (status) {
 						if (status == 'Valid') {
-							_post(url, data, callback);
+							$.when(_post(url, data, callback)).then(function () {
+								_updateMessageCenter();
+							});
 							$(form).parent().parent().parent().modal('hide');
 						} else {
 							Swal.fire({
@@ -503,7 +515,9 @@ var WebApp = (function () {
 						}
 					});
 				} else {
-					_post(url, data, callback);
+					$.when(_post(url, data, callback)).then(function () {
+						_updateMessageCenter();
+					});
 					$(form).parent().parent().parent().modal('hide');
 				}
 			});
@@ -528,6 +542,10 @@ var WebApp = (function () {
 				$('#popupModal').modal('hide');
 			});
 		});
+
+		// ask reason when user Action is 'Processing' or 'Cancelled'
+		_updatePendingOrderForm();
+
 		$('#popupModal').modal('show');
 	};
 
@@ -539,6 +557,33 @@ var WebApp = (function () {
 		$('.modalValueCallback').val('');
 		$('.modalValueBody').val('');
 		$('.modalAction').html('');
+	};
+
+	var _updatePendingOrderForm = function () {
+		if ($('#popupModalText #reasonId').length > 0) {
+			$('#modalAction').attr('disabled', true).css('cursor', 'not-allowed');
+
+			$('#reasonId').on('change', function (e) {
+				$('#modalAction').attr('disabled', false).css('cursor', 'pointer');
+			});
+		}
+	};
+
+	var _updateMessageCenter = function () {
+		var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+		_get('/web/distributor/order/pendingLog?timezone=' + timezone, function (webResponse) {
+			$('#messageCenterContainer #messageCenterCount').html(webResponse.data.length);
+			$('#messageCenterContainer #messageCenterTitle').html(webResponse.title);
+			$('#messageCenterContainer #messageCenterBody').html(webResponse.message);
+
+			if (webResponse.data.length === 0) {
+				$('#messageCenterContainer #topbar_notifications_logs').html('<!--begin::Nav-->' +
+					'<div class="d-flex flex-center text-center text-muted min-h-200px">All caught up!' +
+					'<br />No new notifications.</div>' +
+					'<!--end::Nav-->').removeClass('p-8');
+			}
+		});
 	};
 
 	var _signout = function () {
@@ -1006,7 +1051,7 @@ var WebApp = (function () {
 					message: 'textarea'
 				};
 
-				Object.keys(mapKeyElement).forEach((key) => {
+				Object.keys(mapKeyElement).forEach(function (key) {
 					body[key] = $('#supportModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
 				});
 
@@ -1063,6 +1108,7 @@ var WebApp = (function () {
 
 			_initNotificationTimer();
 
+      _updateMessageCenter();
 			_getDatalayerProduct();
 
 			// handle browser navigation
