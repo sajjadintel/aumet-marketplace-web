@@ -1012,7 +1012,7 @@ class OrderController extends Controller
                     <!--end::Symbol-->
                     <!--begin::Text-->
                     <div class="d-flex flex-column flex-fill font-weight-bold">
-                        <a href="/web/distributor/order/history" class="text-dark text-hover-primary mb-1 font-size-lg">' . $pendingOrderLog['entityBuyer'] . '</a>
+                        <a href="/web/distributor/order/history" class="text-dark text-hover-primary mb-1 font-size-lg">Order ' . $pendingOrderLog['orderId'] . ': ' . $pendingOrderLog['entityBuyer'] . '</a>
                         <div class="text-muted">' . $pendingOrderLog['name_' . $this->objUser->language] . (empty($reasons[$pendingOrderLog['reasonId']]) ? '' : ': ' . $reasons[$pendingOrderLog['reasonId']]) . '</div>
                         <div class="d-flex align-self-end text-muted font-size-sm my-2">' . (new \Moment\Moment(str_replace(' ', 'T', $pendingOrderLog['updatedAt']), $timezone))->calendar() . '</div>
                     </div>
