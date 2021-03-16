@@ -20,6 +20,8 @@ $f3->route('GET /web/auth/reset', 'AuthController->getResetPassword');
 $f3->route('POST /web/auth/reset', 'AuthController->postResetPassword');
 $f3->route('GET /web/auth/verify/account', 'AuthController->getVerifyAccount');
 $f3->route('GET /web/auth/approve/account', 'AuthController->getApproveAccount');
+$f3->route('GET /web/auth/signup/invite', 'AuthController->getSignUpInvite');
+$f3->route('POST /web/auth/signup/invite', 'AuthController->postSignUpInvite');
 
 $f3->route('GET /web/auth/signout', 'AuthController->getSignOut');
 
@@ -94,6 +96,10 @@ $f3->route('POST /web/distributor/order/process', 'OrderController->postProcessO
 $f3->route('POST /web/distributor/order/onhold', 'OrderController->postOnHoldOrder');
 // END  APM-10 APM-11 APM-35
 
+// Message Center
+$f3->route('GET /web/pharmacy/order/pendingLog', 'OrderController->getPharmacyPendingOrderLog');
+$f3->route('GET /web/distributor/order/pendingLog', 'OrderController->getDistributorPendingOrderLog');
+
 // START APM-37
 $f3->route('GET /web/distributor/product', 'ProductsController->getDistributorProducts');
 $f3->route('GET /web/distributor/product/@productId', 'ProductsController->getProductDetails');
@@ -149,6 +155,7 @@ $f3->route('GET /web/distributor/customer/@customerId', 'EntityController->getEn
 $f3->route('GET /web/distributor/customer/relation/@entityBuyerId/@entitySellerId', 'EntityController->getEntityCustomerRelationDetails');
 $f3->route('POST /web/distributor/customer', 'EntityController->postEntityCustomers');
 $f3->route('POST /web/distributor/customer/edit/group', 'EntityController->postEntityCustomersEditGroup');
+$f3->route('POST /web/distributor/customer/edit/identifier', 'EntityController->postEntityCustomersIdentifier');
 
 // Customer Group
 $f3->route('GET /web/distributor/customer/group', 'EntityController->getEntityCustomerGroup');
@@ -219,4 +226,9 @@ $f3->route('GET /web/auth/onboarding/activate/pharmacy', 'AuthController->getPro
 
 $f3->route('GET /web/distributor/notification', 'NotificationController->index');
 $f3->route('POST /web/distributor/notification/@notificationId/read', 'NotificationController->markAsRead');
+
+$f3->route('POST /web/distributor/invite', 'UserInvitesController->index');
+$f3->route('POST /web/distributor/invite/create', 'UserInvitesController->create');
+$f3->route('POST /web/distributor/invite/@id/destroy', 'UserInvitesController->destroy');
+
 include_once('routes-permission.php');

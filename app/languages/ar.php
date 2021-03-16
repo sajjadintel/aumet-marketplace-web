@@ -116,6 +116,7 @@ return array(
 
     'vSignup_thankyouTitle' => 'شكرا على التسجيل!',
     'vSignup_thankyouSubtitle' => 'تم إرسال بريد إلكتروني إليك للتحقق من حسابك.',
+    'vSignup_thankyouInviteSubtitle' => 'تم تفعيل حسابك, قم بتسجيل الدخول الان.',
     'vSignup_thankyouHome' => 'العودة إلى الصفحة الرئيسية',
 
     'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',
@@ -261,6 +262,21 @@ return array(
     'vOrderStatus_Canceled' => 'ألغيت',
     'vOrderStatus_Received' => 'تم الاستلام',
     'vOrderStatus_Paid' => 'دفع',
+
+    'vMessageCenter_heading' => 'Message Center', // TODO: add translation
+    'vMessageCenter_seeAll' => 'See All', // TODO: add translation
+    'vOrderPending_logTitle' => 'Pending Orders Log', // TODO: add translation
+    'vOrderPending_reasons' => [
+        'لا يوجد حساب الرجاء فتح حساب',
+        'لم يتم طباعة الطلبية فالحساب مغلق',
+        'الرجاء مراجعة المندوب',
+        'شيك راجع',
+        'سيكون الدفع نقدا',
+        'حساب موقوف الرجاء مراجعة المندوب',
+        'لم يتم طباعة الطلبية فقد وصلت حد السقف',
+        'الرجاء المتابعة مع قسم المحاسبة',
+        'أخرى',
+    ],
 
     'vModule_customer_title' => 'الزبائن',
     'vModule_customer_header' => 'يمكنك البحث عن الزبائن',
@@ -502,4 +518,11 @@ return array(
     'vModule_promotion_useImage' => 'استخدم الصورة',
     'vModule_promotion_addLimit' => 'Promotion limit reached (max: {0})', // TODO: translate
     'vModule_promotion_endDateInvalid' => 'يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء',
+
+    'user_invite_not_found' => 'الدعوة غير موجودة',
+    'unauthorized_to_delete_user_invite' => 'أنت غير مخول لحذف هذه الدعوة.',
+    'user_invite_is_processed' => 'لا يمكن حذف هذه الدعوة ﻷنها استخدمت.',
+
+    'customer_not_found' => 'الزبون غير موجود.',
+    'unauthorized_to_edit_customer' => 'أنت غير مخول لتعديل هذا الزبون.',
 );

@@ -61,6 +61,9 @@
                     <div id="paymentSettingButton" class="py-3 pl-20" onclick="Profile.handleMenuChange('paymentSetting')">
                         <h4><?php echo $vModule_profile_paymentSettingButton; ?></h4>
                     </div>
+                    <div id="manageUsersButton" class="py-3 pl-20" onclick="Profile.handleMenuChange('manageUsers')">
+                        <h4><?php echo $vModule_profile_manageUsersButton; ?></h4>
+                    </div>
                 </div>
             </div>
             <!--begin::Main-->
@@ -295,12 +298,117 @@
                         <!--end::Save Button-->
                     </form>
                 </div>
+                <div id="manageUsersSection" style="display: none;">
+                    <div class="card-label font-weight-bolder font-size-h1"><?php echo $vModule_profile_manageUsersTitle ?></div>
+                    <form class="form pt-5" novalidate="novalidate" id="manageUsersForm">
+                        <input type="hidden" name="userId" value="<?php echo $user->userId; ?>" />
+                        <input type="hidden" name="countryId" value="<?php echo $user->entityCountryId; ?>" />
+                        <div class="row">
+                            <div class="col-12 form-group">
+                                <p class="card-label font-size-h4"><?php echo $vModule_profile_manageUsersSubtitle ?></p>
+                                <button type="button" class="btn btn-primary mb-2" onclick="DistributorUserInvitesDataTable.createUserInviteModal()">Invite new user</button>
+                            </div>
+                        </div>
+                        <div class="py-5">
+                            <div class="row">
+                                <table
+                                        id="datatable"
+                                        class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
+                                </table>
+                            </div>
+                            <div id="minimumValueOrderRepeater">
+
+                                <!--<div class="row">
+                                    <div class="col-lg-4">
+                                        <a href="javascript:;" id="minimumValueOrderAdd" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
+                                            <i class="la la-plus"></i><?php /*echo $vButton_add; */?></a>
+                                    </div>
+                                </div>-->
+                            </div>
+                        </div>
+                        <!--begin::Save Button-->
+                        <div>
+                            <!--<a class="btn btn-primary font-weight-bolder font-size-h5 pl-12 pr-12 py-4 my-3 mr-3" onclick="Profile.saveDistributorPaymentSetting();">
+                                <?php /*echo $vModule_profile_saveButton; */?>
+                            </a>-->
+                        </div>
+                        <!--end::Save Button-->
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<?php include_once 'modals/new-user-invite-modal.php'; ?>
+<?php include_once 'modals/destroy-user-invite-modal.php'; ?>
+<script src="/assets/js/distributor-user-invites.js"></script>
 <script>
+    var PageClass = function () {
+        var elementId = "#datatable";
+        var url = '/web/distributor/invite';
+
+        var columnDefs = [
+            {
+                className: "export_datatable",
+                targets: [0, 1, 2, 3, 4, 5]
+            },
+            {
+                targets: 0,
+                title: '#',
+                data: 'id',
+            },
+            {
+              targets: 1,
+              title: 'Created By',
+              data: 'createdBy',
+            },
+            {
+                targets: 2,
+                title: 'email',
+                data: 'email',
+                render: $.fn.dataTable.render.ellipsis( 100 )
+            },
+            {
+                targets: 3,
+                title: 'status',
+                data: 'status'
+            },
+            {
+                targets: 4,
+                title: 'Created At',
+                data: 'createdAt',
+            },
+            {
+                targets: 5,
+                title: '',
+                data: 'id',
+                orderable: false,
+                render: function (data, type, row, meta) {
+                    output =
+                        `<btn type='button' class='btn btn-link btn-sm navi-link btn-outline-primary btn-hover-primary mr-2'
+                            onclick='DistributorUserInvitesDataTable.destroyUserInviteModal(${data}, "${row.email}")'><i class="nav-icon las la-trash p-0"></i></btn>`;
+
+                    return '<div style="display: flex;">' + output + '</div>';
+                },
+            }
+        ];
+
+        function updateDatatable() {
+            WebApp.CreateDatatableServerside("User Invites List", elementId, url, columnDefs, '');
+        }
+
+        var initiate = function () {
+            updateDatatable();
+        };
+        return {
+            init: function () {
+                initiate();
+            },
+        };
+    }();
+
     $(document).ready(function() {
         Profile.init();
+        PageClass.init();
     })
 </script>

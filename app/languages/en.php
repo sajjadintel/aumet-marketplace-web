@@ -117,6 +117,7 @@ return array(
 
     'vSignup_thankyouTitle' => 'Thanks for Registering!',
     'vSignup_thankyouSubtitle' => 'An email has been sent to you to verify your account.',
+    'vSignup_thankyouInviteSubtitle' => 'Your account was created, click below to login.',
     'vSignup_thankyouHome' => 'Go back to home',
 
     'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',
@@ -190,6 +191,21 @@ return array(
     'vOrderStatus_Canceled' => 'Canceled',
     'vOrderStatus_Received' => 'Received',
     'vOrderStatus_Paid' => 'Paid',
+
+    'vMessageCenter_heading' => 'Message Center',
+    'vMessageCenter_seeAll' => 'See All',
+    'vOrderPending_logTitle' => 'Pending Orders Log',
+    'vOrderPending_reasons' => [
+        'Please open an account with the distributor',
+        'Order not printed so account is closed',
+        'Please follow up with the representative',
+        'Cheque returned',
+        'Cash payment',
+        'Account suspended, please follow up with the representative',
+        'Order limit reached',
+        'Follow up with accounting required',
+        'Other',
+    ],
 
     'vModule_customer_title' => 'Customer List',
     'vModule_customer_header' => 'You can view list of customers',
@@ -333,6 +349,11 @@ return array(
 
     'vModule_customer_relationGroupTitle' => 'Customer Group',
     'vModule_customer_relationGroup' => 'Customer Group',
+    'vModule_customer_editIdTitle' => 'Customer Title',
+
+    'vModule_customer_id' => 'Customer Id',
+
+    'vModule_profile_inviteUserTitle' => 'Invite User',
 
     'vResponse_notFound' => '{0} not found',
     'vResponse_notUpdated' => '{0} could not be updated',
@@ -403,6 +424,9 @@ return array(
     'vModule_profile_paymentSettingButton' => 'Payment Setting',
     'vModule_profile_paymentSettingTitle' => 'Payment Setting',
     'vModule_profile_paymentSettingSaved' => 'Payment Setting saved successfully',
+    'vModule_profile_manageUsersTitle' => 'Manage Users',
+    'vModule_profile_manageUsersSubtitle' => 'Invite users to your account',
+    'vModule_profile_manageUsersButton' => 'Manage Users',
     'vModule_profile_pharmacyName' => 'Pharmacy Name',
     'vModule_profile_tradeLicenseNumber' => 'Trade License Number',
     'vModule_profile_country' => 'Country',
@@ -508,4 +532,11 @@ return array(
     'vModule_promotion_useImage' => 'Use Image',
     'vModule_promotion_addLimit' => 'Promotion limit reached (max: {0})',
     'vModule_promotion_endDateInvalid' => 'End date should be after the start date',
+
+    'user_invite_not_found' => 'The invite doesn\'t exist',
+    'unauthorized_to_delete_user_invite' => 'You are not authorized to delete this user invite.',
+    'user_invite_is_processed' => 'Can\'t delete user invite because it\'s already processed',
+
+    'customer_not_found' => 'The customer doesn\'t exist',
+    'unauthorized_to_edit_customer' => 'You are not authorized to edit this customer invite.',
 );

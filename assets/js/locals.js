@@ -820,16 +820,6 @@ var WebAppLocals = (function () {
 			ar: 'دولة',
 			fr: ''	
 		},
-		city: {
-			en: 'City',
-			ar: 'مدينة',
-			fr: ''	
-		},
-		addToGroup: {
-			en: 'Add to group',
-			ar: 'إضافة إلى المجموعة',
-			fr: ''
-		},
 		activeIngredients: {
 			en: 'Active Ingredients',
 			ar: 'مكونات نشطة',
@@ -950,6 +940,11 @@ var WebAppLocals = (function () {
 			ar: 'هل أنت متأكد أنك تريد حذف هذا الترويج؟',
 			fr: ''
 		},
+		addCustomerId: {
+			en: 'Add Customer Id',
+			ar: ' إضافة معرف للزبون',
+			fr: ''
+		}
 	};
 
 	var _symbolsLocals = {
@@ -976,10 +971,10 @@ var WebAppLocals = (function () {
 				};
 			}
 		},
-		getMessage(key) {
+		getMessage: function (key) {
 			return _arrLocals[key][docLang];
 		},
-		getSymbol(key) {
+		getSymbol: function (key) {
 			return _symbolsLocals[key];
 		},
 	};

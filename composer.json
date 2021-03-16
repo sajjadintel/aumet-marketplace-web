@@ -17,7 +17,9 @@
 		"kreait/firebase-php": "^5.8",
 		"lcobucci/jwt": "3.4.1",
 		"kenwheeler/slick": "1.6.*",
-		"ikkez/f3-middleware": "^1.1"
+		"ikkez/f3-middleware": "^1.1",
+		"geofmureithi/f3-validate": "^1.1",
+		"fightbulc/moment": "^1.32"
 	},
 	"license": "Aumet Inc All Rights Reserved",
 	"authors": [
@@ -25,5 +27,11 @@
 			"name": "Alaa Al Atrash",
 			"email": "a.atrash@aumet.me"
 		}
-	]
+	],
+	"autoload": {
+		"psr-4": {
+			"App\\Validators\\": "app\\Validators",
+			"App\\Mailers\\": "app\\Mailers"
+		}
+	}
 }
