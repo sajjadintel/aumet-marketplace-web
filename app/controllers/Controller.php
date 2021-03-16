@@ -44,6 +44,7 @@ class Controller
 
             $this->f3->set('objUser', $this->objUser);
             $this->f3->set('isAuth', true);
+            $this->objUser->unreadNotificationCount = (new Notification)->count(['user_id = ? AND `read` = ?', $this->objUser->id, false]);
         } else {
             $this->isAuth = false;
         }

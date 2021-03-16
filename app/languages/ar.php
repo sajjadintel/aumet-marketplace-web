@@ -400,6 +400,7 @@ return array(
     'vTitle_dashboard' => 'لوحة القيادة',
     'vTitle_homepage' => 'الصفحة الرئيسية',
     'vTitle_profile' => 'الملف الشخصي',
+    'vTitle_notifications' => 'الإشعارات',
 
     'vModule_profile_signout' => 'خروج',
     'vModule_profile_myProfileButton' => 'ملفي',

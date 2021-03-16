@@ -979,6 +979,9 @@ class CartController extends Controller
                 array_push($commands, $query);
             }
 
+            $cartDetails = (new BaseModel($this->db, 'vwCartDetail'))->find(['accountId = ?', $this->objUser->accountId]);
+            $this->sendPushNotification($dbOrder, $cartDetails);
+
             $this->db->exec($commands);
 
             $dbCartDetail = new BaseModel($this->db, "cartDetail");
@@ -1031,5 +1034,17 @@ class CartController extends Controller
             $this->webResponse->data = View::instance()->render('app/cart/thankyou.php');
             echo $this->webResponse->jsonResponse();
         }
+    }
+
+    private function sendPushNotification($order, $cartDetails)
+    {
+        if (!array_key_exists($order->statusId, FcmNotification::AVAILABLE_NOTIFICATIONS)) {
+            return;
+        }
+
+        $notificationClassName = FcmNotification::AVAILABLE_NOTIFICATIONS[$order->statusId];
+        $notificationInstance = new $notificationClassName();
+        $user = (new BaseModel($this->db, 'user'))->find(['id = ?', $order->userSellerId]);
+        $notificationInstance->send($user, $cartDetails);
     }
 }

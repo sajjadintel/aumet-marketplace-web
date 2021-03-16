@@ -88,6 +88,28 @@
 	</div>
 	<!--end::CartCheckout-->
 	<?php endif; ?>
+    <?php if($objUser->menuId == Constants::MENU_DISTRIBUTOR): ?>  <!--If::Check if not distributor-->
+	<!--begin::Notifications-->
+	<div class="topbar-item">
+		<div class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1" id="kt_quick_cart_toggle" onclick="WebApp.loadPage('/web/distributor/notification')">
+			<span class="svg-icon svg-icon-xl svg-icon-primary" style="display: flex; align-items: center;">
+				<!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Cart3.svg-->
+				<i class="las la-bell text-primary" style="height: 24px; width: 24px;"></i>
+				<!--end::Svg Icon-->
+				<span class="label label-danger ml-2" id="notificationCount"
+					style="<?php if($objUser->unreadNotificationCount > 0) : ?>display: flex;<?php else : ?>display: none;<?php endif; ?>"
+				>
+					<?php if($objUser->unreadNotificationCount > 9) : ?>
+						9+
+					<?php else : ?>
+						<?php echo $objUser->unreadNotificationCount ?>
+					<?php endif; ?>
+				</span>
+			</span>
+		</div>
+	</div>
+	<!--end::Notifications-->
+	<?php endif; ?>
     <!--begin::Chat-->
     <?php if (getenv('ENV') == Constants::ENV_LOC) { ?>
         <div class="topbar-item">

@@ -410,6 +410,7 @@ return array(
     'vTitle_dashboard' => 'Dashboard',
     'vTitle_homepage' => 'Homepage',
     'vTitle_profile' => 'Profile',
+    'vTitle_notifications' => 'Notifications',
 
     'vModule_profile_signout' => 'Sign Out',
     'vModule_profile_myProfileButton' => 'My Profile',

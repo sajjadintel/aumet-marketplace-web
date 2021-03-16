@@ -1590,6 +1590,31 @@ alter table supportLog add message text null after requestCall;
 
 ################################
 
+# 02/03/2021 - Abdul-fattah Tayih
+# Create userFcmTokens table
+CREATE TABLE user_fcm_tokens (
+    id int NOT NULL AUTO_INCREMENT,
+	fcm_token varchar(512) NOT NULL,
+    platform varchar(10) NOT NULL,
+    user_id int NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    PRIMARY KEY (id)
+);
+
+# Create notifications table
+CREATE TABLE notifications (
+    id int NOT NULL AUTO_INCREMENT,
+    title varchar(256) NOT NULL,
+    body text NOT NULL,
+    type varchar(50) NOT NULL,
+    read boolean DEFAULT false,
+    user_id int NOT NULL,
+    created_at timestamp DEFAULT now(),
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    PRIMARY KEY (id)
+);
+
+################################
 
 # 05/03/2021 - Abdul-fattah Tayih
 

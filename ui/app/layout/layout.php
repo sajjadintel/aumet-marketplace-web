@@ -338,10 +338,14 @@ function compress_htmlcode($codedata)
 
     <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     <script type="text/javascript" src="/assets/lib/slick/slick.min.js"></script>
-
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-messaging.js"></script>
+    <script src="/assets/js/activate-fcm.js"></script>
     <script>
         jQuery(document).ready(function() {
             WebApp.init();
+            let credentials = '<?php echo json_encode(['apiKey' => getenv('FCM_API_KEY'), 'authDomain' => getenv('FCM_AUTH_DOMAIN'), 'projectId' => getenv('FCM_PROJECT_ID'), 'storageBucket' => getenv('FCM_STORAGE_BUCKET'), 'messagingSenderId' => getenv('FCM_MESSAGING_SENDER_ID'), 'appId' => getenv('FCM_APP_ID')]); ?>';
+            activateFirebase(JSON.parse(credentials));
         });
 
         var _autocompleteDesktop = $('#searchBarInputDesktop').autocomplete2({

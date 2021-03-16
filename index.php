@@ -18,7 +18,7 @@ $dotenv->load();
 
 $f3 = \Base::instance();
 
-$f3->set('AUTOLOAD', "app/controllers/ | app/classes/ | app/models/ | app/models/views/ | lib/ | app/cron/ ");
+$f3->set('AUTOLOAD', "app/controllers/ | app/classes/ | app/models/ | app/models/views/ | lib/ | app/cron/ | app/notifications/ ");
 
 /* Config */
 $f3->set('DEBUG', '9');
