@@ -75,8 +75,7 @@ function compress_htmlcode($codedata)
                 title: '#',
                 data: 'id',
                 render: function(data, type, row, meta) {
-                    var output = row.id;
-                    return output;
+                    return row.id;
                 }
             },
             {
@@ -94,7 +93,6 @@ function compress_htmlcode($codedata)
                 data: 'entityBuyer',
                 render: function(data, type, row, meta) {
                     if (!row.entityBuyerImage) row.entityBuyerImage = "/assets/img/profile.png";
-                    console.log('entityBuyerImage', row.entityBuyerImage, typeof (row.entityBuyerImage));
                     var output = '<div style="display:flex;flex-direction:row;align-items: center"><div>' +
                         '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light">' +
                         '<img class="productImage image-contain" style="width: 60px;" src="' + row.entityBuyerImage + '">' +

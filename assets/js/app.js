@@ -24,6 +24,18 @@ var WebApp = (function () {
 
 	var _notificationInProgress = false;
 
+	var _getUserRoleName = function () {
+		var userRoleName = '';
+
+		if (location.href.includes('distributor')) {
+			userRoleName = 'distributor';
+		} else if (location.href.includes('pharmacy'))  {
+			userRoleName = 'pharmacy';
+		}
+
+		return userRoleName;
+	};
+
 	var _alertError = function (msg) {
 		Swal.fire({
 			html: msg,
@@ -86,7 +98,7 @@ var WebApp = (function () {
 				confirmButton: 'btn font-weight-bold btn-primary',
 				cancelButton: 'btn font-weight-bold btn-outline-primary',
 			},
-		}).then((result) => {
+		}).then(function (result) {
 			KTUtil.scrollTop();
 			if (result.value) {
 				WebApp.loadPage('/web/distributor/order/pending');
@@ -116,14 +128,23 @@ var WebApp = (function () {
 	};
 
 	var _get = function (url, fnCallback = null) {
+		var fullUrl = url + '?_t=' + Date.now();
+		if (url && url.includes('?')) {
+			var allParts = url.split('?');
+			var mainUrl = allParts.shift();
+			var queryParams = allParts.join('?');
+
+			fullUrl = mainUrl + '?' + queryParams + '&_t=' + Date.now();
+		}
+
 		$.ajax({
-			url: url + '?_t=' + Date.now(),
+			url: fullUrl,
 			type: 'GET',
 			dataType: 'json',
 			async: true,
 			beforeSend: function (jqXHR, settings) {
-				_blurPage(96);
-				_blockPage(97);
+				_blurPage(120);
+				_blockPage(121);
 			},
 		})
 			.done(function (webResponse) {
@@ -145,8 +166,8 @@ var WebApp = (function () {
 				_alertError(WebAppLocals.getMessage('error'));
 			})
 			.always(function (jqXHR, textStatus, errorThrown) {
-				_unblurPage(119);
-				_unblockPage(120);
+				_unblurPage(130);
+				_unblockPage(131);
 			});
 	};
 
@@ -158,8 +179,8 @@ var WebApp = (function () {
 			data: data,
 			async: true,
 			beforeSend: function (jqXHR, settings) {
-				_blurPage(132);
-				_blockPage(133);
+				_blurPage(140);
+				_blockPage(141);
 			},
 		})
 			.done(function (webResponse) {
@@ -182,6 +203,20 @@ var WebApp = (function () {
 							}
 						}
 						_alertError(webResponse.message);
+						if (webResponse.errortype){
+							dataLayer.push({
+								'event': 'errors',
+								'error_type': webResponse.errortype,
+								'error_message': webResponse.message
+							});
+						}else {
+							dataLayer.push({
+								'event': 'errors',
+								'error_type': "unknown",
+								'error_message': webResponse.message
+							});
+						}
+
 					}
 				} else {
 					if (forceCallback) {
@@ -189,6 +224,13 @@ var WebApp = (function () {
 							fnCallback(webResponse);
 						}
 					}
+
+					dataLayer.push({
+						'event': 'errors',
+						'error_type': "unknown",
+						'error_message': WebAppLocals.getMessage('error')
+					});
+
 					_alertError(WebAppLocals.getMessage('error'));
 				}
 				if (submitButton) {
@@ -209,8 +251,8 @@ var WebApp = (function () {
 				}
 			})
 			.always(function (jqXHR, textStatus, errorThrown) {
-				_unblurPage(182);
-				_unblockPage(184);
+				_unblurPage(150);
+				_unblockPage(151);
 			});
 	};
 
@@ -436,6 +478,7 @@ var WebApp = (function () {
 				}
 				var callback = null;
 				if ($(form).find('.modalValueCallback').val() != '') {
+					// TODO: fix eval() function
 					callback = eval($(form).find('.modalValueCallback').val());
 				}
 
@@ -465,7 +508,9 @@ var WebApp = (function () {
 
 					_validator.validate().then(function (status) {
 						if (status == 'Valid') {
-							_post(url, data, callback);
+							$.when(_post(url, data, callback)).then(function () {
+								_updateMessageCenter();
+							});
 							$(form).parent().parent().parent().modal('hide');
 						} else {
 							Swal.fire({
@@ -482,7 +527,9 @@ var WebApp = (function () {
 						}
 					});
 				} else {
-					_post(url, data, callback);
+					$.when(_post(url, data, callback)).then(function () {
+						_updateMessageCenter();
+					});
 					$(form).parent().parent().parent().modal('hide');
 				}
 			});
@@ -507,6 +554,10 @@ var WebApp = (function () {
 				$('#popupModal').modal('hide');
 			});
 		});
+
+		// ask reason when user Action is 'Processing' or 'Cancelled'
+		_updatePendingOrderForm();
+
 		$('#popupModal').modal('show');
 	};
 
@@ -518,6 +569,43 @@ var WebApp = (function () {
 		$('.modalValueCallback').val('');
 		$('.modalValueBody').val('');
 		$('.modalAction').html('');
+	};
+
+	var _updatePendingOrderForm = function () {
+		if ($('#popupModalText #reasonId').length > 0) {
+			$('#modalAction').attr('disabled', true).css('cursor', 'not-allowed');
+
+			$('#reasonId').on('change', function (e) {
+				$('#modalAction').attr('disabled', false).css('cursor', 'pointer');
+			});
+		}
+	};
+
+	var _renderEmptyMessageCenter = function () {
+		$('#messageCenterContainer #topbar_notifications_logs').html('<!--begin::Nav-->' +
+			'<div class="d-flex flex-center text-center text-muted min-h-200px">All caught up!' +
+			'<br />No new notifications.</div>' +
+			'<!--end::Nav-->').removeClass('p-8');
+	};
+
+	var _updateMessageCenter = function (userRoleName) {
+		if (userRoleName === '') {
+			_renderEmptyMessageCenter();
+			return;
+		}
+
+		var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+		_get('/web/' + userRoleName + '/order/pendingLog?timezone=' + timezone, function (webResponse) {
+			$('#messageCenterContainer #messageCenterCount').html(webResponse.data.length);
+			$('#messageCenterContainer #messageCenterTitle').html(webResponse.title);
+			$('#messageCenterContainer #messageCenterBody').html(webResponse.message);
+			$('#messageCenterContainer #messageCenterSeeAllLink').html('/web/' + userRoleName + '/order/history');
+
+			if (webResponse.data.length === 0) {
+				_renderEmptyMessageCenter();
+			}
+		});
 	};
 
 	var _signout = function () {
@@ -822,6 +910,41 @@ var WebApp = (function () {
 		}, 5000);
 	};
 
+	var _getDatalayerProduct = function (){
+		//This function is added for datalayer fetch. It will be used accorss marketplace in future. That is why its added in app.js
+		$( document ).on("click",".datalayer-image-click,.datalayer-text-click",function (){
+			var $selector = $(this).closest(".product-container");
+			var itemName = $selector.find(".hidden_item_name").val();
+			var itemId = $selector.find(".hidden_item_id").val();
+			var itemPrice = $selector.find(".hidden_price").val();
+			var itemCategory = $selector.find(".hidden_item_category").val();
+			var itemListId = $selector.find(".hidden_item_list_id").val();
+			var itemAvailablity = $selector.find(".hidden_availability").val();
+			var itemMadeIn = $selector.find(".hidden_made_in").val();
+			var itemManufactureId = $selector.find(".hidden_manufacturer_id").val();
+			dataLayer.push({
+				'event': 'select_item',
+				'ecommerce': {
+					'currency':'AED',
+					'items': [
+						{
+							'item_name': itemName,
+							'item_id': itemId,
+							'price': itemPrice,
+							'item_brand': itemManufactureId,
+							'item_category': itemCategory,
+							'item_list_name': 'Product list',
+							'item_list_id': itemListId,
+							'index': 1,
+							'currency': 'AED',
+							'availability': itemAvailablity,
+							'made_in': itemMadeIn,
+						}]
+				}
+			});
+		});
+	}
+
 	var _redirect = function (url) {
 		$(location).attr('href', url);
 	};
@@ -950,7 +1073,7 @@ var WebApp = (function () {
 					message: 'textarea'
 				};
 
-				Object.keys(mapKeyElement).forEach((key) => {
+				Object.keys(mapKeyElement).forEach(function (key) {
 					body[key] = $('#supportModalForm ' + mapKeyElement[key] + '[name=' + key + ']').val();
 				});
 
@@ -961,7 +1084,9 @@ var WebApp = (function () {
 				// Show loading state on button
 				KTUtil.btnWait(formSubmitButton, _buttonSpinnerClasses, 'Please wait');
 				$(formSubmitButton).prop('disabled', true);
-
+				dataLayer.push({
+					'event': 'support_form_success'
+				});
 				_post(formSubmitUrl, body, _supportModalSuccessCallback, formSubmitButton);
 			});
 		});
@@ -1004,6 +1129,8 @@ var WebApp = (function () {
 			//$("#webGuidedTourModal").modal();
 
 			_initNotificationTimer();
+      		_updateMessageCenter(_getUserRoleName());
+			_getDatalayerProduct();
 
 			// handle browser navigation
 			$(window).on('popstate', function () {
