@@ -1590,6 +1590,26 @@ alter table supportLog add message text null after requestCall;
 
 ################################
 
+
+# Abdul-fattah Tayih 07/03/2021
+# Create userInvites Table
+
+CREATE TABLE `marketplace`.`userInvites` (
+    id int NOT NULL AUTO_INCREMENT,
+    email varchar(100) NOT NULL,
+    createdBy int NOT NULL,
+    entityId int NOT NULL,
+    token varchar(32) NOT NULL,
+    status int NOT NULL,
+    createdAt timestamp,
+    PRIMARY KEY (id),
+    UNIQUE (email),
+    UNIQUE (token),
+    FOREIGN KEY (entityId) REFERENCES entity(id),
+    FOREIGN KEY (createdBy) REFERENCES user(id)
+);
+
+################################
 ## 15/03/2021 -- Hamza Rashid
 
 # updated `orderLog` table to include `reasonId` field which gets its values from index of array available in PHP languages file with key: vOrderPending_reasons

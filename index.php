@@ -100,7 +100,7 @@ $f3->set('mailPort', 587);
 $f3->set('mailFromName', 'Aumet Marketplace');
 $f3->set('mailFromEmail', 'no-reply@aumet.tech');
 $f3->set('mailBCC', 'a.atrash@aumet.me');
-
+App\Validators\Validator::registerValidators();
 define('CHUNK_SIZE', 1024 * 1024);
 
 global $dbConnection;

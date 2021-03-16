@@ -116,6 +116,7 @@ return array(
 
     'vSignup_thankyouTitle' => 'شكرا على التسجيل!',
     'vSignup_thankyouSubtitle' => 'تم إرسال بريد إلكتروني إليك للتحقق من حسابك.',
+    'vSignup_thankyouInviteSubtitle' => 'تم تفعيل حسابك, قم بتسجيل الدخول الان.',
     'vSignup_thankyouHome' => 'العودة إلى الصفحة الرئيسية',
 
     'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',
@@ -516,4 +517,8 @@ return array(
     'vModule_promotion_useImage' => 'استخدم الصورة',
     'vModule_promotion_addLimit' => 'Promotion limit reached (max: {0})', // TODO: translate
     'vModule_promotion_endDateInvalid' => 'يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء',
+
+    'user_invite_not_found' => 'الدعوة غير موجودة',
+    'unauthorized_to_delete_user_invite' => 'أنت غير مخول لحذف هذه الدعوة.',
+    'user_invite_is_processed' => 'لا يمكن حذف هذه الدعوة ﻷنها استخدمت.',
 );

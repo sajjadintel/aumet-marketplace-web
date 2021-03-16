@@ -117,6 +117,7 @@ return array(
 
     'vSignup_thankyouTitle' => 'Thanks for Registering!',
     'vSignup_thankyouSubtitle' => 'An email has been sent to you to verify your account.',
+    'vSignup_thankyouInviteSubtitle' => 'Your account was created, click below to login.',
     'vSignup_thankyouHome' => 'Go back to home',
 
     'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',
@@ -349,6 +350,8 @@ return array(
     'vModule_customer_relationGroupTitle' => 'Customer Group',
     'vModule_customer_relationGroup' => 'Customer Group',
 
+    'vModule_profile_inviteUserTitle' => 'Invite User',
+
     'vResponse_notFound' => '{0} not found',
     'vResponse_notUpdated' => '{0} could not be updated',
     'vResponse_notAdded' => '{0} could not be added',
@@ -417,6 +420,9 @@ return array(
     'vModule_profile_paymentSettingButton' => 'Payment Setting',
     'vModule_profile_paymentSettingTitle' => 'Payment Setting',
     'vModule_profile_paymentSettingSaved' => 'Payment Setting saved successfully',
+    'vModule_profile_manageUsersTitle' => 'Manage Users',
+    'vModule_profile_manageUsersSubtitle' => 'Invite users to your account',
+    'vModule_profile_manageUsersButton' => 'Manage Users',
     'vModule_profile_pharmacyName' => 'Pharmacy Name',
     'vModule_profile_tradeLicenseNumber' => 'Trade License Number',
     'vModule_profile_country' => 'Country',
@@ -522,4 +528,8 @@ return array(
     'vModule_promotion_useImage' => 'Use Image',
     'vModule_promotion_addLimit' => 'Promotion limit reached (max: {0})',
     'vModule_promotion_endDateInvalid' => 'End date should be after the start date',
+
+    'user_invite_not_found' => 'The invite doesn\'t exist',
+    'unauthorized_to_delete_user_invite' => 'You are not authorized to delete this user invite.',
+    'user_invite_is_processed' => 'Can\'t delete user invite because it\'s already processed',
 );
