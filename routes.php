@@ -20,6 +20,8 @@ $f3->route('GET /web/auth/reset', 'AuthController->getResetPassword');
 $f3->route('POST /web/auth/reset', 'AuthController->postResetPassword');
 $f3->route('GET /web/auth/verify/account', 'AuthController->getVerifyAccount');
 $f3->route('GET /web/auth/approve/account', 'AuthController->getApproveAccount');
+$f3->route('GET /web/auth/signup/invite', 'AuthController->getSignUpInvite');
+$f3->route('POST /web/auth/signup/invite', 'AuthController->postSignUpInvite');
 
 $f3->route('GET /web/auth/signout', 'AuthController->getSignOut');
 
@@ -92,6 +94,10 @@ $f3->route('POST /web/distributor/order/paid', 'OrderController->postPaidOrder')
 $f3->route('POST /web/distributor/order/process', 'OrderController->postProcessOrder');
 $f3->route('POST /web/distributor/order/onhold', 'OrderController->postOnHoldOrder');
 // END  APM-10 APM-11 APM-35
+
+// Message Center
+$f3->route('GET /web/pharmacy/order/pendingLog', 'OrderController->getPharmacyPendingOrderLog');
+$f3->route('GET /web/distributor/order/pendingLog', 'OrderController->getDistributorPendingOrderLog');
 
 // START APM-37
 $f3->route('GET /web/distributor/product', 'ProductsController->getDistributorProducts');
@@ -217,5 +223,8 @@ $f3->route('GET /web/review/distributor/profile/approve', 'ReviewController->get
 $f3->route('GET /web/test/welcome/email/atrash', 'AuthController->getProcessPharmacies');
 $f3->route('GET /web/auth/onboarding/activate/pharmacy', 'AuthController->getProcessEmailOnboarding');
 
+$f3->route('POST /web/distributor/invite', 'UserInvitesController->index');
+$f3->route('POST /web/distributor/invite/create', 'UserInvitesController->create');
+$f3->route('POST /web/distributor/invite/@id/destroy', 'UserInvitesController->destroy');
 
 include_once('routes-permission.php');

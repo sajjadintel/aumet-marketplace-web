@@ -7,7 +7,7 @@ var Profile = (function () {
 	var _validator;
 	var _mapEntityTypeMenus = {
 		pharmacy: ['myProfile', 'accountSetting'],
-		distributor: ['myProfile', 'accountSetting', 'paymentSetting'],
+		distributor: ['myProfile', 'accountSetting', 'paymentSetting', 'manageUsers'],
 	};
 	var _mapEntityTypeMenuValidatorFields = {
 		pharmacy: {
