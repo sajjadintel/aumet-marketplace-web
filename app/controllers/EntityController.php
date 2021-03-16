@@ -113,7 +113,6 @@ class EntityController extends Controller
         $totalRecords = $dbData->count($fullQuery);
         $totalFiltered = $dbData->count($query);
         $data = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
-        $data = $dbData->withIdentifiers($data);
         ## Response
         $response = array(
             "draw" => intval($datatable->draw),
@@ -227,10 +226,11 @@ class EntityController extends Controller
         } else {
             $entityRelationId = $this->f3->get('POST.id');
 
-            $dbEntityRelation = new BaseModel($this->db, "entityRelation");
-            $data = $dbEntityRelation->getWhere("id=$entityRelationId")[0];
+            $dbEntityRelation = new EntityRelation;
+            $entityId = EntityUserProfileView::getEntityIdFromUser($this->objUser->id);
+            $entityRelation = $dbEntityRelation->findone(['id = ? AND entitySellerId = ?', $entityRelationId, $entityId]);
 
-            if ($dbEntityRelation->dry()) {
+            if ($dbEntityRelation === false) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "No Customer";
@@ -238,16 +238,14 @@ class EntityController extends Controller
                 return;
             }
 
-            $identifier = new EntityRelationIdentifier;
-            $identifier->updateOrCreate([
-                'entityId = ? AND entityRelationId = ?',
-                $data['entitySellerId'],
-                $entityRelationId
-            ], [
-                'identifier' => $this->f3->get('POST.customerIdentifier'),
-                'entityId' => $data['entitySellerId'],
-                'entityRelationId' => $entityRelationId,
-            ]);
+            $entityRelation = $entityRelation->saveIdentifier($this->f3->get('POST.customerIdentifier'));
+            if ($entityRelation->hasErrors) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->title = "";
+                $this->webResponse->message = implode("\n", array_values($entityRelation->errors));
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
             $this->webResponse->title = "";
