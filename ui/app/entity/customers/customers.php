@@ -47,9 +47,7 @@ function compress_htmlcode($codedata)
     <div class="card card-custom gutter-b mt-5">
         <div class="card-body">
             <!--begin: Datatable-->
-            <table
-                id="datatable"
-                class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
+            <table id="datatable" class="compact hover order-column row-border table datatable datatable-bordered datatable-head-custom">
             </table>
             <!--end: Datatable-->
         </div>
@@ -57,12 +55,11 @@ function compress_htmlcode($codedata)
 </div>
 <!--end::Container-->
 <script>
-    var PageClass = function () {
+    var PageClass = function() {
         var elementId = "#datatable";
         var url = '<?php echo $_SERVER['REQUEST_URI']; ?>';
 
-        var columnDefs = [
-            {
+        var columnDefs = [{
                 className: "export_datatable",
                 targets: [0, 1, 2, 3, 4, 5, 6, 7, 8]
             },
@@ -75,19 +72,19 @@ function compress_htmlcode($codedata)
                 targets: 1,
                 title: WebAppLocals.getMessage('customerName'),
                 data: 'buyerName',
-                render: $.fn.dataTable.render.ellipsis( 100 )
+                render: $.fn.dataTable.render.ellipsis(100)
             },
             {
                 targets: 2,
                 title: WebAppLocals.getMessage('relationGroup'),
                 data: 'relationGroupName',
-                render: $.fn.dataTable.render.ellipsis( 100 )
+                render: $.fn.dataTable.render.ellipsis(100)
             },
             {
                 targets: 3,
                 title: WebAppLocals.getMessage('ordersCount'),
                 data: 'orderCount',
-                render: function (data, type, row, meta) {
+                render: function(data, type, row, meta) {
                     var output = null;
 
                     output = row.orderCount;
@@ -98,7 +95,7 @@ function compress_htmlcode($codedata)
                 targets: 4,
                 title: WebAppLocals.getMessage('orderTotal'),
                 data: 'orderTotalPaid',
-                render: function (data, type, row, meta) {
+                render: function(data, type, row, meta) {
                     var output = null;
 
                     output = row.currencySymbol + ' ' + row.orderTotalPaid;
@@ -122,10 +119,15 @@ function compress_htmlcode($codedata)
             },
             {
                 targets: 8,
+                title: 'Identifier',
+                data: 'buyerIdentifier'
+            },
+            {
+                targets: 9,
                 title: '',
                 data: 'id',
                 orderable: false,
-                render: function (data, type, row, meta) {
+                render: function(data, type, row, meta) {
                     var output =
                         '<a href="javascript:;" onclick=\'DistributorCustomersDataTable.customerEditGroupModal(false, ' + row.id + ')\'\
                     class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="' + WebAppLocals.getMessage('addToGroup') + '">\
@@ -135,6 +137,11 @@ function compress_htmlcode($codedata)
                         '<a href="javascript:;" onclick=\'window.location.href = "/web/distributor/order/history?customer=' + row.entityBuyerId + '"\'\
                     class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="' + WebAppLocals.getMessage('viewOrders') + '">\
                     <i class="nav-icon la la-eye p-0"></i></a>';
+
+                    output +=
+                        `<a href="javascript:;" onclick='DistributorCustomersDataTable.customerEditIdentifierModal(${row.id}, "${row.buyerIdentifier}")'
+                        class="btn btn-sm navi-link btn-outline-primary btn-hover-primary mr-2" title="${WebAppLocals.getMessage('addCustomerId')}">
+                        <i class="nav-icon las la-id-card p-0"></i></a>`;
 
                     return '<div style="display: flex;">' + output + '</div>';
                 },
@@ -328,18 +335,18 @@ function compress_htmlcode($codedata)
             WebApp.CreateDatatableServerside("Customers List", elementId, url, columnDefs, searchQuery);
         }
 
-        var initiate = function () {
+        var initiate = function() {
             updateDatatable();
         };
         return {
-            init: function () {
+            init: function() {
                 initiate();
             },
         };
     }();
 
     PageClass.init();
-
 </script>
 <?php ob_end_flush(); ?>
 <?php include_once 'edit-group-modal.php'; ?>
+<?php include_once 'edit-customer-id-modal.php'; ?>

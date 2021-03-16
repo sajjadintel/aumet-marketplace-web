@@ -154,6 +154,7 @@ $f3->route('GET /web/distributor/customer/@customerId', 'EntityController->getEn
 $f3->route('GET /web/distributor/customer/relation/@entityBuyerId/@entitySellerId', 'EntityController->getEntityCustomerRelationDetails');
 $f3->route('POST /web/distributor/customer', 'EntityController->postEntityCustomers');
 $f3->route('POST /web/distributor/customer/edit/group', 'EntityController->postEntityCustomersEditGroup');
+$f3->route('POST /web/distributor/customer/edit/identifier', 'EntityController->postEntityCustomersIdentifier');
 
 // Customer Group
 $f3->route('GET /web/distributor/customer/group', 'EntityController->getEntityCustomerGroup');

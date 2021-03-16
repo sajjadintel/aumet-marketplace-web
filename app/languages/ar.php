@@ -521,4 +521,7 @@ return array(
     'user_invite_not_found' => 'الدعوة غير موجودة',
     'unauthorized_to_delete_user_invite' => 'أنت غير مخول لحذف هذه الدعوة.',
     'user_invite_is_processed' => 'لا يمكن حذف هذه الدعوة ﻷنها استخدمت.',
+
+    'customer_not_found' => 'الزبون غير موجود.',
+    'unauthorized_to_edit_customer' => 'أنت غير مخول لتعديل هذا الزبون.',
 );

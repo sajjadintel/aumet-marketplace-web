@@ -1591,6 +1591,55 @@ alter table supportLog add message text null after requestCall;
 ################################
 
 
+# 05/03/2021 - Abdul-fattah Tayih
+
+# Add entityRelationIdentifiers
+ALTER TABLE `marketplace`.`entityRelation`
+    ADD buyerIdentifier varchar(150) UNIQUE AFTER statusId;
+
+CREATE OR REPLACE VIEW `vwEntityRelation` AS
+    SELECT 
+        `relation`.`id` AS `id`,
+        `relation`.`entityBuyerId` AS `entityBuyerId`,
+        `relation`.`entitySellerId` AS `entitySellerId`,
+        `entityBuyer`.`name_en` AS `buyerName_en`,
+        `entityBuyer`.`name_fr` AS `buyerName_fr`,
+        `entityBuyer`.`name_ar` AS `buyerName_ar`,
+        `entityBuyer`.`countryId` AS `buyerCountryId`,
+        `buyerCountry`.`name_ar` AS `buyerCountryName_ar`,
+        `buyerCountry`.`name_en` AS `buyerCountryName_en`,
+        `buyerCountry`.`name_fr` AS `buyerCountryName_fr`,
+        `buyerEntityBranch`.`cityId` AS `buyerCityId`,
+        `buyerCity`.`nameAr` AS `buyerCityName_ar`,
+        `buyerCity`.`nameEn` AS `buyerCityName_en`,
+        `buyerCity`.`nameFr` AS `buyerCityName_fr`,
+        `relation`.`buyerIdentifier` AS `buyerIdentifier`,
+        `entitySeller`.`name_ar` AS `sellerName_ar`,
+        `entitySeller`.`name_en` AS `sellerName_en`,
+        `entitySeller`.`name_fr` AS `sellerName_fr`,
+        `entitySeller`.`countryId` AS `sellerCountryId`,
+        `relation`.`relationGroupId` AS `relationGroupId`,
+        `entityRelationGroup`.`name_ar` AS `relationGroupName_ar`,
+        `entityRelationGroup`.`name_en` AS `relationGroupName_en`,
+        `entityRelationGroup`.`name_fr` AS `relationGroupName_fr`,
+        `relation`.`orderCount` AS `orderCount`,
+        `relation`.`orderCountPaid` AS `orderCountPaid`,
+        `relation`.`orderTotal` AS `orderTotal`,
+        `relation`.`orderTotalPaid` AS `orderTotalPaid`,
+        (`relation`.`orderTotal` - `relation`.`orderTotalPaid`) AS `orderTotalUnPaid`,
+        `relation`.`statusId` AS `statusId`,
+        `currency`.`symbol` AS `currencySymbol`
+    FROM
+        (((((((`entityRelation` `relation`
+        JOIN `entity` `entityBuyer` ON ((`entityBuyer`.`id` = `relation`.`entityBuyerId`)))
+        JOIN `entity` `entitySeller` ON ((`entitySeller`.`id` = `relation`.`entitySellerId`)))
+        JOIN `currency` ON ((`entitySeller`.`currencyId` = `currency`.`id`)))
+        JOIN `entityBranch` `buyerEntityBranch` ON ((`buyerEntityBranch`.`entityId` = `entityBuyer`.`id`)))
+        JOIN `country` `buyerCountry` ON ((`buyerCountry`.`id` = `entityBuyer`.`countryId`)))
+        JOIN `city` `buyerCity` ON ((`buyerCity`.`id` = `buyerEntityBranch`.`cityId`)))
+        LEFT JOIN `entityRelationGroup` ON ((`entityRelationGroup`.`id` = `relation`.`relationGroupId`)));
+
+################################
 # Abdul-fattah Tayih 07/03/2021
 # Create userInvites Table
 

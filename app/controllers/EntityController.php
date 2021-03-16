@@ -102,7 +102,7 @@ class EntityController extends Controller
             }
         }
 
-        $dbData = new BaseModel($this->db, "vwEntityRelation");
+        $dbData = new EntityRelationView;
         $dbData->buyerName = "buyerName_" . $this->objUser->language;
         $dbData->sellerName = "sellerName_" . $this->objUser->language;
         $dbData->relationGroupName = "relationGroupName_" . $this->objUser->language;
@@ -113,7 +113,6 @@ class EntityController extends Controller
         $totalRecords = $dbData->count($fullQuery);
         $totalFiltered = $dbData->count($query);
         $data = $dbData->findWhere($query, "$datatable->sortBy $datatable->sortByOrder", $datatable->limit, $datatable->offset);
-
         ## Response
         $response = array(
             "draw" => intval($datatable->draw),
@@ -216,6 +215,41 @@ class EntityController extends Controller
                 $this->webResponse->message = $this->f3->get('vModule_customerEdited');
                 echo $this->webResponse->jsonResponse();
             }
+        }
+    }
+
+    public function postEntityCustomersIdentifier()
+    {
+        if (!$this->f3->ajax()) {
+            $this->f3->set("pageURL", "/web/distributor/customer");
+            echo View::instance()->render('app/layout/layout.php');
+        } else {
+            $entityRelationId = $this->f3->get('POST.id');
+
+            $entityId = EntityUserProfileView::getEntityIdFromUser($this->objUser->id);
+            $entityRelation = EntityRelation::findByIdAndEntityId($entityRelationId, $entityId);
+
+            if ($entityRelation->hasErrors) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->title = "";
+                $this->webResponse->message = "No Customer";
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
+
+            $entityRelation = $entityRelation->saveIdentifier($this->f3->get('POST.customerIdentifier'));
+            if ($entityRelation->hasErrors) {
+                $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->title = "";
+                $this->webResponse->message = implode("\n", array_values($entityRelation->errors));
+                echo $this->webResponse->jsonResponse();
+                return;
+            }
+
+            $this->webResponse->errorCode = Constants::STATUS_SUCCESS_SHOW_DIALOG;
+            $this->webResponse->title = "";
+            $this->webResponse->message = $this->f3->get('vModule_customerEdited');
+            echo $this->webResponse->jsonResponse();
         }
     }
 
