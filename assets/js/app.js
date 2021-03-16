@@ -24,18 +24,6 @@ var WebApp = (function () {
 
 	var _notificationInProgress = false;
 
-	var _getUserRoleName = function () {
-		var userRoleName = '';
-
-		if (location.href.includes('distributor')) {
-			userRoleName = 'distributor';
-		} else if (location.href.includes('pharmacy'))  {
-			userRoleName = 'pharmacy';
-		}
-
-		return userRoleName;
-	};
-
 	var _alertError = function (msg) {
 		Swal.fire({
 			html: msg,
@@ -588,7 +576,12 @@ var WebApp = (function () {
 			'<!--end::Nav-->').removeClass('p-8');
 	};
 
-	var _updateMessageCenter = function (userRoleName) {
+	var _updateMessageCenter = function () {
+		var userRoleName = $('#welcomeModal').data('role-name');
+		if (sessionStorage.getItem('userRoleName') !== userRoleName) {
+			sessionStorage.setItem('userRoleName', userRoleName);
+		}
+
 		if (userRoleName === '') {
 			_renderEmptyMessageCenter();
 			return;
@@ -600,7 +593,7 @@ var WebApp = (function () {
 			$('#messageCenterContainer #messageCenterCount').html(webResponse.data.length);
 			$('#messageCenterContainer #messageCenterTitle').html(webResponse.title);
 			$('#messageCenterContainer #messageCenterBody').html(webResponse.message);
-			$('#messageCenterContainer #messageCenterSeeAllLink').html('/web/' + userRoleName + '/order/history');
+			$('#messageCenterContainer #messageCenterSeeAllLink').attr('href', '/web/' + userRoleName + '/order/history');
 
 			if (webResponse.data.length === 0) {
 				_renderEmptyMessageCenter();
@@ -1129,7 +1122,7 @@ var WebApp = (function () {
 			//$("#webGuidedTourModal").modal();
 
 			_initNotificationTimer();
-      		_updateMessageCenter(_getUserRoleName());
+      		_updateMessageCenter();
 			_getDatalayerProduct();
 
 			// handle browser navigation
