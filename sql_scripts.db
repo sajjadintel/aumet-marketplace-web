@@ -1607,7 +1607,7 @@ CREATE TABLE notifications (
     title varchar(256) NOT NULL,
     body text NOT NULL,
     type varchar(50) NOT NULL,
-    read boolean DEFAULT false,
+    `read` boolean DEFAULT false,
     user_id int NOT NULL,
     created_at timestamp DEFAULT now(),
     FOREIGN KEY (user_id) REFERENCES user(id),
