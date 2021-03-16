@@ -67,6 +67,7 @@ class NotificationController extends Controller {
             $renderFile = 'app/notifications/index.php';
             $title = $this->f3->get('vTitle_notifications');
             $offset = array_key_exists('page', $_GET) ? $_GET['page'] - 1 : 0;
+            $this->f3->set('page', array_key_exists('page', $_GET) ? (int) $_GET['page'] : 1);
             $this->f3->set('notifications', (new Notification)->paginate($offset, 10, ['user_id = ?', $this->objUser->id], ['order' => 'created_at DESC']));
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
             $this->webResponse->title = $title;

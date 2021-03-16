@@ -17,20 +17,29 @@ function compress_htmlcode($codedata)
 <div class="container-fluid">
     <div class="card card-custom gutter-b mt-20">
         <div class="card-body">
-        <?php foreach ($notifications['subset'] as $notification): ?>
-            <div class="card mb-2" onclick="markAsReadAndRedirect(<?php echo $notification->id; ?>, '/web/distributor/order/pending')" style="cursor: pointer">
-                <div class="card-body <?php echo !$notification->read ?: 'bg-secondary'; ?>">
-                    <h3 class="d-flex align-items-center">
-                        <?php if(!$notification->read) : ?>
-                            <span class="label label-danger mx-2" id="unread" style="height: 0.5rem; width: 0.5rem"></span>
-                        <?php endif; ?>
-                        <?php echo $notification->title; ?>
-                    </h3>
-                    <div><?php echo $notification->body; ?></div>
-                    <small><?php echo (new DateTime($notification->created_at))->format('d/m/Y H:i:s') ?></small>
+            <?php foreach ($notifications['subset'] as $notification) : ?>
+                <div class="card mb-2" onclick="markAsReadAndRedirect(<?php echo $notification->id; ?>, '/web/distributor/order/pending')" style="cursor: pointer">
+                    <div class="card-body <?php echo !$notification->read ?: 'bg-secondary'; ?>">
+                        <h3 class="d-flex align-items-center">
+                            <?php if (!$notification->read) : ?>
+                                <span class="label label-danger mx-2" id="unread" style="height: 0.5rem; width: 0.5rem"></span>
+                            <?php endif; ?>
+                            <?php echo $notification->title; ?>
+                        </h3>
+                        <div><?php echo $notification->body; ?></div>
+                        <small><?php echo (new DateTime($notification->created_at))->format('d/m/Y H:i:s') ?></small>
+                    </div>
                 </div>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <?php for ($i = 1; $i <= $notifications['count']; $i++) : ?>
+                        <li class="page-item <?php echo $page !== $i ?: 'active'; ?>">
+                            <a class="page-link" href="/web/distributor/notification?page=<?php echo $i;?>"><?php echo $i; ?></a>
+                        </li>
+                    <?php endfor; ?>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
