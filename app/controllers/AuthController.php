@@ -115,7 +115,7 @@ class AuthController extends Controller
     public function postSignUpInvite()
     {
         $invite = UserInvite::findByTokenAndStatus($this->f3->get('POST.token'), UserInvite::STATUS_PENDING);
-        $invite !== false ?: $this->renderError(Constants::STATUS_ERROR, implode("\n", $this->f3->get('user_invite_not_found')));
+        $this->renderErrorIfValidationFails($invite, Constants::STATUS_ERROR, implode("\n", array_values($invite->errors)));
         $invite = $invite->process();
 
         $user = (new User)->create($this->f3->get('POST'), true, true);

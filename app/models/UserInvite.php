@@ -106,11 +106,13 @@ class UserInvite extends BaseModel
 
     public static function findByTokenAndStatus($token, $status)
     {
-        if (empty($token)) {
-            return false;
-        }
-
         $model = new self;
+        if (empty($token)) {
+            $model->hasErrors = true;
+            $model->errors[] = str_replace('{0}', 'token', $model->getDefaultErrorMessages()['required']);
+            return $model;
+        }
+        
         return $model->findone(['token = ? AND status = ?', $token, $status]);
     }
 
