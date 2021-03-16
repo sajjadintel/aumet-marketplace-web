@@ -14,6 +14,26 @@ class EntityRelation extends BaseModel
         ];
     }
 
+    public static function findByIdAndEntityId($id, $entityId)
+    {
+        $model = new self;
+        $model = $model->findone(['id = ?', $id]);
+        if ($model === false) {
+            $model = new self;
+            $model->hasErrors = true;
+            $model->errors = ['id' => Base::instance()->get('customer_not_found')];
+            return $model;
+        }
+
+        if ($model->entitySellerId !== $entityId) {
+            $model->hasErrors = true;
+            $model->errors = ['entitySellerId' => Base::instance()->get('unauthorized_to_edit_customer')];
+            return $model;
+        }
+
+        return $model;
+    }
+
     public function saveIdentifier($identifier)
     {
         if (empty($identifier)) {

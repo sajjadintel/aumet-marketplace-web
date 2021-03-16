@@ -535,4 +535,7 @@ return array(
     'user_invite_not_found' => 'The invite doesn\'t exist',
     'unauthorized_to_delete_user_invite' => 'You are not authorized to delete this user invite.',
     'user_invite_is_processed' => 'Can\'t delete user invite because it\'s already processed',
+
+    'customer_not_found' => 'The customer doesn\'t exist',
+    'unauthorized_to_edit_customer' => 'You are not authorized to edit this customer invite.',
 );

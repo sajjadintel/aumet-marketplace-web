@@ -226,11 +226,10 @@ class EntityController extends Controller
         } else {
             $entityRelationId = $this->f3->get('POST.id');
 
-            $dbEntityRelation = new EntityRelation;
             $entityId = EntityUserProfileView::getEntityIdFromUser($this->objUser->id);
-            $entityRelation = $dbEntityRelation->findone(['id = ? AND entitySellerId = ?', $entityRelationId, $entityId]);
+            $entityRelation = EntityRelation::findByIdAndEntityId($entityRelationId, $entityId);
 
-            if ($dbEntityRelation === false) {
+            if ($entityRelation->hasErrors) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
                 $this->webResponse->message = "No Customer";
