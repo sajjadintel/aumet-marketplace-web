@@ -1592,7 +1592,7 @@ alter table supportLog add message text null after requestCall;
 
 # 02/03/2021 - Abdul-fattah Tayih
 # Create userFcmTokens table
-CREATE TABLE user_fcm_tokens (
+CREATE TABLE userFcmTokens (
     id int NOT NULL AUTO_INCREMENT,
 	fcm_token varchar(512) NOT NULL,
     platform varchar(10) NOT NULL,
