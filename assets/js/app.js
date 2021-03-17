@@ -655,7 +655,7 @@ var WebApp = (function () {
 		);
 	};
 
-	var _createDatatableServerside = function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
+	var _createDatatableServerside = function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null, fnCallback = null) {
 		// delete cached datatable
 		if ($.fn.DataTable.isDataTable(vElementId)) {
 			if (datatableVar.length > 0) {
@@ -784,7 +784,9 @@ var WebApp = (function () {
 					while (blockStack > 0) {
 						_unblockPage(668);
 					}
-					console.debug('there');
+					if (typeof fnCallback === 'function') {
+						fnCallback();
+					}
 				},
 			},
 			columnDefs: vColumnDefs,
@@ -1175,10 +1177,10 @@ var WebApp = (function () {
 		openModal: function (webResponse) {
 			_openModal(webResponse);
 		},
-		CreateDatatableServerside: function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null) {
+		CreateDatatableServerside: function (vTableName, vElementId, vUrl, vColumnDefs, vParams = null, vAdditionalOptions = null, fncCallback = null  ) {
 			_blurPage(1040);
 			_blockPage(1041);
-			_createDatatableServerside(vTableName, vElementId, vUrl, vColumnDefs, vParams, vAdditionalOptions);
+			_createDatatableServerside(vTableName, vElementId, vUrl, vColumnDefs, vParams, vAdditionalOptions,fncCallback);
 			_unblurPage(1050);
 			_unblockPage(1051);
 		},
