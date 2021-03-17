@@ -89,6 +89,7 @@ class DashboardController extends Controller
                     $product->madeInCountry = $productDb['madeInCountryName_en'];
                     $product->category = $productDb['category_name_en'];
                     $product->manufacturerName = $productDb['manufacturerName'];
+                    $product->productStore = $productDb['entityName_en'];
                     $product->currency = $productDb['currency'];
 
                     $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];
