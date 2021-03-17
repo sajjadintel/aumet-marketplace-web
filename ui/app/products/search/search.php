@@ -164,8 +164,15 @@ function compress_htmlcode($codedata)
                         row.id +
                         '\')"> ' +
                         '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <img class="productImage image-contain" style="width: 60px;" src="' + row.image + '"></div>' +
-                        '</a></div>';
-                    output += '<div><span href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        '</a></div>' +
+                        '<input type="hidden" class="dlist-product-scientific-name" value="'+row.scientificName+'">' +
+                        '<input type="hidden" class="dlist-product-unitPrice" value="'+row['unitPrice']+'">' +
+                        '<input type="hidden" class="dlist-product-stock-available" value="'+row['stockStatusName_en']+'">' +
+                        '<input type="hidden" class="dlist-product-made-in" value="'+row['madeInCountryName_en']+'">' +
+                        '<input type="hidden" class="dlist-product-made-in" value="'+row['madeInCountryName_en']+'">' +
+                        '<input type="hidden" class="dlist-product-currency" value="'+row['currency']+'">' +
+                        '<input type="hidden" class="dlist-product-pharmacy" value="'+row['entityName_en']+'">';
+                    output += '<div><span class="dlist-product-name" data-ditem-id="'+row.id+'" href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
                         row.id +
@@ -728,6 +735,7 @@ function compress_htmlcode($codedata)
             }
         };
 
+
         function updateDatatable() {
             if (query != null)
                 searchQuery.query = query;
@@ -735,7 +743,40 @@ function compress_htmlcode($codedata)
                 searchQuery.entityId.push(distributorId);
             if (scientificName != null && !searchQuery.scientificName.includes(scientificName))
                 searchQuery.scientificName.push(scientificName);
-            WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions);
+            WebApp.CreateDatatableServerside("Product List", elementId, url, columnDefs, searchQuery, dbAdditionalOptions,function (){
+                var productItemListGTM="";
+                productItemListGTM = [];
+               $("#datatable").find("tr").each(function (){
+                   var name = $(this).find(".dlist-product-name").attr("title");
+                   if (name !== undefined) {
+                       item = {};
+                       item["item_name"] = name;
+                       item["item_id"] = $(this).find(".dlist-product-name").data("ditem-id");
+                       item["price"] = $(this).find(".dlist-product-unitPrice").val();
+                       item["item_category"] = $(this).find(".dlist-product-scientific-name").val();
+                       item["item_list_name"] = "Product list";
+                       item["item_list_id"] = "LNPRODCTLIST";
+                       item["index"] = Object.keys(productItemListGTM).length + 1;
+                       item["quantity"] = $(this).find(".qtyBox").val();
+                       item["currency"] = $(this).find(".dlist-product-currency").val();
+                       item["availability"] = $(this).find(".dlist-product-stock-available").val();
+                       item["made_in"] = $(this).find(".dlist-product-made-in").val();
+                       item["manufacturer_name"] = $(this).find(".dlist-product-pharmacy").val();
+                       productItemListGTM.push(item);
+                   }
+
+               });
+                dataLayer.push({
+                    'event': 'view_item_list',
+                    'ecommerce': {
+                        'currency':'AED',
+                        'items': [
+                            productItemListGTM
+                        ]
+                    }
+                });
+
+            });
 
         }
 
