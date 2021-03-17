@@ -127,7 +127,7 @@
                                     <p class="text-hover-primary datalayer-text-click" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
                                     <p style="text-align: center;"><?php echo $product->price; ?></p>
 
-                                <?php $productListName="LNNEWPRODUCTS";//This is added for Google Datalayer segregation ?>
+                                <?php $productListName="New products";$productListId="LNNEWPRODUCTS";//This is added for Google Datalayer segregation ?>
                                 <?php include "productData.php"; ?>
                                 </div>
                             <?php endforeach; ?>
@@ -157,7 +157,7 @@
                                     <p class="text-hover-primary datalayer-text-click" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
                                     <p style="text-align: center;"><?php echo $product->price; ?></p>
 
-                                <?php $productListName="LNTOPSELLING";//This is added for Google Datalayer segregation ?>
+                                <?php $productListName="Top selling";$productListId="LNTOPSELLING";//This is added for Google Datalayer segregation ?>
                                 <?php include "productData.php"; ?>
                                 </div>
                             <?php endforeach; ?>

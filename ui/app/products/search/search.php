@@ -158,21 +158,25 @@ function compress_htmlcode($codedata)
                 data: 'productName_en',
                 render: function(data, type, row, meta) {
                     if (!row.image) row.image = "/assets/img/default-product-image.png";
-                    var output = '<div style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                    var output = '<div class="product-container" style="display:flex;flex-direction:row;align-items: center"><div><a href="javascript:;" class="datalayer-image-click" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
                         row.id +
                         '\')"> ' +
                         '<div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light"> <img class="productImage image-contain" style="width: 60px;" src="' + row.image + '"></div>' +
                         '</a></div>' +
-                        '<input type="hidden" class="dlist-product-scientific-name" value="'+row.scientificName+'">' +
-                        '<input type="hidden" class="dlist-product-unitPrice" value="'+row['unitPrice']+'">' +
-                        '<input type="hidden" class="dlist-product-stock-available" value="'+row['stockStatusName_en']+'">' +
-                        '<input type="hidden" class="dlist-product-made-in" value="'+row['madeInCountryName_en']+'">' +
-                        '<input type="hidden" class="dlist-product-made-in" value="'+row['madeInCountryName_en']+'">' +
-                        '<input type="hidden" class="dlist-product-currency" value="'+row['currency']+'">' +
-                        '<input type="hidden" class="dlist-product-pharmacy" value="'+row['entityName_en']+'">';
-                    output += '<div><span class="dlist-product-name" data-ditem-id="'+row.id+'" href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
+                        '<input type="hidden" class="hidden_item_category_1" value="'+row.scientificName+'">' +
+                        '<input type="hidden" class="hidden_item_name" value="'+row['productName_en']+'">' +
+                        '<input type="hidden" class="hidden_item_id" value="'+row.id+'">' +
+                        '<input type="hidden" class="hidden_price" value="'+row['unitPrice']+'">' +
+                        '<input type="hidden" class="hidden_availability" value="'+row['stockStatusName_en']+'">' +
+                        '<input type="hidden" class="hidden_made_in" value="'+row['madeInCountryName_en']+'">' +
+                        '<input type="hidden" class="hidden_item_category" value="'+row['category_name_en']+'">' +
+                        '<input type="hidden" class="hidden_currency" value="'+row['currency']+'">' +
+                        '<input type="hidden" class="hidden_item_list_name" value="Product list">' +
+                        '<input type="hidden" class="hidden_item_list_id" value="LNPRODCTLIST">' +
+                        '<input type="hidden" class="hidden_manufacturer_id" value="'+row['entityName_en']+'">';
+                    output += '<div><span class="datalayer-text-click" href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
                         row.id +
@@ -747,21 +751,24 @@ function compress_htmlcode($codedata)
                 var productItemListGTM="";
                 productItemListGTM = [];
                $("#datatable").find("tr").each(function (){
-                   var name = $(this).find(".dlist-product-name").attr("title");
+                   var name = $(this).find(".hidden_item_name").val();
                    if (name !== undefined) {
+
+
                        item = {};
                        item["item_name"] = name;
-                       item["item_id"] = $(this).find(".dlist-product-name").data("ditem-id");
-                       item["price"] = $(this).find(".dlist-product-unitPrice").val();
-                       item["item_category"] = $(this).find(".dlist-product-scientific-name").val();
-                       item["item_list_name"] = "Product list";
-                       item["item_list_id"] = "LNPRODCTLIST";
+                       item["item_id"] = $(this).find(".hidden_item_id").data("ditem-id");
+                       item["price"] = $(this).find(".hidden_price").val();
+                       item["item_brand"] = $(this).find(".hidden_manufacturer_id").val();
+                       item["item_category"] = $(this).find(".hidden_item_category_1").val();
+                       item["item_category_2"] = $(this).find(".hidden_item_category").val();
+                       item["item_list_name"] = $(this).find(".hidden_item_list_name").val();
+                       item["item_list_id"] = $(this).find(".hidden_item_list_id").val();
                        item["index"] = Object.keys(productItemListGTM).length + 1;
                        item["quantity"] = $(this).find(".qtyBox").val();
-                       item["currency"] = $(this).find(".dlist-product-currency").val();
-                       item["availability"] = $(this).find(".dlist-product-stock-available").val();
-                       item["made_in"] = $(this).find(".dlist-product-made-in").val();
-                       item["manufacturer_name"] = $(this).find(".dlist-product-pharmacy").val();
+                       item["currency"] = $(this).find(".hidden_currency").val();
+                       item["availability"] = $(this).find(".hidden_availability").val();
+                       item["made_in"] = $(this).find(".hidden_made_in").val();
                        productItemListGTM.push(item);
                    }
 
