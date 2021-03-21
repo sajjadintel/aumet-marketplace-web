@@ -891,7 +891,7 @@ class AuthController extends Controller
     function getProcessPharmacies()
     {
         $dbUpload = new BaseModel($this->db, "uploadpharma_1");
-        $dbUpload->getByField('isProcess', 6);
+        $dbUpload->getByField('isProcess', 7);
 
         $arr = [];
 

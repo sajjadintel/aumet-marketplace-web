@@ -757,8 +757,7 @@ class NotificationHelper {
 
         $emailHandler->appendToAddress($userEmail, $userFullname);
 
-        $emailHandler->appendToBcc('n.sohal@aumet.com', 'Naresh');
-        $emailHandler->appendToBcc('s.qarem@aumet.com', 'Sahar');
+        $emailHandler->appendToBcc('d.nofal@aumet.com', 'Diana');
         $emailHandler->appendToBcc('a.atrash@aumet.com', 'Alaa');
         $emailHandler->appendToBcc('a.abdullah@aumet.com', 'Ahmad');
         $emailHandler->appendToBcc('s.jaber@aumet.com', 'Shahed');
