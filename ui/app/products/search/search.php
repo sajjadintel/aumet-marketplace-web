@@ -273,7 +273,7 @@ function compress_htmlcode($codedata)
 
                     if (row.stockStatusId == 1) {
 
-                        let vMinusBtn = '<a class="btn btn-xs btn-light-success btn-icon subQty" onclick="SearchDataTable.subQuantity(this)"> <i class="ki ki-minus icon-xs"></i></a>';
+                        let vMinusBtn = '<a class="btn btn-xs btn-light-success btn-icon subQty removeQtyDatalayer" onclick="SearchDataTable.subQuantity(this)"> <i class="ki ki-minus icon-xs"></i></a>';
 
                         output += vMinusBtn;
 
@@ -288,7 +288,7 @@ function compress_htmlcode($codedata)
 
                         output += vQuantity;
 
-                        let vPlusBtn = '<a class="btn btn-xs btn-light-success btn-icon addQty" onclick="SearchDataTable.addQuantity(this)"> <i class="ki ki-plus icon-xs"></i></a>';
+                        let vPlusBtn = '<a class="btn btn-xs btn-light-success btn-icon addQty addQtyDatalayer" onclick="SearchDataTable.addQuantity(this)"> <i class="ki ki-plus icon-xs"></i></a>';
 
                         output += vPlusBtn;
 
@@ -757,7 +757,7 @@ function compress_htmlcode($codedata)
 
                        item = {};
                        item["item_name"] = name;
-                       item["item_id"] = $(this).find(".hidden_item_id").data("ditem-id");
+                       item["item_id"] = $(this).find(".hidden_item_id").val();
                        item["price"] = $(this).find(".hidden_price").val();
                        item["item_brand"] = $(this).find(".hidden_manufacturer_id").val();
                        item["item_category"] = $(this).find(".hidden_item_category_1").val();
@@ -807,6 +807,15 @@ function compress_htmlcode($codedata)
                     }
                 }
             });
+        });
+
+        $(document).on('click','.addQtyDatalayer',function (){
+            var $selector = $(this).closest("tr").find(".product-container");
+            WebApp.addDataLayerProductData($selector,"add_to_cart")
+        });
+        $(document).on('click','.removeQtyDatalayer',function (){
+            var $selector = $(this).closest("tr").find(".product-container");
+            WebApp.addDataLayerProductData($selector,"remove_from_cart")
         });
     });
 </script>

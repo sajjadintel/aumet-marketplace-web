@@ -144,11 +144,11 @@ function compress_htmlcode($codedata)
                                                                 </div>
                                                             </td>
                                                             <td class="text-center align-middle cart-item-separator">
-                                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, -1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover)" class="btn btn-xs btn-light-success btn-icon mr-2">
+                                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, -1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover)" class="btn btn-xs btn-light-success btn-icon mr-2 removeQtyDatalayer">
                                                                     <i class="ki ki-minus icon-xs"></i>
                                                                 </a>
                                                                 <input style="width: 40%;" type="number" id="quantity-<?php echo $item->entityProductId ?>" onfocus="this.oldvalue = this.value;" onfocusout="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, 0, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover, this.oldvalue)" class="form-control form-control-sm d-inline mr-2 font-weight-bolder quantity quantity-value" min="0" max="<?php echo min($item->stock, $item->maximumOrderQuantity); ?>" value="<?php echo $item->quantity ?>" name="quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, 1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover)" class="btn btn-xs btn-light-success btn-icon">
+                                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, 1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover)" class="btn btn-xs btn-light-success btn-icon addQtyDatalayer">
                                                                     <i class="ki ki-plus icon-xs"></i>
                                                                 </a>
                                                             </td>
@@ -194,19 +194,8 @@ function compress_htmlcode($codedata)
                                                                     </span>
                                                                 </a>
                                                             </td>
+                                                            <?php include "cartProductData.php"; ?>
                                                         </tr>
-                                                        <script type="text/javascript">
-                                                            item = {};
-                                                            item ["item_name"] = "<?php echo $item->name; ?>";
-                                                            item ["item_id"] = "<?php echo $item->entityProductId; ?>";
-                                                            item ["price"] = "<?php echo $item->unitPrice; ?>";
-                                                            item ["index"] = Object.keys(productItemListGTM).length+1;
-                                                            item ["quantity"] = "<?php echo $item->quantity ?>";
-                                                            item ["currency"] = "<?php echo $currencySymbol; ?>";
-                                                            item ["item_brand"] = "<?php echo $seller->name ?>";
-                                                            item ["availability"] = "<?php echo $item->stock; ?>";
-                                                            productItemListGTM.push(item);
-                                                        </script>
                                                         <?php
                                                         $productPrice = $item->quantity * $item->unitPrice;
                                                         $productTax = $productPrice * $item->vat / 100.0;
@@ -325,6 +314,25 @@ function compress_htmlcode($codedata)
                     ]
                 }
             });
+        dataLayer.push({
+            'event': 'begin_checkout',
+            'ecommerce': {
+                'value':"<?= $fullCartPrice ?>",
+                'currency':'AED',
+                'items': [
+                    productItemListGTM
+                ]
+            }
+        });
+
+        $(document).on('click','.addQtyDatalayer',function (){
+            var $selector = $(this).closest("tr");
+            WebApp.addDataLayerProductData($selector,"add_to_cart")
+        });
+        $(document).on('click','.removeQtyDatalayer',function (){
+            var $selector = $(this).closest("tr");
+            WebApp.addDataLayerProductData($selector,"remove_from_cart")
+        });
 
         $(document).on('click','.modalAction',function (){
             var action = $(this).closest("form").attr("action");

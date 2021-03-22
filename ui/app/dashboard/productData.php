@@ -13,7 +13,11 @@
     item ["availability"] = "<?php echo $product->inStock; ?>";
     item ["made_in"] = "<?php echo $product->madeInCountry; ?>";
     item ["manufacturer_id"] = "<?php echo $product->manufacturerName; ?>";
-    productItemListGTM.push(item);
+    if ("<?php echo $productListId; ?>" == "LNNEWPRODUCTS"){
+        productItemListGTM.push(item);
+    }else{
+        productItemListGTMTop.push(item);
+    }
 </script>
 <input type="hidden" class="hidden_item_name" value="<?php echo $product->name; ?>">
 <input type="hidden" class="hidden_item_id" value="<?php echo $product->id; ?>">
