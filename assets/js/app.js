@@ -909,40 +909,42 @@ var WebApp = (function () {
 		//This function is added for datalayer fetch. It will be used accorss marketplace in future. That is why its added in app.js
 		$( document ).on("click",".datalayer-image-click,.datalayer-text-click",function (){
 			var $selector = $(this).closest(".product-container");
-			var itemName = $selector.find(".hidden_item_name").val();
-			var itemId = $selector.find(".hidden_item_id").val();
-			var itemPrice = $selector.find(".hidden_price").val();
-			var itemCategory = $selector.find(".hidden_item_category").val();
-			var itemListId = $selector.find(".hidden_item_list_id").val();
-			var itemAvailablity = $selector.find(".hidden_availability").val();
-			var itemMadeIn = $selector.find(".hidden_made_in").val();
-			var itemCurrency = $selector.find(".hidden_currency").val();
-			var itemManufactureId = $selector.find(".hidden_manufacturer_id").val();
-			var itemProductstore = $selector.find(".hidden_productstore").val();
-			var itemListName = $selector.find(".hidden_item_list_name").val();
-			dataLayer.push({
-				'event': 'select_item',
-				'ecommerce': {
-					'currency':'AED',
-					'items': [
-						{
-							'item_name': itemName,
-							'item_id': itemId,
-							'price': itemPrice,
-							'item_brand': itemProductstore,
-							'item_category': itemCategory,
-							'item_list_name': itemListName,
-							'item_list_id': itemListId,
-							'index': 1,
-							'currency': itemCurrency,
-							'availability': itemAvailablity,
-							'made_in': itemMadeIn,
-						}]
-				}
-			});
+			_addDataLayerProductData($selector,'select_item');
 		});
 	}
-
+	var _addDataLayerProductData = function ($selector,type){
+		var itemName = $selector.find(".hidden_item_name").val();
+		var itemId = $selector.find(".hidden_item_id").val();
+		var itemPrice = $selector.find(".hidden_price").val();
+		var itemCategory = $selector.find(".hidden_item_category").val();
+		var itemListId = $selector.find(".hidden_item_list_id").val();
+		var itemAvailablity = $selector.find(".hidden_availability").val();
+		var itemMadeIn = $selector.find(".hidden_made_in").val();
+		var itemCurrency = $selector.find(".hidden_currency").val();
+		var itemManufactureId = $selector.find(".hidden_manufacturer_id").val();
+		var itemProductstore = $selector.find(".hidden_productstore").val();
+		var itemListName = $selector.find(".hidden_item_list_name").val();
+		dataLayer.push({
+			'event': type,
+			'ecommerce': {
+				'currency':'AED',
+				'items': [
+					{
+						'item_name': itemName,
+						'item_id': itemId,
+						'price': itemPrice,
+						'item_brand': itemProductstore,
+						'item_category': itemCategory,
+						'item_list_name': itemListName,
+						'item_list_id': itemListId,
+						'index': 1,
+						'currency': itemCurrency,
+						'availability': itemAvailablity,
+						'made_in': itemMadeIn,
+					}]
+			}
+		});
+	}
 	var _redirect = function (url) {
 		$(location).attr('href', url);
 	};
@@ -1205,6 +1207,9 @@ var WebApp = (function () {
 		},
 		redirect: function (url) {
 			_redirect(url);
+		},
+		addDataLayerProductData: function (selector,type) {
+			_addDataLayerProductData(selector,type);
 		},
 		truncateText: function (text, n) {
 			return _truncateText(text, n);

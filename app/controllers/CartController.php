@@ -510,6 +510,7 @@ class CartController extends Controller
 
                 $mapSellerIdArrPaymentMethod[$seller->sellerId] = $arrEntityPaymentMethod;
             }
+
             $this->f3->set('mapSellerIdArrPaymentMethod', $mapSellerIdArrPaymentMethod);
 
             $this->webResponse->errorCode = Constants::STATUS_SUCCESS;

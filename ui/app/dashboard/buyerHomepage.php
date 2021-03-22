@@ -56,9 +56,6 @@
         }
     }
 </style>
-<script>
-    var productItemListGTM =[];
-</script>
 <!--begin::Entry-->
 <div class="d-flex flex-column-fluid">
     <!--begin::Container-->
@@ -119,6 +116,9 @@
                             </div>
                         </div>
                         <div class="row mb-10">
+                            <script>
+                                var productItemListGTM =[];
+                            </script>
                             <?php foreach ($arrNewestProducts as $product) : ?>
                                 <div class="col-3 product-container">
                                     <div class="img-fill flex-shrink-0 bg-light mb-4 dynamic-image">
@@ -131,6 +131,20 @@
                                 <?php include "productData.php"; ?>
                                 </div>
                             <?php endforeach; ?>
+                            <script>
+                                $( document ).ready(function() {
+                                    dataLayer.push({
+                                        'event': 'view_item_list',
+                                        'ecommerce': {
+                                            'currency':'AED',
+                                            'items': [
+                                                productItemListGTM
+                                            ]
+                                        }
+                                    });
+
+                                });
+                            </script>
 
                         </div>
                     </div>
@@ -149,6 +163,9 @@
                             </div>
                         </div>
                         <div class="row">
+                            <script>
+                                var productItemListGTMTop =[];
+                            </script>
                             <?php foreach ($arrTopSellingProducts as $product) : ?>
                                 <div class="col-3 product-container">
                                     <div class="img-fill flex-shrink-0 bg-light mb-4 dynamic-image">
@@ -161,6 +178,20 @@
                                 <?php include "productData.php"; ?>
                                 </div>
                             <?php endforeach; ?>
+                            <script>
+                                $( document ).ready(function() {
+                                    dataLayer.push({
+                                        'event': 'view_item_list',
+                                        'ecommerce': {
+                                            'currency':'AED',
+                                            'items': [
+                                                productItemListGTMTop
+                                            ]
+                                        }
+                                    });
+
+                                });
+                            </script>
                         </div>
                     </div>
                 </div>
@@ -246,19 +277,6 @@
     $(document).ready(function() {
         initAutoplay();
         fillStatusLabel();
-    });
-
-    $( document ).ready(function() {
-        dataLayer.push({
-            'event': 'view_item_list',
-            'ecommerce': {
-                'currency':'AED',
-                'items': [
-                   productItemListGTM
-                ]
-            }
-        });
-
     });
 
     function initAutoplay() {
