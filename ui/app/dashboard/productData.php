@@ -13,6 +13,7 @@
     item ["availability"] = "<?php echo $product->inStock; ?>";
     item ["made_in"] = "<?php echo $product->madeInCountry; ?>";
     item ["seller_id"] = "<?php echo $product->entityId; ?>";
+
     if ("<?php echo $productListId; ?>" == "LNNEWPRODUCTS"){
         productItemListGTM.push(item);
     }else{
