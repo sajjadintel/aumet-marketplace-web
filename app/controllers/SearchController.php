@@ -777,6 +777,9 @@ class SearchController extends Controller
             "query" => $query
         );
 
+        /*echo "<pre>";
+        print_r($response);
+        exit();*/
         $this->jsonResponseAPI($response);
     }
 
