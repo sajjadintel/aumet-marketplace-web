@@ -939,6 +939,9 @@ class OrderController extends Controller
         $dbEntityBranch = new BaseModel($this->db, "entityBranch");
         $entityBranch = $dbEntityBranch->getByField("id", $arrOrder['branchBuyerId'])[0];
 
+        $dbUser = new BaseModel($this->db, "user");
+        $user = $dbUser->getByField("id", $arrOrder['branchBuyerId'])[0];
+
         $dbCity = new BaseModel($this->db, "city");
         $city = $dbCity->getByField("id", $dbEntityBranch['cityId'])[0];
 
@@ -970,9 +973,9 @@ class OrderController extends Controller
 
         $pharmacyTableHeader = array('Buyer Info');
         if ($arrOrder['userBuyerEmail'] != null) {
-            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']), array($buyerAddress) , array($arrOrder['userBuyerEmail']));
+            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']), array($buyerAddress) , array($arrOrder['userBuyerEmail']), array("Phone: ". $user['mobile']));
         } else {
-            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']), array($buyerAddress));
+            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']), array($buyerAddress), array("Phone: ". $user['mobile']));
         }
         $pdf->FancyOneTitleHeader($pharmacyTableHeader, $pharmacyTableData);
         $pdf->Ln(20);
