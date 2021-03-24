@@ -9,6 +9,7 @@
     item ["currency"] = "<?php echo $currencySymbol; ?>";
     item ["availability"] = "<?php echo $item->stockStatusName_en; ?>";
     item ["made_in"] = "<?php echo $item->madeInCountryName_en ?>";
+    item ["seller_id"] = "<?php echo $seller->sellerId ?>";
     productItemListGTM.push(item);
 </script>
     <input type="hidden" class="hidden_item_name" value="<?php echo $item->name; ?>">
@@ -19,3 +20,4 @@
     <input type="hidden" class="hidden_made_in" value="<?php echo $item->madeInCountryName_en; ?>">
     <input type="hidden" class="hidden_availability" value="<?php echo $item->stockStatusName_en; ?>">
     <input type="hidden" class="hidden_currency" value="<?php echo $currencySymbol; ?>">
+    <input type="hidden" class="hidden_seller_id" value="<?php echo $seller->sellerId; ?>">

@@ -921,7 +921,7 @@ var WebApp = (function () {
 		var itemAvailablity = $selector.find(".hidden_availability").val();
 		var itemMadeIn = $selector.find(".hidden_made_in").val();
 		var itemCurrency = $selector.find(".hidden_currency").val();
-		var itemManufactureId = $selector.find(".hidden_manufacturer_id").val();
+		var itemManufactureId = $selector.find(".hidden_seller_id").val();
 		var itemProductstore = $selector.find(".hidden_productstore").val();
 		var itemListName = $selector.find(".hidden_item_list_name").val();
 		dataLayer.push({
@@ -941,6 +941,7 @@ var WebApp = (function () {
 						'currency': itemCurrency,
 						'availability': itemAvailablity,
 						'made_in': itemMadeIn,
+						'seller_id': itemManufactureId,
 					}]
 			}
 		});

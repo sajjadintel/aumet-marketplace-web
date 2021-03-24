@@ -80,7 +80,7 @@ var CartCheckout = (function () {
 			});
 
 			dataLayer.push({
-				'event': 'begin_checkout',
+				'event': 'purchase',
 				'ecommerce': {
 					'value':totalPrice,
 					'currency':'AED',

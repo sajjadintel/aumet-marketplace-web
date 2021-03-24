@@ -338,25 +338,10 @@ function compress_htmlcode($codedata)
             var action = $(this).closest("form").attr("action");
             if (action=="/web/cart/remove"){
                 var popupremove = $(this).closest("form").find(".modal-body #popupModalValueId").val();
-                var productid = $(".tbl-data-"+popupremove).find('.name-of-product').data("productid");
-                var productName = $(".tbl-data-"+popupremove).find('.name-of-product').text();
-                var productQuantity = $(".tbl-data-"+popupremove).find('.quantity-value').val();
-                var UnitPrice = $(".tbl-data-"+popupremove).find('.unit-price-val').data("unitprice");
-                dataLayer.push({
-                    'event': 'remove_from_cart',
-                    'ecommerce': {
-                        'currency':'AED',
-                        'items': [
-                            {
-                                'item_name': ""+productName+"",
-                                'item_id': productid,
-                                'price': UnitPrice,
-                                'quantity': productQuantity,
-                                'currency': 'AED',
-                                'availability': 'Available',
-                            }]
-                    }
-                });
+                var $selector = $(".tbl-data-"+popupremove);
+                WebApp.addDataLayerProductData($selector,"remove_from_cart")
+
+
             }
 
         });

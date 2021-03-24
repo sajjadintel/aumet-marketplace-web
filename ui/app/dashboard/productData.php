@@ -12,7 +12,7 @@
     item ["currency"] = "<?php echo $product->currency; ?>";
     item ["availability"] = "<?php echo $product->inStock; ?>";
     item ["made_in"] = "<?php echo $product->madeInCountry; ?>";
-    item ["manufacturer_id"] = "<?php echo $product->manufacturerName; ?>";
+    item ["seller_id"] = "<?php echo $product->entityId; ?>";
     if ("<?php echo $productListId; ?>" == "LNNEWPRODUCTS"){
         productItemListGTM.push(item);
     }else{
@@ -29,4 +29,4 @@
 <input type="hidden" class="hidden_item_list_name" value="<?php echo $productListName; ?>">
 <input type="hidden" class="hidden_currency" value="<?php echo $product->currency; ?>">
 <input type="hidden" class="hidden_productstore" value="<?php echo $product->productStore; ?>">
-<input type="hidden" class="hidden_manufacturer_id" value="<?php echo $product->manufacturerName; ?>">
+<input type="hidden" class="hidden_seller_id" value="<?php echo $product->entityId; ?>">

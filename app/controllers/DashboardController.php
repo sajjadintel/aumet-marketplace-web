@@ -83,6 +83,7 @@ class DashboardController extends Controller
                     $product->image = $productDb['image'];
                     $product->id = $productDb['id'];
                     $product->entityId = $productDb['entityId'];
+                    $product->productId = $productDb['productId'];
                     //Used for datalayer implementation
                     $product->inStock = $productDb['stockStatusName_en'];
                     $product->stock = $productDb['stock'];
@@ -110,12 +111,14 @@ class DashboardController extends Controller
                     $product->image = $productDb['image'];
                     $product->id = $productDb['id'];
                     $product->entityId = $productDb['entityId'];
+                    $product->productId = $productDb['productId'];
                     //Used for datalayer implementation
                     $product->inStock = $productDb['stockStatusName_en'];
                     $product->stock = $productDb['stock'];
                     $product->madeInCountry = $productDb['madeInCountryName_en'];
                     $product->category = $productDb['category_name_en'];
                     $product->manufacturerName = $productDb['manufacturerName'];
+                    $product->productStore = $productDb['entityName_en'];
                     $product->currency = $productDb['currency'];
 
                     $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];

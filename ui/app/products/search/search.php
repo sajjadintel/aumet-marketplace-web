@@ -175,7 +175,7 @@ function compress_htmlcode($codedata)
                         '<input type="hidden" class="hidden_currency" value="'+row['currency']+'">' +
                         '<input type="hidden" class="hidden_item_list_name" value="Product list">' +
                         '<input type="hidden" class="hidden_item_list_id" value="LNPRODCTLIST">' +
-                        '<input type="hidden" class="hidden_manufacturer_id" value="'+row['entityName_en']+'">';
+                        '<input type="hidden" class="hidden_seller_id" value="'+row['entityId']+'">';
                     output += '<div><span class="datalayer-text-click" href="javascript:;" onclick="WebApp.loadSubPage(\'/web/entity/' +
                         row.entityId +
                         '/product/' +
@@ -759,7 +759,7 @@ function compress_htmlcode($codedata)
                        item["item_name"] = name;
                        item["item_id"] = $(this).find(".hidden_item_id").val();
                        item["price"] = $(this).find(".hidden_price").val();
-                       item["item_brand"] = $(this).find(".hidden_manufacturer_id").val();
+                       item["item_brand"] = $(this).find(".hidden_productstore").val();
                        item["item_category"] = $(this).find(".hidden_item_category_1").val();
                        item["item_category_2"] = $(this).find(".hidden_item_category").val();
                        item["item_list_name"] = $(this).find(".hidden_item_list_name").val();
@@ -769,6 +769,7 @@ function compress_htmlcode($codedata)
                        item["currency"] = $(this).find(".hidden_currency").val();
                        item["availability"] = $(this).find(".hidden_availability").val();
                        item["made_in"] = $(this).find(".hidden_made_in").val();
+                       item["seller_id"] = $(this).find(".hidden_seller_id").val();
                        productItemListGTM.push(item);
                    }
 

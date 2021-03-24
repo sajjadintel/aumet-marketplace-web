@@ -326,7 +326,7 @@ function compress_htmlcode($codedata)
                         'currency': "<?php echo $objEntityProduct->currency ?>",
                         'availability': "<?php echo $objEntityProduct->stockStatusName_en ?>",
                         'made_in': "<?php echo $objEntityProduct->madeInCountryName ?>",
-                        'manufacturer_id': "<?php echo $objEntityProduct->entityName ?>"
+                        'seller_id': "<?php echo $objEntityProduct->entityId ?>"
                     }]
             },
         })
@@ -780,6 +780,7 @@ function compress_htmlcode($codedata)
                         'currency': "<?php echo $objEntityProduct->currency ?>",
                         'availability': "<?php echo $objEntityProduct->stockStatusName_en ?>",
                         'made_in': "<?php echo $objEntityProduct->madeInCountryName ?>",
+                        'seller_id': "<?php echo $objEntityProduct->entityId ?>",
                     }]
             },
         })
