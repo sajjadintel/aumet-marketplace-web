@@ -365,7 +365,7 @@ class SearchController extends Controller
                     array_push($arrCityId, $buyerCityId);
                 }
             }
-            
+
             $arrCityIdStr = "-1";
             if(count($arrCityId) > 0) {
                 $arrCityIdStr = implode(",", $arrCityId);
@@ -777,6 +777,9 @@ class SearchController extends Controller
             "query" => $query
         );
 
+        /*echo "<pre>";
+        print_r($response);
+        exit();*/
         $this->jsonResponseAPI($response);
     }
 

@@ -226,6 +226,16 @@ function compress_htmlcode($codedata)
                     return '<div style="width: max-content;">' + output + '</div>';
                 },
             },
+            {
+                targets: 6,
+                title: WebAppLocals.getMessage('expiryDate'),
+                data: 'productExpiryDate',
+                render: function(data, type, row, meta) {
+                    var output = (row.productExpiryDate != "" && row.productExpiryDate != null) ? row.productExpiryDate : '';
+
+                    return '<div style="width: max-content;">' + output + '</div>';
+                },
+            },
             /*{
                 targets: 6,
                 title: WebAppLocals.getMessage('bonus'),
@@ -247,7 +257,7 @@ function compress_htmlcode($codedata)
                 },
             }, */
             {
-                targets: 6,
+                targets: 7,
                 title: WebAppLocals.getMessage('quantity'),
                 data: 'id',
                 orderable: false,
@@ -294,7 +304,7 @@ function compress_htmlcode($codedata)
                 },
             },
             {
-                targets: 7,
+                targets: 8,
                 title: WebAppLocals.getMessage('bonus'),
                 data: 'id',
                 orderable: false,
@@ -304,7 +314,7 @@ function compress_htmlcode($codedata)
                 },
             },
             {
-                targets: 8,
+                targets: 9,
                 title: '',
                 data: 'id',
                 orderable: false,
