@@ -924,6 +924,7 @@ var WebApp = (function () {
 		var itemManufactureId = $selector.find(".hidden_seller_id").val();
 		var itemProductstore = $selector.find(".hidden_productstore").val();
 		var itemListName = $selector.find(".hidden_item_list_name").val();
+		
 		dataLayer.push({
 			'event': type,
 			'ecommerce': {

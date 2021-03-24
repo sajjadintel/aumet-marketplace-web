@@ -12,6 +12,7 @@
     item ["seller_id"] = "<?php echo $seller->sellerId ?>";
     productItemListGTM.push(item);
 </script>
+
     <input type="hidden" class="hidden_item_name" value="<?php echo $item->name; ?>">
     <input type="hidden" class="hidden_item_id" value="<?php echo $item->entityProductId; ?>">
     <input type="hidden" class="hidden_price" value="<?php echo $item->unitPrice; ?>">
