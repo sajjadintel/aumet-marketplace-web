@@ -972,10 +972,11 @@ class OrderController extends Controller
 
 
         $pharmacyTableHeader = array('Buyer Info');
+        $phoneNo = ($user['mobile'] != null) ? $user['mobile'] : '-';
         if ($arrOrder['userBuyerEmail'] != null) {
-            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']), array($buyerAddress) , array($arrOrder['userBuyerEmail']), array("Phone: ". $user['mobile']));
+            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']), array($buyerAddress) , array($arrOrder['userBuyerEmail']), array("Phone: ". $phoneNo ));
         } else {
-            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']), array($buyerAddress), array("Phone: ". $user['mobile']));
+            $pharmacyTableData = array(array('#' . $arrOrder['entityBuyerId'] . ' - ' . $arrOrder['entityBuyer']), array($buyerAddress), array("Phone: ". $phoneNo));
         }
         $pdf->FancyOneTitleHeader($pharmacyTableHeader, $pharmacyTableData);
         $pdf->Ln(20);
