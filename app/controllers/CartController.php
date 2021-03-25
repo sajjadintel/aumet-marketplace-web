@@ -864,6 +864,7 @@ class CartController extends Controller
                 $this->f3->set('total', round($total, 2));
                 $this->f3->set('ordersUrl', "web/distributor/order/pending");
                 $this->f3->set('name', "Buyer name: " . $buyerName);
+                $this->f3->set('buyerFullUserName', "User Name: " . $this->objUser->fullname);
                 $this->f3->set('buyerEmail', "Email: " . $this->objUser->email);
                 $this->f3->set('buyerAddress', "Address: " . $buyerAddress);
                 $this->f3->set('paymentMethod', $mapPaymentMethodIdName[$paymentMethodId]);
