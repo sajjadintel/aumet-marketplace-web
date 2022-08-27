@@ -15,4 +15,14 @@ class UserController extends Controller
 
       $this->f3->reroute("/web");
   }
+
+  function updateToken()
+  {
+      $this->jsonResponseAPI([
+          'message' => UserFcmToken::setWebTokenForUser(
+              $this->objUser->id,
+              $this->f3->get('POST.fcm_token')
+          )
+      ]);
+  }
 }

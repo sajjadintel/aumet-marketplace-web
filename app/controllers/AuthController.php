@@ -40,6 +40,7 @@ class AuthController extends Controller
                 $this->f3->set('LANGUAGE', $lang);
 
                 $this->f3->set('vAuthFile', 'signin');
+                $this->f3->set('pageSeoTitle', 'Aumet Marketplace - Sign In');
 
                 echo View::instance()->render('public/auth/layout.php');
             }
@@ -83,9 +84,68 @@ class AuthController extends Controller
             $dbCountry->name = "name_en";
             $arrCountry = $dbCountry->findAll("name_en ASC");
             $this->f3->set('arrCountry', $arrCountry);
-
+            $this->f3->set('pageSeoTitle', 'Aumet Marketplace - Register');
             echo View::instance()->render('public/auth/layout.php');
         }
+    }
+
+    public function getSignUpInvite()
+    {
+        if ($this->isAuth) {
+            $this->f3->reroute('/web');
+            return;
+        }
+        $this->f3->set('companyType', ($this->f3->get('SESSION.companyType')));
+        $this->f3->set('vAuthFile', 'signup-invite');
+
+        $token = array_key_exists('token', $_GET) ? $_GET['token'] : null;
+        $invite = UserInvite::findByToken($token);
+        if ($invite == false) {
+            $this->f3->reroute('/web/auth/signup');
+            return;
+        } else if (!$invite->statusIsPending()) {
+            $this->f3->set('SESSION.error', 'Invalid Invite');
+            $this->f3->reroute('/web/auth/signup');
+            return;
+        }
+
+        $this->f3->set('invite', $invite);
+        echo View::instance()->render('public/auth/layout.php');
+    }
+
+    public function postSignUpInvite()
+    {
+        $invite = UserInvite::findByTokenAndStatus($this->f3->get('POST.token'), UserInvite::STATUS_PENDING);
+        $this->renderErrorIfValidationFails($invite, Constants::STATUS_ERROR, implode("\n", array_values($invite->errors)));
+        $invite = $invite->process();
+
+        $user = (new User)->create($this->f3->get('POST'), true, true);
+        $this->renderErrorIfValidationFails($user, Constants::STATUS_ERROR, implode("\n", array_values($user->errors)));
+        $account = (new Account)->create(['entityId' => $invite->entityId, 'number' => 100, 'statusId' => Constants::ACCOUNT_STATUS_ACTIVE]);
+        $this->renderErrorIfValidationFails($account, Constants::STATUS_ERROR, implode("\n", array_values($account->errors)));
+        $userAccount = (new UserAccount)->create(['userId' => $user->id, 'accountId' => $account->id, 'statusId' => Constants::ACCOUNT_STATUS_ACTIVE]);
+        $this->renderErrorIfValidationFails($userAccount, Constants::STATUS_ERROR, implode("\n", array_values($userAccount->errors)));
+        $entity = (new EntityUserProfileView)->findone(['entityId = ?', $invite->entityId]);
+
+        $allValues = new stdClass();
+        $allValues->name = $user->fullname;
+        $allValues->mobile = $user->mobile;
+        $allValues->email = $user->email;
+        $allValues->entityName = $entity->entityName_en;
+        $allValues->tradeLicenseNumber = $entity->entityBranchTradeLicenseNumber;
+        $allValues->countryId = $entity->entityCountryId;
+        $allValues->countryName = $entity->entityCountryName_en;
+        $allValues->cityId = $entity->entityBranchCityId;
+        $allValues->cityName = $entity->entityBranchCityName_en;
+        $allValues->address = $entity->entityBranchAddress_en;
+        $allValues->tradeLicenseUrl = $entity->entityBranchTradeLicenseUrl;
+        $allValues->roleId = $user->roleId;
+        $allValues->invite = $invite;
+
+        $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
+        $this->webResponse->message = $this->f3->get("vMessage_signupSuccessful");
+        $this->webResponse->data = $allValues;
+        echo $this->webResponse->jsonResponse();
     }
 
     function postSignIn_NoFirebase()
@@ -111,6 +171,7 @@ class AuthController extends Controller
                 }
             } else {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->errortype = "login";
                 $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
                 $this->webResponse->data = $dbUser;
                 echo $this->webResponse->jsonResponse();
@@ -139,6 +200,7 @@ class AuthController extends Controller
                 $dbUser->getWhere("email = '$user->email'");
                 if ($dbUser->dry()) {
                     $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                    $this->webResponse->errortype = "login";
                     $this->webResponse->message = $this->f3->get("vMessage_invalidLogin");
                     $this->webResponse->data = $user;
                 } else {
@@ -164,9 +226,11 @@ class AuthController extends Controller
             }
         } catch (\InvalidArgumentException $e) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->errortype = "login";
             $this->webResponse->message = $e->getMessage();
         } catch (InvalidToken $e) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->errortype = "login";
             $this->webResponse->message = $e->getMessage();
         }
 
@@ -262,6 +326,7 @@ class AuthController extends Controller
         if ($this->isAuth) {
             $this->f3->reroute('/web');
         } else {
+            $this->f3->set('pageSeoTitle', 'Aumet Marketplace - Forgot Password');
             $this->f3->set('vAuthFile', 'forgot');
             echo View::instance()->render('public/auth/layout.php');
         }
@@ -276,6 +341,7 @@ class AuthController extends Controller
 
         if ($dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->errortype = "password reset";
             $this->webResponse->title = "";
             $this->webResponse->message = "Email doesn't exist!";
             echo $this->webResponse->jsonResponse();
@@ -336,6 +402,7 @@ class AuthController extends Controller
 
         if (!$name || !ltrim($mobile, "+") || !$email || !$password || !$entityName || !$countryId || !$cityId || !$address) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Some mandatory fields are missing";
             echo $this->webResponse->jsonResponse();
             return;
@@ -348,6 +415,7 @@ class AuthController extends Controller
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Email Already Exists";
             echo $this->webResponse->jsonResponse();
             return;
@@ -360,6 +428,7 @@ class AuthController extends Controller
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Phone number exists!";
             echo $this->webResponse->jsonResponse();
             return;
@@ -372,6 +441,7 @@ class AuthController extends Controller
 
             if (!$dbEntityBranch->dry()) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
+                $this->webResponse->errortype = "registration";
                 $this->webResponse->title = "";
                 $this->webResponse->message = "Trading license exists!";
                 echo $this->webResponse->jsonResponse();
@@ -686,6 +756,7 @@ class AuthController extends Controller
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Email already exists.";
             echo $this->webResponse->jsonResponse();
             return;
@@ -696,6 +767,7 @@ class AuthController extends Controller
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Mobile already exists.";
             echo $this->webResponse->jsonResponse();
             return;
@@ -790,8 +862,10 @@ class AuthController extends Controller
             $allValues->tradeLicenseUrl = $dbEntityBranch->tradeLicenseUrl;
             if (Helper::isPharmacy($dbUser->roleId)) {
                 NotificationHelper::sendApprovalPharmacyNotification($this->f3, $this->db, $allValues, $dbUser);
+                $this->f3->set('companyType', 'pharmacy');
             } else {
                 NotificationHelper::sendApprovalDistributorNotification($this->f3, $this->db, $allValues, $dbUser);
+                $this->f3->set('companyType', 'distributor');
             }
 
             $this->f3->set('vAuthFile', 'signup-verification-verified');
@@ -965,6 +1039,7 @@ class AuthController extends Controller
 
         if (!$name || !ltrim($mobile, "+") || !$email || !$password || !$entityName || !$countryId || !$cityId || !$address) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Some mandatory fields are missing";
             return false;
         }
@@ -976,6 +1051,7 @@ class AuthController extends Controller
         if (!$dbUser->dry()) {
             $this->webResponse->errorCode = Constants::STATUS_ERROR;
             $this->webResponse->title = "";
+            $this->webResponse->errortype = "registration";
             $this->webResponse->message = "Email Already Exists";
             return false;
         }
@@ -1004,6 +1080,7 @@ class AuthController extends Controller
             if (!$dbEntityBranch->dry()) {
                 $this->webResponse->errorCode = Constants::STATUS_ERROR;
                 $this->webResponse->title = "";
+                $this->webResponse->errortype = "registration";
                 $this->webResponse->message = "Trading license exists!";
                 return  $this->webResponse->jsonResponse();
             }
@@ -1079,5 +1156,16 @@ class AuthController extends Controller
         $dbUserAccount->addReturnID();
 
         return $res;
+    }
+
+    protected function renderErrorIfValidationFails(BaseModel $model, $statusCode, $message, $data = [])
+    {
+        if ($model->hasErrors) {
+            $this->webResponse->errorCode = $statusCode;
+            $this->webResponse->message = $message;
+            $this->webResponse->data = $data;
+            echo $this->webResponse->jsonResponse();
+            die();
+        }
     }
 }

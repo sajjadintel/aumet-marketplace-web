@@ -86,6 +86,10 @@ function compress_htmlcode($codedata)
                                                 </tr>
                                             </thead>
                                         </table>
+                                        <script>
+                                            var productItemListGTM =[];
+                                        </script>
+                                        <?php $fullCartPrice=0; ?>
 
                                         <?php foreach ($allSellers as $seller) : ?>
                                             <?php
@@ -126,8 +130,9 @@ function compress_htmlcode($codedata)
 
                                                     <?php $isFirstItem = true; ?>
                                                     <?php $tax = 0; ?>
+
                                                     <?php foreach ($allCartItems[$seller->sellerId] as $item) : ?>
-                                                        <tr>
+                                                        <tr class="tbl-data-<?php echo $item->id ?>">
                                                             <td class="d-flex align-items-center font-weight-bolder font-size-h5 cart-item-separator">
                                                                 <div class="symbol symbol-60 flex-shrink-0 mr-4 bg-light">
                                                                     <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->entityProductId ?>')" class="text-dark text-hover-primary">
@@ -135,15 +140,15 @@ function compress_htmlcode($codedata)
                                                                     </a>
                                                                 </div>
                                                                 <div>
-                                                                    <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->entityProductId ?>')" class="text-dark text-hover-primary"><?php echo $item->name ?></a>
+                                                                    <a href="javascript:;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $item->entityId ?>/product/<?php echo $item->entityProductId ?>')" class="text-dark text-hover-primary name-of-product" data-productid="<?php echo $item->entityProductId ?>"><?php echo $item->name ?></a>
                                                                 </div>
                                                             </td>
                                                             <td class="text-center align-middle cart-item-separator">
-                                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, -1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover)" class="btn btn-xs btn-light-success btn-icon mr-2">
+                                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, -1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover)" class="btn btn-xs btn-light-success btn-icon mr-2 removeQtyDatalayer">
                                                                     <i class="ki ki-minus icon-xs"></i>
                                                                 </a>
-                                                                <input style="width: 40%;" type="number" id="quantity-<?php echo $item->entityProductId ?>" onfocus="this.oldvalue = this.value;" onfocusout="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, 0, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover, this.oldvalue)" class="form-control form-control-sm d-inline mr-2 font-weight-bolder quantity" min="0" max="<?php echo min($item->stock, $item->maximumOrderQuantity); ?>" value="<?php echo $item->quantity ?>" name="quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, 1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover)" class="btn btn-xs btn-light-success btn-icon">
+                                                                <input style="width: 40%;" type="number" id="quantity-<?php echo $item->entityProductId ?>" onfocus="this.oldvalue = this.value;" onfocusout="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, 0, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover, this.oldvalue)" class="form-control form-control-sm d-inline mr-2 font-weight-bolder quantity quantity-value" min="0" max="<?php echo min($item->stock, $item->maximumOrderQuantity); ?>" value="<?php echo $item->quantity ?>" name="quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                                                <a onclick="CartCheckout.updateQuantity(<?php echo $item->entityProductId ?>, 1, <?php echo $item->stock ?>, <?php echo $item->id ?>, <?php echo $seller->sellerId ?>, updateTotalPrice, initializeBonusPopover)" class="btn btn-xs btn-light-success btn-icon addQtyDatalayer">
                                                                     <i class="ki ki-plus icon-xs"></i>
                                                                 </a>
                                                             </td>
@@ -167,7 +172,7 @@ function compress_htmlcode($codedata)
                                                             <!--" name="note">-->
                                                             <!--</td>-->
 
-                                                            <td class="text-right align-middle font-weight-bolder font-size-h5 cart-item-separator">
+                                                            <td class="text-right align-middle font-weight-bolder font-size-h5 cart-item-separator unit-price-val" data-unitprice="<?php echo Helper::formatMoney($item->unitPrice, 2) ?>">
                                                                 <?php echo Helper::formatMoney($item->unitPrice, 2) . " " . $currencySymbol ?>
                                                             </td>
                                                             <td class="text-right align-middle font-weight-bolder font-size-h5 cart-item-separator productVat-<?php echo $seller->sellerId ?>" data-currency="<?php echo $currencySymbol ?>" id="productVat-<?php echo $item->entityProductId ?>">
@@ -177,7 +182,7 @@ function compress_htmlcode($codedata)
                                                                 <?php echo Helper::formatMoney($item->quantity * $item->unitPrice * (1 + $item->vat / 100)) . " " . $currencySymbol ?>
                                                             </td>
                                                             <td class="text-right align-middle cart-item-separator">
-                                                                <a href="javascript:;" onclick="CartCheckout.removeItemModal(<?php echo $item->id ?>)" class="btn btn-sm btn-light btn-text-danger btn-hover-danger btn-icon  mr-2" title="">
+                                                                <a href="javascript:;" onclick="CartCheckout.removeItemModal(<?php echo $item->id ?>)" class="btn btn-sm btn-light btn-text-danger btn-hover-danger btn-icon  mr-2 remove-data-push " title="">
                                                                     <span class="svg-icon svg-icon-md">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                                             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -189,6 +194,7 @@ function compress_htmlcode($codedata)
                                                                     </span>
                                                                 </a>
                                                             </td>
+                                                            <?php include "cartProductData.php"; ?>
                                                         </tr>
                                                         <?php
                                                         $productPrice = $item->quantity * $item->unitPrice;
@@ -228,6 +234,7 @@ function compress_htmlcode($codedata)
                                                                         <?php echo $vModule_cart_subTotal ?>
                                                                     </span>
                                                                     <span class="totalPrice" style="color: #b7b7b7; font-weight: bold; font-size: 1.25rem;" data-totalPrice="<?php echo $totalPrice ?>" data-currencyId="<?php echo $currencyId ?>" id="totalPrice-<?php echo $seller->sellerId ?>">
+                                                                        <?php $fullCartPrice= $fullCartPrice+$totalPrice ?>
                                                                         <?php echo Helper::formatMoney($totalPrice) . " " . $currencySymbol ?>
                                                                     </span>
                                                                 </p>
@@ -259,7 +266,7 @@ function compress_htmlcode($codedata)
                                             <hr>
                                             <p class="font-weight-bolder font-size-h4 itemWrapper"><span class="text-primary total"><?php echo $vModule_cart_total ?> </span> <span id="grandTotal" class="price"></span></p>
                                         <?php endif; ?>
-                                        <a class="btn btn-success font-weight-bolder px-8" style="margin-top: 40px;" onclick="CartCheckout.submitOrderModal()">
+                                        <a class="btn btn-success font-weight-bolder px-8" style="margin-top: 40px;" onclick="CartCheckout.submitOrderModal(productItemListGTM,'<?= $fullCartPrice ?>')">
                                             <?php echo $vModule_cartCheckout_submitOrder ?>
                                         </a>
                                         <p class="border-0 text-muted pt-10"><?php echo $vModule_cart_term ?></p>
@@ -294,6 +301,52 @@ function compress_htmlcode($codedata)
     SearchDataTable.init();
 </script>
 <?php ob_end_flush(); ?>
+<script>
+    $(document).ready(function() {
+
+            dataLayer.push({
+                'event': 'view_cart',
+                'ecommerce': {
+                    'value':"<?= $fullCartPrice ?>",
+                    'currency':'AED',
+                    'items': [
+                        productItemListGTM
+                    ]
+                }
+            });
+        dataLayer.push({
+            'event': 'begin_checkout',
+            'ecommerce': {
+                'value':"<?= $fullCartPrice ?>",
+                'currency':'AED',
+                'items': [
+                    productItemListGTM
+                ]
+            }
+        });
+
+        $(document).on('click','.addQtyDatalayer',function (){
+            var $selector = $(this).closest("tr");
+            WebApp.addDataLayerProductData($selector,"add_to_cart")
+        });
+        $(document).on('click','.removeQtyDatalayer',function (){
+            var $selector = $(this).closest("tr");
+            WebApp.addDataLayerProductData($selector,"remove_from_cart")
+        });
+
+        $(document).on('click','.modalAction',function (){
+            var action = $(this).closest("form").attr("action");
+            if (action=="/web/cart/remove"){
+                var popupremove = $(this).closest("form").find(".modal-body #popupModalValueId").val();
+                var $selector = $(".tbl-data-"+popupremove);
+                WebApp.addDataLayerProductData($selector,"remove_from_cart")
+
+
+            }
+
+        });
+    })
+</script>
 <script>
     $(document).ready(function() {
         updateTotalPrice();

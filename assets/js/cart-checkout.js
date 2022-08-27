@@ -48,6 +48,7 @@ var CartCheckout = (function () {
 
 	var _removeItemSuccess = function (webResponse) {
 		// Update cart count
+		console.log(webResponse);
 		let cartCount = webResponse.data > 9 ? '9+' : webResponse.data;
 		if (webResponse.data !== 0) $('#cartCount').css('display', 'flex');
 		else $('#cartCount').css('display', 'none');
@@ -55,7 +56,7 @@ var CartCheckout = (function () {
 		WebApp.loadPage('/web/cart/checkout');
 	};
 
-	var _submitOrderModal = function () {
+	var _submitOrderModal = function (productsList,totalPrice) {
 		var valid = true;
 		$('.selectpicker.paymentMethodId').each(function (index, element) {
 			if (!$(element).val()) {
@@ -76,6 +77,17 @@ var CartCheckout = (function () {
 				let sellerId = $(element).attr('data-sellerId');
 				let paymentMethodId = $(element).val();
 				mapSellerIdPaymentMethodId[sellerId] = paymentMethodId;
+			});
+
+			dataLayer.push({
+				'event': 'purchase',
+				'ecommerce': {
+					'value':totalPrice,
+					'currency':'AED',
+					'items': [
+						productsList,
+					]
+				}
 			});
 			WebApp.post('/web/cart/checkout/submit/confirm', { mapSellerIdPaymentMethodId }, WebApp.openModal);
 		} else {
@@ -262,8 +274,8 @@ var CartCheckout = (function () {
 		removeItemSuccess: function (webResponse) {
 			_removeItemSuccess(webResponse);
 		},
-		submitOrderModal: function () {
-			_submitOrderModal();
+		submitOrderModal: function (productsList,totalPrice) {
+			_submitOrderModal(productsList,totalPrice);
 		},
 		submitOrderSuccess: function (webResponse) {
 			_submitOrderSuccess(webResponse);

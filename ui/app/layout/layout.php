@@ -361,8 +361,10 @@ function compress_htmlcode($codedata)
     <script type="text/javascript" src="/assets/js/autocomplete.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/products-search.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/distributor-products.js<?php echo $platformVersion ?>"></script>
+    <script type="text/javascript" src="/assets/js/distributor-single-product.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/distributor-customers.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/distributor-customer-group.js<?php echo $platformVersion ?>"></script>
+    <script type="text/javascript" src="/assets/js/distributor-promotions.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/profile.js<?php echo $platformVersion ?>"></script>
     <script type="text/javascript" src="/assets/js/jquery.smartTab.min.js"></script>
 
@@ -376,10 +378,14 @@ function compress_htmlcode($codedata)
 
     <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     <script type="text/javascript" src="/assets/lib/slick/slick.min.js"></script>
-
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-messaging.js"></script>
+    <script src="/assets/js/activate-fcm.js"></script>
     <script>
         jQuery(document).ready(function() {
             WebApp.init();
+            let credentials = '<?php echo json_encode(['apiKey' => getenv('FCM_API_KEY'), 'authDomain' => getenv('FCM_AUTH_DOMAIN'), 'projectId' => getenv('FCM_PROJECT_ID'), 'storageBucket' => getenv('FCM_STORAGE_BUCKET'), 'messagingSenderId' => getenv('FCM_MESSAGING_SENDER_ID'), 'appId' => getenv('FCM_APP_ID')]); ?>';
+            activateFirebase(JSON.parse(credentials));
         });
 
         var _autocompleteDesktop = $('#searchBarInputDesktop').autocomplete2({
@@ -417,21 +423,41 @@ function compress_htmlcode($codedata)
         $('#searchBarInputDesktop').keyup(function(e) {
             if (e.keyCode == 13) {
                 WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent($('#searchBarInputDesktop').val()));
+                dataLayer.push({
+                    'event': 'search',
+                    'search_term': $('#searchBarInputDesktop').val(),
+                    'search_source': 'logged in marketplace'
+                });
             }
         });
 
         $('#searchBarInputMobile').keyup(function(e) {
             if (e.keyCode == 13) {
                 WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent($('#searchBarInputMobile').val()));
+                dataLayer.push({
+                    'event': 'search',
+                    'search_term': $('#searchBarInputMobile').val(),
+                    'search_source': 'logged in marketplace'
+                });
             }
         });
 
         $("#searchBarInputDesktopIcon").click(function() {
             WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent($('#searchBarInputDesktop').val()));
+            dataLayer.push({
+                'event': 'search',
+                'search_term': $('#searchBarInputDesktop').val(),
+                'search_source': 'logged in marketplace'
+            });
         });
 
         $("#searchBarInputMobileIcon").click(function() {
             WebApp.loadPage('/web/pharmacy/product/search?query=' + encodeURIComponent($('#searchBarInputMobile').val()));
+            dataLayer.push({
+                'event': 'search',
+                'search_term': $('#searchBarInputMobile').val(),
+                'search_source': 'logged in marketplace'
+            });
         });
     </script>
 

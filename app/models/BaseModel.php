@@ -234,5 +234,16 @@ class BaseModel extends DB\SQL\Mapper
         exit();
     }
 
+    public function updateOrCreate($filter, $values) {
+        $object = $this->findone($filter);
+        if (!$object) {
+            $object = new static;
+        }
 
+        foreach ($values as $key => $value) {
+            $object->$key = $value;
+        }
+
+        $object->save();
+    }
 }

@@ -116,15 +116,36 @@
                             </div>
                         </div>
                         <div class="row mb-10">
+                            <script>
+                                var productItemListGTM =[];
+                            </script>
                             <?php foreach ($arrNewestProducts as $product) : ?>
-                                <div class="col-3">
+                                <div class="col-3 product-container">
                                     <div class="img-fill flex-shrink-0 bg-light mb-4 dynamic-image">
-                                        <img class="productImage image-contain" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
+                                        <img class="productImage image-contain datalayer-image-click" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
                                     </div>
-                                    <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
+                                    <p class="text-hover-primary datalayer-text-click" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
                                     <p style="text-align: center;"><?php echo $product->price; ?></p>
+
+                                <?php $productListName="New products";$productListId="LNNEWPRODUCTS";//This is added for Google Datalayer segregation ?>
+                                <?php include "productData.php"; ?>
                                 </div>
                             <?php endforeach; ?>
+                            <script>
+                                $( document ).ready(function() {
+                                    dataLayer.push({
+                                        'event': 'view_item_list',
+                                        'ecommerce': {
+                                            'currency':'AED',
+                                            'items': [
+                                                productItemListGTM
+                                            ]
+                                        }
+                                    });
+
+                                });
+                            </script>
+
                         </div>
                     </div>
                 </div>
@@ -142,15 +163,35 @@
                             </div>
                         </div>
                         <div class="row">
+                            <script>
+                                var productItemListGTMTop =[];
+                            </script>
                             <?php foreach ($arrTopSellingProducts as $product) : ?>
-                                <div class="col-3">
+                                <div class="col-3 product-container">
                                     <div class="img-fill flex-shrink-0 bg-light mb-4 dynamic-image">
-                                        <img class="productImage image-contain" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
+                                        <img class="productImage image-contain datalayer-image-click" src="<?php echo $product->image; ?>" style="cursor: pointer; width: 100%; height: 100%;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');">
                                     </div>
-                                    <p class="text-hover-primary" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
+                                    <p class="text-hover-primary datalayer-text-click" style="cursor: pointer; text-align: center; font-weight: bold;" onclick="WebApp.loadSubPage('/web/entity/<?php echo $product->entityId; ?>/product/<?php echo $product->id; ?>');"><?php echo $product->name; ?></p>
                                     <p style="text-align: center;"><?php echo $product->price; ?></p>
+
+                                <?php $productListName="Top selling";$productListId="LNTOPSELLING";//This is added for Google Datalayer segregation ?>
+                                <?php include "productData.php"; ?>
                                 </div>
                             <?php endforeach; ?>
+                            <script>
+                                $( document ).ready(function() {
+                                    dataLayer.push({
+                                        'event': 'view_item_list',
+                                        'ecommerce': {
+                                            'currency':'AED',
+                                            'items': [
+                                                productItemListGTMTop
+                                            ]
+                                        }
+                                    });
+
+                                });
+                            </script>
                         </div>
                     </div>
                 </div>
@@ -236,7 +277,7 @@
     $(document).ready(function() {
         initAutoplay();
         fillStatusLabel();
-    })
+    });
 
     function initAutoplay() {
         $('.slick-carousel').slick({

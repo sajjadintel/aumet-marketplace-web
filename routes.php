@@ -20,6 +20,8 @@ $f3->route('GET /web/auth/reset', 'AuthController->getResetPassword');
 $f3->route('POST /web/auth/reset', 'AuthController->postResetPassword');
 $f3->route('GET /web/auth/verify/account', 'AuthController->getVerifyAccount');
 $f3->route('GET /web/auth/approve/account', 'AuthController->getApproveAccount');
+$f3->route('GET /web/auth/signup/invite', 'AuthController->getSignUpInvite');
+$f3->route('POST /web/auth/signup/invite', 'AuthController->postSignUpInvite');
 
 $f3->route('GET /web/auth/signout', 'AuthController->getSignOut');
 
@@ -29,6 +31,7 @@ $f3->route('POST /web/notification/support', 'NotificationController->support');
 
 $f3->route('GET /web/me/menu', 'UserController->getMenu');
 $f3->route('GET /web/me/switchLanguage/@lang', 'UserController->switchLanguage');
+$f3->route('POST /web/me/update-token', 'UserController->updateToken');
 
 $f3->route('GET /web/pharmacy/product/search', 'SearchController->getSearchProducts');
 $f3->route('POST /web/pharmacy/product/search', 'SearchController->postSearchProducts');
@@ -93,6 +96,10 @@ $f3->route('POST /web/distributor/order/process', 'OrderController->postProcessO
 $f3->route('POST /web/distributor/order/onhold', 'OrderController->postOnHoldOrder');
 // END  APM-10 APM-11 APM-35
 
+// Message Center
+$f3->route('GET /web/pharmacy/order/pendingLog', 'OrderController->getPharmacyPendingOrderLog');
+$f3->route('GET /web/distributor/order/pendingLog', 'OrderController->getDistributorPendingOrderLog');
+
 // START APM-37
 $f3->route('GET /web/distributor/product', 'ProductsController->getDistributorProducts');
 $f3->route('GET /web/distributor/product/@productId', 'ProductsController->getProductDetails');
@@ -101,13 +108,22 @@ $f3->route('GET /web/distributor/product/stock/@productId', 'ProductsController-
 
 $f3->route('POST /web/distributor/product', 'ProductsController->postDistributorProducts');
 $f3->route('GET /web/distributor/product/list', 'ProductsController->getProductList');
-$f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDistributorProduct');
+$f3->route('POST /web/distributor/product/add/modal', 'ProductsController->postAddDistributorProductModal');
 $f3->route('POST /web/distributor/product/edit', 'ProductsController->postEditDistributorProduct');
 $f3->route('POST /web/distributor/product/image', 'ProductsController->postProductImage');
 $f3->route('POST /web/distributor/product/subimage', 'ProductsController->postProductSubimage');
 $f3->route('POST /web/distributor/product/editQuantity', 'ProductsController->postEditQuantityDistributorProduct');
 $f3->route('POST /web/distributor/product/editStock', 'ProductsController->postEditStockDistributorProduct');
 $f3->route('GET /web/distributor/product/canAdd', 'ProductsController->getDistributorCanAddProduct');
+
+// Product Add-Edit pages
+$f3->route('GET /web/distributor/product/add', 'ProductsController->getAddDistributorProduct');
+$f3->route('POST /web/distributor/product/add', 'ProductsController->postAddDistributorProduct');
+$f3->route('GET /web/distributor/product/edit/@productId', 'ProductsController->getEditDistributorProduct');
+$f3->route('POST /web/distributor/product/general', 'ProductsController->postDistributorProductGeneral');
+$f3->route('POST /web/distributor/product/images', 'ProductsController->postDistributorProductImages');
+$f3->route('POST /web/distributor/product/prices', 'ProductsController->postDistributorProductPrices');
+$f3->route('POST /web/distributor/product/stockSettings', 'ProductsController->postDistributorProductStockSettings');
 
 // Bulk add
 $f3->route('GET /web/distributor/product/bulk/add/download', 'ProductsController->getBulkAddDownload');
@@ -138,6 +154,7 @@ $f3->route('GET /web/distributor/customer/@customerId', 'EntityController->getEn
 $f3->route('GET /web/distributor/customer/relation/@entityBuyerId/@entitySellerId', 'EntityController->getEntityCustomerRelationDetails');
 $f3->route('POST /web/distributor/customer', 'EntityController->postEntityCustomers');
 $f3->route('POST /web/distributor/customer/edit/group', 'EntityController->postEntityCustomersEditGroup');
+$f3->route('POST /web/distributor/customer/edit/identifier', 'EntityController->postEntityCustomersIdentifier');
 
 // Customer Group
 $f3->route('GET /web/distributor/customer/group', 'EntityController->getEntityCustomerGroup');
@@ -147,6 +164,16 @@ $f3->route('POST /web/distributor/customer/group/edit', 'EntityController->postE
 
 $f3->route('GET /web/distributor/customer/feedback', 'CustomersController->getOrderCustomersFeedback');
 $f3->route('POST /web/distributor/customer/feedback', 'CustomersController->postOrderCustomersFeedback');
+
+// Marketing
+$f3->route('GET /web/distributor/marketing/promotion', 'MarketingController->getMarketingPromotions');
+$f3->route('POST /web/distributor/marketing/promotion', 'MarketingController->postMarketingPromotions');
+$f3->route('GET /web/distributor/marketing/promotion/add', 'MarketingController->getMarketingAddPromotions');
+$f3->route('POST /web/distributor/marketing/promotion/add', 'MarketingController->postMarketingAddPromotions');
+$f3->route('GET /web/distributor/marketing/promotion/edit/@promotionId', 'MarketingController->getMarketingEditPromotions');
+$f3->route('POST /web/distributor/marketing/promotion/edit', 'MarketingController->postMarketingEditPromotions');
+$f3->route('POST /web/distributor/marketing/promotion/banner/upload', 'MarketingController->postMarketingBannerUploadPromotion');
+$f3->route('GET /web/distributor/marketing/promotion/delete/@promotionId', 'MarketingController->getMarketingDeletePromotions');
 
 // START dashboard
 $f3->route('POST /web/distributor/order/recent', 'OrderController->postDistributorOrdersRecent');
@@ -196,5 +223,11 @@ $f3->route('GET /web/review/distributor/profile/approve', 'ReviewController->get
 $f3->route('GET /web/test/welcome/email/atrash', 'AuthController->getProcessPharmacies');
 $f3->route('GET /web/auth/onboarding/activate/pharmacy', 'AuthController->getProcessEmailOnboarding');
 
+$f3->route('GET /web/distributor/notification', 'NotificationController->index');
+$f3->route('POST /web/distributor/notification/@notificationId/read', 'NotificationController->markAsRead');
+
+$f3->route('POST /web/distributor/invite', 'UserInvitesController->index');
+$f3->route('POST /web/distributor/invite/create', 'UserInvitesController->create');
+$f3->route('POST /web/distributor/invite/@id/destroy', 'UserInvitesController->destroy');
 
 include_once('routes-permission.php');

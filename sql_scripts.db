@@ -613,7 +613,7 @@ CHANGE COLUMN `paymentMethodId` `paymentMethodId` INT NOT NULL ;
 ## 10/02/2021 -- Antoine Abou Cherfane
 
 CREATE OR REPLACE VIEW `marketplace`.`vwOrderEntityUser` AS
-    SELECT 
+    SELECT
         `order`.`id` AS `id`,
         `order`.`entityBuyerId` AS `entityBuyerId`,
         `order`.`branchBuyerId` AS `branchBuyerId`,
@@ -1159,13 +1159,13 @@ from (((`marketplace`.`entityProductSell` `ep` join `marketplace`.`entity` `e` o
 INSERT INTO `marketplace`.`menuItem` (`menuId`, `parentId`, `order`, `iconId`, `url`, `method`, `type`, `name_ar`, `name_en`, `insertDateTime`) VALUES ('1', '0', '42', '51', '/web/distributor/customer/group', 'ajax', 'link', 'مجموعة الزبائن', 'Customer Group', '2020-10-12 05:11:11');
 
 # Added relationGroupId in 'order' table
-ALTER TABLE `marketplace`.`order` 
+ALTER TABLE `marketplace`.`order`
 ADD COLUMN `relationGroupId` INT NULL DEFAULT NULL AFTER `feedbackSubmitted`;
 
 # Created 'vwEntityRelationGroup' view
 CREATE OR REPLACE VIEW `marketplace`.`vwEntityRelationGroup` AS
   SELECT
-    SELECT 
+    SELECT
         `relation`.`id` AS `id`,
         `relation`.`entityBuyerId` AS `entityBuyerId`,
         `relation`.`entitySellerId` AS `entitySellerId`,
@@ -1310,7 +1310,7 @@ CREATE OR REPLACE VIEW `marketplace`.`vwOrderEntityUser` AS
 
 # Created `vwCountry` view
 CREATE OR REPLACE VIEW `marketplace`.`vwCountry` AS
-    SELECT 
+    SELECT
         `c1`.`id` AS `id`,
         `c1`.`nameEn` AS `name_en`,
         `c1`.`nameAr` AS `name_ar`,
@@ -1352,3 +1352,367 @@ FROM `marketplace`.`entityProductSellBonusDetail` `ePSBD`
 
 ################################
 
+
+## 25/02/2021 -- Antoine Abou Cherfane
+
+# Added imageAlt column to 'product' table
+ALTER TABLE `marketplace`.`product`
+ADD COLUMN `imageAlt` TEXT NULL DEFAULT NULL AFTER `image`;
+
+# Added minimumOrderQuantity column to 'entityProductSell' table
+ALTER TABLE `marketplace`.`entityProductSell`
+ADD COLUMN `minimumOrderQuantity` INT NULL DEFAULT NULL AFTER `maximumOrderQuantity`;
+
+# Added imageAlt and minimumOrderQuantity fields to 'vwEntityProductSell' view
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSell` AS
+    SELECT
+        `ep`.`id` AS `id`,
+        `ep`.`entityId` AS `entityId`,
+        `e`.`name_ar` AS `entityName_ar`,
+        `e`.`name_en` AS `entityName_en`,
+        `e`.`name_fr` AS `entityName_fr`,
+        `e`.`image` AS `entityImage`,
+        `ep`.`productId` AS `productId`,
+        `ep`.`totalOrderQuantity` AS `totalOrderQuantity`,
+        `ep`.`totalOrderCount` AS `totalOrderCount`,
+        `ep`.`maximumOrderQuantity` AS `maximumOrderQuantity`,
+        `ep`.`minimumOrderQuantity` AS `minimumOrderQuantity`,
+        `p`.`scientificNameId` AS `scientificNameId`,
+        `s`.`name` AS `scientificName`,
+        `p`.`insertDateTime` AS `insertDateTime`,
+        `p`.`name_ar` AS `productName_ar`,
+        `p`.`name_en` AS `productName_en`,
+        `p`.`name_fr` AS `productName_fr`,
+        `p`.`subtitle_ar` AS `subtitle_ar`,
+        `p`.`subtitle_en` AS `subtitle_en`,
+        `p`.`subtitle_fr` AS `subtitle_fr`,
+        `p`.`description_ar` AS `description_ar`,
+        `p`.`description_en` AS `description_en`,
+        `p`.`description_fr` AS `description_fr`,
+        `p`.`strength` AS `strength`,
+        `p`.`manufacturerName` AS `manufacturerName`,
+        `p`.`batchNumber` AS `batchNumber`,
+        `p`.`itemCode` AS `itemCode`,
+        `p`.`expiryDate` AS `productExpiryDate`,
+        `p`.`categoryId` AS `productCategoryId`,
+        `productCategory`.`name_en` AS `productCategoryName_en`,
+        `productCategory`.`name_ar` AS `productCategoryName_ar`,
+        `productCategory`.`name_fr` AS `productCategoryName_fr`,
+        `p`.`subcategoryId` AS `productSubcategoryId`,
+        `productSubcategory`.`name_en` AS `productSubcategoryName_en`,
+        `productSubcategory`.`name_ar` AS `productSubcategoryName_ar`,
+        `productSubcategory`.`name_fr` AS `productSubcategoryName_fr`,
+        `s`.`categoryId` AS `categoryId`,
+        `s`.`subCategoryId` AS `subCategoryId`,
+        `category`.`name_en` AS `category_name_en`,
+        `category`.`name_ar` AS `category_name_ar`,
+        `category`.`name_fr` AS `category_name_fr`,
+        `subCategory`.`name_en` AS `sub_category_name_en`,
+        `subCategory`.`name_ar` AS `sub_category_name_ar`,
+        `subCategory`.`name_fr` AS `sub_category_name_fr`,
+        `ep`.`unitPrice` AS `unitPrice`,
+        `ep`.`vat` AS `vat`,
+        `e`.`currencyId` AS `currencyId`,
+        `ec`.`currency` AS `currency`,
+        `ep`.`expiryDate` AS `expiryDate`,
+        `ep`.`statusId` AS `statusId`,
+        `ep`.`stockStatusId` AS `stockStatusId`,
+        `ss`.`name_ar` AS `stockStatusName_ar`,
+        `ss`.`name_en` AS `stockStatusName_en`,
+        `ss`.`name_fr` AS `stockStatusName_fr`,
+        `ep`.`stock` AS `stock`,
+        `ep`.`stockUpdateDateTime` AS `stockUpdateDateTime`,
+        `p`.`image` AS `image`,
+        `p`.`imageAlt` AS `imageAlt`,
+        `p`.`madeInCountryId` AS `madeInCountryId`,
+        `c`.`name_ar` AS `madeInCountryName_ar`,
+        `c`.`name_en` AS `madeInCountryName_en`,
+        `c`.`name_fr` AS `madeInCountryName_fr`,
+        `ep`.`bonusCustomerGroupId` AS `bonusCustomerGroupId`,
+        `cg`.`name_ar` AS `bonusCustomerGroupName_ar`,
+        `cg`.`name_en` AS `bonusCustomerGroupName_en`,
+        `cg`.`name_fr` AS `bonusCustomerGroupName_fr`,
+        `ep`.`bonusTypeId` AS `bonusTypeId`,
+        `epbt`.`formula` AS `bonusFormula`,
+        `epbt`.`name_ar` AS `bonusTypeName_ar`,
+        `epbt`.`name_en` AS `bonusTypeName_en`,
+        `epbt`.`name_fr` AS `bonusTypeName_fr`,
+        IFNULL(MIN(`epbd`.`minOrder`), 10) AS `defaultQuantity`,
+        IF((`ep`.`bonusTypeId` = 2),
+            JSON_ARRAYAGG(JSON_OBJECT('id',
+                            `epbd`.`id`,
+                            'formula',
+                            `epbt`.`formula`,
+                            'name',
+                            REPLACE(REPLACE(`epbt`.`name_en`,
+                                    '%bonus',
+                                    `epbd`.`bonus`),
+                                '%minOrder',
+                                `epbd`.`minOrder`),
+                            'name_ar',
+                            REPLACE(REPLACE(`epbt`.`name_ar`,
+                                    '%bonus',
+                                    `epbd`.`bonus`),
+                                '%minOrder',
+                                `epbd`.`minOrder`),
+                            'name_fr',
+                            REPLACE(REPLACE(`epbt`.`name_fr`,
+                                    '%bonus',
+                                    `epbd`.`bonus`),
+                                '%minOrder',
+                                `epbd`.`minOrder`),
+                            'minOrder',
+                            `epbd`.`minOrder`,
+                            'bonus',
+                            `epbd`.`bonus`)),
+            NULL) AS `bonusConfig`,
+        IFNULL(`q`.`quantity`, 0) AS `quantityOrdered`
+    FROM
+        ((((((((((((((`entityProductSell` `ep`
+        JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
+        LEFT JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
+        JOIN `entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
+        JOIN `country` `c` ON ((`p`.`madeInCountryId` = `c`.`id`)))
+        JOIN `country` `ec` ON ((`e`.`countryId` = `ec`.`id`)))
+        JOIN `stockStatus` `ss` ON ((`ep`.`stockStatusId` = `ss`.`id`)))
+        JOIN `entityProductBonusType` `epbt` ON ((`ep`.`bonusTypeId` = `epbt`.`id`)))
+        LEFT JOIN `category` ON ((`s`.`categoryId` = `category`.`id`)))
+        LEFT JOIN `category` `subCategory` ON ((`s`.`subCategoryId` = `subCategory`.`id`)))
+        LEFT JOIN `category` `productCategory` ON ((`p`.`categoryId` = `productCategory`.`id`)))
+        LEFT JOIN `subcategory` `productSubcategory` ON ((`p`.`subcategoryId` = `productSubcategory`.`id`)))
+        LEFT JOIN `vwOrderProductQuantity` `q` ON ((`q`.`entityProductId` = `ep`.`id`)))
+        LEFT JOIN `entityProductSellBonusDetail` `epbd` ON ((`epbd`.`entityProductId` = `ep`.`id`)))
+        LEFT JOIN `entityRelationGroup` `cg` ON ((`cg`.`id` = `ep`.`bonusCustomerGroupId`)))
+    GROUP BY `ep`.`id`
+
+# Created 'productUnitPrice' table
+CREATE TABLE `marketplace`.`productUnitPrice` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `productId` INT NOT NULL,
+  `paymentMethodId` INT NOT NULL,
+  `unitPrice` DECIMAL(13,2) NOT NULL,
+  PRIMARY KEY (`id`));
+
+# Added paymentMethodId column to 'entityProductSellBonusDetail' table
+ALTER TABLE `marketplace`.`entityProductSellBonusDetail`
+ADD COLUMN `paymentMethodId` INT NULL DEFAULT NULL AFTER `bonusTypeId`;
+
+################################
+
+## 02/03/2021 -- Antoine Abou Cherfane
+
+# Added 'Marketing Tools' section with 'Announcements & Promotions'
+INSERT INTO `marketplace`.`menuItem` (`menuId`, `parentId`, `order`, `type`, `name_ar`, `name_en`, `insertDateTime`) VALUES ('1', '0', '60', 'section', 'أدوات التسويق', 'Marketing Tools', '2020-10-12 05:11:11');
+INSERT INTO `marketplace`.`menuItem` (`menuId`, `parentId`, `order`, `iconId`, `url`, `method`, `type`, `name_ar`, `name_en`, `insertDateTime`) VALUES ('1', '0', '61', '557', '/web/distributor/marketing/promotion', 'ajax', 'link', 'الإعلانات والترقيات', 'Announcements & Promotions', '2020-10-12 05:11:11');
+
+# Created 'entityPromotion' table
+CREATE TABLE `entityPromotion` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `entityId` int NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `message` varchar(5000) NOT NULL,
+  `image` text,
+  `startDate` text NOT NULL,
+  `endDate` text NOT NULL,
+  `active` smallint NOT NULL,
+  `isActive` smallint NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+# Created 'entityPromotionProduct' table
+CREATE TABLE `marketplace`.`entityPromotionProduct` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `entityPromotionId` INT NOT NULL,
+  `productId` INT NOT NULL,
+  PRIMARY KEY (`id`));
+
+# Created 'vwEntityPromotionProduct' view
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityPromotionProduct` AS
+    SELECT
+        `epp`.`id` AS `id`,
+        `epp`.`entityPromotionId` AS `entityPromotionId`,
+        `epp`.`productId` AS `productId`,
+        `p`.`name_ar` AS `productName_ar`,
+        `p`.`name_en` AS `productName_en`,
+        `p`.`name_fr` AS `productName_fr`
+    FROM
+        (`entityPromotionProduct` `epp`
+        JOIN `product` `p` ON ((`epp`.`productId` = `p`.`id`)))
+
+# Added 'productImage' field to 'vwEntityProductSellSummary' view
+CREATE OR REPLACE VIEW `marketplace`.`vwEntityProductSellSummary` AS
+    SELECT
+        `ep`.`id` AS `id`,
+        `ep`.`entityId` AS `entityId`,
+        `e`.`name_ar` AS `entityName_ar`,
+        `e`.`name_en` AS `entityName_en`,
+        `e`.`name_fr` AS `entityName_fr`,
+        `ep`.`productId` AS `productId`,
+        `p`.`scientificNameId` AS `scientificNameId`,
+        `s`.`name` AS `scientificName`,
+        `p`.`name_ar` AS `productName_ar`,
+        `p`.`name_en` AS `productName_en`,
+        `p`.`name_fr` AS `productName_fr`,
+        `p`.`image` AS `productImage`
+    FROM
+        (((`entityProductSell` `ep`
+        JOIN `entity` `e` ON ((`ep`.`entityId` = `e`.`id`)))
+        JOIN `product` `p` ON ((`ep`.`productId` = `p`.`id`)))
+        LEFT JOIN `scientificName` `s` ON ((`p`.`scientificNameId` = `s`.`id`)))
+
+################################
+
+## 08/03/2021 -- Naveed Javaid
+
+# Modify tables supportReason and supportLog, inserted new rows in supportReason table.
+
+alter table supportReason add entityTypeId int default 0 null;
+
+UPDATE marketplace.supportReason t SET t.entityTypeId = 10 WHERE t.id = 2;
+
+INSERT INTO marketplace.supportReason (name_en, name_ar, name_fr, isAuth, entityTypeId) VALUES ('Delivery Related', 'Delivery Related', 'Delivery Related', 1, 40);
+
+INSERT INTO marketplace.supportReason (name_en, name_ar, name_fr, isAuth, entityTypeId) VALUES ('Request to Cancel Related', 'Request to Cancel Related', 'Request to Cancel Related', 1, 40);
+
+INSERT INTO marketplace.supportReason (name_en, name_ar, name_fr, isAuth, entityTypeId) VALUES ('Request to Return Related', 'Request to Return Related', 'Request to Return Related', 1, 40);
+
+INSERT INTO marketplace.supportReason (name_en, name_ar, name_fr, isAuth, entityTypeId) VALUES ('Pharmacy Related', 'Pharmacy Related', 'Pharmacy Related', 1, 10);
+
+INSERT INTO marketplace.supportReason (name_en, name_ar, name_fr, isAuth, entityTypeId) VALUES ('Support with Marketplace', 'Support with Marketplace', 'Support with Marketplace', 1, DEFAULT);
+
+alter table supportLog add orderId int default 0 null after phone;
+
+alter table supportLog add entityBuyerId int default 0 null after orderId;
+
+alter table supportLog add requestCall int default 0 null after entityBuyerId;
+
+alter table supportLog add message text null after requestCall;
+
+################################
+
+# 02/03/2021 - Abdul-fattah Tayih
+# Create userFcmTokens table
+CREATE TABLE userFcmTokens (
+    id int NOT NULL AUTO_INCREMENT,
+	fcm_token varchar(512) NOT NULL,
+    platform varchar(10) NOT NULL,
+    user_id int NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    PRIMARY KEY (id)
+);
+
+# Create notifications table
+CREATE TABLE notifications (
+    id int NOT NULL AUTO_INCREMENT,
+    title varchar(256) NOT NULL,
+    body text NOT NULL,
+    type varchar(50) NOT NULL,
+    `read` boolean DEFAULT false,
+    user_id int NOT NULL,
+    created_at timestamp DEFAULT now(),
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    PRIMARY KEY (id)
+);
+
+################################
+
+# 05/03/2021 - Abdul-fattah Tayih
+
+# Add entityRelationIdentifiers
+ALTER TABLE `marketplace`.`entityRelation`
+    ADD buyerIdentifier varchar(150) UNIQUE AFTER statusId;
+
+CREATE OR REPLACE VIEW `vwEntityRelation` AS
+    SELECT 
+        `relation`.`id` AS `id`,
+        `relation`.`entityBuyerId` AS `entityBuyerId`,
+        `relation`.`entitySellerId` AS `entitySellerId`,
+        `entityBuyer`.`name_en` AS `buyerName_en`,
+        `entityBuyer`.`name_fr` AS `buyerName_fr`,
+        `entityBuyer`.`name_ar` AS `buyerName_ar`,
+        `entityBuyer`.`countryId` AS `buyerCountryId`,
+        `buyerCountry`.`name_ar` AS `buyerCountryName_ar`,
+        `buyerCountry`.`name_en` AS `buyerCountryName_en`,
+        `buyerCountry`.`name_fr` AS `buyerCountryName_fr`,
+        `buyerEntityBranch`.`cityId` AS `buyerCityId`,
+        `buyerCity`.`nameAr` AS `buyerCityName_ar`,
+        `buyerCity`.`nameEn` AS `buyerCityName_en`,
+        `buyerCity`.`nameFr` AS `buyerCityName_fr`,
+        `relation`.`buyerIdentifier` AS `buyerIdentifier`,
+        `entitySeller`.`name_ar` AS `sellerName_ar`,
+        `entitySeller`.`name_en` AS `sellerName_en`,
+        `entitySeller`.`name_fr` AS `sellerName_fr`,
+        `entitySeller`.`countryId` AS `sellerCountryId`,
+        `relation`.`relationGroupId` AS `relationGroupId`,
+        `entityRelationGroup`.`name_ar` AS `relationGroupName_ar`,
+        `entityRelationGroup`.`name_en` AS `relationGroupName_en`,
+        `entityRelationGroup`.`name_fr` AS `relationGroupName_fr`,
+        `relation`.`orderCount` AS `orderCount`,
+        `relation`.`orderCountPaid` AS `orderCountPaid`,
+        `relation`.`orderTotal` AS `orderTotal`,
+        `relation`.`orderTotalPaid` AS `orderTotalPaid`,
+        (`relation`.`orderTotal` - `relation`.`orderTotalPaid`) AS `orderTotalUnPaid`,
+        `relation`.`statusId` AS `statusId`,
+        `currency`.`symbol` AS `currencySymbol`
+    FROM
+        (((((((`entityRelation` `relation`
+        JOIN `entity` `entityBuyer` ON ((`entityBuyer`.`id` = `relation`.`entityBuyerId`)))
+        JOIN `entity` `entitySeller` ON ((`entitySeller`.`id` = `relation`.`entitySellerId`)))
+        JOIN `currency` ON ((`entitySeller`.`currencyId` = `currency`.`id`)))
+        JOIN `entityBranch` `buyerEntityBranch` ON ((`buyerEntityBranch`.`entityId` = `entityBuyer`.`id`)))
+        JOIN `country` `buyerCountry` ON ((`buyerCountry`.`id` = `entityBuyer`.`countryId`)))
+        JOIN `city` `buyerCity` ON ((`buyerCity`.`id` = `buyerEntityBranch`.`cityId`)))
+        LEFT JOIN `entityRelationGroup` ON ((`entityRelationGroup`.`id` = `relation`.`relationGroupId`)));
+
+################################
+# Abdul-fattah Tayih 07/03/2021
+# Create userInvites Table
+
+CREATE TABLE `marketplace`.`userInvites` (
+    id int NOT NULL AUTO_INCREMENT,
+    email varchar(100) NOT NULL,
+    createdBy int NOT NULL,
+    entityId int NOT NULL,
+    token varchar(32) NOT NULL,
+    status int NOT NULL,
+    createdAt timestamp,
+    PRIMARY KEY (id),
+    UNIQUE (email),
+    UNIQUE (token),
+    FOREIGN KEY (entityId) REFERENCES entity(id),
+    FOREIGN KEY (createdBy) REFERENCES user(id)
+);
+
+################################
+## 15/03/2021 -- Hamza Rashid
+
+# updated `orderLog` table to include `reasonId` field which gets its values from index of array available in PHP languages file with key: vOrderPending_reasons
+
+ALTER TABLE orderLog ADD COLUMN `reasonId` int null COMMENT 'Index from array available in PHP languages file with key: vOrderPending_reasons' AFTER `statusId`;
+
+# add routine to fetch pending orders log for distributor
+
+CREATE PROCEDURE spGetDistributorPendingOrdersLog(IN user_id int)
+BEGIN
+    SELECT `oL`.`id`,
+           `oL`.`orderId` AS `orderId`,
+           `oL`.`statusId`   AS `statusId`,
+           `oL`.`reasonId` AS `reasonId`,
+           `oL`.`updatedAt`  AS `updatedAt`,
+           `marketplace`.`orderStatus`.`name_en` AS `name_en`,
+           `marketplace`.`orderStatus`.`name_ar` AS `name_ar`,
+           `marketplace`.`orderStatus`.`name_fr` AS `name_fr`,
+           `entityBuyer`.`name_en`              AS `entityBuyer`,
+           `entityBuyer`.`image`                AS `entityBuyerImage`
+    FROM (
+        SELECT t1.* FROM `orderLog` t1
+            LEFT JOIN `orderLog` t2 ON (t1.`orderId` = t2.`orderId` AND t1.`id` < t2.`id`)
+        WHERE t1.`userId` = user_id AND t2.`id` IS NULL
+    ) oL
+        JOIN `marketplace`.`order` ON `oL`.`orderId` = `marketplace`.`order`.`id`
+        JOIN `marketplace`.`orderStatus` ON `oL`.`statusId` = `marketplace`.`orderStatus`.`id`
+        LEFT JOIN `marketplace`.`entity` `entityBuyer` on `marketplace`.`order`.`entityBuyerId` = `entityBuyer`.`id`
+    ORDER BY oL.`id` DESC;
+END;
+
+################################

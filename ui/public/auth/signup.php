@@ -24,6 +24,12 @@
 						<div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
 							<!--begin::Title-->
 							<div class="pb-10 pb-lg-15">
+                                <?php if($_SESSION['error']) : ?>
+                                    <div class="alert alert-danger"><?php echo $_SESSION['error']; ?></div>
+                                <?php
+                                    unset($_SESSION['error']);
+                                    endif;
+                                ?>
 								<h3 class="font-weight-bolder text-dark display5"><?php echo $vLogin_signupPharmacy ?></h3>
 								<div class="text-dark-50 font-weight-bold font-size-h4"><?php echo $vSignup_AlreadyHaveAccount ?>
 									<a href="/web/auth/signin" class="text-primary font-weight-bolder"><?php echo $vLogin_signin ?></a>

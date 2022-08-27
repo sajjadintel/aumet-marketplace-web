@@ -88,4 +88,7 @@ class Constants
 
     ### Database
     const MAX_INT_VALUE = 2147483647;
+
+    ### Max Count
+    const MAX_DISTRIBUTOR_PROMOTION_COUNT = 10;
 }

@@ -820,16 +820,131 @@ var WebAppLocals = (function () {
 			ar: 'دولة',
 			fr: ''	
 		},
-		city: {
-			en: 'City',
-			ar: 'مدينة',
-			fr: ''	
-		},
-		addToGroup: {
-			en: 'Add to group',
-			ar: 'إضافة إلى المجموعة',
+		activeIngredients: {
+			en: 'Active Ingredients',
+			ar: 'مكونات نشطة',
 			fr: ''
 		},
+		pleaseWait: {
+			en: 'Please wait',
+			ar: 'انتظر من فضلك',
+			fr: ''
+		},
+		save: {
+			en: 'Save',
+			ar: 'يحفظ',
+			fr: ''
+		},
+		backToEdit: {
+			en: 'Back To Edit',
+			ar: 'عودة للتعديل',
+			fr: ''
+		},
+		minOrderEqStockPt1: {
+			en: 'Minimum Order and Stock Quantities are both ',
+			ar: 'Minimum Order and Stock Quantities are both ', // TODO: translate
+			fr: ''
+		},
+		minOrderEqStockPt2: {
+			en: '. So one order only remains before you’re Out of Stock',
+			ar: '. So one order only remains before you’re Out of Stock', // TODO: translate
+			fr: ''
+		},
+		minOrderEqMaxOrderPt1: {
+			en: 'Only orders of ',
+			ar: 'Only orders of ', // TODO: translate
+			fr: ''
+		},
+		minOrderEqMaxOrderPt2: {
+			en: ' quantity the customers will be able to order of this product. Please Update the Minimum, or Maximum Order Quantities to allow the customers more options',
+			ar: ' quantity the customers will be able to order of this product. Please Update the Minimum, or Maximum Order Quantities to allow the customers more options', // TODO: translate
+			fr: ''
+		},
+		countryId: {
+			en: 'Country',
+			ar: 'دولة',
+			fr: ''
+		},
+		nameAr: {
+			en: 'Brand Name AR',
+			ar: 'Brand Name AR', // TODO: translate
+			fr: ''
+		},
+		nameEn: {
+			en: 'Brand Name EN',
+			ar: 'Brand Name EN', // TODO: translate
+			fr: ''
+		},
+		vat: {
+			en: 'VAT',
+			ar: 'VAT', // TODO: translate
+			fr: ''
+		},
+		stock: {
+			en: 'Available Quantity',
+			ar: 'الكمية المتوفرة',
+			fr: ''
+		},
+		descriptionAr: {
+			en: 'Description AR',
+			ar: 'Description AR', // TODO: translate
+			fr: ''
+		},
+		descriptionEn: {
+			en: 'Description EN',
+			ar: 'Description EN', // TODO: translate
+			fr: ''
+		},
+		subtitleAr: {
+			en: 'Subtitle AR',
+			ar: 'Subtitle AR', // TODO: translate
+			fr: ''
+		},
+		subtitleEn: {
+			en: 'Subtitle EN',
+			ar: 'Subtitle EN', // TODO: translate
+			fr: ''
+		},
+		manufacturerName: {
+			en: 'Manufacturer Name',
+			ar: 'اسم المصنع',
+			fr: ''
+		},
+		strength: {
+			en: 'Strength',
+			ar: 'قوة',
+			fr: ''
+		},
+		pricesTabInvalid: {
+			en: 'Prices Tab Invalid',
+			ar: 'Prices Tab Invalid', // TODO: translate
+			fr: ''
+		},
+		active: {
+			en: 'Active',
+			ar: 'متوفرة',
+			fr: ''
+		},
+		start: {
+			en: 'Start',
+			ar: 'بداية',
+			fr: ''
+		},
+		end: {
+			en: 'End',
+			ar: 'نهاية',
+			fr: ''
+		},
+		deletePromotion: {
+			en: 'Are you sure you want to delete this promotion?',
+			ar: 'هل أنت متأكد أنك تريد حذف هذا الترويج؟',
+			fr: ''
+		},
+		addCustomerId: {
+			en: 'Add Customer Id',
+			ar: ' إضافة معرف للزبون',
+			fr: ''
+		}
 	};
 
 	var _symbolsLocals = {
@@ -856,10 +971,10 @@ var WebAppLocals = (function () {
 				};
 			}
 		},
-		getMessage(key) {
+		getMessage: function (key) {
 			return _arrLocals[key][docLang];
 		},
-		getSymbol(key) {
+		getSymbol: function (key) {
 			return _symbolsLocals[key];
 		},
 	};

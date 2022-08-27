@@ -44,16 +44,25 @@ class Controller
 
             $this->f3->set('objUser', $this->objUser);
             $this->f3->set('isAuth', true);
+            $this->objUser->unreadNotificationCount = (new Notification)->count(['user_id = ? AND `read` = ?', $this->objUser->id, false]);
         } else {
             $this->isAuth = false;
         }
 
         $supportReasons = new BaseModel($this->db, 'supportReason');
         $supportReasons->name = "name_" . ($this->objUser->language ?? 'en');
-        $where = $this->isAuth ? 'isAuth=1' : '';
+        $where = $this->isAuth ? 'isAuth=1' : 'isAuth=0';
+        if($this->isAuth) {
+            $where .= ' AND (entityTypeId = ' . $this->objUser->roleId . ' OR entityTypeId = 0)';
+        }
         $supportReasons = $supportReasons->find($where);
 
         $this->f3->set('supportReasons', $supportReasons);
+
+        if($this->isAuth){
+            $this->f3->set('supportCustomers', $this->supportCustomers());
+            $this->f3->set('supportOrders', $this->supportOrders());
+        }
 
         LayoutRender::setMainMenu($this->f3, $this->db, $this->objUser->menuId);
     }
@@ -750,4 +759,42 @@ class Controller
             exit;
         }
     }
+
+    function supportCustomers()
+    {
+        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+        $query = "entitySellerId IN ($arrEntityId)";
+
+        $dbData = new BaseModel($this->db, "vwEntityRelation");
+        $dbData->buyerName = "buyerName_" . $this->objUser->language;
+        $dbData->sellerName = "sellerName_" . $this->objUser->language;
+        $dbData->relationGroupName = "relationGroupName_" . $this->objUser->language;
+        $dbData->buyerCountryName = "buyerCountryName_" . $this->objUser->language;
+        $dbData->buyerCityName = "buyerCityName_" . $this->objUser->language;
+
+        $data = $dbData->findWhere($query,'buyerName ASC');
+
+        return $data;
+    }
+
+    function supportOrders()
+    {
+        $arrEntityId = Helper::idListFromArray($this->f3->get('SESSION.arrEntities'));
+        if(Helper::isDistributor($this->objUser->roleId)){
+            $query = "entitySellerId IN ($arrEntityId)";
+        }
+        else if(Helper::isPharmacy($this->objUser->roleId)){
+            $query = "entityBuyerId IN ($arrEntityId)";
+        }
+
+        $query .= " AND statusId IN (1,2,3,4,5,6,7,8,9)";
+
+        $dbData = new BaseModel($this->db, "vwOrderEntityUser");
+
+        $orders = $dbData->findWhere($query, 'id desc');
+
+        return $orders;
+    }
+
+
 }

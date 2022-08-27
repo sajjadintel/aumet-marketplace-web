@@ -83,12 +83,21 @@ class DashboardController extends Controller
                     $product->image = $productDb['image'];
                     $product->id = $productDb['id'];
                     $product->entityId = $productDb['entityId'];
+                    $product->productId = $productDb['productId'];
+                    //Used for datalayer implementation
+                    $product->inStock = $productDb['stockStatusName_en'];
+                    $product->stock = $productDb['stock'];
+                    $product->madeInCountry = $productDb['madeInCountryName_en'];
+                    $product->category = $productDb['category_name_en'];
+                    $product->manufacturerName = $productDb['manufacturerName'];
+                    $product->productStore = $productDb['entityName_en'];
+                    $product->currency = $productDb['currency'];
 
                     $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];
                     $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];
                     $price = $priceUSD / $buyerCurrency['conversionToUSD'];
                     $product->price = Helper::formatMoney($price, 2) . " " . $buyerCurrency['symbol'];
-
+                    $product->priceInt = Helper::formatMoney($price, 2);
                     array_push($arrNewestProducts, $product);
                 }
                 $this->f3->set('arrNewestProducts', $arrNewestProducts);
@@ -102,11 +111,21 @@ class DashboardController extends Controller
                     $product->image = $productDb['image'];
                     $product->id = $productDb['id'];
                     $product->entityId = $productDb['entityId'];
+                    $product->productId = $productDb['productId'];
+                    //Used for datalayer implementation
+                    $product->inStock = $productDb['stockStatusName_en'];
+                    $product->stock = $productDb['stock'];
+                    $product->madeInCountry = $productDb['madeInCountryName_en'];
+                    $product->category = $productDb['category_name_en'];
+                    $product->manufacturerName = $productDb['manufacturerName'];
+                    $product->productStore = $productDb['entityName_en'];
+                    $product->currency = $productDb['currency'];
 
                     $productCurrency = $mapCurrencyIdCurrency[$productDb['currencyId']];
                     $priceUSD = $productDb['unitPrice'] * $productCurrency['conversionToUSD'];
                     $price = $priceUSD / $buyerCurrency['conversionToUSD'];
                     $product->price = Helper::formatMoney($price, 2) . " " . $buyerCurrency['symbol'];
+                    $product->priceInt = Helper::formatMoney($price, 2);
 
                     array_push($arrTopSellingProducts, $product);
                 }
@@ -170,8 +189,6 @@ class DashboardController extends Controller
                     }
                 }
                 $this->f3->set('arrTopDistributors', $arrTopDistributors);
-
-
 
                 $this->webResponse->errorCode = Constants::STATUS_SUCCESS;
                 $this->webResponse->title = $this->f3->get('vTitle_homepage');

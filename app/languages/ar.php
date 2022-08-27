@@ -36,6 +36,9 @@ return array(
     'vSupport_emailMissing' => 'Email is required', // TODO: Translate
     'vSupport_phoneMissing' => 'Phone is required', // TODO: Translate
     'vSupport_reasonMissing' => 'Reason is required', // TODO: Translate
+    'vSupport_message' => 'Message:', // TODO: Translate
+    'vSupport_customer' => 'Customer:', // TODO: Translate
+    'vSupport_order' => 'Order #:', // TODO: Translate
 
     'vLogin_signin' => 'تسجيل الدخول',
     'vLogin_signinWithGoole' => 'سجل من خلال جوجل',
@@ -113,6 +116,7 @@ return array(
 
     'vSignup_thankyouTitle' => 'شكرا على التسجيل!',
     'vSignup_thankyouSubtitle' => 'تم إرسال بريد إلكتروني إليك للتحقق من حسابك.',
+    'vSignup_thankyouInviteSubtitle' => 'تم تفعيل حسابك, قم بتسجيل الدخول الان.',
     'vSignup_thankyouHome' => 'العودة إلى الصفحة الرئيسية',
 
     'vSignup_isVerifiedTitle' => 'Your Email has been Verified!',
@@ -195,6 +199,31 @@ return array(
     'vModule_product_quantityTooBig' => 'الكمية كبيرة جدًا!',
     'vModule_product_bonusTooBig' => 'المكافأة كبيرة جدًا!',
     'vModule_product_productOverview' => 'Product Overview', // TODO: add translation
+    'vModule_product_addProduct' => 'إضافة منتج',
+    'vModule_product_editProduct' => 'تحرير المنتج',
+    'vModule_product_editing' => 'التحرير',
+    'vModule_product_editingInfo' => 'لن يتم تطبيق التغييرات إلا عند الضغط على "حفظ التغييرات"',
+    'vModule_product_general' => 'عام',
+    'vModule_product_images' => 'الصور',
+    'vModule_product_prices' => 'الأسعار',
+    'vModule_product_stockSettings' => 'إعدادات المخزون',
+    'vModule_product_saveChanges' => 'حفظ التغييرات',
+    'vModule_product_mainImage' => 'الصورة الرئيسية',
+    'vModule_product_subImages' => 'الصورة الفرعية',
+    'vModule_product_mainImageAlt' => 'النص الرئيسي البديل للصورة',
+    'vModule_product_imageAltPlaceholder' => 'صف الصورة',
+    'vModule_product_removePhoto' => 'إزالة الصورة',
+    'vModule_product_addUnitPrices' => 'أضف أسعار الوحدات',
+    'vModule_product_paymentMethod' => 'طريقة الدفع',
+    'vModule_product_vatTooHigh' => 'يجب أن تتراوح ضريبة القيمة المضافة بين ٠ و ١٠٠',
+    'vModule_product_unitPricesDuplicatePaymentMethod' => 'لا يمكن أن يكون لأسعار الوحدات المتعددة نفس طريقة الدفع',
+    'vModule_product_unitPricesInvalid' => 'أسعار الوحدات غير صالحة',
+    'vModule_product_minimumOrderQuantity' => 'أقل كمية ممكن طلبها',
+    'vModule_product_minHigherThanMaxOrderQuantity' => 'الحد الأدنى لكمية الطلب أكبر من الحد الأقصى لكمية الطلب',
+    'vModule_product_minOrderQtyHigherThanStock' => 'الحد الأدنى لكمية الطلب أكبر من المخزون',
+    'vModule_product_minOrderQtyNegative' => 'يجب أن يكون الحد الأدنى لكمية الطلب عددًا موجبًا',
+    'vModule_product_maxOrderQtyHigherThanStock' => 'الحد الأقصى لكمية الطلب أكبر من المخزون',
+    'vModule_product_maxOrderQtyNegative' => 'يجب أن يكون الحد الأقصى لكمية الطلب عددًا موجبًا',
 
     'vModule_product_bonus_download_file_button' => 'Download Sample Bonus Excel File',  // TODO: add translation
     'vModule_product_bonus_download_file_info_message' => 'Use Microsoft Excel (desktop version) to update file',  // TODO: add translation
@@ -233,6 +262,21 @@ return array(
     'vOrderStatus_Canceled' => 'ألغيت',
     'vOrderStatus_Received' => 'تم الاستلام',
     'vOrderStatus_Paid' => 'دفع',
+
+    'vMessageCenter_heading' => 'Message Center', // TODO: add translation
+    'vMessageCenter_seeAll' => 'See All', // TODO: add translation
+    'vOrderPending_logTitle' => 'Pending Orders Log', // TODO: add translation
+    'vOrderPending_reasons' => [
+        'لا يوجد حساب الرجاء فتح حساب',
+        'لم يتم طباعة الطلبية فالحساب مغلق',
+        'الرجاء مراجعة المندوب',
+        'شيك راجع',
+        'سيكون الدفع نقدا',
+        'حساب موقوف الرجاء مراجعة المندوب',
+        'لم يتم طباعة الطلبية فقد وصلت حد السقف',
+        'الرجاء المتابعة مع قسم المحاسبة',
+        'أخرى',
+    ],
 
     'vModule_customer_title' => 'الزبائن',
     'vModule_customer_header' => 'يمكنك البحث عن الزبائن',
@@ -356,6 +400,7 @@ return array(
     'vTitle_dashboard' => 'لوحة القيادة',
     'vTitle_homepage' => 'الصفحة الرئيسية',
     'vTitle_profile' => 'الملف الشخصي',
+    'vTitle_notifications' => 'الإشعارات',
 
     'vModule_profile_signout' => 'خروج',
     'vModule_profile_myProfileButton' => 'ملفي',
@@ -408,27 +453,29 @@ return array(
     'vModule_profile_invalidImage' => 'Did not match data URI with image data', // TODO: translate
     'vModule_profile_tradeLicenseTaken' => 'Trade License Number already exists', // TODO: translate
 
-    'error_filedTooLong' => ' field is too long! maximum length: ',
-    'error_filedTooShort' => ' field is too short! minimum length: ',
-    'field_entityName' => 'Entity Name',
-    'field_pharmacyName' => 'Pharmacy Name',
-    'field_distributorName' => 'Distributor Name',
-    'field_relationGroupName' => 'Customer group name',
-    'field_address' => 'Address',
-    'field_tradeLicenseNumber' => 'Trade License Number',
-    'field_nameAr' => 'Name AR',
-    'field_nameEn' => 'Name EN',
-    'field_nameFr' => 'Name FR',
-    'field_descriptionAr' => 'Description AR',
-    'field_descriptionEn' => 'Description EN',
-    'field_descriptionFr' => 'Description FR',
-    'field_subtitleAr' => 'Subtitle AR',
-    'field_subtitleEn' => 'Subtitle EN',
-    'field_subtitleFr' => 'Subtitle FR',
-    'field_manufacturerName' => 'Manufacturer Name',
-    'field_batchNumber' => 'Batch Number',
-    'field_itemCode' => 'Item Code',
-    'field_strength' => 'Strength',
+    'error_filedTooLong' => ' field is too long! maximum length: ', // TODO: translate
+    'error_filedTooShort' => ' field is too short! minimum length: ', // TODO: translate
+    'field_entityName' => 'Entity Name', // TODO: translate
+    'field_pharmacyName' => 'Pharmacy Name', // TODO: translate
+    'field_distributorName' => 'Distributor Name', // TODO: translate
+    'field_relationGroupName' => 'Customer group name', // TODO: translate
+    'field_address' => 'Address', // TODO: translate
+    'field_tradeLicenseNumber' => 'Trade License Number', // TODO: translate
+    'field_nameAr' => 'Name AR', // TODO: translate
+    'field_nameEn' => 'Name EN', // TODO: translate
+    'field_nameFr' => 'Name FR', // TODO: translate
+    'field_descriptionAr' => 'Description AR', // TODO: translate
+    'field_descriptionEn' => 'Description EN', // TODO: translate
+    'field_descriptionFr' => 'Description FR', // TODO: translate
+    'field_subtitleAr' => 'Subtitle AR', // TODO: translate
+    'field_subtitleEn' => 'Subtitle EN', // TODO: translate
+    'field_subtitleFr' => 'Subtitle FR', // TODO: translate
+    'field_manufacturerName' => 'Manufacturer Name', // TODO: translate
+    'field_batchNumber' => 'Batch Number', // TODO: translate
+    'field_itemCode' => 'Item Code', // TODO: translate
+    'field_strength' => 'Strength', // TODO: translate
+    'field_name' => 'Name', // TODO: translate
+    'field_message' => 'Message', // TODO: translate
 
     'vModal_welcome_title' => 'Welcome', // TODO: translate
     'vModal_welcome_message' => 'Please complete your profile.', // TODO: translate
@@ -439,10 +486,43 @@ return array(
     'vModal_welcome_step3_title' => 'Add minimum value order by location.', // TODO: translate
     'vModal_welcome_step3_message' => 'Add minimum value order by location.', // TODO: translate
     'vModal_welcome_callToAction' => 'Complete Profile', // TODO: translate
-    
+
     'vModule_customerGroup_title' => 'مجموعة الزبائن',
     'vModule_customerGroup_editModalTitle' => 'مجموعة الزبائن',
     'vModule_customerGroup_editModalNonGrouped' => 'غير مجمعة',
     'vModule_customerGroup_noCustomerGroup' => 'لا مجموعة العملاء',
     'vModule_customerGroup_saved' => 'تم حفظ مجموعة العملاء بنجاح',
+    
+    'vModule_promotion_title' => 'الإعلانات والترقيات',
+    'vModule_promotion_addTitle' => 'أضف الترويج',
+    'vModule_promotion_editTitle' => 'تحرير الترويج',
+    'vModule_promotion_add' => 'أضف الترويج',
+    'vModule_promotion_edit' => 'تحرير الترويج',
+    'vModule_promotion_added' => 'تمت إضافة الترقية بنجاح',
+    'vModule_promotion_edited' => 'تم تحرير الترقية بنجاح',
+    'vModule_promotion_deleted' => 'تم حذف الترويج بنجاح',
+    'vModule_promotion_name' => 'اسم الترويج',
+    'vModule_promotion_active' => 'نشيط',
+    'vModule_promotion_duration' => 'مدة الترويج',
+    'vModule_promotion_start' => 'بداية الترويج',
+    'vModule_promotion_to' => 'إلى',
+    'vModule_promotion_end' => 'نهاية الترويج',
+    'vModule_promotion_homepageBanner' => 'لافتة الصفحة الرئيسية',
+    'vModule_promotion_featuredProducts' => 'منتجات مميزة',
+    'vModule_promotion_productName' => 'اسم المنتج',
+    'vModule_promotion_message' => 'رسالة ترويجية',
+    'vModule_promotion_duplicateFeaturedProduct' => 'منتج مميز مكرر',
+    'vModule_promotion_featuredProductInvalid' => 'المنتج المميز غير صالح',
+    'vModule_promotion_notFound' => 'الترويج غير موجود',
+    'vModule_promotion_missingFields' => 'بعض الحقول الإلزامية مفقودة',
+    'vModule_promotion_useImage' => 'استخدم الصورة',
+    'vModule_promotion_addLimit' => 'Promotion limit reached (max: {0})', // TODO: translate
+    'vModule_promotion_endDateInvalid' => 'يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء',
+
+    'user_invite_not_found' => 'الدعوة غير موجودة',
+    'unauthorized_to_delete_user_invite' => 'أنت غير مخول لحذف هذه الدعوة.',
+    'user_invite_is_processed' => 'لا يمكن حذف هذه الدعوة ﻷنها استخدمت.',
+
+    'customer_not_found' => 'الزبون غير موجود.',
+    'unauthorized_to_edit_customer' => 'أنت غير مخول لتعديل هذا الزبون.',
 );

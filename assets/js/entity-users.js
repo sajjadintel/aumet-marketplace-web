@@ -311,7 +311,7 @@ var EntityUsersDataTable = (function () {
 	};
 
 	var _productAddModalOpen = function () {
-		$('#addModalForm').attr('action', '/web/distributor/product/add');
+		$('#addModalForm').attr('action', '/web/distributor/product/add/modal');
 
 		$('#addModalTitle').html(WebAppLocals.getMessage('add'));
 		$("label[for='addProductScientificName']").text(WebAppLocals.getMessage('productScientificName'));

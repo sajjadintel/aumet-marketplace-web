@@ -61,7 +61,7 @@
         firebase.auth().signOut();
     </script>
     <meta charset="utf-8" />
-    <title><?php echo $vTitle; ?></title>
+    <title><?php if (isset($pageSeoTitle)){echo $pageSeoTitle;}  ?></title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link rel="canonical" href="" />
@@ -187,7 +187,11 @@
         var docLang = "<?php echo $LANGUAGE ?>";
     </script>
     <script src="/assets/js/locals.js<?php echo $platformVersion ?>"></script>
-    <script src="/assets/js/auth.js<?php echo $platformVersion ?>"></script>
+    <?php if($vAuthFile == 'signup-invite'): ?>
+        <script src="/assets/js/auth-invite.js<?php echo $platformVersion ?>"></script>
+    <?php else: ?>
+        <script src="/assets/js/auth.js<?php echo $platformVersion ?>"></script>
+    <?php endif; ?>
     <script src="/assets/js/app.js<?php echo $platformVersion ?>"></script>
     <script src="/assets/js/jquery.foggy.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/3.1.0/jquery.serializejson.min.js" integrity="sha512-4y8bsEzrXJqRyl2dqjdKk/DetH59JcFTtYNMsy5DUpvVV8CXiSrQ1gSCL3+dFgj1Xco0ONPizsYd6wX2eAXL2g==" crossorigin="anonymous"></script>
